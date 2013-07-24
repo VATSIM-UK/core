@@ -36,7 +36,7 @@
                     <?=$_account->name_first." ".$_account->name_last?>,
                 </p>
                 <p>
-                    Sorry to interrupt you, but this account is protected with a second layer of security.  This additional security has, however, expired.  Please complete the form below to reinstate your account.
+                    This account is protected with a second layer of security. This additional security has, expired. Please complete the form below to reinstate your account.
                 </p>
                 <p>
                     Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
@@ -45,7 +45,7 @@
                     Thanks,
                 </p>
                 <p class="signature-fancy">
-                    The VATSIM-UK Web Team
+                    The VATSIM UK Web Team
                 </p>
             </div>
             <div class="content">

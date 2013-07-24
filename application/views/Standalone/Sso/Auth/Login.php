@@ -40,10 +40,10 @@
                     features will be moved over to this new area, which will replace a number of the administrative interfaces.
                 </p>
                 <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-services][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
+                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
                 </p>
                 <p class="signature-fancy">
-                    The VATSIM-UK Web Team
+                    The VATSIM UK Web Team
                 </p>
             </div>
             <div class="content">
