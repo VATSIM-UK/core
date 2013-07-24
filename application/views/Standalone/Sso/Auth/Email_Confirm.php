@@ -36,7 +36,7 @@
                     <?=$_account->name_first." ".$_account->name_last?>,
                 </p>
                 <p>
-                    Sorry to interrupt you - but it seems we do not yet have a valid email address stored in our database for you.
+                    We do not yet have a valid email address stored in our database for you.
                     This could be because this is the first time you have logged in, you haven't logged in within the last 3 months or a 
                     syncronisation error with the main VATSIM database.
                 </p>
@@ -50,7 +50,7 @@
                     Thanks,
                 </p>
                 <p class="signature-fancy">
-                    The VATSIM-UK Web Team
+                    The VATSIM UK Web Team
                 </p>
             </div>
             <div class="content">
