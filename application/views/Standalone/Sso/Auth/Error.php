@@ -42,7 +42,7 @@
                     Thanks,
                 </p>
                 <p class="signature-fancy">
-                    The VATSIM-UK Web Team
+                    The VATSIM UK Web Team
                 </p>
             </div>
         </div>
