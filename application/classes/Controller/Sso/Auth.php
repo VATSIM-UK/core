@@ -329,7 +329,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $security = $this->_current_account->security->find();
             
             // Expired?
-            if($security->value == null || strtotime(gmdate("Y-m-d H:i:s")) > strtotime($security->expires)){
+            if($security->value == null || ($security->expires != null && strtotime(gmdate("Y-m-d H:i:s")) > strtotime($security->expires))){
                 $this->redirect("sso/auth/extra_security_replace");
                 return;
             }
