@@ -37,7 +37,7 @@ class Model_Account_Email extends Model_Master {
             'email' => array(
                 array('not_empty'),
                 array('email', array(':value', true)),
-                array(array($this, 'email_check_unique')),
+                //array(array($this, 'email_check_unique')),
             ),
         );
     }
