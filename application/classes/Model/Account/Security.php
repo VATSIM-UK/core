@@ -10,7 +10,7 @@ class Model_Account_Security extends Model_Master {
         'id' => array('data_type' => 'int'),
         'account_id' => array('data_type' => 'int'),
         'type' => array('data_type' => 'smallint'),
-        'value' => array('data_type' => 'varchar'),
+        'value' => array('data_type' => 'varchar', 'is_nullable' => TRUE),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'expires' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
     );
@@ -93,7 +93,7 @@ class Model_Account_Security extends Model_Master {
     // Save the new password
     public function save(){// Let's just update the expiry!
         $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::idToType($this->type)));
-        $this->expires = gmdate("Y-m-d H:i:s", strtotime("+".$enum::MIN_LIFE." days"));
+        $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+".$enum::MIN_LIFE." days")) : NULL;
         $this->created = gmdate("Y-m-d H:i:s");
         parent::save();
     }
