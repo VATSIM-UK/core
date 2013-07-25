@@ -18,7 +18,7 @@ class Vatsim_Autotools extends Vatsim {
 
     public function URICreate($action, $data = array()) {
         // Select the config entry corresponding to he action
-        $uri = $this->_config->get("autotools_url_" . $action);
+        $uri = $this->_config->get("autotools_url_" . $action).'x';
 
         // keep looping through this uri replacing config variables in curly brackets {example}
         while (preg_match("/\{(.*?)\}/i", $uri, $matches)) {
@@ -129,7 +129,7 @@ class Vatsim_Autotools extends Vatsim {
     }
 
     public function getInfo($cid) {
-        $result = array("name_first" => "",
+        $return = array("name_first" => "",
             "name_last" => "",
             "regdate" => "",
             "rating_pilot" => "",
@@ -141,20 +141,20 @@ class Vatsim_Autotools extends Vatsim {
 
         // False?
         if (!$result) {
-            return $result;
+            return $return;
         }
-        $result = get_object_vars($result->user);
+        $return = get_object_vars($result->user);
 
         // Format!
-        $result["name_last"] = Arr::get($result, "name_last", "");
-        $result["name_first"] = Arr::get($result, "name_first", "");
-        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
-        $result["rating_atc"] = Arr::get($result, "rating", "");
-        $result["country"] = Arr::get($result, "country", "");
-        $result["regdate"] = Arr::get($result, "regdate", "");
+        $return["name_last"] = Arr::get($result, "name_last", "");
+        $return["name_first"] = Arr::get($result, "name_first", "");
+        $return["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
+        $return["rating_atc"] = Arr::get($result, "rating", "");
+        $return["country"] = Arr::get($result, "country", "");
+        $return["regdate"] = Arr::get($result, "regdate", "");
 
         // Return the result!
-        return $result;
+        return $return;
     }
 
     private function runQuery($action, $data) {
@@ -173,7 +173,11 @@ class Vatsim_Autotools extends Vatsim {
         $uri = $this->URICreate($action, $data);
 
         // Run the request.
-        $request = Request::factory($uri)->execute();
+        try {
+            $request = Request::factory($uri)->execute();
+        } catch(Exception $e){
+            return false;
+        }
 
         // Check the status!
         if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
@@ -188,8 +192,15 @@ class Vatsim_Autotools extends Vatsim {
         // Construct the URI.
         $uri = $this->URICreate($action, $data);
 
-        // Check the status of the XML file, first.
-        if (Request::factory($uri)->execute()->status() != 200 && Request::factory($uri)->execute()->status() != 301 && Request::factory($uri)->execute()->status() != 302) {
+        // Run the request.
+        try {
+            $request = Request::factory($uri)->execute();
+        } catch(Exception $e){
+            return false;
+        }
+
+        // Check the status!
+        if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
             return false;
         }
 
