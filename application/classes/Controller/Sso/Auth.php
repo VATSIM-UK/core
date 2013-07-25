@@ -94,7 +94,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $this->process_login();
             return;
         } else {
-            $this->redirect("/sso/auth/login");
+            $this->redirect("sso/auth/login");
         }
     }
     
@@ -280,6 +280,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
+        // Let's set a "grace" period for passwords;
+        Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+10 minutes")));
+        
         // Extra security is valid!
         $this->returnHome();
     }
@@ -369,7 +372,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     private function postLoginChecks(){
         // Do we need to get an email address from them?
         if($this->_current_account->emails->where("deleted", "IS", NULL)->count_all() < 1){
-            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+5 minutes"));
+            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
             $this->redirect("sso/auth/email_confirm");
             return;
@@ -378,7 +381,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // What about security?
         if($this->_current_account->security->find()->loaded()){
             // Whatever happens, they need longer!
-            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+5 minutes"));
+            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
             
             $security = $this->_current_account->security->find();
@@ -390,8 +393,10 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             }
             
             // Otherwise, it's current!
-            $this->redirect("sso/auth/extra_security");
-            return;
+            if(Session::instance()->get("sso_password_grace", null) == null || strtotime(Session::instance()->get("sso_password_grace")) < time()){
+                $this->redirect("sso/auth/extra_security");
+                return;
+            }
         }
     }
     
@@ -421,7 +426,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Send back.
         Session::instance()->delete("sso_token");
-        $this->redirect($this->_current_token->return_url."?_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]));
+        $URL = $this->_current_token->return_url;
+        $pURL = parse_url($URL);
+        $URL = $pURL["scheme"]."://".$pURL["host"].$pURL["path"]."?";
+        $URL.= "_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
+        $URL.= "&".$pURL["query"];
+        $this->redirect($URL);
     }
     
     private function security(){
@@ -463,7 +473,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Do these details exist?
         if(!$this->_current_token->loaded()){
-            die("HERE!xxx");
             Session::instance()->delete("sso_token");
             return false;
         }
