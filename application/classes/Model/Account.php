@@ -52,14 +52,19 @@ class Model_Account extends Model_Master {
             'model' => 'Account_State',
             'foreign_key' => 'account_id',
         ),
-        'security' => array(
-            'model' => 'Account_Security',
+        'downloads' => array(
+            'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
     );
     
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'security' => array(
+            'model' => 'Account_Security',
+            'foreign_key' => 'account_id',
+        ),
+    );
     
     // Validation rules
     public function rules(){
