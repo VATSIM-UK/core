@@ -45,6 +45,7 @@ class Model_Account_Qualification extends Model_Master {
     public function __toString(){
         return $this->formatQualification(false);
     }
+    
     public function formatQualification($full=true){
         $enum = "Enum_Account_Qualification_".$this->type;
         return $full ? $enum::getDescription($this->value) : $enum::idToType($this->value); 
