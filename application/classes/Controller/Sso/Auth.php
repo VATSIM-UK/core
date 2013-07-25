@@ -23,64 +23,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         parent::after();
     }
     
-    /*public function action_requestToken(){
-        // For the request, we expect an API code to be issued.
-        $APICodes = array("RTS_System" => "GyNeypTxZ5GomLlJyBkiGOUF",
-                          "ANT_DEV" => "ajk5nSJn5lsmfnsaDLsn5",
-                          "TS_REG" => "vmbFQVWQ6ycxdghEXooWB1rV",
-                          "EVENTS_HUB" => "0EXXwGENxoPU1TfnFicDNG6H",
-                          "HELPDESK" => "hVyTLne7XrH9av3HO9mr0HMT",
-                          "FORUM" => "XDwLN7AlXoeqO6gnHcnqcZdx");
-        
-        // If no API code has been submitted, error.
-        if(!array_key_exists($this->request->query("ssoKey"), $APICodes) && $APICodes[$this->request->query("ssoKey")] != $this->request->query("ssoSecret")){
-            $this->response->body(json_encode(array("error" => "Invalid key/secret provided.")));
-            return;
-        }
-        
-        // No returnURL?
-        if($this->request->query("returnURL") == null){
-            $this->response->body(json_encode(array("error" => "You must submit a return URL with your inital token request.")));
-            return;
-        }
-        
-        // Now let's create a new request
-        $request = ORM::factory("Sso_Token");
-        $request->sso_key = $this->request->query("ssoKey");
-        $request->created = gmdate("Y-m-d H:i:s");
-        $request->expires = gmdate("Y-m-d H:i:s", strtotime("+7 minutes"));
-        $request->return_url = $this->request->query("returnURL");
-        $request->token = sha1($request->created.$this->request->query("ssoSecret").$request->expires).".".uniqid();
-        $request->save();
-        
-        // Now, return the token
-        $this->response->body(json_encode(array("token" => $request->token)));
-        return;
-    }*/
-    
-    /*public function action_requestDetails(){
-        if(!$this->security() || $this->_current_token->account_id < 1){
-            $this->response->body(json_encode(array("error" => "Invalid token supplied.")));
-            return;
-        }
-        
-        // Let's kill this token!
-        $this->_current_token->expires = gmdate("Y-m-d H:i:s");
-        $this->_current_token->save();
-        
-        // Now that we have the request, let's get the account!
-        $account = ORM::factory("Account", $this->_current_token->account_id);
-        $return = array();
-        $return["cid"] = $account->id;
-        $return["name_first"] = $account->name_first;
-        $return["name_last"] = $account->name_last;
-        $return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
-        $return["atc_rating"] = $account->get_atc_qualification();
-        $return["pilot_rating"] = $account->get_pilot_qualifications();
-        $this->response->body(json_encode($return));
-        return;
-    }*/
-    
     public function action_preLogin(){
         if(!$this->security()){
             $this->redirect("sso/auth/error");
