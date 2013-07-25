@@ -89,8 +89,9 @@ Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . str
  * - boolean  expose      set the X-Powered-By header                        FALSE
  */
 // INIT!
+$_SERVER_URI = explode("/", $_SERVER["REQUEST_URI"]);
 Kohana::init(array(
-    'base_url' => $_SERVER["REQUEST_URI"],
+    'base_url' => (Kohana::$environment !== Kohana::PRODUCTION) ? "/".$_SERVER_URI[1]."/".$_SERVER_URI[2]."/" : "/",
     'index_file' => Kohana::$environment === Kohana::PRODUCTION,
     'errors' => Kohana::$environment !== Kohana::PRODUCTION,
     'profile' => Kohana::$environment !== Kohana::PRODUCTION,
