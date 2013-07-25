@@ -339,6 +339,13 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 $this->action_extra_security_replace();
                 return false;
             }
+            
+            // Let's check the new password isn't the same as the old password.
+            if($this->request->post("new_password") == $this->request->post("old_password")){
+                $this->_data["error"] = "You are not allowed to use your old password again, please try something different.";
+                $this->action_extra_security_replace();
+                return false;
+            }
         }
         
         // Let's check the new passwords match
@@ -347,14 +354,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $this->action_extra_security_replace();
             return false;
         }
-        
-        // Let's check the new password isn't the same as the old password.
-        if($this->request->post("new_password") != $this->request->post("new_password2")){
-            $this->_data["error"] = "Your new passwords do not match, please try again.";
-            $this->action_extra_security_replace();
-            return false;
-        }
-        
+                
         // All fine - update the password!
         try {
             $security->value = $this->request->post("new_password");
