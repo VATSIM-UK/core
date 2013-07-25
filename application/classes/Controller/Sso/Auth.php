@@ -315,7 +315,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $this->_data["_requirements"] = $requirements;
         }
         
-        if($security->loaded() && $security->expires == null) {
+        if($security->loaded() && ($security->value == null || $security->value == '')) {
             $this->_data["_newReg"] = true;
         }
         
@@ -333,7 +333,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         $security = $this->_current_account->security->find();
         
         // Check the old password is right
-        if($security->loaded() && $security->value != '' && $security->expires != null){
+        if($security->loaded() && $security->value != '' && $security->value != null){
             if(sha1(sha1($this->request->post("old_password"))) != $security->value){
                 $this->_data["error"] = "Your old password is invalid, please try again.";
                 $this->action_extra_security_replace();
@@ -387,7 +387,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $security = $this->_current_account->security->find();
             
             // Expired?
-            if(strtotime(gmdate("Y-m-d H:i:s")) > strtotime($security->expires)){
+            if($security->value == null || strtotime(gmdate("Y-m-d H:i:s")) > strtotime($security->expires)){
                 $this->redirect("sso/auth/extra_security_replace");
                 return;
             }
