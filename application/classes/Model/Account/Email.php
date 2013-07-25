@@ -54,6 +54,7 @@ class Model_Account_Email extends Model_Master {
 
     // Check email is unique in the database.
     public function email_check_unique($email) {
+        return false;
         return !(bool) ORM::factory("Account_Email")
                         ->where("id", "!=", $this->id)
                         ->where("email", "=", $email)
