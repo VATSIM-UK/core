@@ -31,7 +31,7 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Extra Security - Now Expired</h1>
+                <h1>Extra Security - <?=(isset($_newReg) ? "Required" : "Now Expired")?></h1>
                 <p>
                     <?=$_account->name_first." ".$_account->name_last?>,
                 </p>

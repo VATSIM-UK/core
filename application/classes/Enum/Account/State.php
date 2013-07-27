@@ -3,10 +3,7 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Account_State extends Enum_Main {
-    const NOT_REGISTERED = 0;
     const GUEST = 1;
-    //const SUSPENDED = 10;
-    //const INACTIVE = 20;
     const DIVISION = 30;
     const REGION = 40;
     const VISITOR = 50;
