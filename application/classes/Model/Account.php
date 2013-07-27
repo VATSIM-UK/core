@@ -102,9 +102,9 @@ class Model_Account extends Model_Master {
             'extra_password' => array(
                 array("sha1"),
             ),
-            'token_ip' => array(
+            'last_login_ip' => array(
                 array("ip2long"),
-            ),
+            )
         );
     }
     
@@ -221,6 +221,9 @@ class Model_Account extends Model_Master {
         
     }
     
+    public function get_last_login_ip(){
+        return long2ip($this->last_login_ip);
+    }
     
 }
 
