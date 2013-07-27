@@ -18,7 +18,7 @@ class Vatsim_Autotools extends Vatsim {
 
     public function URICreate($action, $data = array()) {
         // Select the config entry corresponding to he action
-        $uri = $this->_config->get("autotools_url_" . $action).'x';
+        $uri = $this->_config->get("autotools_url_" . $action);
 
         // keep looping through this uri replacing config variables in curly brackets {example}
         while (preg_match("/\{(.*?)\}/i", $uri, $matches)) {
