@@ -91,11 +91,13 @@ class Model_Account_Security extends Model_Master {
     }
     
     // Save the new password
-    public function save(){// Let's just update the expiry!
+    public function save(Validation $validation = NULL){// Let's just update the expiry!
         $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::idToType($this->type)));
-        $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+".$enum::MIN_LIFE." days")) : NULL;
-        $this->created = gmdate("Y-m-d H:i:s");
-        parent::save();
+        if($this->expires == null){
+            $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+".$enum::MIN_LIFE." days")) : NULL;
+            $this->created = gmdate("Y-m-d H:i:s");
+        }
+        parent::save($validation);
     }
 }
 
