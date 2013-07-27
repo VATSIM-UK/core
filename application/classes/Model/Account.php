@@ -225,6 +225,22 @@ class Model_Account extends Model_Master {
         return long2ip($this->last_login_ip);
     }
     
+    public function count_last_login_ip_usage($ip, $timeLimit="-8 hours"){
+        $ipCheck = ORM::factory("Account")->where("last_login_ip", "=", ip2long($ip));
+        
+        // Exclude this user?
+        if($this->id > 0){
+            $ipCheck = $ipCheck->where("id", "!=", $this->id);
+        }
+        
+        // Limit the timeframe?
+        if($timeLimit != null && $timeLimit != false){
+            $ipCheck = $ipCheck->where("last_login", ">=", gmdate("Y-m-d H:i:s", strtotime($timeLimit)));
+        }
+        
+        // Return the count.
+        return $ipCheck->reset(FALSE)->count_all();
+    }
 }
 
 ?>
