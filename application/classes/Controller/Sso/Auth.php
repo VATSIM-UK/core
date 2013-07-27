@@ -139,6 +139,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
+        // Let's 
+        
         // Now that we've got this far, they're VALID! So, let's update the token.
         $this->_current_token->account_id = $cid;
         $this->_current_token->save();

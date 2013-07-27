@@ -9,14 +9,14 @@ class Model_Account extends Model_Master {
     protected $_primary_key = 'id';
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
-        'token' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'token_ip' => array('data_type' => 'int', 'is_nullable' => FALSE),
-        'name_first' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'name_last' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'password' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'extra_password' => array('data_type' => 'string', 'is_nullable' => FALSE),
+        'name_first' => array('data_type' => 'string'),
+        'name_last' => array('data_type' => 'string'),
+        'password' => array('data_type' => 'string'),
+        'extra_password' => array('data_type' => 'string'),
+        'last_login' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'last_login_ip' => array('data_type' => 'int'),
         'gender' => array('data_type' => 'char', 'is_nullable' => TRUE),
-        'age' => array('data_type' => 'smallint', 'is_nullable' => FALSE),
+        'age' => array('data_type' => 'smallint'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'updated' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'checked' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
@@ -52,14 +52,19 @@ class Model_Account extends Model_Master {
             'model' => 'Account_State',
             'foreign_key' => 'account_id',
         ),
-        'security' => array(
-            'model' => 'Account_Security',
+        'downloads' => array(
+            'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
     );
     
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'security' => array(
+            'model' => 'Account_Security',
+            'foreign_key' => 'account_id',
+        ),
+    );
     
     // Validation rules
     public function rules(){
