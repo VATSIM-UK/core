@@ -9,14 +9,14 @@ class Model_Account extends Model_Master {
     protected $_primary_key = 'id';
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
-        'token' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'token_ip' => array('data_type' => 'int', 'is_nullable' => FALSE),
-        'name_first' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'name_last' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'password' => array('data_type' => 'string', 'is_nullable' => FALSE),
-        'extra_password' => array('data_type' => 'string', 'is_nullable' => FALSE),
+        'name_first' => array('data_type' => 'string'),
+        'name_last' => array('data_type' => 'string'),
+        'password' => array('data_type' => 'string'),
+        'extra_password' => array('data_type' => 'string'),
+        'last_login' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'last_login_ip' => array('data_type' => 'int'),
         'gender' => array('data_type' => 'char', 'is_nullable' => TRUE),
-        'age' => array('data_type' => 'smallint', 'is_nullable' => FALSE),
+        'age' => array('data_type' => 'smallint'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'updated' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'checked' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
@@ -52,14 +52,19 @@ class Model_Account extends Model_Master {
             'model' => 'Account_State',
             'foreign_key' => 'account_id',
         ),
-        'security' => array(
-            'model' => 'Account_Security',
+        'downloads' => array(
+            'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
     );
     
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'security' => array(
+            'model' => 'Account_Security',
+            'foreign_key' => 'account_id',
+        ),
+    );
     
     // Validation rules
     public function rules(){
@@ -97,9 +102,9 @@ class Model_Account extends Model_Master {
             'extra_password' => array(
                 array("sha1"),
             ),
-            'token_ip' => array(
+            'last_login_ip' => array(
                 array("ip2long"),
-            ),
+            )
         );
     }
     
@@ -216,7 +221,26 @@ class Model_Account extends Model_Master {
         
     }
     
+    public function get_last_login_ip(){
+        return long2ip($this->last_login_ip);
+    }
     
+    public function count_last_login_ip_usage($ip, $timeLimit="-8 hours"){
+        $ipCheck = ORM::factory("Account")->where("last_login_ip", "=", ip2long($ip));
+        
+        // Exclude this user?
+        if($this->id > 0){
+            $ipCheck = $ipCheck->where("id", "!=", $this->id);
+        }
+        
+        // Limit the timeframe?
+        if($timeLimit != null && $timeLimit != false){
+            $ipCheck = $ipCheck->where("last_login", ">=", gmdate("Y-m-d H:i:s", strtotime($timeLimit)));
+        }
+        
+        // Return the count.
+        return $ipCheck->reset(FALSE)->count_all();
+    }
 }
 
 ?>

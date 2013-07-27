@@ -32,7 +32,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         Session::instance()->set("sso_token", $this->_current_token->token);
         
         // Has this member logged in before? Are we remembering them?
-        if(Session::instance()->get("sso_cid", null) != null){
+        if(Session::instance()->get("sso_cid", null) != null){   
+            Session::instance()->set("sso_fast_login", true);
             $this->process_login();
             return;
         } else {
@@ -41,7 +42,29 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     }
     
     public function action_logout(){
-        Session::instance()->destroy();
+        if(!$this->security() || $this->request->query("returnURL") == null){
+            $this->redirect("sso/auth/error");
+        }
+        
+        Session::instance()->set("logout_url", $this->request->query("returnURL"));
+        
+        // Add the key to the form.
+        $this->_data["area"] = $this->_current_token->sso_key;
+        
+        // Display the login form.
+        $this->setTemplate("Auth/Logout");
+    }
+    
+    public function process_logout(){
+        $returnURL = Session::instance()->get("logout_url");
+        
+        // Result?
+        if($this->request->post("processlogout") == 1){
+            Session::instance()->destory();
+        }
+        
+        $this->redirect($returnURL);
+        return;
     }
         
     public function action_login(){
@@ -55,6 +78,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Get the CID and Password - if no cookie is set
+        $adminOverride = false;
         if(Session::instance()->get("sso_cid", null) != null){
             $cid = Session::instance()->get("sso_cid");
         } else {
@@ -139,6 +163,11 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
+        // Let's update their last login information
+        $this->_current_account->last_login = gmdate("Y-m-d H:i:s");
+        $this->_current_account->last_login_ip = $_SERVER["REMOTE_ADDR"];
+        $this->_current_account->save();
+        
         // Now that we've got this far, they're VALID! So, let's update the token.
         $this->_current_token->account_id = $cid;
         $this->_current_token->save();
@@ -216,14 +245,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return;
         }
         
-        if(sha1(sha1($this->request->post("extra_password"))) != $this->_current_account->security->find()->value){
+        if(sha1(sha1($this->request->post("extra_password"))) != $this->_current_account->security->value){
             $this->_data["error"] = "The second layer security you entered is invalid - please try again.";
             $this->action_extra_security();
             return false;
         }
         
         // Let's set a "grace" period for passwords;
-        Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+10 minutes")));
+        Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
         
         // Extra security is valid!
         $this->returnHome();
@@ -300,6 +329,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // All fine - update the password!
         try {
             $security->value = $this->request->post("new_password");
+            $security->created = null;
+            $security->expires = null;
             $security->save();
         } Catch(Exception $e){
             $this->_data["error"] = "Your new password doesn't meet the specifications required.";
@@ -307,7 +338,55 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
+        // Add a grace period for the second layer password.
+        Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+        
         // Now, redirect!
+        $this->returnHome();
+    }
+    
+    public function action_checkpoint(){
+        if(!$this->security()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Let's see what checkpoint we need - member or staff
+        if($this->_current_account->security->loaded() || $this->_current_account->security->find()->loaded()){
+            $this->_data["checkpoint_type"] = "staff";
+        } else {
+            $this->_data["checkpoint_type"] = "member";
+        }
+        
+        $this->setTemplate("Auth/Checkpoint");
+    }
+    
+    public function process_checkpoint(){
+        if(!$this->security() || !$this->_current_account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Which checkpoint type?
+        if($this->_current_account->security->find()->loaded()){ // Staff
+            if(sha1(sha1($this->request->post("extra_password"))) != $this->_current_account->security->find()->value){
+                $this->_data["error"] = "The second layer security you entered is invalid - please try again.";
+                $this->action_extra_security();
+                return false;
+            }
+        } else {
+            if(!Vatsim::factory("autotools")->authenticate(Session::instance()->get("sso_cid"), $this->request->post("password"))){
+                $this->_data["error"] = "Your VATSIM password has not been recognised, please try again.";
+                $this->action_extra_security();
+                return false;
+            }
+        }
+        
+        // Let's set a "grace" period for passwords;
+        Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+        
+        // Extra security is valid!
+        $this->postLoginChecks();
         $this->returnHome();
     }
     
@@ -321,12 +400,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // What about security?
-        if($this->_current_account->security->find()->loaded()){
+        if($this->_current_account->security->loaded() || $this->_current_account->security->find()->loaded()){
             // Whatever happens, they need longer!
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
             
-            $security = $this->_current_account->security->find();
+            $security = $this->_current_account->security;
             
             // Expired?
             if($security->value == null || ($security->expires != null && strtotime(gmdate("Y-m-d H:i:s")) > strtotime($security->expires))){
@@ -337,6 +416,15 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             // Otherwise, it's current!
             if(Session::instance()->get("sso_password_grace", null) == null || strtotime(Session::instance()->get("sso_password_grace")) < time()){
                 $this->redirect("sso/auth/extra_security");
+                return;
+            }
+        }
+        
+        // They've logged in before, but let's just check nobody else is using the same IP!!
+        if(Session::instance()->get("sso_fast_login", null) != null){
+            $ipCheckCount = $this->_current_account->count_last_login_ip_usage($_SERVER["REMOTE_ADDR"]);
+            if($ipCheckCount > 0){
+                $this->action_checkpoint();
                 return;
             }
         }
@@ -368,11 +456,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Send back.
         Session::instance()->delete("sso_token");
+        Session::instance()->delete("sso_fast_login");
         $URL = $this->_current_token->return_url;
         $pURL = parse_url($URL);
         $URL = $pURL["scheme"]."://".$pURL["host"].$pURL["path"]."?";
         $URL.= "_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
-        $URL.= "&".$pURL["query"];
+        $URL.= "&".Arr::get($pURL, "query", "");
         $this->redirect($URL);
     }
     
