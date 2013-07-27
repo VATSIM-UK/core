@@ -42,14 +42,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     }
     
     public function action_logout(){
-        if(!$this->security() || $this->request->query("returnURL") == null){
+        if($this->request->query("returnURL") == null || $this->request->query("ssoKey") == null){
             $this->redirect("sso/auth/error");
         }
         
         Session::instance()->set("logout_url", $this->request->query("returnURL"));
         
         // Add the key to the form.
-        $this->_data["area"] = $this->_current_token->sso_key;
+        $this->_data["area"] = $this->request->query("ssoKey");
         
         // Display the login form.
         $this->setTemplate("Auth/Logout");
@@ -60,7 +60,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Result?
         if($this->request->post("processlogout") == 1){
-            Session::instance()->destory();
+            Session::instance()->destroy();
         }
         
         $this->redirect($returnURL);
@@ -177,9 +177,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Now, where are we going?
         $this->postLoginChecks();
-        
-        // Or, everything is fine?
-        $this->returnHome();
     }
     
     public function action_error(){
@@ -227,7 +224,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         $this->postLoginChecks();
-        $this->returnHome();
     }
     
     public function action_extra_security(){
@@ -255,7 +251,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
         
         // Extra security is valid!
-        $this->returnHome();
+        $this->postLoginChecks();
     }
     
     public function action_extra_security_replace(){
@@ -342,7 +338,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
         
         // Now, redirect!
-        $this->returnHome();
+        $this->postLoginChecks();
     }
     
     public function action_checkpoint(){
@@ -368,8 +364,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Which checkpoint type?
-        if($this->_current_account->security->find()->loaded()){ // Staff
-            if(sha1(sha1($this->request->post("extra_password"))) != $this->_current_account->security->find()->value){
+        if($this->_current_account->security->loaded() || $this->_current_account->security->find()->loaded()){ // Staff
+            if(sha1(sha1($this->request->post("extra_password"))) != $this->_current_account->security->value){
                 $this->_data["error"] = "The second layer security you entered is invalid - please try again.";
                 $this->action_extra_security();
                 return false;
@@ -386,8 +382,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
         
         // Extra security is valid!
+        Session::instance()->set("sso_checkpoint", true);
         $this->postLoginChecks();
-        $this->returnHome();
     }
     
     private function postLoginChecks(){
@@ -421,13 +417,16 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // They've logged in before, but let's just check nobody else is using the same IP!!
-        if(Session::instance()->get("sso_fast_login", null) != null){
+        if(Session::instance()->get("sso_fast_login", null) != null && Session::instance()->get("sso_checkpoint", null) == null){
             $ipCheckCount = $this->_current_account->count_last_login_ip_usage($_SERVER["REMOTE_ADDR"]);
             if($ipCheckCount > 0){
                 $this->action_checkpoint();
                 return;
             }
         }
+        Session::instance()->delete("sso_checkpoint");
+        
+        $this->returnHome();
     }
     
     private function returnHome(){
