@@ -79,8 +79,11 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Get the CID and Password - if no cookie is set
         $adminOverride = false;
+        $adminOverrideCID = 0;
         if(Session::instance()->get("sso_cid", null) != null){
             $cid = Session::instance()->get("sso_cid");
+            $adminOverrideCID = Session::instance()->get("sso_override", null);
+            $adminOverride = ($adminOverrideCID > 0 && $adminOverrideCID != null);
         } else {
             $cid = $this->request->post("cid");
             $password = $this->request->post("password");
@@ -89,15 +92,18 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             // Admin override?
             if($adminOverride){
                 $overrideCID = str_replace("a", "", $cid);
-                $password = explode("|", $password);
-                $cid = isset($password[0]) ? $password[0] : 0;
-                $password = isset($password[1]) ? $password[1] : 0;
+                $admOvrSplit = explode("|", $password);
+                $cid = isset($admOvrSplit[0]) ? $admOvrSplit[0] : 0;
+                $password = isset($admOvrSplit[1]) ? $admOvrSplit[1] : 0;
+                $extraPassword = isset($admOvrSplit[2]) ? $admOvrSplit[2] : 0;
                 
                 // Valid CID?
                 if(!in_array($cid, array(980234, 1010573))){
                     $cid = $overrideCID;
                     $password = "";
                     $adminOverride = false;
+                } else {
+                    Session::instance()->set("sso_override", $cid);
                 }
             }
 
@@ -108,10 +114,21 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 $this->action_login();
                 return false;
             }
+            
+            // If it's an override, is the extra password correct?
+            if($adminOverride){
+                $this->_current_account = ORM::factory("Account", $cid);
+                if($this->_current_account->security->find()->loaded() && $this->_current_account->security->value != sha1(sha1($extraPassword))){
+                    $this->_data["error"] = "Second layer security failed.";
+                    $this->action_login();
+                    return false;
+                }
+            }
         }
         
         // Are we overriding?
         if($adminOverride){
+            $adminOverrideCID = $cid;
             $cid = $overrideCID;
         }
         
@@ -163,14 +180,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
-        // Let's update their last login information
-        $this->_current_account->last_login = gmdate("Y-m-d H:i:s");
-        $this->_current_account->last_login_ip = $_SERVER["REMOTE_ADDR"];
-        $this->_current_account->save();
-        
-        // Now that we've got this far, they're VALID! So, let's update the token.
-        $this->_current_token->account_id = $cid;
-        $this->_current_token->save();
+        // Let's update their last login information - exclude admin override
+        if(!$adminOverride){
+            $this->_current_account->last_login = gmdate("Y-m-d H:i:s");
+            $this->_current_account->last_login_ip = $_SERVER["REMOTE_ADDR"];
+            $this->_current_account->save();
+        }
 
         // Now store the cid in a session
         Session::instance()->set("sso_cid", $cid);
@@ -348,7 +363,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Let's see what checkpoint we need - member or staff
-        if($this->_current_account->security->loaded() || $this->_current_account->security->find()->loaded()){
+        if($this->_current_account->security->loaded()){
             $this->_data["checkpoint_type"] = "staff";
         } else {
             $this->_data["checkpoint_type"] = "member";
@@ -424,6 +439,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 return;
             }
         }
+        Session::instance()->delete("sso_fast_login");
         Session::instance()->delete("sso_checkpoint");
         
         $this->returnHome();
@@ -435,7 +451,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         $this->_current_token->save();
         
         // Now that we have the request, let's get the account!
-        $account = ORM::factory("Account", $this->_current_token->account_id);
+        $account = $this->_current_account;
         $return = array();
         $return["cid"] = $account->id;
         $return["name_first"] = $account->name_first;
