@@ -22,10 +22,10 @@
         <div class="container container-header">
             <div class="row-fluid">
                 <div class="span4 header-left">
-                    <p align="left"><img src="<?= URL::site("media/style/global/images/logo.png") ?>" alt="" /></p>
+                    <p align="left"><?= HTML::image("media/style/global/images/logo.png") ?></p>
                 </div>
                 <div class="span8 header-right">
-                    <p align="right"><img src="<?= URL::site("media/style/global/images/slogan.png"); ?>" alt="" /></p>
+                    <p align="right"><?= HTML::image("media/style/global/images/slogan.png"); ?></p>
                 </div>
             </div>
         </div>
