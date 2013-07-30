@@ -210,7 +210,7 @@ class Model_Account extends Model_Master {
         
         $quals = $this->qualifications->where("removed", "IS", NULL)
                                           ->where("type", "=", "pilot")
-                                          ->order_by("value", "DESC")->limit(1)
+                                          ->order_by("value", "DESC")
                                           ->find_all();
         $return = array();
         foreach($quals as $qual){
