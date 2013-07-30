@@ -260,7 +260,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return;
         }
         
-        $security = $this->_current_account->security->find();
+        $security = $this->_current_account->security;
         
         if($security->loaded()){
             // What are the requirements?
@@ -297,7 +297,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Get the current security row
-        $security = $this->_current_account->security->find();
+        $security = $this->_current_account->security;
         
         // Check the old password is right
         if($security->loaded() && $security->value != '' && $security->value != null){
@@ -396,7 +396,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // What about security?
-        if($this->_current_account->security->loaded() || $this->_current_account->security->find()->loaded()){
+        if($this->_current_account->security->loaded()){
             // Whatever happens, they need longer!
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
