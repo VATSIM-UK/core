@@ -170,7 +170,7 @@ class Vatsim_Autotools extends Vatsim {
     
     private function runQueryCall($action, $data){
         // Construct the URI.
-        $uri = "x".$this->URICreate($action, $data)."x";
+        $uri = $this->URICreate($action, $data);
 
         // Run the request.
         $request = Request::factory($uri)->execute();
