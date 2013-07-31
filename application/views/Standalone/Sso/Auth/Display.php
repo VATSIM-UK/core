@@ -122,7 +122,7 @@
                             <?php foreach($_account->qualifications->get_all_atc() as $qual): ?>
                                 <?=$qual->formatQualification(true)?> (<?=$qual?>)
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?=gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created))?>">
-                                    <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.
+                                    <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.<br />
                                 </a>
                             <?php endforeach; ?>
                             <?php if(count($_account->qualifications->get_all_atc()) < 1): ?>
@@ -136,7 +136,7 @@
                             <?php foreach($_account->qualifications->get_all_pilot() as $qual): ?>
                                 <?=$qual->formatQualification(true)?> (<?=$qual?>)
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?=gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created))?>">
-                                    <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.
+                                    <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.<br />
                                 </a>
                             <?php endforeach; ?>
                             <?php if(count($_account->qualifications->get_all_pilot()) < 1): ?>
