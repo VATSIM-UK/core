@@ -209,9 +209,19 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                     return false;
                 }
             } catch(Exception $e){
-                $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details, please try again later.";
-                $this->action_login();
-                return false;
+                // Since we're unable to login to CERT, can we validate against their second layer security?
+                $this->_current_account = ORM::factory("Account", $cid);
+                $security = $this->_current_account->security->find();
+                if(!$security->loaded() || sha1(sha1($password)) != $security->value){
+                    $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details, please try again later.";
+                    $this->_data["error"].= "Alternatively, if you have a second layer security password set, you can enter it now.";
+                    $this->action_login();
+                    return false;
+                }
+                
+                // Let's set a session to say we've logged in using SLS and we don't need to be asked for it AGAIN, unless expired.
+                Session::instance()->set("sso_login_sls", true);
+                Session::instance()->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
             }
         }
         
@@ -521,10 +531,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 return;
             }
             
-            // Otherwise, it's current!
-            if(Session::instance()->get("sso_password_grace", null) == null || strtotime(Session::instance()->get("sso_password_grace")) < time()){
-                $this->redirect("sso/auth/extra_security");
-                return;
+            // Otherwise, it's current - if they haven't already entered it!
+            if(Session::instance()->get("sso_login_sls", null) == null){
+                if(Session::instance()->get("sso_password_grace", null) == null || strtotime(Session::instance()->get("sso_password_grace")) < time()){
+                    $this->redirect("sso/auth/extra_security");
+                    return;
+                }
             }
         }
         
@@ -573,6 +585,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // Send back.
         Session::instance()->delete("sso_token");
         Session::instance()->delete("sso_fast_login");
+        Session::instance()->delete("sso_login_sls");
+        
+        // Return URL
         $URL = $this->_current_token->return_url;
         $pURL = parse_url($URL);
         $URL = $pURL["scheme"]."://".$pURL["host"].$pURL["path"]."?";
