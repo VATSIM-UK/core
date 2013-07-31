@@ -57,11 +57,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return;
         }
         
-        // Load security?
-        if(!$account->security->loaded()){
-            $account->security->find();
-        }
-        
         // Set the account details
         $this->_data["_account"] = $account;
         
