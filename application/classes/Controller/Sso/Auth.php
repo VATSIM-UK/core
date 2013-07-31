@@ -491,7 +491,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // What about security?
-        if($this->_current_account->security->loaded()){
+        if($this->_current_account->security->loaded() && $this->_current_account->security == $this->_current_account){
             // Whatever happens, they need longer!
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
@@ -538,7 +538,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
         $return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
-        $return["atc_rating"] = ($account->qualifications->get_current_atc()->loaded() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
+        $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
         $return["pilot_rating"] = array();
         foreach($account->qualifications->get_all_pilot() as $qual){
             $return["pilot_rating"][] = $qual->value;
