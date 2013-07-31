@@ -21,17 +21,18 @@ class Model_Account_Security extends Model_Master {
     
     // Belongs to relationships
     protected $_belongs_to = array(
-        'account' => array(
-            'model' => 'Account',
-            'foreign_key' => 'account_id',
-        ),
     );
     
     // Has man relationships
     protected $_has_many = array();
     
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'account' => array(
+            'model' => 'Account',
+            'foreign_key' => 'account_id',
+        ),
+    );
     
     // Validation rules
     public function rules(){
