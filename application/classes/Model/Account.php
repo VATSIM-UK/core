@@ -186,41 +186,7 @@ class Model_Account extends Model_Master {
             return '';
         }
     }
-    
-    public function get_atc_qualification(){
-        // must be an instance of a user
-        if (!$this->loaded()){
-             throw new Kohana_Exception("ATC Qualification cannot be found for a non-user");
-             return false;
-        }
         
-        return $this->qualifications->where("removed", "IS", NULL)
-                                          ->where("type", "=", "atc")
-                                          ->order_by("value", "DESC")->limit(1)
-                                          ->find()->value;
-        
-    }
-    
-    public function get_pilot_qualifications(){
-        // must be an instanceof a user
-        if (!$this->loaded()){
-             throw new Kohana_Exception("Pilot Qualifications cannot be found for a non-user");
-             return false;
-        }
-        
-        $quals = $this->qualifications->where("removed", "IS", NULL)
-                                          ->where("type", "=", "pilot")
-                                          ->order_by("value", "DESC")
-                                          ->find_all();
-        $return = array();
-        foreach($quals as $qual){
-            $return[] = $qual->value;
-        }
-        
-        return $return;
-        
-    }
-    
     public function get_last_login_ip(){
         return long2ip($this->last_login_ip);
     }
