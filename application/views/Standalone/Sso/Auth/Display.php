@@ -166,6 +166,13 @@
                 </table>
             </div>
         </div>
+        <div class="container container-footer">
+            <div class="footer">
+                <div class="row-fluid">
+                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                </div>
+            </div>
+        </div>
     </body>
     <script type="text/javascript" language="javascript">
         $(".tooltip_displays").tooltip();
