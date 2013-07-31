@@ -201,9 +201,15 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $password = $this->request->post("password");
             
             // Let's perform a check against CERT
-            $cert = Vatsim::factory("autotools")->authenticate($cid, $password);
-            if (!$cert) {
-                $this->_data["error"] = "The CID/Password combination entered was invalid.";
+            try {
+                $cert = Vatsim::factory("autotools")->authenticate($cid, $password);
+                if (!$cert) {
+                    $this->_data["error"] = "The CID/Password combination entered was invalid.";
+                    $this->action_login();
+                    return false;
+                }
+            } catch(Exception $e){
+                $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details, please try again later.";
                 $this->action_login();
                 return false;
             }
@@ -227,12 +233,11 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                                                            "location_country" => $details["country"],
                                                            "state" => Enum_Account_State::GUEST), Helper_Membership_Account::ACTION_USER);
             
-            // Retry the login
-            $result = $this->process_login();
-            if($result !== false){
-                return $result;
+            $this->_current_account = ORM::factory("Account", $cid);
+            
+            if(!$this->_current_account->loaded()){
+                return false;
             }
-            return false; // Failed second process login call.
         } else {
             // It's a valid request! Let's get the latest details for them.
             $details = Vatsim::factory("autotools")->getInfo($this->_current_account->id);
@@ -294,8 +299,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Is the email "valid"?
-        if(!Vatsim::factory("autotools")->confirm_email($this->_current_account->id, $this->request->post("email"))){
-            $this->_data["error"] = "This email address does not match your VATSIM registered one.  Please try again.";
+        try {
+            if(!Vatsim::factory("autotools")->confirm_email($this->_current_account->id, $this->request->post("email"))){
+                $this->_data["error"] = "This email address does not match your VATSIM registered one.  Please try again.";
+                $this->action_email_confirm();
+                return false;
+            }
+        } catch(Exception $e){
+            $this->_data["error"] = "The VATSIM Certificate Server is currently offline and we are unable to validate your request.";
             $this->action_email_confirm();
             return false;
         }
@@ -466,10 +477,16 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 return false;
             }
         } else {
-            if(!Vatsim::factory("autotools")->authenticate(Session::instance()->get("sso_cid"), $this->request->post("password"))){
-                $this->_data["error"] = "Your VATSIM password has not been recognised, please try again.";
-                $this->action_extra_security();
-                return false;
+            try {
+                if(!Vatsim::factory("autotools")->authenticate(Session::instance()->get("sso_cid"), $this->request->post("password"))){
+                    $this->_data["error"] = "Your VATSIM password has not been recognised, please try again.";
+                    $this->action_extra_security();
+                    return false;
+                }
+            } catch(Exception $e){
+                    $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details.  Please try again later.";
+                    $this->action_extra_security();
+                    return false;
             }
         }
         
