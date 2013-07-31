@@ -87,7 +87,7 @@
                     <tr>
                         <th>Second Layer Security</th>
                         <td>
-                            <?php if($_account->security->loaded()): ?>
+                            <?php if($_account->security->loaded() && $_account->security->value != null): ?>
                                 You currently have second layer security enabled.
                                 <?php if($_account->security->type == Enum_Account_Security::MEMBER): ?>
                                     <strong>You are allowed to disable this.</strong>
@@ -125,6 +125,9 @@
                                     <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.
                                 </a>
                             <?php endforeach; ?>
+                            <?php if(count($_account->qualifications->get_all_atc()) < 1): ?>
+                                You have no ATC ratings.
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr>
@@ -136,6 +139,9 @@
                                     <em>added <?=Date::fuzzy_span(strtotime($qual->created))?></em>.
                                 </a>
                             <?php endforeach; ?>
+                            <?php if(count($_account->qualifications->get_all_pilot()) < 1): ?>
+                                You have no Pilot ratings.
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr>
