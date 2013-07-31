@@ -137,25 +137,21 @@ class Vatsim_Autotools extends Vatsim {
             "country" => "");
 
         // Get the result
-        try {
-            $result = $this->runQuery("xstat", array($cid));
+        $result = $this->runQuery("xstat", array($cid));
 
-            // False?
-            if (!$result) {
-                return $result;
-            }
-            $result = get_object_vars($result->user);
-
-            // Format!
-            $result["name_last"] = Arr::get($result, "name_last", "");
-            $result["name_first"] = Arr::get($result, "name_first", "");
-            $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
-            $result["rating_atc"] = Arr::get($result, "rating", "");
-            $result["country"] = Arr::get($result, "country", "");
-            $result["regdate"] = Arr::get($result, "regdate", "");
-        } catch(Exception $e){
-            // Don't bother, we've got defaults above.
+        // False?
+        if (!$result) {
+            return $result;
         }
+        $result = get_object_vars($result->user);
+
+        // Format!
+        $result["name_last"] = Arr::get($result, "name_last", "");
+        $result["name_first"] = Arr::get($result, "name_first", "");
+        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
+        $result["rating_atc"] = Arr::get($result, "rating", "");
+        $result["country"] = Arr::get($result, "country", "");
+        $result["regdate"] = Arr::get($result, "regdate", "");
 
         // Return the result!
         return $result;
@@ -174,7 +170,7 @@ class Vatsim_Autotools extends Vatsim {
     
     private function runQueryCall($action, $data){
         // Construct the URI.
-        $uri = $this->URICreate($action, $data);
+        $uri = "x".$this->URICreate($action, $data)."x";
 
         // Run the request.
         $request = Request::factory($uri)->execute();

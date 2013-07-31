@@ -137,6 +137,10 @@ class Model_Account extends Model_Master {
                 return $name;
 
             } else {
+                if(strlen($name) <= 2){
+                    return $name;
+                }
+                
                 ///Check for Mc - eg McTighe
                 $name = strtolower($name);
                             $first_two = $name{0} . (isset($name{1}) ? $name{1} : "");

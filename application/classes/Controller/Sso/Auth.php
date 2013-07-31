@@ -211,7 +211,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             } catch(Exception $e){
                 // Since we're unable to login to CERT, can we validate against their second layer security?
                 $this->_current_account = ORM::factory("Account", $cid);
-                $security = $this->_current_account->security->find();
+                $security = $this->_current_account->security;
                 if(!$security->loaded() || sha1(sha1($password)) != $security->value){
                     $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details, please try again later.";
                     $this->_data["error"].= "Alternatively, if you have a second layer security password set, you can enter it now.";
@@ -231,31 +231,39 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // Not loaded (account doesn't exist) - create a guest one for them.
         if (!$this->_current_account->loaded()) {
             // Let's get some details from CERT for them.
-            $details = Vatsim::factory("autotools")->getInfo($cid);
-            
-            // Use the helper to create the member.
-            Helper_Membership_Account::processMember(array("cid" => $cid,
-                                                           "name_first" => $details["name_first"],
-                                                           "name_last" => $details["name_first"],
-                                                           "created" => $details["regdate"],
-                                                           "rating" => $details["rating"],
-                                                           "prating" => $details["pilotrating"],
-                                                           "location_country" => $details["country"],
-                                                           "state" => Enum_Account_State::GUEST), Helper_Membership_Account::ACTION_USER);
-            
-            $this->_current_account = ORM::factory("Account", $cid);
+            try {
+                $details = Vatsim::factory("autotools")->getInfo($cid);
+
+                // Use the helper to create the member.
+                Helper_Membership_Account::processMember(array("cid" => $cid,
+                                                               "name_first" => $details["name_first"],
+                                                               "name_last" => $details["name_first"],
+                                                               "created" => $details["regdate"],
+                                                               "rating" => $details["rating"],
+                                                               "prating" => $details["pilotrating"],
+                                                               "location_country" => $details["country"],
+                                                               "state" => Enum_Account_State::GUEST), Helper_Membership_Account::ACTION_USER);
+
+                $this->_current_account = ORM::factory("Account", $cid);
+            } catch(Exception $e){
+                // Do nothing, we've got defaults.
+            }
             
             if(!$this->_current_account->loaded()){
                 return false;
             }
         } else {
             // It's a valid request! Let's get the latest details for them.
-            $details = Vatsim::factory("autotools")->getInfo($this->_current_account->id);
-            if (count($details) > 0) {
-                $this->_current_account->name_first = $details["name_first"];
-                $this->_current_account->name_last = $details["name_last"];
-                $this->_current_account->checked = gmdate("Y-m-d H:i:s");
-                $this->_current_account->save();
+            try {
+                $details = Vatsim::factory("autotools")->getInfo($this->_current_account->id);
+                if (count($details) > 0) {
+                    $this->_current_account->name_first = $details["name_first"];
+                    $this->_current_account->name_last = $details["name_last"];
+                    $this->_current_account->checked = gmdate("Y-m-d H:i:s");
+                    $this->_current_account->save();
+                }
+            } catch(Exception $e){
+                // Do nothing, we're not bothered by it.
             }
         }
         
