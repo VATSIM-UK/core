@@ -10,6 +10,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     
     private $_current_token = null;
     private $_current_account = null;
+    private $_actual_account = null;
 
     public function getDefaultAction() {
         return "login";
@@ -23,6 +24,126 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         parent::after();
     }
     
+    public function action_display(){
+        // If they're not logged in, we'll go to the preLogin page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // Any actions?
+        /*if($this->request->query("security", null) == 1){
+            // SET SECOND LAYER!
+            if(!$account->security->loaded()){
+                $security = ORM::factory("Account_Security");
+                $security->account_id = $account;
+                $security->save();
+                $account->reload();
+            }
+        } else if($this->request->query("security", null) == 0){
+            // DISABLE SECOND LAYER!
+            if($account->security->loaded()){
+                $account->security->delete();
+                $account->reload();
+            }
+        }*/
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Load security?
+        if(!$account->security->loaded()){
+            $account->security->find();
+        }
+        
+        // Set the account details
+        $this->_data["_account"] = $account;
+        
+        // Display the holding page, for somebody that's logged in.
+        $this->setTemplate("Auth/Display");
+    }
+    
+    public function action_override(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // KH or AL?
+        if(!in_array(Session::instance()->get("sso_cid"), array(980234, 1010573))){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Set the account details
+        $this->_data["_account"] = $account;
+        
+        // Display the holding page, for somebody that's logged in.
+        $this->setTemplate("Auth/Override");
+    }
+    
+    public function process_override(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // KH or AL?
+        if(!in_array(Session::instance()->get("sso_cid"), array(980234, 1010573))){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Validate the override details.
+        if($account->security->value != sha1(sha1($this->request->post("extra_password")))){
+            $this->_data["error"] = "Invalid second layer security.";
+            $this->action_override();
+            return false;
+        }
+        
+        // Check override
+        $ovrAccount = ORM::factory("Account", $this->request->post("override_cid"));
+        if(!$ovrAccount->loaded()){
+            $this->_data["error"] = "Invalid override CID.";
+            $this->action_override();
+            return false;
+        }
+        
+        // Override!
+        Session::instance()->set("sso_override", Session::instance()->get("sso_cid"));
+        Session::instance()->set("sso_cid", $ovrAccount->id);
+        
+        // Send to display.
+        $this->redirect("sso/auth/display");
+        return;
+    }
+    
     public function action_preLogin(){
         if(!$this->security()){
             $this->redirect("sso/auth/error");
@@ -30,7 +151,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Since we don't want the token in the URL, let's hide it.
         Session::instance()->set("sso_token", $this->_current_token->token);
-        
+                
         // Has this member logged in before? Are we remembering them?
         if(Session::instance()->get("sso_cid", null) != null){   
             Session::instance()->set("sso_fast_login", true);
@@ -77,36 +198,13 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $this->redirect("sso/auth/error");
         }
         
-        // Get the CID and Password - if no cookie is set
-        $adminOverride = false;
-        $adminOverrideCID = 0;
-        if(Session::instance()->get("sso_cid", null) != null){
+        // Session and fast login?
+        if(Session::instance()->get("sso_cid", null) != null && Session::instance()->get("sso_fast_login", null) != null){
             $cid = Session::instance()->get("sso_cid");
-            $adminOverrideCID = Session::instance()->get("sso_override", null);
-            $adminOverride = ($adminOverrideCID > 0 && $adminOverrideCID != null);
         } else {
             $cid = $this->request->post("cid");
             $password = $this->request->post("password");
-            $adminOverride = (substr($cid.'0000', 0, 1) == 'a');
             
-            // Admin override?
-            if($adminOverride){
-                $overrideCID = str_replace("a", "", $cid);
-                $admOvrSplit = explode("|", $password);
-                $cid = isset($admOvrSplit[0]) ? $admOvrSplit[0] : 0;
-                $password = isset($admOvrSplit[1]) ? $admOvrSplit[1] : 0;
-                $extraPassword = isset($admOvrSplit[2]) ? $admOvrSplit[2] : 0;
-                
-                // Valid CID?
-                if(!in_array($cid, array(980234, 1010573))){
-                    $cid = $overrideCID;
-                    $password = "";
-                    $adminOverride = false;
-                } else {
-                    Session::instance()->set("sso_override", $cid);
-                }
-            }
-
             // Let's perform a check against CERT
             $cert = Vatsim::factory("autotools")->authenticate($cid, $password);
             if (!$cert) {
@@ -114,22 +212,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 $this->action_login();
                 return false;
             }
-            
-            // If it's an override, is the extra password correct?
-            if($adminOverride){
-                $this->_current_account = ORM::factory("Account", $cid);
-                if($this->_current_account->security->find()->loaded() && $this->_current_account->security->value != sha1(sha1($extraPassword))){
-                    $this->_data["error"] = "Second layer security failed.";
-                    $this->action_login();
-                    return false;
-                }
-            }
-        }
-        
-        // Are we overriding?
-        if($adminOverride){
-            $adminOverrideCID = $cid;
-            $cid = $overrideCID;
         }
         
         // Get this user account.
@@ -167,6 +249,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             }
         }
         
+        
         // Are they banned?
         if(($this->_current_account->status & bindec(Enum_Account::STATUS_SYSTEM_BANNED)) == true){
             $this->_data["error"] = "You are currently banned from the VATSIM-UK System.  Please use the link above to request support.";
@@ -180,13 +263,15 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             return false;
         }
         
-        // Let's update their last login information - exclude admin override
-        if(!$adminOverride){
-            $this->_current_account->last_login = gmdate("Y-m-d H:i:s");
-            $this->_current_account->last_login_ip = $_SERVER["REMOTE_ADDR"];
-            $this->_current_account->save();
-        }
-
+        // Let's update their last login information.
+        $this->_current_account->last_login = gmdate("Y-m-d H:i:s");
+        $this->_current_account->last_login_ip = $_SERVER["REMOTE_ADDR"];
+        $this->_current_account->save();
+        
+        // Now update the account ID in the token.
+        $this->_current_token->account_id = $this->_current_account;
+        $this->_current_token->save();
+        
         // Now store the cid in a session
         Session::instance()->set("sso_cid", $cid);
         
@@ -441,6 +526,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         Session::instance()->delete("sso_fast_login");
         Session::instance()->delete("sso_checkpoint");
+        Session::instance()->delete("sso_override");
         
         $this->returnHome();
     }
@@ -457,8 +543,11 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
         $return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
-        $return["atc_rating"] = $account->get_atc_qualification();
-        $return["pilot_rating"] = $account->get_pilot_qualifications();
+        $return["atc_rating"] = ($account->qualifications->get_current_atc()->loaded() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
+        $return["pilot_rating"] = array();
+        foreach($account->qualifications->get_all_pilot() as $qual){
+            $return["pilot_rating"][] = $qual->value;
+        }
         $return["home_member"] = $account->states->where("state", "=", Enum_Account_State::DIVISION)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = $return["home_member"] || $account->states->where("state", "=", Enum_Account_State::TRANSFER)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = (int) $return["home_member"];
@@ -481,13 +570,15 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     }
     
     private function security(){
+        // Are we overriding?
+        if(Session::instance()->get("sso_override", null) != null){
+            $this->_actual_account = ORM::factory("Account", Session::instance()->get("sso_override"));
+        }
+        
         // Does a token exist in the session?
         if(Session::instance()->get("sso_token", null) != null){
             $token = Session::instance()->get("sso_token");
             $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
-            if(!$this->_current_token->loaded()){
-                Session::instance()->delete("sso_token");
-            }
         }
         
         // Since we can't find a session version, have they requested one now?
@@ -527,6 +618,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         if($this->_current_token->account_id > 0){
             $this->_current_account = ORM::factory("Account", $this->_current_token->account_id);
             $this->_data["_account"] = $this->_current_account;
+        } else {
+            $this->_current_account = ORM::factory("Account");
         }
         return true;
     }
