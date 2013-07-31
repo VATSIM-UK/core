@@ -11,7 +11,7 @@ class Enum_Account extends Enum_Main {
     public static function getDescription($id){
         switch($id){
             default:
-                 return self::idToType($id);
+                 return self::valueToType($id);
         }
     }
     

@@ -8,8 +8,8 @@ class Enum_Training_Course_Test extends Enum_Main {
     const BEFORE = 2;
     const OPTIONAL = 3;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::MODULE:
                  return "Required module test";
             case self::END:
@@ -19,7 +19,7 @@ class Enum_Training_Course_Test extends Enum_Main {
             case self::OPTIONAL:
                  return "Optional theory test";
             default:
-                 return false;
+                 return parent::getDescription($value);
         }
     }
     

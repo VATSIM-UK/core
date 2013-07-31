@@ -359,7 +359,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         if($security->loaded()){
             // What are the requirements?
-            $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::idToType($security->type)));
+            $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($security->type)));
             $requirements = array();
             
             if($enum::MIN_LENGTH > 0){

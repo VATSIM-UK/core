@@ -23,7 +23,7 @@ class Enum_Account_Note_Type extends Enum_Account_Note {
             case self::SYSTEM:
                 return "System Comment";
             default:
-                 return self::idToType($id);
+                 return self::valueToType($id);
         }
     }
 }

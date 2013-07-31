@@ -10,7 +10,7 @@ class Enum_Account_Security extends Enum_Main {
     const HIGH = 100;
     
     public static function getDescription($id){
-        switch(self::idToType($id)){
+        switch(self::valueToType($id)){
             case "MEMBER":
                 return "Member Password";
             case "LOW":

@@ -13,7 +13,7 @@ class Enum_Account_Age extends Enum_Main {
     const _60 = 7;
     
     public static function getDescription($id){
-        switch(self::idToType($id)){
+        switch(self::valueToType($id)){
             case "_13":
                 return "Under 13";
             case "_1317":

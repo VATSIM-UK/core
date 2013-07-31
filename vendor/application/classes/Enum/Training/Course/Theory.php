@@ -16,7 +16,7 @@ class Enum_Training_Course_Theory extends Enum_Main {
             case self::AVAILABLE:
                  return "Theory material and/or optional tests are available for this course"; 
             default:
-                 return self::idToType($id);
+                 return self::valueToType($id);
         }
     }
     

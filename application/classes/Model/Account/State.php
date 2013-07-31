@@ -47,7 +47,7 @@ class Model_Account_State extends Model_Master {
         return $this->formatEndorsement(false);
     }
     public function formatState($full=true){
-        return $full ? Enum_Account_State::getDescription($this->value) : Enum_Account_State::idToType($this->value); 
+        return $full ? Enum_Account_State::getDescription($this->value) : Enum_Account_State::valueToType($this->value); 
     }
 }
 

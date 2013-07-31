@@ -27,7 +27,7 @@ class Enum_Account_State extends Enum_Main {
             case self::TRANSFER:
                  return "Transferring member";
             default:
-                 return self::idToType($id);
+                 return self::valueToType($id);
         }
     }
     
