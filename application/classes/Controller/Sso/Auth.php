@@ -3,25 +3,109 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Auth extends Controller_Sso_Master {
-
-    protected $_permissions = array(
-        "_" => array('*'),
-    );
-    
     private $_current_token = null;
     private $_current_account = null;
     private $_actual_account = null;
 
+    /**
+     * Define the default action within this class to call.
+     * @return string The default action.
+     */
     public function getDefaultAction() {
         return "login";
     }
 
+    /**
+     * Any actions that need performing before other actions within this class, must go here after the parent call.
+     * @return void
+     */
     public function before() {
         parent::before();
     }
 
+    /**
+     * Any actions that need performing after the other actions within this class, must go here before the parent call.
+     * @return void
+     */
     public function after() {
         parent::after();
+    }
+    
+    private function loadAccount(){
+        
+    }
+    
+    private function getAccount(){
+        if($this->_current_account == null){
+            $this->loadAccount();
+        }
+        return $this->_current_account;
+    }
+    
+    private function loadToken(){
+        
+    }
+    
+    private function getToken(){
+        if($this->_current_token == null){
+            $this->loadToken();
+        }
+        return $this->_current_token;
+    }
+    
+    private function security(){
+        // Are we overriding?
+        if(Session::instance()->get("sso_override", null) != null){
+            $this->_actual_account = ORM::factory("Account", Session::instance()->get("sso_override"));
+        }
+        
+        // Does a token exist in the session?
+        if(Session::instance()->get("sso_token", null) != null){
+            $token = Session::instance()->get("sso_token");
+            $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
+        }
+        
+        // Since we can't find a session version, have they requested one now?
+        if(Session::instance()->get("sso_token", null) == null){
+            $token = $this->request->query("token");
+            $ssoKey = $this->request->query("ssoKey");
+            //$this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("sso_key", "=", $ssoKey)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
+            
+            if(!$token || !$ssoKey){
+                return false;
+            }
+            
+            // Does this token file exists?
+            if(!file_exists("/var/tokens/".$token)){
+                return false;
+            }
+            
+            // Get the details from the file and store this token in the database.
+            $returnURL = file_get_contents("/var/tokens/".$token);
+            
+            $this->_current_token = ORM::factory("Sso_Token");
+            $this->_current_token->token = $token;
+            $this->_current_token->sso_key = $ssoKey;
+            $this->_current_token->return_url = $returnURL;
+            $this->_current_token->created = gmdate("Y-m-d H:i:s");
+            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+2 minutes"));
+            $this->_current_token->save();
+        }
+        
+        // Do these details exist?
+        if(!$this->_current_token->loaded()){
+            Session::instance()->delete("sso_token");
+            return false;
+        }
+        
+        // We've got a valid token - do we need to load the account?
+        if($this->_current_token->account_id > 0){
+            $this->_current_account = ORM::factory("Account", $this->_current_token->account_id);
+            $this->_data["_account"] = $this->_current_account;
+        } else {
+            $this->_current_account = ORM::factory("Account");
+        }
+        return true;
     }
     
     public function action_display(){
@@ -602,60 +686,5 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         $URL.= "_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
         $URL.= "&".Arr::get($pURL, "query", "");
         $this->redirect($URL);
-    }
-    
-    private function security(){
-        // Are we overriding?
-        if(Session::instance()->get("sso_override", null) != null){
-            $this->_actual_account = ORM::factory("Account", Session::instance()->get("sso_override"));
-        }
-        
-        // Does a token exist in the session?
-        if(Session::instance()->get("sso_token", null) != null){
-            $token = Session::instance()->get("sso_token");
-            $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
-        }
-        
-        // Since we can't find a session version, have they requested one now?
-        if(Session::instance()->get("sso_token", null) == null){
-            $token = $this->request->query("token");
-            $ssoKey = $this->request->query("ssoKey");
-            //$this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("sso_key", "=", $ssoKey)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
-            
-            if(!$token || !$ssoKey){
-                return false;
-            }
-            
-            // Does this token file exists?
-            if(!file_exists("/var/tokens/".$token)){
-                return false;
-            }
-            
-            // Get the details from the file and store this token in the database.
-            $returnURL = file_get_contents("/var/tokens/".$token);
-            
-            $this->_current_token = ORM::factory("Sso_Token");
-            $this->_current_token->token = $token;
-            $this->_current_token->sso_key = $ssoKey;
-            $this->_current_token->return_url = $returnURL;
-            $this->_current_token->created = gmdate("Y-m-d H:i:s");
-            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+2 minutes"));
-            $this->_current_token->save();
-        }
-        
-        // Do these details exist?
-        if(!$this->_current_token->loaded()){
-            Session::instance()->delete("sso_token");
-            return false;
-        }
-        
-        // We've got a valid token - do we need to load the account?
-        if($this->_current_token->account_id > 0){
-            $this->_current_account = ORM::factory("Account", $this->_current_token->account_id);
-            $this->_data["_account"] = $this->_current_account;
-        } else {
-            $this->_current_account = ORM::factory("Account");
-        }
-        return true;
     }
 }
