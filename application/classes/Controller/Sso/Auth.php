@@ -109,10 +109,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     }
     
     public function action_display(){
-        // If they're not logged in, we'll go to the preLogin page.
+        // If they're not logged in, we'll treat this as an SSO login.
         if(Session::instance()->get("sso_cid", null) == null){
-            $this->redirect("sso/auth/error");
-            return;
+            require_once "/var/www/sharedResources/SSO.class.php";
+            $SSO = new SSO("CORE", URL::site("/sso/auth/display", "http"));
+            $details = $SSO->member;
+            Session::instance()->set("sso_cid", $details->cid);
         }
         
         // Get the account details
@@ -221,6 +223,181 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // Send to display.
         $this->redirect("sso/auth/display");
         return;
+    }
+    
+    public function action_security_enable(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Are they allowed to enable the security on their account?
+        if($account->security->loaded()){
+            $this->_data["error"] = "You are not allowed to set a new security level until your old one has been disabled.";
+            $this->action_security_enable();
+            return false;
+        }
+        
+        // What are the requirements?
+        $requirements = array();
+
+        if(Enum_Account_Security_Member::MIN_LENGTH > 0){
+            $requirements[] = "Be a minimum length of ".Enum_Account_Security_Member::MIN_LENGTH;
+        }
+        if(Enum_Account_Security_Member::MIN_ALPHA > 0){
+            $requirements[] = "Contain a minimum of ".Enum_Account_Security_Member::MIN_ALPHA." alphabetical (A-Z) characters.";
+        }
+        if(Enum_Account_Security_Member::MIN_NUMERIC > 0){
+            $requirements[] = "Contain a minimum of ".Enum_Account_Security_Member::MIN_NUMERIC." numeric (0-9) digits.";
+        }
+        if(Enum_Account_Security_Member::MIN_NON_ALPHANUM > 0){
+            $requirements[] = "Contain a minimum of ".Enum_Account_Security_Member::MIN_NON_ALPHANUM." none alpha-numeric characters, for example !)(><.,";
+        }
+        $this->_data["_requirements"] = $requirements;
+        
+        // Set the account details
+        $this->_data["_account"] = $account;
+        
+        // Display the holding page, for somebody that's logged in.
+        $this->setTemplate("Auth/Security_Enable");
+    }
+    
+    public function process_security_enable(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            die("HERE".__LINE__);
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            die("HERE".__LINE__);
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Are they allowed to enable the security on their account?
+        if($account->security->loaded()){
+            $this->_data["error"] = "You are not allowed to set a new security level until your old one has been disabled.";
+            $this->action_display();
+            return false;
+        }
+        
+        // Let's check the new passwords match
+        if($this->request->post("new_password") != $this->request->post("new_password2")){
+            $this->_data["error"] = "Your new passwords do not match, please try again.";
+            $this->action_security_enable();
+            return false;
+        }
+                
+        // All fine - update the password!
+        try {
+            $security = ORM::factory("Account_Security");
+            $security->account_id = $account;
+            $security->type = Enum_Account_Security::MEMBER;
+            $security->value = $this->request->post("new_password");
+            $security->created = null;
+            $security->expires = null;
+            $security->save();
+            
+            // Return to the display page.
+            $this->_data["message"] = "You have now enabled second layer security - you will be required to enter this password on each login.";
+            $this->action_display();
+            return true;
+        } Catch(Exception $e){
+            $this->_data["error"] = "Your new password doesn't meet the specifications required.";
+            $this->action_security_enable();
+            return false;
+        }
+    }
+    
+    public function action_security_disable(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Are they allowed to disable the security on their account?
+        if(!$account->security->loaded() || $account->security->type != Enum_Account_Security::MEMBER){
+            $this->_data["error"] = "You are not permitted to disable your second securty password.";
+            $this->action_display();
+            return false;
+        }
+        
+        // Set the account details
+        $this->_data["_account"] = $account;
+        
+        // Display the holding page, for somebody that's logged in.
+        $this->setTemplate("Auth/Security_Disable");
+    }
+    
+    public function process_security_disable(){
+        // If they're not logged in, we'll go to the error page.
+        if(Session::instance()->get("sso_cid", null) == null){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Get the account details
+        $account = ORM::factory("Account", Session::instance()->get("sso_cid"));
+        
+        // If they're not loaded, error
+        if(!$account->loaded()){
+            $this->redirect("sso/auth/error");
+            return;
+        }
+        
+        // Are they allowed to enable the security on their account?
+        if(!$account->security->loaded() || $account->security->type != Enum_Account_Security::MEMBER){
+            $this->_data["error"] = "You are not permitted to disable your second securty password.";
+            $this->action_display();
+            return false;
+        }
+        
+        // Let's check the password is valid.
+        if(sha1(sha1($this->request->post("password"))) != $account->security->value){
+            $this->_data["error"] = "Your current password is not valid, please try again.";
+            $this->action_security_disable();
+            return false;
+        }
+                
+        // All fine - delete the password!
+        try {
+            $account->security->delete();
+            
+            // Return to the display page.
+            $this->_data["message"] = "You have now disabled your second security layer - you are no longer required to enter this upon login.";
+            $this->action_display();
+            return true;
+        } Catch(Exception $e){
+            $this->_data["error"] = "We couldn't disable your password at this time, please try again.";
+            $this->action_display();
+            return true;
+        }
     }
     
     public function action_preLogin(){
