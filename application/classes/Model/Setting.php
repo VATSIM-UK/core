@@ -60,13 +60,16 @@ class Model_Setting extends Model_Master {
     }
     
     // Load a specific key.
-    public function __construct($area, $key) {
+    public function __construct($id = NULL) {
         parent::__construct(NULL);
         
         // Let's get the ID!
-        $id = $this->where("area", "=", $area)->where("key", "=", $key)->find();
-        if($id->loaded()){
-            parent::__construct($id->id);
+        if($id != null){
+            $id = explode(".", $id);
+            $id = $this->where("area", "=", $id[0])->where("key", "=", $id[1])->find();
+            if($id->loaded()){
+                parent::__construct($id->id);
+            }
         }
     }
 }
