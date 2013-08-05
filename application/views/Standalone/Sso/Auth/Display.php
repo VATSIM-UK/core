@@ -34,14 +34,26 @@
                 <h1>Details</h1>
                 <p>
                     Below are the current details stored by the Single Sign-On (SSO) system.
+                    Please note that as not all data has been transitioned from other (older) systems,
+                    some data might be recorded incorrectly.
                 </p>
                 
-                <?php if (isset($message)): ?>
-                    <div class="alert alert-warning">
+                <?php if (isset($error)): ?>
+                    <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <strong></strong>
                         <ul>
                             <li><?= $error ?></li>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($message)): ?>
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong></strong>
+                        <ul>
+                            <li><?= $message ?></li>
                         </ul>
                     </div>
                 <?php endif; ?>
@@ -151,10 +163,10 @@
                             
                             <?php if($_account->security->loaded() && $_account->security->type == Enum_Account_Security::MEMBER): ?>
                                 &nbsp;&nbsp;
-                                [<?=HTML::anchor("sso/auth/display?security=0", "Disable Second Layer Security")?>]
+                                [<?=HTML::anchor("sso/auth/security_disable", "Disable Second Layer Security")?>]
                             <?php elseif(!$_account->security->loaded()): ?>
                                 &nbsp;&nbsp;
-                                [<?=HTML::anchor("sso/auth/display?security=1", "Set Second Layer Security")?>]
+                                [<?=HTML::anchor("sso/auth/security_enable", "Set Second Layer Security")?>]
                             <?php endif; ?>
                             
                             <?php if(in_array($_account->id, array(980234, 1010573))): ?>
