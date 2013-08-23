@@ -31,30 +31,40 @@ class Controller_Sso_Auth extends Controller_Master {
         // Are we overriding?
         if(Session::instance("native")->get("sso_override", null) != null){
             $this->_actual_account = ORM::factory("Account", Session::instance("native")->get("sso_override"));
+            
+            if(Session::instance("native")->get("sso_cid", null) == null){
+                Session::instance("native")->set("sso_cid", $this->_actual_account->id);
+                Session::instance("native")->delete("sso_override");
+            }
         }
         
+        // Are we logged in?
+        if(Session::instance("native")->get("sso_cid", null) != null){
+            $this->_current_account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+            $this->_data["_account"] = $this->_current_account;
+        }
         
         // Requesting a new token, or using old one?
-        if(Session::instance("native")->get("sso_token", null) != null){
+        if(Session::instance("native")->get("sso_token", null) != null && $this->request->query("token") != null){
             $token = Session::instance("native")->get("sso_token");
             $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
         }
-        if(Session::instance("native")->get("sso_token", null) == null){
+        if(Session::instance("native")->get("sso_token", null) == null || $this->request->query("token") != null){
             $token = $this->request->query("token");
             $ssoKey = $this->request->query("ssoKey");
-            
+
             if(!$token || !$ssoKey){
                 return false;
             }
-            
+
             // Does this token file exists?
             if(!file_exists("/var/tokens/".$token)){
                 return false;
             }
-            
+
             // Get the details from the file and store this token in the database.
             $returnURL = file_get_contents("/var/tokens/".$token);
-            
+
             $this->_current_token = ORM::factory("Sso_Token");
             $this->_current_token->token = $token;
             $this->_current_token->sso_key = $ssoKey;
@@ -63,13 +73,13 @@ class Controller_Sso_Auth extends Controller_Master {
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+6 minutes"));
             $this->_current_token->save();
         }
-        
+
         // Do these details exist?
         if(!$this->_current_token->loaded()){
             Session::instance("native")->delete("sso_token");
             return false;
         }
-        
+
         // We've got a valid token - do we need to load the account?
         if($this->_current_token->account_id > 0){
             $this->_current_account = ORM::factory("Account", $this->_current_token->account_id);
@@ -77,6 +87,7 @@ class Controller_Sso_Auth extends Controller_Master {
         } else {
             $this->_current_account = ORM::factory("Account");
         }
+        
         return true;
     }
     
@@ -380,14 +391,22 @@ class Controller_Sso_Auth extends Controller_Master {
     }
     
     public function action_logout(){
-        if($this->request->query("returnURL") == null || $this->request->query("ssoKey") == null){
-            $this->redirect("sso/auth/error");
+        if(!$this->security()){
+            $this->redirect("sso/auth/display");
+            exit();
         }
         
-        Session::instance("native")->set("logout_url", $this->request->query("returnURL"));
+        $returnURL = $this->request->query("returnURL");
+        $ssoKey = $this->request->query("ssoKey");
+        if($returnURL == null || $ssoKey == null){
+            $returnURL = "/sso/auth/display";
+            $ssoKey = "CORE";
+        }
+        
+        Session::instance("native")->set("logout_url", $returnURL);
         
         // Add the key to the form.
-        $this->_data["area"] = $this->request->query("ssoKey");
+        $this->_data["area"] = $ssoKey;
         
         // Display the login form.
         $this->setTemplate("Auth/Logout");
