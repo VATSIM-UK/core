@@ -55,11 +55,10 @@ class Helper_Account_Main {
         if(!$account->loaded()){
             $account->id = $account_id;
         }
-        
         // Go through the various fields we can update.
         foreach ($account->list_columns() as $_col => $_data) {
-            if(strcasecmp($account->{$_col}, Arr::get($details, $_col)) != 0 && in_array($_col, self::$CHANGES_FIELD_LIST)){
-                $account->{$_col} = Arr::get($details, $_col, $account->{$_col});
+            if(strcasecmp($account->{$_col}, Arr::get($data, $_col)) != 0 && in_array($_col, self::$CHANGES_FIELD_LIST)){
+                $account->{$_col} = Arr::get($data, $_col, $account->{$_col});
             }
         }
         
@@ -71,19 +70,20 @@ class Helper_Account_Main {
             // TODO: Handle this!
             return false;
         }
-        
         // Determine (and log) changed values.
-        $changed = self::$_ormAccount->changed();
+        $changed = $account->changed();
+        print "<pre>" . print_r($changed, true); exit();
         foreach ($changed as $key => $value) {
             // Add a note to the members account detailing the changes.
+            Helper_Membership_Account::loadMember($account_id);
             if($key == "age"){
-                self::addNote("ACCOUNT/DETAILS_CHANGED", array(
+                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array(
                     $key,
                     Enum_Account_Age::getDescription($value["old"]),
                     Enum_Account_Age::getDescription($value["new"]),
                 ));
             } else {
-                self::addNote("ACCOUNT/DETAILS_CHANGED", array($key, $value["old"], $value["new"]));
+                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array($key, $value["old"], $value["new"]));
             }
         }
 

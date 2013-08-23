@@ -33,9 +33,6 @@
             <div class="content">
                 <h1>Logout Confirmation</h1>
                 <p>
-                    <?=$_account->name_first." ".$_account->name_last?>,
-                </p>
-                <p>
                     You have now been logged out of the <?=$area?> system.  Would you like for your SSO session to be terminated, preventing future access to other services?
                 </p>
                 

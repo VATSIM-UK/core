@@ -16,9 +16,6 @@ class Helper_Account {
             return false;
         }
         
-        // Let's load the data
-        /*$account = ORM::factory("Account_Main", $account_id);
-        
         // Now get all of the details from VATSIM
         try {
             // Details from remote.
@@ -30,11 +27,11 @@ class Helper_Account {
             }
             
             // Let's now run the updates!
-            Helper_Account_Main::run_update($account_id, $details, !$account->loaded());
+            Helper_Account_Main::run_updates($account_id, $details);
         } catch(Exception $e){
             // TODO: Handle this!
             return false;
-        }*/
+        }
         return true;
     }
 }

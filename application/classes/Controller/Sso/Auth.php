@@ -48,12 +48,12 @@ class Controller_Sso_Auth extends Controller_Master {
         if(Session::instance("native")->get("sso_token", null) != null && $this->request->query("token") == null){
             $token = Session::instance("native")->get("sso_token");
             $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
-        }
-        if(Session::instance("native")->get("sso_token", null) == null || $this->request->query("token") != null){
+        } elseif($this->request->query("token") != null){
             $token = $this->request->query("token");
             $ssoKey = $this->request->query("ssoKey");
 
             if(!$token || !$ssoKey){
+                die("HERE".__FILE__."////".__LINE__);
                 return false;
             }
 
@@ -72,6 +72,8 @@ class Controller_Sso_Auth extends Controller_Master {
             $this->_current_token->created = gmdate("Y-m-d H:i:s");
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
+        } else {
+            return false;
         }
 
         // Do these details exist?
@@ -391,11 +393,6 @@ class Controller_Sso_Auth extends Controller_Master {
     }
     
     public function action_logout(){
-        if(!$this->security()){
-            $this->redirect("sso/auth/display");
-            exit();
-        }
-        
         $returnURL = $this->request->query("returnURL");
         $ssoKey = $this->request->query("ssoKey");
         if($returnURL == null || $ssoKey == null){
