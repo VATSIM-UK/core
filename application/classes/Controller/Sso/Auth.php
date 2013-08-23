@@ -396,7 +396,7 @@ class Controller_Sso_Auth extends Controller_Master {
         $returnURL = $this->request->query("returnURL");
         $ssoKey = $this->request->query("ssoKey");
         if($returnURL == null || $ssoKey == null){
-            $returnURL = "/sso/auth/display";
+            $returnURL = URL::site("/sso/auth/login", "http");
             $ssoKey = "CORE";
         }
         
