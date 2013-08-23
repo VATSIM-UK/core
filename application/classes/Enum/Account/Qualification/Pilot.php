@@ -8,8 +8,8 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
     const P2 = 2;
     const P3 = 3;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::P0:
                 return "Not Rated";
             case self::P1:
@@ -19,12 +19,12 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
             case self::P3:
                 return "VFR Pilot";
             default:
-                return parent::getDescription($id);
+                return parent::getDescription($value);
         }
     }
     
-    public static function getAbbreviation($id) {
-        switch($id){
+    public static function getAbbreviation($value) {
+        switch($value){
             case self::P0:
                 return "P0";
             case self::P1:
@@ -34,7 +34,7 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
             case self::P3:
                 return "P3";
             default:
-                return "Unknown";
+                return "NA";
         }
     }
     

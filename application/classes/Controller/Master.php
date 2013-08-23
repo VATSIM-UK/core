@@ -47,7 +47,7 @@ abstract class Controller_Master extends Controller_Template {
         }
         
         // Now, let's get the membership details
-        $this->_account = ORM::factory("Account", Session::instance()->get($this->_data["config_session_name"]));
+        $this->_account = ORM::factory("Account", Session::instance("database")->get($this->_data["config_session_name"]));
     }
     
 
@@ -102,8 +102,8 @@ abstract class Controller_Master extends Controller_Template {
                 $this->view->bind_global("_ajax_functions", $this->_ajaxFunctions);
                 $this->view->bind_global("request", $this->request);
                 $this->view->bind_global("_account", $this->_account);
-                $this->view->set_global("_errors", Session::instance()->get("errors", array()));
-                Session::instance()->delete("errors");
+                $this->view->set_global("_errors", Session::instance("database")->get("errors", array()));
+                Session::instance("database")->delete("errors");
             //}
 
             // Now set all variables to view and/or template.

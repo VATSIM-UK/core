@@ -133,8 +133,8 @@ class Helper_Membership_Account {
         // Try all the processing
         try {
             // Process general details
-            self::debugWrite("processMember: processing general details....", "cyan");
-            self::_processGeneralDetails($cid, $details);
+            //self::debugWrite("processMember: processing general details....", "cyan");
+            //self::_processGeneralDetails($cid, $details);
 
             // Process email
             if (Arr::get($details, "email", null) != null && Arr::get($details, "email_action", null) != null) {
@@ -184,7 +184,7 @@ class Helper_Membership_Account {
      * @param type $details - The array of details.  See {@link processMember} for a list of keys.
      * @return boolean
      */
-    private static function _processGeneralDetails($cid, $details = array()) {
+    /*private static function _processGeneralDetails($cid, $details = array()) {
         self::debugWrite("processGeneralDetails: started", "cyan");
         // CID? (ONLY if it's a new member!)
         $_actionDB = Helper_Membership_Account::ACTION_UPDATE;
@@ -230,7 +230,7 @@ class Helper_Membership_Account {
         }
 
         return self::$_ormAccount->saved();
-    }
+    }*/
 
     /**
      * Process this email address for this member's account.
@@ -370,8 +370,8 @@ class Helper_Membership_Account {
         $_ormAccountState->save();
 
         // Log this change.
-        self::addNote("STATE/CHANGED", array(Enum_Account_State::idToType($_ormAccountStateOld->state),
-                                             Enum_Account_State::idToType($_ormAccountState->state)));
+        self::addNote("STATE/CHANGED", array(Enum_Account_State::valueToType($_ormAccountStateOld->state),
+                                             Enum_Account_State::valueToType($_ormAccountState->state)));
 
         // Saved successfully?
         return (($_ormAccountStateOld->loaded() && $_ormAccountStateOld->saved()) || !$_ormAccountStateOld->loaded()) && $_ormAccountState->saved();
@@ -397,7 +397,7 @@ class Helper_Membership_Account {
         // get their CURRENT state
         $_ormState = self::$_ormAccount->states->where("removed", "=", null)->find();
         if ($_ormState->loaded()) {
-            $_state = Enum_Account_State::stringToID($_ormState->state);
+            $_state = Enum_Account_State::IdToValue($_ormState->state);
         } else {
             $_state = Enum_Account_State::GUEST; // Everyone has to work their way up the ratings.
         }
@@ -512,10 +512,10 @@ class Helper_Membership_Account {
                     self::addNote("ACCOUNT/STATUS_SET", array($_status));
                     break;
                 case "+":
-                    self::addNote("ACCOUNT/STATUS_ADD", array(Enum_Account::idToType(decbin($status))));
+                    self::addNote("ACCOUNT/STATUS_ADD", array(Enum_Account::valueToType(decbin($status))));
                     break;
                 default:
-                    self::addNote("ACCOUNT/STATUS_DELETE", array(Enum_Account::idToType(decbin($status))));
+                    self::addNote("ACCOUNT/STATUS_DELETE", array(Enum_Account::valueToType(decbin($status))));
             }
             return self::$_ormAccount->saved();
         }
@@ -593,7 +593,7 @@ class Helper_Membership_Account {
     private static function _processQualifications($cid, $details) {
         // If the ATC rating is above zero, we'll begin.
         if (Arr::get($details, "rating", 0) > 0) {
-            if(Enum_Account_Qualification_ATC::idToType(Arr::get($details, "rating")) != Arr::get($details, "rating")):
+            if(Enum_Account_Qualification_ATC::valueToType(Arr::get($details, "rating")) != Arr::get($details, "rating")):
                 // Is there an older rating?
                 $_atcROlder = self::$_ormAccount->qualifications
                                     ->where("type", "=", "ATC")
@@ -628,9 +628,9 @@ class Helper_Membership_Account {
                         // LOG HERE!
                         self::addNote("QUALIFICATION/ATC_GRANTED", array(
                                 Enum_Account_Qualification_ATC::getDescription($_ormATCQual->value),
-                                Enum_Account_Qualification_ATC::idToType($_ormATCQual->value),
+                                Enum_Account_Qualification_ATC::valueToType($_ormATCQual->value),
                                 Enum_Account_Qualification_ATC::getDescription($_atcROlder->value),
-                                Enum_Account_Qualification_ATC::idToType($_atcROlder->value),
+                                Enum_Account_Qualification_ATC::valueToType($_atcROlder->value),
                             ));
                     }
                 }
@@ -641,7 +641,7 @@ class Helper_Membership_Account {
         if (Arr::get($details, "prating", 0) > 0 || Arr::get($details, "prating", array()) != array()) {
             // Let's go through all ratings and add the ones that don't exist, as of "today".
             foreach(Arr::get($details, "prating") as $rating):
-                if(Enum_Account_Qualification_Pilot::idToType($rating[1]) !== $rating[1]){
+                if(Enum_Account_Qualification_Pilot::valueToType($rating[1]) !== $rating[1]){
                     // Let's see if we currently have this rating.
                     $_pilRCount = self::$_ormAccount->qualifications
                                         ->where("type", "=", "PILOT")
@@ -663,7 +663,7 @@ class Helper_Membership_Account {
                         // LOG HERE!
                         self::addNote("QUALIFICATION/PILOT_GRANTED", array(
                                 Enum_Account_Qualification_Pilot::getDescription($_ormPilQual->value),
-                                Enum_Account_Qualification_Pilot::idToType($_ormPilQual->value),
+                                Enum_Account_Qualification_Pilot::valueToType($_ormPilQual->value),
                             ));
                         }
                     endif;

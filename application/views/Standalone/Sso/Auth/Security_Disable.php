@@ -31,42 +31,51 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Confirm Account Access</h1>
+                <h1>Extra Security - Disable</h1>
                 <p>
-                    Sorry to have to stop you, but it appears there have been multiple logins from the same IP address.  As a precaution you are required to validate your details by answering the security question below.
+                    <?=$_account->name_first." ".$_account->name_last?>,
+                </p>
+                <p>
+                    
+                </p>
+                <p>
+                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
+                </p>
+                <p>
+                    Thanks,
+                </p>
+                <p class="signature-fancy">
+                    The VATSIM UK Web Team
+                </p>
+            </div>
+            <div class="content">
+                <h1>Disable Extra Security</h1>
+                <p>
+                    Please complete this form below to disable a second security layer on your account. Before disabling your extra security password, we need to confirm your current one.
                 </p>
 
-                <?php if (isset($error)): ?>
+                <?php if(isset($error)): ?>
                     <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <strong>Warning! An error occured:</strong>
                         <ul>
-                            <li><?= $error ?></li>
+                            <li><?=$error?></li>
                         </ul>
                     </div>
                 <?php endif; ?>
 
                 <div class="row-fluid">
                     <div class="span6 offset2">
-                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/checkpoint") ?>">
-                            <?php if(isset($checkpoint_type) && $checkpoint_type == 'staff'): ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="extra_password">Extra Security/Second Level Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="extra_password" name="extra_password" placeholder="Extra Security Password">
-                                    </div>
+                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/security_disable") ?>">
+                            <div class="control-group">
+                                <label class="control-label" for="password">Current Password</label>
+                                <div class="controls">
+                                    <input type="password" id="password" name="password" placeholder="Password">
                                 </div>
-                            <?php else: ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="password">Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="password" name="password" placeholder="Password">
-                                    </div>
-                                </div>
-                            <?php endif; ?>
+                            </div>
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn" name="processcheckpoint" value="login">Confirm</button>
+                                    <button type="submit" class="btn" name="processsecurity_disable" value="security_disable">Disable Extra Security</button>
                                 </div>
                             </div>
                         </form>

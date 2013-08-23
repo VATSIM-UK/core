@@ -167,8 +167,8 @@ class Vatsim_Autotools extends Vatsim {
         $type = $this->_actions[$action];
         return $this->{"runQuery" . ucfirst($type)}($action, $data);
     }
-
-    private function runQueryText($action, $data) {
+    
+    private function runQueryCall($action, $data){
         // Construct the URI.
         $uri = $this->URICreate($action, $data);
 
@@ -179,17 +179,27 @@ class Vatsim_Autotools extends Vatsim {
         if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
             return false;
         }
+        
+        return $request;
+    }
+
+    private function runQueryText($action, $data) {
+        // Run the request.
+        $request = $this->runQueryCall($action, $data);
+        
+        if(!$request){
+            return false;
+        }
 
         // Get all of the details!
         return explode("\n", $request->body());
     }
 
     private function runQueryXml($action, $data) {
-        // Construct the URI.
-        $uri = $this->URICreate($action, $data);
-
-        // Check the status of the XML file, first.
-        if (Request::factory($uri)->execute()->status() != 200 && Request::factory($uri)->execute()->status() != 301 && Request::factory($uri)->execute()->status() != 302) {
+        // Run the request.
+        $request = $this->runQueryCall($action, $data);
+        
+        if(!$request){
             return false;
         }
 

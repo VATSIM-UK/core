@@ -12,24 +12,24 @@ class Enum_Account_Age extends Enum_Main {
     const _4960 = 6;
     const _60 = 7;
     
-    public static function getDescription($id){
-        switch(self::idToType($id)){
-            case "_13":
+    public static function getDescription($value){
+        switch(self::valueToType($value)){
+            case self::_13:
                 return "Under 13";
-            case "_1317":
+            case self::_1317:
                 return "13 - 17";
-            case "_1825":
+            case self::_1825:
                 return "18 - 25";
-            case "_2636":
+            case self::_2636:
                 return "26 - 36";
-            case "_3748":
+            case self::_3748:
                 return "37 - 48";
-            case "_4960":
+            case self::_4960:
                 return "49 - 60";
-            case "_60":
+            case self::_60:
                 return "Over 60";
             default:
-                return "unknown";
+                return parent::getDescription($value);
         }
     }
 }

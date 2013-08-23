@@ -1,3 +1,5 @@
 application/cache/*
 application/logs/*
 log.txt
+nbproject/
+docs/

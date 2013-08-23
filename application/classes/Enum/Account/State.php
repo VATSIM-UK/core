@@ -12,8 +12,8 @@ class Enum_Account_State extends Enum_Main {
     const VISITOR = 50;
     const TRANSFER = 60;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             //case self::SUSPENDED:
             //    return "Suspended";
             //case self::INACTIVE:
@@ -27,7 +27,7 @@ class Enum_Account_State extends Enum_Main {
             case self::TRANSFER:
                  return "Transferring member";
             default:
-                 return self::idToType($id);
+                 return parent::getDescription($value);
         }
     }
     

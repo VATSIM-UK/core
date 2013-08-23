@@ -12,12 +12,12 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
         ->defaults(array(
             'directory' => 'Sso',
             'controller' => 'Auth',
-            'action' => 'login',
+            'action' => 'display',
             'area' => NULL,
         ));
 Route::set('default', '')
         ->defaults(array(
             'directory' => 'Sso',
             'controller' => 'Auth',
-            'action' => 'login'
+            'action' => 'display'
         ));

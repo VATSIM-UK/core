@@ -22,7 +22,7 @@ class Model_Account_Email extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'account' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'account_id',
         ),
     );
@@ -65,6 +65,30 @@ class Model_Account_Email extends Model_Master {
     // Gotta love __toString!
     public function __toString() {
         return ($this->email ? $this->email : "");
+    }
+    
+    // Pre-get_active_*
+    private function helper_pre_get_active(){
+        return $this->where("deleted", "IS", NULL);
+    }
+    
+    // Get the current primary email for this account
+    public function get_active_primary(){
+        // Limit to primary.
+        $finder = $this->helper_pre_get_active()->where("primary", "=", "1")->find();
+        
+        // Found one?
+        if($finder->loaded()){
+            return $finder;
+        }
+        
+        // Found nothing! :-(
+        return ORM::factory("Account_Email");
+    }
+    
+    // Get the current secondary emails for this account
+    public function get_active_secondary(){      
+        return $this->helper_pre_get_active()->where("primary", "=", "0")->find_all();
     }
 
 }

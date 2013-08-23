@@ -37,6 +37,19 @@ html, body {
     text-align: left;
 }
 
+/* Footer */
+.container-footer {
+    padding: 5px;
+    /*background: #f3f3f3;*/
+}
+
+.footer {
+    margin: 5px;
+    /*background: #fff;*/
+    padding: 20px;
+    text-align: center;
+}
+
 /* Specific content */
 .signature-fancy {
     font-family: 'Yellowtail', serif;

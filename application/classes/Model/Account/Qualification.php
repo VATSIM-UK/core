@@ -20,7 +20,7 @@ class Model_Account_Qualification extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'account' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'account_id',
         ),
     );
@@ -45,9 +45,11 @@ class Model_Account_Qualification extends Model_Master {
     public function __toString(){
         return $this->formatQualification(false);
     }
+    
+    // Format the current qualification.
     public function formatQualification($full=true){
         $enum = "Enum_Account_Qualification_".$this->type;
-        return $full ? $enum::getDescription($this->value) : $enum::idToType($this->value); 
+        return $full ? $enum::getDescription($this->value) : $enum::IdToValue($this->value); 
     }
     
     // Get position suffixes.
@@ -59,6 +61,50 @@ class Model_Account_Qualification extends Model_Master {
         
         $enum = "Enum_Account_Qualification_ATC";
         return ($type == "string") ? $enum::getPositionSuffixes($this->value) : explode(",", $enum::getPositionSuffixes($this->value)); 
+    }
+    
+    // Pre-get_**
+    private function helper_pre_get_all(){
+        return $this->where("removed", "IS", NULL)->order_by("value", "DESC");
+    }
+    private function helper_pre_get_current(){
+        return $this->helper_pre_get_all()->limit(1);
+    }
+    
+    // Get the current atc qualification.
+    public function get_current_atc(){
+        return $this->helper_pre_get_current()->where("type", "LIKE", "atc")->find();
+    }
+    
+    public function get_all_atc(){
+        return $this->helper_pre_get_all()->where("type", "LIKE", "atc")->find_all();
+        
+        // Turn into a readable array....
+        $return = array();
+        foreach($quals as $qual){
+            $return[] = $qual->value;
+        }
+        
+        // Yeah, we're done.... phew!
+        return $return;
+    }
+    
+    public function get_current_pilot(){
+        return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find();
+    }
+    
+    public function get_all_pilot(){
+        return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find_all();
+        
+        // Turn into a readable array....
+        $return = array();
+        foreach($quals as $qual){
+            $return[] = $qual->value;
+        }
+        
+        // Yeah, we're done.... phew!
+        return $return;
+        
     }
 }
 
