@@ -76,7 +76,7 @@
             <div class="footer">
                 <div class="row-fluid">
                     <p>
-                        VATSIM-UK &copy; 2013 - Version <?=str_replace(" v", " ", exec("git describe --abbrev=0 --tags"))?>
+                        VATSIM-UK &copy; 2013 - Version <?=$_version?>
                         
                         <br />Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
                     </p>

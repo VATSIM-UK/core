@@ -103,6 +103,9 @@ abstract class Controller_Master extends Controller_Template {
                 $this->view->bind_global("request", $this->request);
                 $this->view->bind_global("_account", $this->_account);
                 $this->view->set_global("_errors", Session::instance("native")->get("errors", array()));
+                exec("git describe --abbrev=0 --tags", $v);
+                $v[0] = str_replace("v", "", $v[0]);
+                $this->view->bind_global("_version", $v[0]);
                 Session::instance("native")->delete("errors");
             //}
 
