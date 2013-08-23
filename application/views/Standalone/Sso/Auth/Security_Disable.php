@@ -31,24 +31,6 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Extra Security - Disable</h1>
-                <p>
-                    <?=$_account->name_first." ".$_account->name_last?>,
-                </p>
-                <p>
-                    
-                </p>
-                <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
-                </p>
-                <p>
-                    Thanks,
-                </p>
-                <p class="signature-fancy">
-                    The VATSIM UK Web Team
-                </p>
-            </div>
-            <div class="content">
                 <h1>Disable Extra Security</h1>
                 <p>
                     Please complete this form below to disable a second security layer on your account. Before disabling your extra security password, we need to confirm your current one.
