@@ -45,7 +45,7 @@ class Controller_Sso_Auth extends Controller_Master {
         }
         
         // Requesting a new token, or using old one?
-        if(Session::instance("native")->get("sso_token", null) != null && $this->request->query("token") != null){
+        if(Session::instance("native")->get("sso_token", null) != null && $this->request->query("token") == null){
             $token = Session::instance("native")->get("sso_token");
             $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
         }
