@@ -31,42 +31,51 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Confirm Account Access</h1>
+                <h1>Enable Extra Security</h1>
                 <p>
-                    Sorry to have to stop you, but it appears there have been multiple logins from the same IP address.  As a precaution you are required to validate your details by answering the security question below.
+                    Please complete this form below to enable a second security layer on your account.
                 </p>
 
-                <?php if (isset($error)): ?>
+                <?php if(isset($error)): ?>
                     <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <strong>Warning! An error occured:</strong>
                         <ul>
-                            <li><?= $error ?></li>
+                            <li><?=$error?></li>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php if(isset($_requirements)): ?>
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Please note, your password must:</strong>
+                        <ul>
+                            <?php foreach($_requirements as $r): ?>
+                                <li><?=$r?></li>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php endif; ?>
 
                 <div class="row-fluid">
                     <div class="span6 offset2">
-                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/checkpoint") ?>">
-                            <?php if(isset($checkpoint_type) && $checkpoint_type == 'staff'): ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="extra_password">Extra Security/Second Level Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="extra_password" name="extra_password" placeholder="Extra Security Password">
-                                    </div>
+                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/security_enable") ?>">
+                            <div class="control-group">
+                                <label class="control-label" for="new_password">New Password</label>
+                                <div class="controls">
+                                    <input type="password" id="new_password" name="new_password" placeholder="New Password">
                                 </div>
-                            <?php else: ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="password">Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="password" name="password" placeholder="Password">
-                                    </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="new_password2">Confirm New Password</label>
+                                <div class="controls">
+                                    <input type="password" id="new_password2" name="new_password2" placeholder="Confirm New Password">
                                 </div>
-                            <?php endif; ?>
+                            </div>
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn" name="processcheckpoint" value="login">Confirm</button>
+                                    <button type="submit" class="btn" name="processsecurity_enable" value="security_enable">Enable Extra Security</button>
                                 </div>
                             </div>
                         </form>

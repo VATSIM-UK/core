@@ -3,24 +3,24 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Main {
-    public static function idToType($id) {
+    public static function valueToType($value) {
         $constants = new ReflectionClass(get_called_class());
         foreach ($constants->getConstants() as $c => $v) {
-            if ($v == $id) {
+            if ($v == $value) {
                 return $c;
             }
         }
-        return $id;
+        return $value;
     }
 
-    public static function stringToID($str) {
+    public static function IdToValue($idString) {
         $constants = new ReflectionClass(get_called_class());
         foreach ($constants->getConstants() as $c => $v) {
-            if ($c == strtoupper($str)) {
+            if ($c == strtoupper($idString)) {
                 return $v;
             }
         }
-        return $str;
+        return $idString;
     }
 
     public static function getAll(){
@@ -29,10 +29,10 @@ class Enum_Main {
     }
     
     public static function valueExists($value){
-        return self::idToType($value) != $value;
+        return self::valueToType($value) != $value;
     }
     
     public static function keyExists($key){
-        return self::stringToID($key) != $key;
+        return self::IdToValue($key) != $key;
     }
 }

@@ -25,11 +25,11 @@ class Model_Account_Note extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'user' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'account_id',
         ),
         'actioner' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'actioner_id',
         ),
     );

@@ -10,8 +10,8 @@ class Enum_Account_Note_Type extends Enum_Account_Note {
     const AUTO = 99; // Automatic notes from within the system.
         const SYSTEM = 99; // Same as above, alias.
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::ACTION:
                 return "Requires action";
             case self::IMPORTANT:
@@ -23,7 +23,7 @@ class Enum_Account_Note_Type extends Enum_Account_Note {
             case self::SYSTEM:
                 return "System Comment";
             default:
-                 return self::idToType($id);
+                 return self::valueToType($value);
         }
     }
 }

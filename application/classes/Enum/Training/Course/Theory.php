@@ -7,8 +7,8 @@ class Enum_Training_Course_Theory extends Enum_Main {
     const REQUIRED = 1;
     const AVAILABLE = 2;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::NONE:
                  return "No theory assessment";
             case self::REQUIRED:
@@ -16,7 +16,7 @@ class Enum_Training_Course_Theory extends Enum_Main {
             case self::AVAILABLE:
                  return "Theory material and/or optional tests are available for this course"; 
             default:
-                 return self::idToType($id);
+                 return parent::getDescription($value);
         }
     }
     

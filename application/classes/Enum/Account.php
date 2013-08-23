@@ -8,10 +8,10 @@ class Enum_Account extends Enum_Main {
     const STATUS_NETWORK_BANNED = b"010";
     const STATUS_INACTIVE = b"100";
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             default:
-                 return self::idToType($id);
+                 return parent::getDescription($value);
         }
     }
     

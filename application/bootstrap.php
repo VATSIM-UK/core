@@ -89,9 +89,11 @@ Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . str
  * - boolean  expose      set the X-Powered-By header                        FALSE
  */
 // INIT!
-$_SERVER_URI = explode("/", $_SERVER["REQUEST_URI"]);
+$_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
+array_pop($_SERVER_URI);
+$_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
 Kohana::init(array(
-    'base_url' => (Kohana::$environment !== Kohana::PRODUCTION) ? "/".$_SERVER_URI[1]."/".$_SERVER_URI[2]."/" : "/",
+    'base_url' => $_SERVER_URI,
     'index_file' => Kohana::$environment === Kohana::PRODUCTION,
     'errors' => Kohana::$environment !== Kohana::PRODUCTION,
     'profile' => Kohana::$environment !== Kohana::PRODUCTION,
@@ -115,7 +117,7 @@ Kohana::$config->attach(new Config_File);
 Kohana::modules(array(
     //auth' => MODPATH . 'auth', // Basic authentication
     'cache'      => MODPATH.'cache',      // Caching with multiple backends
-    // 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
+    'codebench'  => MODPATH.'codebench',  // Benchmarking tool
     'database' => MODPATH . 'database', // Database access
     'image' => MODPATH . 'image', // Image manipulation
     'minion'     => MODPATH.'minion',     // CLI Tasks

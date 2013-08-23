@@ -7,8 +7,8 @@ class Enum_Account_Qualification_Admin extends Enum_Account_Qualification {
     const SUP2 = 2;
     const ADM = 3;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::SUP:
                 return "Supervisor";
             case self::SUP2:
@@ -16,7 +16,7 @@ class Enum_Account_Qualification_Admin extends Enum_Account_Qualification {
             case self::ADM:
                 return "Administrator";
             default:
-                return parent::getDescription($id);
+                return parent::getDescription($value);
         }
     }
 }

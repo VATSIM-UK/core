@@ -21,17 +21,18 @@ class Model_Account_Security extends Model_Master {
     
     // Belongs to relationships
     protected $_belongs_to = array(
-        'account' => array(
-            'model' => 'Account',
-            'foreign_key' => 'account_id',
-        ),
     );
     
     // Has man relationships
     protected $_has_many = array();
     
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'account' => array(
+            'model' => 'Account_Main',
+            'foreign_key' => 'account_id',
+        ),
+    );
     
     // Validation rules
     public function rules(){
@@ -50,7 +51,7 @@ class Model_Account_Security extends Model_Master {
     // Validate the passwords
     public function validatePassword($password){
         // Create the name of the enum class
-        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::idToType($this->type)));
+        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($this->type)));
         
         // Does it meet the minimum length?
         if($enum::MIN_LENGTH > 0){
@@ -92,7 +93,7 @@ class Model_Account_Security extends Model_Master {
     
     // Save the new password
     public function save(Validation $validation = NULL){// Let's just update the expiry!
-        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::idToType($this->type)));
+        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($this->type)));
         if($this->expires == null){
             $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+".$enum::MIN_LIFE." days")) : NULL;
             $this->created = gmdate("Y-m-d H:i:s");

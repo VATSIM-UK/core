@@ -129,7 +129,7 @@ class Vatsim_Autotools extends Vatsim {
     }
 
     public function getInfo($cid) {
-        $return = array("name_first" => "",
+        $result = array("name_first" => "",
             "name_last" => "",
             "regdate" => "",
             "rating_pilot" => "",
@@ -141,20 +141,20 @@ class Vatsim_Autotools extends Vatsim {
 
         // False?
         if (!$result) {
-            return $return;
+            return $result;
         }
-        $return = get_object_vars($result->user);
+        $result = get_object_vars($result->user);
 
         // Format!
-        $return["name_last"] = Arr::get($result, "name_last", "");
-        $return["name_first"] = Arr::get($result, "name_first", "");
-        $return["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
-        $return["rating_atc"] = Arr::get($result, "rating", "");
-        $return["country"] = Arr::get($result, "country", "");
-        $return["regdate"] = Arr::get($result, "regdate", "");
+        $result["name_last"] = Arr::get($result, "name_last", "");
+        $result["name_first"] = Arr::get($result, "name_first", "");
+        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
+        $result["rating_atc"] = Arr::get($result, "rating", "");
+        $result["country"] = Arr::get($result, "country", "");
+        $result["regdate"] = Arr::get($result, "regdate", "");
 
         // Return the result!
-        return $return;
+        return $result;
     }
 
     private function runQuery($action, $data) {
@@ -167,20 +167,27 @@ class Vatsim_Autotools extends Vatsim {
         $type = $this->_actions[$action];
         return $this->{"runQuery" . ucfirst($type)}($action, $data);
     }
-
-    private function runQueryText($action, $data) {
+    
+    private function runQueryCall($action, $data){
         // Construct the URI.
         $uri = $this->URICreate($action, $data);
 
         // Run the request.
-        try {
-            $request = Request::factory($uri)->execute();
-        } catch(Exception $e){
-            return false;
-        }
+        $request = Request::factory($uri)->execute();
 
         // Check the status!
         if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
+            return false;
+        }
+        
+        return $request;
+    }
+
+    private function runQueryText($action, $data) {
+        // Run the request.
+        $request = $this->runQueryCall($action, $data);
+        
+        if(!$request){
             return false;
         }
 
@@ -189,18 +196,10 @@ class Vatsim_Autotools extends Vatsim {
     }
 
     private function runQueryXml($action, $data) {
-        // Construct the URI.
-        $uri = $this->URICreate($action, $data);
-
         // Run the request.
-        try {
-            $request = Request::factory($uri)->execute();
-        } catch(Exception $e){
-            return false;
-        }
-
-        // Check the status!
-        if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
+        $request = $this->runQueryCall($action, $data);
+        
+        if(!$request){
             return false;
         }
 

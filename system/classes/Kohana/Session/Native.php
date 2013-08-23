@@ -24,6 +24,9 @@ class Kohana_Session_Native extends Session {
 	 */
 	protected function _read($id = NULL)
 	{
+		// change garbage collector to match session lifetime
+        ini_set("session.gc_maxlifetime", $this->_lifetime);
+		
 		// Sync up the session cookie with Cookie parameters
 		session_set_cookie_params($this->_lifetime, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
 

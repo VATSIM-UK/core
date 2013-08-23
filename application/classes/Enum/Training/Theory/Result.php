@@ -8,8 +8,8 @@ class Enum_Training_Theory_Result extends Enum_Main {
     const FAIL = 2;
     const CANCEL = 3;
     
-    public static function getResult($id){
-         switch($id){
+    public static function getResult($value){
+         switch($value){
               case self::PASS:
                    return 'Pass';
                    break;
@@ -23,7 +23,7 @@ class Enum_Training_Theory_Result extends Enum_Main {
                    return 'In Progress';
                    break;
               default:
-                   return false;
+                   return parent::getDescription($value);
          }
     }
     

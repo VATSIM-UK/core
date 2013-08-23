@@ -11,8 +11,8 @@ class Enum_Account_Qualification_ATC extends Enum_Account_Qualification {
     const C2 = 5; // No longer in use.
     const C3 = 7;
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             case self::OBS:
                 return "Observer";
             case self::S1:
@@ -27,12 +27,12 @@ class Enum_Account_Qualification_ATC extends Enum_Account_Qualification {
             case self::C3:
                 return "Senior Controller";
             default:
-                return parent::getDescription($id);
+                return parent::getDescription($value);
         }
     }
     
-    public static function getPositionSuffixes($id){
-        switch($id){
+    public static function getPositionSuffixes($value){
+        switch($value){
             case self::OBS:
                 return "OBS";
             case self::S1:

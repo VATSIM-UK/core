@@ -9,18 +9,18 @@ class Enum_Account_Security extends Enum_Main {
     const MED = 50;
     const HIGH = 100;
     
-    public static function getDescription($id){
-        switch(self::idToType($id)){
-            case "MEMBER":
+    public static function getDescription($value){
+        switch(self::valueToType($value)){
+            case self::MEMBER:
                 return "Member Password";
-            case "LOW":
+            case self::LOW:
                 return "Low Strength Password";
-            case "MED":
+            case self::MED:
                 return "Medium Strength Password";
-            case "HIG":
+            case self::HIGH:
                 return "Maximum Strength Password";
             default:
-                return "unknown";
+                return parent::getDescription($value);
         }
     }
 }

@@ -31,48 +31,44 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Confirm Account Access</h1>
+                <h1>Account Override</h1>
                 <p>
-                    Sorry to have to stop you, but it appears there have been multiple logins from the same IP address.  As a precaution you are required to validate your details by answering the security question below.
+                    Please enter the CID of an account to override, along with your second security layer details.
                 </p>
-
-                <?php if (isset($error)): ?>
+                
+                <?php if(isset($error)): ?>
                     <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <strong>Warning! An error occured:</strong>
                         <ul>
-                            <li><?= $error ?></li>
+                            <li><?=$error?></li>
                         </ul>
                     </div>
                 <?php endif; ?>
 
                 <div class="row-fluid">
                     <div class="span6 offset2">
-                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/checkpoint") ?>">
-                            <?php if(isset($checkpoint_type) && $checkpoint_type == 'staff'): ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="extra_password">Extra Security/Second Level Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="extra_password" name="extra_password" placeholder="Extra Security Password">
-                                    </div>
+                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/override") ?>">
+                            <div class="control-group">
+                                <label class="control-label" for="override_cid">Account CID</label>
+                                <div class="controls">
+                                    <input type="text" id="override_cid" name="override_cid" placeholder="Account CID">
                                 </div>
-                            <?php else: ?>
-                                <div class="control-group">
-                                    <label class="control-label" for="password">Password</label>
-                                    <div class="controls">
-                                        <input type="password" id="password" name="password" placeholder="Password">
-                                    </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="extra_password">Extra Password</label>
+                                <div class="controls">
+                                    <input type="password" id="extra_password" name="extra_password" placeholder="Extra Password">
                                 </div>
-                            <?php endif; ?>
+                            </div>
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn" name="processcheckpoint" value="login">Confirm</button>
+                                    <button type="submit" class="btn" name="processoverride" value="override">Override Account</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="container container-footer">

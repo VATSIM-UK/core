@@ -23,11 +23,11 @@ class Model_Account_Note_Flag extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'flagger' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'flag_by',
         ),
         'resolver' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'resolve_by',
         ),
         'note' => array(
