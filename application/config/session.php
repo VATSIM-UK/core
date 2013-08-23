@@ -3,7 +3,7 @@
 return array(
     'database' => array(
         'name' => 'vuk_core',
-        'encrypted' => TRUE,
+        'encrypted' => FALSE,
         'lifetime' => 43200,
         'group' => 'sys',
         'table' => 'session',
