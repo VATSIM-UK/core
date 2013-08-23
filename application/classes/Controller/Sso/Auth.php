@@ -89,7 +89,6 @@ class Controller_Sso_Auth extends Controller_Master {
     public function action_display(){
         // If they're not logged in, we'll treat this as an SSO login.
         if(!Helper_Account_Main::check_login_status()){
-            die("NOT LOGGED IN!");
             require_once "/var/www/sharedResources/SSO.class.php";
             $SSO = new SSO("CORE", URL::site("/sso/auth/display", "http"));
             $details = $SSO->member;
