@@ -36,7 +36,7 @@
                     <?=$_account->name_first." ".$_account->name_last?>,
                 </p>
                 <p>
-                    Please complete this form below to disable a second security layer on your account.
+                    
                 </p>
                 <p>
                     Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
@@ -51,7 +51,7 @@
             <div class="content">
                 <h1>Disable Extra Security</h1>
                 <p>
-                    Before disabling your extra security password, we need to confirm your current one.
+                    Please complete this form below to disable a second security layer on your account. Before disabling your extra security password, we need to confirm your current one.
                 </p>
 
                 <?php if(isset($error)): ?>
@@ -87,7 +87,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

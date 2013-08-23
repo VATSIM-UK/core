@@ -31,10 +31,7 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>EMail Confirmation</h1>
-                <p>
-                    <?=$_account->name_first." ".$_account->name_last?>,
-                </p>
+                <h1>Confirm Email</h1>
                 <p>
                     We do not yet have a valid email address stored in our database for you.
                     This could be because this is the first time you have logged in, you haven't logged in within the last 3 months or a 
@@ -43,20 +40,6 @@
                 <p>
                     To continue utilising our systems, please provide your current VATSIM email address so that we can store this for future reference.
                 </p>
-                <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
-                </p>
-                <p>
-                    Thanks,
-                </p>
-                <p class="signature-fancy">
-                    The VATSIM UK Web Team
-                </p>
-            </div>
-            <div class="content">
-                <h1>Confirm Email</h1>
-                <p>
-                    To confirm your main VATSIM email address, please enter it below.
                 </p>
 
                 <?php if (isset($error)): ?>
@@ -92,7 +75,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

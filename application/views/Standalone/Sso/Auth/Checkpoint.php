@@ -31,24 +31,9 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Security Checkpoint</h1>
-                <p>
-                    <?=$_account->name_first." ".$_account->name_last?>,
-                </p>
-                <p>
-                    Sorry to have to stop you, but it appears there have been multiple logins from the same IP address.  As a precaution you are required to validate your details by answering the security question below.
-                </p>
-                <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
-                </p>
-                <p class="signature-fancy">
-                    The VATSIM UK Web Team
-                </p>
-            </div>
-            <div class="content">
                 <h1>Confirm Account Access</h1>
                 <p>
-                    To continue using our systems, please enter the necessary answer below.
+                    Sorry to have to stop you, but it appears there have been multiple logins from the same IP address.  As a precaution you are required to validate your details by answering the security question below.
                 </p>
 
                 <?php if (isset($error)): ?>
@@ -93,7 +78,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

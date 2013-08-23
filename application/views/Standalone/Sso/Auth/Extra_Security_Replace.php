@@ -31,24 +31,6 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>Extra Security - Now Expired</h1>
-                <p>
-                    <?=$_account->name_first." ".$_account->name_last?>,
-                </p>
-                <p>
-                    This account is protected with a second layer of security. This additional security has, expired. Please complete the form below to reinstate your account.
-                </p>
-                <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
-                </p>
-                <p>
-                    Thanks,
-                </p>
-                <p class="signature-fancy">
-                    The VATSIM UK Web Team
-                </p>
-            </div>
-            <div class="content">
                 <h1>Change Extra Security Details</h1>
                 <p>
                     <?php if(isset($_newReg)): ?>
@@ -117,7 +99,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

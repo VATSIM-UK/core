@@ -74,7 +74,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

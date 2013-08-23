@@ -22,7 +22,7 @@ class Model_Account_Email extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'account' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'account_id',
         ),
     );

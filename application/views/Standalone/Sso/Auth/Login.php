@@ -31,22 +31,6 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1>New Single Sign-On</h1>
-                <p>
-                    Dear members,
-                </p>
-                <p>
-                    In an effort to centralise all of our services, we have now created a Single Sign-On (SSO) area.  Over the coming months more
-                    features will be moved over to this new area, which will replace a number of the administrative interfaces.
-                </p>
-                <p>
-                    Should you have any questions, comments or concerns, please contact <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>.
-                </p>
-                <p class="signature-fancy">
-                    The VATSIM UK Web Team
-                </p>
-            </div>
-            <div class="content">
                 <h1>Login</h1>
                 <p>
                     To login to the <?= (isset($_GET["area"]) ? $_GET["area"] : "VATUK system") ?>, please enter your VATSIM Certificate ID and network password below.
@@ -91,7 +75,11 @@
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
-                    <p>VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?></p>
+                    <p>
+                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
+                        &bull;
+                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                    </p>
                 </div>
             </div>
         </div>

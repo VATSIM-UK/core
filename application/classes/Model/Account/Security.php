@@ -29,7 +29,7 @@ class Model_Account_Security extends Model_Master {
     // Has one relationship
     protected $_has_one = array(
         'account' => array(
-            'model' => 'Account',
+            'model' => 'Account_Main',
             'foreign_key' => 'account_id',
         ),
     );

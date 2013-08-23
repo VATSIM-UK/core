@@ -133,8 +133,8 @@ class Helper_Membership_Account {
         // Try all the processing
         try {
             // Process general details
-            self::debugWrite("processMember: processing general details....", "cyan");
-            self::_processGeneralDetails($cid, $details);
+            //self::debugWrite("processMember: processing general details....", "cyan");
+            //self::_processGeneralDetails($cid, $details);
 
             // Process email
             if (Arr::get($details, "email", null) != null && Arr::get($details, "email_action", null) != null) {
@@ -184,7 +184,7 @@ class Helper_Membership_Account {
      * @param type $details - The array of details.  See {@link processMember} for a list of keys.
      * @return boolean
      */
-    private static function _processGeneralDetails($cid, $details = array()) {
+    /*private static function _processGeneralDetails($cid, $details = array()) {
         self::debugWrite("processGeneralDetails: started", "cyan");
         // CID? (ONLY if it's a new member!)
         $_actionDB = Helper_Membership_Account::ACTION_UPDATE;
@@ -230,7 +230,7 @@ class Helper_Membership_Account {
         }
 
         return self::$_ormAccount->saved();
-    }
+    }*/
 
     /**
      * Process this email address for this member's account.
