@@ -52,11 +52,11 @@
                             <div class="control-group">
                                 <label class="control-label" for="cid">CID</label>
                                 <div class="controls">
-                                    <input type="text" id="cid" name="cid" placeholder="CID">
+                                    <input type="text" id="cid" name="cid" placeholder="CID" value="<?=$request->post("cid")?>">
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label" for="password">Password</label>
+                                <label class="control-label" for="password"><?=isset($cert_offline) ? "Extra Password" : "Password"?></label>
                                 <div class="controls">
                                     <input type="password" id="password" name="password" placeholder="Password">
                                 </div>

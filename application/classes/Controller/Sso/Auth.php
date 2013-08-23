@@ -70,7 +70,7 @@ class Controller_Sso_Auth extends Controller_Master {
             $this->_current_token->sso_key = $ssoKey;
             $this->_current_token->return_url = $returnURL;
             $this->_current_token->created = gmdate("Y-m-d H:i:s");
-            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+6 minutes"));
+            $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
             $this->_current_token->save();
         }
 
@@ -456,6 +456,7 @@ class Controller_Sso_Auth extends Controller_Master {
                 if(!$security->loaded() || sha1(sha1($password)) != $security->value){
                     $this->_data["error"] = "The VATSIM Certificate Server is currently unavailable and we cannot validate your details, please try again later.";
                     $this->_data["error"].= "Alternatively, if you have a second layer security password set, you can enter it now.";
+                    $this->_data["cert_offline"] = true;
                     $this->action_login();
                     return false;
                 }
