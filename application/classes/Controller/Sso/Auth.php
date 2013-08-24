@@ -87,7 +87,7 @@ class Controller_Sso_Auth extends Controller_Master {
         if ($this->_current_token->account_id > 0 && !$this->_current_account->loaded()) {
             $this->_current_account = ORM::factory("Account", $this->_current_token->account_id);
             $this->_data["_account"] = $this->_current_account;
-        } elseif(!$this->_current_account->loaded()) {
+        } elseif(!is_object($this->_current_account) || !$this->_current_account->loaded()) {
             $this->_current_account = ORM::factory("Account");
         }
 
