@@ -177,6 +177,7 @@ class Vatsim_Autotools extends Vatsim {
 
         // Check the status!
         if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
+            throw new Kohana_Exception("404 Result");
             return false;
         }
         
