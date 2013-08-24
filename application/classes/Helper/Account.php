@@ -11,12 +11,10 @@ class Helper_Account {
      */
     public static function update_using_remote($account_id){
         // Got a user to do this on?
+        //if($account_id == Kohana::$config->load("general")->get("system_user") || $account_id == null || !is_numeric($account_id)){
         if($account_id == null || !is_numeric($account_id)){
             return false;
         }
-        
-        // Let's load the data
-        $account = ORM::factory("Account_Main", $account_id);
         
         // Now get all of the details from VATSIM
         try {
@@ -29,7 +27,7 @@ class Helper_Account {
             }
             
             // Let's now run the updates!
-            Helper_Account_Main::run_update($account_id, $details, !$account->loaded());
+            Helper_Account_Main::run_updates($account_id, $details);
         } catch(Exception $e){
             // TODO: Handle this!
             return false;

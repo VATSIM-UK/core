@@ -52,11 +52,11 @@
                             <div class="control-group">
                                 <label class="control-label" for="cid">CID</label>
                                 <div class="controls">
-                                    <input type="text" id="cid" name="cid" placeholder="CID">
+                                    <input type="text" id="cid" name="cid" placeholder="CID" value="<?=$request->post("cid")?>">
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label" for="password">Password</label>
+                                <label class="control-label" for="password"><?=isset($cert_offline) ? "Extra Password" : "Password"?></label>
                                 <div class="controls">
                                     <input type="password" id="password" name="password" placeholder="Password">
                                 </div>
@@ -76,9 +76,9 @@
             <div class="footer">
                 <div class="row-fluid">
                     <p>
-                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
-                        &bull;
-                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                        VATSIM-UK &copy; 2013 - Version <?=$_version?>
+                        
+                        <br />Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
                     </p>
                 </div>
             </div>
