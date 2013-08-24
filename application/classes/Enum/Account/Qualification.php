@@ -6,6 +6,6 @@ class Enum_Account_Qualification extends Enum_Main {
     const UNKNOWN = 0;
     
     public static function getDescription($value){
-        return parent::getDescription($value);
+        return parent::valueToType($value);
     }
 }

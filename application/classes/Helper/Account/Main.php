@@ -1,12 +1,12 @@
-<?php /*
+<?php 
 
 defined('SYSPATH') or die('No direct script access.');
 
 class Helper_Account_Main {
-    /*const SESSION_CID = "auth_cid";
-    private CHANGES_FIELD_LIST = array(
+    const SESSION_CID = "sso_cid";
+    private static $CHANGES_FIELD_LIST = array(
         "name_first", "name_last", "gender", "age", "created",
-    );*/
+    );
     
     /**
      * Check whether a member is currently logged in or not.
@@ -14,7 +14,7 @@ class Helper_Account_Main {
      * @param boolean $returnID If set to true, the ID will be returned if found.
      * @return boolean|int The current ID or true on success, false otherwise.
      */
-    /*public static function check_login_status($returnID=true){
+    public static function check_login_status($returnID=true){
         // Is an override set?
         if(defined("AUTH_OVERRIDE")){
             if($returnID){
@@ -25,11 +25,11 @@ class Helper_Account_Main {
         }
         
         if($returnID){
-            return Helper_Session::get(self::SESSION_CID, false);
+            return Session::instance()->get(self::SESSION_CID, false);
         } else{
-            return !(Helper_Session::get(self::SESSION_CID, null) == null)
+            return Session::instance()->get(self::SESSION_CID, null) == null;
         }
-    }*/
+    }
     
     /**
      * Handle any changes in basic account details.
@@ -47,7 +47,7 @@ class Helper_Account_Main {
      * @param int $account_id The account_id we're creating/updating.
      * @param array $data The array of data that can be used
      */
-    /*public static function run_updates($account_id, $data){
+    public static function run_updates($account_id, $data){
         // Load the account!
         $account = ORM::factory("Account_Main", $account_id);
         
@@ -55,11 +55,10 @@ class Helper_Account_Main {
         if(!$account->loaded()){
             $account->id = $account_id;
         }
-        
         // Go through the various fields we can update.
         foreach ($account->list_columns() as $_col => $_data) {
-            if(strcasecmp($account->{$_col}, Arr::get($details, $_col)) != 0 && in_array($_col, self::$CHANGES_FIELD_LIST)){
-                $account->{$_col} = Arr::get($details, $_col, $account->{$_col});
+            if(strcasecmp($account->{$_col}, Arr::get($data, $_col)) != 0 && in_array($_col, self::$CHANGES_FIELD_LIST)){
+                $account->{$_col} = Arr::get($data, $_col, $account->{$_col});
             }
         }
         
@@ -71,24 +70,25 @@ class Helper_Account_Main {
             // TODO: Handle this!
             return false;
         }
-        
         // Determine (and log) changed values.
-        /*$changed = self::$_ormAccount->changed();
+        $changed = $account->changed();
+        print "<pre>" . print_r($changed, true); exit();
         foreach ($changed as $key => $value) {
             // Add a note to the members account detailing the changes.
+            Helper_Membership_Account::loadMember($account_id);
             if($key == "age"){
-                self::addNote("ACCOUNT/DETAILS_CHANGED", array(
+                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array(
                     $key,
                     Enum_Account_Age::getDescription($value["old"]),
                     Enum_Account_Age::getDescription($value["new"]),
                 ));
             } else {
-                self::addNote("ACCOUNT/DETAILS_CHANGED", array($key, $value["old"], $value["new"]));
+                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array($key, $value["old"], $value["new"]));
             }
-        }*/
+        }
 
-        /*return $account->saved();
-    }*/
+        return $account->saved();
+    }
     
     /**
      * This helper formats the name of a person to conform with expected output.
@@ -97,7 +97,7 @@ class Helper_Account_Main {
      * @param string $type 'f' for forename, 's' for surname.
      * @return string The formatted name.
      */
-    /*public static function name_formatter($name, $type='f'){
+    public static function name_formatter($name, $type='f'){
         //Firstname
         if($type == 'f'){
 
@@ -177,5 +177,5 @@ class Helper_Account_Main {
         } else {
             return '';
         }
-    }*/
-//}
+    }
+}

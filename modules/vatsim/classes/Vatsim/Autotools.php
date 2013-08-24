@@ -197,9 +197,9 @@ class Vatsim_Autotools extends Vatsim {
 
     private function runQueryXml($action, $data) {
         // Run the request.
-        $request = $this->runQueryCall($action, $data);
+        $uri = $this->URICreate($action, $data);
         
-        if(!$request){
+        if(!$uri){
             return false;
         }
 
