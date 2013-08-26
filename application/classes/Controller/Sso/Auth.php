@@ -2,7 +2,7 @@
 
 defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Sso_Auth extends Controller_Master {
+class Controller_Sso_Auth extends Controller_Sso_Master {
 
     /**
      * Allow the current user to login using their CID and password.
