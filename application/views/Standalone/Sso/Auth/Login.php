@@ -19,7 +19,7 @@
             <div class="control-group">
                 <label class="control-label" for="cid">CID</label>
                 <div class="controls">
-                    <input type="text" id="cid" name="cid" placeholder="CID" value="<?= $request->post("cid") ?>">
+                    <input type="text" id="cid" name="cid" placeholder="CID" value="<?= $_request->request->post("cid") ?>">
                 </div>
             </div>
             <div class="control-group">

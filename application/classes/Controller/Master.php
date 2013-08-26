@@ -80,8 +80,9 @@ abstract class Controller_Master extends Controller_Template {
                 $this->template->set($k, $v);
             }
         }
-
+        
         // Set the view template variables
+        $this->_view->bind("_request", $this->request);
         if ($this->request->is_initial()) {
             $this->_view->bind_global("_area", $this->_area);
             $this->_view->bind_global("_controller", $this->_controller);
