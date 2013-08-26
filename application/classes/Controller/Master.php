@@ -107,14 +107,23 @@ abstract class Controller_Master extends Controller_Template {
     public function setTemplate($template = null) {
         // Template name
         if ($template == null) {
-            $template = $this->_area . "/" . $this->_controller . "/" . str_replace("_", "/", $this->_action);
+            $_a = str_replace("_", "/", $this->_action);
+            $actions = "";
+            foreach(explode("/", $_a) as $a){
+                $actions.= ucfirst($a)."/";
+            }
+            $actions = rtrim($actions, "/");
+            $template = $this->_area . "/" . $this->_controller . "/" . $actions;
         }
+        
+        // Add the template directory
+        $template = $this->_templateDir . "/" . $template;
 
         // Now create and store the template. If there's no wrapper, it's the main view!
         if ($this->_wrapper === FALSE) {
             $this->_view = View::factory($template);
         } else {
-            $this->_view = View::factory($this->_area . "/Global/Wrapper");
+            $this->_view = View::factory($this->_templateDir . "/Global/Wrapper");
             $this->template = View::factory($template);
         }
     }
