@@ -82,7 +82,6 @@ abstract class Controller_Master extends Controller_Template {
         }
         
         // Set the view template variables
-        $this->_view->bind("_request", $this->request);
         if ($this->request->is_initial()) {
             $this->_view->bind_global("_area", $this->_area);
             $this->_view->bind_global("_controller", $this->_controller);
@@ -91,6 +90,7 @@ abstract class Controller_Master extends Controller_Template {
             $this->_view->bind_global("_breadcrumbs", $this->_breadcrumbs);
             $this->_view->bind_global("_messages", $this->_messages);
             $this->_view->bind_global("_account", $this->_account);
+            $this->_view->bind_global("_request", $this->request);
         }
 
         // If there's a wrapper, set the different elements to the template too!

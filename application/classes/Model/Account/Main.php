@@ -163,7 +163,7 @@ class Model_Account_Main extends Model_Master {
      */
     public function action_authenticate($pass){
         // Get the auth result - we'll let the controller catch the exception.
-        $authResult = Helper_Account::authenticate($this->id, $pass);
+        $authResult = Vatsim::factory("autotools")->authenticate($this->id, $pass);
 
         // If we've got a valid authentication, set the session!
         if($authResult){
