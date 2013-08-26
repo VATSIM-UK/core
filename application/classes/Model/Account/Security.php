@@ -87,8 +87,53 @@ class Model_Account_Security extends Model_Master {
             }
         }
         
-        $this->value = sha1(sha1($this->value));
+        $this->value = $this->hash($password);
         return true;
+    }
+    
+    /**
+     * Password hashing for the second security layer.
+     * 
+     * @param string $password The password to hash.
+     * @return string The hashed password.
+     */
+    public function hash($password){
+        return Helper_Account::hash_password($password);
+    }
+    
+    
+    /**
+     * Check whether a user's second security info is still valid.
+     * 
+     * @return boolean True for valid details, false for no security
+     */
+    public function is_active(){
+        if(!$this->loaded() || strtotime($this->expires) <= time()){
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Authorise a user's second security details.
+     * 
+     * @param string $security The second security layer password.
+     * @return boolean Ture on success, false otherwise.
+     */
+    public function action_authorise($security=null){
+        // If this isn't loaded, they don't need a second password.
+        if(!$this->loaded()){
+            return true;
+        }
+        
+        // Let's validate!
+        if($this->hash($security) == $this->value){
+            return true;
+        }
+        
+        // Default response for protection!
+        return false;
     }
     
     // Save the new password

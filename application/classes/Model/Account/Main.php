@@ -154,6 +154,27 @@ class Model_Account_Main extends Model_Master {
         return $ipCheck->reset(FALSE)->count_all();
     }
     
+    
+    /**
+     * Authenticate a user using their CID and password, and then set the necessary sessions.
+     * 
+     * @param string $pass The password to use for authentication.
+     * @return boolean True on success, false otherwise.
+     */
+    public function action_authenticate($pass){
+        // Get the auth result - we'll let the controller catch the exception.
+        $authResult = Helper_Account::authenticate($this->id, $pass);
+
+        // If we've got a valid authentication, set the session!
+        if($authResult){
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("session.account.key"), $this->id);
+            return $authResult;
+        }
+        
+        // Default response - protects the system!
+        return false;
+    }
+    
     /**
      * This helper formats the name of a person to conform with expected output.
      * 
