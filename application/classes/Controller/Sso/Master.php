@@ -2,7 +2,7 @@
 
 defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Sso_Auth extends Controller_Master {
+class Controller_Sso_Master extends Controller_Master {
     protected $_templateDir = "Standalone"; // Override parent settings.
     protected $_current_token = null;
     protected $_current_account = null;
