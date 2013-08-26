@@ -30,24 +30,24 @@ class Controller_Sso_Auth extends Controller_Master {
 
     private function security() {
         // Are we overriding?
-        if (Session::instance("native")->get("sso_override", null) != null) {
-            $this->_actual_account = ORM::factory("Account", Session::instance("native")->get("sso_override"));
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_override", null) != null) {
+            $this->_actual_account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_override"));
 
-            if (Session::instance("native")->get("sso_cid", null) == null) {
-                Session::instance("native")->set("sso_cid", $this->_actual_account->id);
-                Session::instance("native")->delete("sso_override");
+            if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
+                Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_cid", $this->_actual_account->id);
+                Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_override");
             }
         }
 
         // Are we logged in?
-        if (Session::instance("native")->get("sso_cid", null) != null) {
-            $this->_current_account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) != null) {
+            $this->_current_account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
             $this->_data["_account"] = $this->_current_account;
         }
         
         // Requesting a new token, or using old one?
-        if (Session::instance("native")->get("sso_token", null) != null && $this->request->query("token") == null) {
-            $token = Session::instance("native")->get("sso_token");
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_token", null) != null && $this->request->query("token") == null) {
+            $token = Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_token");
             $this->_current_token = ORM::factory("Sso_Token")->where("token", "=", $token)->where("expires", ">=", gmdate("Y-m-d H:i:s"))->find();
         } elseif ($this->request->query("token") != null) {
             $token = $this->request->query("token");
@@ -79,7 +79,7 @@ class Controller_Sso_Auth extends Controller_Master {
 
         // Do these details exist?
         if (!$this->_current_token->loaded()) {
-            Session::instance("native")->delete("sso_token");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_token");
             return false;
         }
 
@@ -105,11 +105,11 @@ class Controller_Sso_Auth extends Controller_Master {
             require_once "/var/www/sharedResources/SSO.class.php";
             $SSO = new SSO("CORE", URL::site("/sso/auth/display", "http"), false, (Kohana::$environment === Kohana::DEVELOPMENT ? "http://dev.vatsim-uk.co.uk/ALawrence/core.vatsim-uk.co.uk/sso/auth/preLogin" : ""));
             $details = $SSO->member;
-            Session::instance("native")->set("sso_cid", $details->cid);
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_cid", $details->cid);
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -126,19 +126,19 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function action_override() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // KH or AL?
-        if (!in_array(Session::instance("native")->get("sso_cid"), array(980234, 1010573))) {
+        if (!in_array(Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"), array(980234, 1010573))) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -155,19 +155,19 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function process_override() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // KH or AL?
-        if (!in_array(Session::instance("native")->get("sso_cid"), array(980234, 1010573))) {
+        if (!in_array(Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"), array(980234, 1010573))) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -191,8 +191,8 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Override!
-        Session::instance("native")->set("sso_override", Session::instance("native")->get("sso_cid"));
-        Session::instance("native")->set("sso_cid", $ovrAccount->id);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_override", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_cid", $ovrAccount->id);
 
         // Send to display.
         $this->redirect("sso/auth/display");
@@ -201,13 +201,13 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function action_security_enable() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -248,14 +248,14 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function process_security_enable() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             die("HERE" . __LINE__);
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -301,13 +301,13 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function action_security_disable() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -331,13 +331,13 @@ class Controller_Sso_Auth extends Controller_Master {
 
     public function process_security_disable() {
         // If they're not logged in, we'll go to the error page.
-        if (Session::instance("native")->get("sso_cid", null) == null) {
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) == null) {
             $this->redirect("sso/auth/error");
             return;
         }
 
         // Get the account details
-        $account = ORM::factory("Account", Session::instance("native")->get("sso_cid"));
+        $account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"));
 
         // If they're not loaded, error
         if (!$account->loaded()) {
@@ -380,11 +380,11 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Since we don't want the token in the URL, let's hide it.
-        Session::instance("native")->set("sso_token", $this->_current_token->token);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_token", $this->_current_token->token);
 
         // Has this member logged in before? Are we remembering them?
-        if (Session::instance("native")->get("sso_cid", null) != null) {
-            Session::instance("native")->set("sso_fast_login", true);
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) != null) {
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_fast_login", true);
             $this->process_login();
             return;
         } else {
@@ -400,7 +400,7 @@ class Controller_Sso_Auth extends Controller_Master {
             $ssoKey = "CORE";
         }
 
-        Session::instance("native")->set("logout_url", $returnURL);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("logout_url", $returnURL);
 
         // Add the key to the form.
         $this->_data["area"] = $ssoKey;
@@ -410,16 +410,16 @@ class Controller_Sso_Auth extends Controller_Master {
     }
 
     public function process_logout() {
-        $returnURL = Session::instance("native")->get("logout_url");
+        $returnURL = Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("logout_url");
 
         // Result?
         if ($this->request->post("processlogout") == 1) {
-            Session::instance("native")->delete("sso_cid");
-            Session::instance("native")->delete("sso_token");
-            Session::instance("native")->delete("sso_fast_login");
-            Session::instance("native")->delete("sso_login_sls");
-            Session::instance("native")->delete("sso_password_grace");
-            Session::instance("native")->destroy();
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_cid");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_token");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_fast_login");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_login_sls");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_password_grace");
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->destroy();
         }
 
         $this->redirect($returnURL);
@@ -437,8 +437,8 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Session and fast login?
-        if (Session::instance("native")->get("sso_cid", null) != null && Session::instance("native")->get("sso_fast_login", null) != null) {
-            $cid = Session::instance("native")->get("sso_cid");
+        if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid", null) != null && Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_fast_login", null) != null) {
+            $cid = Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid");
         } else {
             $cid = $this->request->post("cid");
             $password = $this->request->post("password");
@@ -464,8 +464,8 @@ class Controller_Sso_Auth extends Controller_Master {
                 }
 
                 // Let's set a session to say we've logged in using SLS and we don't need to be asked for it AGAIN, unless expired.
-                Session::instance("native")->set("sso_login_sls", true);
-                Session::instance("native")->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+                Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_login_sls", true);
+                Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
             }
         }
 
@@ -535,7 +535,7 @@ class Controller_Sso_Auth extends Controller_Master {
         $this->_current_token->save();
 
         // Now store the cid in a session
-        Session::instance("native")->set("sso_cid", $cid);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_cid", $cid);
 
         // Now, where are we going?
         $this->postLoginChecks();
@@ -616,7 +616,7 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Let's set a "grace" period for passwords;
-        Session::instance("native")->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
 
         // Extra security is valid!
         $this->postLoginChecks();
@@ -703,7 +703,7 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Add a grace period for the second layer password.
-        Session::instance("native")->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
 
         // Now, redirect!
         $this->postLoginChecks();
@@ -749,7 +749,7 @@ class Controller_Sso_Auth extends Controller_Master {
             }
         } else {
             try {
-                if (!Vatsim::factory("autotools")->authenticate(Session::instance("native")->get("sso_cid"), $this->request->post("password"))) {
+                if (!Vatsim::factory("autotools")->authenticate(Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_cid"), $this->request->post("password"))) {
                     $this->_data["error"] = "Your VATSIM password has not been recognised, please try again.";
                     $this->action_extra_security();
                     return false;
@@ -762,10 +762,10 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // Let's set a "grace" period for passwords;
-        Session::instance("native")->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_password_grace", gmdate("Y-m-d H:i:s", strtotime("+2 hours")));
 
         // Extra security is valid!
-        Session::instance("native")->set("sso_checkpoint", true);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("sso_checkpoint", true);
         $this->postLoginChecks();
     }
 
@@ -793,8 +793,8 @@ class Controller_Sso_Auth extends Controller_Master {
             }
 
             // Otherwise, it's current - if they haven't already entered it!
-            if (Session::instance("native")->get("sso_login_sls", null) == null) {
-                if (Session::instance("native")->get("sso_password_grace", null) == null || strtotime(Session::instance("native")->get("sso_password_grace")) < time()) {
+            if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_login_sls", null) == null) {
+                if (Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_password_grace", null) == null || strtotime(Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_password_grace")) < time()) {
                     $this->redirect("sso/auth/extra_security");
                     return;
                 }
@@ -802,16 +802,16 @@ class Controller_Sso_Auth extends Controller_Master {
         }
 
         // They've logged in before, but let's just check nobody else is using the same IP!!
-        /* if(Session::instance("native")->get("sso_fast_login", null) != null && Session::instance("native")->get("sso_checkpoint", null) == null){
+        /* if(Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_fast_login", null) != null && Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("sso_checkpoint", null) == null){
           $ipCheckCount = $this->_current_account->count_last_login_ip_usage($_SERVER["REMOTE_ADDR"]);
           if($ipCheckCount > 0){
           $this->action_checkpoint();
           return;
           }
           } */
-        Session::instance("native")->delete("sso_fast_login");
-        Session::instance("native")->delete("sso_checkpoint");
-        Session::instance("native")->delete("sso_override");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_fast_login");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_checkpoint");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_override");
 
         $this->returnHome();
     }
@@ -844,9 +844,9 @@ class Controller_Sso_Auth extends Controller_Master {
         fclose($fh);
 
         // Send back.
-        Session::instance("native")->delete("sso_token");
-        Session::instance("native")->delete("sso_fast_login");
-        Session::instance("native")->delete("sso_login_sls");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_token");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_fast_login");
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete("sso_login_sls");
 
         // Return URL
         $URL = $this->_current_token->return_url;

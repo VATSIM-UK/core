@@ -43,7 +43,7 @@ class Controller_Account_Manage extends Controller_Account_Master {
             }
             
             // It's not confirmed!!!! ERROR!!!!
-            Session::instance("native")->set("errors", Session::instance("native")->get("errors", array()) + array("The email address you have supplied is not your VATSIM registered one, please try again."));
+            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set("errors", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get("errors", array()) + array("The email address you have supplied is not your VATSIM registered one, please try again."));
         }
 
         /** TEMPLATE SETTINGS * */
