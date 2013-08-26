@@ -70,11 +70,6 @@ abstract class Kohana_Controller {
 
 		// Determine the action to use
                 $action = ($this->request->is_ajax() ? "ajax" : "action");
-                if($action == "action"){
-                    if($this->request->post("process".$this->request->action()) != null){
-                        $action = "process";
-                    }
-                }
 		$action = $action."_".$this->request->action();
 
 		// If the action doesn't exist, it's a 404
