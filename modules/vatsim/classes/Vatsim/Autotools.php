@@ -173,7 +173,10 @@ class Vatsim_Autotools extends Vatsim {
         $uri = $this->URICreate($action, $data);
 
         // Run the request.
-        $request = Request::factory($uri)->execute();
+        $request = Request::factory($uri);
+        $request->client()->options(array(CURLOPT_TIMEOUT => 5));
+        $request = $request->execute();
+
 
         // Check the status!
         if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
@@ -198,14 +201,14 @@ class Vatsim_Autotools extends Vatsim {
 
     private function runQueryXml($action, $data) {
         // Run the request.
-        $uri = $this->URICreate($action, $data);
+        $request = $this->runQueryCall($action, $data);
         
-        if(!$uri){
+        if(!$request){
             return false;
         }
 
         // Return the XML file.
-        return simplexml_load_file($uri);
+        return simplexml_load_string($request);
     }
     
     
