@@ -4,7 +4,7 @@ defined('SYSPATH') or die('No direct script access.');
 
 class Model_Setting_Main extends ORM {
 
-    protected $_db = 'sys';
+    protected $_db_group = 'sys';
     protected $_table_name = 'setting';
     protected $_primary_key = 'id';
     protected $_table_columns = array(
