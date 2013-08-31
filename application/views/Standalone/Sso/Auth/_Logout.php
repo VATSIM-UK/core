@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.2" />
-        <title><?= Arr::get($_config, "site.name.long", "") ?></title>
+        <title><?= $config_site_title ?></title>
 
         <!-- CSS -->
         <?= HTML::style("http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css"); ?>
@@ -31,28 +31,32 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1><?=$_title?></h1>
+                <h1>Logout Confirmation</h1>
+                <p>
+                    You have now been logged out of the <?=$area?> system.  Would you like for your SSO session to be terminated, preventing future access to other services?
+                </p>
                 
-                <?php if (isset($_messages) && isset($_messages["error"])): ?>
-                    <?php foreach($_messages["error"] as $error): ?>
-                        <div class="alert alert-error">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><?=$error->title?></strong>
-                            <p><?= $error->message ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-                
-                <?=$_content?>
+                <div class="row-fluid">
+                    <div class="span6 offset2">
+                        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/logout") ?>">
+                            <div class="control-group offset3">
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-success btn-large" name="processlogout" value="1">YES, please!</button>
+                                        <button type="submit" class="btn btn-danger btn-large" name="processlogout" value="0">NO, thanks</button>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container container-footer">
             <div class="footer">
                 <div class="row-fluid">
                     <p>
-                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?>
-                        &bull;
-                        Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
+                        VATSIM-UK &copy; 2013 - Version <?=$_version?>
+                        
+                        <br />Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
                     </p>
                 </div>
             </div>
