@@ -9,7 +9,7 @@ return array(
 	'autotools_url_ratch'  => '{autotools_url}ratch.php?authid={autotools_user}&authpassword={autotools_pass}&div={autotools_div}&rating=%1$u',
 	'autotools_url_xstat'  => 'https://cert.vatsim.net/vatsimnet/idstatusint.php?cid=%1$u',
 	'autotools_user'     => "400201",
-	'autotools_pass'     => "dp4w67f",
+	'autotools_pass'     => "86agj3s7",
 	'autotools_reg'     => "EUR",
 	'autotools_div'     => "GBR",
 );
