@@ -98,7 +98,7 @@ class Model_Account_Security extends Model_Master {
      * @return string The hashed password.
      */
     public function hash($password){
-        return Helper_Account::hash_password($password);
+        return sha1(sha1($password));
     }
     
     
@@ -108,11 +108,23 @@ class Model_Account_Security extends Model_Master {
      * @return boolean True for valid details, false for no security
      */
     public function is_active(){
-        if(!$this->loaded() || strtotime($this->expires) <= time()){
+        if(strtotime($this->expires) <= time()){
             return false;
         }
         
         return true;
+    }
+    
+    /**
+     * Do we need to validate the user's second password, are we OK for a bit?
+     * 
+     * @return boolean TRUE if validation require, FALSE otherwise.
+     */
+    public function require_validation(){
+        $gracePeriod = ORM::factory("Setting")->getValue("sso.security.grace");
+        $graceCutoff = gmdate("Y-m-d H:i:s", strtotime("-".$gracePeriod));
+        $lastSecurity = $this->_security->get(ORM::factory("Setting")->getValue("session.security.key"), $graceCutoff);
+        return (strtotime($lastSecurity) <= strtotime($graceCutoff));
     }
     
     /**
@@ -129,6 +141,9 @@ class Model_Account_Security extends Model_Master {
         
         // Let's validate!
         if($this->hash($security) == $this->value){
+            if($this->_security->get(ORM::factory("Setting")->getValue("session.security.key"), false) === false){
+                $this->_security->set(ORM::factory("Setting")->getValue("session.security.key"), gmdate("Y-m-d H:i:s"));
+            }
             return true;
         }
         
