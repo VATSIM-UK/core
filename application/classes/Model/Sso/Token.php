@@ -143,7 +143,7 @@ class Model_Sso_Token extends Model_Master {
      * @return void
      */
     public function set_account_id($cid){
-        $this->_account_id;
+        $this->account_id;
         $this->save();
     }
     
