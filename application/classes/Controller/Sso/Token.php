@@ -3,13 +3,17 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Token extends Controller_Sso_Master {
-
     public function action_auth() {
         // Get the necessary information.
         $token = $this->request->query("token", null);
         $key = $this->request->query("ssoKey", null);
-        $returnURL = $this->request->query("returnURL");
-
+        
+        // Now check the token file and get the returnURL.
+        if(!file_exists("/var/tokens/".$token)){
+            return false;
+        }
+        $returnURL = file_get_contents("/var/tokens/".$token);
+        
         // Let's sort the storing of this session out!
         try {
             $token = ORM::factory("Sso_Token")->set_current_token($token, $key, $returnURL);
@@ -21,5 +25,27 @@ class Controller_Sso_Token extends Controller_Sso_Master {
         // Since we've now set the session in the database, we can start the login process!
         $this->redirect("sso/auth/login");
         return;
+    }
+    
+    /**
+     * Redirect the user to either the expected location or internally to SSO.
+     * 
+     * @param boolean $forceInternal If set to TRUE, will always use an internal request.
+     * @return void
+     */
+    public function action_redirect($forceInternal=false){
+        if(!$this->security()){
+            $this->redirect("sso/error?e=token&r=SSO_TOKEN_SECURITY");
+            return;
+        }
+        
+        $internal = ($forceInternal === true);
+        $redirect = "/sso/manage/display";
+        
+        if(!$internal){
+            $redirect = $this->_current_token->return_url;
+        }
+        
+        $this->redirect($redirect);
     }
 }
