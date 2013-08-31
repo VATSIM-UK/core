@@ -29,5 +29,6 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                 $this->setMessage("Security Authorisation Error", "The secondary password you entered was incorrect.", "error");
             }
         }
+        $this->setTitle("Secondary Password");
     }
 }
