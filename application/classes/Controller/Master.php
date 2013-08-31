@@ -71,7 +71,7 @@ abstract class Controller_Master extends Controller_Template {
     public function after() {
         // Template setup!
         $this->setTemplate(null);
-        $this->setTitle($this->_controller . " " . $this->_action);
+        $this->setTitle(ucfirst($this->_action));
 
         // Now set all variables to view and/or template.
         foreach ($this->_data as $k => $v) {
