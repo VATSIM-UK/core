@@ -45,6 +45,34 @@ class Model_Sso_Token extends Model_Master {
     }
     
     /**
+     * Check the token file exists for this token.
+     * 
+     * @param string $token The token to check against (optional).
+     * @return boolean TRUE if exists, FALSE otherwise.
+     */
+    public function check_token_file($token=null){
+        if($token == null){
+            $this->get_current_token();
+            $token = $this->token;
+        }
+        return file_exists("/var/tokens/".$token);
+    }
+    
+    /**
+     * Get the contents of the token file.
+     * 
+     * @param string $token The token to get the contents of (optional)
+     * @return string The contents of the token file.
+     */
+    public function get_token_file($token=null){
+        if($token == null){
+            $this->get_current_token();
+            $token = $this->token;
+        }
+        return file_get_contents("/var/tokens/".$token);
+    }
+    
+    /**
      * Load the current or requested token.
      * 
      * @param string $token If set, this token will be loaded.

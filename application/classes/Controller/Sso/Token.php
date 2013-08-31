@@ -9,10 +9,10 @@ class Controller_Sso_Token extends Controller_Sso_Master {
         $key = $this->request->query("ssoKey", null);
         
         // Now check the token file and get the returnURL.
-        if(!file_exists("/var/tokens/".$token)){
+        if(!ORM::factory("Sso_Token")->check_token_file($token)){
             return false;
         }
-        $returnURL = file_get_contents("/var/tokens/".$token);
+        $returnURL = ORM::factory("Sso_Token")->get_token_file($token);
         
         // Let's sort the storing of this session out!
         try {
