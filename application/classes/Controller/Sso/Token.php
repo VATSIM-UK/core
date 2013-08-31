@@ -39,11 +39,19 @@ class Controller_Sso_Token extends Controller_Sso_Master {
             return;
         }
         
+        // Generate the token file return data
+        $this->_current_token->generate_token_file_return_data();
+        
         $internal = ($forceInternal === true);
         $redirect = "/sso/manage/display";
         
         if(!$internal){
+            // Return URL
             $redirect = $this->_current_token->return_url;
+            $pURL = parse_url($redirect);
+            $redirect = $pURL["scheme"]."://".$pURL["host"].$pURL["path"]."?";
+            $redirect.= "_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
+            $redirect.= "&".Arr::get($pURL, "query", "");
         }
         
         $this->redirect($redirect);

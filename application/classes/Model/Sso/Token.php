@@ -73,6 +73,44 @@ class Model_Sso_Token extends Model_Master {
     }
     
     /**
+     * Generate the return data for a token file.
+     * 
+     * This will also write to the token file!
+     * 
+     * @param string $token The token to generate the return data for (optional).
+     * @return void
+     */
+    public function generate_token_file_return_data($token=null){
+        $this->get_current_token($token);
+        $this->expire_current_token($token);
+        
+        // Return data!
+        $account = ORM::factory("Account_Main", $this->account_id);
+        $return = array();
+        $return["cid"] = $account->id;
+        $return["name_first"] = $account->name_first;
+        $return["name_last"] = $account->name_last;
+        $return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
+        $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
+        $return["pilot_rating"] = array();
+        foreach($account->qualifications->get_all_pilot() as $qual){
+            $return["pilot_rating"][] = $qual->value;
+        }
+        $return["home_member"] = $account->states->where("state", "=", Enum_Account_State::DIVISION)->where("removed", "IS", NULL)->find()->loaded();
+        $return["home_member"] = $return["home_member"] || $account->states->where("state", "=", Enum_Account_State::TRANSFER)->where("removed", "IS", NULL)->find()->loaded();
+        $return["home_member"] = (int) $return["home_member"];
+        $return["return_token"] = sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
+        
+        // Save the return data to the token file.
+        $fh = fopen("/var/tokens/".$this->token, "w");
+        fwrite($fh, json_encode($return));
+        fclose($fh);
+        
+        // Delete the session token
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->delete(ORM::factory("Setting")->getValue("sso.token.key"));
+    }
+    
+    /**
      * Load the current or requested token.
      * 
      * @param string $token If set, this token will be loaded.
@@ -96,6 +134,17 @@ class Model_Sso_Token extends Model_Master {
         // Now, load THIS model properly!
         $this->__construct($token->id);
         return $this;
+    }
+    
+    /**
+     * Set the account idea for the current request.
+     * 
+     * @param int $cid The CID to set!
+     * @return void
+     */
+    public function set_account_id($cid){
+        $this->_account_id;
+        $this->save();
     }
     
     /**
@@ -130,6 +179,17 @@ class Model_Sso_Token extends Model_Master {
         Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("sso.token.key"), $token);
         
         return $newToken;
+    }
+    
+    /**
+     * For a token to expire.
+     * 
+     * @return void
+     */
+    public function expire_current_token($token=null){
+        $this->get_current_token($token);
+        $this->expires = gmdate("Y-m-d H:i:s");
+        $this->save();
     }
 }
 
