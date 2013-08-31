@@ -107,6 +107,17 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Update the last_login fields!
+     * 
+     * @return void
+     */
+    public function update_last_login_info(){
+        $this->last_login = gmdate("Y-m-d H:i:s");
+        $this->last_login_ip = $_SERVER["REMOTE_ADDR"];
+        $this->save();
+    }
+    
+    /**
      * Load the current authenticated user
      * 
      * @return Account_Main ORM Object.
@@ -148,7 +159,7 @@ class Model_Account_Main extends Model_Master {
      * @param string $timeLimit An strtotime() string to determine the period we're checking.
      * @return int The number of times the {@link $ip} has been using within {@link $timeLimit}.
      */
-    public function count_last_login_ip_usage($ip=NULL, $timeLimit="-8 hours"){
+    public function count_last_login_ip_usage($ip=null, $timeLimit="-8 hours"){
         // Use the last IP of this account?
         if($ip == null){
             $ip = $this->get_last_login_ip();
@@ -170,6 +181,15 @@ class Model_Account_Main extends Model_Master {
         return $ipCheck->reset(FALSE)->count_all();
     }
     
+    /** 
+     * Validate the given password for this user.
+     *  
+     * @param string $pass The password to validate.
+     * @return boolean True on success, false otherwise.
+     */
+    public function validate_password($pass){
+        return Vatsim::factory("autotools")->authenticate($this->id, $pass);
+    }
     
     /**
      * Authenticate a user using their CID and password, and then set the necessary sessions.
@@ -179,11 +199,12 @@ class Model_Account_Main extends Model_Master {
      */
     public function action_authenticate($pass){
         // Get the auth result - we'll let the controller catch the exception.
-        $authResult = Vatsim::factory("autotools")->authenticate($this->id, $pass);
+        $authResult = $this->validate_password();
 
         // If we've got a valid authentication, set the session!
         if($authResult){
             $this->setSessionData(false);
+            $this->update_last_login_info();
             return $authResult;
         }
         
@@ -196,6 +217,7 @@ class Model_Account_Main extends Model_Master {
      */
     public function action_quick_login(){
         $this->setSessionData(true);
+        $this->update_last_login_info();
         return true;
     }
     
