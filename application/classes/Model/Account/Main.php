@@ -207,7 +207,7 @@ class Model_Account_Main extends Model_Master {
      */
     private function setSessionData($quickLogin=false){
         Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("session.account.key"), $this->id);
-        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("sso.quicklogin.key", $quickLogin));
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("sso.quicklogin.key"), $quickLogin);
     }
     
     /**
