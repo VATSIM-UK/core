@@ -7,7 +7,7 @@ abstract class Model_Master extends ORM {
     
     public function __construct($id = NULL) {
         if(get_class($this) != "Model_Setting"){
-            $this->_session = Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
+            $this->_session = $this->_session;
         }
         parent::__construct($id);
     }
