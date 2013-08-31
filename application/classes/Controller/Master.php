@@ -137,18 +137,29 @@ abstract class Controller_Master extends Controller_Template {
         $this->_title = $title;
     }
 
-    public function setMessage($title, $message, $type) {
-        if (!is_array($this->_messages)) {
+    public function setMessage($title, $message, $type){
+        if(!is_array($this->_messages)){
             $this->_messages = array();
         }
-        if (!isset($this->_messages[$type]) || !is_array($this->_messages[$type])) {
+        if(!isset($this->_messages[$type]) || !is_array($this->_messages[$type])){
             $this->_messages[$type] = array();
         }
-
-        $m = new stdClass();
-        $m->title = $title;
-        $m->message = $message;
-        $this->_messages[$type][] = $m;
+        
+        // Do we need to append to a previous error? (same title)?
+        $exists = false;
+        foreach($this->_messages[$type] as $key => $error){
+            if($error->title == $title){
+                $exists = true;
+                $error->message .= "<br />" . $message;
+                $this->_messages[$type][$key] = $error;
+            }
+        }
+        
+        if(!$exists){
+            $m = new stdClass();
+            $m->title = $title;
+            $m->message = $message;
+            $this->_messages[$type][] = $m;
+        }
     }
-
 }
