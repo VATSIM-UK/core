@@ -108,6 +108,10 @@ class Model_Account_Security extends Model_Master {
      * @return boolean True for valid details, false for no security
      */
     public function is_active(){
+        if(!$this->loaded()){
+            return true;
+        }
+        
         if(strtotime($this->expires) <= time()){
             return false;
         }
@@ -131,9 +135,10 @@ class Model_Account_Security extends Model_Master {
      * Authorise a user's second security details.
      * 
      * @param string $security The second security layer password.
+     * @param boolean $forceSession if set to true the grace time is updated regardless.
      * @return boolean Ture on success, false otherwise.
      */
-    public function action_authorise($security=null){
+    public function action_authorise($security=null, $forceSession=false){
         // If this isn't loaded, they don't need a second password.
         if(!$this->loaded()){
             return true;
@@ -141,7 +146,7 @@ class Model_Account_Security extends Model_Master {
         
         // Let's validate!
         if($this->hash($security) == $this->value){
-            if($this->require_validation()){
+            if($this->require_validation() || $forceSession){
                 $this->session()->set(ORM::factory("Setting")->getValue("sso.security.key"), gmdate("Y-m-d H:i:s"));
             }
             return true;

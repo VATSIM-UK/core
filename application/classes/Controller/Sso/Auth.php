@@ -43,6 +43,10 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Does their second layer security need updating?
+        if(!$this->_current_account->security->is_active()){
+            $this->redirect("/sso/security/replace");
+            return;
+        }
         
         // Do we need to validate their primary email address?
         
