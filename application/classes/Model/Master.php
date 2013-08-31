@@ -3,6 +3,15 @@
 defined('SYSPATH') or die('No direct script access.');
 
 abstract class Model_Master extends ORM {
+    protected $_session = null;
+    
+    public function __construct($id = NULL) {
+        if(class_name($this) != "Model_Setting"){
+            $this->_session = Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
+        }
+        parent::__construct($id);
+    }
+    
     public function changed($field = NULL){
         // If a field is set, let's use the parent!
         if($field != null && parent::changed($field)){
