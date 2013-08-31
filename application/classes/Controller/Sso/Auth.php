@@ -24,7 +24,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // If it's a QUICK login, there are alternative checks to be made.
         if($this->_current_account->is_quick_login()){
             // Has this user's IP been used before? (GREATER than zero = YES!)
-            if(!$this->_session->get_once("sso_checkpoint", false) && $this->_current_account->count_last_login_ip_usage() > 0){
+            if(!$this->session()->get_once("sso_checkpoint", false) && $this->_current_account->count_last_login_ip_usage() > 0){
                 $this->redirect("/sso/auth/checkpoint");
                 return;
             } else {
@@ -52,6 +52,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Let's continue! We'll return to the token form, for this.
         $this->redirect("/sso/token/redirect");
+        return;
     }
     
     /**
@@ -105,7 +106,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             
             // RESULT!
             if($result){
-                $this->_session->set("sso_checkpoint", true);
+                $this->session()->set("sso_checkpoint", true);
                 $this->action_checks();
             } else {
                 $this->setMessage("Checkpoint Error", "The details you entered in response to the verification question are invalid.  Please try again.", "error");

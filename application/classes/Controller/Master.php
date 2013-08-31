@@ -16,18 +16,18 @@ abstract class Controller_Master extends Controller_Template {
     protected $_breadcrumbs = array();
     protected $_title = NULL;
     protected $_messages = array();
-    protected $_session = null;
 
     public function hasPermission() {
         return true;
+    }
+    
+    public function session(){
+        return Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
     }
 
     public function __construct($request, $response) {
         parent::__construct($request, $response);
         
-        // Load the session!
-        $this->_session = Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
-
         // Disable auto-rendering!
         $this->auto_render = FALSE;
 
@@ -71,12 +71,15 @@ abstract class Controller_Master extends Controller_Template {
         $this->addBreadcrumb($this->_controller, $this->_controller . "/");
         $this->addBreadcrumb($this->_action, $this->_controller . "/" . $this->_action . "/");
         
-        // Template setup!
-        $this->setTemplate(null);
         $this->setTitle(ucfirst($this->_action));
     }
 
     public function after() {
+        // Template setup!
+        if($this->template == "template"){
+            $this->setTemplate(null);
+        }
+        
         // Now set all variables to view and/or template.
         foreach ($this->_data as $k => $v) {
             $this->_view->set($k, $v);
