@@ -105,6 +105,22 @@ class Model_Account_Main extends Model_Master {
             )
         );
     }
+    
+    /**
+     * Load the current authenticated user
+     * 
+     * @return Account_Main ORM Object.
+     */
+    public function get_current_account(){
+        $id = Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get(ORM::factory("Setting")->getValue("session.account.key"), null);
+        if($id == NULL || !is_numeric($id)){
+            return $this;
+        }
+        
+        // Now, load THIS model properly!
+        $this->__construct($id);
+        return $this;
+    }
         
     /**
      * Check whether this account requires an update from CERT.
@@ -167,12 +183,41 @@ class Model_Account_Main extends Model_Master {
 
         // If we've got a valid authentication, set the session!
         if($authResult){
-            Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("session.account.key"), $this->id);
+            $this->setSessionData(false);
             return $authResult;
         }
         
         // Default response - protects the system!
         return false;
+    }
+    
+    /**
+     * If a user's details are already set, run a quick login on them!
+     */
+    public function action_quick_login(){
+        $this->setSessionData(true);
+        return true;
+    }
+    
+    /**
+     * Set session data!
+     * 
+     * @param boolean $quickLogin If TRUE, it will set a quickLogin session value.
+     * @return void
+     */
+    private function setSessionData($quickLogin=false){
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("session.account.key"), $this->id);
+        Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->set(ORM::factory("Setting")->getValue("sso.quicklogin.key", $quickLogin));
+    }
+    
+    /**
+     * Was this login a quick login?
+     * 
+     * @return boolean TRUE if it was a quick login, false otherwise.
+     */
+    public function is_quick_login(){
+        $ql = Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get(ORM::factory("Setting")->getValue("sso.quicklogin.key", false));
+        return $ql;
     }
     
     /**
