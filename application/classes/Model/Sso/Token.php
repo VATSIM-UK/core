@@ -99,7 +99,7 @@ class Model_Sso_Token extends Model_Master {
         $return["home_member"] = $account->states->where("state", "=", Enum_Account_State::DIVISION)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = $return["home_member"] || $account->states->where("state", "=", Enum_Account_State::TRANSFER)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = (int) $return["home_member"];
-        $return["return_token"] = sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
+        $return["return_token"] = sha1($this->token.$_SERVER["REMOTE_ADDR"]);
         
         // Save the return data to the token file.
         $fh = fopen("/var/tokens/".$this->token, "w");
@@ -143,7 +143,7 @@ class Model_Sso_Token extends Model_Master {
      * @return void
      */
     public function set_account_id($cid){
-        $this->account_id;
+        $this->account_id = $cid;
         $this->save();
     }
     
