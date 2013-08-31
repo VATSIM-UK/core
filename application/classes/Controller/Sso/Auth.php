@@ -78,14 +78,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             try {
                 $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
                 $this->_current_token->set_account_id($cid);
+            
+                // Now, we need to run the checks and send them to the necessary place!
+                $this->action_checks();
             } catch(Exception $e){
                 $this->setMessage("Certificate Server Error", "The VATSIM Certificate server is currently not responding.
                                    If you have a second layer password set, you can enter that instead of your network
                                    password to gain access to our systems.", "error");
             }
-            
-            // Now, we need to run the checks and send them to the necessary place!
-            $this->action_checks();
         }
     }
     
