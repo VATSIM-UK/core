@@ -50,6 +50,8 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                 // Now we can set the new one!
                 if($this->request->post("new_password") != $this->request->post("new_password2")){
                     $this->setMessage("Security Authorisation Error", "The two new passwords do not match, please try again.", "error");
+                } elseif($this->_current_account->security->hash($this->request->post("new_password")) == $this->_current_account->security->value){
+                    $this->setMessage("Security Authorisation Error", "Your new password cannot be the same as your old password.", "error");
                 } else {
                     // Update!
                     $security = ORM::factory("Account_Security");
