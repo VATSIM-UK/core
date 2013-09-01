@@ -239,7 +239,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean TRUE if it was a quick login, false otherwise.
      */
     public function is_quick_login(){
-        $ql = $this->session()->get(sso_quicklogin, false);
+        $ql = $this->session()->get("sso_quicklogin", false);
         return $ql;
     }
     
