@@ -125,9 +125,9 @@ class Model_Account_Security extends Model_Master {
      * @return boolean TRUE if validation require, FALSE otherwise.
      */
     public function require_validation(){
-        $gracePeriod = ORM::factory("Setting")->getValue("sso.security.grace");
+        $gracePeriod = ORM::factory("Setting")->getValue("auth.sso.security.grace");
         $graceCutoff = gmdate("Y-m-d H:i:s", strtotime("-".$gracePeriod));
-        $lastSecurity = $this->session()->get(ORM::factory("Setting")->getValue("sso.security.key"), $graceCutoff);
+        $lastSecurity = $this->session()->get("sso_security_grace", $graceCutoff);
         return (strtotime($lastSecurity) <= strtotime($graceCutoff));
     }
     
@@ -147,7 +147,7 @@ class Model_Account_Security extends Model_Master {
         // Let's validate!
         if($this->hash($security) == $this->value){
             if($this->require_validation() || $forceSession){
-                $this->session()->set(ORM::factory("Setting")->getValue("sso.security.key"), gmdate("Y-m-d H:i:s"));
+                $this->session()->set("sso_security_grace", gmdate("Y-m-d H:i:s"));
             }
             return true;
         }

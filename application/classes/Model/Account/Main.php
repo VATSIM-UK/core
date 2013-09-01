@@ -123,7 +123,7 @@ class Model_Account_Main extends Model_Master {
      * @return Account_Main ORM Object.
      */
     public function get_current_account(){
-        $id = $this->session()->get(ORM::factory("Setting")->getValue("session.account.key"), null);
+        $id = $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key"), null);
         if($id == NULL || !is_numeric($id)){
             return $this;
         }
@@ -228,8 +228,9 @@ class Model_Account_Main extends Model_Master {
      * @return void
      */
     private function setSessionData($quickLogin=false){
-        $this->session()->set(ORM::factory("Setting")->getValue("session.account.key"), $this->id);
-        $this->session()->set(ORM::factory("Setting")->getValue("sso.quicklogin.key"), $quickLogin);
+        $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->id);
+        Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $this->id, ORM::factory("Setting")->getValue("auth.account.cookie.lifetime"));
+        $this->session()->set("sso_quicklogin", $quickLogin);
     }
     
     /**
@@ -238,7 +239,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean TRUE if it was a quick login, false otherwise.
      */
     public function is_quick_login(){
-        $ql = $this->session()->get(ORM::factory("Setting")->getValue("sso.quicklogin.key", false));
+        $ql = $this->session()->get(sso_quicklogin, false);
         return $ql;
     }
     
