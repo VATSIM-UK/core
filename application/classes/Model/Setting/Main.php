@@ -79,7 +79,7 @@ class Model_Setting_Main extends ORM {
      * @param string $key The individual key.
      * @return string The value.
      */
-    public function getValue($group, $area, $section = null, $key = null) {
+    public function getValue($group, $area=null, $section = null, $key = null) {
         if ($section == null || $key == null) {
             $area = explode(".", $area);
             $key = Arr::get($area, 3, "");
