@@ -94,6 +94,13 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     }
     
     /**
+     * Allow a user to logout.
+     */
+    public function action_logout(){
+        
+    }
+    
+    /**
      * Security checkpoint for multiple uses of the same login IP.
      */
     public function action_checkpoint(){
