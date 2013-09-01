@@ -25,9 +25,9 @@ class Helper_Account_Main {
         }
         
         if($returnID){
-            return Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get(self::SESSION_CID, false);
+            return $this->session()->get(self::SESSION_CID, false);
         } else{
-            return Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get(self::SESSION_CID, null) == null;
+            return $this->session()->get(self::SESSION_CID, null) == null;
         }
     }
     

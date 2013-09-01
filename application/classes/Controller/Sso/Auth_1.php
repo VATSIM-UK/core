@@ -9,25 +9,25 @@ class Controller_Sso_Auth_1 extends Controller_Master {
     private $_current_account = null;
     private $_actual_account = null;
 
-    private function getAccount(){
+    /*private function getAccount(){
         if($this->_current_account == null){
             $this->loadAccount();
         }
         return $this->_current_account;
-    }
+    }*/
     
-    private function loadToken(){
+    /*private function loadToken(){
         
-    }
+    }*/
     
-    private function getToken(){
+    /*private function getToken(){
         if($this->_current_token == null){
             $this->loadToken();
         }
         return $this->_current_token;
-    }
+    }*/
     
-    private function security(){
+    /*private function security(){
         // Are we overriding?
         if(Session::instance("database")->get("sso_override", null) != null){
             $this->_actual_account = ORM::factory("Account", Session::instance("database")->get("sso_override"));
@@ -80,7 +80,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
             $this->_current_account = ORM::factory("Account");
         }
         return true;
-    }
+    }*/
     
     
     /**
@@ -412,7 +412,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->setTemplate("Auth/Login");
     }*/
     
-    protected function process_login(){
+    /*protected function process_login(){
         if(!$this->security()){
             $this->redirect("sso/auth/error");
         }
@@ -519,11 +519,11 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         
         // Now, where are we going?
         $this->postLoginChecks();
-    }
+    }*/
     
-    public function action_error(){
+    /*public function action_error(){
         $this->setTemplate("Auth/Error");
-    }
+    }*/
     
     public function action_email_confirm(){
         if(!$this->security() || !$this->_current_account->loaded()){
@@ -574,7 +574,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->postLoginChecks();
     }
     
-    public function action_extra_security(){
+    /*public function action_extra_security(){
         if(!$this->security() || !$this->_current_account->loaded()){
             $this->redirect("sso/auth/error");
             return;
@@ -600,9 +600,9 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         
         // Extra security is valid!
         $this->postLoginChecks();
-    }
+    }*/
     
-    public function action_extra_security_replace(){
+    /*public function action_extra_security_replace(){
         if(!$this->security() || !$this->_current_account->loaded()){
             $this->redirect("sso/auth/error");
             return;
@@ -687,9 +687,9 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         
         // Now, redirect!
         $this->postLoginChecks();
-    }
+    }*/
     
-    public function action_checkpoint(){
+    /*public function action_checkpoint(){
         if(!$this->security()){
             $this->redirect("sso/auth/error");
             return;
@@ -703,9 +703,9 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         }
         
         $this->setTemplate("Auth/Checkpoint");
-    }
+    }*/
     
-    public function process_checkpoint(){
+    /*public function process_checkpoint(){
         if(!$this->security() || !$this->_current_account->loaded()){
             $this->redirect("sso/auth/error");
             return;
@@ -738,7 +738,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         // Extra security is valid!
         Session::instance("database")->set("sso_checkpoint", true);
         $this->postLoginChecks();
-    }
+    }*/
     
     private function postLoginChecks(){
         // Do we need to get an email address from them?
@@ -787,7 +787,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->returnHome();
     }
     
-    private function returnHome(){
+    /*private function returnHome(){
         // Let's kill this token!
         $this->_current_token->expires = gmdate("Y-m-d H:i:s");
         $this->_current_token->save();
@@ -826,9 +826,9 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $URL.= "_1_=".sha1($this->_current_token->token.$_SERVER["REMOTE_ADDR"]);
         $URL.= "&".Arr::get($pURL, "query", "");
         $this->redirect($URL);
-    }
+    }*/
 
-    protected function getDefaultAction() {
+    /*protected function getDefaultAction() {
         
-    }
+    }*/
 }
