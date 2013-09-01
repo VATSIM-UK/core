@@ -56,7 +56,7 @@ abstract class Controller_Master extends Controller_Template {
         $this->_config = ORM::factory("Setting");
 
         // Now, let's get the membership details
-        $this->_account = ORM::factory("Account", Session::instance(ORM::factory("Setting")->getValue("system.session.type"))->get(ORM::factory("Setting")->getValue("session.account.key")));
+        $this->_account = ORM::factory("Account", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
     }
 
     public function before() {
