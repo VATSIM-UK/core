@@ -125,7 +125,10 @@ class Model_Account_Main extends Model_Master {
     public function get_current_account(){
         $id = $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key"), null);
         if($id == NULL || !is_numeric($id)){
-            return $this;
+            $id = Cookie::decrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), null);
+            if($id == NULL || !is_numeric($id)){
+                return $this;
+            }
         }
         
         // Now, load THIS model properly!
@@ -229,7 +232,9 @@ class Model_Account_Main extends Model_Master {
      */
     private function setSessionData($quickLogin=false){
         $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->id);
-        Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $this->id, ORM::factory("Setting")->getValue("auth.account.cookie.lifetime"));
+        $lifetime = strtotime("+".ORM::factory("Setting")->getValue("auth.account.cookie.lifetime"));
+        $lifetime = $lifetime-time();
+        Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $this->id, $lifetime);
         $this->session()->set("sso_quicklogin", $quickLogin);
     }
     
