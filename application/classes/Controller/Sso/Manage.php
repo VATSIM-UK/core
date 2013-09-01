@@ -3,6 +3,11 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Manage extends Controller_Sso_Master {
+    /**
+     * Display the user's details if they're logged in.
+     * 
+     * If a user is not logged in, send them to the SSO system to login.
+     */
     public function action_display(){
         // If they're not logged in, we'll treat this as an SSO login.
         if(!$this->_current_account->loaded()){
