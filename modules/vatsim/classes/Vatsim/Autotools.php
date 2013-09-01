@@ -174,7 +174,7 @@ class Vatsim_Autotools extends Vatsim {
 
         // Run the request.
         $request = Request::factory($uri);
-        $request->client()->options(array(CURLOPT_TIMEOUT => 5));
+        $request->client()->options(array(CURLOPT_TIMEOUT => 7));
         $request = $request->execute();
 
 
