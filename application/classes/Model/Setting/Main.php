@@ -73,20 +73,15 @@ class Model_Setting_Main extends ORM {
     /**
      * Get a value of a propery.
      * 
-     * @param string $group The group value.
-     * @param string $area The area value.
-     * @param string $section The section.
-     * @param string $key The individual key.
+     * @param string $longKey The long key for the setting.
      * @return string The value.
      */
-    public function getValue($group, $area=null, $section = null, $key = null) {
-        if ($section == null || $key == null) {
-            $area = explode(".", $area);
-            $key = Arr::get($area, 3, "");
-            $section = Arr::get($area, 2, "");
-            $area = Arr::get($area, 1, "");
-            $group = Arr::get($area, 0, "");
-        }
+    public function getValue($longKey) {
+        $longKey = explode(".", $longKey);
+        $key = Arr::get($longKey, 3, "");
+        $section = Arr::get($longKey, 2, "");
+        $area = Arr::get($longKey, 1, "");
+        $group = Arr::get($longKey, 0, "");
         $this->quickLoad($group, $area, $section, $key);
         return ($this->loaded()) ? $this->value : "";
     }
