@@ -28,8 +28,14 @@ class Model_Account_Email extends Model_Master {
     );
     // Has man relationships
     protected $_has_many = array();
+    
     // Has one relationship
-    protected $_has_one = array();
+    protected $_has_one = array(
+        'sso_email' => array(
+            'model' => 'Sso_Email',
+            'foreign_key' => 'account_email_id',
+        ),
+    );
 
     // Validation rules
     public function rules() {
@@ -51,7 +57,28 @@ class Model_Account_Email extends Model_Master {
             )
         );
     }
-
+    
+    /**
+     * Check whether the current email has been assigned to an SSO system.
+     * 
+     * @param string $system The system to check for an assignment for.
+     * @param boolean $returnEmail If set to TRUE the email will be returned, instead of true/false.
+     * @return boolean TRUE if this system has an email assignment. FALSE otherwise.
+     */
+    public function assigned_to_sso($system, $returnEmail=false){
+        // Let's loop through ALL emails
+        foreach($this->where("deleted", "IS", NULL)->find_all() as $email){
+            if($email->sso_email->loaded() && $email->sso_email->sso_system == $system){
+                if($returnEmail){
+                    return $email->email;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     // Check email is unique in the database.
     public function email_check_unique($email) {
         return false;
@@ -72,18 +99,31 @@ class Model_Account_Email extends Model_Master {
         return $this->where("deleted", "IS", NULL);
     }
     
-    // Get the current primary email for this account
-    public function get_active_primary(){
+    /**
+     * Get the current primary email for this account
+     * 
+     * @param boolean $idOnly If set to TRUE, the id will be returned and not the entire object.
+     * @return int|Model_Account_Email
+     */
+    public function get_active_primary($idOnly=false){
         // Limit to primary.
         $finder = $this->helper_pre_get_active()->where("primary", "=", "1")->find();
         
         // Found one?
         if($finder->loaded()){
-            return $finder;
+            if($idOnly){
+                return $finder->id;
+            } else {
+                return $finder;
+            }
         }
         
         // Found nothing! :-(
-        return ORM::factory("Account_Email");
+        if($idOnly){
+            return 0;
+        } else {
+            return ORM::factory("Account_Email");
+        }
     }
     
     // Get the current secondary emails for this account

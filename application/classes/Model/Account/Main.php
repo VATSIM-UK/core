@@ -210,6 +210,9 @@ class Model_Account_Main extends Model_Master {
             $this->update_last_login_info();
             return $authResult;
         }
+        $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
+        Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
+        $this->session()->delete("sso_quicklogin");
         
         // Default response - protects the system!
         return false;

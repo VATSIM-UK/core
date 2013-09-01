@@ -11,7 +11,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
             exit();
         }
-
     }
     
     /**
@@ -20,6 +19,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
      * This should always be run after positive responses from functions within here.
      */
     public function action_checks(){
+        $this->loadToken();
+        $this->loadAccount();
+        
         // NB: Not all checks need to be applied to all logins.
         // If it's a QUICK login, there are alternative checks to be made.
         if($this->_current_account->is_quick_login()){
@@ -53,6 +55,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // Are there any important messages or notifications they need to read?
         
         // Do they need to choose an email address to allocate to this system?
+        if(!$this->_current_account->emails->assigned_to_sso($this->_current_token->sso_key)){
+            ORM::factory("Sso_Email")->assign_email($this->_current_account->emails->get_active_primary(true), $this->_current_token->sso_key);
+        }
         
         // Let's continue! We'll return to the token form, for this.
         $this->redirect("/sso/token/redirect");
@@ -79,16 +84,22 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             $security = $this->request->post("security");
 
             // Try and authenticate!
+            $authResult = false;
             try {
                 $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
-                $this->_current_token->set_account_id($cid);
-            
-                // Now, we need to run the checks and send them to the necessary place!
-                $this->action_checks();
-            } catch(Exception $e){
+            } catch(Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
+                if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
+                    $authResult = true;
+                }
                 $this->setMessage("Certificate Server Error", "The VATSIM Certificate server is currently not responding.
                                    If you have a second layer password set, you can enter that instead of your network
                                    password to gain access to our systems.", "error");
+            }
+            
+            // Redirect?
+            if($authResult){
+                $this->_current_token->set_account_id($cid);
+                $this->action_checks();
             }
         }
     }
