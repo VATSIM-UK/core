@@ -107,7 +107,7 @@ class Model_Sso_Token extends Model_Master {
         fclose($fh);
         
         // Delete the session token
-        $this->session()->delete(ORM::factory("Setting")->getValue("sso.token.key"));
+        $this->session()->delete(ORM::factory("Setting")->getValue("auth.sso.token.key"));
     }
     
     /**
@@ -118,7 +118,7 @@ class Model_Sso_Token extends Model_Master {
      */
     public function get_current_token($token=null){
         if($token == null){
-            $token = $this->session()->get(ORM::factory("Setting")->getValue("sso.token.key"), null);
+            $token = $this->session()->get(ORM::factory("Setting")->getValue("auth.sso.token.key"), null);
             if($token == NULL){
                 return $this;
             }
@@ -164,7 +164,7 @@ class Model_Sso_Token extends Model_Master {
             $oldToken->expires = gmdate("Y-m-d H:i:s", strtotime("-30 seconds"));
             $oldToken->save();
         }
-        $this->session()->delete(ORM::factory("Setting")->getValue("sso.token.key"));
+        $this->session()->delete(ORM::factory("Setting")->getValue("auth.sso.token.key"));
         
         // Now, start a new one!
         $newToken = ORM::factory("Sso_Token");
@@ -172,11 +172,11 @@ class Model_Sso_Token extends Model_Master {
         $newToken->sso_key = $key;
         $newToken->return_url = $returnURL;
         $newToken->created = gmdate("Y-m-d H:i:s");
-        $newToken->expires = gmdate("Y-m-d H:i:s", strtotime("+".ORM::factory("Setting")->getValue("sso.token.expires")));
+        $newToken->expires = gmdate("Y-m-d H:i:s", strtotime("+".ORM::factory("Setting")->getValue("auth.sso.token.lifetime")));
         $newToken->save();
         
         // Store this token!
-        $this->session()->set(ORM::factory("Setting")->getValue("sso.token.key"), $token);
+        $this->session()->set(ORM::factory("Setting")->getValue("auth.sso.token.key"), $token);
         
         return $newToken;
     }
