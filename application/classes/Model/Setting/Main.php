@@ -56,13 +56,14 @@ class Model_Setting_Main extends ORM {
     /**
      * To quickly load a setting, this function can be called.
      * 
+     * @param string $group The group value.
      * @param string $area The area value.
-     * @param string $section The section (controller)
+     * @param string $section The section
      * @param string $key The individual key
      * @return void
      */
-    public function quickLoad($area, $section, $key) {
-        $find = ORM::factory("Setting")->where("area", "=", $area)->where("section", "=", $section)->where("key", "=", $key)->find();
+    public function quickLoad($group, $area, $section, $key) {
+        $find = ORM::factory("Setting")->where("group", "=", $group)->where("area", "=", $area)->where("section", "=", $section)->where("key", "=", $key)->find();
 
         if ($find->loaded()) {
             $this->__construct($find->id);
@@ -72,19 +73,21 @@ class Model_Setting_Main extends ORM {
     /**
      * Get a value of a propery.
      * 
+     * @param string $group The group value.
      * @param string $area The area value.
-     * @param string $section The section (controller)
-     * @param string $key The individual key
+     * @param string $section The section.
+     * @param string $key The individual key.
      * @return string The value.
      */
-    public function getValue($area, $section = null, $key = null) {
+    public function getValue($group, $area, $section = null, $key = null) {
         if ($section == null || $key == null) {
             $area = explode(".", $area);
-            $key = Arr::get($area, 2, "");
-            $section = Arr::get($area, 1, "");
-            $area = Arr::get($area, 0, "");
+            $key = Arr::get($area, 3, "");
+            $section = Arr::get($area, 2, "");
+            $area = Arr::get($area, 1, "");
+            $group = Arr::get($area, 0, "");
         }
-        $this->quickLoad($area, $section, $key);
+        $this->quickLoad($group, $area, $section, $key);
         return ($this->loaded()) ? $this->value : "";
     }
 
