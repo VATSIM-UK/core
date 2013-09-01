@@ -18,6 +18,6 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
 Route::set('default', '')
         ->defaults(array(
             'directory' => 'Sso',
-            'controller' => 'Auth',
+            'controller' => 'Manage',
             'action' => 'display'
         ));
