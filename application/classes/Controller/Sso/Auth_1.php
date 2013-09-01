@@ -3,11 +3,11 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Auth_1 extends Controller_Master {
-    protected $_wrapper = FALSE; // Override parent settings.
+    /*protected $_wrapper = FALSE; // Override parent settings.
     protected $_templateDir = "Standalone"; // Override parent settings.
     private $_current_token = null;
     private $_current_account = null;
-    private $_actual_account = null;
+    private $_actual_account = null;*/
 
     /*private function getAccount(){
         if($this->_current_account == null){
@@ -88,7 +88,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
      * 
      * If the member is not logged in they'll be sent through the SSO procedure first.
      */
-    public function action_display(){
+    /*public function action_display(){
         // If they're not logged in, we'll treat this as an SSO login.
         if(!Helper_Account_Main::check_login_status()){
             require_once "/var/www/sharedResources/SSO.class.php";
@@ -111,7 +111,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         
         // Display the holding page, for somebody that's logged in.
         $this->setTemplate("Auth/Display");
-    }
+    }*/
     
     public function action_override(){
         // If they're not logged in, we'll go to the error page.

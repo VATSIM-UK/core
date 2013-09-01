@@ -98,4 +98,12 @@ class Controller_Sso_Security extends Controller_Sso_Master {
             $this->_data["sls_type"] = "expired";
         }
     }
+    
+    public function action_activate(){
+        
+    }
+    
+    public function action_deactivate(){
+        
+    }
 }
