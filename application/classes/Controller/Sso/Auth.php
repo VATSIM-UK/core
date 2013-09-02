@@ -122,9 +122,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override", false)) {
+        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override") === 1) {
             // Run the logout!
-            if($this->request->post("processlogout") == 1 || $this->request->query("override", false)){
+            if($this->request->post("processlogout") == 1 || $this->request->query("override") === 1){
                 if($this->_current_account->is_overriding()){
                     $this->_current_account->override_disable();
                 } else {
