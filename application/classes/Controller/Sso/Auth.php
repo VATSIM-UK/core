@@ -100,6 +100,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
                     $authResult = true;
                 }
+
                 $this->setMessage("Certificate Server Error", "The VATSIM Certificate server is currently not responding.
                                    If you have a second layer password set, you can enter that instead of your network
                                    password to gain access to our systems.", "error");
@@ -109,6 +110,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             if($authResult){
                 $this->_current_token->set_account_id($cid);
                 $this->action_checks();
+            } else {
+                $this->setMessage("Invalid Credentials", "The CID and password you entered was incorrect.  Please try again.", "error");
             }
         }
     }
