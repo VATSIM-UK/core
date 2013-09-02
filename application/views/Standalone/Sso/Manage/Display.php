@@ -20,10 +20,21 @@
     <tr>
         <th>Primary Email Address</th>
         <td>
-            <strong><?= $_account->emails->get_active_primary()->email ?></strong>
+            <strong>
+                <?= $_account->emails->get_active_primary()->email ?>
+            </strong>
             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($_account->emails->get_active_primary()->created)) ?>">
                 <em>added <?= Date::fuzzy_span(strtotime($_account->emails->get_active_primary()->created)) ?></em>
             </a>
+            <?php if(count($_account->emails->get_active_primary()->sso_email->find_all()) > 0): ?>
+                <br />
+                <em style="margin-left: 25px;">Assigned to: 
+                <?php foreach($_account->emails->get_active_primary()->sso_email->find_all() as $key => $sso): ?>
+                    <?=$sso->sso_system?>
+                    <?=($key+1 < count($_account->emails->get_active_primary()->sso_email->find_all())) ? ", " : ""?>
+                <?php endforeach; ?>
+                </em>
+            <?php endif; ?>
         </td>
     </tr>
     <tr>
@@ -31,11 +42,22 @@
         <td>
             <?php if (count($_account->emails->get_active_secondary()) > 0): ?>
                 <?php foreach ($_account->emails->get_active_secondary() as $email): ?>
-                    <strong><?= $email->email ?></strong>
-
+                    <strong>
+                    <?= $email->email ?>
+                    </strong>
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($email->created)) ?>">
-                        <em>added <?= Date::fuzzy_span(strtotime($email->created)) ?></em><br />
+                        <em>added <?= Date::fuzzy_span(strtotime($email->created)) ?></em>
                     </a>
+                    <?php if(count($email->sso_email->find_all()) > 0): ?>
+                        <br />
+                        <em style="margin-left: 25px;">Assigned to: 
+                        <?php foreach($email->sso_email->find_all() as $key => $sso): ?>
+                            <?=$sso->sso_system?>
+                            <?=($key+1 < count($email->sso_email->find_all())) ? ", " : ""?>
+                        <?php endforeach; ?>
+                        </em>
+                    <?php endif; ?>
+                    <br />
                 <?php endforeach; ?>
             <?php else: ?>
                 No secondary email addresses are currently set.

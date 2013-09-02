@@ -27,14 +27,15 @@ class Model_Account_Email extends Model_Master {
         ),
     );
     // Has man relationships
-    protected $_has_many = array();
-    
-    // Has one relationship
-    protected $_has_one = array(
+    protected $_has_many = array(
         'sso_email' => array(
             'model' => 'Sso_Email',
             'foreign_key' => 'account_email_id',
         ),
+    );
+    
+    // Has one relationship
+    protected $_has_one = array(
     );
 
     // Validation rules
