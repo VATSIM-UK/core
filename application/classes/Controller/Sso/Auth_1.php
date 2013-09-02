@@ -113,7 +113,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->setTemplate("Auth/Display");
     }*/
     
-    public function action_override(){
+    /*public function action_override(){
         // If they're not logged in, we'll go to the error page.
         if(Session::instance("database")->get("sso_cid", null) == null){
             $this->redirect("sso/auth/error");
@@ -186,7 +186,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         // Send to display.
         $this->redirect("sso/auth/display");
         return;
-    }
+    }*/
     
     /*public function action_security_enable(){
         // If they're not logged in, we'll go to the error page.

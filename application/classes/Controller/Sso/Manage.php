@@ -3,6 +3,15 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Manage extends Controller_Sso_Master {
+    public function before() {
+        parent::before();
+        
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "display")){
+            $this->redirect("/sso/auth/checks");
+            exit();
+        }
+    }
+    
     /**
      * Display the user's details if they're logged in.
      * 

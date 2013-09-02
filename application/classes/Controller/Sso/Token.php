@@ -4,6 +4,9 @@ defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Token extends Controller_Sso_Master {
     public function action_auth() {
+        // Start the token lock.
+        $this->session()->set("sso_token_lock", true);
+        
         // Get the necessary information.
         $token = $this->request->query("token", null);
         $key = $this->request->query("ssoKey", null);
@@ -54,6 +57,8 @@ class Controller_Sso_Token extends Controller_Sso_Master {
             $redirect.= "&".Arr::get($pURL, "query", "");
         }
         
+        // Delete token lock and then redirect
+        $this->session()->delete("sso_token_lock");
         $this->redirect($redirect);
     }
 }

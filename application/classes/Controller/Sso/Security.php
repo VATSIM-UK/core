@@ -3,6 +3,15 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Security extends Controller_Sso_Master {
+    public function before() {
+        parent::before();
+        
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "enable" || $this->_action == "disable")){
+            $this->redirect("/sso/auth/checks");
+            exit();
+        }
+    }
+    
     /**
      * Authorise the user's access with their secondary password.
      */

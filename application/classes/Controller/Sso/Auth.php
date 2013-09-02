@@ -6,6 +6,11 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     public function before(){
         parent::before();
         
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override")){
+            $this->redirect("/sso/auth/checks");
+            exit();
+        }
+        
         // If we don't have a valid token, we can't be here!
         if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
             $this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
