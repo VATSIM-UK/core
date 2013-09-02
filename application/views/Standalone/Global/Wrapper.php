@@ -58,4 +58,7 @@
             </div>
         </div>
     </body>
+    <script type="text/javascript" language="javascript">
+        $(".tooltip_displays").tooltip();
+    </script>
 </html>
