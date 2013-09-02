@@ -740,7 +740,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->postLoginChecks();
     }*/
     
-    private function postLoginChecks(){
+    /*private function postLoginChecks(){
         // Do we need to get an email address from them?
         if($this->_current_account->emails->where("deleted", "IS", NULL)->count_all() < 1){
             $this->_current_token->expires = gmdate("Y-m-d H:i:s", strtotime("+15 minutes"));
@@ -785,7 +785,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         Session::instance("database")->delete("sso_override");
         
         $this->returnHome();
-    }
+    }*/
     
     /*private function returnHome(){
         // Let's kill this token!

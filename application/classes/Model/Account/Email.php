@@ -94,6 +94,39 @@ class Model_Account_Email extends Model_Master {
         return ($this->email ? $this->email : "");
     }
     
+    /**
+     * Set the primary email for the given account!
+     */
+    public function set_primary($email){
+        $account_id = Arr::get(Arr::get($this->_db_pending, 0), "args");
+        $account_id = Arr::get($account_id, 0) == "account_email.account_id" ? Arr::get($account_id, 2) : 0;
+        
+        // Demote the old primary, if set.
+        $oldPrimary = $this->get_active_primary();
+        if($oldPrimary->loaded()){
+            $oldPrimary->primary = 0;
+            $oldPrimary->save();
+        }
+        
+        // Does this email already exist?
+        if($this->helper_pre_get_active()->where("email", "=", strtolower($email))->count_all() > 0){
+            // It exists, update it to set primary = 1
+            $curEmail = $this->helper_pre_get_active()->where("account_id", "=", $account_id)->where("email", "=", strtolower($email))->find();
+            $curEmail->primary = 1;
+            $curEmail->verified = gmdate("Y-m-d H:i:s");
+            $curEmail->save();
+        } else {
+            // Store the new one!
+            $newEmail = ORM::factory("Account_Email");
+            $newEmail->account_id = $account_id;
+            $newEmail->email = $email;
+            $newEmail->primary = 1;
+            $newEmail->verified = gmdate("Y-m-d H:i:s");
+            $newEmail->created = gmdate("Y-m-d H:i:s");
+            $newEmail->save();
+        }
+    }
+    
     // Pre-get_active_*
     private function helper_pre_get_active(){
         return $this->where("deleted", "IS", NULL);

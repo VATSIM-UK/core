@@ -51,6 +51,10 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Do we need to validate their primary email address?
+        if(!$this->_current_account->emails->get_active_primary()->loaded()){
+            $this->redirect("/sso/manage/email_confirm");
+            return;
+        }
         
         // Are there any important messages or notifications they need to read?
         
