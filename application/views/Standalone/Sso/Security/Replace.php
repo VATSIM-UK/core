@@ -1,8 +1,12 @@
 <p>
     <?php if (isset($sls_type) && $sls_type == "forced"): ?>
         An administrator has requested that you create a second password before continuing with your login.  You will not be able to use any services until this action has been completed.
-    <?php else: ?>
+    <?php elseif (isset($sls_type) && $sls_type == "requested"): ?>
+        You have requested to set a secondary password on your account.  Please complete the form below to complete this request.
+    <?php elseif (isset($sls_type) && $sls_type == "expired"): ?>
         Your previous secondary password has expired, please enter your old password along with a new one below.  Remember though, they must be different!
+    <?php else: ?>
+        To change your secondary password, complete the form below.
     <?php endif; ?>
 </p>
 
@@ -21,7 +25,7 @@
 <div class="row-fluid">
     <div class="span6 offset2">
         <form class="form-horizontal form-login" method="POST" action="<?= URL::site("/sso/security/replace") ?>">
-            <?php if (!isset($_newReg)): ?>
+            <?php if (isset($sls_type) && $sls_type == "expired"): ?>
                 <div class="control-group">
                     <label class="control-label" for="old_password">Old Password</label>
                     <div class="controls">

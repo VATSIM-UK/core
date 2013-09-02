@@ -132,6 +132,29 @@ class Model_Account_Security extends Model_Master {
     }
     
     /**
+     * Set the security on an account.
+     * 
+     * @param int $account_id The account to set security on.
+     * @param int $type The security type.
+     * @param string $password The password to set.
+     */
+    public function set_security($account_id, $type, $password){
+        // Delete old one, if exists
+        $oldSecurity = ORM::factory("Account_Security")->where("account_id", "=", $account_id)->find();
+        if($oldSecurity->loaded()){
+            $oldSecurity->delete();
+        }
+        
+        // Store new one!
+        $newSecurity = ORM::factory("Account_Security");
+        $newSecurity->account_id = $account_id;
+        $newSecurity->type = $type;
+        $newSecurity->value = $password;
+        $newSecurity->created = gmdate("Y-m-d H:i:s");
+        $newSecurity->save();
+    }
+    
+    /**
      * Authorise a user's second security details.
      * 
      * @param string $security The second security layer password.

@@ -109,10 +109,10 @@
 
             <?php if ($_account->security->loaded() && $_account->security->type == Enum_Account_Security::MEMBER): ?>
                 &nbsp;&nbsp;
-                [<?= HTML::anchor("sso/auth/security_disable", "Disable Second Layer Security") ?>]
+                [<?= HTML::anchor("sso/security/disable", "Disable") ?> | <?= HTML::anchor("sso/security/replace", "Modify")?> Secondary Password]
             <?php elseif (!$_account->security->loaded()): ?>
                 &nbsp;&nbsp;
-                [<?= HTML::anchor("sso/auth/security_enable", "Set Second Layer Security") ?>]
+                [<?= HTML::anchor("sso/security/enable", "Enable Secondary Password") ?>]
             <?php endif; ?>
 
             <?php if (in_array($_account->id, array(980234, 1010573))): ?>

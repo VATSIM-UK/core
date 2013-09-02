@@ -188,7 +188,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         return;
     }
     
-    public function action_security_enable(){
+    /*public function action_security_enable(){
         // If they're not logged in, we'll go to the error page.
         if(Session::instance("database")->get("sso_cid", null) == null){
             $this->redirect("sso/auth/error");
@@ -286,9 +286,9 @@ class Controller_Sso_Auth_1 extends Controller_Master {
             $this->action_security_enable();
             return false;
         }
-    }
+    }*/
     
-    public function action_security_disable(){
+    /*public function action_security_disable(){
         // If they're not logged in, we'll go to the error page.
         if(Session::instance("database")->get("sso_cid", null) == null){
             $this->redirect("sso/auth/error");
@@ -361,7 +361,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
             $this->action_display();
             return true;
         }
-    }
+    }*/
     
     /*public function action_preLogin(){
         if(!$this->security()){
@@ -525,7 +525,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         $this->setTemplate("Auth/Error");
     }*/
     
-    public function action_email_confirm(){
+    /*public function action_email_confirm(){
         if(!$this->security() || !$this->_current_account->loaded()){
             $this->redirect("sso/auth/error");
             return;
@@ -566,13 +566,13 @@ class Controller_Sso_Auth_1 extends Controller_Master {
                                                            "email" => $this->request->post("email"),
                                                             "email_action" => Helper_Membership_Account::ACTION_EMAIL_CREATE_PRIMARY),
                                                      Helper_Membership_Account::ACTION_USER);*/
-        } catch(Exception $e){
+        /*} catch(Exception $e){
             $this->_data["error"] = "There seems to be an error.  Please contact web services.";
             $this->action_email_confirm();
             return false;
         }
         $this->postLoginChecks();
-    }
+    }*/
     
     /*public function action_extra_security(){
         if(!$this->security() || !$this->_current_account->loaded()){

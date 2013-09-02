@@ -42,19 +42,15 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
                     $this->_current_account->emails->set_primary($this->request->post("email"));
                 } catch(Exception $e){
                     $valid = false;
-                    print "<pre>"; print_r($e);
                     $this->_data["error"] = "There seems to be an error.  Please contact web services.";
                 }
                 
                 // Send back to complete the checks!
                 if($valid){
-                    die("DONNNNNEEE!");
                     $this->redirect("/sso/auth/checks");
                     return;
                 }
             }
-            
-            print $this->_data["error"]; exit();
         }
         
         $this->setTitle("Email Confirmation");

@@ -3,17 +3,6 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Security extends Controller_Sso_Master {
-    public function before(){
-        parent::before();
-        
-        // If we don't have a valid token, we can't be here!
-        if (!$this->security()) {
-            $this->redirect("sso/error?e=TOKEN&r=SSO_SECURITY_".strtoupper($this->_action));
-            exit();
-        }
-
-    }
-    
     /**
      * Authorise the user's access with their secondary password.
      */
@@ -36,10 +25,13 @@ class Controller_Sso_Security extends Controller_Sso_Master {
      * Authorise the user's access with their secondary password.
      */
     public function action_replace() {
+        // Get the security type we're working with here!
+        $securityType = ($this->_current_account->security->loaded() ? $this->_current_account->security->type : Enum_Account_Security::MEMBER);
+        
         // Submitted the form?
         if (HTTP_Request::POST == $this->request->method()) {
             // Try and authenticate the old password
-            if($this->_current_account->security->value == null){
+            if(!$this->_current_account->security->loaded() || $this->_current_account->security->value == null){
                 $result = true;
             } else {
                 $result = $this->_current_account->security->action_authorise($this->request->post("old_password"));
@@ -50,21 +42,19 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                 // Now we can set the new one!
                 if($this->request->post("new_password") != $this->request->post("new_password2")){
                     $this->setMessage("Security Authorisation Error", "The two new passwords do not match, please try again.", "error");
-                } elseif($this->_current_account->security->hash($this->request->post("new_password")) == $this->_current_account->security->value){
+                } elseif($this->_current_account->security->loaded() && $this->_current_account->security->hash($this->request->post("new_password")) == $this->_current_account->security->value){
                     $this->setMessage("Security Authorisation Error", "Your new password cannot be the same as your old password.", "error");
                 } else {
                     // Update!
-                    $security = ORM::factory("Account_Security");
-                    $security->account_id = $this->_current_account;
-                    $security->type = $this->_current_account->security->type;
-                    $security->value = $this->request->post("new_password");
-                    $security->created = gmdate("Y-m-d H:i:s");
-                    $this->_current_account->security->delete();
-                    $security->save();
-                    $security->action_authorise($this->request->post("new_password"), true);
+                    ORM::factory("Account_Security")->set_security($this->_current_account->id, $securityType, $this->request->post("new_password"));
+                    ORM::factory("Account_Security")->action_authorise($this->request->post("new_password"), true);
                     
-                    // Send back and do some more checks!
-                    $this->redirect("/sso/auth/checks");
+                    if($this->_current_token->loaded()){
+                        // Send back and do some more checks!
+                        $this->redirect("/sso/auth/checks");
+                    } else {
+                        $this->redirect("/sso/manage/display");
+                    }
                     return;
                 }
             } else {
@@ -73,7 +63,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
         }
         
         // What are the requirements?
-        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($this->_current_account->security->type)));
+        $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($securityType)));
         $requirements = array();
 
         if($enum::MIN_LENGTH > 0){
@@ -90,20 +80,51 @@ class Controller_Sso_Security extends Controller_Sso_Master {
         }
         $this->_data["_requirements"] = $requirements;
         
-        if($this->_current_account->security->value == null){
+        if(!$this->_current_account->security->loaded()){
+            $this->setTitle("Activate Secondary Password");
+            $this->_data["sls_type"] = "requested";
+        } elseif($this->_current_account->security->value == null){
             $this->setTitle("Set Secondary Password");
             $this->_data["sls_type"] = "forced";
-        } else {
+        } elseif($this->_current_account->security->expires < gmdate("Y-m-d")) {
             $this->setTitle("Secondary Password Expired");
             $this->_data["sls_type"] = "expired";
+        } else {
+            $this->setTitle("Change Secondary Password");
+            $this->_data["sls_type"] = "change";
         }
     }
     
-    public function action_activate(){
-        
+    public function action_enable(){
+        $this->_action = "replace";
+        $this->action_replace();
     }
     
-    public function action_deactivate(){
+    public function action_disable(){
+        // Let's check there's anything TO disable
+        if(!$this->_current_account->security->loaded()){
+            $this->redirect("/sso/manage/display");
+            return;
+        }
         
+        // Are they allowed to "disable"?
+        if($this->_current_account->security->type != Enum_Account_Security::MEMBER){
+            $this->redirect("/sso/manage/display");
+            return;
+        }
+        
+        // Submitted the form?
+        if (HTTP_Request::POST == $this->request->method()) {
+            // Let's check the password matches!
+            $result = $this->_current_account->security->action_authorise($this->request->post("password"));
+            
+            if($result){
+                $this->_current_account->security->delete();
+                $this->redirect("/sso/manage/display");
+                return;
+            } else {
+                $this->setMessage("Invalid Password", "The password you entered is invalid.  Please try again.", "error");
+            }
+        }
     }
 }
