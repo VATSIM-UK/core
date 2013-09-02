@@ -72,7 +72,6 @@ class Helper_Account_Main {
         }
         // Determine (and log) changed values.
         $changed = $account->changed();
-        print "<pre>" . print_r($changed, true); exit();
         foreach ($changed as $key => $value) {
             // Add a note to the members account detailing the changes.
             Helper_Membership_Account::loadMember($account_id);

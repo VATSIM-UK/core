@@ -262,6 +262,29 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Override the current account with another account.
+     */
+    public function override_enable($override_id){
+        $this->session()->set("sso_account_override", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
+        $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $override_id);
+    }
+    
+    /**
+     * Override the current account with another account.
+     */
+    public function override_disable(){
+        $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->session()->get("sso_account_override"));
+        $this->session()->delete("sso_account_override");
+    }
+    
+    /**
+     * Check whether this account is being overriden.
+     */
+    public function is_overriding(){
+        return !($this->session()->get("sso_account_override", null) == null);
+    }
+    
+    /**
      * Was this login a quick login?
      * 
      * @return boolean TRUE if it was a quick login, false otherwise.

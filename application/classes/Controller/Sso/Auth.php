@@ -7,7 +7,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         parent::before();
         
         // If we don't have a valid token, we can't be here!
-        if (!$this->security() && $this->_action != "logout") {
+        if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
             $this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
             exit();
         }
@@ -117,10 +117,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method()) {
+        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override", false)) {
             // Run the logout!
-            if($this->request->post("processlogout") == 1){
-                $this->_current_account->action_logout();
+            if($this->request->post("processlogout") == 1 || $this->request->query("override", false)){
+                if($this->_current_account->is_overriding()){
+                    $this->_current_account->override_disable();
+                } else {
+                    $this->_current_account->action_logout();
+                }
             }
             
             // Redirect?
@@ -154,6 +158,35 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 $this->action_checks();
             } else {
                 $this->setMessage("Checkpoint Error", "The details you entered in response to the verification question are invalid.  Please try again.", "error");
+            }
+        }
+    }
+    
+    /**
+     * Override the current login with another.
+     */
+    public function action_override(){
+        // KH or AL?
+        if(!in_array($this->_current_account->id, array(980234, 1010573))){
+            $this->redirect("sso/manage/display");
+            return;
+        }
+        
+        // Submitted the form?
+        if (HTTP_Request::POST == $this->request->method()) {
+            // Validate the secondary password!
+            if($this->_current_account->security->action_authorise($this->request->post("password"))){
+                // Try and load the override account!
+                $ovrAccount = ORM::factory("Account", $this->request->post("override_cid"));
+                if($ovrAccount->loaded()){
+                    $this->_current_account->override_enable($this->request->post("override_cid"));
+                    $this->redirect("/sso/manage/display");
+                    return;
+                } else {
+                    $this->setMessage("Invalid Override", "The CID entered is invalid.", "error");
+                }
+            } else {
+                $this->setMessage("Invalid Password", "The password entered, is incorrect.", "error");
             }
         }
     }

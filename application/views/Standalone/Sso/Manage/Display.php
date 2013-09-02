@@ -127,7 +127,11 @@
     <tr>
         <th>Actions</th>
         <td>
-            [<?= HTML::anchor("sso/auth/logout", "Logout") ?>]
+            <?php if($_account->is_overriding()): ?>
+                [<?= HTML::anchor("sso/auth/logout?override=1", "Cancel Override") ?>]
+            <?php else: ?>
+                [<?= HTML::anchor("sso/auth/logout", "Logout") ?>]
+            <?php endif; ?>
 
             <?php if ($_account->security->loaded() && $_account->security->type == Enum_Account_Security::MEMBER): ?>
                 &nbsp;&nbsp;

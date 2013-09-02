@@ -94,7 +94,7 @@ array_pop($_SERVER_URI);
 $_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
 Kohana::init(array(
     'base_url' => $_SERVER_URI,
-    //'index_file' => Kohana::$environment === Kohana::PRODUCTION,
+    'index_file' => "",//Kohana::$environment === Kohana::PRODUCTION,
     'errors' => Kohana::$environment !== Kohana::PRODUCTION,
     'profile' => Kohana::$environment !== Kohana::PRODUCTION,
     'caching' => Kohana::$environment === Kohana::PRODUCTION,
