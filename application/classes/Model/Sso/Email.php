@@ -48,9 +48,16 @@ class Model_Sso_Email extends Model_Master {
      * @return void
      */
     public function assign_email($account_email_id, $system){
-        $this->account_email_id = $account_email_id;
-        $this->sso_system = $system;
-        $this->save();
+        // Is there an email for this already?
+        if(ORM::factory("Sso_Email")->where("account_email_id", "=", $account_email_id)->where("sso_system", "=", $system)->find()->loaded()){
+            return;
+        }
+        
+        // Assign the new email
+        $newEmail = ORM::factory("Sso_Email");
+        $newEmail->account_email_id = $account_email_id;
+        $newEmail->sso_system = $system;
+        $newEmail->save();
     }
 }
 
