@@ -179,6 +179,13 @@ class Model_Account_Security extends Model_Master {
         return false;
     }
     
+    /**
+     * Kill the grace session!
+     */
+    public function action_deauthorise(){
+        $this->session()->delete("sso_security_grace");
+    }
+    
     // Save the new password
     public function save(Validation $validation = NULL){// Let's just update the expiry!
         $enum = "Enum_Account_Security_".ucfirst(strtolower(Enum_Account_Security::valueToType($this->type)));

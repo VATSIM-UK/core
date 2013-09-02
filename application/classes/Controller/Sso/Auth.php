@@ -129,6 +129,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                     $this->_current_account->override_disable();
                 } else {
                     $this->_current_account->action_logout();
+                    $this->_current_account->security->action_deauthorise();
                 }
             }
             
