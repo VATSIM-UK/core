@@ -111,7 +111,7 @@ class Model_Account_Email extends Model_Master {
         // Does this email already exist?
         if($this->helper_pre_get_active()->where("email", "=", strtolower($email))->count_all() > 0){
             // It exists, update it to set primary = 1
-            $curEmail = $this->helper_pre_get_active()->where("account_id", "=", $account_id)->where("email", "=", strtolower($email))->find();
+            $curEmail = ORM::factory("Account_Email")->helper_pre_get_active()->where("account_id", "=", $account_id)->where("email", "=", strtolower($email))->find();
             $curEmail->primary = 1;
             $curEmail->verified = gmdate("Y-m-d H:i:s");
             $curEmail->save();
