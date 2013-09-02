@@ -381,7 +381,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         }
     }*/
     
-    public function action_logout(){
+    /*public function action_logout(){
         if($this->request->query("returnURL") == null || $this->request->query("ssoKey") == null){
             $this->redirect("sso/auth/error");
         }
@@ -405,7 +405,7 @@ class Controller_Sso_Auth_1 extends Controller_Master {
         
         $this->redirect($returnURL);
         return;
-    }
+    }*/
         
     /*public function action_login(){
         // Display the login form.

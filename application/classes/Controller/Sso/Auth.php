@@ -7,7 +7,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         parent::before();
         
         // If we don't have a valid token, we can't be here!
-        if (!$this->security()) {
+        if (!$this->security() && $this->_action != "logout") {
             $this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
             exit();
         }
@@ -108,7 +108,25 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
      * Allow a user to logout.
      */
     public function action_logout(){
+        if($this->request->query("returnURL") != null && $this->request->query("ssoKey") != null){
+            $this->session()->set("sso_logout_url", $this->request->query("returnURL"));
+        }
         
+        // Submitted the form?
+        if (HTTP_Request::POST == $this->request->method()) {
+            // Run the logout!
+            if($this->request->post("processlogout") == 1){
+                $this->_current_account->action_logout();
+            }
+            
+            // Redirect?
+            $redirectURL = $this->session()->get_once("sso_logout_url", "/sso/manage/display");
+            $this->redirect($redirectURL);
+            return;
+        }
+        
+        // Add the key to the form.
+        $this->_data["area"] = $this->request->query("ssoKey");
     }
     
     /**

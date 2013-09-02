@@ -219,6 +219,13 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Log a user out!
+     */
+    public function action_logout(){
+        $this->destroySessionData();
+    }
+    
+    /**
      * If a user's details are already set, run a quick login on them!
      */
     public function action_quick_login(){
@@ -239,6 +246,18 @@ class Model_Account_Main extends Model_Master {
         $lifetime = $lifetime-time();
         Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $this->id, $lifetime);
         $this->session()->set("sso_quicklogin", $quickLogin);
+    }
+    
+    /**
+     * Destory the session data!
+     * 
+     * @param boolean $quickLogin If TRUE, it will set a quickLogin session value.
+     * @return void
+     */
+    private function destroySessionData(){
+        $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
+        Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
+        $this->session()->delete("sso_quicklogin");
     }
     
     /**

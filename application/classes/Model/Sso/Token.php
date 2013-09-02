@@ -90,7 +90,8 @@ class Model_Sso_Token extends Model_Master {
         $return["cid"] = $account->id;
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
-        $return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
+        //$return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
+        $return["email"] = $account->emails->assigned_to_sso($this->sso_key, true);
         $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
         $return["pilot_rating"] = array();
         foreach($account->qualifications->get_all_pilot() as $qual){
