@@ -17,6 +17,7 @@ class Model_Account_Main extends Model_Master {
         'last_login_ip' => array('data_type' => 'int'),
         'gender' => array('data_type' => 'char', 'is_nullable' => TRUE),
         'age' => array('data_type' => 'smallint'),
+        'template' => array('data_type' => 'string'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'updated' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'checked' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),

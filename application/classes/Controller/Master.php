@@ -9,6 +9,7 @@ abstract class Controller_Master extends Controller_Template {
     protected $view = NULL;
     protected $_wrapper = TRUE;
     protected $_templateDir = "V3";
+    protected $_templateOverride = false;
     protected $_area = NULL;
     protected $_controller = null;
     protected $_action = null;
@@ -57,6 +58,13 @@ abstract class Controller_Master extends Controller_Template {
 
         // Now, let's get the membership details
         $this->_account = ORM::factory("Account", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
+        
+        // Has the member changed the template they're using?
+        if($this->_templateDir != "Standalone" && !$this->_templateOverride && $this->_account->template != ""){
+            if(file_exists(APPPATH."views/".$this->_account->template)){
+                $this->_templateDir = $this->_account->template;
+            }
+        }
     }
 
     public function before() {
