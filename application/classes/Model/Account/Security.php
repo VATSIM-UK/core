@@ -112,7 +112,7 @@ class Model_Account_Security extends Model_Master {
             return true;
         }
         
-        if(strtotime($this->expires) <= time()){
+        if(strtotime($this->expires) <= time() && $this->expires != null){
             return false;
         }
         
