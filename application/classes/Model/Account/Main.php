@@ -11,8 +11,7 @@ class Model_Account_Main extends Model_Master {
         'id' => array('data_type' => 'bigint'),
         'name_first' => array('data_type' => 'string'),
         'name_last' => array('data_type' => 'string'),
-        'password' => array('data_type' => 'string'),
-        'extra_password' => array('data_type' => 'string'),
+        'salt' => array('data_type' => 'string'),
         'last_login' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'last_login_ip' => array('data_type' => 'int'),
         'gender' => array('data_type' => 'char', 'is_nullable' => TRUE),
@@ -126,8 +125,25 @@ class Model_Account_Main extends Model_Master {
     public function get_current_account(){
         $id = $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key"), null);
         if($id == NULL || !is_numeric($id)){
-            $id = Cookie::decrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), null);
+            // Get the salt value from the database.
+            $cookieValue = Cookie::decrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), null);
+            if($cookieValue == NULL){
+                return $this;
+            }
+            
+            // Split the cookie into CID and Salt.
+            $cookieValue = explode("|", $cookieValue);
+            $id = Arr::get($cookieValue, 0, NULL);
+            $salt = Arr::get($cookieValue, 1, "x");
+            
+            // Valid ID?
             if($id == NULL || !is_numeric($id)){
+                return $this;
+            }
+            
+            // Valid ID/Salt pair?
+            $check = ORM::factory("Account_Main")->where("salt", "=", $salt)->where("id", "=", $id)->reset(FALSE)->count_all();
+            if($check < 1){
                 return $this;
             }
         }
@@ -236,6 +252,17 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Update the salt for this user's account.
+     */
+    private function renew_salt(){
+        $salt = md5(uniqid().md5(time()));
+        $salt = substr($salt, 0, 20);
+        $this->salt = $salt;
+        $this->save();
+        return $salt;
+    }
+    
+    /**
      * Set session data!
      * 
      * @param boolean $quickLogin If TRUE, it will set a quickLogin session value.
@@ -243,9 +270,13 @@ class Model_Account_Main extends Model_Master {
      */
     private function setSessionData($quickLogin=false){
         $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->id);
+        
+        // Cookie!
         $lifetime = strtotime("+".ORM::factory("Setting")->getValue("auth.account.cookie.lifetime"));
         $lifetime = $lifetime-time();
-        Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $this->id, $lifetime);
+        $salt = $this->renew_salt();
+        $cookieValue = $this->id."|".$salt;
+        Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $cookieValue, $lifetime);
         $this->session()->set("sso_quicklogin", $quickLogin);
     }
     
