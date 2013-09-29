@@ -69,15 +69,18 @@ class Model_Account_Email extends Model_Master {
     public function assigned_to_sso($system, $returnEmail=false){
         // Let's loop through ALL emails
         foreach($this->where("deleted", "IS", NULL)->find_all() as $email){
-            if($email->sso_email->loaded() && $email->sso_email->sso_system == $system){
-                if($returnEmail){
-                    return $email->email;
+            $sso = $email->sso_email->find();
+            if($sso->loaded() && $sso->sso_system == $system){
+                if($returnEmail && $sso->email->loaded()){
+                    return $sso->email->email;
                 } else {
                     return true;
                 }
             }
         }
-        return false;
+
+        // If we still don't have a return by now, let's just get the primary!
+        return $this->get_active_primary(false)->email;
     }
     
     // Check email is unique in the database.
