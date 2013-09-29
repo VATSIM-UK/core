@@ -11,13 +11,13 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
         ))
         ->defaults(array(
             'directory' => 'Sso',
-            'controller' => 'Auth',
+            'controller' => 'Manage',
             'action' => 'display',
             'area' => NULL,
         ));
 Route::set('default', '')
         ->defaults(array(
             'directory' => 'Sso',
-            'controller' => 'Auth',
+            'controller' => 'Manage',
             'action' => 'display'
         ));

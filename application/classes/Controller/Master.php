@@ -3,34 +3,38 @@
 defined('SYSPATH') or die('No direct script access.');
 
 abstract class Controller_Master extends Controller_Template {
+
+    protected $_config = array();
     protected $_permissions = NULL;
     protected $view = NULL;
     protected $_wrapper = TRUE;
     protected $_templateDir = "V3";
+    protected $_templateOverride = false;
     protected $_area = NULL;
+    protected $_controller = null;
+    protected $_action = null;
     protected $_data = array();
     protected $_breadcrumbs = array();
     protected $_title = NULL;
+    protected $_messages = array();
+
+    public function hasPermission() {
+        return true;
+    }
     
-    abstract protected function getDefaultAction();
-    
-    public function action_index($return=false){
-        if($return === true){
-            return (strcasecmp($this->request->action, "index") ? "action_".$this->getDefaultAction() : $this->request->action);
-        } else {
-            $this->{"action_".$this->getDefaultAction()}();
-        }
+    public function session(){
+        return Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
     }
 
     public function __construct($request, $response) {
         parent::__construct($request, $response);
-
+        
         // Disable auto-rendering!
         $this->auto_render = FALSE;
 
         // Default the standard _data entries
         $this->_data = array(
-            "title" => NULL, "styles" => array(), "scripts" => array(),
+            "title" => NULL,
             "breadcrumb" => array(),
         );
         // TODO: Get name from database.
@@ -39,124 +43,138 @@ abstract class Controller_Master extends Controller_Template {
         // Determine the "area" (i.e the base folder)
         $this->_area = explode("_", get_class($this));
         $this->_area = (count($this->_area) > 1) ? $this->_area[1] : "Site";
+        $this->_controller = ucfirst($this->request->controller());
+        $this->_action = $this->request->action();
 
-        // Load the general config file as data.
-        $_tmp = Kohana::$config->load("general");
-        foreach ($_tmp as $k => $v) {
-            $this->_data["config_" . $k] = $v;
+        // Load the settings from the database.
+        $_tmp = ORM::factory("Setting")->find_all();
+        $this->_data["_config"] = array();
+        foreach ($_tmp as $v) {
+            $key = $v->area . "." . $v->section;
+            $key.= $v->key ? "." . $v->key : "";
+            $this->_data["_config"][$key] = $v->value;
         }
-        
+        $this->_config = ORM::factory("Setting");
+
         // Now, let's get the membership details
-        $this->_account = ORM::factory("Account", Session::instance("native")->get($this->_data["config_session_name"]));
-    }
-    
-
-    
-    protected function hasPermission(){
-        // Get the account type
-        /*$type = is_object($this->_account) ? $this->_account->type : Enum_Account_Types::GUEST;
+        $this->_account = ORM::factory("Account", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
         
-        // If the permissions variable is NULL or an empty array, just... no.
-        if($this->_permissions == NULL || (is_array($this->_permissions) && count($this->_permissions) < 1)){
-            return false;
-        }
-        
-        // Is there a key for this action?
-        if(!array_key_exists($this->request->action(), $this->_permissions) || !is_array($this->_permissions[$this->request->action()])){
-            // Since there isn't, check the global settings.
-            if(array_key_exists("_", $this->_permissions) && is_array($this->_permissions["_"])){
-                // Do the global settings permit anyone (i.e wildcard?)
-                if(in_array("*", $this->_permissions["_"])){
-                    return true;
-                } else {
-                    return in_array($type, $this->_permissions["_"]);
-                }
-            } else {
-                // No, there's no  permissions at all it seems.
-                return false;
+        // Has the member changed the template they're using?
+        if($this->_templateDir != "Standalone" && !$this->_templateOverride && $this->_account->template != ""){
+            if(file_exists(APPPATH."views/".$this->_account->template)){
+                $this->_templateDir = $this->_account->template;
             }
         }
-        
-        // Since there's a specific key, is it an array?
-        return in_array($type, $this->_permissions[$this->request->action()]);*/
-        return true;
     }
-    
+
     public function before() {
         // Does this user have permission to access this action?
-        if(!$this->hasPermission()){
-            $this->redirect($this->getDefaultAction());
+        if (!$this->hasPermission()) {
+            die("NO PERMISSION!");
             return;
         }
-        
+
         // Add to the breadcrumb
-        $this->addBreadcrumb($this->_area, URL::site((strcasecmp($this->_area, "site") == 0) ? "" : $this->_area));
+        $this->addBreadcrumb($this->_area, "/");
+        $this->addBreadcrumb($this->_controller, $this->_controller . "/");
+        $this->addBreadcrumb($this->_action, $this->_controller . "/" . $this->_action . "/");
+        
+        $this->setTitle(ucfirst($this->_action));
     }
 
     public function after() {
-        if(is_object($this->view)){
-            // Set the global variables - only if it's the initial request though!
-            //if($this->request->is_initial() || !$this->_wrapper){
-                $this->view->bind_global("_title", $this->_title);
-                $this->view->bind_global("_breadcrumbs", $this->_breadcrumbs);
-                $this->view->bind_global("_ajax_functions", $this->_ajaxFunctions);
-                $this->view->bind_global("request", $this->request);
-                $this->view->bind_global("_account", $this->_account);
-                $this->view->set_global("_errors", Session::instance("native")->get("errors", array()));
-                exec("git describe --abbrev=0 --tags", $v);
-                $v[0] = str_replace("v", "", $v[0]);
-                $this->view->bind_global("_version", $v[0]);
-                Session::instance("native")->delete("errors");
-            //}
-
-            // Now set all variables to view and/or template.
-            foreach ($this->_data as $k => $v) {
-                $this->view->set($k, $v);
-                if ($this->_wrapper === TRUE) {
-                    $this->template->set($k, $v);
-                }
-            }
-            
-            // Set the view template variables.
-            $this->view->set("_area", $this->_area);
-            $this->view->set("_controller", $this->request->controller());
-//            $this->view->set("_action", $this->action_index(true));
-
-            // If there's a wrapper, set the different elements to the template too!
-            if($this->_wrapper === TRUE && is_object($this->template)){
-                $this->template->set("_area", $this->_area);
-                $this->view->set("_content", $this->template->render());
-            }
-            
-            // Display the template.
-            $this->response->body($this->view->render());
+        // Template setup!
+        if($this->template == "template"){
+            $this->setTemplate(null);
         }
+        
+        // Now set all variables to view and/or template.
+        foreach ($this->_data as $k => $v) {
+            $this->_view->set($k, $v);
+            if ($this->_wrapper === TRUE) {
+                $this->template->set($k, $v);
+            }
+        }
+        
+        // Set the view template variables
+        if ($this->request->is_initial()) {
+            $this->_view->bind_global("_area", $this->_area);
+            $this->_view->bind_global("_controller", $this->_controller);
+            $this->_view->bind_global("_action", $this->_action);
+            $this->_view->bind_global("_title", $this->_title);
+            $this->_view->bind_global("_breadcrumbs", $this->_breadcrumbs);
+            $this->_view->bind_global("_messages", $this->_messages);
+            $this->_view->bind_global("_account", $this->_account);
+            $this->_view->bind_global("_request", $this->request);
+        }
+
+        // If there's a wrapper, set the different elements to the template too!
+        if ($this->_wrapper === TRUE) {
+            $this->template->set("_area", $this->_area);
+            $this->template->set("_controller", $this->_controller);
+            $this->template->set("_action", $this->_action);
+            $this->_view->set("_content", $this->template->render());
+        }
+
+        // Display the template.
+        $this->response->body($this->_view->render());
     }
 
-    public function setTemplate($template) {
+    public function setTemplate($template = null) {
+        // Template name
+        if ($template == null) {
+            $_a = str_replace("_", "/", $this->_action);
+            $actions = "";
+            foreach(explode("/", $_a) as $a){
+                $actions.= ucfirst($a)."/";
+            }
+            $actions = rtrim($actions, "/");
+            $template = $this->_area . "/" . $this->_controller . "/" . $actions;
+        }
+        
+        // Add the template directory
+        $template = $this->_templateDir . "/" . $template;
+
         // Now create and store the template. If there's no wrapper, it's the main view!
-        if (!$this->_wrapper) {
-            $this->view = View::factory($this->_templateDir . "/" . $this->_area . "/" . $template);
+        if ($this->_wrapper === FALSE) {
+            $this->_view = View::factory($template);
         } else {
-            $this->view = View::factory($this->_templateDir . "/Global/Wrapper");
-            $this->template = View::factory($this->_templateDir . "/" . $this->_area . "/" . $template);
+            $this->_view = View::factory($this->_templateDir . "/Global/Wrapper");
+            $this->template = View::factory($template);
         }
     }
 
     public function addBreadcrumb($name, $uri) {
         $this->_breadcrumbs[] = array("name" => $name, "url" => $uri);
     }
-    
-    public function setTitle($title){
+
+    public function setTitle($title) {
         $this->_title = $title;
     }
-    
-    public function setErrors($errors){
-        $this->_data["_errors"] = array();
-        foreach($errors as $error){
-            if(is_array($error)){ $error = $error[key($error)]; }
-            $error = explode(" ", $error);
-            $this->_data["_errors"][] = $error[0];
+
+    public function setMessage($title, $message, $type){
+        if(!is_array($this->_messages)){
+            $this->_messages = array();
+        }
+        if(!isset($this->_messages[$type]) || !is_array($this->_messages[$type])){
+            $this->_messages[$type] = array();
+        }
+        
+        // Do we need to append to a previous error? (same title)?
+        $exists = false;
+        foreach($this->_messages[$type] as $key => $error){
+            if($error->title == $title){
+                $exists = true;
+                $error->message .= "<br />" . $message;
+                $this->_messages[$type][$key] = $error;
+            }
+        }
+        
+        if(!$exists){
+            $m = new stdClass();
+            $m->title = $title;
+            $m->message = $message;
+            $this->_messages[$type][] = $m;
         }
     }
 }

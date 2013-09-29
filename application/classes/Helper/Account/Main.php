@@ -25,9 +25,9 @@ class Helper_Account_Main {
         }
         
         if($returnID){
-            return Session::instance()->get(self::SESSION_CID, false);
+            return $this->session()->get(self::SESSION_CID, false);
         } else{
-            return Session::instance()->get(self::SESSION_CID, null) == null;
+            return $this->session()->get(self::SESSION_CID, null) == null;
         }
     }
     
@@ -72,7 +72,6 @@ class Helper_Account_Main {
         }
         // Determine (and log) changed values.
         $changed = $account->changed();
-        print "<pre>" . print_r($changed, true); exit();
         foreach ($changed as $key => $value) {
             // Add a note to the members account detailing the changes.
             Helper_Membership_Account::loadMember($account_id);
@@ -88,94 +87,5 @@ class Helper_Account_Main {
         }
 
         return $account->saved();
-    }
-    
-    /**
-     * This helper formats the name of a person to conform with expected output.
-     * 
-     * @param string $name The name to format.
-     * @param string $type 'f' for forename, 's' for surname.
-     * @return string The formatted name.
-     */
-    public static function name_formatter($name, $type='f'){
-        //Firstname
-        if($type == 'f'){
-
-            $name = trim($name);
-            $name = ucfirst(strtolower($name));
-            $name = addslashes($name);
-
-            return $name;
-
-        ///Surname
-        } elseif($type == 's') {
-
-            $name = trim($name);
-
-            ///Test for spaces- eg Le Bargy
-            $space = explode(' ', $name);
-            if(count($space) > 1){
-
-                $name = '';
-                foreach($space as $k => $v){
-                    $name .= ucfirst(strtolower($v)).' ';
-                }
-
-                $name = addslashes(trim($name));
-                return $name;
-
-            } else {
-                if(strlen($name) <= 2){
-                    return $name;
-                }
-                
-                ///Check for Mc - eg McTighe
-                $name = strtolower($name);
-                            $first_two = $name{0} . (isset($name{1}) ? $name{1} : "");
-                $therest = '';
-
-                if($first_two == 'mc'){
-                    for($i = 2; $i < strlen($name); $i++){
-                        $therest .= $name{$i};
-                    }
-
-                    $name = "Mc".ucfirst($therest);
-                    $name = addslashes(trim($name));
-                    return $name;
-
-                } else {
-
-                    ///Check for hyphon seperated surnames
-                    $hyphon = explode('-', $name);
-                    if(count($hyphon) > 1){
-
-                        $name = '';
-                        $numh = 0;
-                        foreach($hyphon as $k => $v){
-
-                            $numh = $numh+1;
-                            $name .= ucfirst(strtolower($v));
-
-                            ///Dont append extra -
-                            if($numh != count($hyphon)){
-                                $name .= '-';
-                            }
-
-                        }
-
-                        $name = addslashes(trim($name));
-                        return $name;
-
-                    } else {
-                        ///Any other surname
-                        $name = ucfirst(strtolower($name));
-                        $name = addslashes(trim($name));
-                        return $name;
-                    }
-                }
-            }
-        } else {
-            return '';
-        }
     }
 }
