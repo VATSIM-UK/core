@@ -21,7 +21,7 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
         // If they're not logged in, we'll treat this as an SSO login.
         if(!$this->_current_account->loaded()){
             require_once "/var/www/sharedResources/SSO.class.php";
-            $SSO = new SSO("CORE", URL::site("/sso/manage/display", "http"), false, "http://dev.vatsim-uk.co.uk/ALawrence/core.vatsim-uk.co.uk/sso/token/auth");
+            $SSO = new SSO("CORE", URL::site("/sso/manage/display", "http"), false, URL::site("/sso/token/auth"));
             $details = $SSO->member;
         }
         
