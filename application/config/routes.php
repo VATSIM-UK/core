@@ -10,6 +10,7 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
             "directory" => "(membership|site|account|training|sso)",
         ))
         ->defaults(array(
+<<<<<<< HEAD
             'directory' => 'membership',
             'controller' => 'default',
             'action' => NULL,
@@ -22,6 +23,11 @@ Route::set('frontend_global_route', '<controller>/<action>(/)(<area>)',
         ->defaults(array(
             'controller' => 'global',
             'action' => NULL,
+=======
+            'directory' => 'Sso',
+            'controller' => 'Manage',
+            'action' => 'display',
+>>>>>>> hotfix/1.1.0
             'area' => NULL,
         ));
 Route::set('frontend_site_route', '<controller>/<action>(/)(<area>)')
@@ -38,6 +44,7 @@ Route::set('frontend_site_page_route', '<page>')
         ));
 Route::set('default', '')
         ->defaults(array(
+<<<<<<< HEAD
             'directory' => 'Site',
             'controller' => 'page',
             'action' => 'default'
@@ -53,6 +60,11 @@ Route::set('frontend_page_route', 'page/<page>(/)')
             'directory' => 'Site',
             'controller' => 'page',
             'action' => 'display',
+=======
+            'directory' => 'Sso',
+            'controller' => 'Manage',
+            'action' => 'display'
+>>>>>>> hotfix/1.1.0
         ));
 Route::set('frontend_route', '<controller>(/)(<action>(/)(<extra>(/)))')
         ->defaults(array(

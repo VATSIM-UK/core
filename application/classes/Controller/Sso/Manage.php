@@ -2,63 +2,71 @@
 
 defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Account_Manage extends Controller_Account_Master {
-
-    protected $_permissions = array(
-        "_" => array('*'),
-    );
-
-    public function getDefaultAction() {
-        return "dashboard";
-    }
-
+class Controller_Sso_Manage extends Controller_Sso_Master {
     public function before() {
         parent::before();
-    }
-
-    public function after() {
-        parent::after();
-    }
-
-    public function action_dashboard() {
-        die("DASHBOARD!");
-    }
-
-    public function action_email_confirm() {
-        if (HTTP_Request::POST == $this->request->method()) {
-            // Get the confirmation.
-            $confirmed = $this->process_email_confirm();
-            
-            // If it's confirmed, store and redirect!
-            if($confirmed){
-                // Let's store this email!
-                Helper_Membership_Account::processMember(array("cid" => $this->_account->id,
-                                                               "email" => $this->request->post("email"),
-                                                               "email_action" => Helper_Membership_Account::ACTION_EMAIL_CREATE_PRIMARY),
-                                                         Helper_Membership_Account::ACTION_USER);
-                
-                // Redirect!
-                $this->redirect("account/session/login_redirect");
-                exit();
-            }
-            
-            // It's not confirmed!!!! ERROR!!!!
-            Session::instance("native")->set("errors", Session::instance("native")->get("errors", array()) + array("The email address you have supplied is not your VATSIM registered one, please try again."));
-        }
-
-        /** TEMPLATE SETTINGS * */
-        $this->setTemplate("Manage/Email_Confirm");
-    }
-
-    protected function process_email_confirm() {
-        // Firstly, are we logged in?
-        if(!$this->_account->loaded()){
-            $this->redirect();
+        
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "display")){
+            $this->redirect("/sso/auth/checks");
             exit();
         }
-        
-        // Now, let's check the email they've provided against CERT.
-        return Vatsim::factory("autotools")->confirm_email($this->_account->id, $this->request->post("email"));
     }
-
+    
+    /**
+     * Display the user's details if they're logged in.
+     * 
+     * If a user is not logged in, send them to the SSO system to login.
+     */
+    public function action_display(){
+        // If they're not logged in, we'll treat this as an SSO login.
+        if(!$this->_current_account->loaded()){
+            require_once "/var/www/sharedResources/SSO.class.php";
+            $SSO = new SSO("CORE", URL::site("/sso/manage/display", "http"), false, "http://dev.vatsim-uk.co.uk/ALawrence/core.vatsim-uk.co.uk/sso/token/auth");
+            $details = $SSO->member;
+        }
+        
+        // Set the account details
+        $this->_data["_account"] = $this->_current_account;
+    }
+    
+    public function action_email_confirm(){
+        // Submitted the form?
+        if (HTTP_Request::POST == $this->request->method()) {
+            // Is the email "valid"?
+            $valid = false;
+            try {
+                if(Vatsim::factory("autotools")->confirm_email($this->_current_account->id, $this->request->post("email"))){
+                    $valid = true;
+                } else {
+                    $this->_data["error"] = "This email address does not match your VATSIM registered one.  Please try again.";
+                }
+            } catch(Exception $e){
+                $this->_data["error"] = "The VATSIM Certificate Server is currently offline and we are unable to validate your request.";
+            }
+            
+            // Let's store it!
+            if($valid){
+                // Store and return to the site!
+                try {
+                    $this->_current_account->emails->set_primary($this->request->post("email"));
+                } catch(Exception $e){
+                    $valid = false;
+                    $this->_data["error"] = "There seems to be an error.  Please contact web services.";
+                }
+                
+                // Send back to complete the checks!
+                if($valid){
+                    $this->redirect("/sso/auth/checks");
+                    return;
+                }
+            }
+        }
+        
+        $this->setTitle("Email Confirmation");
+    }
+    
+    public function action_email_allocate(){
+        
+    }
+    
 }

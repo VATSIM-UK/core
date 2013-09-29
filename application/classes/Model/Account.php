@@ -11,6 +11,10 @@ class Model_Account extends Model_Account_Main {
     public function __construct($id = NULL){
         parent::__construct($id);
         
+        if($id == NULL){
+            return $this;
+        }
+        
         // Cert update?
         if(!$this->loaded() || $this->check_requires_cert_update()){
             Helper_Account::update_using_remote($id);
