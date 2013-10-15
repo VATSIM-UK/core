@@ -44,4 +44,4 @@ Route::set('default', '')
             'directory' => 'Site',
             'controller' => 'page',
             'action' => 'default'
-        ));*/
+        ));
