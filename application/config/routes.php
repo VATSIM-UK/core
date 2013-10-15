@@ -7,7 +7,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
  * ************************************************************ */
 Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(<area>(/))))',
         array(
-            "directory" => "(membership|site|account|training|sso)",
+            "directory" => "(sso)",
         ))
         ->defaults(array(
             'directory' => 'Sso',
@@ -15,33 +15,9 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
             'action' => 'display',
             'area' => NULL,
         ));
-Route::set('frontend_site_route', '<controller>/<action>(/)(<area>)')
-        ->defaults(array(
-            'directory' => 'Site',
-            'controller' => 'page',
-            'action' => 'homepage',
-        ));
-Route::set('frontend_site_page_route', '<page>')
-        ->defaults(array(
-            'directory' => 'Site',
-            'controller' => 'page',
-            'action' => 'display',
-        ));
 Route::set('default', '')
         ->defaults(array(
             'directory' => 'Sso',
             'controller' => 'Manage',
             'action' => 'display'
-        ));
-Route::set('frontend_route', '<controller>(/)(<action>(/)(<extra>(/)))')
-        ->defaults(array(
-            'directory' => 'Site',
-            'controller' => 'page',
-            'action' => 'default',
-        ));
-Route::set('default', '')
-        ->defaults(array(
-            'directory' => 'Site',
-            'controller' => 'page',
-            'action' => 'default'
         ));

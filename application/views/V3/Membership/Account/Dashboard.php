@@ -15,7 +15,7 @@
 <h3>Endorsements</h3>
 <p>
     <?php foreach($_account->endorsements->find_all() as $e): ?>
-        <h5><?=$e->type?> :: <?=$e->formatQualification(true)?> (<?=$e?>)</h5>
+        <h5><?=$e->type?> :: <?=$e->formatEndorsement(true)?> (<?=$e?>)</h5>
         <p>Gained: <?=$e->created?></p>
         <p><?=(($e->type == "ATC") ? $e->formatPositionSuffixes() : "")?></p>
     <?php endforeach; ?>

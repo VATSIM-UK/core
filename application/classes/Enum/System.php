@@ -3,13 +3,11 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_System extends Enum_Main {
-    const SYSTEM_BUILD = "20130725";
-    const SYSTEM_VERSION_NAME = "1.0.3";
     
-    public static function getDescription($id){
-        switch($id){
+    public static function getDescription($value){
+        switch($value){
             default:
-                 return self::idToType($id);
+                 return parent::getDescription($value);
         }
     }
     
