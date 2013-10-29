@@ -25,7 +25,7 @@
 <div class="row-fluid">
     <div class="span6 offset2">
         <form class="form-horizontal form-login" method="POST" action="<?= URL::site("/sso/security/replace") ?>">
-            <?php if (isset($sls_type) && $sls_type == "expired"): ?>
+            <?php if (isset($sls_type) && ($sls_type == "expired" || $sls_type == "change")): ?>
                 <div class="control-group">
                     <label class="control-label" for="old_password">Old Password</label>
                     <div class="controls">
