@@ -32,7 +32,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         if($this->_current_account->is_quick_login()){
             // Has this user's IP been used before? (GREATER than zero = YES!)
             if(!$this->session()->get_once("sso_checkpoint", false) && $this->_current_account->count_last_login_ip_usage() > 0){
-                // If we're not overriding, send them to the checkin.
+                // If we're not overriding, send them back to the checkpoint to confirm.
                 if(!$this->_current_account->is_overriding()){
                     $this->redirect("/sso/auth/checkpoint");
                     return;
