@@ -95,7 +95,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
         } elseif($this->_current_account->security->value == null){
             $this->setTitle("Set Secondary Password");
             $this->_data["sls_type"] = "forced";
-        } elseif($this->_current_account->security->expires < gmdate("Y-m-d")) {
+        } elseif(strtotime($this->_current_account->security->expires) < time() && $this->_current_account->security->expires != NULL) {
             $this->setTitle("Secondary Password Expired");
             $this->_data["sls_type"] = "expired";
         } else {
