@@ -111,6 +111,33 @@ class Model_Sso_Token extends Model_Master {
             }
         }
         
+        $return["admin_ratings"] = array();
+        foreach($account->qualifications->get_all_admin() as $qual){
+            $e = array();
+            $e["rating"] = $qual->value;
+            $e["human_short"] = Enum_Account_Qualification_Admin::valueToType($qual->value);
+            $e["human_long"] = Enum_Account_Qualification_Admin::getDescription($qual->value);
+            $return["admin_ratings"][] = (array) $e;
+        }
+        
+        $return["training_pilot_ratings"] = array();
+        foreach($account->qualifications->get_all_training("pilot") as $qual){
+            $e = array();
+            $e["rating"] = $qual->value;
+            $e["human_short"] = Enum_Account_Qualification_Training_Pilot::valueToType($qual->value);
+            $e["human_long"] = Enum_Account_Qualification_Training_Pilot::getDescription($qual->value);
+            $return["training_pilot_ratings"][] = (array) $e;
+        }
+        
+        $return["training_atc_ratings"] = array();
+        foreach($account->qualifications->get_all_training("atc") as $qual){
+            $e = array();
+            $e["rating"] = $qual->value;
+            $e["human_short"] = Enum_Account_Qualification_Training_ATC::valueToType($qual->value);
+            $e["human_long"] = Enum_Account_Qualification_Training_ATC::getDescription($qual->value);
+            $return["training_atc_ratings"][] = (array) $e;
+        }
+        
         // OLD-Remove BB-Core-66
         $return["pilot_rating"] = $return["pilot_ratings"];
         

@@ -88,7 +88,7 @@ class Model_Account_Qualification extends Model_Master {
         return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find_all();
     }
     
-    public function get_all_administrator(){
+    public function get_all_admin(){
         return $this->helper_pre_get_all()->where("type", "LIKE", "admin")->find_all();
     }
     
