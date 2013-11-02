@@ -95,7 +95,8 @@ class Model_Sso_Token extends Model_Master {
         $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
         $return["atc_rating_human_short"] = Enum_Account_Qualification_ATC::valueToType($return["atc_rating"]);
         $return["atc_rating_human_long"] = Enum_Account_Qualification_ATC::getDescription($return["atc_rating"]);
-                
+        $return["atc_rating_date"] = $account->qualifications->get_current_atc()->created;
+        
         $return["pilot_ratings"] = array();
         if(count($account->qualifications->get_all_pilot()) < 1){
             $return["pilot_ratings"][] = 0;
@@ -107,6 +108,7 @@ class Model_Sso_Token extends Model_Master {
                 $e["rating"] = $qual->value;
                 $e["human_short"] = Enum_Account_Qualification_Pilot::valueToType($qual->value);
                 $e["human_long"] = Enum_Account_Qualification_Pilot::getDescription($qual->value);
+                $e["date"] = $qual->created;
                 $return["pilot_ratings"][] = (array) $e;
             }
         }
@@ -117,6 +119,7 @@ class Model_Sso_Token extends Model_Master {
             $e["rating"] = $qual->value;
             $e["human_short"] = Enum_Account_Qualification_Admin::valueToType($qual->value);
             $e["human_long"] = Enum_Account_Qualification_Admin::getDescription($qual->value);
+            $e["date"] = $qual->created;
             $return["admin_ratings"][] = (array) $e;
         }
         
@@ -126,6 +129,7 @@ class Model_Sso_Token extends Model_Master {
             $e["rating"] = $qual->value;
             $e["human_short"] = Enum_Account_Qualification_Training_Pilot::valueToType($qual->value);
             $e["human_long"] = Enum_Account_Qualification_Training_Pilot::getDescription($qual->value);
+            $e["date"] = $qual->created;
             $return["training_pilot_ratings"][] = (array) $e;
         }
         
@@ -135,6 +139,7 @@ class Model_Sso_Token extends Model_Master {
             $e["rating"] = $qual->value;
             $e["human_short"] = Enum_Account_Qualification_Training_ATC::valueToType($qual->value);
             $e["human_long"] = Enum_Account_Qualification_Training_ATC::getDescription($qual->value);
+            $e["date"] = $qual->created;
             $return["training_atc_ratings"][] = (array) $e;
         }
         
