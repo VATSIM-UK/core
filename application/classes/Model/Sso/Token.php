@@ -95,27 +95,37 @@ class Model_Sso_Token extends Model_Master {
         $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
         $return["atc_rating_human_short"] = Enum_Account_Qualification_ATC::valueToType($return["atc_rating"]);
         $return["atc_rating_human_long"] = Enum_Account_Qualification_ATC::getDescription($return["atc_rating"]);
-        $return["pilot_rating"] = array();
-        $return["pilot_rating_human_short"] = array();
-        $return["pilot_rating_human_long"] = array();
+                
+        $return["pilot_ratings"] = array();
         if(count($account->qualifications->get_all_pilot()) < 1){
-            $return["pilot_rating"][] = 0;
-            $return["pilot_rating_human_short"][] = "NA";
-            $return["pilot_rating_human_long"][] = "None Awarded";
+            $return["pilot_ratings"][] = 0;
+            $return["pilot_ratings_human_short"][] = "NA";
+            $return["pilot_ratings_human_long"][] = "None Awarded";
         } else {
             foreach($account->qualifications->get_all_pilot() as $qual){
-                $return["pilot_rating"][] = $qual->value;
-                $return["pilot_rating_human_short"][] = Enum_Account_Qualification_Pilot::valueToType($qual->value);
-                $return["pilot_rating_human_long"][] = Enum_Account_Qualification_Pilot::getDescription($qual->value);
+                $e = array();
+                $e["rating"] = $qual->value;
+                $e["human_short"] = Enum_Account_Qualification_Pilot::valueToType($qual->value);
+                $e["human_long"] = Enum_Account_Qualification_Pilot::getDescription($qual->value);
+                $return["pilot_ratings"][] = (array) $e;
             }
         }
+        
+        // OLD-Remove BB-Core-66
+        $return["pilot_rating"] = $return["pilot_ratings"];
+        
         $return["home_member"] = $account->states->where("state", "=", Enum_Account_State::DIVISION)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = $return["home_member"] || $account->states->where("state", "=", Enum_Account_State::TRANSFER)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = (int) $return["home_member"];
-        $return["state"] = array();
+        
+        $return["fields_pending_deletion"] = array("pilot_rating", "home_member");
+        //-
+        
+        $return["account_state"] = array();
         foreach(Enum_Account_State::getAll() as $key => $value){
-            $return["state"][strtolower($key)] = (int) $account->states->where("state", "=", $value)->where("removed", "IS", NULL)->find()->loaded();
+            $return["account_state"][strtolower($key)] = (int) $account->states->where("state", "=", $value)->where("removed", "IS", NULL)->find()->loaded();
         }
+        $return["account_status"] = Helper_Account_Status::getStatusFlags($account);
         $return["return_token"] = sha1($this->token.$_SERVER["REMOTE_ADDR"]);
         
         // Save the return data to the token file.
