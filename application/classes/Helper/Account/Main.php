@@ -74,15 +74,16 @@ class Helper_Account_Main {
         $changed = $account->changed();
         foreach ($changed as $key => $value) {
             // Add a note to the members account detailing the changes.
-            Helper_Membership_Account::loadMember($account_id);
             if($key == "age"){
-                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array(
+                ORM::factory("Account_Note")->writeNote($account->id, "ACCOUNT/DETAILS_CHANGED", $account->id, array(
                     $key,
                     Enum_Account_Age::getDescription($value["old"]),
                     Enum_Account_Age::getDescription($value["new"]),
-                ));
+                ), Enum_Account_Note_Type::AUTO);
             } else {
-                Helper_Membership_Account::addNote("ACCOUNT/DETAILS_CHANGED", array($key, $value["old"], $value["new"]));
+                ORM::factory("Account_Note")->writeNote($account->id, "ACCOUNT/DETAILS_CHANGED", $account->id, array(
+                    $key, $value["old"], $value["new"],
+                ), Enum_Account_Note_Type::AUTO);
             }
         }
 
