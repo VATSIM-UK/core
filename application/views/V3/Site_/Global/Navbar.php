@@ -20,8 +20,8 @@
                     </li>
                 </ul>
                 <form class="navbar-form pull-right navbar-login" action="<?= URL::site("account/login") ?>" method="POST">
-                    <input type="email" name="email" placeholder="Email address..." class="span2">
-                    <input type="password" name="password" placeholder="Your password..." class="span2">
+                    <input type="email" name="email" placeholder="Email address..." class="col-md-2">
+                    <input type="password" name="password" placeholder="Your password..." class="col-md-2">
                     <button type="submit" class="btn btn-inverse">Submit</button>
                 </form>
             </div>

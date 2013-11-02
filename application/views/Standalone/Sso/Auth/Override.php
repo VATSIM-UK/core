@@ -12,24 +12,24 @@
     </div>
 <?php endif; ?>
 
-<div class="row-fluid">
-    <div class="span6 offset2">
-        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/auth/override") ?>">
-            <div class="control-group">
-                <label class="control-label" for="override_cid">Account CID</label>
-                <div class="controls">
-                    <input type="text" id="override_cid" name="override_cid" placeholder="Account CID">
+<div class="row">
+    <div class="col-md-7 col-md-offset-2">
+        <form class="form-horizontal" method="POST" action="<?= URL::site("sso/auth/override") ?>">
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="override_cid">Account CID</label>
+                <div class="col-sm-7">
+                    <input class="form-control" type="text" id="override_cid" name="override_cid" placeholder="Account CID">
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="password">Secondary Password</label>
-                <div class="controls">
-                    <input type="password" id="extra_password" name="password" placeholder="Secondary Password">
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="password">Secondary Password</label>
+                <div class="col-sm-7">
+                    <input class="form-control" type="password" id="extra_password" name="password" placeholder="Secondary Password">
                 </div>
             </div>
-            <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn" name="processoverride" value="override">Override Account</button>
+            <div class="form-group">
+                <div class="col-sm-offset-5 col-sm-7">
+                    <button type="submit" class="btn btn-default" name="processoverride" value="override">Override Account</button>
                 </div>
             </div>
         </form>
