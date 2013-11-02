@@ -49,7 +49,7 @@ class Model_Account_Qualification extends Model_Master {
     // Format the current qualification.
     public function formatQualification($full=true){
         $enum = "Enum_Account_Qualification_".$this->type;
-        return $full ? $enum::getDescription($this->value) : $enum::IdToValue($this->value); 
+        return $full ? $enum::getDescription($this->value) : $enum::valueToType($this->value); 
     }
     
     // Get position suffixes.
