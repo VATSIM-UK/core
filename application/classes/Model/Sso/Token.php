@@ -90,16 +90,32 @@ class Model_Sso_Token extends Model_Master {
         $return["cid"] = $account->id;
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
-        //$return["email"] = $account->emails->where("primary", "=", 1)->where("deleted", "IS", NULL)->find()->email;
+        $return["name_full"] = $return["name_first"]." ".$return["name_last"];
         $return["email"] = $account->emails->assigned_to_sso($this->sso_key, $account->id, true);
         $return["atc_rating"] = ($account->qualifications->get_current_atc() ? $account->qualifications->get_current_atc()->value : Enum_Account_Qualification_ATC::UNKNOWN);
+        $return["atc_rating_human_short"] = Enum_Account_Qualification_ATC::valueToType($return["atc_rating"]);
+        $return["atc_rating_human_long"] = Enum_Account_Qualification_ATC::getDescription($return["atc_rating"]);
         $return["pilot_rating"] = array();
-        foreach($account->qualifications->get_all_pilot() as $qual){
-            $return["pilot_rating"][] = $qual->value;
+        $return["pilot_rating_human_short"] = array();
+        $return["pilot_rating_human_long"] = array();
+        if(count($account->qualifications->get_all_pilot()) < 1){
+            $return["pilot_rating"][] = 0;
+            $return["pilot_rating_human_short"][] = "NA";
+            $return["pilot_rating_human_long"][] = "None Awarded";
+        } else {
+            foreach($account->qualifications->get_all_pilot() as $qual){
+                $return["pilot_rating"][] = $qual->value;
+                $return["pilot_rating_human_short"][] = Enum_Account_Qualification_Pilot::valueToType($qual->value);
+                $return["pilot_rating_human_long"][] = Enum_Account_Qualification_Pilot::getDescription($qual->value);
+            }
         }
         $return["home_member"] = $account->states->where("state", "=", Enum_Account_State::DIVISION)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = $return["home_member"] || $account->states->where("state", "=", Enum_Account_State::TRANSFER)->where("removed", "IS", NULL)->find()->loaded();
         $return["home_member"] = (int) $return["home_member"];
+        $return["state"] = array();
+        foreach(Enum_Account_State::getAll() as $key => $value){
+            $return["state"][strtolower($key)] = (int) $account->states->where("state", "=", $value)->where("removed", "IS", NULL)->find()->loaded();
+        }
         $return["return_token"] = sha1($this->token.$_SERVER["REMOTE_ADDR"]);
         
         // Save the return data to the token file.
