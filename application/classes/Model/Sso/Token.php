@@ -121,10 +121,7 @@ class Model_Sso_Token extends Model_Master {
         $return["fields_pending_deletion"] = array("pilot_rating", "home_member");
         //-
         
-        $return["account_state"] = array();
-        foreach(Enum_Account_State::getAll() as $key => $value){
-            $return["account_state"][strtolower($key)] = (int) $account->states->where("state", "=", $value)->where("removed", "IS", NULL)->find()->loaded();
-        }
+        $return["account_state"] = $account->getStates();
         $return["account_status"] = $account->getStatusFlags();
         $return["return_token"] = sha1($this->token.$_SERVER["REMOTE_ADDR"]);
         

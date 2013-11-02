@@ -326,6 +326,37 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Determine whether the current loaded member is of the set state.
+     * 
+     * @param Enum_Account_State $state The state to check.
+     * @param string $returnType boolean or date.
+     * @return boolean True if set, false otherwise.
+     */
+    public function isStateSet($state, $returnType="boolean"){
+        foreach($this->states->find_all() as $_s){
+            if(is_object($_s) && $_s->state == $state && $_s->removed == NULL){
+                return (($returnType == "date") ? $_s->created : true);
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get all the state flags for this user.
+     * 
+     * @return array An array of states -> boolean key/value pair.
+     */
+    public function getStates(){
+        $return = array();
+        foreach(Enum_Account_State::getAll() as $key => $value){
+            $return[strtolower($key)] = (int) $this->isStateSet($value);
+            if($return[strtolower($key)])
+                $return[strtolower($key)."_date"] = $this->isStateSet($value, "date");
+        }
+        return $return;
+    }
+    
+    /**
      * Get all current status flags for a user's account.
      * 
      * @return array An array of status => boolean pairs.
