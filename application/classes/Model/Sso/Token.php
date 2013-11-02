@@ -125,7 +125,7 @@ class Model_Sso_Token extends Model_Master {
         foreach(Enum_Account_State::getAll() as $key => $value){
             $return["account_state"][strtolower($key)] = (int) $account->states->where("state", "=", $value)->where("removed", "IS", NULL)->find()->loaded();
         }
-        $return["account_status"] = Helper_Account_Status::getStatusFlags($account);
+        $return["account_status"] = $account->getStatusFlags();
         $return["return_token"] = sha1($this->token.$_SERVER["REMOTE_ADDR"]);
         
         // Save the return data to the token file.

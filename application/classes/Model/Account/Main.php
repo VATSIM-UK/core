@@ -346,7 +346,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean True if set, false otherwise.
      */
     public function isStatusFieldSet($status){
-        return (boolean) (bindec($value) & $this->status);
+        return (boolean) (bindec($status) & $this->status);
     }
     
     /**
