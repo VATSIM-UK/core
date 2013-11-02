@@ -78,15 +78,6 @@ class Model_Account_Qualification extends Model_Master {
     
     public function get_all_atc(){
         return $this->helper_pre_get_all()->where("type", "LIKE", "atc")->find_all();
-        
-        // Turn into a readable array....
-        $return = array();
-        foreach($quals as $qual){
-            $return[] = $qual->value;
-        }
-        
-        // Yeah, we're done.... phew!
-        return $return;
     }
     
     public function get_current_pilot(){
@@ -95,16 +86,20 @@ class Model_Account_Qualification extends Model_Master {
     
     public function get_all_pilot(){
         return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find_all();
-        
-        // Turn into a readable array....
-        $return = array();
-        foreach($quals as $qual){
-            $return[] = $qual->value;
-        }
-        
-        // Yeah, we're done.... phew!
-        return $return;
-        
+    }
+    
+    public function get_all_administrator(){
+        return $this->helper_pre_get_all()->where("type", "LIKE", "admin")->find_all();
+    }
+    
+    /**
+     * All all UK administrative/training ratings (Instructors).
+     * 
+     * @param string $type Either pilot or atc.
+     * @return Model_Account_Qualification 
+     */
+    public function get_all_training($type="pilot"){
+        return $this->helper_pre_get_all()->where("type", "LIKE", "training_".$type)->find_all();
     }
 }
 
