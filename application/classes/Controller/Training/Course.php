@@ -28,5 +28,7 @@ class Controller_Training_Course extends Controller_Training_Master {
      * Display a list of all the available course (regardless of user level).
      */
     public function action_list(){
+        $this->setTitle("Current Training Courses");
+        $this->_data["courses"] = ORM::factory("Training_Course")->getActive();
     }
 }

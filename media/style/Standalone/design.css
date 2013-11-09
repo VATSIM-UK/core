@@ -9,9 +9,6 @@ html, body {
     background: url('images/bg_fabric_plaid.png');
     text-align: center;
 }
-.container {
-    width: 800px;
-}
 
 /* Header */
 .container-header {
