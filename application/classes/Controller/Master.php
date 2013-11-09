@@ -69,6 +69,8 @@ abstract class Controller_Master extends Controller_Template {
 
         // Now, let's get the membership details
         $this->_account = ORM::factory("Account", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
+        $this->loadAccount();
+        $this->loadToken();
         
         // Has the member changed the template they're using?
         if($this->_templateDir != "Standalone" && !$this->_templateOverride && $this->_account->template != ""){
