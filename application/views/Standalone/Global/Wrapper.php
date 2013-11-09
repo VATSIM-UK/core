@@ -31,6 +31,13 @@
         </div>
         <div class="container container-content">
             <div class="content">
+                <?php
+                $email = ORM::factory("Postmaster_Queue")->action_add("DEV_TEST", 980234);
+                var_dump($email->action_dispatch());
+                exit();
+                
+                ?>
+                
                 <h1><?=$_title?></h1>
                 
                 <?php if (isset($_messages) && isset($_messages["error"])): ?>

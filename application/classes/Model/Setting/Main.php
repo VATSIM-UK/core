@@ -9,6 +9,7 @@ class Model_Setting_Main extends ORM {
     protected $_primary_key = 'id';
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
+        'group' => array('data_type' => 'string'),
         'area' => array('data_type' => 'string'),
         'section' => array('data_type' => 'string'),
         'key' => array('data_type' => 'string'),
@@ -69,7 +70,7 @@ class Model_Setting_Main extends ORM {
             $this->__construct($find->id);
         }
     }
-
+    
     /**
      * Get a value of a propery.
      * 
