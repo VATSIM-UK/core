@@ -55,3 +55,7 @@ html, body {
     font-family: 'Yellowtail', serif;
     font-size: 24px;
 }
+
+.training_course_description {
+    font-weight: lighter;
+}
