@@ -98,7 +98,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             // Try and authenticate!
             $authResult = false;
             try {
-                $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
+                // Does this user *actually* exist?
+                if(!ORM::factory("Account", $cid) OR !ORM::factory("Account", $cid)->loaded()){
+                    $authResult = false;
+                } else {
+                    $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
+                }
             } catch(Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
                 if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
                     $authResult = true;

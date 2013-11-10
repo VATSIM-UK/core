@@ -27,7 +27,7 @@ class Model_Account extends Model_Account_Main {
         }
         parent::__construct($id);
         if($newMember){
-            ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $this->id, null, 
+            ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $id, null, 
                     array(
                         "primary_email" => $this->emails->get_active_primary()->email,
                         "account_state" => $this->getState(),
