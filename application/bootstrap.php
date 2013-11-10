@@ -155,8 +155,10 @@ $_sysUsr = ORM::factory("Account_Main", Kohana::$config->load("general")->get("s
 if(!$_sysUsr->loaded()){
     $_sysUsr = ORM::factory("Account");
     $_sysUsr->id = Kohana::$config->load("general")->get("system_user");
-    $_sysUsr->name_first = "VATSIM";
-    $_sysUsr->name_last = "UK";
+    $_name = ORM::factory("Setting")->getValue("general.site.name.short");
+    $_name = explode(" ", $_name);
+    $_sysUsr->name_first = Arr::get($_name, 0, "");
+    $_sysUsr->name_last = Arr::get($_name, 1, "");
     $_sysUsr->status = 7;
     $_sysUsr->created = gmdate("Y-m-d H:i:s");
     $_sysUsr->save();
