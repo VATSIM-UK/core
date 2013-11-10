@@ -18,6 +18,8 @@ class Model_Postmaster_Queue extends Model_Master {
         'timestamp_queued' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'timestamp_parsed' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'timestamp_scheduled' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'timestamp_delayed' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'timestamp_sent' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'status' => array('data_type' => 'smallint'),
     );
     
@@ -224,8 +226,8 @@ class Model_Postmaster_Queue extends Model_Master {
             return false;
         }
         
-        // ... We're also only dispatching PARSED emails!
-        if($this->status != Enum_System_Postmaster_Queue_Status::PARSED){
+        // ... We're also only dispatching PARSED or DELAYED emails!
+        if($this->status != Enum_System_Postmaster_Queue_Status::PARSED AND $this->status != Enum_System_Postmaster_Queue_Status::DELAYED){
             return false;
         }
         
@@ -233,8 +235,12 @@ class Model_Postmaster_Queue extends Model_Master {
         $email = Email::factory($this->subject, strip_tags($this->body));
         
         // Let's generate the email within a template!
-        $htmlBody = View::factory("Email/Default");
+        $htmlBody = View::factory("Email/".$this->email->getTemplate()."/".$this->email->getLayout());
         $htmlBody->set("content", nl2br($this->body));
+        $htmlBody->set("_key", $this->email->key);
+        $htmlBody->set("_id", $this->id);
+        $htmlBody->set("_template", $this->email->getTemplate());
+        $htmlBody->set("_layout", $this->email->getLayout());
         $htmlBody = $htmlBody->render();
         $email->message($htmlBody, "text/html"); // HTML VERSION!
         
@@ -248,9 +254,17 @@ class Model_Postmaster_Queue extends Model_Master {
         }
         
         // 3...2....1 LIFT OFF!
-        $email->send();
-        
-        return true;
+        if($email->send()){
+            $this->timestamp_sent = gmdate("Y-m-d H:i:s");
+            $this->status = Enum_System_Postmaster_Queue_Status::SENT;
+            $this->save();
+            return true;
+        } else {
+            $this->timestamp_delayed = gmdate("Y-m-d H:i:s");
+            $this->status = Enum_System_Postmaster_Queue_Status::DELAYED;
+            $this->save();
+            return false;
+        }
     }
 }
 

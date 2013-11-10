@@ -5,7 +5,7 @@ defined('SYSPATH') or die('No direct script access.');
 class Enum_System_Postmaster_Queue_Status extends Enum_System {
     const QUEUED = 10;
     const PARSED = 40;
-    const SCHEDULED = 90;
+    const DELAYED = 90;
     const SENT = 100;
     
     public static function getDescription($value){
@@ -14,8 +14,8 @@ class Enum_System_Postmaster_Queue_Status extends Enum_System {
                 return "Queued";
             case PARSED:
                 return "Parsed";
-            case SCHEDULED:
-                return "Scheduled";
+            case DELAYED:
+                return "Delayed (Attempted to send, but couldn't)";
             case SENT:
                 return "Dispatched from Server";
             default:

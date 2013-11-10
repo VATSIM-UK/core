@@ -9,6 +9,8 @@ class Model_Postmaster_Email extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'int'),
         'key' => array('data_type' => 'varchar'),
+        'template' => array('data_type' => 'varchar'),
+        'layout' => array('data_type' => 'varchar'),
         'subject' => array('data_type' => 'varchar'),
         'body' => array('data_type' => 'varchar'),
         'reply_to' => array('data_type' => 'varchar'),
@@ -45,6 +47,22 @@ class Model_Postmaster_Email extends Model_Master {
     public function filters(){
         return array(
         );
+    }
+    
+    public function getTemplate(){
+        if($this->template == "" OR $this->template == "Default"){
+            return ORM::factory("Setting")->getValue("system.postmaster.email.template");
+        } else {
+            return $this->template;
+        }
+    }
+    
+    public function getLayout(){
+        if($this->layout == "" OR $this->layout == "Default"){
+            return ORM::factory("Setting")->getValue("system.postmaster.email.layout");
+        } else {
+            return $this->layout;
+        }
     }
 }
 
