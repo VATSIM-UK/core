@@ -30,6 +30,14 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
     }
     
     public function action_email_confirm(){
+        // If the user isn't logged in, force a logout!
+        if(!is_object($this->_current_account) OR !$this->_current_account->loaded()){
+            if(!is_object($this->_current_account)){
+                $this->_current_account->action_logout();
+            }
+            $this->redirect("sso/manage/display");
+        }
+        
         // Submitted the form?
         if (HTTP_Request::POST == $this->request->method()) {
             // Is the email "valid"?
