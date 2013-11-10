@@ -239,6 +239,14 @@ class Model_Postmaster_Queue extends Model_Master {
             return false;
         }
         
+        // Before we continue we MUST make sure the user's have emails.
+        if(!$this->recipient->emails->get_active_primary() OR $this->recipient->emails->get_active_primary() == ""){
+            return false;
+        }
+        if(!$this->sender->emails->get_active_primary() OR $this->sender->emails->get_active_primary() == ""){
+            return false;
+        }
+        
         // Create the mail object.
         $email = Email::factory($this->subject, strip_tags($this->body));
         
@@ -256,7 +264,7 @@ class Model_Postmaster_Queue extends Model_Master {
         $email->to(strval($this->recipient->emails->get_active_primary()), strval($this->recipient->name_first." ".$this->recipient->name_last));
         $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         if($this->email->reply_to == ""){
-        $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
+            $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         } else {
             $email->reply_to(strval($this->email->reply_to));
         }
