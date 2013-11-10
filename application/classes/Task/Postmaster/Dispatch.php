@@ -15,7 +15,10 @@ class Task_Postmaster_Dispatch extends Minion_Task
         if(Arr::get($params, "debug")) print "Dispatching all elegible emails from the queue...\n\n";
         
         // Get all emails, we'll order by priority!
-        $emails = ORM::factory("Postmaster_Queue")->where("status", ">=", Enum_System_Postmaster_Queue_Status::DELAYED)->order_by("priority", "DESC")->find_all();
+        $emails = ORM::factory("Postmaster_Queue")
+                     ->where("status", "=", Enum_System_Postmaster_Queue_Status::PARSED)
+                     ->or_where("status", "=", Enum_System_Postmaster_Queue_Status::DELAYED)
+                     ->order_by("priority", "DESC")->find_all();
         if(Arr::get($params, "debug")) print "There are ".count($emails)." waiting to be dispatched:";
         
         // Now parse them all

@@ -164,9 +164,16 @@ class Model_Postmaster_Queue extends Model_Master {
         }
         
         // ..replacements based on the sender and recipient of this email.
-        foreach(array("sender", "recipient") as $_rc){
+        foreach(array("sender", "recipient" => array("recipient", "member")) as $_rc => $_){
+            if(is_numeric($_rc)) $_rc = $_;
             foreach(array("name_first", "name_last") as $cKey){
-                $replacements[$_rc.".".$cKey] = $this->{$_rc}->get($cKey);
+                if(!is_array($_)){
+                    $_ = array($cKey);
+                }
+                foreach($_ as $_alias){
+                    $replacements[$_alias.".".$cKey] = $this->{$_rc}->get($cKey);
+                }
+
             }
         }
         
@@ -205,6 +212,7 @@ class Model_Postmaster_Queue extends Model_Master {
         $this->subject = preg_replace("/\%\{.*?\}/i", "#", $this->subject);
         $this->body = preg_replace("/\%\{.*?\}/i", "#", $this->body);
         
+        
         // Set timestamps and status
         $this->timestamp_parsed = gmdate("Y-m-d H:i:s");
         $this->status = Enum_System_Postmaster_Queue_Status::PARSED;
@@ -236,11 +244,11 @@ class Model_Postmaster_Queue extends Model_Master {
         
         // Let's generate the email within a template!
         $htmlBody = View::factory("Email/".$this->email->getTemplate()."/".$this->email->getLayout());
-        $htmlBody->set("content", nl2br($this->body));
-        $htmlBody->set("_key", $this->email->key);
-        $htmlBody->set("_id", $this->id);
-        $htmlBody->set("_template", $this->email->getTemplate());
-        $htmlBody->set("_layout", $this->email->getLayout());
+        $htmlBody->set_global("content", nl2br($this->body));
+        $htmlBody->set_global("_key", $this->email->key);
+        $htmlBody->set_global("_id", $this->id);
+        $htmlBody->set_global("_template", $this->email->getTemplate());
+        $htmlBody->set_global("_layout", $this->email->getLayout());
         $htmlBody = $htmlBody->render();
         $email->message($htmlBody, "text/html"); // HTML VERSION!
         
