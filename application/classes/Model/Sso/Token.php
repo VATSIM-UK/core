@@ -219,6 +219,7 @@ class Model_Sso_Token extends Model_Master {
         if($oldToken->loaded()){
             $oldToken->expires = gmdate("Y-m-d H:i:s", strtotime("-30 seconds"));
             $oldToken->save();
+            print "<pre>" . print_r($oldToken, true);
         }
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.sso.token.key"));
         
@@ -230,6 +231,9 @@ class Model_Sso_Token extends Model_Master {
         $newToken->created = gmdate("Y-m-d H:i:s");
         $newToken->expires = gmdate("Y-m-d H:i:s", strtotime("+".ORM::factory("Setting")->getValue("auth.sso.token.lifetime")));
         $newToken->save();
+        var_dump($newToken->saved());
+        print_r($newToken);
+        exit();
         
         // Store this token!
         $this->session()->set(ORM::factory("Setting")->getValue("auth.sso.token.key"), $token);
