@@ -98,7 +98,7 @@ $_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
 array_pop($_SERVER_URI);
 $_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
 Kohana::init(array(
-    'base_url' => $_SERVER_URI,
+    'base_url' => ((Kohana::$environment==Kohana::DEVELOPMENT) ? "http://dev.vatsim-uk.co.uk".$_SERVER_URI : "http://core.vatsim-uk.co.uk".$_SERVER_URI),
     'index_file' => "",//Kohana::$environment === Kohana::PRODUCTION,
     'errors' => Kohana::$environment !== Kohana::PRODUCTION,
     'profile' => Kohana::$environment !== Kohana::PRODUCTION,
