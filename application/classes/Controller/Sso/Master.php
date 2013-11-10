@@ -25,19 +25,8 @@ class Controller_Sso_Master extends Controller_Master {
         $this->loadAccount();   
         $this->loadToken();
         
-        if(!is_object($this->_current_token)){
+        if(!is_object($this->_current_token) || !$this->_current_token->loaded() || strtotime($this->_current_token->expires) < strtotime(gmdate("Y-m-d H:i:s"))){
             $this->session()->delete("sso_security_grace");
-            die("HERE!1");
-            return false;
-        }
-        if(!$this->_current_token->loaded()){
-            $this->session()->delete("sso_security_grace");
-            die("HERE!2");
-            return false;
-        }
-        if(strtotime($this->_current_token->expires) < strtotime(gmdate("Y-m-d H:i:s"))){
-            $this->session()->delete("sso_security_grace");
-            die("HERE!3");
             return false;
         }
         if($checkAccount === true && !is_object($this->_current_account) && !$this->_current_account->loaded()){
