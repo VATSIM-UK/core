@@ -13,7 +13,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             exit();
         }
         
-        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override")){
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override" && $this->_action != "logout")){
             $this->redirect("/sso/auth/checks");
             exit();
         }

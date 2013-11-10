@@ -55,7 +55,7 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
                 }
                 
                 // Send the SSO welcome email.
-                ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $id, null, 
+                ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $this->_current_account->id, null, 
                     array(
                         "primary_email" => $this->_current_account->emails->get_active_primary()->email,
                         "account_state" => $this->_current_account->getState(),

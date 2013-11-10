@@ -54,6 +54,7 @@ class Helper_Account_Main {
         // If not loaded, set the id!
         if(!$account->loaded()){
             $account->id = $account_id;
+            $account->created = gmdate("Y-m-d H:i:s");
         }
         // Go through the various fields we can update.
         foreach ($account->list_columns() as $_col => $_data) {
@@ -64,12 +65,14 @@ class Helper_Account_Main {
         
         // Save it, yeeee-ha!
         try {
+            $account->updated = gmdate("Y-m-d H:i:s");
             $account->checked = gmdate("Y-m-d H:i:s");
             $account->save();
         } catch(Exception $e){
             // TODO: Handle this!
             return false;
         }
+        
         // Determine (and log) changed values.
         $changed = $account->changed();
         foreach ($changed as $key => $value) {
