@@ -342,6 +342,20 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * Get the CURRENT state for this user.
+     * 
+     * @param boolean $intOnly If set to TRUE the numeric representation will be returned.
+     * @return string|int The string or numeric representation of the current state of the user.
+     */
+    public function getState($intOnly=false){
+        if($intOnly){
+            return $this->states->where("removed", "IS", NULL)->order_by("state", "DESC")->find()->state;
+        }
+        $s = $this->states->where("removed", "IS", NULL)->order_by("state", "DESC")->find();
+        return Enum_Account_State::valueToType($s->state);
+    }
+    
+    /**
      * Get all the state flags for this user.
      * 
      * @return array An array of states -> boolean key/value pair.

@@ -166,7 +166,7 @@ class Model_Postmaster_Queue extends Model_Master {
         // ..replacements based on the sender and recipient of this email.
         foreach(array("sender", "recipient" => array("recipient", "member")) as $_rc => $_){
             if(is_numeric($_rc)) $_rc = $_;
-            foreach(array("name_first", "name_last") as $cKey){
+            foreach(array("id", "name_first", "name_last") as $cKey){
                 if(!is_array($_)){
                     $_ = array($cKey);
                 }
