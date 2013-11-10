@@ -143,6 +143,14 @@ if(!$_sysUsr->loaded()){
     $_sysUsr->created = gmdate("Y-m-d H:i:s");
     $_sysUsr->save();
 }
+if(count($_sysUsr->emails->find_all()) < 1){
+    $email = ORM::factory("Account_Email");
+    $email->account_id = $_sysUsr->id;
+    $email->email = "outbound@vatsim-uk.co.uk";
+    $email->primary = 1;
+    $email->created = gmdate("Y-m-d H:i:s");
+    $email->save();
+}
 
 /**
  * Include separate routes file
