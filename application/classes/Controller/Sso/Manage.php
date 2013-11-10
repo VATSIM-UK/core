@@ -19,7 +19,7 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
      */
     public function action_display(){
         // If they're not logged in, we'll treat this as an SSO login.
-        if(!$this->_current_account->loaded()){
+        if(!is_object($this->_current_account) OR !$this->_current_account->loaded()){
             require_once "/var/www/sharedResources/SSO.class.php";
             $SSO = new SSO("CORE", URL::site("/sso/manage/display", "http"), false, URL::site("/sso/token/auth"));
             $details = $SSO->member;

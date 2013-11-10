@@ -295,6 +295,7 @@ class Model_Account_Main extends Model_Master {
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
         Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
         $this->session()->delete("sso_quicklogin");
+        $this->session()->regenerate();
     }
     
     /**

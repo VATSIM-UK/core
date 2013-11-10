@@ -84,13 +84,16 @@ abstract class Controller_Master extends Controller_Template {
             die("NO PERMISSION!");
             return;
         }
-
+        
         // Add to the breadcrumb
         $this->addBreadcrumb($this->_area, "/");
         $this->addBreadcrumb($this->_controller, $this->_controller . "/");
         $this->addBreadcrumb($this->_action, $this->_controller . "/" . $this->_action . "/");
         
         $this->setTitle(ucfirst($this->_action));
+        
+        $this->loadAccount();
+        $this->loadToken();
     }
 
     public function after() {
