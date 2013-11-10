@@ -36,25 +36,45 @@ class Controller_Sso_Security extends Controller_Sso_Master {
      * NB: registered vatsim email === primary email.
      */
     public function action_forgotten(){
-        // Get the security type we're working with here!
-        $securityType = ($this->_current_account->security->loaded() ? $this->_current_account->security->type : Enum_Account_Security::MEMBER);
-        
-        // Let's generate....
-        $random = Text::random("distinct", 12);
-        
-        // Let's update....
-        $this->_current_account->security->value = $random;
-        $this->_current_account->security->created = gmdate("Y-m-d H:i:s");
-        $this->_current_account->security->expires = gmdate("Y-m-d H:i:s");
-        $this->_current_account->security->save();
-        
-        // Now email them!
-        ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $this->_current_account->id, null, array("temp_password" => $random));
+        $res = $this->_current_account->security_resets->action_generate($this->_current_account->id);
         
         // Message
-        $this->setMessage("Password Reset", "As you have forgotten your password,
-            a new one has been sent to you via email.<br />
-            Please ".HTML::anchor("sso/security/auth", "return to the password screen").".", "success");
+        if($res){
+            $this->setMessage("Password Reset", "As you have forgotten your password,
+                an authorisation link has been emailed to you.  Once you click this link to confirm this request
+                a new password will be generated and emailed to you.<br />
+                You can now close this window.", "success");
+        } else {
+            $this->setMessage("Password Reset", "We were unable to generate a password reset link.
+                         Please contact the ".HTML::anchor("mailto:web-support@vatsim-uk.co.uk", "web services team").".", "error");
+        }
+        $this->_current_account->action_logout();
+    }
+    
+    /**
+     * Reset a user's secondary password and send it to their register vatsim email.
+     * 
+     * NB: registered vatsim email === primary email.
+     */
+    public function action_forgotten_link(){
+        // Let's get the code and hash.
+        $code = $this->request->query("code", null);
+        $hash = $this->request->query("hash", null);
+        
+        // We need to validate this information.
+        // But we'll leave that down to the model.
+        // Let's rock and roll baby!
+        $result = ORM::factory("Account_Security_Reset")->action_clickLink($code, $hash);
+        
+        if($result){
+            $this->setMessage("Password Reset", "A new password has been emailed to you.<br />
+                You can now close this window.", "success");
+        } else {
+            $this->setMessage("Password Reset", "The link you have clicked is invalid.  If you believe this is an error
+                please contact the ".HTML::anchor("mailto:web-support@vatsim-uk.co.uk", "web services team").".", "error");
+        }
+        $this->_current_account->action_logout();
+        $this->setTemplate("Sso/Security/Forgotten");
     }
     
     /**

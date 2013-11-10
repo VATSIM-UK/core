@@ -56,6 +56,7 @@ class Helper_Account_Main {
             $account->id = $account_id;
             $account->created = gmdate("Y-m-d H:i:s");
         }
+        
         // Go through the various fields we can update.
         foreach ($account->list_columns() as $_col => $_data) {
             if(strcasecmp($account->{$_col}, Arr::get($data, $_col)) != 0 && in_array($_col, self::$CHANGES_FIELD_LIST)){
