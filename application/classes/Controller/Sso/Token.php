@@ -13,7 +13,6 @@ class Controller_Sso_Token extends Controller_Sso_Master {
         
         // Now check the token file and get the returnURL.
         if(!ORM::factory("Sso_Token")->check_token_file($token)){
-            die("HAI!");
             return false;
         }
         $returnURL = ORM::factory("Sso_Token")->get_token_file($token);
