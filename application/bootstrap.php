@@ -102,9 +102,15 @@ if(Kohana::$environment == Kohana::PRODUCTION && $dev){
  * - boolean  expose      set the X-Powered-By header                        FALSE
  */
 // INIT!
-$_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
-array_pop($_SERVER_URI);
-$_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+if(Kohana::$environment==Kohana::PRODUCTION){
+    $_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
+    array_pop($_SERVER_URI);
+    $_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+} else {
+    $_SERVER_URI = explode("/", $_SERVER["PWD"]);
+    $_SERVER_URI = array_slice($_SERVER_URI, 4);
+    $_SERVER_URI = "/".str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+}
 Kohana::init(array(
     'base_url' => ((Kohana::$environment==Kohana::STAGING) ? "http://beta.vatsim-uk.co.uk".$_SERVER_URI : ((Kohana::$environment==Kohana::DEVELOPMENT) ? "http://dev.vatsim-uk.co.uk".$_SERVER_URI : "http://core.vatsim-uk.co.uk".$_SERVER_URI)),
     'index_file' => "",//Kohana::$environment === Kohana::PRODUCTION,
