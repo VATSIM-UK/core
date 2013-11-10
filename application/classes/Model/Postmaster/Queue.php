@@ -147,7 +147,8 @@ class Model_Postmaster_Queue extends Model_Master {
         }
         
         // Build our list of possible replacements for this email.
-        $replacements = array("signature" => "%{setting.system.postmaster.email.signature}");
+        $replacements = array("signature" => "%{setting.system.postmaster.email.signature}",
+                              "url.site" => URL::site("", "http"));
         
         // ..replacements based on the data stored for THIS email specifically.
         if($this->data != ""){
