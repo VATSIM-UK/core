@@ -1,6 +1,4 @@
 [submodule "shadowhand_email"]
 	path = modules/email
 	url = git://github.com/shadowhand/email.git
-[submodule "swiftmailer"]
-	path = modules/vendors/swiftmailer
-	url = git://github.com/swiftmailer/swiftmailer.git
+
