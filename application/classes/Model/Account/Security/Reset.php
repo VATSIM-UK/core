@@ -12,6 +12,7 @@ class Model_Account_Security_Reset extends Model_Master {
         'code' => array('data_type' => 'varchar'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'expires' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'used' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'enabled' => array('data_type' => 'boolean'),
     );
     
