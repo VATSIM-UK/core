@@ -74,7 +74,7 @@ if (isset($_SERVER['KOHANA_ENV'])) {
 Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . strtoupper($_SERVER['KOHANA_ENV'])) : Kohana::PRODUCTION;
 
 if(isset($_SERVER["PWD"])){
-    $dev = preg_match("/(httpdocs|dev)/i", $_SERVER["PWD"]);
+    $dev = preg_match("/(httpdocs|dev|beta|staging)/i", $_SERVER["PWD"]);
 } else {
     $dev = false;
 }
