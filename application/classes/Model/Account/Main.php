@@ -69,6 +69,11 @@ class Model_Account_Main extends Model_Master {
     // Validation rules
     public function rules(){
         return array(
+            'id' => array(
+                array('min_length', array(':value', 6)),
+                array('max_length', array(':value', 7)),
+                array('numeric'),
+            ),
             'name_first' => array(
                 array('not_empty'),
             ),
