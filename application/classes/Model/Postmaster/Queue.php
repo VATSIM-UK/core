@@ -256,7 +256,7 @@ class Model_Postmaster_Queue extends Model_Master {
         // 3...2....1 LIFT OFF!
         if($email->send()){
             $this->timestamp_sent = gmdate("Y-m-d H:i:s");
-            $this->status = Enum_System_Postmaster_Queue_Status::SENT;
+            $this->status = Enum_System_Postmaster_Queue_Status::DISPATCHED;
             $this->save();
             return true;
         } else {

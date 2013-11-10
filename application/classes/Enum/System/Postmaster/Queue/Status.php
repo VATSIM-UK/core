@@ -6,6 +6,7 @@ class Enum_System_Postmaster_Queue_Status extends Enum_System {
     const QUEUED = 10;
     const PARSED = 40;
     const DELAYED = 90;
+    const DISPATCHED = 100;
     const SENT = 100;
     
     public static function getDescription($value){
@@ -16,6 +17,7 @@ class Enum_System_Postmaster_Queue_Status extends Enum_System {
                 return "Parsed";
             case DELAYED:
                 return "Delayed (Attempted to send, but couldn't)";
+            case DISPATCHED:
             case SENT:
                 return "Dispatched from Server";
             default:

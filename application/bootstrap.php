@@ -73,6 +73,11 @@ if (isset($_SERVER['KOHANA_ENV'])) {
 
 Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . strtoupper($_SERVER['KOHANA_ENV'])) : Kohana::PRODUCTION;
 
+$dev = preg_match("/(httpdocs|dev)/i", $_SERVER["PWD"]);
+if(Kohana::$environment == Kohana::PRODUCTION && $dev){
+    Kohana::$environment = Kohana::DEVELOPMENT;
+}
+
 /**
  * Initialize Kohana, setting the default options.
  *
