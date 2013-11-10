@@ -54,6 +54,13 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
                     $this->_data["error"] = "There seems to be an error.  Please contact web services.";
                 }
                 
+                // Send the SSO welcome email.
+                ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $id, null, 
+                    array(
+                        "primary_email" => $this->_current_account->emails->get_active_primary()->email,
+                        "account_state" => $this->_current_account->getState(),
+                    ));
+                
                 // Send back to complete the checks!
                 if($valid){
                     $this->redirect("/sso/auth/checks");
