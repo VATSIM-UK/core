@@ -116,7 +116,6 @@ Kohana::$config->attach(new Config_File);
  */
 Kohana::modules(array(
     //auth' => MODPATH . 'auth', // Basic authentication
-    'vendor' => MODPATH.'vendor', // Vendor dir in modules...
     'cache'      => MODPATH.'cache',      // Caching with multiple backends
     'codebench'  => MODPATH.'codebench',  // Benchmarking tool
     'database' => MODPATH . 'database', // Database access
