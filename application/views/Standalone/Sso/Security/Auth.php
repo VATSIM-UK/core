@@ -8,6 +8,7 @@
                 <label class="col-sm-5 control-label" for="password">Secondary Password</label>
                 <div class="col-sm-7">
                     <input class="form-control" type="password" id="password" name="password" placeholder="Secondary Password">
+                    <span class="help"><?=HTML::anchor("sso/security/forgotten", "Forgotten password?")?></span>
                 </div>
             </div>
             <div class="form-group">

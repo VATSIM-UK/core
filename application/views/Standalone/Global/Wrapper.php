@@ -43,6 +43,15 @@
                     <?php endforeach; ?>
                 <?php endif; ?>
                 
+                <?php if (isset($_messages) && isset($_messages["success"])): ?>
+                    <?php foreach($_messages["success"] as $msg): ?>
+                        <div class="alert alert-success">
+                            <strong><?=$msg->title?></strong>
+                            <p><?= $msg->message ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                
                 <?=$_content?>
             </div>
         </div>

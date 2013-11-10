@@ -31,6 +31,33 @@ class Controller_Sso_Security extends Controller_Sso_Master {
     }
     
     /**
+     * Reset a user's secondary password and send it to their register vatsim email.
+     * 
+     * NB: registered vatsim email === primary email.
+     */
+    public function action_forgotten(){
+        // Get the security type we're working with here!
+        $securityType = ($this->_current_account->security->loaded() ? $this->_current_account->security->type : Enum_Account_Security::MEMBER);
+        
+        // Let's generate....
+        $random = Text::random("distinct", 12);
+        
+        // Let's update....
+        $this->_current_account->security->value = $random;
+        $this->_current_account->security->created = gmdate("Y-m-d H:i:s");
+        $this->_current_account->security->expires = gmdate("Y-m-d H:i:s");
+        $this->_current_account->security->save();
+        
+        // Now email them!
+        ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $this->_current_account->id, null, array("temp_password" => $random));
+        
+        // Message
+        $this->setMessage("Password Reset", "As you have forgotten your password,
+            a new one has been sent to you via email.<br />
+            Please ".HTML::anchor("sso/security/auth", "return to the password screen").".", "success");
+    }
+    
+    /**
      * Authorise the user's access with their secondary password.
      */
     public function action_replace() {
