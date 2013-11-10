@@ -6,7 +6,7 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
     public function before() {
         parent::before();
         
-        if($this->session()->get("sso_token_lock", false) && ($this->_action == "display")){
+        if(is_object($this->_current_account) && $this->_current_account->loaded() && $this->session()->get("sso_token_lock", false) && ($this->_action == "display")){
             $this->redirect("/sso/auth/checks");
             exit();
         }
