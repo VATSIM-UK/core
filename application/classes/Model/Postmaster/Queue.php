@@ -145,7 +145,7 @@ class Model_Postmaster_Queue extends Model_Master {
         }
         
         // Build our list of possible replacements for this email.
-        $replacements = array();
+        $replacements = array("signature" => "%{setting.system.postmaster.email.signature}");
         
         // ..replacements based on the data stored for THIS email specifically.
         if($this->data != ""){
@@ -229,15 +229,25 @@ class Model_Postmaster_Queue extends Model_Master {
             return false;
         }
         
-        // Send the email
-        $email = Email::factory($this->subject, $this->body);
-        $email->to($this->recipient->emails->get_active_primary(), $this->recipient->name_first." ".$this->recipient->name_last);
-        $email->from($this->sender->emails->get_active_primary(), $this->sender->name_first." ".$this->recipient->name_last);
+        // Create the mail object.
+        $email = Email::factory($this->subject, strip_tags($this->body));
+        
+        // Let's generate the email within a template!
+        $htmlBody = View::factory("Email/Default");
+        $htmlBody->set("content", nl2br($this->body));
+        $htmlBody = $htmlBody->render();
+        $email->message($htmlBody, "text/html"); // HTML VERSION!
+        
+        // Set the to's, from's and reply_to's before sending!
+        $email->to(strval($this->recipient->emails->get_active_primary()), strval($this->recipient->name_first." ".$this->recipient->name_last));
+        $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         if($this->email->reply_to == ""){
-            $email->reply_to($this->sender->emails->get_active_primary(), $this->sender->name_first." ".$this->recipient->name_last);
+        $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         } else {
-            $email->reply_to($this->email->reply_to);
+            $email->reply_to(strval($this->email->reply_to));
         }
+        
+        // 3...2....1 LIFT OFF!
         $email->send();
         
         return true;

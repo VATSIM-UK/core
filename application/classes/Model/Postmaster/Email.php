@@ -11,6 +11,7 @@ class Model_Postmaster_Email extends Model_Master {
         'key' => array('data_type' => 'varchar'),
         'subject' => array('data_type' => 'varchar'),
         'body' => array('data_type' => 'varchar'),
+        'reply_to' => array('data_type' => 'varchar'),
         'priority' => array('data_type' => 'smallint'),
     );
     

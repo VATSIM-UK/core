@@ -26,7 +26,7 @@ return array(
 	 * @param   array   smtp: hostname, (username), (password), (port), (encryption)
 	 */
 	'options' => array(
-            "hostname" => "ssl://smtp.gmail.com",
+            "hostname" => "smtp.gmail.com",
             "username" => "outbound@vatsim-uk.co.uk",
             "password" => "2Q=SqHG82Q=SqHG8",
             "port" => 465,
