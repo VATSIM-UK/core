@@ -24,6 +24,6 @@
                     <?php endif; ?>
                 </p>
             <?php endif; ?>
-            <?php View::factory("Email/Global/Footer")->render() ?>
+            <?=View::factory("Email/Global/Footer")->render()?>
         </div>
 </html>
