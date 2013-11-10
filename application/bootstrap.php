@@ -149,7 +149,6 @@ if(!$_sysUsr->loaded()){
     $_sysUsr->name_first = "VATSIM";
     $_sysUsr->name_last = "UK";
     $_sysUsr->status = 7;
-    $_sysUsr->password = "somewhere_over_the_rainbow25js1";
     $_sysUsr->created = gmdate("Y-m-d H:i:s");
     $_sysUsr->save();
 }
