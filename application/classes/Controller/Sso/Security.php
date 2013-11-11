@@ -50,6 +50,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                          Please contact the " . HTML::anchor("mailto:web-support@vatsim-uk.co.uk", "web services team") . ".", "error");
         }
         $this->_current_account->action_logout();
+        $this->setTitle("Secondary Password - Forgotten");
     }
 
     /**
@@ -75,6 +76,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                 please contact the " . HTML::anchor("mailto:web-support@vatsim-uk.co.uk", "web services team") . ".", "error");
         }
         $this->_current_account->action_logout();
+        $this->setTitle("Secondary Password - Forgotten");
         $this->setTemplate("Sso/Security/Forgotten");
     }
 
