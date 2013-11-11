@@ -108,17 +108,18 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                     try {
                         ORM::factory("Account_Security")->set_security($this->_current_account->id, $securityType, $this->request->post("new_password"));
                         ORM::factory("Account_Security")->action_authorise($this->request->post("new_password"), true);
-
-                        if ($this->_current_token->loaded()) {
-                            // Send back and do some more checks!
-                            $this->redirect("/sso/auth/checks");
-                        } else {
-                            $this->redirect("/sso/manage/display");
-                        }
-                        return true;
                     } catch (Exception $e) {
                         $this->setMessage("Security Authorisation Error", "Your new password does not meet the requirements specified.", "error");
                     }
+                    
+                    // This has to be here, as the redirects generate exceptions thus will be caught.
+                    if ($this->_current_token->loaded()) {
+                        // Send back and do some more checks!
+                        $this->redirect("/sso/auth/checks");
+                    } else {
+                        $this->redirect("/sso/manage/display");
+                    }
+                    return true;
                 }
             } else {
                 $this->setMessage("Security Authorisation Error", "The existing secondary password you entered was incorrect.", "error");
