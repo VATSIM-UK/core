@@ -7,15 +7,14 @@
 
         <!-- CSS -->
         <?= HTML::style("http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css"); ?>
-        <?= HTML::style("media/bootstrap/3/css/bootstrap.min.css"); ?>
-        <?= HTML::style("media/bootstrap/3/css/bootstrap-responsive.min.css"); ?>
+        <?= HTML::style("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"); ?>
         <?= HTML::style("media/style/Standalone/design.css"); ?>
         <?= HTML::style("http://fonts.googleapis.com/css?family=Yellowtail"); ?>
 
         <!-- Javascript -->
         <?= HTML::script("http://code.jquery.com/jquery-1.9.1.min.js"); ?>
         <?= HTML::script("http://code.jquery.com/ui/1.10.1/jquery-ui.js"); ?>
-        <?= HTML::script("media/bootstrap/3/js/bootstrap.min.js"); ?>
+        <?= HTML::script("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"); ?>
         <?= HTML::script("media/scripts/general.js"); ?>
     </head>
     <body>
