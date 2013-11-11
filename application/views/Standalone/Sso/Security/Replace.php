@@ -15,7 +15,7 @@
         <strong>Please note, your password must:</strong>
         <ul>
             <?php foreach ($_requirements as $r): ?>
-                <&nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>
+                &nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>
             <?php endforeach; ?>
         </ul>
     </div>
