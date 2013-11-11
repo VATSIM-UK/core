@@ -1,3 +1,3 @@
 <?= View::factory("Email/Global/Header")->render() ?>
-    <?= $content ?>
+<?= $content ?>
 <?=View::factory("Email/Global/Footer")->render()?>
