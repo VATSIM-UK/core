@@ -10,6 +10,7 @@
         <?= HTML::style("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"); ?>
         <?= HTML::style("media/style/Standalone/design.css"); ?>
         <?= HTML::style("http://fonts.googleapis.com/css?family=Yellowtail"); ?>
+        <?= HTML::style("http://fonts.googleapis.com/css?family=Josefin+Slab:600"); ?>
 
         <!-- Javascript -->
         <?= HTML::script("http://code.jquery.com/jquery-1.9.1.min.js"); ?>
