@@ -12,42 +12,42 @@
 
 <?php if (isset($_requirements)): ?>
     <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Please note, your password must:</strong>
         <ul>
             <?php foreach ($_requirements as $r): ?>
-                <li><?= $r ?></li>
+                &nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>
             <?php endforeach; ?>
         </ul>
     </div>
 <?php endif; ?>
 
-<div class="row-fluid">
-    <div class="span6 offset2">
-        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("/sso/security/replace") ?>">
+<div class="row">
+    <div class="col-md-7 col-md-offset-2">
+        <form class="form-horizontal" method="POST" action="<?= URL::site("/sso/security/replace") ?>" role="form">
             <?php if (isset($sls_type) && ($sls_type == "expired" || $sls_type == "change")): ?>
-                <div class="control-group">
-                    <label class="control-label" for="old_password">Old Password</label>
-                    <div class="controls">
-                        <input type="password" id="old_password" name="old_password" placeholder="Old Password">
+                <div class="form-group">
+                    <label class="col-sm-5 control-label" for="old_password">Old Password</label>
+                    <div class="col-sm-7">
+                        <input class="form-control" type="password" id="old_password" name="old_password" placeholder="Old Password">
+                        <span class="help-block col-md-offset-1">May be a temporary password</span>
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="control-group">
-                <label class="control-label" for="new_password">New Password</label>
-                <div class="controls">
-                    <input type="password" id="new_password" name="new_password" placeholder="New Password">
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="new_password">New Password</label>
+                <div class="col-sm-7">
+                    <input class="form-control" type="password" id="new_password" name="new_password" placeholder="New Password">
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="new_password2">Confirm New Password</label>
-                <div class="controls">
-                    <input type="password" id="new_password2" name="new_password2" placeholder="Confirm New Password">
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="new_password2">Confirm New Password</label>
+                <div class="col-sm-7">
+                    <input class="form-control" type="password" id="new_password2" name="new_password2" placeholder="Confirm New Password">
                 </div>
             </div>
-            <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn" name="processextra_security_replace" value="extra_security_replace">Change Security Details</button>
+            <div class="form-group">
+                <div class="col-sm-offset-5 col-sm-7">
+                    <button type="submit" class="btn btn-default" name="processextra_security_replace" value="extra_security_replace">Proceed</button>
                 </div>
             </div>
         </form>

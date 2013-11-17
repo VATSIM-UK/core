@@ -19,6 +19,7 @@ class Model_Account extends Model_Account_Main {
         if(!$this->loaded() || $this->check_requires_cert_update()){
             Helper_Account::update_using_remote($id);
         }
+        parent::__construct($id);
     }
 }
 

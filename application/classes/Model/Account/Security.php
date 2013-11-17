@@ -38,6 +38,7 @@ class Model_Account_Security extends Model_Master {
     public function rules(){
         return array(
             'value' => array(
+                array("not_empty"),
                 array(array($this, "validatePassword")),
             ),
         );

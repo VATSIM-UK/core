@@ -17,6 +17,17 @@ abstract class Controller_Master extends Controller_Template {
     protected $_breadcrumbs = array();
     protected $_title = NULL;
     protected $_messages = array();
+    protected $_current_token = null;
+    protected $_current_account = null;
+    protected $_actual_account = null;
+    
+    protected function loadAccount(){
+        $this->_current_account = ORM::factory("Account_Main")->get_current_account();
+    }
+    
+    protected function loadToken(){
+        $this->_current_token = ORM::factory("Sso_Token")->get_current_token();
+    }
 
     public function hasPermission() {
         return true;
@@ -73,13 +84,16 @@ abstract class Controller_Master extends Controller_Template {
             die("NO PERMISSION!");
             return;
         }
-
+        
         // Add to the breadcrumb
         $this->addBreadcrumb($this->_area, "/");
         $this->addBreadcrumb($this->_controller, $this->_controller . "/");
         $this->addBreadcrumb($this->_action, $this->_controller . "/" . $this->_action . "/");
         
         $this->setTitle(ucfirst($this->_action));
+        
+        $this->loadAccount();
+        $this->loadToken();
     }
 
     public function after() {

@@ -4,17 +4,6 @@ defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Master extends Controller_Master {
     protected $_templateDir = "Standalone"; // Override parent settings.
-    protected $_current_token = null;
-    protected $_current_account = null;
-    protected $_actual_account = null;
-    
-    protected function loadAccount(){
-        $this->_current_account = ORM::factory("Account_Main")->get_current_account();
-    }
-    
-    protected function loadToken(){
-        $this->_current_token = ORM::factory("Sso_Token")->get_current_token();
-    }
 
     public function __construct($request, $response){
         parent::__construct($request, $response);

@@ -11,21 +11,21 @@ class Enum_Account_Qualification_ATC extends Enum_Account_Qualification {
     const C2 = 5; // No longer in use.
     const C3 = 7;
     
-    public static function getDescription($value){
+    public static function getDescription($value, $long=true){
         switch($value){
             case self::OBS:
-                return "Observer";
+                return ($long ? "Observer" : "OBS");
             case self::S1:
-                return "Student";
+                return ($long ? "Student 1" : "STU1");
             case self::S2:
-                return "Student 2";
+                return ($long ? "Student 2" : "STU2");
             case self::S3:
-                return "Senior Student";
+                return ($long ? "Senior Student" : "STU+");
             case self::C1:
             case self::C2:
-                return "Controller";
+                return ($long ? "Controller 1" : "CTR");
             case self::C3:
-                return "Senior Controller";
+                return ($long ? "Senior Controller" : "CTR+");
             default:
                 return parent::getDescription($value);
         }

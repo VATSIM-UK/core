@@ -12,18 +12,18 @@
     </div>
 <?php endif; ?>
 
-<div class="row-fluid">
-    <div class="span6 offset2">
-        <form class="form-horizontal form-login" method="POST" action="<?= URL::site("sso/security/disable") ?>">
-            <div class="control-group">
-                <label class="control-label" for="password">Current Password</label>
-                <div class="controls">
-                    <input type="password" id="password" name="password" placeholder="Password">
+<div class="row">
+    <div class="col-md-7 col-md-offset-2">
+        <form class="form-horizontal" method="POST" action="<?= URL::site("sso/security/disable") ?>">
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="password">Current Password</label>
+                <div class="col-sm-7">
+                    <input class="form-control" type="password" id="password" name="password" placeholder="Password">
                 </div>
             </div>
-            <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn" name="processsecurity_disable" value="security_disable">Disable Extra Security</button>
+            <div class="form-group">
+                <div class="col-sm-offset-5 col-sm-7">
+                    <button type="submit" class="btn btn-default" name="processsecurity_disable" value="security_disable">Disable Extra Security</button>
                 </div>
             </div>
         </form>

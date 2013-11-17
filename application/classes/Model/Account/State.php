@@ -11,7 +11,7 @@ class Model_Account_State extends Model_Master {
         'account_id' => array('data_type' => 'bigint'),
         'state' => array('data_type' => 'tinyint'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
-        'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'removed' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -41,7 +41,7 @@ class Model_Account_State extends Model_Master {
     public function filters(){
         return array();
     }
-    
+        
     // Get the text for the endorsement
     public function __toString(){
         return $this->formatEndorsement(false);

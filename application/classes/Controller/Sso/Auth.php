@@ -5,15 +5,16 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_Sso_Auth extends Controller_Sso_Master {
     public function before(){
         parent::before();
-        
-        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override")){
-            $this->redirect("/sso/auth/checks");
+                
+        // If we don't have a valid token, we can't be here!
+        if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
+            //$this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
+            $this->redirect("sso/manage/display");
             exit();
         }
         
-        // If we don't have a valid token, we can't be here!
-        if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
-            $this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
+        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override" && $this->_action != "logout")){
+            $this->redirect("/sso/auth/checks");
             exit();
         }
     }
@@ -79,14 +80,14 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     /**
      * Allow the current user to login using their CID and password.
      */
-    public function action_login() {
+    public function action_login() {      
         // Is this user already authenticated?
         if($this->_current_account->loaded()){
             $this->_current_account->action_quick_login();
             $this->_current_token->set_account_id($this->_current_account->id);
             $this->action_checks();
             return;
-        }
+        }  
         
         // Submitted the form?
         if (HTTP_Request::POST == $this->request->method()) {
@@ -98,7 +99,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             // Try and authenticate!
             $authResult = false;
             try {
-                $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
+                // Does this user *actually* exist?
+                if(!ORM::factory("Account", $cid) OR !ORM::factory("Account", $cid)->loaded()){
+                    $authResult = false;
+                } else {
+                    $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
+                }
             } catch(Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
                 if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
                     $authResult = true;
@@ -128,9 +134,9 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         }
         
         // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override") == 1) {
+        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null) {
             // Run the logout!
-            if($this->request->post("processlogout") == 1 || $this->request->query("override") == 1){
+            if($this->request->post("processlogout") == 1 || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null){
                 if($this->_current_account->is_overriding()){
                     $this->_current_account->override_disable();
                 } else {

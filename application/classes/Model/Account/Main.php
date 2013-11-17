@@ -44,6 +44,10 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Account_Email',
             'foreign_key' => 'account_id',
         ),
+        'security_resets' => array(
+            'model' => 'Account_Security_Reset',
+            'foreign_key' => 'account_id',
+        ),
         'qualifications' => array(
             'model' => 'Account_Qualification',
             'foreign_key' => 'account_id',
@@ -69,6 +73,11 @@ class Model_Account_Main extends Model_Master {
     // Validation rules
     public function rules(){
         return array(
+            'id' => array(
+                array('min_length', array(':value', 6)),
+                array('max_length', array(':value', 7)),
+                array('numeric'),
+            ),
             'name_first' => array(
                 array('not_empty'),
             ),
@@ -87,12 +96,12 @@ class Model_Account_Main extends Model_Master {
             'name_first' => array(
                 array('trim'),
                 array(array("UTF8", "clean"), array(":value")),
-                array(array($this, "formatName"), array(":value", "f")),
+                array(array("Helper_Account", "formatName"), array(":value", "f")),
             ),
             'name_last' => array(
                 array('trim'),
                 array(array("UTF8", "clean"), array(":value")),
-                array(array($this, "formatName"), array(":value", "s")),
+                array(array("Helper_Account", "formatName"), array(":value", "s")),
             ),
             'password' => array(
                 array("sha1"),
@@ -290,6 +299,7 @@ class Model_Account_Main extends Model_Master {
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
         Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
         $this->session()->delete("sso_quicklogin");
+        $this->session()->regenerate();
     }
     
     /**
@@ -326,92 +336,81 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
-     * This helper formats the name of a person to conform with expected output.
+     * Determine whether the current loaded member is of the set state.
      * 
-     * @param string $name The name to format.
-     * @param string $type 'f' for forename, 's' for surname.
-     * @return string The formatted name.
+     * @param Enum_Account_State $state The state to check.
+     * @param string $returnType boolean or date.
+     * @return boolean True if set, false otherwise.
      */
-    public static function formatName($name, $type='f'){
-        //Firstname
-        if($type == 'f'){
-
-            $name = trim($name);
-            $name = ucfirst(strtolower($name));
-            $name = addslashes($name);
-
-            return $name;
-
-        ///Surname
-        } elseif($type == 's') {
-
-            $name = trim($name);
-
-            ///Test for spaces- eg Le Bargy
-            $space = explode(' ', $name);
-            if(count($space) > 1){
-
-                $name = '';
-                foreach($space as $k => $v){
-                    $name .= ucfirst(strtolower($v)).' ';
-                }
-
-                $name = addslashes(trim($name));
-                return $name;
-
-            } else {
-                if(strlen($name) <= 2){
-                    return $name;
-                }
-                
-                ///Check for Mc - eg McTighe
-                $name = strtolower($name);
-                            $first_two = $name{0} . (isset($name{1}) ? $name{1} : "");
-                $therest = '';
-
-                if($first_two == 'mc'){
-                    for($i = 2; $i < strlen($name); $i++){
-                        $therest .= $name{$i};
-                    }
-
-                    $name = "Mc".ucfirst($therest);
-                    $name = addslashes(trim($name));
-                    return $name;
-
-                } else {
-
-                    ///Check for hyphon seperated surnames
-                    $hyphon = explode('-', $name);
-                    if(count($hyphon) > 1){
-
-                        $name = '';
-                        $numh = 0;
-                        foreach($hyphon as $k => $v){
-
-                            $numh = $numh+1;
-                            $name .= ucfirst(strtolower($v));
-
-                            ///Dont append extra -
-                            if($numh != count($hyphon)){
-                                $name .= '-';
-                            }
-
-                        }
-
-                        $name = addslashes(trim($name));
-                        return $name;
-
-                    } else {
-                        ///Any other surname
-                        $name = ucfirst(strtolower($name));
-                        $name = addslashes(trim($name));
-                        return $name;
-                    }
-                }
+    public function isStateSet($state, $returnType="boolean"){
+        foreach($this->states->find_all() as $_s){
+            if(is_object($_s) && $_s->state == $state && $_s->removed == NULL){
+                return (($returnType == "date") ? $_s->created : true);
             }
-        } else {
-            return '';
         }
+        return false;
+    }
+    
+    /**
+     * Get the CURRENT state for this user.
+     * 
+     * @param boolean $intOnly If set to TRUE the numeric representation will be returned.
+     * @return string|int The string or numeric representation of the current state of the user.
+     */
+    public function getState($intOnly=false){
+        if($intOnly){
+            return $this->states->where("removed", "IS", NULL)->order_by("state", "DESC")->find()->state;
+        }
+        $s = $this->states->where("removed", "IS", NULL)->order_by("state", "DESC")->find();
+        return Enum_Account_State::valueToType($s->state);
+    }
+    
+    /**
+     * Get all the state flags for this user.
+     * 
+     * @return array An array of states -> boolean key/value pair.
+     */
+    public function getStates(){
+        $return = array();
+        foreach(Enum_Account_State::getAll() as $key => $value){
+            $return[strtolower($key)] = (int) $this->isStateSet($value);
+            if($return[strtolower($key)])
+                $return[strtolower($key)."_date"] = $this->isStateSet($value, "date");
+        }
+        return $return;
+    }
+    
+    /**
+     * Get all current status flags for a user's account.
+     * 
+     * @return array An array of status => boolean pairs.
+     */
+    public function getStatusFlags(){
+        // Now, sort out the status!
+        $return = array();
+        foreach(Enum_Account_Status::getAll() as $key => $value){
+            $return[strtolower($key)] = (int) $this->isStatusFieldSet($value);
+        }
+        return $return;
+    }
+    
+    /**
+     * Determine whether a status is set on the user's account.
+     * 
+     * @param Enum_Account_Status $status The status to check.
+     * @return boolean True if set, false otherwise.
+     */
+    public function isStatusFieldSet($status){
+        return (boolean) (bindec($status) & $this->status);
+    }
+    
+    /**
+     * Determine whether a user is banned in anyway!
+     * 
+     * @return boolean True if banned, false otherwise.
+     */
+    public function isBanned(){
+        return $this->isStatusFieldSet(Enum_Account_Status::SYSTEM_BANNED) OR $this->isStatusFieldSet(Enum_Account_Status::NETWORK_BANNED);
     }
 }
 

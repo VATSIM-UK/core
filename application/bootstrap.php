@@ -73,6 +73,19 @@ if (isset($_SERVER['KOHANA_ENV'])) {
 
 Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . strtoupper($_SERVER['KOHANA_ENV'])) : Kohana::PRODUCTION;
 
+if(isset($_SERVER["PWD"])){
+    $dev = preg_match("/(httpdocs|dev)/i", $_SERVER["PWD"]);
+    $beta = preg_match("/(beta|staging)/i", $_SERVER["PWD"]);
+} else {
+    $dev = false;
+    $beta = false;
+}
+if(Kohana::$environment == Kohana::PRODUCTION && $dev){
+    Kohana::$environment = Kohana::DEVELOPMENT;
+} elseif(Kohana::$environment == Kohana::PRODUCTION && $beta){
+    Kohana::$environment = Kohana::STAGING;
+}
+
 /**
  * Initialize Kohana, setting the default options.
  *
@@ -89,11 +102,17 @@ Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::' . str
  * - boolean  expose      set the X-Powered-By header                        FALSE
  */
 // INIT!
-$_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
-array_pop($_SERVER_URI);
-$_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+if(Kohana::$environment!=Kohana::PRODUCTION && PHP_SAPI == 'cli'){
+    $_SERVER_URI = explode("/", $_SERVER["PWD"]);
+    $_SERVER_URI = array_slice($_SERVER_URI, 4);
+    $_SERVER_URI = "/".str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+} else {
+    $_SERVER_URI = explode("/", $_SERVER["SCRIPT_NAME"]);
+    array_pop($_SERVER_URI);
+    $_SERVER_URI = str_replace("//", "/", implode("/", $_SERVER_URI)."/");
+}
 Kohana::init(array(
-    'base_url' => $_SERVER_URI,
+    'base_url' => ((Kohana::$environment==Kohana::STAGING) ? "http://beta.vatsim-uk.co.uk".$_SERVER_URI : ((Kohana::$environment==Kohana::DEVELOPMENT) ? "http://dev.vatsim-uk.co.uk".$_SERVER_URI : "http://core.vatsim-uk.co.uk".$_SERVER_URI)),
     'index_file' => "",//Kohana::$environment === Kohana::PRODUCTION,
     'errors' => Kohana::$environment !== Kohana::PRODUCTION,
     'profile' => Kohana::$environment !== Kohana::PRODUCTION,
@@ -123,6 +142,7 @@ Kohana::modules(array(
     'minion'     => MODPATH.'minion',     // CLI Tasks
     'orm' => MODPATH . 'orm', // Object Relationship Mapping
     'vatsim' => MODPATH . 'vatsim', // Vatsim interface scripts
+    'email' => MODPATH . 'email', // Shadowhand emailer.
     //'kostache' => MODPATH . 'kostache', // Templating system (Kohana version of Mustache)
     //'kophery' => MODPATH . 'kophery', // Kohana version of Phery (JS AJAX LIBRARY)
         // 'unittest'   => MODPATH.'unittest',   // Unit testing
@@ -135,23 +155,22 @@ $_sysUsr = ORM::factory("Account_Main", Kohana::$config->load("general")->get("s
 if(!$_sysUsr->loaded()){
     $_sysUsr = ORM::factory("Account");
     $_sysUsr->id = Kohana::$config->load("general")->get("system_user");
-    $_sysUsr->name_first = "VATUK";
-    $_sysUsr->name_last = "SYSTEM";
+    $_name = ORM::factory("Setting")->getValue("general.site.name.short");
+    $_name = explode(" ", $_name);
+    $_sysUsr->name_first = Arr::get($_name, 0, "");
+    $_sysUsr->name_last = Arr::get($_name, 1, "");
     $_sysUsr->status = 7;
-    $_sysUsr->password = "somewhere_over_the_rainbow25js1";
     $_sysUsr->created = gmdate("Y-m-d H:i:s");
     $_sysUsr->save();
 }
-
-/**
- * Set the routes. Each route must have a minimum of a name, a URI and a set of
- * defaults for the URI.
- */
-/*Route::set('default', '(<controller>(/<action>(/<id>)))')
-        ->defaults(array(
-            'controller' => 'welcome',
-            'action' => 'index',
-        ));*/
+if(count($_sysUsr->emails->find_all()) < 1){
+    $email = ORM::factory("Account_Email");
+    $email->account_id = $_sysUsr->id;
+    $email->email = "outbound@vatsim-uk.co.uk";
+    $email->primary = 1;
+    $email->created = gmdate("Y-m-d H:i:s");
+    $email->save();
+}
 
 /**
  * Include separate routes file

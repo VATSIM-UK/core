@@ -16,21 +16,21 @@
         </div>
     <? endif; ?>
 
-    <div class="control-group">
-        <label class="control-label" for="email">Email</label>
-        <div class="controls">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="email">Email</label>
+        <div class="col-sm-8">
             <input type="email" name="email" value="<?= $request->post("email") ?>" required />
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="password">Password</label>
-        <div class="controls">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="password">Password</label>
+        <div class="col-sm-8">
             <input type="password" name="password" required />
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="remember">Remember Me</label>
-        <div class="controls">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="remember">Remember Me</label>
+        <div class="col-sm-8">
             <input type="checkbox" name="remember" value="1" />
         </div>
     </div>

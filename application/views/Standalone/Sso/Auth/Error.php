@@ -20,11 +20,11 @@
     </head>
     <body>
         <div class="container container-header">
-            <div class="row-fluid">
-                <div class="span4 header-left">
+            <div class="row">
+                <div class="col-md-4 header-left">
                     <p align="left"><?= HTML::image("media/style/global/images/logo.png") ?></p>
                 </div>
-                <div class="span8 header-right">
+                <div class="col-md-8 header-right">
                     <p align="right"><?= HTML::image("media/style/global/images/slogan.png") ?></p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="container container-footer">
             <div class="footer">
-                <div class="row-fluid">
+                <div class="row">
                     <p>
                         VATSIM-UK &copy; 2013 - Version <?=$_version?>
                         
