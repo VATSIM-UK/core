@@ -44,6 +44,10 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Account_Email',
             'foreign_key' => 'account_id',
         ),
+        'security_resets' => array(
+            'model' => 'Account_Security_Reset',
+            'foreign_key' => 'account_id',
+        ),
         'qualifications' => array(
             'model' => 'Account_Qualification',
             'foreign_key' => 'account_id',
@@ -69,6 +73,11 @@ class Model_Account_Main extends Model_Master {
     // Validation rules
     public function rules(){
         return array(
+            'id' => array(
+                array('min_length', array(':value', 6)),
+                array('max_length', array(':value', 7)),
+                array('numeric'),
+            ),
             'name_first' => array(
                 array('not_empty'),
             ),
@@ -290,6 +299,7 @@ class Model_Account_Main extends Model_Master {
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
         Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
         $this->session()->delete("sso_quicklogin");
+        $this->session()->regenerate();
     }
     
     /**

@@ -15,7 +15,7 @@
         <strong>Please note, your password must:</strong>
         <ul>
             <?php foreach ($_requirements as $r): ?>
-                <li><?= $r ?></li>
+                &nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -29,6 +29,7 @@
                     <label class="col-sm-5 control-label" for="old_password">Old Password</label>
                     <div class="col-sm-7">
                         <input class="form-control" type="password" id="old_password" name="old_password" placeholder="Old Password">
+                        <span class="help-block col-md-offset-1">May be a temporary password</span>
                     </div>
                 </div>
             <?php endif; ?>

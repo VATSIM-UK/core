@@ -7,15 +7,15 @@
 
         <!-- CSS -->
         <?= HTML::style("http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css"); ?>
-        <?= HTML::style("media/bootstrap/3/css/bootstrap.min.css"); ?>
-        <?= HTML::style("media/bootstrap/3/css/bootstrap-responsive.min.css"); ?>
+        <?= HTML::style("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"); ?>
         <?= HTML::style("media/style/Standalone/design.css"); ?>
         <?= HTML::style("http://fonts.googleapis.com/css?family=Yellowtail"); ?>
+        <?= HTML::style("http://fonts.googleapis.com/css?family=Josefin+Slab:600"); ?>
 
         <!-- Javascript -->
         <?= HTML::script("http://code.jquery.com/jquery-1.9.1.min.js"); ?>
         <?= HTML::script("http://code.jquery.com/ui/1.10.1/jquery-ui.js"); ?>
-        <?= HTML::script("media/bootstrap/3/js/bootstrap.min.js"); ?>
+        <?= HTML::script("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"); ?>
         <?= HTML::script("media/scripts/general.js"); ?>
     </head>
     <body>
@@ -59,7 +59,10 @@
             <div class="footer">
                 <div class="row">
                     <p>
-                        VATSIM-UK &copy; 2013 - Version <?=exec("git describe --abbrev=0 --tags")?> (<?=gmdate("d/m/y H:i \G\M\T", filemtime(realpath(APPPATH."../.git/")))?>)
+                        VATSIM-UK &copy; 2013 - 
+                        <a href="http://status.vatsim-uk.co.uk" target="_blank">
+                            Version <?=exec("git describe --abbrev=0 --tags")?> (<?=gmdate("d/m/y H:i \G\M\T", filemtime(realpath(APPPATH."../.git/")))?>)
+                        </a>
                         <br align="center">
                         Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
                     </p>

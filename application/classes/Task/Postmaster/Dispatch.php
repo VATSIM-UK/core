@@ -19,7 +19,7 @@ class Task_Postmaster_Dispatch extends Minion_Task
                      ->where("status", "=", Enum_System_Postmaster_Queue_Status::PARSED)
                      ->or_where("status", "=", Enum_System_Postmaster_Queue_Status::DELAYED)
                      ->order_by("priority", "DESC")->find_all();
-        if(Arr::get($params, "debug")) print "There are ".count($emails)." waiting to be dispatched:";
+        if(Arr::get($params, "debug")) print "There are ".count($emails)." waiting to be dispatched:\n";
         
         // Now parse them all
         foreach($emails as $email){
