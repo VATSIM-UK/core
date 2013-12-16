@@ -15,9 +15,21 @@ class Model_Account extends Model_Account_Main {
             return $this;
         }
         
+        // Need to create account?
+        if(!$this->loaded()){
+            $this->id = $id;
+            $this->save();
+        }
+        
+        // If we're still not created, something is REALLY wrong.
+        if(!$this->loaded()){
+            throw new Exception("We really don't know what's happened, here.");
+            return;
+        }
+        
         // Cert update?
-        if(!$this->loaded() || $this->check_requires_cert_update()){
-            Helper_Account::update_using_remote($id);
+        if($this->check_requires_cert_update()){
+            $this->action_update_from_remote();
         }
         parent::__construct($id);
     }

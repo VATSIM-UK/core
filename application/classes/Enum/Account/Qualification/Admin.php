@@ -3,6 +3,7 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Account_Qualification_Admin extends Enum_Account_Qualification {
+    const TYPE = "Admin";
     const SUP = 1;
     const SUP2 = 2;
     const ADM = 3;

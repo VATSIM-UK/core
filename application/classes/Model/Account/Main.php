@@ -177,7 +177,45 @@ class Model_Account_Main extends Model_Master {
      * @return boolean TRUE if successful, false otherwise.
      */
     public function action_update_from_remote(){
+        if(!$this->loaded()){
+            return false;
+        }
         
+        // If this is a system account, ignore it!
+        if($this->isSystem()){
+            return false;
+        }
+        
+        // Get the raw details.
+        $details = Vatsim::factory("autotools")->getInfo($this->id);
+        $details["rating"] = 7;
+        
+        // Now run updatererers - we're keeping them separate so they can be used elsewhere.
+        $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
+        $this->qualifications->addQualification($this, Arr::get($details, "rating", 1));
+        
+        $this->checked = gmdate("Y-m-d H:i:s");
+        $this->save();
+    }
+    
+    public function setName($name_first, $name_last, $inhibitSave=false){
+        if(!$this->loaded()){
+            return false;
+        }
+        
+        if($name_first != NULL){
+            $this->name_first = $name_first;
+        }
+        
+        if($name_last != NULL){
+            $this->name_last = $name_last;
+        }
+        
+        if(!$inhibitSave){
+            $this->save();
+        }
+        
+        return true;
     }
         
     /**
@@ -420,6 +458,15 @@ class Model_Account_Main extends Model_Master {
      */
     public function isBanned(){
         return $this->isStatusFieldSet(Enum_Account_Status::SYSTEM_BANNED) OR $this->isStatusFieldSet(Enum_Account_Status::NETWORK_BANNED);
+    }
+    
+    /**
+     * Determine whether a user is a system user!
+     * 
+     * @return boolean True if system, false otherwise.
+     */
+    public function isSystem(){
+        return $this->isStatusFieldSet(Enum_Account_Status::LOCKED);
     }
 }
 
