@@ -14,6 +14,33 @@ class Helper_Account {
         //Firstname
         if ($type == 'f') {
 
+            ///Check for hyphon seperated names.
+            $hyphon = explode('-', $name);
+            if (count($hyphon) > 1) {
+
+                $name = '';
+                $numh = 0;
+                foreach ($hyphon as $k => $v) {
+
+                    $numh = $numh + 1;
+                    $name .= ucfirst(strtolower($v));
+
+                    ///Dont append extra -
+                    if ($numh != count($hyphon)) {
+                        $name .= '-';
+                    }
+                }
+
+                $name = addslashes(trim($name));
+                return $name;
+            } else {
+                ///Any other name
+                $name = ucfirst(strtolower($name));
+                $name = addslashes(trim($name));
+                return $name;
+            }
+            
+            
             $name = trim($name);
             $name = ucfirst(strtolower($name));
             $name = addslashes($name);
