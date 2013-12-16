@@ -170,6 +170,15 @@ class Model_Account_Main extends Model_Master {
     public function check_requires_cert_update(){
         return ($this->loaded() && strtotime($this->checked) <= strtotime("-24 hours"));
     }
+    
+    /**
+     * Run an update from the CERT feeds.
+     * 
+     * @return boolean TRUE if successful, false otherwise.
+     */
+    public function action_update_from_remote(){
+        
+    }
         
     /**
      * Get the last ip address used to login to this account.
