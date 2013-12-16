@@ -188,7 +188,7 @@ class Model_Account_Main extends Model_Master {
         
         // Get the raw details.
         $details = Vatsim::factory("autotools")->getInfo($this->id);
-        $details["rating"] = 7;
+        $details["rating"] = 11;
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);

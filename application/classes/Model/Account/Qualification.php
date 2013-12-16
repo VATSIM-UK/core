@@ -171,8 +171,12 @@ class Model_Account_Qualification extends Model_Master {
     }
     
     // Pre-get_**
-    private function helper_pre_get_all(){
-        return $this->where("removed", "IS", NULL)->order_by("value", "DESC");
+    private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        if($incDeleted){
+            return $this->order_by($orderBy, $orderByDir);
+        } else {
+            return $this->where("removed", "IS", NULL)->order_by($orderBy, $orderByDir);
+        }
     }
     private function helper_pre_get_current(){
         return $this->helper_pre_get_all()->limit(1);
@@ -183,40 +187,40 @@ class Model_Account_Qualification extends Model_Master {
         return $this->helper_pre_get_current()->where("type", "LIKE", "atc")->find();
     }
     
-    public function get_all_atc(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "atc")->find_all();
+    public function get_all_atc($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "atc")->find_all();
     }
     
     public function get_current_training_atc(){
         return $this->helper_pre_get_current()->where("type", "LIKE", "training_atc")->find();
     }
     
-    public function get_all_training_atc(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "training_atc")->find_all();
+    public function get_all_training_atc($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "training_atc")->find_all();
     }
     
     public function get_current_pilot(){
         return $this->helper_pre_get_current()->where("type", "LIKE", "pilot")->find();
     }
     
-    public function get_all_pilot(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find_all();
+    public function get_all_pilot($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "pilot")->find_all();
     }
     
     public function get_current_training_pilot(){
         return $this->helper_pre_get_current()->where("type", "LIKE", "training_pilot")->find();
     }
     
-    public function get_all_training_pilot(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "training_pilot")->find_all();
+    public function get_all_training_pilot($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "training_pilot")->find_all();
     }
     
     public function get_current_admin(){
         return $this->helper_pre_get_current()->where("type", "LIKE", "admin")->find();
     }
     
-    public function get_all_admin(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "admin")->find_all();
+    public function get_all_admin($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "admin")->find_all();
     }
     
     /**
