@@ -77,6 +77,7 @@ class Model_Account_Note extends Model_Master {
         // If account isn't of type Model_Account, error.
         if(!$account instanceof Model_Account_Main){
             throw new Kohana_Exception("'account' must be of type Model_Account");
+            die("HAIRAI!");
             return false;
         }
         
@@ -89,6 +90,7 @@ class Model_Account_Note extends Model_Master {
         // If format isn't of type Model_Account_Note_Format, error.
         if(!$format instanceof Model_Account_Note_Format){
             throw new Kohana_Exception("'format' must be of type Model_Account_Note_Format");
+            die("HAIRsgsdfAI!");
             return false;
         }
         

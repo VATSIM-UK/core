@@ -116,6 +116,35 @@ class Model_Account_Main extends Model_Master {
     }
     
     /**
+     * @override
+     */
+    public function save(\Validation $validation = NULL) {
+        // Get the old values!
+        $ovs = $this->changed();
+        
+        parent::save($validation);
+        
+        // Basic logs!
+        $logKeys = array("name_first", "name_last", "status");
+        foreach($ovs as $key => $value){
+            if(in_array($key, $logKeys)){
+                $data = array();
+                $data[] = $key;
+                if($key == "status"){
+                    $data[] = Enum_Account_Status::getDescription(decbin($value["old"]));
+                    $data[] = Enum_Account_Status::getDescription(decbin($value["new"]));
+                } else {
+                    $data[] = $value["old"];
+                    $data[] = $value["new"];
+                }
+                ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/DETAILS_CHANGED", 707070, $data);
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
      * Update the last_login fields!
      * 
      * @return void
@@ -168,6 +197,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean True if it requires an update.
      */
     public function check_requires_cert_update(){
+        return true;
         return ($this->loaded() && strtotime($this->checked) <= strtotime("-24 hours"));
     }
     
@@ -188,11 +218,28 @@ class Model_Account_Main extends Model_Master {
         
         // Get the raw details.
         $details = Vatsim::factory("autotools")->getInfo($this->id);
-        $details["rating"] = 11;
+        $details["rating"] = 0;
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
         $this->qualifications->addQualification($this, Arr::get($details, "rating", 1));
+        
+        // Status?
+        if(Arr::get($details, "rating", 99) < 1){
+            if(Arr::get($details, "rating", 99) == 0){
+                $this->setStatus(Enum_Account_Status::INACTIVE, true);
+            } else {
+                $this->unSetStatus(Enum_Account_Status::INACTIVE, true);
+            }
+            if(Arr::get($details, "rating", 99) == -1){
+                $this->setStatus(Enum_Account_Status::NETWORK_BANNED, true);
+            } else {
+                $this->unSetStatus(Enum_Account_Status::NETWORK_BANNED, true);
+            }
+        } else {
+            $this->unSetStatus(Enum_Account_Status::INACTIVE, true);
+            $this->unSetStatus(Enum_Account_Status::NETWORK_BANNED, true);
+        }
         
         $this->checked = gmdate("Y-m-d H:i:s");
         $this->save();
@@ -215,6 +262,29 @@ class Model_Account_Main extends Model_Master {
             $this->save();
         }
         
+        return true;
+    }
+    
+    public function setStatus($status, $inhibitSave=false){
+        if(!$this->isStatusFieldSet($status)){
+            $this->status = $this->status + bindec($status);
+        }
+        
+        if(!$inhibitSave){
+            $this->save();
+        }
+        
+        return true;
+    }
+    
+    public function unSetStatus($status, $inhibitSave=false){
+        if($this->isStatusFieldSet($status)){
+            $this->status = $this->status - bindec($status);
+        }
+        
+        if(!$inhibitSave){
+            $this->save();
+        }
         return true;
     }
         
