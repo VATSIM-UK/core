@@ -204,9 +204,10 @@ class Model_Account_Main extends Model_Master {
     /**
      * Run an update from the CERT feeds.
      * 
+     * @param array $data If set, this data will be used instead.
      * @return boolean TRUE if successful, false otherwise.
      */
-    public function action_update_from_remote(){
+    public function action_update_from_remote($data=null){
         if(!$this->loaded()){
             return false;
         }
@@ -217,21 +218,29 @@ class Model_Account_Main extends Model_Master {
         }
         
         // Get the raw details.
-        $details = Vatsim::factory("autotools")->getInfo($this->id);
-        $details["rating"] = 0;
+        if($data == null){
+            $details = Vatsim::factory("autotools")->getInfo($this->id);
+        } else {
+            $details = $data;
+        }
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
-        $this->qualifications->addQualification($this, Arr::get($details, "rating", 1));
+        $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+
+        // Pilot ratings are slightly funny in that we need to set each one!
+        foreach($details["rating_pilot"] as $prating){
+            $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
+        }
         
         // Status?
-        if(Arr::get($details, "rating", 99) < 1){
-            if(Arr::get($details, "rating", 99) == 0){
+        if(Arr::get($details, "rating_atc", 99) < 1){
+            if(Arr::get($details, "rating_atc", 99) == 0){
                 $this->setStatus(Enum_Account_Status::INACTIVE, true);
             } else {
                 $this->unSetStatus(Enum_Account_Status::INACTIVE, true);
             }
-            if(Arr::get($details, "rating", 99) == -1){
+            if(Arr::get($details, "rating_atc", 99) == -1){
                 $this->setStatus(Enum_Account_Status::NETWORK_BANNED, true);
             } else {
                 $this->unSetStatus(Enum_Account_Status::NETWORK_BANNED, true);
@@ -239,6 +248,15 @@ class Model_Account_Main extends Model_Master {
         } else {
             $this->unSetStatus(Enum_Account_Status::INACTIVE, true);
             $this->unSetStatus(Enum_Account_Status::NETWORK_BANNED, true);
+        }
+        
+        // Work out what the state is!
+        if(Arr::get($details, "division", null) != null && strcasecmp($details["division"], "GBR") == 0){
+            $this->states->addState($this, "DIVISION");
+        } elseif(Arr::get($details, "region", null) != null && strcasecmp($details["region"], "EUR") == 0){
+            $this->states->addState($this, "REGION");
+        } else {
+            $this->states->addState($this, "VISITOR");
         }
         
         $this->checked = gmdate("Y-m-d H:i:s");
@@ -311,7 +329,7 @@ class Model_Account_Main extends Model_Master {
             $ip = $this->get_last_login_ip();
         }
         
-        $ipCheck = ORM::factory("Account")->where("last_login_ip", "=", ip2long($ip));
+        $ipCheck = ORM::factory("Account_Main")->where("last_login_ip", "=", ip2long($ip));
         
         // Exclude this user?
         if($this->id > 0){
@@ -519,6 +537,30 @@ class Model_Account_Main extends Model_Master {
      */
     public function isStatusFieldSet($status){
         return (boolean) (bindec($status) & $this->status);
+    }
+    
+    /**
+     * Get the current status of a user.
+     * 
+     * @return string The current status, in words.
+     */
+    public function getStatus(){
+        if($this->isBanned()){
+            return "Banned";
+        } elseif($this->isInactive()){
+            return "Inactive";
+        } else {
+            return "Active";
+        }
+    }
+    
+    /**
+     * Determine whether a user is inactive.
+     * 
+     * @return boolean True if inactive, false otherwise.
+     */
+    public function isInactive(){
+        return $this->isStatusFieldSet(Enum_Account_Status::INACTIVE);
     }
     
     /**

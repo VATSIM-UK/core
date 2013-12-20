@@ -187,6 +187,12 @@
     </tr>
     <?php endif; ?>
     <tr>
+        <th>Account Status</th>
+        <td> 
+            <?=$_account->getStatus()?> <?=$_account->states->getCurrent()->formatState(true)?>
+        </td>
+    </tr>
+    <tr>
         <th>Actions</th>
         <td>
             <?php if($_account->is_overriding()): ?>
