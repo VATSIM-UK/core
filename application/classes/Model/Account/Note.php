@@ -108,9 +108,9 @@ class Model_Account_Note extends Model_Master {
         }
         
         // Let's find/add this user's details.
-        $_user = ORM::factory("Account", $user);
+        $_user = ORM::factory("Account_Main", $user);
         if(!$_user->loaded()){
-            $_user = ORM::factory("Account", Kohana::$config->load('general')->get("system_user"));
+            $_user = ORM::factory("Account_Main", Kohana::$config->load('general')->get("system_user"));
         }
         
         foreach($_user->list_columns() as $_col => $_val){
