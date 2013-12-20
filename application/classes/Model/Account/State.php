@@ -59,12 +59,11 @@ class Model_Account_State extends Model_Master {
         $oldState = ORM::factory("Account_Main", $this->account_id)->states->getCurrent();
         
         if($oldState->loaded()){
-            $data[] = $oldState->formatState(false);
             $data[] = $oldState->formatState(true);
         } else {
-            $data[] = Enum_Account_State::NOT_REGISTERED;
             $data[] = Enum_Account_State::getDescription(Enum_Account_State::NOT_REGISTERED);
         }
+        $data[] = Enum_Account_State::getDescription($this->state);
         
         $type = Enum_Account_Note_Type::SYSTEM;
         
@@ -96,9 +95,15 @@ class Model_Account_State extends Model_Master {
             return false;
         }
         
+        // Get the current state, if it's the same as now we'll ignore this request!
+        $currentState = $account->states->getCurrent();
+        if($currentState->loaded() && $currentState->state == Enum_Account_State::IdToValue($state)){
+            return false;
+        }
+        
         // Remmove all current states.
         foreach($account->states->find_all() as $r){
-            $r->delete();
+            $r->delete($dateOverride);
         }
 
         // Add this state!

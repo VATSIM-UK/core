@@ -25,8 +25,6 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
             $details = $SSO->member;
         }
         
-        $this->_current_account->action_update_from_remote();
-        
         // Set the account details
         $this->_data["_account"] = $this->_current_account;
     }

@@ -46,8 +46,8 @@ class Model_Account_Qualification extends Model_Master {
     /**
      * @overload
      */
-    public function delete(){
-        $this->removed = gmdate("Y-m-d H:i:s");
+    public function delete($dateOverride=null){
+        $this->removed = (($dateOverride == null) ? gmdate("Y-m-d H:i:s") : $dateOverride);
         $this->save();
     }
     
@@ -110,21 +110,21 @@ class Model_Account_Qualification extends Model_Master {
         if(strcasecmp($sysRating[0], "ATC") == 0){
             // If ratings are higher than current, they just delete "deleted".
             foreach($account->qualifications->get_all_atc() as $r){
-                if($r->value != $sysRating[1] && $r->value > $sysRating[1]){
-                    $r->delete();
+                if($r->value != $sysRating[1] && $r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
+                    $r->delete($dateOverride);
                 }
             }
         }
         // ATC Training expired
         foreach($account->qualifications->get_all_training_atc() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR strcasecmp($sysRating[0], "Training_ATC") != 0){
-                $r->delete();
+                $r->delete($dateOverride);
             }
         }
         // Admin expired
         foreach($account->qualifications->get_all_admin() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Admin") == 0) OR strcasecmp($sysRating[0], "Admin") != 0){
-                $r->delete();
+                $r->delete($dateOverride);
             }
         }
 

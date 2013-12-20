@@ -60,6 +60,49 @@ class Model_Account_Email extends Model_Master {
     }
     
     /**
+     * Add a new email to the given account.
+     * 
+     * @param object $account The account to add the email to.
+     * @param string $email The email address to add.
+     * @param boolean|int If set to TRUE will be verified straight away.
+     * @param boolean|int $primary If set to TRUE or 1, then set to primary!
+     */
+    public function action_add_email($account, $email, $verify=0, $primary=0){
+        if(!$account->loaded()){
+            return;
+        }
+        
+        // Let's check for this email on this account.
+        if($account->emails->where("email", "LIKE", $email)->count_all() > 0){
+            return;
+        }
+        
+        // Create new.
+        try {
+            $newEmail = ORM::factory("Account_Email");
+            $newEmail->account_id = $account;
+            $newEmail->email = $email;
+            $newEmail->verified = ($verify ? gmdate("Y-m-d H:i:s") : NULL);
+            $newEmail->created = gmdate("Y-m-d H:i:s");
+            $newEmail->save();
+        } catch(ORM_Validation_Exception $e){
+            print_r($e->errors());
+            return;
+        }
+        
+        // Log it!
+        $data = array($email);
+        ORM::factory("Account_Note")->writeNote($account, "EMAIL/ADDED", 707070, $data, Enum_Account_Note_Type::SYSTEM);
+        
+        // Set primary?
+        if($primary){
+            $newEmail->set_primary($email, $account);
+        }
+        
+        return true;
+    }
+    
+    /**
      * Check whether the current email has been assigned to an SSO system.
      * 
      * @param string $system The system to check for an assignment for.
@@ -111,34 +154,29 @@ class Model_Account_Email extends Model_Master {
     /**
      * Set the primary email for the given account!
      */
-    public function set_primary($email){
-        $account_id = Arr::get(Arr::get($this->_db_pending, 0), "args");
-        $account_id = Arr::get($account_id, 0) == "account_email.account_id" ? Arr::get($account_id, 2) : 0;
+    public function set_primary(){
+        if(!$this->loaded()){
+            return false;
+        }
         
         // Demote the old primary, if set.
         $oldPrimary = $this->get_active_primary();
         if($oldPrimary->loaded()){
             $oldPrimary->primary = 0;
             $oldPrimary->save();
+            
+            // Log it!
+            $data = array($oldPrimary->email);
+            ORM::factory("Account_Note")->writeNote($this->account, "EMAIL/PRIMARY_DEMOTED", 707070, $data, Enum_Account_Note_Type::SYSTEM);
         }
         
-        // Does this email already exist?
-        if($this->helper_pre_get_active()->where("email", "=", strtolower($email))->count_all() > 0){
-            // It exists, update it to set primary = 1
-            $curEmail = ORM::factory("Account_Email")->helper_pre_get_active()->where("account_id", "=", $account_id)->where("email", "=", strtolower($email))->find();
-            $curEmail->primary = 1;
-            $curEmail->verified = gmdate("Y-m-d H:i:s");
-            $curEmail->save();
-        } else {
-            // Store the new one!
-            $newEmail = ORM::factory("Account_Email");
-            $newEmail->account_id = $account_id;
-            $newEmail->email = $email;
-            $newEmail->primary = 1;
-            $newEmail->verified = gmdate("Y-m-d H:i:s");
-            $newEmail->created = gmdate("Y-m-d H:i:s");
-            $newEmail->save();
-        }
+        // It exists, update it to set primary = 1
+        $this->primary = 1;
+        $this->save();
+
+        // Log it!
+        $data = array($curEmail->email);
+        ORM::factory("Account_Note")->writeNote($this->account, "EMAIL/PRIMARY_PROMOTED", 707070, $data, Enum_Account_Note_Type::SYSTEM);
     }
     
     // Pre-get_active_*
@@ -154,7 +192,7 @@ class Model_Account_Email extends Model_Master {
      */
     public function get_active_primary($idOnly=false){
         // Limit to primary.
-        $finder = $this->helper_pre_get_active()->where("primary", "=", "1")->find();
+        $finder = $this->account->emails->helper_pre_get_active()->where("primary", "=", "1")->find();
         
         // Found one?
         if($finder->loaded()){

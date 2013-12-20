@@ -197,8 +197,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean True if it requires an update.
      */
     public function check_requires_cert_update(){
-        return true;
-        return ($this->loaded() && strtotime($this->checked) <= strtotime("-24 hours"));
+        return ($this->loaded() && strtotime($this->checked) <= strtotime("-48 hours"));
     }
     
     /**
@@ -217,6 +216,13 @@ class Model_Account_Main extends Model_Master {
             return false;
         }
         
+        // Let's log the fact we've requested a data update from CERT!
+        if($data == null){
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE_XML", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        } else {
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        }
+        
         // Get the raw details.
         if($data == null){
             $details = Vatsim::factory("autotools")->getInfo($this->id);
@@ -224,13 +230,37 @@ class Model_Account_Main extends Model_Master {
             $details = $data;
         }
         
+        /***** LEGACY SUPPORT *****/
+        // Legacy support! When were they created? OBS rating, basically.
+        if($this->qualifications->reset(FALSE)->count_all() < 1 && Arr::get($details, 'regdate', null) != null){
+            $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
+        }
+        
+        // Peeps got their S1 straight away!
+        if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
+            $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
+        }
+        
+        /**************************/
+        
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
-        $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+        
+        // Emails!
+        if(Arr::get($details, "email", null) != null){
+            $this->emails->action_add_email($this, $details["email"], 1, 1);
+        }
+        
+        // Qualifications!
+        if(Arr::get($details, "rating_atc", null) != null){
+            $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+        }
 
         // Pilot ratings are slightly funny in that we need to set each one!
-        foreach($details["rating_pilot"] as $prating){
-            $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
+        if(Arr::get($details, "rating_pilot", null) != null && is_array($details["rating_pilot"])){
+            foreach($details["rating_pilot"] as $prating){
+                $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
+            }
         }
         
         // Status?
