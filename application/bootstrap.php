@@ -153,7 +153,7 @@ Kohana::modules(array(
 //1 - If the system user doesn't exist, create them.
 $_sysUsr = ORM::factory("Account_Main", Kohana::$config->load("general")->get("system_user"));
 if(!$_sysUsr->loaded()){
-    $_sysUsr = ORM::factory("Account");
+    $_sysUsr = ORM::factory("Account_Main");
     $_sysUsr->id = Kohana::$config->load("general")->get("system_user");
     $_name = ORM::factory("Setting")->getValue("general.site.name.short");
     $_name = explode(" ", $_name);
