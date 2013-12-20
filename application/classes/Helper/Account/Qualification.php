@@ -8,7 +8,7 @@ class Helper_Account_Qualification {
      * 
      * @param int $vrating The VATSIM rating.
      */
-    public static function convert_vatsim_rating($vrating){
+    public static function convert_vatsim_atc_rating($vrating){
         // First of all, if it's just a rating of OBS - C3, return that enum type!
         if($vrating >= 1 AND $vrating <= 7){
             return array("ATC", $vrating);
