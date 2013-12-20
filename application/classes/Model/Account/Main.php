@@ -245,11 +245,22 @@ class Model_Account_Main extends Model_Master {
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
-        $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+        
+        // Emails!
+        if(Arr::get($details, "email", null) != null){
+            $this->emails->action_add_email($this, $details["email"], 1, 1);
+        }
+        
+        // Qualifications!
+        if(Arr::get($details, "rating_atc", null) != null){
+            $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+        }
 
         // Pilot ratings are slightly funny in that we need to set each one!
-        foreach($details["rating_pilot"] as $prating){
-            $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
+        if(Arr::get($details, "rating_pilot", null) != null && is_array($details["rating_pilot"])){
+            foreach($details["rating_pilot"] as $prating){
+                $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
+            }
         }
         
         // Status?

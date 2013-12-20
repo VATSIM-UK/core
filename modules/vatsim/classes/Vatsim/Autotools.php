@@ -137,17 +137,18 @@ class Vatsim_Autotools extends Vatsim {
         if (!$result) {
             return array();
         }
-        $result = get_object_vars($result->user);
+        $result_raw = get_object_vars($result->user);
 
         // Format!
-        $result["name_last"] = Arr::get($result, "name_last", null);
-        $result["name_first"] = Arr::get($result, "name_first", null);
-        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", "0"));
-        $result["rating_atc"] = Arr::get($result, "rating", "1");
-        $result["country"] = Arr::get($result, "country", null);
-        $result["regdate"] = Arr::get($result, "regdate", null);
-        $result["region"] = Arr::get($result, "region", null);
-        $result["division"] = Arr::get($result, "division", null);
+        $result = array();
+        $result["name_last"] = Arr::get($result_raw, "name_last", null);
+        $result["name_first"] = Arr::get($result_raw, "name_first", null);
+        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result_raw, "pilotrating", "0"));
+        $result["rating_atc"] = Arr::get($result_raw, "rating", "1");
+        $result["country"] = Arr::get($result_raw, "country", null);
+        $result["regdate"] = Arr::get($result_raw, "regdate", null);
+        $result["region"] = Arr::get($result_raw, "region", null);
+        $result["division"] = Arr::get($result_raw, "division", null);
 
         // Return the result!
         return $result;

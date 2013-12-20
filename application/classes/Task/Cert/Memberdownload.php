@@ -32,32 +32,16 @@ class Task_Cert_Memberdownload extends Minion_Task
             
             // process!!
             Minion_CLI::write("Processing account ".$member["cid"]);
-            $_m = ORM::factory("Account_Main", $cid);
-            $_m->action_update_from_remote($member);
-            Minion_CLI::write("\t-Processed successfully!");
-            $membersProcessed[] = $cid;
-        }
-        die("HERE!");
-        // Now, anyone who hasn't been processed, either needs setting to GUEST or INACTIVE.
-        if(count($membersProcessed) > 0){
-            Minion_CLI::write("Now processing the stragglers:");
-            $_membersUnprocessed = ORM::factory("Account")->where("id", ">", 810000)->where("id", "NOT IN", $membersProcessed)->find_all();
-            foreach($_membersUnprocessed as $member){
-                // Let's get their info, first.
-                Minion_CLI::write("-".$member->id.":");
-                $info = Vatsim::factory("autotools")->getInfo($member->id);
-
-                // If they're rating -1, they're just inactive!
-                Minion_CLI::write("\t-Are they just a guest or inactive?");
-                if($info["rating_atc"] == -1){
-                    Minion_CLI::write("\t\t-INACTIVE");
-                    Helper_Membership_Account::loadMember($member->id);
-                    Helper_Membership_Account::processMember(array("status" => Enum_Account::STATUS_INACTIVE), Helper_Membership_Account::ACTION_CERT);
-                } else { // Otherwise, guest them!
-                    Minion_CLI::write("\t\t-GUEST");
-                    Helper_Membership_Account::loadMember($member->id);
-                    Helper_Membership_Account::processMember(array("state" => Enum_Account_State::GUEST), Helper_Membership_Account::ACTION_CERT);
-                }
+            $_m = ORM::factory("Account", $cid);
+            Minion_CLI::write("\t-Email: ".$member["email"]);
+            try {
+                $_m->action_update_from_remote($member);
+                Minion_CLI::write("\t-Processed successfully!");
+                $membersProcessed[] = $cid;
+            } catch(ORM_Validation_Exception $e){
+                print_r($e->errors()); exit();
+            } catch(Exception $e){
+                Minion_CLI::write("\t-Error, skipping!");
             }
         }
         
