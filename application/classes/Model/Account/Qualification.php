@@ -110,7 +110,7 @@ class Model_Account_Qualification extends Model_Master {
         if(strcasecmp($sysRating[0], "ATC") == 0){
             // If ratings are higher than current, they just delete "deleted".
             foreach($account->qualifications->get_all_atc() as $r){
-                if($r->value != $sysRating[1] && $r->value > $sysRating[1]){
+                if($r->value != $sysRating[1] && $r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
                     $r->delete($dateOverride);
                 }
             }
