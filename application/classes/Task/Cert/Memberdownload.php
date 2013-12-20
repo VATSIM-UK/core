@@ -28,16 +28,16 @@ class Task_Cert_Memberdownload extends Minion_Task
             $count++;
 
             // First, let's convert the pratings!
-            $member["pratings"] = Vatsim::factory("autotools")->helper_convertPilotRating($member["prating"]);
+            $member["rating_pilot"] = Vatsim::factory("autotools")->helper_convertPilotRating($member["rating_pilot"]);
             
             // process!!
             Minion_CLI::write("Processing account ".$member["cid"]);
             $_m = ORM::factory("Account_Main", $cid);
-            $_m->
+            $_m->action_update_from_remote($member);
             Minion_CLI::write("\t-Processed successfully!");
             $membersProcessed[] = $cid;
         }
-        
+        die("HERE!");
         // Now, anyone who hasn't been processed, either needs setting to GUEST or INACTIVE.
         if(count($membersProcessed) > 0){
             Minion_CLI::write("Now processing the stragglers:");

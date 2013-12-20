@@ -217,7 +217,11 @@ class Model_Account_Main extends Model_Master {
         }
         
         // Let's log the fact we've requested a data update from CERT!
-        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        if($data == null){
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE_XML", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        } else {
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        }
         
         // Get the raw details.
         if($data == null){

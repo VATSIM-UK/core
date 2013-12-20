@@ -97,12 +97,12 @@ class Vatsim_Autotools extends Vatsim {
             }
             
             // Now split into the array!
-            list($member["cid"], $member["rating"], $member["prating"],
+            list($member["cid"], $member["rating_atc"], $member["rating_pilot"],
                  $member["name_first"], $member["name_last"],
                  $member["email"], $member["age"],
-                 $member["location_state"], $member["location_country"],
+                 $member["location_state"], $member["country"],
                  $member["experience"], $member["suspended_until"],
-                 $member["created"], $member["region"],
+                 $member["regdate"], $member["region"],
                  $member["division"],) = explode(",", $line);
                     
             // Store!
