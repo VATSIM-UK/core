@@ -69,7 +69,7 @@ class Model_Account_Security_Reset extends Model_Master {
         
         // Let's create!
         $this->account_id = $account_id;
-        $this->code = uniqid(Text::random("distinct", 7)."-", true);
+        $this->code = uniqid(Text::random("alnum", 10)."-");
         $this->created = gmdate("Y-m-d H:i:s");
         $this->expires = gmdate("Y-m-d H:i:s", strtotime("+".ORM::factory("Setting")->getValue("auth.sso.security.reset_time")." seconds"));
         $this->enabled = 1;
@@ -117,7 +117,7 @@ class Model_Account_Security_Reset extends Model_Master {
         $reset->save();
         
         // Let's generate....
-        $random = Text::random("distinct", 12);
+        $random = str_shuffle(Text::random("alnum", 12).Text::random("numeric", 4))."!";
         
         // Let's update....
         $reset->account->security->value = $random;
