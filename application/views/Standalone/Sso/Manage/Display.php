@@ -96,32 +96,100 @@
             <?php endif; ?>
         </td>
     </tr>
+    <?php if(count($_account->qualifications->get_all_admin(true)) > 0): ?>
+    <tr>
+        <th>Administrative Ratings<br /><small>Past and Present</small></th>
+        <td> 
+            <?php foreach ($_account->qualifications->get_all_admin(true, "created") as $qual): ?>
+                <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                </a>
+                <?php if($qual->removed != NULL): ?>
+                    -
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    </a>
+                <?php endif; ?>
+                <br />
+            <?php endforeach; ?>
+        </td>
+    </tr>
+    <?php endif; ?>
     <tr>
         <th>ATC Qualifications</th>
         <td> 
             <?php foreach ($_account->qualifications->get_all_atc() as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.<br />
+                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.
                 </a>
+                <br />
             <?php endforeach; ?>
             <?php if (count($_account->qualifications->get_all_atc()) < 1): ?>
                 You have no ATC ratings.
             <?php endif; ?>
         </td>
     </tr>
+    <?php if(count($_account->qualifications->get_all_training_atc(true)) > 0): ?>
+    <tr>
+        <th>ATC Training Ratings<br /><small>Past and Present</small></th>
+        <td> 
+            <?php foreach ($_account->qualifications->get_all_training_atc(true, "created") as $qual): ?>
+                <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                </a>
+                <?php if($qual->removed != NULL): ?>
+                    -
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    </a>
+                <?php endif; ?>
+                <br />
+            <?php endforeach; ?>
+        </td>
+    </tr>
+    <?php endif; ?>
     <tr>
         <th>Pilot Qualifications</th>
         <td>
             <?php foreach ($_account->qualifications->get_all_pilot() as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.<br />
+                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.
                 </a>
+                <br />
             <?php endforeach; ?>
             <?php if (count($_account->qualifications->get_all_pilot()) < 1): ?>
                 You have no Pilot ratings.
             <?php endif; ?>
+        </td>
+    </tr>
+    <?php if(count($_account->qualifications->get_all_training_pilot(true)) > 0): ?>
+    <tr>
+        <th>Pilot Training Ratings<br /><small>Past and Present</small></th>
+        <td> 
+            <?php foreach ($_account->qualifications->get_all_training_pilot(true, "created") as $qual): ?>
+                <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                </a>
+                <?php if($qual->removed != NULL): ?>
+                    -
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    </a>
+                <?php endif; ?>
+                <br />
+            <?php endforeach; ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <tr>
+        <th>Account Status</th>
+        <td> 
+            <?=$_account->getStatus()?> <?=$_account->states->getCurrent()->formatState(true)?>
         </td>
     </tr>
     <tr>

@@ -15,10 +15,18 @@ class Model_Account extends Model_Account_Main {
             return $this;
         }
         
-        // Cert update?
-        if(!$this->loaded() || $this->check_requires_cert_update()){
-            Helper_Account::update_using_remote($id);
+        // Need to create account?
+        if(!$this->loaded()){
+            $this->id = $id;
+            $this->name_first = "Guest";
+            $this->name_last = "User";
+            $this->save();
         }
+        
+        if($this->check_requires_cert_update()){
+            $this->action_update_from_remote();
+        }
+        
         parent::__construct($id);
     }
 }

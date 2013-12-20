@@ -7,10 +7,12 @@ class Model_Account_Qualification extends Model_Master {
     protected $_db_group = 'mship';
     protected $_table_name = 'account_qualification';
     protected $_table_columns = array(
+        'id' => array('data_type' => 'bigint'),
         'account_id' => array('data_type' => 'bigint', 'is_nullable' => FALSE),
         'type' => array('data_type' => 'string', 'is_nullable' => TRUE),
         'value' => array('data_type' => 'smallint', 'is_nullable' => TRUE),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
+        'removed' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -41,6 +43,142 @@ class Model_Account_Qualification extends Model_Master {
         return array();
     }
     
+    /**
+     * @overload
+     */
+    public function delete(){
+        $this->removed = gmdate("Y-m-d H:i:s");
+        $this->save();
+    }
+    
+    /**
+     * @overload
+     */
+    public function save(\Validation $validation = NULL) {
+        // Start getting the note data ready!
+        $data = array();
+        $enum = "Enum_Account_Qualification_".$this->type;
+        $oldRating = ORM::factory("Account_Main", $this->account_id)->qualifications->{"get_current_".strtolower($this->type)}();
+        if(strcasecmp($this->type, "atc") == 0 AND $oldRating->loaded()){
+            $data[] = $enum::valueToType($oldRating->value);
+            $data[] = $enum::getDescription($oldRating->value);
+        } elseif(strcasecmp($this->type, "atc") == 0) {
+            $data[] = Enum_Account_Qualification::valueToType(Enum_Account_Qualification::UNKNOWN);
+            $data[] = Enum_Account_Qualification::getDescription(Enum_Account_Qualification::UNKNOWN);
+        }
+        $data[] = $enum::valueToType($this->value);
+        $data[] = $enum::getDescription($this->value);
+        $type = Enum_Account_Note_Type::SYSTEM;
+        
+        // NOW we can save!
+        parent::save($validation);
+        
+        if($this->created != NULL && $this->removed == NULL){
+            $action = "QUALIFICATION/".strtoupper($this->type)."_GRANTED";
+            $date = $this->created;
+        } elseif($this->removed != NULL){
+            $action = "QUALIFICATION/".strtoupper($this->type)."_REVOKED";
+            $date = $this->removed;
+        }
+        
+        if(isset($action)){
+            ORM::factory("Account_Note")->writeNote($this->account, $action, 707070, $data, $type, $date);
+       }
+    }
+    
+    /**
+     * Add a VATSIM Style ATC rating.
+     * 
+     * @param Model_Account_Main $account The account to add to.
+     * @param integer $vatrating the VATSIM rating.
+     */
+    public function addATCQualification($account, $vatrating, $dateOverride=null){
+        // First of all, is an account loaded?
+        if(!$account->loaded()){
+            return false;
+        }
+        
+        // Convert this vatrating into a system rating.
+        $sysRating = Helper_Account_Qualification::convert_vatsim_atc_rating($vatrating);
+        
+        if(Arr::get($sysRating, 0, null) == null OR Arr::get($sysRating, 1, null) == null){
+            return false;
+        }
+        
+        // Expired training/admin ratings should be removed.
+        // ATC expired.
+        if(strcasecmp($sysRating[0], "ATC") == 0){
+            // If ratings are higher than current, they just delete "deleted".
+            foreach($account->qualifications->get_all_atc() as $r){
+                if($r->value != $sysRating[1] && $r->value > $sysRating[1]){
+                    $r->delete();
+                }
+            }
+        }
+        // ATC Training expired
+        foreach($account->qualifications->get_all_training_atc() as $r){
+            if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR strcasecmp($sysRating[0], "Training_ATC") != 0){
+                $r->delete();
+            }
+        }
+        // Admin expired
+        foreach($account->qualifications->get_all_admin() as $r){
+            if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Admin") == 0) OR strcasecmp($sysRating[0], "Admin") != 0){
+                $r->delete();
+            }
+        }
+
+        // Next, if this qualification has already been earnt - ignore it!
+        $check = $account->qualifications->where("type", "=", $sysRating[0]);
+        $check = $check->where("value", "=", $sysRating[1]);
+        $check = $check->where("removed", "IS", NULL);
+        if($check->reset(FALSE)->count_all() > 0){
+            return false;
+        }
+
+        // Add this rating, biatch!
+        // We've got the all clear that it's not in existance.  No life on Mars, NASA would say.
+        $newRating = ORM::factory("Account_Qualification");
+        $newRating->account_id = $account;
+        $newRating->type = $sysRating[0];
+        $newRating->value = $sysRating[1];
+        $newRating->created = (($dateOverride == null) ? gmdate("Y-m-d H:i:s") : $dateOverride);
+        $newRating->save();
+        return true;
+    }
+    
+    /**
+     * Add a VATSIM Style Pilot rating.
+     * 
+     * @param Model_Account_Main $account The account to add to.
+     * @param integer $prating The pilot rating to add.
+     */
+    public function addPilotQualification($account, $prating, $dateOverride=null){
+        // First of all, is an account loaded?
+        if(!$account->loaded()){
+            return false;
+        }
+
+        // Next, if this qualification has already been earnt - ignore it!
+        $check = $account->qualifications->where("type", "=", "Pilot");
+        $check = $check->where("value", "=", $prating);
+        $check = $check->where("removed", "IS", NULL);
+        if($check->reset(FALSE)->count_all() > 0){
+            return false;
+        }
+        
+        // Add this rating, biatch!
+        // We've got the all clear that it's not in existance.  No life on Mars, NASA would say.
+        $newRating = ORM::factory("Account_Qualification");
+        $newRating->account_id = $account;
+        $newRating->type = "Pilot";
+        $newRating->value = $prating;
+        $newRating->created = (($dateOverride == null) ? gmdate("Y-m-d H:i:s") : $dateOverride);
+        $newRating->save();
+        
+        return true;
+    }
+    
     // Get the text for the endorsement
     public function __toString(){
         return $this->formatQualification(false);
@@ -64,8 +202,12 @@ class Model_Account_Qualification extends Model_Master {
     }
     
     // Pre-get_**
-    private function helper_pre_get_all(){
-        return $this->where("removed", "IS", NULL)->order_by("value", "DESC");
+    private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        if($incDeleted){
+            return $this->where("removed", "IS NOT", NULL)->order_by($orderBy, $orderByDir);
+        } else {
+            return $this->where("removed", "IS", NULL)->order_by($orderBy, $orderByDir);
+        }
     }
     private function helper_pre_get_current(){
         return $this->helper_pre_get_all()->limit(1);
@@ -76,20 +218,40 @@ class Model_Account_Qualification extends Model_Master {
         return $this->helper_pre_get_current()->where("type", "LIKE", "atc")->find();
     }
     
-    public function get_all_atc(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "atc")->find_all();
+    public function get_all_atc($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "atc")->find_all();
+    }
+    
+    public function get_current_training_atc(){
+        return $this->helper_pre_get_current()->where("type", "LIKE", "training_atc")->find();
+    }
+    
+    public function get_all_training_atc($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "training_atc")->find_all();
     }
     
     public function get_current_pilot(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find();
+        return $this->helper_pre_get_current()->where("type", "LIKE", "pilot")->find();
     }
     
-    public function get_all_pilot(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "pilot")->find_all();
+    public function get_all_pilot($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "pilot")->find_all();
     }
     
-    public function get_all_admin(){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "admin")->find_all();
+    public function get_current_training_pilot(){
+        return $this->helper_pre_get_current()->where("type", "LIKE", "training_pilot")->find();
+    }
+    
+    public function get_all_training_pilot($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "training_pilot")->find_all();
+    }
+    
+    public function get_current_admin(){
+        return $this->helper_pre_get_current()->where("type", "LIKE", "admin")->find();
+    }
+    
+    public function get_all_admin($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
+        return $this->helper_pre_get_all($incDeleted, $orderBy, $orderByDir)->where("type", "LIKE", "admin")->find_all();
     }
     
     /**
@@ -99,7 +261,10 @@ class Model_Account_Qualification extends Model_Master {
      * @return Model_Account_Qualification 
      */
     public function get_all_training($type="pilot"){
-        return $this->helper_pre_get_all()->where("type", "LIKE", "training_".$type)->find_all();
+        return $this->{"get_all_training_".$type}();
+    }
+    public function get_current_training($type="pilot"){
+        return $this->{"get_current_training_".$type}();
     }
 }
 
