@@ -175,7 +175,7 @@ class Model_Account_Email extends Model_Master {
         $this->save();
 
         // Log it!
-        $data = array($curEmail->email);
+        $data = array($this->email);
         ORM::factory("Account_Note")->writeNote($this->account, "EMAIL/PRIMARY_PROMOTED", 707070, $data, Enum_Account_Note_Type::SYSTEM);
     }
     
