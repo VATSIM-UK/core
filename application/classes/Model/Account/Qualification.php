@@ -58,7 +58,7 @@ class Model_Account_Qualification extends Model_Master {
         // Start getting the note data ready!
         $data = array();
         $enum = "Enum_Account_Qualification_".$this->type;
-        $oldRating = ORM::factory("Account", $this->account_id)->qualifications->{"get_current_".strtolower($this->type)}();
+        $oldRating = ORM::factory("Account_Main", $this->account_id)->qualifications->{"get_current_".strtolower($this->type)}();
         if(strcasecmp($this->type, "atc") == 0 AND $oldRating->loaded()){
             $data[] = $enum::valueToType($oldRating->value);
             $data[] = $enum::getDescription($oldRating->value);
@@ -87,19 +87,19 @@ class Model_Account_Qualification extends Model_Master {
     }
     
     /**
-     * Add a VATSIM Style rating.
+     * Add a VATSIM Style ATC rating.
      * 
      * @param Model_Account_Main $account The account to add to.
      * @param integer $vatrating the VATSIM rating.
      */
-    public function addQualification($account, $vatrating){
+    public function addATCQualification($account, $vatrating, $dateOverride=null){
         // First of all, is an account loaded?
         if(!$account->loaded()){
             return false;
         }
         
         // Convert this vatrating into a system rating.
-        $sysRating = Helper_Account_Qualification::convert_vatsim_rating($vatrating);
+        $sysRating = Helper_Account_Qualification::convert_vatsim_atc_rating($vatrating);
         
         if(Arr::get($sysRating, 0, null) == null OR Arr::get($sysRating, 1, null) == null){
             return false;
@@ -135,14 +135,45 @@ class Model_Account_Qualification extends Model_Master {
         if($check->reset(FALSE)->count_all() > 0){
             return false;
         }
-        
+
         // Add this rating, biatch!
         // We've got the all clear that it's not in existance.  No life on Mars, NASA would say.
         $newRating = ORM::factory("Account_Qualification");
         $newRating->account_id = $account;
         $newRating->type = $sysRating[0];
         $newRating->value = $sysRating[1];
-        $newRating->created = gmdate("Y-m-d H:i:s");
+        $newRating->created = (($dateOverride == null) ? gmdate("Y-m-d H:i:s") : $dateOverride);
+        $newRating->save();
+        return true;
+    }
+    
+    /**
+     * Add a VATSIM Style Pilot rating.
+     * 
+     * @param Model_Account_Main $account The account to add to.
+     * @param integer $prating The pilot rating to add.
+     */
+    public function addPilotQualification($account, $prating, $dateOverride=null){
+        // First of all, is an account loaded?
+        if(!$account->loaded()){
+            return false;
+        }
+
+        // Next, if this qualification has already been earnt - ignore it!
+        $check = $account->qualifications->where("type", "=", "Pilot");
+        $check = $check->where("value", "=", $prating);
+        $check = $check->where("removed", "IS", NULL);
+        if($check->reset(FALSE)->count_all() > 0){
+            return false;
+        }
+        
+        // Add this rating, biatch!
+        // We've got the all clear that it's not in existance.  No life on Mars, NASA would say.
+        $newRating = ORM::factory("Account_Qualification");
+        $newRating->account_id = $account;
+        $newRating->type = "Pilot";
+        $newRating->value = $prating;
+        $newRating->created = (($dateOverride == null) ? gmdate("Y-m-d H:i:s") : $dateOverride);
         $newRating->save();
         
         return true;
@@ -173,7 +204,7 @@ class Model_Account_Qualification extends Model_Master {
     // Pre-get_**
     private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
         if($incDeleted){
-            return $this->order_by($orderBy, $orderByDir);
+            return $this->where("removed", "IS NOT", NULL)->order_by($orderBy, $orderByDir);
         } else {
             return $this->where("removed", "IS", NULL)->order_by($orderBy, $orderByDir);
         }
