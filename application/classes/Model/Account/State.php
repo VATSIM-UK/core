@@ -59,12 +59,11 @@ class Model_Account_State extends Model_Master {
         $oldState = ORM::factory("Account_Main", $this->account_id)->states->getCurrent();
         
         if($oldState->loaded()){
-            $data[] = $oldState->formatState(false);
             $data[] = $oldState->formatState(true);
         } else {
-            $data[] = Enum_Account_State::NOT_REGISTERED;
             $data[] = Enum_Account_State::getDescription(Enum_Account_State::NOT_REGISTERED);
         }
+        $data[] = Enum_Account_State::getDescription($this->state);
         
         $type = Enum_Account_Note_Type::SYSTEM;
         
