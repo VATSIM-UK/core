@@ -197,8 +197,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean True if it requires an update.
      */
     public function check_requires_cert_update(){
-        return true;
-        return ($this->loaded() && strtotime($this->checked) <= strtotime("-24 hours"));
+        return ($this->loaded() && strtotime($this->checked) <= strtotime("-48 hours"));
     }
     
     /**
