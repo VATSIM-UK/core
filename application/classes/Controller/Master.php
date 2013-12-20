@@ -22,7 +22,7 @@ abstract class Controller_Master extends Controller_Template {
     protected $_actual_account = null;
     
     protected function loadAccount(){
-        $this->_current_account = ORM::factory("Account_Main")->get_current_account();
+        $this->_current_account = ORM::factory("Account")->get_current_account();
     }
     
     protected function loadToken(){
