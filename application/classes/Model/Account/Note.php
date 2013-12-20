@@ -73,10 +73,11 @@ class Model_Account_Note extends Model_Master {
      * 
      * 
      */
-    public function writeNote($account, $format, $user=707070, $data=array(), $type=Enum_Account_Note_Type::STANDARD){
+    public function writeNote($account, $format, $user=707070, $data=array(), $type=Enum_Account_Note_Type::SYSTEM, $date=null){
         // If account isn't of type Model_Account, error.
-        if(!$account instanceof Model_Account){
+        if(!$account instanceof Model_Account_Main){
             throw new Kohana_Exception("'account' must be of type Model_Account");
+            die("HAIRAI!");
             return false;
         }
         
@@ -89,11 +90,13 @@ class Model_Account_Note extends Model_Master {
         // If format isn't of type Model_Account_Note_Format, error.
         if(!$format instanceof Model_Account_Note_Format){
             throw new Kohana_Exception("'format' must be of type Model_Account_Note_Format");
+            die("HAIRsgsdfAI!");
             return false;
         }
         
         // If the format isn't loaded, error.
         if(!$format->loaded()){
+            die("NO FORMAT:".$format);
             return false;
         }
         
@@ -105,9 +108,9 @@ class Model_Account_Note extends Model_Master {
         }
         
         // Let's find/add this user's details.
-        $_user = ORM::factory("Account", $user);
+        $_user = ORM::factory("Account_Main", $user);
         if(!$_user->loaded()){
-            $_user = ORM::factory("Account", Kohana::$config->load('general')->get("system_user"));
+            $_user = ORM::factory("Account_Main", Kohana::$config->load('general')->get("system_user"));
         }
         
         foreach($_user->list_columns() as $_col => $_val){
@@ -120,7 +123,7 @@ class Model_Account_Note extends Model_Master {
         $_ormAccountNote->actioner_id = $_user;
         $_ormAccountNote->format_id = $format;
         $_ormAccountNote->type = $type;
-        $_ormAccountNote->created = gmdate("Y-m-d H:i:s");
+        $_ormAccountNote->created = ($date != null) ? $date : gmdate("Y-m-d H:i:s");
         $_ormAccountNote->body = vsprintf($format->string, $_data);
         $_ormAccountNote->data = $data;
         $_ormAccountNote->save();

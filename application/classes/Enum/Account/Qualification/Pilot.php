@@ -3,6 +3,7 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
+    const TYPE = "Pilot";
     const P0 = 0;
     const P1 = 1;
     const P2 = 2;

@@ -3,6 +3,7 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Account_Qualification_ATC extends Enum_Account_Qualification {
+    const TYPE = "ATC";
     const OBS = 1;
     const S1 = 2;
     const S2 = 3;

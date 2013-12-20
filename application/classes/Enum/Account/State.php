@@ -14,14 +14,14 @@ class Enum_Account_State extends Enum_Main {
     
     public static function getDescription($value){
         switch($value){
-            //case self::SUSPENDED:
-            //    return "Suspended";
-            //case self::INACTIVE:
-            //    return "Inactive Account";
+            case self::NOT_REGISTERED:
+                return "Not registered";
+            case self::GUEST:
+                return "Guest Member";
             case self::DIVISION:
                 return "Division Member";
             case self::REGION:
-                return "Regional Member (NO DIVISION)";
+                return "Regional Member";
             case self::VISITOR:
                 return "Visiting member";
             case self::TRANSFER:

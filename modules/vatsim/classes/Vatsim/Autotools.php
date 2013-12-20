@@ -14,7 +14,8 @@ class Vatsim_Autotools extends Vatsim {
 
     private $_actionDefault = "auths";
     private $_actions = array("auths" => "text", "email" => "text", "divdb" => "text", "regdb" => "text",
-        "ratch" => "text", "xstat" => "xml");
+                              "ratch" => "text", "xstat" => "xml");
+    private $_remoteInfoFields = array("name_first", "name_last", "rating", "regdate", "pilotrating", "region", "division");
 
     public function URICreate($action, $data = array()) {
         // Select the config entry corresponding to he action
@@ -96,12 +97,12 @@ class Vatsim_Autotools extends Vatsim {
             }
             
             // Now split into the array!
-            list($member["cid"], $member["rating"], $member["prating"],
+            list($member["cid"], $member["rating_atc"], $member["rating_pilot"],
                  $member["name_first"], $member["name_last"],
                  $member["email"], $member["age"],
-                 $member["location_state"], $member["location_country"],
+                 $member["location_state"], $member["country"],
                  $member["experience"], $member["suspended_until"],
-                 $member["created"], $member["region"],
+                 $member["regdate"], $member["region"],
                  $member["division"],) = explode(",", $line);
                     
             // Store!
@@ -129,29 +130,25 @@ class Vatsim_Autotools extends Vatsim {
     }
 
     public function getInfo($cid) {
-        $result = array("name_first" => "",
-            "name_last" => "",
-            "regdate" => "",
-            "rating_pilot" => "",
-            "rating_atc" => "",
-            "country" => "");
-
         // Get the result
         $result = $this->runQuery("xstat", array($cid));
 
         // False?
         if (!$result) {
-            return $result;
+            return array();
         }
-        $result = get_object_vars($result->user);
+        $result_raw = get_object_vars($result->user);
 
         // Format!
-        $result["name_last"] = Arr::get($result, "name_last", "");
-        $result["name_first"] = Arr::get($result, "name_first", "");
-        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result, "pilotrating", ""));
-        $result["rating_atc"] = Arr::get($result, "rating", "");
-        $result["country"] = Arr::get($result, "country", "");
-        $result["regdate"] = Arr::get($result, "regdate", "");
+        $result = array();
+        $result["name_last"] = Arr::get($result_raw, "name_last", null);
+        $result["name_first"] = Arr::get($result_raw, "name_first", null);
+        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result_raw, "pilotrating", "0"));
+        $result["rating_atc"] = Arr::get($result_raw, "rating", "1");
+        $result["country"] = Arr::get($result_raw, "country", null);
+        $result["regdate"] = Arr::get($result_raw, "regdate", null);
+        $result["region"] = Arr::get($result_raw, "region", null);
+        $result["division"] = Arr::get($result_raw, "division", null);
 
         // Return the result!
         return $result;
@@ -215,8 +212,7 @@ class Vatsim_Autotools extends Vatsim {
     /// HELPERS ///
     public function helper_convertPilotRating($prating){
         // Let's go through the motions! First, set the PR array
-        $_pratings = array("P0" => 0,   //000000
-                           "P1" => 1,   //000001
+        $_pratings = array("P1" => 1,   //000001
                            "P2" => 2,   //000010
                            "P3" => 4,   //000100
                            "P4" => 8,   //001000
