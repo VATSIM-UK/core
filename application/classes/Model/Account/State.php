@@ -103,7 +103,7 @@ class Model_Account_State extends Model_Master {
         
         // Remmove all current states.
         foreach($account->states->find_all() as $r){
-            $r->delete();
+            $r->delete($dateOverride);
         }
 
         // Add this state!

@@ -226,6 +226,16 @@ class Model_Account_Main extends Model_Master {
             $details = $data;
         }
         
+        /***** LEGACY SUPPORT *****/
+        // Legacy support! When were they created? OBS rating, basically.
+        if($this->qualifications->reset(FALSE)->count_all() < 1 && Arr::get($details, 'regdate', null) != null){
+            $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
+        }
+        
+        // Peeps got their S1 straight away!
+        
+        /**************************/
+        
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
         $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
