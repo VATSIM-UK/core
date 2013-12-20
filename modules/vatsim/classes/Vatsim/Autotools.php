@@ -211,8 +211,7 @@ class Vatsim_Autotools extends Vatsim {
     /// HELPERS ///
     public function helper_convertPilotRating($prating){
         // Let's go through the motions! First, set the PR array
-        $_pratings = array("P0" => 0,   //000000
-                           "P1" => 1,   //000001
+        $_pratings = array("P1" => 1,   //000001
                            "P2" => 2,   //000010
                            "P3" => 4,   //000100
                            "P4" => 8,   //001000
