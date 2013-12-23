@@ -192,7 +192,11 @@ class Model_Account_Email extends Model_Master {
      */
     public function get_active_primary($idOnly=false){
         // Limit to primary.
-        $finder = $this->account->emails->helper_pre_get_active()->where("primary", "=", "1")->find();
+        if(!$this->loaded()){
+            $finder = $this->helper_pre_get_active()->where("primary", "=", "1")->find();
+        } else {
+            $finder = $this->account->emails->helper_pre_get_active()->where("primary", "=", "1")->find();
+        }
         
         // Found one?
         if($finder->loaded()){
