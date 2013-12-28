@@ -34,6 +34,10 @@ class Model_Training_Course extends Model_Master {
     
     // Has one relationship
     protected $_has_one = array(
+        'prerequisites' => array(
+            'model' => 'Training_Course_Prerequisite',
+            'foreign_key' => 'course_id',
+        ),
         'theory_outcome' => array(
             'model' => 'Training_Outcome',
             'foreign_key' => 'theory_outcome_id',

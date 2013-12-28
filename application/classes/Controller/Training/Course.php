@@ -8,27 +8,20 @@ class Controller_Training_Course extends Controller_Training_Master {
     }
     
     /**
-     * Dynamic function: if no id is specified, or it doesn't exist, display a list.
-     * 
-     * Otherwise, display the course info!
-     */
-    public function action_dynamic_display(){
-        $courseID = $this->_area;
-        $course = ORM::factory("Training_Course", $courseID);
-        
-        if($course && $course->loaded()){
-            $this->action_display($courseID);
-            return;
-        }
-        
-        $this->action_list();
-    }
-    
-    /**
      * Display a list of all the available course (regardless of user level).
      */
     public function action_list(){
         $this->setTitle("Current Training Courses");
         $this->_data["courses"] = ORM::factory("Training_Course")->getActive();
+    }
+    
+    /**
+     * Display a course.
+     */
+    public function action_display(){
+        $courseID = $this->request->param("id");
+        $course = ORM::factory("Training_Course", $courseID);
+        $this->_data["course"] = $course;
+        $this->setTitle("Course :: ".$course);
     }
 }
