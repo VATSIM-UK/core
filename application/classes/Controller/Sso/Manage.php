@@ -56,7 +56,7 @@ class Controller_Sso_Manage extends Controller_Sso_Master {
             if($valid){
                 // Store and return to the site!
                 try {
-                    $this->_current_account->emails->set_primary($this->request->post("email"));
+                    $this->_current_account->emails->action_add_email($this->_current_account, $this->request->post("email"), true, true);
                 } catch(Exception $e){
                     $valid = false;
                     $this->_data["error"] = "There seems to be an error.  Please contact web services.";
