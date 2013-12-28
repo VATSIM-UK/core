@@ -25,12 +25,12 @@
             <div class="col-md-3">
                 <p><strong>Theory / Practical:</strong> <?= ($course->theory_status ? "YES" : "NO") ?> / <?= ($course->practical_status ? "YES" : "NO") ?></p>
                 <p><strong>Status:</strong> Available</p>
-                <form class="form-horizontal" method="GET" action="<?= URL::site("training/course/view/".$course->id) ?>">
+                <form class="form-horizontal" method="GET" action="<?= URL::site("training/course/display/".$course->id) ?>">
                     <div class="form-group">
                         <div style="text-align: center;">
                             <div class="btn-group">
                                 <button type="submit" class="btn btn-default" name="viewCourse<?=$course->id?>" value="1">View</button>
-                                <button type="submit" class="btn btn-primary" name="enrolCourse<?=$course->id?>" value="0">Enrol</button>
+                                <!--<button type="submit" class="btn btn-primary" name="enrolCourse<?=$course->id?>" value="0">Enrol</button>-->
                             </div>
                         </div>
                     </div>
