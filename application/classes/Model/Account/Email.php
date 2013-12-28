@@ -74,7 +74,12 @@ class Model_Account_Email extends Model_Master {
         
         // Let's check for this email on this account.
         if($account->emails->where("email", "LIKE", $email)->count_all() > 0){
-            return;
+            $email = $account->emails->where("email", "LIKE", $email)->find();
+            if(!$email->primary && $primary){
+                $email->set_primary();
+                return true;
+            }
+            return true;
         }
         
         // Create new.
@@ -86,8 +91,7 @@ class Model_Account_Email extends Model_Master {
             $newEmail->created = gmdate("Y-m-d H:i:s");
             $newEmail->save();
         } catch(ORM_Validation_Exception $e){
-            print_r($e->errors());
-            return;
+            return false;
         }
         
         // Log it!
@@ -160,7 +164,7 @@ class Model_Account_Email extends Model_Master {
         }
         
         // Demote the old primary, if set.
-        $oldPrimary = $this->get_active_primary();
+        $oldPrimary = ORM::factory("Account_Email")->where("account_id", "=", $this->account_id)->where("primary", "=", 1);
         if($oldPrimary->loaded()){
             $oldPrimary->primary = 0;
             $oldPrimary->save();
@@ -175,8 +179,9 @@ class Model_Account_Email extends Model_Master {
         $this->save();
 
         // Log it!
-        $data = array($curEmail->email);
+        $data = array($this->email);
         ORM::factory("Account_Note")->writeNote($this->account, "EMAIL/PRIMARY_PROMOTED", 707070, $data, Enum_Account_Note_Type::SYSTEM);
+        return true;
     }
     
     // Pre-get_active_*
@@ -192,7 +197,7 @@ class Model_Account_Email extends Model_Master {
      */
     public function get_active_primary($idOnly=false){
         // Limit to primary.
-        $finder = $this->account->emails->helper_pre_get_active()->where("primary", "=", "1")->find();
+        $finder = $this->helper_pre_get_active()->where("primary", "=", "1")->find();
         
         // Found one?
         if($finder->loaded()){
