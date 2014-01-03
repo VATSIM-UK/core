@@ -196,6 +196,17 @@ class Model_Account_Qualification extends Model_Master {
         return ($type == "string") ? $enum::getPositionSuffixes($this->value) : explode(",", $enum::getPositionSuffixes($this->value)); 
     }
     
+    // Determine if the account has the rating being checked.
+    public function check_has_qualification($type="atc", $value, $incDeleted=false){
+        $quals = $this->get_all_training($type, $incDeleted);
+        foreach($quals as $qual){
+            if($qual->value == $value){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     // Pre-get_**
     private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
         if($incDeleted){
@@ -255,8 +266,8 @@ class Model_Account_Qualification extends Model_Master {
      * @param string $type Either pilot or atc.
      * @return Model_Account_Qualification 
      */
-    public function get_all_training($type="pilot"){
-        return $this->{"get_all_training_".$type}();
+    public function get_all_training($type="pilot", $incDeleted=false){
+        return $this->{"get_all_training_".$type}($incDeleted);
     }
     public function get_current_training($type="pilot"){
         return $this->{"get_current_training_".$type}();
