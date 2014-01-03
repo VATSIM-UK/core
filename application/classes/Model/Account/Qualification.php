@@ -103,12 +103,13 @@ class Model_Account_Qualification extends Model_Master {
         // ATC expired - only if downgraded.  Shouldn't ever happen, but *could*.
         if(strcasecmp($sysRating[0], "ATC") == 0){
             // If ratings are higher than current, they just delete "deleted".
-            foreach($account->qualifications->get_all_atc() as $r){
+            /*foreach($account->qualifications->get_all_atc() as $r){
                 if($r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
                     $r->delete($dateOverride);
                 }
-            }
+            }*/
         }
+        
         // ATC Training expired
         foreach($account->qualifications->get_all_training_atc() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR strcasecmp($sysRating[0], "Training_ATC") != 0){
@@ -198,7 +199,7 @@ class Model_Account_Qualification extends Model_Master {
     
     // Determine if the account has the rating being checked.
     public function check_has_qualification($type="atc", $value, $incDeleted=false){
-        $quals = $this->get_all_training($type, $incDeleted);
+        $quals = $this->{"get_all_".$type}($incDeleted);
         foreach($quals as $qual){
             if($qual->value == $value){
                 return true;
