@@ -58,14 +58,8 @@ class Model_Account_Qualification extends Model_Master {
         // Start getting the note data ready!
         $data = array();
         $enum = "Enum_Account_Qualification_".$this->type;
-        $oldRating = ORM::factory("Account_Main", $this->account_id)->qualifications->{"get_current_".strtolower($this->type)}();
-        if(strcasecmp($this->type, "atc") == 0 AND $oldRating->loaded()){
-            $data[] = $enum::valueToType($oldRating->value);
-            $data[] = $enum::getDescription($oldRating->value);
-        } elseif(strcasecmp($this->type, "atc") == 0) {
-            $data[] = Enum_Account_Qualification::valueToType(Enum_Account_Qualification::UNKNOWN);
-            $data[] = Enum_Account_Qualification::getDescription(Enum_Account_Qualification::UNKNOWN);
-        }
+        
+        // Add new rating information.
         $data[] = $enum::valueToType($this->value);
         $data[] = $enum::getDescription($this->value);
         $type = Enum_Account_Note_Type::SYSTEM;
@@ -106,21 +100,23 @@ class Model_Account_Qualification extends Model_Master {
         }
         
         // Expired training/admin ratings should be removed.
-        // ATC expired.
+        // ATC expired - only if downgraded.  Shouldn't ever happen, but *could*.
         if(strcasecmp($sysRating[0], "ATC") == 0){
             // If ratings are higher than current, they just delete "deleted".
-            foreach($account->qualifications->get_all_atc() as $r){
-                if($r->value != $sysRating[1] && $r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
+            /*foreach($account->qualifications->get_all_atc() as $r){
+                if($r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
                     $r->delete($dateOverride);
                 }
-            }
+            }*/
         }
+        
         // ATC Training expired
         foreach($account->qualifications->get_all_training_atc() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR strcasecmp($sysRating[0], "Training_ATC") != 0){
                 $r->delete($dateOverride);
             }
         }
+        
         // Admin expired
         foreach($account->qualifications->get_all_admin() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Admin") == 0) OR strcasecmp($sysRating[0], "Admin") != 0){
@@ -201,10 +197,21 @@ class Model_Account_Qualification extends Model_Master {
         return ($type == "string") ? $enum::getPositionSuffixes($this->value) : explode(",", $enum::getPositionSuffixes($this->value)); 
     }
     
+    // Determine if the account has the rating being checked.
+    public function check_has_qualification($type="atc", $value, $incDeleted=false){
+        $quals = $this->{"get_all_".$type}($incDeleted);
+        foreach($quals as $qual){
+            if($qual->value == $value){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     // Pre-get_**
     private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
         if($incDeleted){
-            return $this->where("removed", "IS NOT", NULL)->order_by($orderBy, $orderByDir);
+            return $this->order_by($orderBy, $orderByDir);
         } else {
             return $this->where("removed", "IS", NULL)->order_by($orderBy, $orderByDir);
         }
@@ -260,8 +267,8 @@ class Model_Account_Qualification extends Model_Master {
      * @param string $type Either pilot or atc.
      * @return Model_Account_Qualification 
      */
-    public function get_all_training($type="pilot"){
-        return $this->{"get_all_training_".$type}();
+    public function get_all_training($type="pilot", $incDeleted=false){
+        return $this->{"get_all_training_".$type}($incDeleted);
     }
     public function get_current_training($type="pilot"){
         return $this->{"get_current_training_".$type}();

@@ -150,6 +150,8 @@ class Model_Account_Main extends Model_Master {
      * @return void
      */
     public function update_last_login_info(){
+        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/LOGIN_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        
         $this->last_login = gmdate("Y-m-d H:i:s");
         $this->last_login_ip = $_SERVER["REMOTE_ADDR"];
         $this->save();
@@ -230,17 +232,19 @@ class Model_Account_Main extends Model_Master {
             $details = $data;
         }
         
-        /***** LEGACY SUPPORT *****/
-        // Legacy support! When were they created? OBS rating, basically.
-        if($this->qualifications->reset(FALSE)->count_all() < 1 && Arr::get($details, 'regdate', null) != null){
+        // We need to add the OBS date of a member to the qualifications table, when they are created.
+        if(!$this->qualifications->check_has_qualification("atc", 1)){
             $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
         }
         
-        // Peeps got their S1 straight away!
-        if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
-            $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
+        /***** LEGACY SUPPORT *****/
+        // Peeps got their S1 straight away: Pre 2008-01-01 00:00:00
+        if(!$this->qualifications->check_has_qualification("atc", 2)){
+            if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
+                $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
+                die("OI OI!");
+            }
         }
-        
         /**************************/
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
@@ -397,10 +401,12 @@ class Model_Account_Main extends Model_Master {
 
         // If we've got a valid authentication, set the session!
         if($authResult){
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
             $this->setSessionData(false);
             $this->update_last_login_info();
             return $authResult;
         }
+        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
         Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
         $this->session()->delete("sso_quicklogin");
