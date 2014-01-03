@@ -117,13 +117,22 @@
     </tr>
     <?php endif; ?>
     <tr>
-        <th>ATC Qualifications</th>
+        <th>ATC Qualifications<br /><small>Showing all achieved</small></th>
         <td> 
-            <?php foreach ($_account->qualifications->get_all_atc() as $qual): ?>
+            <?php foreach ($_account->qualifications->get_all_atc(true) as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
+                <em>awarded 
                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.
+                    <?= Date::fuzzy_span(strtotime($qual->created)) ?>
                 </a>
+                    
+                <?php if($qual->removed != null): ?>
+                    - expired 
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <?= Date::fuzzy_span(strtotime($qual->removed)) ?>
+                    </a>
+                <?php endif; ?>
+                .</em>
                 <br />
             <?php endforeach; ?>
             <?php if (count($_account->qualifications->get_all_atc()) < 1): ?>
@@ -152,13 +161,22 @@
     </tr>
     <?php endif; ?>
     <tr>
-        <th>Pilot Qualifications</th>
+        <th>Pilot Qualifications<br /><small>Showing all achieved</small></th>
         <td>
-            <?php foreach ($_account->qualifications->get_all_pilot() as $qual): ?>
+            <?php foreach ($_account->qualifications->get_all_pilot(true) as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
+                <em>awarded 
                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>added <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>.
+                    <?= Date::fuzzy_span(strtotime($qual->created)) ?>
                 </a>
+                    
+                <?php if($qual->removed != null): ?>
+                    - expired 
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <?= Date::fuzzy_span(strtotime($qual->removed)) ?>
+                    </a>
+                <?php endif; ?>
+                .</em>
                 <br />
             <?php endforeach; ?>
             <?php if (count($_account->qualifications->get_all_pilot()) < 1): ?>
