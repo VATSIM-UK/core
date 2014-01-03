@@ -230,17 +230,19 @@ class Model_Account_Main extends Model_Master {
             $details = $data;
         }
         
-        /***** LEGACY SUPPORT *****/
-        // Legacy support! When were they created? OBS rating, basically.
-        if($this->qualifications->reset(FALSE)->count_all() < 1 && Arr::get($details, 'regdate', null) != null){
+        // We need to add the OBS date of a member to the qualifications table, when they are created.
+        if(!$this->qualifications->check_has_qualification("atc", 1)){
             $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
         }
         
-        // Peeps got their S1 straight away!
-        if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
-            $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
+        /***** LEGACY SUPPORT *****/
+        // Peeps got their S1 straight away: Pre 2008-01-01 00:00:00
+        if(!$this->qualifications->check_has_qualification("atc", 2)){
+            if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
+                $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
+                die("OI OI!");
+            }
         }
-        
         /**************************/
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
