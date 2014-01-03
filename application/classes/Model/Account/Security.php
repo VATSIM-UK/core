@@ -21,6 +21,10 @@ class Model_Account_Security extends Model_Master {
     
     // Belongs to relationships
     protected $_belongs_to = array(
+        'account' => array(
+            'model' => 'Account_Main',
+            'foreign_key' => 'account_id',
+        ),
     );
     
     // Has man relationships
@@ -28,10 +32,6 @@ class Model_Account_Security extends Model_Master {
     
     // Has one relationship
     protected $_has_one = array(
-        'account' => array(
-            'model' => 'Account_Main',
-            'foreign_key' => 'account_id',
-        ),
     );
     
     // Validation rules
@@ -170,11 +170,13 @@ class Model_Account_Security extends Model_Master {
         
         // Let's validate!
         if($this->hash($security) == $this->value){
+            ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
             if($this->require_validation() || $forceSession){
                 $this->session()->set("sso_security_grace", gmdate("Y-m-d H:i:s"));
             }
             return true;
         }
+        ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
         
         // Default response for protection!
         return false;

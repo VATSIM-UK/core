@@ -150,6 +150,8 @@ class Model_Account_Main extends Model_Master {
      * @return void
      */
     public function update_last_login_info(){
+        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/LOGIN_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        
         $this->last_login = gmdate("Y-m-d H:i:s");
         $this->last_login_ip = $_SERVER["REMOTE_ADDR"];
         $this->save();
@@ -399,10 +401,12 @@ class Model_Account_Main extends Model_Master {
 
         // If we've got a valid authentication, set the session!
         if($authResult){
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
             $this->setSessionData(false);
             $this->update_last_login_info();
             return $authResult;
         }
+        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
         Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
         $this->session()->delete("sso_quicklogin");
