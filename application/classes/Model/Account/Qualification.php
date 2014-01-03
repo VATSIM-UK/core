@@ -58,14 +58,8 @@ class Model_Account_Qualification extends Model_Master {
         // Start getting the note data ready!
         $data = array();
         $enum = "Enum_Account_Qualification_".$this->type;
-        $oldRating = ORM::factory("Account_Main", $this->account_id)->qualifications->{"get_current_".strtolower($this->type)}();
-        if(strcasecmp($this->type, "atc") == 0 AND $oldRating->loaded()){
-            $data[] = $enum::valueToType($oldRating->value);
-            $data[] = $enum::getDescription($oldRating->value);
-        } elseif(strcasecmp($this->type, "atc") == 0) {
-            $data[] = Enum_Account_Qualification::valueToType(Enum_Account_Qualification::UNKNOWN);
-            $data[] = Enum_Account_Qualification::getDescription(Enum_Account_Qualification::UNKNOWN);
-        }
+        
+        // Add new rating information.
         $data[] = $enum::valueToType($this->value);
         $data[] = $enum::getDescription($this->value);
         $type = Enum_Account_Note_Type::SYSTEM;
@@ -106,11 +100,11 @@ class Model_Account_Qualification extends Model_Master {
         }
         
         // Expired training/admin ratings should be removed.
-        // ATC expired.
+        // ATC expired - only if downgraded.  Shouldn't ever happen, but *could*.
         if(strcasecmp($sysRating[0], "ATC") == 0){
             // If ratings are higher than current, they just delete "deleted".
             foreach($account->qualifications->get_all_atc() as $r){
-                if($r->value != $sysRating[1] && $r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
+                if($r->value > $sysRating[1] && strtotime($dateOverride) >= $r->created){
                     $r->delete($dateOverride);
                 }
             }
@@ -121,6 +115,7 @@ class Model_Account_Qualification extends Model_Master {
                 $r->delete($dateOverride);
             }
         }
+        
         // Admin expired
         foreach($account->qualifications->get_all_admin() as $r){
             if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Admin") == 0) OR strcasecmp($sysRating[0], "Admin") != 0){
@@ -204,7 +199,7 @@ class Model_Account_Qualification extends Model_Master {
     // Pre-get_**
     private function helper_pre_get_all($incDeleted=false, $orderBy="value", $orderByDir="DESC"){
         if($incDeleted){
-            return $this->where("removed", "IS NOT", NULL)->order_by($orderBy, $orderByDir);
+            return $this->order_by($orderBy, $orderByDir);
         } else {
             return $this->where("removed", "IS", NULL)->order_by($orderBy, $orderByDir);
         }
