@@ -9,7 +9,7 @@ Route::set('default_training', 'training(/)(<controller>(/)(<action>(/)(<id>(/))
         ->defaults(array(
             'directory' => 'Training',
             'controller' => 'Course',
-            'action' => 'dynamic_display'
+            'action' => 'list'
         ));
 Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(<area>(/))))',
         array(
