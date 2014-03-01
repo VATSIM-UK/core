@@ -78,6 +78,9 @@ abstract class Controller_Master extends Controller_Template {
                 $this->_templateDir = $this->_account->template;
             }
         }
+        
+        // Load the flash messages
+        $this->_messages = unserialize($this->session()->get_once("flash_messages", serialize(array())));
     }
 
     public function before() {
@@ -192,5 +195,8 @@ abstract class Controller_Master extends Controller_Template {
             $m->message = $message;
             $this->_messages[$type][] = $m;
         }
+        
+        // Now let's make the messages a flash storage!
+        $this->session()->set("flash_messages", serialize($this->_messages));
     }
 }
