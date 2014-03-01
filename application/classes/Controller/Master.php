@@ -78,9 +78,6 @@ abstract class Controller_Master extends Controller_Template {
                 $this->_templateDir = $this->_account->template;
             }
         }
-        
-        // Load the flash messages
-        $this->_messages = unserialize($this->session()->get_once("flash_messages", serialize(array())));
     }
 
     public function before() {
@@ -114,6 +111,9 @@ abstract class Controller_Master extends Controller_Template {
                 $this->template->set($k, $v);
             }
         }
+        
+        // Load the flash messages
+        $this->_messages = unserialize($this->session()->get_once("flash_messages", serialize(array())));
         
         // Set the view template variables
         if ($this->request->is_initial()) {
