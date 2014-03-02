@@ -17,6 +17,10 @@
         <?= HTML::script("http://code.jquery.com/ui/1.10.1/jquery-ui.js"); ?>
         <?= HTML::script("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"); ?>
         <?= HTML::script("media/scripts/general.js"); ?>
+        
+        <?php foreach($scripts as $s): ?>
+            <?=HTML::script($s); ?>
+        <?php endforeach; ?>
     </head>
     <body>
         <div class="container container-header">
@@ -31,28 +35,54 @@
         </div>
         <div class="container container-content">
             <div class="content">
-                <h1><?=$_title?></h1>
-                
+                <?php if($_account->loaded()): ?>
+                    <ul class="nav nav-pills">
+                        <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "SSO/MANAGE/DISPLAY") ? "active" : "" ?>">
+                            <a href="<?= URL::site("sso/manage/display") ?>">Dashboard</a>
+                        </li>
+                        <li class="dropdown <?= !strcasecmp($_area . "/" . $_controller, "TRAINING/THEORY") ? "active" : "" ?>">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                Training :: Theory <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ADMIN_TEST_LIST") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory/admin_test_list") ?>">Test Management</a>
+                                </li>
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/CATEGORY") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory/category") ?>">Category Management</a>
+                                </li>
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/QUESTION") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory/question") ?>">Question Management</a>
+                                </li>
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ATTEMPT") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory/attempt") ?>">Attempt Management</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                <?php endif; ?>
+                <h1><?= $_title ?></h1>
+
                 <?php if (isset($_messages) && isset($_messages["error"])): ?>
-                    <?php foreach($_messages["error"] as $error): ?>
+                    <?php foreach ($_messages["error"] as $error): ?>
                         <div class="alert alert-danger alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <strong><?=$error->title?></strong>
+                            <strong><?= $error->title ?></strong>
                             <p><?= $error->message ?></p>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
-                
+
                 <?php if (isset($_messages) && isset($_messages["success"])): ?>
-                    <?php foreach($_messages["success"] as $msg): ?>
+                    <?php foreach ($_messages["success"] as $msg): ?>
                         <div class="alert alert-success">
-                            <strong><?=$msg->title?></strong>
+                            <strong><?= $msg->title ?></strong>
                             <p><?= $msg->message ?></p>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
-                
-                <?=$_content?>
+
+                <?= $_content ?>
             </div>
         </div>
         <div class="container container-footer">
@@ -61,7 +91,7 @@
                     <p>
                         VATSIM-UK &copy; 2013 - 
                         <a href="http://status.vatsim-uk.co.uk" target="_blank">
-                            Version <?=exec("git describe --abbrev=0 --tags")?> (<?=gmdate("d/m/y H:i \G\M\T", filemtime(realpath(APPPATH."../.git/")))?>)
+                            Version <?= exec("git describe --abbrev=0 --tags") ?> (<?= gmdate("d/m/y H:i \G\M\T", filemtime(realpath(APPPATH . "../.git/"))) ?>)
                         </a>
                         <br align="center">
                         Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
