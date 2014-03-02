@@ -12,7 +12,7 @@ class Model_Training_Theory_Attempt extends Model_Master {
         'test_id' => array('data_type' => 'int'),
         'time_start' => array('data_type' => 'timestamp'),
         'time_expire' => array('data_type' => 'timestamp'),
-        'result' => array('data_type' => 'string'),
+        'result' => array('data_type' => 'tinyint'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations

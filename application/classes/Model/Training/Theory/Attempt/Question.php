@@ -13,7 +13,7 @@ class Model_Training_Theory_Attempt_Question extends Model_Master {
         'time_start' => array('data_type' => 'timestamp'),
         'time_end' => array('data_type' => 'timestamp'),
         'answer' => array('data_type' => 'string'),
-        'result' => array('data_type' => 'string'),
+        'result' => array('data_type' => 'tinyint'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
