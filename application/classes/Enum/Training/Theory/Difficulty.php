@@ -2,25 +2,21 @@
 
 defined('SYSPATH') or die('No direct script access.');
 
-class Enum_Training_Theory_Result extends Enum_Main {
-    const STARTED = 0;
-    const PASS = 1;
-    const FAIL = 2;
-    const CANCEL = 3;
+class Enum_Training_Theory_Difficulty extends Enum_Main {
+    const BASIC = 10;
+    const MEDIUM = 50;
+    const DIFFICULT = 90;
     
     public static function getResult($value){
          switch($value){
-              case self::PASS:
-                   return 'Pass';
+              case self::BASIC:
+                   return 'Basic/Easy';
                    break;
-              case self::FAIL:
-                   return 'Fail';
+              case self::MEDIUM:
+                   return 'Medium';
                    break;
-              case self::CANCEL:
-                   return 'Forfeit';
-                   break;
-              case self::STARTED:
-                   return 'In Progress';
+              case self::DIFFICULT:
+                   return 'Difficult';
                    break;
               default:
                    return parent::getDescription($value);
