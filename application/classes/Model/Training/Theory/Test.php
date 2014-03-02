@@ -32,7 +32,7 @@ class Model_Training_Theory_Test extends Model_Master {
         ),
         'categories' => array(
             'model' => 'Training_Theory_Test_Category',
-            'foreign_key' => 'category_id',
+            'foreign_key' => 'test_id',
         ),
     );
     
@@ -48,6 +48,60 @@ class Model_Training_Theory_Test extends Model_Master {
     // Data filters
     public function filters(){
         return array();
+    }
+    
+    public function add_test($name, $options=array()){
+        if($this->loaded()){
+            return false;
+        }
+        
+        // Make a test!
+        $this->name = $name;
+        $this->save();
+        $this->edit_test($options);
+        
+        return $this;
+    }
+    
+    public function edit_test($options=array()){
+        if(!is_array($options)){
+            return false;
+        }
+        foreach($options as $key => $value){
+            $this->{$key} = $value;
+        }
+        $this->save();
+        return $this;
+    }
+    
+    public function edit_test_categories($categories=array()){
+        if(!is_array($categories)){
+            return false;
+        }
+        // Delete all categories - we'll add them back in a sec.
+        foreach($this->categories->find_all() as $c){
+            $c->delete();
+        }
+        // Now add categories!
+        foreach($categories as $c){
+            $cat = ORM::factory("Training_Theory_Test_Category");
+            $cat->test_id = $this->id;
+            $cat->category_id = $c["category_id"];
+            $cat->difficulty_min = $c["difficulty_min"];
+            $cat->difficulty_max = $c["difficulty_max"];
+            $cat->question_count = $c["question_count"];
+            $cat->save();
+        }
+        
+        return true;
+    }
+    
+    public function get_question_count(){
+        $count = 0;
+        foreach($this->categories->find_all() as $c){
+            $count+= $c->question_count;
+        }
+        return $count;
     }
 }
 
