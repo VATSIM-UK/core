@@ -40,6 +40,16 @@
                         <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "SSO/MANAGE/DISPLAY") ? "active" : "" ?>">
                             <a href="<?= URL::site("sso/manage/display") ?>">Dashboard</a>
                         </li>
+                        <li class="dropdown <?= !strcasecmp($_area . "/" . $_controller, "TRAINING") ? "active" : "" ?>">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                Training <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/CATEGORY/ADMIN_LIST") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/category/admin_list") ?>">Category Management</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="dropdown <?= !strcasecmp($_area . "/" . $_controller, "TRAINING/THEORY") ? "active" : "" ?>">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 Training :: Theory <span class="caret"></span>
@@ -48,14 +58,11 @@
                                 <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ADMIN_TEST_LIST") ? "active" : "" ?>">
                                     <a href="<?= URL::site("training/theory/admin_test_list") ?>">Test Management</a>
                                 </li>
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/CATEGORY") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/category") ?>">Category Management</a>
-                                </li>
                                 <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/QUESTION") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/question") ?>">Question Management</a>
+                                    <a href="<?= URL::site("training/theory/admin_question_list") ?>">Question Management</a>
                                 </li>
                                 <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ATTEMPT") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/attempt") ?>">Attempt Management</a>
+                                    <a href="<?= URL::site("training/theory/admin_attempt_list") ?>">Attempt Management</a>
                                 </li>
                             </ul>
                         </li>
