@@ -161,7 +161,7 @@ abstract class Controller_Master extends Controller_Template {
             $this->_view->bind_global("_title", $this->_title);
             $this->_view->bind_global("_breadcrumbs", $this->_breadcrumbs);
             $this->_view->bind_global("_messages", $this->_messages);
-            $this->_view->bind_global("_account", $this->_account);
+            $this->_view->bind_global("_account", $this->_current_account);
             $this->_view->bind_global("_request", $this->request);
         }
 
