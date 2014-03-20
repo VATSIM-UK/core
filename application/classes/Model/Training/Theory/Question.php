@@ -28,7 +28,7 @@ class Model_Training_Theory_Question extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'category' => array(
-            'model' => 'Training_Theory_Category',
+            'model' => 'Training_Category',
             'foreign_key' => 'category_id',
         ),
     );

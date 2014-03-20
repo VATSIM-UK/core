@@ -14,6 +14,7 @@ class Model_Training_Theory_Test extends Model_Master {
         'retake_cooloff' => array('data_type' => 'tinyint'),
         'retake_max' => array('data_type' => 'tinyint'),
         'available' => array('data_type' => 'boolean'),
+        'deleted' => array('data_type' => 'boolean'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -48,6 +49,10 @@ class Model_Training_Theory_Test extends Model_Master {
     // Data filters
     public function filters(){
         return array();
+    }
+    
+    public function get_all_tests(){
+        return $this->where("deleted", "=", "0");
     }
     
     public function add_test($name, $options=array()){

@@ -16,6 +16,7 @@
                 <th>Retake Cooloff (days)</th>
                 <th>Retake Max Attempts (0=N/A)</th>
                 <th style="text-align: center">Status</th>
+                <th style="text-align: center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,13 +35,27 @@
                     <td><?= $test->retake_cooloff ?></td>
                     <td><?= $test->retake_max ?></td>
                     <td align="center">
+                        <?php if ($test->available): ?>
+                            <span class="label label-success">&nbsp;&nbsp;Available&nbsp;&nbsp;</span>
+                        <?php else: ?>
+                            <span class="label label-danger">Unavailable</span>
+                        <?php endif; ?>
+                    </td>
+                    <td align="center">
                         <a href="<?= URL::site("training/theory/admin_test_toggle_status/" . $test->id) ?>">
                             <?php if ($test->available): ?>
-                                <button type="button" class="btn btn-success btn-xs btn-block">&nbsp;&nbsp;Available&nbsp;&nbsp;</button>
+                                <span class="label label-info"><span class="glyphicon glyphicon-eye-close"></span></span>
                             <?php else: ?>
-                                <button type="button" class="btn btn-danger btn-xs btn-block">Unavailable</button>
+                                <span class="label label-info"><span class="glyphicon glyphicon-eye-open"></span></span>
                             <?php endif; ?>
                         </a>
+                        <a href="<?= URL::site("training/theory/admin_test_modify/" . $test->id) ?>">
+                            <span class="label label-default"><span class="glyphicon glyphicon-pencil"></span></span>
+                        </a>
+                        <a href="<?= URL::site("training/theory/admin_test_delete/" . $test->id) ?>">
+                            <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>
+                        </a>
+                    </a>
                     </td>
                 </tr>
             <?php endforeach; ?>

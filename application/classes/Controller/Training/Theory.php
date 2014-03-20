@@ -3,16 +3,11 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Training_Theory extends Controller_Training_Master {
-
-    public function before() {
-        parent::before();
-    }
-
     /**
      * Display a list of all tests in the database currently.
      */
     public function action_admin_test_list() {
-        $tests = ORM::factory("Training_Theory_Test")->find_all();
+        $tests = ORM::factory("Training_Theory_Test")->get_all_tests()->find_all();
         $this->_data["tests"] = $tests;
         $this->setTitle("Theory :: Test List");
     }
@@ -26,7 +21,7 @@ class Controller_Training_Theory extends Controller_Training_Master {
         $create = ($testID == 0) ? true : false;
         
         // Exists? No?
-        if (!$test->loaded() && !$create) {
+        if ((!$test->loaded() OR $test->deleted) && !$create) {
             $this->setMessage("Test Unavailable", "This test couldn't be found.  Please try again.", "error");
             $this->redirect("training/theory/admin_test_list");
             return false;
@@ -84,7 +79,7 @@ class Controller_Training_Theory extends Controller_Training_Master {
         $test = ORM::factory("Training_Theory_Test", $testID);
 
         // Exists? No?
-        if (!$test->loaded()) {
+        if (!$test->loaded() OR $test->deleted) {
             $this->setMessage("Test Unavailable", "This test couldn't be found.  Please try again.", "error");
             $this->redirect("training/theory/admin_test_list");
             return false;
@@ -94,6 +89,27 @@ class Controller_Training_Theory extends Controller_Training_Master {
         $_str = (!$test->available ? "Enabled" : "Disabled");
         $this->setMessage("Test " . $_str, "You have successfully <strong>" . $_str . "</strong> the '" . $test->name . "' test.", "success");
         $test->edit_test(array("available" => !$test->available));
+        $this->redirect("training/theory/admin_test_list");
+        return;
+    }
+    
+    /**
+     * Delete a test.
+     */
+    public function action_admin_test_delete(){
+        $testID = $this->request->param("id");
+        $test = ORM::factory("Training_Theory_Test", $testID);
+
+        // Exists? No?
+        if (!$test->loaded() OR $test->deleted) {
+            $this->setMessage("Test Unavailable", "This test couldn't be found.  Please try again.", "error");
+            $this->redirect("training/theory/admin_test_list");
+            return false;
+        }
+
+        // Now delete!
+        $this->setMessage("Test Deleted", "You have successfully <strong>deleted</strong> the '" . $test->name . "' test.", "success");
+        $test->edit_test(array("deleted" => 1));
         $this->redirect("training/theory/admin_test_list");
         return;
     }
