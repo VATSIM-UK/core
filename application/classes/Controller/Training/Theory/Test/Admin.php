@@ -61,7 +61,7 @@ class Controller_Training_Theory_Test_Admin extends Controller_Training_Master {
 
         $this->_data["create"] = $create;
         $this->_data["test"] = $test;
-        $categories = ORM::factory("Training_Category")->order_by("name", "ASC")->find_all();
+        $categories = ORM::factory("Training_Category")->order_by("name", "ASC")->find_all_categories();
         $this->_data["categories"] = $categories;
 
         if ($create) {
