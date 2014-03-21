@@ -11,12 +11,17 @@
         <?= HTML::style("media/style/Standalone/design.css"); ?>
         <?= HTML::style("http://fonts.googleapis.com/css?family=Yellowtail"); ?>
         <?= HTML::style("http://fonts.googleapis.com/css?family=Josefin+Slab:600"); ?>
+        <?= HTML::style("http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"); ?>
+        <?= HTML::style("media/bootstrap/3/css/summernote.css"); ?>
+        <?= HTML::style("media/bootstrap/3/css/summernote-bs3.css"); ?>
+        <?= HTML::style("media/bootstrap/3/css/bootstrap-switch.min.css"); ?>
 
         <!-- Javascript -->
         <?= HTML::script("http://code.jquery.com/jquery-1.9.1.min.js"); ?>
         <?= HTML::script("http://code.jquery.com/ui/1.10.1/jquery-ui.js"); ?>
         <?= HTML::script("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"); ?>
-        <?= HTML::script("media/scripts/general.js"); ?>
+        <?= HTML::script("media/bootstrap/3/js/summernote.min.js"); ?>
+        <?= HTML::script("media/bootstrap/3/js/bootstrap-switch.min.js"); ?>
         
         <?php foreach($scripts as $s): ?>
             <?=HTML::script($s); ?>
@@ -50,19 +55,19 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="dropdown <?= !strcasecmp($_area . "/" . $_controller, "TRAINING/THEORY") ? "active" : "" ?>">
+                        <li class="dropdown <?= (strtoupper(substr($_area . "/" . $_controller, 0, 15)) == "TRAINING/THEORY") ? "active" : "" ?>">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 Training :: Theory <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ADMIN_TEST_LIST") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/admin_test_list") ?>">Test Management</a>
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY_TEST_ADMIN/LIST") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory_test_admin/list") ?>">Test Management</a>
                                 </li>
                                 <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/QUESTION") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/admin_question_list") ?>">Question Management</a>
+                                    <a href="<?= URL::site("training/theory_question_admin/list") ?>">Question Management</a>
                                 </li>
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/ATTEMPT") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory/admin_attempt_list") ?>">Attempt Management</a>
+                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY_ATTEMPT_ADMIN/LIST") ? "active" : "" ?>">
+                                    <a href="<?= URL::site("training/theory_attempt_admin/list") ?>">Attempt Management</a>
                                 </li>
                             </ul>
                         </li>
