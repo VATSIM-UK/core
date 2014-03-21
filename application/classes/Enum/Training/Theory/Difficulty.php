@@ -7,7 +7,7 @@ class Enum_Training_Theory_Difficulty extends Enum_Main {
     const MEDIUM = 50;
     const DIFFICULT = 90;
     
-    public static function getResult($value){
+    public static function getDescription($value){
          switch($value){
               case self::BASIC:
                    return 'Basic/Easy';
