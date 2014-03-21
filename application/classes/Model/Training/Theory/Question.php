@@ -19,6 +19,8 @@ class Model_Training_Theory_Question extends Model_Master {
         'difficulty_rating' => array('data_type' => 'smallint'),
         'used_count' => array('data_type' => 'bigint'),
         'used_last' => array('data_type' => 'timestamp'),
+        'available' => array('data_type' => 'boolean'),
+        'deleted' => array('data_type' => 'boolean'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -49,6 +51,24 @@ class Model_Training_Theory_Question extends Model_Master {
     // Data filters
     public function filters(){
         return array();
+    }
+    
+    public function get_all_questions(){
+        return $this->where("deleted", "=", 0)->find_all();
+    }
+    
+    public function add_question($options=array()){
+        return $this->edit_question($options);
+    }
+    public function edit_question($options=array()){
+        if(!is_array($options)){
+            return false;
+        }
+        foreach($options as $key => $value){
+            $this->{$key} = $value;
+        }
+        $this->save();
+        return $this;
     }
 }
 
