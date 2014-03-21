@@ -104,7 +104,7 @@ abstract class Controller_Master extends Controller_Template {
 
     public function after() {
         // Template setup!
-        if ($this->_template == "template" OR $this->_template == NULL) {
+        if ($this->_template == "template" OR ($this->_view == NULL)) {
             $this->setTemplate(null);
         }
 
@@ -180,13 +180,21 @@ abstract class Controller_Master extends Controller_Template {
     public function setTemplate($template = null) {
         // Template name
         if ($template == null) {
+            // Sort the final actions out.
             $_a = str_replace("_", "/", $this->_action);
             $actions = "";
             foreach (explode("/", $_a) as $a) {
                 $actions.= ucfirst($a) . "/";
             }
             $actions = rtrim($actions, "/");
-            $template = $this->_area . "/" . $this->_controller . "/" . $actions;
+            $template = $this->_area . "/" . str_replace("_", "/", $this->_controller) . "/" . $actions;
+        } else {
+            $_t = explode("/", $template);
+            $template = "";
+            foreach($_t as $_){
+                $template.= ucfirst($_)."/";
+            }
+            $template = rtrim($template, "/");
         }
 
         // Add the template directory
