@@ -19,12 +19,13 @@
         <!-- Javascript -->
         <?= HTML::script("http://code.jquery.com/jquery-1.9.1.min.js"); ?>
         <?= HTML::script("http://code.jquery.com/ui/1.10.1/jquery-ui.js"); ?>
+        <?= HTML::script("media/jquery/js/jquery.cookie.js"); ?>
         <?= HTML::script("http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"); ?>
         <?= HTML::script("media/bootstrap/3/js/summernote.min.js"); ?>
         <?= HTML::script("media/bootstrap/3/js/bootstrap-switch.min.js"); ?>
-        
-        <?php foreach($scripts as $s): ?>
-            <?=HTML::script($s); ?>
+
+        <?php foreach ($scripts as $s): ?>
+            <?= HTML::script($s); ?>
         <?php endforeach; ?>
     </head>
     <body>
@@ -38,63 +39,108 @@
                 </div>
             </div>
         </div>
-        <div class="container container-content">
-            <div class="content">
-                <?php if($_account->loaded()): ?>
-                    <ul class="nav nav-pills">
-                        <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "SSO/MANAGE/DISPLAY") ? "active" : "" ?>">
-                            <a href="<?= URL::site("sso/manage/display") ?>">Dashboard</a>
-                        </li>
-                        <li class="dropdown <?= !strcasecmp($_area . "/" . $_controller, "TRAINING") ? "active" : "" ?>">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                Training <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/CATEGORY/ADMIN_LIST") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/category/admin_list") ?>">Category Management</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown <?= (strtoupper(substr($_area . "/" . $_controller, 0, 15)) == "TRAINING/THEORY") ? "active" : "" ?>">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                Training :: Theory <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY_TEST_ADMIN/LIST") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory_test_admin/list") ?>">Test Management</a>
-                                </li>
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY/QUESTION") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory_question_admin/list") ?>">Question Management</a>
-                                </li>
-                                <li class="<?= !strcasecmp($_area . "/" . $_controller . "/" . $_action, "TRAINING/THEORY_ATTEMPT_ADMIN/LIST") ? "active" : "" ?>">
-                                    <a href="<?= URL::site("training/theory_attempt_admin/list") ?>">Attempt Management</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                <?php endif; ?>
-                <h1><?= $_title ?></h1>
+        <div class="container" id="mainContainer">
+            <div class="container container-menu">
 
-                <?php if (isset($_messages) && isset($_messages["error"])): ?>
-                    <?php foreach ($_messages["error"] as $error): ?>
-                        <div class="alert alert-danger alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <strong><?= $error->title ?></strong>
-                            <p><?= $error->message ?></p>
+                <?php if ($_account->loaded()): ?>
+                    <div id="menuContain" class="col-md-12 ui-corner-all">
+                        <div class="menuRow container bg-warning">
+                            <div class="row menuRow" id="menuRowAll">
+                                <div class="col-md-2 ui-corner-all menuArea menuAreaAll">
+                                    <div class="menuHeader menuHeaderAll col-md-12 ui-corner-top">My Account</div>
+                                    <a href="<?= URL::site("sso/manage/display"); ?>">Dashboard</a>
+                                    <a href="<?= URL::site("sso/auth/logout"); ?>">Logout</a>
+                                </div>
+                                <div class="col-md-2 ui-corner-all menuArea">
+                                    <div class="menuHeader ui-corner-top">Training System</div>
+                                    <a href="<?= URL::site("training/category/admin_list"); ?>">Manage Categories</a>
+                                </div>
+                                <div class="col-md-2 ui-corner-all menuArea">
+                                    <div class="menuHeader ui-corner-top">Theory System</div>
+                                    <a href="<?= URL::site("training/theory_test_admin/list"); ?>">Manage Tests</a>
+                                    <a href="<?= URL::site("training/theory_question_admin/list"); ?>">Question Bank</a>
+                                    <a href="<?= URL::site("training/theory_attempt_admin/history"); ?>" class="disabled">Attempt History</a>
+                                </div>
+                            </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
 
-                <?php if (isset($_messages) && isset($_messages["success"])): ?>
-                    <?php foreach ($_messages["success"] as $msg): ?>
-                        <div class="alert alert-success">
-                            <strong><?= $msg->title ?></strong>
-                            <p><?= $msg->message ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                        <!--<div class="menuRow">
+                            <div class="menuArea ui-corner-all">
+                                <div class="menuHeader ui-corner-top">Members</div>
+                                <a href="#">Dashboard</a>
+                                <a href="#">My Account</a>
+                                <a href="#">Membership</a>
+                                <a href="#">Messages</a>
+                                <a href="#">Signature</a>
+                            </div>
+                            <div class="menuArea ui-corner-all">
+                                <div class="menuHeader ui-corner-top">Activities</div>
+                                <a href="#">New Activity</a>
+                                <a href="#">My Availability</a>
+                                <a href="#">My Activities</a>
+                                <a href="#">Calendar</a>
+                                <a href="#">TeamSpeak</a>
+                            </div>
+                            <div class="menuArea ui-corner-all">
+                                <div class="menuHeader ui-corner-top">Training</div>
+                                <a href="#">My Status</a>
+                                <a href="#">Available Courses</a>
+                                <a href="#">Contact</a>
+                                <a href="#" class="disabled">Students</a>
+                            </div>
+                            <div class="menuArea ui-corner-all">
+                                <div class="menuHeader ui-corner-top">Theory</div>
+                                <a href="#">Active Material</a>
+                                <a href="#">All Material</a>
+                                <a href="#">Exams</a>
+                                <a href="#" class="disabled">Students</a>
+                            </div>
+                            <div class="menuArea ui-corner-all">
+                                <div class="menuHeader ui-corner-top">Practical</div>
+                                <a href="#">My Sessions</a>
+                                <a href="#">History</a>
+                                <a href="#">Exams</a>
+                                <a href="#" class="disabled">Students</a>
+                            </div>
+                            <div class="clearer"></div>
+                        </div>-->
+                        <p align="right" style="font-size: 11px;">
+                            <input type="checkbox" id="staticMenuToggle" value="1" />&nbsp;&nbsp;<span id="staticMenuText">Static?</span>
+                        </p>
+                    </div>
 
-                <?= $_content ?>
+                    <div id="menuToggle" class="col-md-1 col-md-offset-5 ui-state-highlight ui-corner-bottom">
+                        <div id="menuIcon" class="ui-icon ui-icon-carat-1-s"></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="container container-content">
+                <div class="content">
+                    <div class="content-inner">
+                        <h1><?= $_title ?></h1>
+
+                        <?php if (isset($_messages) && isset($_messages["error"])): ?>
+                            <?php foreach ($_messages["error"] as $error): ?>
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <strong><?= $error->title ?></strong>
+                                    <p><?= $error->message ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <?php if (isset($_messages) && isset($_messages["success"])): ?>
+                            <?php foreach ($_messages["success"] as $msg): ?>
+                                <div class="alert alert-success">
+                                    <strong><?= $msg->title ?></strong>
+                                    <p><?= $msg->message ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <?= $_content ?>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container container-footer">
