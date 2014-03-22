@@ -73,6 +73,11 @@ class Model_Training_Theory_Question extends Model_Master {
         if (!is_array($options)) {
             return false;
         }
+        
+        // Only one update? Available/deleted?
+        if(count($options) == 1 AND (isset($options["deleted"]) OR isset($options["available"]))){
+            $inhibitVersioning = 1;
+        }
 
         if ($inhibitVersioning) {
             foreach ($this->table_columns() as $key => $value) {

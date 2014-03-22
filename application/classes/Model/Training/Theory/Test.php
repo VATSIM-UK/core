@@ -65,7 +65,7 @@ class Model_Training_Theory_Test extends Model_Master {
         // Make a test!
         $this->name = $name;
         
-        // "REal" new, or fake new?
+        // "Real" new, or fake new?
         if(!isset($options["version"])){
             $this->sys_id = strtoupper(strrev(uniqid()));
             $this->version = 1;
@@ -80,6 +80,11 @@ class Model_Training_Theory_Test extends Model_Master {
     public function edit_test($options=array(), $inhibitVersioning=false){
         if(!is_array($options)){
             return false;
+        }
+        
+        // Only one update? Available/deleted?
+        if(count($options) == 1 AND (isset($options["deleted"]) OR isset($options["available"]))){
+            $inhibitVersioning = 1;
         }
         
         // If we're not ignoring the creation rule, we must preserve this data!
