@@ -69,7 +69,7 @@ class Controller_Training_Theory_Question_Admin extends Controller_Training_Mast
                 $this->redirect("training/theory_question_admin/list/");
                 return true;
             } else {
-                $this->_question->edit_question($opt);
+                $this->_question = $this->_question->edit_question($opt);
                 $this->setMessage("Question Edited", "Question #'".$this->_question->id."' was edited succesfully.", "success");
             }
         }

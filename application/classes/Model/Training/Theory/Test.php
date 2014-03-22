@@ -8,6 +8,7 @@ class Model_Training_Theory_Test extends Model_Master {
     protected $_table_name = 'theory_test';
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
+        'sys_id' => array('data_type' => 'string'),
         'name' => array('data_type' => 'string'),
         'version' => array('data_type' => 'smallint'),
         'time_allowed' => array('data_type' => 'smallint'),
@@ -63,22 +64,30 @@ class Model_Training_Theory_Test extends Model_Master {
         
         // Make a test!
         $this->name = $name;
-        $this->version = 1;
+        
+        // "REal" new, or fake new?
+        if(!isset($options["version"])){
+            $this->sys_id = strtoupper(strrev(uniqid()));
+            $this->version = 1;
+        }
+        
         $this->save();
         $this->edit_test($options, true);
         
         return $this;
     }
     
-    public function edit_test($options=array(), $ignoreCreate=false){
+    public function edit_test($options=array(), $inhibitVersioning=false){
         if(!is_array($options)){
             return false;
         }
         
         // If we're not ignoring the creation rule, we must preserve this data!
-        if($ignoreCreate){
-            foreach($options as $key => $value){
-                $this->{$key} = $value;
+        if($inhibitVersioning){
+            foreach ($this->table_columns() as $key => $value) {
+                if (isset($options[$key])) {
+                    $this->{$key} = $options[$key];
+                }
             }
             $this->save();
         } else {
