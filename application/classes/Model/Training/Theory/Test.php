@@ -9,6 +9,7 @@ class Model_Training_Theory_Test extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
         'name' => array('data_type' => 'string'),
+        'version' => array('data_type' => 'smallint'),
         'time_allowed' => array('data_type' => 'smallint'),
         'time_expire_action' => array('data_type' => 'string'),
         'retake_cooloff' => array('data_type' => 'tinyint'),
@@ -62,20 +63,43 @@ class Model_Training_Theory_Test extends Model_Master {
         
         // Make a test!
         $this->name = $name;
+        $this->version = 1;
         $this->save();
-        $this->edit_test($options);
+        $this->edit_test($options, true);
         
         return $this;
     }
     
-    public function edit_test($options=array()){
+    public function edit_test($options=array(), $ignoreCreate=false){
         if(!is_array($options)){
             return false;
         }
-        foreach($options as $key => $value){
-            $this->{$key} = $value;
+        
+        // If we're not ignoring the creation rule, we must preserve this data!
+        if($ignoreCreate){
+            foreach($options as $key => $value){
+                $this->{$key} = $value;
+            }
+            $this->save();
+        } else {
+            // Let's make a new one!
+            $name = isset($options["name"]) ? $options["name"] : $this->name;
+            $opt = array();
+            foreach($this->table_columns() as $key => $value){
+                if(isset($options[$key])){
+                    $opt[$key] = $options[$key];
+                } else {
+                    $opt[$key] = $this->{$key};
+                }
+            }
+            unset($opt["id"]);
+            $opt["version"] = $this->version+1;
+            $newTest = ORM::factory("Training_Theory_Test")->add_test($name, $opt);
+
+            $this->edit_test(array("deleted" => 1), true);
+            return $newTest;
         }
-        $this->save();
+        
         return $this;
     }
     

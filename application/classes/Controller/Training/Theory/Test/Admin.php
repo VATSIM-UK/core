@@ -53,7 +53,7 @@ class Controller_Training_Theory_Test_Admin extends Controller_Training_Master {
                 $this->redirect("training/theory_test_admin/modify/".$test->id);
                 return true;
             } else {
-                $test->edit_test($opt);
+                $test = $test->edit_test($opt);
                 $test->edit_test_categories($cats);
                 $this->setMessage("Test Edited", "Test '".$test->name."' was edited succesfully.", "success");
             }
