@@ -240,10 +240,10 @@ class Model_Account_Main extends Model_Master {
         /***** LEGACY SUPPORT *****/
         // Peeps got their S1 straight away: Pre 2008-01-01 00:00:00
         if(!$this->qualifications->check_has_qualification("atc", 2)){
-            if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
+            /*if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
                 $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
                 die("OI OI!");
-            }
+            }*/
         }
         /**************************/
         
