@@ -96,6 +96,10 @@ class Model_Postmaster_Queue extends Model_Master {
             // TODO: log.
             return false;
         }
+        // Ignore accounts with no email.
+        if(!$recipient->emails->get_active_primary()->loaded()){
+            return false;
+        }
         
         // Let's validate the sender.  If they don't validate, default to default user.
         if(is_numeric($sender)){
