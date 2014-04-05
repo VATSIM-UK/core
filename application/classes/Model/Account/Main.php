@@ -290,7 +290,7 @@ class Model_Account_Main extends Model_Master {
         } elseif(Arr::get($details, "region", null) != null && strcasecmp($details["region"], "EUR") == 0){
             $this->states->addState($this, "REGION");
         } else {
-            $this->states->addState($this, "VISITOR");
+            $this->states->addState($this, "INTERNATIONAL");
         }
         
         $this->checked = gmdate("Y-m-d H:i:s");
