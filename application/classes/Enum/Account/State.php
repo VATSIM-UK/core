@@ -9,9 +9,9 @@ class Enum_Account_State extends Enum_Main {
     //const INACTIVE = 20;
     const DIVISION = 30;
     const REGION = 40;
-    const VISITOR = 50;
+    const INTERNATIONAL = 50;
+    const VISITOR = 70;
     const TRANSFER = 60;
-    const INTERNATIONAL = 99;
     
     public static function getDescription($value){
         switch($value){
