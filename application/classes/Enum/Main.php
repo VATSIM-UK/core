@@ -35,4 +35,8 @@ class Enum_Main {
     public static function keyExists($key){
         return self::IdToValue($key) != $key;
     }
+    
+    public static function getDescription($value){
+        return NULL;
+    }
 }
