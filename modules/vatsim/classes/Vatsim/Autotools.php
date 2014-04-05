@@ -20,6 +20,9 @@ class Vatsim_Autotools extends Vatsim {
     public function URICreate($action, $data = array()) {
         // Select the config entry corresponding to he action
         $uri = $this->_config->get("autotools_url_" . $action);
+        
+        // First let's add some variables to the URL!
+        $uri = sprintf($uri, Arr::get($data, 0, null), Arr::get($data, 1, null));
 
         // keep looping through this uri replacing config variables in curly brackets {example}
         while (preg_match("/\{(.*?)\}/i", $uri, $matches)) {
@@ -30,17 +33,19 @@ class Vatsim_Autotools extends Vatsim {
 
             // No config value for this variable?
             if ($this->_config->get($matches[1]) == null) {
-                preg_replace("/\{" . $matches[1] . "\}/i", "", $uri);
-                die("NULL!");
-                continue;
+                // Check the database?
+                if(ORM::factory("Setting")->getValue($matches[1]) != null){
+                    $uri = preg_replace("/\{" . $matches[1] . "\}/i", urlencode(ORM::factory("Setting")->getValue($matches[1])), $uri);
+                } else {
+                    $uri = preg_replace("/\{" . $matches[1] . "\}/i", "UNKNOWN", $uri);
+                }
+            } else {
+                // config value found - replace 
+                $uri = str_replace($matches[0], $this->_config->get($matches[1]), $uri);
             }
-
-            // config value found - replace 
-            $uri = str_replace($matches[0], $this->_config->get($matches[1]), $uri);
         }
 
         // add provided variables to the URI
-        $uri = sprintf($uri, Arr::get($data, 0, null), Arr::get($data, 1, null));
         return $uri;
     }
 
@@ -170,18 +175,23 @@ class Vatsim_Autotools extends Vatsim {
         $uri = $this->URICreate($action, $data);
 
         // Run the request.
-        $request = Request::factory($uri);
-        $request->client()->options(array(CURLOPT_TIMEOUT => 7, CURLOPT_SSL_VERIFYPEER=>false));
-        $request = $request->execute();
+        try {
+            $request = Request::factory($uri);
+            $request->client()->options(array(CURLOPT_TIMEOUT => 7, CURLOPT_SSL_VERIFYPEER=>false));
+            $response = $request->execute();
+        } catch(Exception $e){
+            print $e->getMessage();
+            die();
+        }
 
 
         // Check the status!
-        if ($request->status() != 200 && $request->status() != 302 && $request->status() != 301) {
+        if ($response->status() != 200 && $response->status() != 302 && $response->status() != 301) {
             throw new Kohana_Exception("404 Result");
             return false;
         }
         
-        return $request;
+        return $response;
     }
 
     private function runQueryText($action, $data) {
