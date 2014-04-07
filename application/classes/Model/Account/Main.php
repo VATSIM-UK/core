@@ -68,6 +68,10 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Stats_Controller',
             'foreign_key' => 'account_id',
         )
+        'theory_attempts' => array(
+            'model' => 'Training_Theory_Attempt',
+            'foreign_key' => 'account_id',
+        ),
     );
     
     // Has one relationship
