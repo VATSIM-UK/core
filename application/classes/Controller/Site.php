@@ -9,8 +9,7 @@ class Controller_Site extends Controller_Master {
 
     public function action_index() {
 
-        $this->data['title'] = 'VATSIM United Kingdom Division';
-        //$this->data['content'] = 'VATSIM United Kingdom Division';
+        $this->setTitle('VATSIM United Kingdom Division');
     }
 
 }

@@ -55,7 +55,7 @@
                 <a href="http://www.vatsim-uk.co.uk/"><?php echo HTML::image('media/style/global/images/logo.png', array('border' => 0, 'width' => '300px')); ?></a>
             </div>
             <div class="bannerRight">
-                <?php echo HTML::image('media/style/V2/Site/images/tagline-blue-large.png', array('class' => 'tagLine')); ?>
+                <?php echo HTML::image('media/style/global/images/slogan', array('class' => 'tagLine')); ?>
 
 
                 <a href="http://www.twitter.com/vatsimuk" target="_blank"><?php echo HTML::image('media/style/V2/Site/images/twitter.png', array('class' => 'bannerTwitterWrapper')); ?></a>
@@ -67,7 +67,7 @@
         <div class="superWrapper rtl rbr rbl">
             <div class="subWrapper rtl rbr rbl">
                 <div class="colLeft rtl rbl">
-                    <?php echo View::factory('/V2/Global/Sidebar'); ?>
+                    <?php echo View::factory('V2/Global/Sidebar'); ?>
                     
                 </div> <!-- colLeft -->
                 <div class="colRight">
