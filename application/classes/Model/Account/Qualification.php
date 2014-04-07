@@ -111,8 +111,9 @@ class Model_Account_Qualification extends Model_Master {
         }
         
         // ATC Training expired
+        // We don't delete if they've an admin rating either, as this causes issues with I1/I3s who're also SUPs.
         foreach($account->qualifications->get_all_training_atc() as $r){
-            if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR strcasecmp($sysRating[0], "Training_ATC") != 0){
+            if(($r->value != $sysRating[1] AND strcasecmp($sysRating[0], "Training_ATC") == 0) OR (strcasecmp($sysRating[0], "Training_ATC") != 0 AND strcasecmp($sysRating[0], "Admin") != 0)){
                 $r->delete($dateOverride);
             }
         }

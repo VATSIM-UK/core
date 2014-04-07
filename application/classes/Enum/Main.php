@@ -37,6 +37,6 @@ class Enum_Main {
     }
     
     public static function getDescription($value){
-        return "Unknown";
+        return NULL;
     }
 }

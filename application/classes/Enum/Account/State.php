@@ -9,7 +9,8 @@ class Enum_Account_State extends Enum_Main {
     //const INACTIVE = 20;
     const DIVISION = 30;
     const REGION = 40;
-    const VISITOR = 50;
+    const INTERNATIONAL = 50;
+    const VISITOR = 70;
     const TRANSFER = 60;
     
     public static function getDescription($value){
@@ -26,6 +27,8 @@ class Enum_Account_State extends Enum_Main {
                 return "Visiting member";
             case self::TRANSFER:
                  return "Transferring member";
+            case self::INTERNATIONAL:
+                 return "International member";
             default:
                  return parent::getDescription($value);
         }
