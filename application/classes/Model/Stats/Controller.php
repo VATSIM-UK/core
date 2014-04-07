@@ -10,7 +10,7 @@ class Model_Stats_Controller extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
         'account_id' => array('data_type' => 'int'),
-        'callsign' => array('data_type' => 'string'),
+        'callsign' => array('data_type' => 'varchar'),
         'frequency' => array('data_type' => 'decimal'),
         'latitude' => array('data_type' => 'decimal'),
         'longitude' => array('data_type' => 'decimal'),
@@ -53,14 +53,26 @@ class Model_Stats_Controller extends Model_Master {
         );
     }
     
-    /**
-     * @override
-     */
-    public function save(\Validation $validation = NULL) {
-        $this->updated_time = gmdate("Y-m-d H:i:s");
-        parent::save($validation);
+    public function find_recent($cid, $callsign){
+        $check = ORM::factory("Stats_Controller")->where("account_id", "=", $cid);
+        $check = $check->where("callsign", "LIKE", $callsign);
+        $check = $check->where("updated_time", ">=", gmdate("Y-m-d H:i:s", strtotime("-4 minutes")));
+        $check = $check->find();
         
-        return true;
+        // Run the check!
+        if($check->loaded()){
+            return $check;
+        } else {
+            return ORM::factory("Stats_Controller");
+        }
+    }
+    
+    public function run_expiration($timestampBefore){
+        $expired = ORM::factory("Stats_Controller")->where("updated_time", "<", $timestampBefore)->where("logoff_time", "IS", NULL)->find_all();
+        foreach($expired as $exp){
+            $exp->logoff_time = $timestampBefore;
+            $exp->save();
+        }
     }
 }
 

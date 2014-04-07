@@ -12,226 +12,149 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 class Vatsim_Datafeed extends Vatsim {
 
-    private $_dataFeedMain = "http://status.vatsim.net/status.txt";
+    private $_statusFile = "http://status.vatsim.net/status.txt";
+    private $_dataFile = "";
     private $_servers = array();
+    private $_headers = array("clients" => array('callsign', 'cid', 'realname', 'clienttype', 'frequency', 'latitude', 'longitude', 'altitude', 'groundspeed', 'planned_aircraft',
+            'planned_tascruise', 'planned_depairport', 'planned_altitude', 'planned_destairport', 'server', 'protrevision', 'rating', 'transponder', 'facilitytype',
+            'visualrange', 'planned_revision', 'planned_flighttype', 'planned_deptime', 'planned_actdeptime', 'planned_hrsenroute', 'planned_minenroute',
+            'planned_hrsfuel', 'planned_minfuel', 'planned_altairport', 'planned_remarks', 'planned_route', 'planned_depairport_lat', 'planned_depairport_lon',
+            'planned_destairport_lat', 'planned_destairport_lon', 'atis_message', 'time_last_atis_received', 'time_logon', 'heading', 'QNH_iHg', 'QNH_Mb',""
+    ));
 
-    public function fetch_servers(){
+    public function servers_fetch() {
         // Get the status.txt file containing a list of all available servers.
         if (Cache::instance()->get("vatsim.status.txt", null) != null) {
-            $fileContents = Cache::instance()->get("vatsim.status.txt");
+            $fileContents = unserialize(Cache::instance()->get("vatsim.status.txt"));
         } else {
-            $remoteFile = Request::factory($this->_dataFeedMain)->execute();
-            
-            if(!in_array($remoteFile->status(), array(200))){
+            $remoteFile = Request::factory($this->_statusFile)->execute();
+
+            if (!in_array($remoteFile->status(), array(200))) {
                 return false;
             }
-            
+
             $fileContents = $remoteFile->body();
-            Cache::instance()->set("vatsim.status.txt", $fileContents, 3600*12); // Cache for 12 hours.
-        }
-        
-        // Now process the file contents.
-        preg_match_all("/^url1=(.*?)$/i", $fileContents, $matches);
-        print_r($matches);
-    }
-    
-    /*
-    public function downloadDatabase($type = "div") {
-        // Default response
-        $response = array();
 
-        // Let's create the URL.
-        $uri = $this->URICreate($type . "db");
-        
-        // Is this URI in the cache still?
-        $fileContents = array();
-        if (Cache::instance()->get("vatsim.autotools." . md5($uri), null) != null) {
-            $fileContents = Cache::instance()->get("vatsim.autotools." . md5($uri));
-            $fileContents = Encrypt::instance("tripledes")->decode($fileContents);
+            // Now process the file contents and store the servers locally.
+            preg_match_all("/url0=(.*)/i", $fileContents, $matches);
+            $fileContents = isset($matches[1]) ? $matches[1] : array();
+
+            Cache::instance()->set("vatsim.status.txt", serialize($fileContents), 3600 * 12); // Cache for 12 hours.
+        }
+
+        $this->_servers = $fileContents;
+
+        $this->servers_choose();
+    }
+
+    public function servers_choose() {
+        $this->_dataFile = trim($this->_servers[array_rand($this->_servers)]);
+    }
+
+    public function feed_download($type="pilot") {
+        // First we need to make sure a server has been chosen!
+        if($this->_dataFile == ""){
+            $this->servers_fetch();
+        }
+
+        // Now fetch the file - if it's not cached!
+        if (Cache::instance()->get("vatsim.data.".strtolower($type).".txt", null) != null) {
+            $fileContents = unserialize(Cache::instance()->get("vatsim.data.".strtolower($type).".txt"));
         } else {
-            // Break up the query string!
-            $_qs = explode("?", $uri);
-            $_qs = explode("&", $_qs[1]);
-            $_qsN = array();
-            foreach($_qs as $v){
-                $_qsN[] = explode("=", $v);
-            }
-            
-            // Let's fetch the file!
-            $request = Request::factory($uri);
-            foreach($_qsN as $v){
-                $request->query($v[0], $v[1]);
-            }
-            $request = $request->execute();
-            
-            // If it was a bad request, return default.
-            if(!in_array($request->status(), array(200, 301, 302))){
-                die("BAD RESPONSE:".$request->status());
-                return $response;
-            }
-            
-            // Let's download the file contents
-            $fileContents = $request->body();
-            
-            // Let's save an encrypted copy of the raw contents.
-            Cache::instance()->set("vatsim.autotools." . md5($uri), Encrypt::instance("tripledes")->encode($fileContents), 3600*12); // Cache for 12 hours.
-        }
-        
+            $remoteFile = Request::factory($this->_dataFile)->execute();
 
-        // Now, let's process it line by line!
-        foreach (explode("\n", $fileContents) as $line) {
-            // Default the member.
-            $member = array();
-            
-            // If it's an empty line, forget it!
-            if(trim($line) == ""){
-                continue;
+            if (!in_array($remoteFile->status(), array(200))) {
+                return false;
             }
+
+            $fileContents = $remoteFile->body();
             
-            // Now split into the array!
-            list($member["cid"], $member["rating_atc"], $member["rating_pilot"],
-                 $member["name_first"], $member["name_last"],
-                 $member["email"], $member["age"],
-                 $member["location_state"], $member["country"],
-                 $member["experience"], $member["suspended_until"],
-                 $member["regdate"], $member["region"],
-                 $member["division"],) = explode(",", $line);
-                    
-            // Store!
-            $response[$member["cid"]] = $member;
+            // We *MUST* strip data from the start to the start of !CLIENTS as we don't need it!
+            $strip_from = strpos($fileContents, "!CLIENTS", 1200);
+            $strip_to = strpos($fileContents, "!PREFILE", $strip_from);
+            $fileContents = substr($fileContents, $strip_from + 11, $strip_to-8 - $strip_from);
+
+            // Split the data into multiple lines.
+            preg_match_all("/.*:".strtoupper($type).":.*/i", $fileContents, $fileContents);
+            $fileContents = array_map(function($line){
+                return explode(":", $line);
+            }, $fileContents[0]);
+            
+            Cache::instance()->set("vatsim.data.".strtolower($type).".txt", serialize($fileContents), 120); // Cache for 2 minutes.
         }
-        
-        // Return all members!
-        return $response;
+            
+        return $fileContents;
     }
 
-    public function authenticate($cid, $pass) {
-        // Get the result
-        $result = $this->runQuery("auths", array($cid, $pass));
-
-        // Return if right/wrong/etc.
-        return ($result[0] == "1");
-    }
-
-    public function confirm_email($cid, $email) {
-        // Get the result
-        $result = $this->runQuery("email", array($cid, $email));
-
-        // Return if right/wrong/etc.
-        return (strcasecmp($result[0], "YES") == 0);
-    }
-
-    public function getInfo($cid) {
-        // Get the result
-        $result = $this->runQuery("xstat", array($cid));
-
-        // False?
-        if (!$result) {
-            return array();
-        }
-        $result_raw = get_object_vars($result->user);
-
-        // Format!
-        $result = array();
-        $result["name_last"] = Arr::get($result_raw, "name_last", null);
-        $result["name_first"] = Arr::get($result_raw, "name_first", null);
-        $result["rating_pilot"] = $this->helper_convertPilotRating(Arr::get($result_raw, "pilotrating", "0"));
-        $result["rating_atc"] = Arr::get($result_raw, "rating", "1");
-        $result["country"] = Arr::get($result_raw, "country", null);
-        $result["regdate"] = Arr::get($result_raw, "regdate", null);
-        $result["region"] = Arr::get($result_raw, "region", null);
-        $result["division"] = Arr::get($result_raw, "division", null);
-
-        // Return the result!
-        return $result;
-    }
-
-    private function runQuery($action, $data) {
-        // Valid action?
-        if (!array_key_exists($action, $this->_actions)) {
-            $action = $this->_actionDefault;
+    public function fetch_voice_servers() {
+        // First we need to make sure a server has been chosen!
+        if($this->_dataFile == ""){
+            $this->servers_fetch();
         }
 
-        // Get the actual (data) type and run THAT query.
-        $type = $this->_actions[$action];
-        return $this->{"runQuery" . ucfirst($type)}($action, $data);
+        // Now fetch the file - if it's not cached!
+        if (Cache::instance()->get("vatsim.data.voice.txt", null) != null) {
+            $fileContents = unserialize(Cache::instance()->get("vatsim.data.voice.txt"));
+        } else {
+            $remoteFile = Request::factory($this->_dataFile)->execute();
+
+            if (!in_array($remoteFile->status(), array(200))) {
+                return false;
+            }
+
+            $fileContents = $remoteFile->body();
+            
+            // We *MUST* strip data from the start to the start of !VOICE SERVERS as we don't need it!
+            $strip_from = strpos($fileContents, "!VOICE SERVERS", 2500);
+            $strip_to = strpos($fileContents, "!CLIENTS", $strip_from);
+            $fileContents = substr($fileContents, $strip_from + 15, $strip_to-8 - $strip_from);
+
+            // Split the data into multiple lines.
+            preg_match_all("/(.*?):.*/i", $fileContents, $fileContents);
+            $fileContents = isset($fileContents[1]) ? $fileContents[1] : array();
+            
+            Cache::instance()->set("vatsim.data.voice.txt", serialize($fileContents), 3600 * 24); // Cache for 24 hours.
+        }
+            
+        return $fileContents;
     }
     
-    private function runQueryCall($action, $data){
-        // Construct the URI.
-        $uri = $this->URICreate($action, $data);
-
-        // Run the request.
-        try {
-            $request = Request::factory($uri);
-            $request->client()->options(array(CURLOPT_TIMEOUT => 7, CURLOPT_SSL_VERIFYPEER=>false));
-            $response = $request->execute();
-        } catch(Exception $e){
-            print $e->getMessage();
-            die();
-        }
-
-
-        // Check the status!
-        if ($response->status() != 200 && $response->status() != 302 && $response->status() != 301) {
-            throw new Kohana_Exception("404 Result");
-            return false;
+    public function download_voice_rooms(){
+        // First we need to make sure a server has been chosen!
+        if($this->_dataFile == ""){
+            $this->servers_fetch();
         }
         
-        return $response;
-    }
-
-    private function runQueryText($action, $data) {
-        // Run the request.
-        $request = $this->runQueryCall($action, $data);
+        // We also need the voice servers!
+        $voiceServers = $this->fetch_voice_servers();
         
-        if(!$request){
-            return false;
+        // Now, we're going to go over each and every voice server and gather details about the clients in those rooms.
+        foreach($voiceServers as $vx){
+            $remoteData = Request::factory("http://".$vx.":18009?opts=-R-D")->execute();
+            $remoteData = $remoteData->body();
+            
+            // Let's get each section seperately.
+            preg_match_all("/\<p\>(.*)\<\/p\>/m", $remoteData, $blockMatches);
+            print_r($blockMatches);
         }
-
-        // Get all of the details!
-        return explode("\n", $request->body());
-    }
-
-    private function runQueryXml($action, $data) {
-        // Run the request.
-        $request = $this->runQueryCall($action, $data);
-        
-        if(!$request){
-            return false;
-        }
-
-        // Return the XML file.
-        return simplexml_load_string($request);
     }
     
-    
-    /// HELPERS ///
-    public function helper_convertPilotRating($prating){
-        // Let's go through the motions! First, set the PR array
-        $_pratings = array("P1" => 1,   //000001
-                           "P2" => 2,   //000010
-                           "P3" => 4,   //000100
-                           "P4" => 8,   //001000
-                           "P5" => 16,  //010000
-                           "P6" => 32); //100000
-        $_pratingsGained = array();
-        
-        // now, loop through each rating checking the bitmask.
-        foreach($_pratings as $name => $value){
-            // Do we have a match?
-            $has = $value & $prating;
-            if($has == $value){
-                $_pratingsGained[] = array($name, $value);
-            } else if($value > $prating){
-                break;
-            }
-        }
-        
-        // RETURN THE RESULT!
-        return $_pratingsGained;
+    public function client_get_info($client, $key){
+        return isset($client[array_search($key, $this->_headers["clients"])]) ? $client[array_search($key, $this->_headers["clients"])] : null;
     }
-*/
+    
+    public function helper_cleanse_route($route){
+        return $route;
+    }
+    
+    public function helper_convert_datestamp($datestamp){
+        $year = substr($datestamp, 0, 4);
+        $month = substr($datestamp, 4, 2);
+        $day = substr($datestamp, 6, 2);
+        $hour = substr($datestamp, 8, 2);
+        $minute = substr($datestamp, 10, 2);
+        $seconds = substr($datestamp, 12, 2);
+        
+        return ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconds);
+    }
 }
-
-// End Vatsim
