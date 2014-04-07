@@ -65,7 +65,7 @@ $dbDefs = array(
         'caching' => TRUE,
     ),
     'stats' => array(
-        'type' => 'MySQL',
+        'type' => 'MySQLi',
         'connection' => $dbOvr[$useDB]['connection'],
         'table_prefix' => 'stats_',
         'charset' => 'utf8',
