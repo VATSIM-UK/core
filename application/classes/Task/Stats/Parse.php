@@ -56,7 +56,6 @@ class Task_Stats_Parse extends Minion_Task
             $session = $session->where("account_id", "=", Vatsim::factory("Datafeed")->client_get_info($p, "cid"));
             $session = $session->where("callsign", "LIKE", Vatsim::factory("Datafeed")->client_get_info($p, "callsign"));
             $session = $session->where("logoff_time", "IS", NULL);
-            $session = $session->where("status", "!=", Enum_Stats_Flight_Status::ARRIVED);
             $session = $session->find();
             
             // Update the planned cruise altitude.
