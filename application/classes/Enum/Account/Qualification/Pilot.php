@@ -8,6 +8,12 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
     const P1 = 1;
     const P2 = 2;
     const P3 = 3;
+    const P4 = 4;
+    const P5 = 5;
+    const P6 = 6;
+    const P7 = 7;
+    const P8 = 8;
+    const P9 = 9;
     
     public static function getDescription($value){
         switch($value){
@@ -19,24 +25,25 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
                 return "Pilot Fundamentals";
             case self::P3:
                 return "VFR Pilot";
+            case self::P4:
+                return "IFR Pilot";
+            case self::P5:
+                return "Advanced IFR Pilot";
+            case self::P6:
+                return "International and Oceanic Pilot";
+            case self::P7:
+                return "Helicopter VFR and IFR Pilot";
+            case self::P8:
+                return "Military Special Operations Pilot";
+            case self::P9:
+                return "Pilot Flight Instructor";
             default:
                 return parent::getDescription($value);
         }
     }
     
     public static function getAbbreviation($value) {
-        switch($value){
-            case self::P0:
-                return "P0";
-            case self::P1:
-                return "P1";
-            case self::P2:
-                return "P2";
-            case self::P3:
-                return "P3";
-            default:
-                return "NA";
-        }
+        return self::valueToType($value);
     }
     
     public static function getDisplayString($array, $type='abbreviation'){

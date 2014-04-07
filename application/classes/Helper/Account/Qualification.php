@@ -17,12 +17,12 @@ class Helper_Account_Qualification {
         
         // For ratings I1 - I3 (8,9,10) we need the Training ones!
         if($vrating == 8){
-            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::INS1);
+            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::I1);
             //return "Enum_Account_Qualification_Training_ATC::".Enum_Account_Qualification_Training_ATC::valueToType($vrating-7);
         } elseif($vrating == 9){
-            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::INS2);
+            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::I2);
         }elseif($vrating == 10){
-            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::INS3);
+            return array("Training_ATC", Enum_Account_Qualification_Training_ATC::I3);
         }
         
         // For ratings SUP and ADMIN (11 & 12) we need the ADMIN enum type!

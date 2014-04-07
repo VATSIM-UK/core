@@ -73,8 +73,8 @@ class Model_Account_Email extends Model_Master {
         }
         
         // Let's check for this email on this account.
-        if($account->emails->where("email", "LIKE", $email)->count_all() > 0){
-            $email = $account->emails->where("email", "LIKE", $email)->find();
+        if($account->emails->where("email", "LIKE", $email)->where("deleted", "=", "0")->count_all() > 0){
+            $email = $account->emails->where("email", "LIKE", $email)->where("deleted", "=", "0")->find();
             if(!$email->primary && $primary){
                 $email->set_primary();
                 return true;

@@ -9,9 +9,6 @@ html, body {
     background: url('images/bg_fabric_plaid.png');
     text-align: center;
 }
-.container {
-    width: 800px;
-}
 
 /* Header */
 .container-header {
@@ -24,6 +21,86 @@ html, body {
     margin-top: 25px;
 }
 
+/* Menu Styling */
+.container-menu {
+    z-index: 9999;
+    position: absolute;
+}
+
+#menuToggle {
+    width: 100px;
+    height: 17px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#menuToggle .menuOpen {
+    margin-top: 10px;
+}
+
+#menuToggle .menuClosed {
+    margin-top: 0px;
+}
+
+#menuContain {
+    background: #f3f3f3;
+    display: none;
+    border: 1px solid #cccccc;
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+
+#menuIcon {
+    margin: auto;
+}
+
+.menuRow {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.menuArea {
+    background: #e4e4e4;
+    text-align: left;
+    margin-right: 36px;
+    padding: 0px !important; // Important there's no padding, bootstrap will try to apply some.
+}
+
+.menuArea .menuHeader {
+    padding: 5px 15px;
+    line-height: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    background: #6e6e6e;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.menuArea a {
+    display: block;
+    margin: auto;
+    padding: 5px 15px;
+    line-height: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    text-decoration: none;
+}
+
+.menuArea a:hover {
+    background: #ffffff;
+}
+
+.menuArea a.disabled {
+    color: #888888;
+}
+
+.menuArea a.disabled:hover {
+    background: transparent;
+    cursor: not-allowed;
+}
+
 /* Content */
 .container-content {
     padding: 5px;
@@ -33,8 +110,11 @@ html, body {
 .content {
     margin: 5px;
     background: #fff;
-    padding: 20px;
     text-align: left;
+}
+
+.content-inner {
+    padding: 20px;
 }
 
 /* Footer */
@@ -54,4 +134,8 @@ html, body {
 .signature-fancy {
     font-family: 'Yellowtail', serif;
     font-size: 24px;
+}
+
+.training_course_description {
+    font-weight: lighter;
 }

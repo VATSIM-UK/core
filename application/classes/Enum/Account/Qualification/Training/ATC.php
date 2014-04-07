@@ -4,16 +4,16 @@ defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Account_Qualification_Training_ATC extends Enum_Account_Qualification {
     const TYPE = "Training_ATC";
-    const INS1 = 1;
-    const INS2 = 2;
-    const INS3 = 3;
+    const I1 = 1;
+    const I2 = 2;
+    const I3 = 3;
     
     public static function getDescription($value){
         switch($value){
-            case self::INS1:
-            case self::INS2:
+            case self::I1:
+            case self::I2:
                 return "Instructor";
-            case self::INS3:
+            case self::I3:
                 return "Senior Instructor";
             default:
                 return parent::getDescription($value);

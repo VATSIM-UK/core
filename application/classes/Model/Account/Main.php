@@ -60,6 +60,18 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
+        'pilot_sessions' => array(
+            'model' => 'Stats_Pilot',
+            'foreign_key' => 'account_id',
+        ),
+        'atc_sessions' => array(
+            'model' => 'Stats_Controller',
+            'foreign_key' => 'account_id',
+        ),
+        'theory_attempts' => array(
+            'model' => 'Training_Theory_Attempt',
+            'foreign_key' => 'account_id',
+        ),
     );
     
     // Has one relationship
@@ -240,10 +252,10 @@ class Model_Account_Main extends Model_Master {
         /***** LEGACY SUPPORT *****/
         // Peeps got their S1 straight away: Pre 2008-01-01 00:00:00
         if(!$this->qualifications->check_has_qualification("atc", 2)){
-            if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
+            /*if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
                 $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
                 die("OI OI!");
-            }
+            }*/
         }
         /**************************/
         
@@ -290,7 +302,7 @@ class Model_Account_Main extends Model_Master {
         } elseif(Arr::get($details, "region", null) != null && strcasecmp($details["region"], "EUR") == 0){
             $this->states->addState($this, "REGION");
         } else {
-            $this->states->addState($this, "VISITOR");
+            $this->states->addState($this, "INTERNATIONAL");
         }
         
         $this->checked = gmdate("Y-m-d H:i:s");
