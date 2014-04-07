@@ -64,6 +64,13 @@ $dbDefs = array(
         'charset' => 'utf8',
         'caching' => TRUE,
     ),
+    'stats' => array(
+        'type' => 'MySQL',
+        'connection' => $dbOvr[$useDB]['connection'],
+        'table_prefix' => 'stats_',
+        'charset' => 'utf8',
+        'caching' => TRUE,
+    ),
     'sys' => array(
         'type' => 'MySQL',
         'connection' => $dbOvr[$useDB]['connection'],

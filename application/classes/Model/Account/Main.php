@@ -60,6 +60,14 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
+        'pilot_sessions' => array(
+            'model' => 'Stats_Pilot',
+            'foreign_key' => 'account_id',
+        ),
+        'atc_sessions' => array(
+            'model' => 'Stats_Controller',
+            'foreign_key' => 'account_id',
+        )
     );
     
     // Has one relationship
