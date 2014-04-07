@@ -5,6 +5,13 @@ defined('SYSPATH') OR die('No direct access allowed.');
 /* * ************************************************************
  * Default Router
  * ************************************************************ */
+Route::set('frontend_website', '((<action>(/)(<area>(/))))')
+        ->defaults(array(
+            'controller' => 'Site',
+            'action' => 'index',
+            'area' => NULL,
+        ));
+
 Route::set('default_training', 'training(/)(<controller>(/)(<action>(/)(<id>(/))))')
         ->defaults(array(
             'directory' => 'Training',
@@ -12,8 +19,7 @@ Route::set('default_training', 'training(/)(<controller>(/)(<action>(/)(<id>(/))
             'action' => 'list',
             'id' => 0,
         ));
-Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(<area>(/))))',
-        array(
+Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(<area>(/))))', array(
             "directory" => "(sso|training)",
         ))
         ->defaults(array(
