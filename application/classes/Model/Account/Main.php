@@ -67,7 +67,7 @@ class Model_Account_Main extends Model_Master {
         'atc_sessions' => array(
             'model' => 'Stats_Controller',
             'foreign_key' => 'account_id',
-        )
+        ),
         'theory_attempts' => array(
             'model' => 'Training_Theory_Attempt',
             'foreign_key' => 'account_id',
