@@ -5,7 +5,7 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_Sso_Auth extends Controller_Sso_Master {
     public function before(){
         parent::before();
-                
+
         // If we don't have a valid token, we can't be here!
         if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
             //$this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
@@ -80,7 +80,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     /**
      * Allow the current user to login using their CID and password.
      */
-    public function action_login() {      
+    public function action_login() {  
         // Is this user already authenticated?
         if($this->_current_account->loaded()){
             $this->_current_account->action_quick_login();
@@ -105,7 +105,7 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 } else {
                     $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
                 }
-            } catch(Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
+            } catch(Request_Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
                 if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
                     $authResult = true;
                 }
@@ -113,6 +113,8 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
                 $this->setMessage("Certificate Server Error", "The VATSIM Certificate server is currently not responding.
                                    If you have a second layer password set, you can enter that instead of your network
                                    password to gain access to our systems.", "error");
+            } catch(Exception $e){
+                $authResult = false;
             }
             
             // Redirect?
