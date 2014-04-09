@@ -101,12 +101,22 @@ if ( ! defined('KOHANA_START_MEMORY'))
 // Bootstrap the application
 require APPPATH.'bootstrap'.EXT;
 
+// Get the current version from the database!
+$_curDbVersion = ORM::factory("Setting")->getValue("system.version.current");
+$_curDbVersion = (int) str_replace(".", "", $_curDbVersion);
+
 if (PHP_SAPI == 'cli') // Try and load minion
 {
 	class_exists('Minion_Task') OR die('Please enable the Minion module for CLI support.');
 	set_exception_handler(array('Minion_Exception', 'handler'));
 
 	Minion_Task::factory(Minion_CLI::options())->execute();
+}
+elseif($_curDbVersion < str_replace(".", "", Enum_Main::CURRENT_VERSION)){
+    echo Request::factory("error/upgrade", array(), TRUE)
+            ->execute()
+            ->send_headers(TRUE)
+            ->body();
 }
 else
 {
