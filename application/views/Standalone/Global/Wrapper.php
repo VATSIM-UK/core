@@ -149,7 +149,7 @@
                     <p>
                         VATSIM-UK &copy; 2013 - 
                         <a href="http://status.vatsim-uk.co.uk" target="_blank">
-                            Version <?= exec("git describe --abbrev=0 --tags") ?> (<?= gmdate("d/m/y H:i \G\M\T", filemtime(realpath(APPPATH . "../.git/"))) ?>)
+                            Version <?=__VERSION__?> (<?=__VERSION_DATE__?>)
                         </a>
                         <br align="center">
                         Got a problem? Email us: <?= Html::anchor('http://helpdesk.vatsim-uk.co.uk/index.php?act=tickets&code=open&step=2&department=2', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) ?>
