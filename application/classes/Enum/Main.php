@@ -3,6 +3,8 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Enum_Main {
+    const CURRENT_VERSION = "1.2.4";
+    
     public static function valueToType($value) {
         $constants = new ReflectionClass(get_called_class());
         foreach ($constants->getConstants() as $c => $v) {
