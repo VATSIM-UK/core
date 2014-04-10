@@ -10,18 +10,52 @@ class Task_Installer extends Minion_Task
     {
         // Disable so output is instant & log starting.
         ob_end_flush();
-        Log::instance()->add(Log::INFO, "Task::Postmaster::Parse started.");
+        Log::instance()->add(Log::INFO, "Task::Installer started.");
         
-        if(Arr::get($params, "debug")) print "Parsing all emails that are currently in the queue...\n\n";
+        // Get the DB version
+        $_dbVersion = ORM::factory("Setting")->getValue("system.version.current");
         
-        // Get all NEW emails.
-        $emails = ORM::factory("Postmaster_Queue")->where("status", "=", Enum_System_Postmaster_Queue_Status::QUEUED)->find_all();
-        if(Arr::get($params, "debug")) print "There are ".count($emails)." waiting to be parsed:";
+        // Triple check there's a difference
+        if($_dbVersion == Enum_Main::CURRENT_VERSION){
+            Log::instance()->add(Log::INFO, "Task::Installer doesn't need to run.  Finished.");
+            return;
+        }
         
-        // Now parse them all
-        foreach($emails as $email){
-            $email->action_parse();
-            if(Arr::get($params, "debug")) print "\t[QID: ".$email->id."] ".$email->subject."\n";
+        // See if there's an install file to run.
+        while($ugFiles = glob(APPPATH."install/sql/".$_dbVersion."-*.sql")){
+            $ugFile_raw = $ugFiles[0];
+            $ugFile = str_replace(APPPATH."install/sql/", "", $ugFile_raw);
+            preg_match("/".$_dbVersion."\-([0-9]+\.[0-9]+\.[0-9]+)\.sql/i", $ugFile, $matches);
+            
+            // Get the "to" version number.
+            if(!isset($matches[1])){
+                Log::instance()->add(Log::INFO, "Task::Installer running upgrade ".$_dbVersion."-".$expVersion.".");
+                return;
+            }
+            $expVersion = $matches[1];
+            
+            // Now let's run the upgrades!
+            print("Task::Installer upgrading from version ".$_dbVersion." to ".$expVersion.".\n");
+            Log::instance()->add(Log::INFO, "Task::Installer upgrading from version ".$_dbVersion." to ".$expVersion.".");
+            
+            $upgradeSQLs = file_get_contents($ugFile_raw);
+            
+            if(empty($upgradeSQLs) OR $upgradeSQLs == ""){
+                Log::instance()->add(Log::INFO, "Task::Installer unable to upgrade using empty file.");
+                return;
+            }
+            
+            DB::query(null,$upgradeSQLs)->execute();
+            
+            // Now get the "latest" version and confirm it installed.
+            $_dbVersion = ORM::factory("Setting")->getValue("system.version.current");
+            
+            if($_dbVersion != $expVersion){
+                Log::instance()->add(Log::INFO, "Task::Installer error in script - upgrade seemed to file, check logs.");
+                return;
+            }
+            
+            Log::instance()->add(Log::INFO, "Task::Installer upgrade ".$_dbVersion."-".$expVersion." completed successfully.");
         }
         
         // Log the finish.

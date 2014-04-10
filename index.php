@@ -103,7 +103,6 @@ require APPPATH.'bootstrap'.EXT;
 
 // Get the current version from the database!
 $_curDbVersion = ORM::factory("Setting")->getValue("system.version.current");
-$_curDbVersion = (int) str_replace(".", "", $_curDbVersion);
 
 $_v = exec("git describe --abbrev=0 --tags");
 $_v.= "-";
@@ -118,7 +117,7 @@ if (PHP_SAPI == 'cli') // Try and load minion
 
 	Minion_Task::factory(Minion_CLI::options())->execute();
 }
-elseif($_curDbVersion < str_replace(".", "", Enum_Main::CURRENT_VERSION)){
+elseif($_curDbVersion != Enum_Main::CURRENT_VERSION){
     echo Request::factory("error/upgrade", array(), TRUE)
             ->execute()
             ->send_headers(TRUE)
