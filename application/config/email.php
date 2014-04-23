@@ -28,7 +28,7 @@ return array(
 	'options' => array(
             "hostname" => "smtp.gmail.com",
             "username" => "outbound@vatsim-uk.co.uk",
-            "password" => "2Q=SqHG82Q=SqHG8",
+            "password" => "5jIAl20().ju=JAOjk",
             "port" => 465,
             "encryption" => "ssl",
         )
