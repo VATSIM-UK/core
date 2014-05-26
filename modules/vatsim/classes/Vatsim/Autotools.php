@@ -191,7 +191,7 @@ class Vatsim_Autotools extends Vatsim {
             return false;
         }
         
-        return $response;
+        return $response->body();
     }
 
     private function runQueryText($action, $data) {
@@ -213,7 +213,7 @@ class Vatsim_Autotools extends Vatsim {
         if(!$request){
             return false;
         }
-
+        
         // Return the XML file.
         return simplexml_load_string($request);
     }

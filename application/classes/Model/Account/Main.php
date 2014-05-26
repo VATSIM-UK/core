@@ -209,6 +209,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean TRUE if successful, false otherwise.
      */
     public function action_update_from_remote($data=null){
+        return;
         if(!$this->loaded()){
             return false;
         }
@@ -236,16 +237,6 @@ class Model_Account_Main extends Model_Master {
         if(!$this->qualifications->check_has_qualification("atc", 1)){
             $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
         }
-        
-        /***** LEGACY SUPPORT *****/
-        // Peeps got their S1 straight away: Pre 2008-01-01 00:00:00
-        if(!$this->qualifications->check_has_qualification("atc", 2)){
-            /*if(Arr::get($details, 'regdate', null) != null && strtotime($details["regdate"]) <= strtotime("2008-01-01 00:00:00")){
-                $this->qualifications->addATCQualification($this, 2, $details['regdate']); // Add S1 to date they joined.
-                die("OI OI!");
-            }*/
-        }
-        /**************************/
         
         // Now run updatererers - we're keeping them separate so they can be used elsewhere.
         $this->setName(Arr::get($details, "name_first", NULL), Arr::get($details, "name_last", NULL), true);
@@ -379,42 +370,6 @@ class Model_Account_Main extends Model_Master {
         return $ipCheck->reset(FALSE)->count_all();
     }
     
-    /** 
-     * Validate the given password for this user.
-     *  
-     * @param string $pass The password to validate.
-     * @return boolean True on success, false otherwise.
-     */
-    public function validate_password($pass){
-        return Vatsim::factory("autotools")->authenticate($this->id, $pass);
-    }
-    
-    /**
-     * Authenticate a user using their CID and password, and then set the necessary sessions.
-     * 
-     * @param string $pass The password to use for authentication.
-     * @return boolean True on success, false otherwise.
-     */
-    public function action_authenticate($pass){
-        // Get the auth result - we'll let the controller catch the exception.
-        $authResult = $this->validate_password($pass);
-
-        // If we've got a valid authentication, set the session!
-        if($authResult){
-            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
-            $this->setSessionData(false);
-            $this->update_last_login_info();
-            return $authResult;
-        }
-        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTH_CERT_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
-        $this->session()->delete(ORM::factory("Setting")->getValue("auth.account.session.key"));
-        Cookie::delete(ORM::factory("Setting")->getValue("auth.account.cookie.key"));
-        $this->session()->delete("sso_quicklogin");
-        
-        // Default response - protects the system!
-        return false;
-    }
-    
     /**
      * Log a user out!
      */
@@ -448,7 +403,7 @@ class Model_Account_Main extends Model_Master {
      * @param boolean $quickLogin If TRUE, it will set a quickLogin session value.
      * @return void
      */
-    private function setSessionData($quickLogin=false){
+    public function setSessionData($quickLogin=false){
         $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->id);
         
         // Cookie!

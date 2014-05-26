@@ -5,6 +5,7 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_Sso_Auth extends Controller_Sso_Master {
     public function before(){
         parent::before();
+        return;
 
         // If we don't have a valid token, we can't be here!
         if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
@@ -31,10 +32,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // NB: Not all checks need to be applied to all logins.
         // If it's a QUICK login, there are alternative checks to be made.
         if($this->_current_account->is_quick_login()){
+                        die("AKMD".__LINE__);
             // Has this user's IP been used before? (GREATER than zero = YES!)
             if(!$this->session()->get_once("sso_checkpoint", false) && $this->_current_account->count_last_login_ip_usage() > 0){
                 // If we're not overriding, send them back to the checkpoint to confirm.
                 if(!$this->_current_account->is_overriding()){
+                        die("AKMD".__LINE__);
                     $this->redirect("/sso/auth/checkpoint");
                     return;
                 }
@@ -61,11 +64,12 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         
         // Do we need to validate their primary email address?
         if(!$this->_current_account->emails->get_active_primary()->loaded()){
-            $this->redirect("/sso/manage/email_confirm");
-            return;
+            //$this->redirect("/sso/manage/email_confirm");
+            //return;
         }
         
         // Are there any important messages or notifications they need to read?
+        // TODO: HERE!
         
         // Do they need to choose an email address to allocate to this system?
         if(!$this->_current_account->emails->assigned_to_sso($this->_current_token->sso_key)){
@@ -80,51 +84,39 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
     /**
      * Allow the current user to login using their CID and password.
      */
-    public function action_login() {  
+    public function action_login() { 
         // Is this user already authenticated?
         if($this->_current_account->loaded()){
             $this->_current_account->action_quick_login();
             $this->_current_token->set_account_id($this->_current_account->id);
             $this->action_checks();
             return;
-        }  
-        
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method()) {
-            // Let's gather the CID and password
-            $cid = $this->request->post("cid");
-            $pass = $this->request->post("password");
-            $security = $this->request->post("security");
-
-            // Try and authenticate!
-            $authResult = false;
-            try {
-                // Does this user *actually* exist?
-                if(!ORM::factory("Account", $cid) OR !ORM::factory("Account", $cid)->loaded()){
-                    $authResult = false;
-                } else {
-                    $authResult = ORM::factory("Account", $cid)->action_authenticate($pass, $security);
-                }
-            } catch(Request_Exception $e){ // Cert is unavailable, can we validate it as a secondary password?
-                if(ORM::factory("Account", $cid)->security->action_authorise($pass, true)){
-                    $authResult = true;
-                }
-
-                $this->setMessage("Certificate Server Error", "The VATSIM Certificate server is currently not responding.
-                                   If you have a second layer password set, you can enter that instead of your network
-                                   password to gain access to our systems.", "error");
-            } catch(Exception $e){
-                $authResult = false;
-            }
-            
-            // Redirect?
-            if($authResult){
-                $this->_current_token->set_account_id($cid);
-                $this->action_checks();
-            } else {
-                $this->setMessage("Invalid Credentials", "The CID and password you entered was incorrect.  Please try again.", "error");
-            }
         }
+        
+        $SSO = Vatsim::factory("Sso");
+        try {
+            $details = $SSO->doRunSSO();
+        } catch(Exception $e){
+            // TODO: Log.
+            $this->setMessage("Authentication Error", "There was an error authenticating you, please try again.", "error");
+            $this->redirect("sso/auth/login");
+            return;
+        }
+        
+        if(isset($details->request) && $details->request->result == "success"){
+            // OK, logged in so now let's process an update on member details....
+            $member = ORM::factory("Account", $details->user->id);
+            $SSO->updateMember($member, $details->user);
+            $member->setSessionData();
+            
+            // We've logged in, so store it and run the checks!
+            $this->_current_token->set_account_id($details->user->id);
+            $this->action_checks();
+
+        }
+        
+        $this->redirect("sso/error/display");
+        return;
     }
     
     /**
