@@ -195,7 +195,7 @@ class Model_Account_Main extends Model_Master {
      * @return void
      */
     public function update_last_login_info() {
-        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/LOGIN_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/LOGIN_SUCCESS", $this->id, array(), Enum_Account_Note_Type::AUTO);
 
         $this->last_login = gmdate("Y-m-d H:i:s");
         $this->last_login_ip = $_SERVER["REMOTE_ADDR"];

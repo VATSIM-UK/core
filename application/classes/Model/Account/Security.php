@@ -165,13 +165,13 @@ class Model_Account_Security extends Model_Master {
 
         // Let's validate!
         if ($this->hash($security) == $this->value) {
-            ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+            ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_SUCCESS", $this->id, array(), Enum_Account_Note_Type::AUTO);
             if ($this->require_authorisation() || $forceSession) {
                 $this->session()->set("sso_security_grace", gmdate("Y-m-d H:i:s"));
             }
             return true;
         }
-        ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array(), Enum_Account_Note_Type::AUTO);
         // Default response for protection!
         return false;
     }
@@ -204,7 +204,7 @@ class Model_Account_Security extends Model_Master {
             return false;
         }
 
-        ORM::factory("Account_Note")->writeNote($account, "ACCOUNT/SECURITY_RESET_REQUEST", $account->id, array($token->code, $_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($account, "ACCOUNT/SECURITY_RESET_REQUEST", $account->id, array($token->code), Enum_Account_Note_Type::AUTO);
         
         // Queue an email!
         ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_RESET", $account_id, null, array(
@@ -233,7 +233,7 @@ class Model_Account_Security extends Model_Master {
         $resetAccount->security->expires = gmdate("Y-m-d H:i:s");
         $resetAccount->security->save();
 
-        ORM::factory("Account_Note")->writeNote($resetAccount, "ACCOUNT/SECURITY_RESET_CONFIRMED", $resetAccount->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($resetAccount, "ACCOUNT/SECURITY_RESET_CONFIRMED", $resetAccount->id, array(), Enum_Account_Note_Type::AUTO);
         
         // Now email them!
         ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $resetAccount->id, null, array("temp_password" => $random));
@@ -248,6 +248,13 @@ class Model_Account_Security extends Model_Master {
             $this->created = gmdate("Y-m-d H:i:s");
         }
         parent::save($validation);
+    }
+    
+    public function delete(){
+        // Now log.
+        ORM::factory("Account_Note")->writeNote($this->account_id, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array(), Enum_Account_Note_Type::AUTO);
+        
+        parent::delete();
     }
 
 }

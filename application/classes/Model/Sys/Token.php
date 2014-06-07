@@ -80,7 +80,7 @@ class Model_Sys_Token extends Model_Master {
         $this->enabled = 1;
         $this->save();
         
-        ORM::factory("Account_Note")->writeNote($account, "SYSTEM/TOKEN_GENERATED", $account_id, array(Enum_System_Token::valueToType($type), $this->code, $_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($account, "SYSTEM/TOKEN_GENERATED", $account_id, array(Enum_System_Token::valueToType($type), $this->code), Enum_Account_Note_Type::AUTO);
 
         return $this;
     }
