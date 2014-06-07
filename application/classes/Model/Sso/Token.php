@@ -44,6 +44,14 @@ class Model_Sso_Token extends Model_Master {
         return array();
     }
     
+    public function locate_user_active(){
+        if(!$this->loaded()){
+            return $this;
+        }
+        
+        return $this->where("expires", ">", gmdate("Y-m-d H:i:s"));
+    }
+    
     public function locate($token){
         return $this->where("token", "=", $token)->find();
     }

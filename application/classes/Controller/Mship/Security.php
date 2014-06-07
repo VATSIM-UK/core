@@ -2,33 +2,10 @@
 
 defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Sso_Security extends Controller_Sso_Master {
+class Controller_Mship_Security extends Controller_Mship_Master {
 
     public function before() {
         parent::before();
-
-        if ($this->session()->get("sso_token_lock", false) && ($this->_action == "enable" || $this->_action == "disable")) {
-            $this->redirect("/sso/auth/checks");
-            exit();
-        }
-    }
-
-    /**
-     * Authorise the user's access with their secondary password.
-     */
-    public function action_auth() {
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method()) {
-            // Try and authenticate!
-            $result = $this->_current_account->security->action_authorise($this->request->post("password"));
-            if ($result) {
-                $this->redirect("/sso/auth/checks");
-                return;
-            } else {
-                $this->setMessage("Security Authorisation Error", "The secondary password you entered was incorrect.", "error");
-            }
-        }
-        $this->setTitle("Secondary Password");
     }
 
     /**
@@ -77,7 +54,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
         }
         $this->_current_account->action_logout();
         $this->setTitle("Secondary Password - Forgotten");
-        $this->setTemplate("Sso/Security/Forgotten");
+        $this->setTemplate("Mship/Security/Forgotten");
     }
 
     /**
@@ -107,18 +84,14 @@ class Controller_Sso_Security extends Controller_Sso_Master {
                     // Update!
                     try {
                         ORM::factory("Account_Security")->set_security($this->_current_account->id, $securityType, $this->request->post("new_password"));
-                        ORM::factory("Account_Security")->action_authorise($this->request->post("new_password"), true);
+                        $this->_current_account->reload()->security->action_authorise($this->request->post("new_password"), true);
                     } catch (Exception $e) {
                         $this->setMessage("Security Authorisation Error", "Your new password does not meet the requirements specified.", "error");
                     }
                     
                     // This has to be here, as the redirects generate exceptions thus will be caught.
-                    if ($this->_current_token->loaded()) {
-                        // Send back and do some more checks!
-                        $this->redirect("/sso/auth/checks");
-                    } else {
-                        $this->redirect("/sso/manage/display");
-                    }
+                    // Send back and do some more checks!
+                    $this->redirect("/mship/auth/login");
                     return true;
                 }
             } else {
@@ -167,13 +140,13 @@ class Controller_Sso_Security extends Controller_Sso_Master {
     public function action_disable() {
         // Let's check there's anything TO disable
         if (!$this->_current_account->security->loaded()) {
-            $this->redirect("/sso/manage/display");
+            $this->redirect("/mship/manage/display");
             return;
         }
 
         // Are they allowed to "disable"?
         if ($this->_current_account->security->type != Enum_Account_Security::MEMBER) {
-            $this->redirect("/sso/manage/display");
+            $this->redirect("/mship/manage/display");
             return;
         }
 
@@ -184,7 +157,7 @@ class Controller_Sso_Security extends Controller_Sso_Master {
 
             if ($result) {
                 $this->_current_account->security->delete();
-                $this->redirect("/sso/manage/display");
+                $this->redirect("/mship/manage/display");
                 return;
             } else {
                 $this->setMessage("Invalid Password", "The password you entered is invalid.  Please try again.", "error");

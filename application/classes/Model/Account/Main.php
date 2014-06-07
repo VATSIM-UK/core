@@ -60,6 +60,10 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Download',
             'foreign_key' => 'account_id',
         ),
+        'sso_tokens' => array(
+            'model' => 'Sso_Token',
+            'foreign_key' => 'account_id',
+        ),
     );
     
     // Has one relationship

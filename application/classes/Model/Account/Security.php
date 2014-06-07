@@ -113,7 +113,7 @@ class Model_Account_Security extends Model_Master {
             return true;
         }
         
-        if(strtotime($this->expires) <= time() && $this->expires != null){
+        if(strtotime($this->expires. " GMT") <= time() && $this->expires != null){
             return false;
         }
         
@@ -125,11 +125,11 @@ class Model_Account_Security extends Model_Master {
      * 
      * @return boolean TRUE if validation require, FALSE otherwise.
      */
-    public function require_validation(){
+    public function require_authorisation(){
         $gracePeriod = ORM::factory("Setting")->getValue("auth.sso.security.grace");
         $graceCutoff = gmdate("Y-m-d H:i:s", strtotime("-".$gracePeriod));
         $lastSecurity = $this->session()->get("sso_security_grace", $graceCutoff);
-        return (strtotime($lastSecurity) <= strtotime($graceCutoff));
+        return (strtotime($lastSecurity." GMT") <= strtotime($graceCutoff." GMT"));
     }
     
     /**
@@ -160,7 +160,7 @@ class Model_Account_Security extends Model_Master {
      * 
      * @param string $security The second security layer password.
      * @param boolean $forceSession if set to true the grace time is updated regardless.
-     * @return boolean Ture on success, false otherwise.
+     * @return boolean True on success, false otherwise.
      */
     public function action_authorise($security=null, $forceSession=false){
         // If this isn't loaded, they don't need a second password.
@@ -171,13 +171,12 @@ class Model_Account_Security extends Model_Master {
         // Let's validate!
         if($this->hash($security) == $this->value){
             ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_SUCCESS", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
-            if($this->require_validation() || $forceSession){
+            if($this->require_authorisation() || $forceSession){
                 $this->session()->set("sso_security_grace", gmdate("Y-m-d H:i:s"));
             }
             return true;
         }
         ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array($_SERVER["REMOTE_ADDR"]), Enum_Account_Note_Type::AUTO);
-        
         // Default response for protection!
         return false;
     }

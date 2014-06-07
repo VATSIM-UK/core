@@ -214,22 +214,22 @@
         <th>Actions</th>
         <td>
             <?php if($_account->is_overriding()): ?>
-                [<?= HTML::anchor("sso/auth/logout?override=1", "Cancel Override") ?>]
+                [<?= HTML::anchor("mship/auth/logout?override=1", "Cancel Override") ?>]
             <?php else: ?>
-                [<?= HTML::anchor("sso/auth/logout", "Logout") ?>]
+                [<?= HTML::anchor("mship/auth/logout", "Logout") ?>]
             <?php endif; ?>
 
             <?php if ($_account->security->loaded() && $_account->security->type == Enum_Account_Security::MEMBER): ?>
                 &nbsp;&nbsp;
-                [<?= HTML::anchor("sso/security/disable", "Disable") ?> | <?= HTML::anchor("sso/security/replace", "Modify")?> Secondary Password]
+                [<?= HTML::anchor("mship/security/disable", "Disable") ?> | <?= HTML::anchor("mship/security/replace", "Modify")?> Secondary Password]
             <?php elseif (!$_account->security->loaded()): ?>
                 &nbsp;&nbsp;
-                [<?= HTML::anchor("sso/security/enable", "Enable Secondary Password") ?>]
+                [<?= HTML::anchor("mship/security/enable", "Enable Secondary Password") ?>]
             <?php endif; ?>
 
             <?php if (in_array($_account->id, array(980234, 1010573))): ?>
                 &nbsp;&nbsp;
-                [<?= HTML::anchor("sso/auth/override", "Account Override") ?>]
+                [<?= HTML::anchor("mship/auth/override", "Account Override") ?>]
             <?php endif; ?>
         </td>
     </tr>

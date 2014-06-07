@@ -3,23 +3,6 @@
 defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Sso_Auth extends Controller_Sso_Master {
-    public function before(){
-        parent::before();
-        return;
-
-        // If we don't have a valid token, we can't be here!
-        if (!$this->security() && $this->_action != "logout" && $this->_action != "override") {
-            //$this->redirect("sso/error?e=TOKEN&r=SSO_AUTH_".strtoupper($this->_action));
-            $this->redirect("sso/manage/display");
-            exit();
-        }
-        
-        if($this->session()->get("sso_token_lock", false) && ($this->_action == "override" && $this->_action != "logout")){
-            $this->redirect("/sso/auth/checks");
-            exit();
-        }
-    }
-    
     /**
      * Make a few checks and redirect the user to the necessary places.
      * 
@@ -79,83 +62,6 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
         // Let's continue! We'll return to the token form, for this.
         $this->redirect("/sso/token/redirect");
         return;
-    }
-    
-    /**
-     * Allow the current user to login using their CID and password.
-     */
-    public function action_login() { 
-        // Is this user already authenticated?
-        if($this->_current_account->loaded()){
-            $this->_current_account->action_quick_login();
-            $this->_current_token->set_account_id($this->_current_account->id);
-            $this->action_checks();
-            return;
-        }
-        
-        $SSO = Vatsim::factory("Sso");
-        try {
-            $details = $SSO->doRunSSO();
-        } catch(Exception $e){
-            // TODO: Log.
-            $this->setMessage("Authentication Error", "There was an error authenticating you, please try again.", "error");
-            $this->redirect("sso/auth/login");
-            return;
-        }
-        
-        if(isset($details->request) && $details->request->result == "success"){
-            // OK, logged in so now let's process an update on member details....
-            $member = ORM::factory("Account", $details->user->id);
-            $SSO->updateMember($member, $details->user);
-            $member->setSessionData();
-            
-            if($member->last_login_ip == 0){
-                ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $member->id, null, 
-                            array(
-                                "primary_email" => $member->emails->get_active_primary()->email,
-                                "account_state" => $member->getState(),
-                            ));
-            }
-            
-            // We've logged in, so store it and run the checks!
-            $this->_current_token->set_account_id($details->user->id);
-            $this->action_checks();
-
-        }
-        
-        
-        $this->redirect("sso/error/display");
-        return;
-    }
-    
-    /**
-     * Allow a user to logout.
-     */
-    public function action_logout(){
-        if($this->request->query("returnURL") != null && $this->request->query("ssoKey") != null){
-            $this->session()->set("sso_logout_url", $this->request->query("returnURL"));
-        }
-        
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null) {
-            // Run the logout!
-            if($this->request->post("processlogout") == 1 || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null){
-                if($this->_current_account->is_overriding()){
-                    $this->_current_account->override_disable();
-                } else {
-                    $this->_current_account->action_logout();
-                    $this->_current_account->security->action_deauthorise();
-                }
-            }
-            
-            // Redirect?
-            $redirectURL = $this->session()->get_once("sso_logout_url", "/sso/manage/display");
-            $this->redirect($redirectURL);
-            return;
-        }
-        
-        // Add the key to the form.
-        $this->_data["area"] = $this->request->query("ssoKey");
     }
     
     /**
