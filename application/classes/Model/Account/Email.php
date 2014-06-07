@@ -164,7 +164,7 @@ class Model_Account_Email extends Model_Master {
         }
         
         // Demote the old primary, if set.
-        $oldPrimary = ORM::factory("Account_Email")->where("account_id", "=", $this->account_id)->where("primary", "=", 1);
+        $oldPrimary = ORM::factory("Account_Email")->where("account_id", "=", $this->account_id)->where("primary", "=", 1)->find();
         if($oldPrimary->loaded()){
             $oldPrimary->primary = 0;
             $oldPrimary->save();
