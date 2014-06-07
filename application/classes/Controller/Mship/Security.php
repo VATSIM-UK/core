@@ -14,7 +14,7 @@ class Controller_Mship_Security extends Controller_Mship_Master {
      * NB: registered vatsim email === primary email.
      */
     public function action_forgotten() {
-        $res = $this->_current_account->security_resets->action_generate($this->_current_account->id);
+        $res = $this->_current_account->security->action_generate_security_reset_token($this->_current_account->id);
 
         // Message
         if ($res) {
@@ -38,14 +38,14 @@ class Controller_Mship_Security extends Controller_Mship_Master {
     public function action_forgotten_link() {
         // Let's get the code and hash.
         $code = $this->request->query("code", null);
-        $hash = $this->request->query("hash", null);
 
         // We need to validate this information.
         // But we'll leave that down to the model.
         // Let's rock and roll baby!
-        $result = ORM::factory("Account_Security_Reset")->action_clickLink($code, $hash);
+        $token = ORM::factory("Sys_Token")->action_consume($code);
 
-        if ($result) {
+        if (is_object($token) && $token->code == $code) {
+            ORM::factory("Account_Security")->action_generate_security_password($token->account_id);
             $this->setMessage("Password Reset", "A new password has been emailed to you.<br />
                 You can now close this window.", "success");
         } else {

@@ -41,8 +41,8 @@ class Model_Account_Main extends Model_Master {
             'model' => 'Account_Email',
             'foreign_key' => 'account_id',
         ),
-        'security_resets' => array(
-            'model' => 'Account_Security_Reset',
+        'tokens' => array(
+            'model' => 'Sys_Token',
             'foreign_key' => 'account_id',
         ),
         'qualifications' => array(
