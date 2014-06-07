@@ -37,7 +37,7 @@ mT7oPERnFKpLN+3eGhDh3Ytq+fY6OacdICQ1kDzxN7b8PAlrKmE=
 EOD;
 
 return array(
-     'base'        => "http://sso.hardern.net/server/", // The location of the VATSIM OAuth interface
+     'base'        => "https://cert.vatsim.net/sso/", // The location of the VATSIM OAuth interface
      'key' => "VATSIM_UK", // The consumer key for your organisation (provided by VATSIM)
      'secret'  => 's84YG.g3jX0k62_~fApm', // The secret key for your orgnisation (provided by VATSIM)
      'return'  => 'http://dev.vatsim-uk.co.uk/ALawrence/core/mship/auth/login/?return=true', // The URL users will be redirected to after they log in

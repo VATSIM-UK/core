@@ -5,7 +5,7 @@ defined('SYSPATH') or die('No direct script access.');
 class Enum_Account_Status extends Enum_Account {
     const ACTIVE = b"00000";
     const SYSTEM_BANNED = b"0001";
-    const NETWORK_BANNED = b"0010";
+    const NETWORK_SUSPENDED = b"0010";
     const INACTIVE = b"0100";
     const LOCKED = b"1000";
         const SYSTEM = b"1000"; // Alias of LOCKED
@@ -16,8 +16,8 @@ class Enum_Account_Status extends Enum_Account {
                 return "Active";
             case self::SYSTEM_BANNED:
                 return "Banned (LOCAL)";
-            case self::NETWORK_BANNED:
-                return "Banned (NETWORK)";
+            case self::NETWORK_SUSPENDED:
+                return "Suspended (NETWORK)";
             case self::INACTIVE:
                 return "Inactive";
             case self::LOCKED:

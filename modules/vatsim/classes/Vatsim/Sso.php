@@ -89,17 +89,33 @@ class Vatsim_Sso extends Vatsim {
         }
     }
     
+    protected function convertSsoToStandardData($data){
+        $details = array();
+        $details["id"] = $data->user->id;
+        $details["name_first"] = $data->user->name_first;
+        $details["name_last"] = $data->user->name_last;
+        $details["rating"] = $data->user->rating->id;
+        $details["pilot_rating"] = $data->user->pilot_rating->rating;
+        $details["regdate"] = $data->user->reg_date;
+        $details["experience"] = $data->user->experience;
+        $details["email"] = $data->user->email;
+        $details["country"] = $data->user->country->code;
+        $details["region"] = $data->user->region->code;
+        $details["division"] = $data->user->division->code;
+        return $details;
+    }
+    
     public function doRunSSO(){
         $sso_return = $this->_config->get("return");
         
         // We've just returned with info!
         if(isset($_GET['return']) && $_GET['return'] == "true"){
-            if(!isset($_SESSION["SSO_SESSION"])){
+            if(!isset($_SESSION[SSO_SESSION])){
                 throw new Exception("NO_SESSION");
             }
             
             // We need to do a few checks, first!
-            if(@$_GET['oauth_token'] != $_SESSION["SSO_SESSION"]["key"]){
+            if(@$_GET['oauth_token'] != $_SESSION[SSO_SESSION]["key"]){
                 throw new Exception("NO_TOKEN_MATCH");
             }
             
@@ -107,10 +123,10 @@ class Vatsim_Sso extends Vatsim {
                 throw new Exception("NO_VERIFIER");
             }
             
-            $details = $this->checkLogin($_SESSION["SSO_SESSION"]["key"], $_SESSION["SSO_SESSION"]["secret"], $_GET['oauth_verifier']);
-            unset($_SESSION["SSO_SESSION"]);
+            $details = $this->checkLogin($_SESSION[SSO_SESSION]["key"], $_SESSION[SSO_SESSION]["secret"], $_GET['oauth_verifier']);
+            unset($_SESSION[SSO_SESSION]);
             
-            return $details;
+            return $this->convertSsoToStandardData($details);
         }
         
         // We have no info, send them off to jolly well get some.
@@ -118,7 +134,7 @@ class Vatsim_Sso extends Vatsim {
         
         if($sso_token){
             // Let's store the SSO data in a special SSO session just for us!
-            $_SESSION["SSO_SESSION"] = array(
+            $_SESSION[SSO_SESSION] = array(
                 'key' => $sso_token->token->oauth_token,
                 'secret' => $sso_token->token->oauth_token_secret,
             );
@@ -153,9 +169,9 @@ class Vatsim_Sso extends Vatsim {
             $member->unSetStatus(Enum_Account_Status::INACTIVE, true);
         }
         if($details->rating->id == -1){
-            $member->setStatus(Enum_Account_Status::NETWORK_BANNED, true);
+            $member->setStatus(Enum_Account_Status::NETWORK_SUSPENDED, true);
         } else {
-            $member->unSetStatus(Enum_Account_Status::NETWORK_BANNED, true);
+            $member->unSetStatus(Enum_Account_Status::NETWORK_SUSPENDED, true);
         }
         
         // Work out what the state is!

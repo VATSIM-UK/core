@@ -31,12 +31,23 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
         $SSO = Vatsim::factory("Sso");
         try {
             $details = $SSO->doRunSSO();
-            $member = ORM::factory("Account", $details->user->id);
-            $member->setSessionData();
         } catch (Exception $e) {
             // TODO: Log.
             $this->setMessage("Authentication Error", "There was an error authenticating you, please try again.", "error");
             $this->redirect("/error/generic/VATSIM_SSO_AUTH");
+            return false;
+        }
+        
+        // Let's do the post-login staff.
+        // This has been separated to prevent SSO errors being caught up with XML ones.
+        try {
+            $member = ORM::factory("Account", $details["id"]);
+            $member->data_from_remote($details);
+            $member->setSessionData();
+        } catch (Exception $e) {
+            // TODO: Log.
+            $this->setMessage("Authentication Error", "There was an error updating your details, please try again later.", "error");
+            $this->redirect("/error/generic/SSO_POST_AUTH_UPDATE");
             return false;
         }
 
@@ -103,8 +114,6 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
                 return true;
             }
         }
-        $this->redirect("/mship/manage/display");
-        die("NO PASSWORD");
 
         // Handle the main redirect - later!
         $returnURL = $this->session()->get_once("return_url");
