@@ -49,26 +49,17 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
             $this->session()->set("sso_logout_url", $this->request->query("returnURL"));
         }
 
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method() || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null) {
-            // Run the logout!
-            if ($this->request->post("processlogout") == 1 || $this->request->query("override") == 1 || $this->request->query("ssoKey") == null) {
-                if ($this->_current_account->is_overriding()) {
-                    $this->_current_account->override_disable();
-                } else {
-                    $this->_current_account->action_logout();
-                    $this->_current_account->security->action_deauthorise();
-                }
-            }
-
-            // Redirect?
-            $redirectURL = $this->session()->get_once("sso_logout_url", "/mship/manage/display");
-            $this->redirect($redirectURL);
-            return;
+        if ($this->_current_account->is_overriding()) {
+            $this->_current_account->override_disable();
+        } else {
+            $this->_current_account->action_logout();
+            $this->_current_account->security->action_deauthorise();
         }
-
-        // Add the key to the form.
-        $this->_data["area"] = $this->request->query("ssoKey");
+        
+        // Redirect?
+        $redirectURL = $this->session()->get_once("sso_logout_url", "/mship/manage/display");
+        $this->redirect($redirectURL);
+        return;
     }
 
     public function action_security_secondary() {
@@ -96,6 +87,8 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
      * Handles the redirect beyond authentication.
      */
     public function postAuthRedirect() {
+        $this->loadAccount();
+        
         // Check the secondary password - do we need to enter it?
         if ($this->_current_account->security->loaded()) {
             // Completel new password?

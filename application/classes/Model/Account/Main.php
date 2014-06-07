@@ -407,7 +407,7 @@ class Model_Account_Main extends Model_Master {
      * @param boolean $quickLogin If TRUE, it will set a quickLogin session value.
      * @return void
      */
-    public function setSessionData($quickLogin=false){
+    public function setSessionData(){
         $this->session()->set(ORM::factory("Setting")->getValue("auth.account.session.key"), $this->id);
         
         // Cookie!
@@ -416,7 +416,6 @@ class Model_Account_Main extends Model_Master {
         $salt = $this->renew_salt();
         $cookieValue = $this->id."|".$salt;
         Cookie::encrypt(ORM::factory("Setting")->getValue("auth.account.cookie.key"), $cookieValue, $lifetime);
-        $this->session()->set("sso_quicklogin", $quickLogin);
     }
     
     /**

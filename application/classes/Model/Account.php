@@ -18,8 +18,6 @@ class Model_Account extends Model_Account_Main {
         // Need to create account?
         if(!$this->loaded()){
             $this->id = $id;
-            $this->name_first = "Guest";
-            $this->name_last = "User";
             $this->save();
         }
         
