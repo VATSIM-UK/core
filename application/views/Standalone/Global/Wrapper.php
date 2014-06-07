@@ -22,7 +22,7 @@
         <div class="container container-header">
             <div class="row">
                 <div class="col-md-4 header-left">
-                    <p align="left"><?= HTML::image("media/style/global/images/logo.png") ?></p>
+                    <p align="left"><?= HTML::anchor("/", HTML::image("media/style/global/images/logo.png")) ?></p>
                 </div>
                 <div class="col-md-8 header-right">
                     <p align="right"><?= HTML::image("media/style/global/images/slogan.png"); ?></p>

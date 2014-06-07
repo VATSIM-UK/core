@@ -226,10 +226,10 @@ class Model_Account_Security extends Model_Master {
 
         // Let's update....
         $reset = ORM::factory("Account", $account_id);
-        $reset->account->security->value = $random;
-        $reset->account->security->created = gmdate("Y-m-d H:i:s");
-        $reset->account->security->expires = gmdate("Y-m-d H:i:s");
-        $reset->account->security->save();
+        $reset->security->value = $random;
+        $reset->security->created = gmdate("Y-m-d H:i:s");
+        $reset->security->expires = gmdate("Y-m-d H:i:s");
+        $reset->security->save();
 
         // Now email them!
         ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $reset->account->id, null, array("temp_password" => $random));
