@@ -22,6 +22,10 @@ class Model_Sso_Email extends Model_Master {
             'model' => 'Account_Email',
             'foreign_key' => 'account_email_id',
         ),
+        'sso_system' => array(
+            'model' => 'Sso_Account',
+            'foreign_key' => 'sso_account_id',
+        )
     );
     
     // Has man relationships

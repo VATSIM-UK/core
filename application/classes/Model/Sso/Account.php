@@ -9,6 +9,7 @@ class Model_Sso_Account extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
         'username' => array('data_type' => 'varchar'),
+        'name' => array('data_type' => 'varchar'),
         'api_key_public' => array('data_type' => 'varchar'),
         'api_key_private' => array('data_type' => 'varchar'),
         'salt' => array('data_type' => 'varchar'),

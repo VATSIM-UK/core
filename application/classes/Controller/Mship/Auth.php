@@ -102,6 +102,13 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
     public function postAuthRedirect() {
         $this->loadAccount();
         
+        // If this person is banned (locally) tell them to disappear.
+        if($this->_current_account->isBanned()){
+            $this->session()->delete("auth_lock");
+            $this->redirect("/error/generic/SYSTEM_BANNED");
+            return true;
+        }
+        
         // Check the secondary password - do we need to enter it?
         if ($this->_current_account->security->loaded()) {
             // Completely new password?

@@ -99,7 +99,7 @@ class Vatsim_Sso extends Vatsim {
         $details["regdate"] = $data->user->reg_date;
         $details["experience"] = $data->user->experience;
         $details["email"] = $data->user->email;
-        $details["country"] = $data->user->country->code;
+        $details["location"] = $data->user->country->code;
         $details["region"] = $data->user->region->code;
         $details["division"] = $data->user->division->code;
         return $details;

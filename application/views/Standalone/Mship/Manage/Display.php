@@ -30,7 +30,7 @@
                 <br />
                 <em style="margin-left: 25px;">Assigned to: 
                 <?php foreach($_account->emails->get_active_primary()->sso_email->find_all() as $key => $sso): ?>
-                    <?=$sso->sso_system?>
+                    <?=$sso->sso_system->name?>
                     <?=($key+1 < count($_account->emails->get_active_primary()->sso_email->find_all())) ? ", " : ""?>
                 <?php endforeach; ?>
                 </em>
@@ -52,7 +52,7 @@
                         <br />
                         <em style="margin-left: 25px;">Assigned to: 
                         <?php foreach($email->sso_email->find_all() as $key => $sso): ?>
-                            <?=$sso->sso_system?>
+                            <?=$sso->sso_system->name?>
                             <?=($key+1 < count($email->sso_email->find_all())) ? ", " : ""?>
                         <?php endforeach; ?>
                         </em>

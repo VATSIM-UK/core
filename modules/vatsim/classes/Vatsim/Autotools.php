@@ -46,7 +46,7 @@ class Vatsim_Autotools extends Vatsim {
         }
 
         // add provided variables to the URI
-        return $uri;
+        return urldecode($uri);
     }
 
     public function downloadDatabase($type = "div") {
@@ -105,10 +105,11 @@ class Vatsim_Autotools extends Vatsim {
             list($member["cid"], $member["rating_atc"], $member["rating_pilot"],
                  $member["name_first"], $member["name_last"],
                  $member["email"], $member["age"],
-                 $member["location_state"], $member["country"],
+                 $member["location"], $member["country"],
                  $member["experience"], $member["suspended_until"],
                  $member["regdate"], $member["region"],
-                 $member["division"],) = explode(",", $line);
+                 $member["division"]) = explode(",", $line);
+            $member["region"] = "EUR";
                     
             // Store!
             $response[$member["cid"]] = $member;
