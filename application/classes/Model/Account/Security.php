@@ -225,14 +225,14 @@ class Model_Account_Security extends Model_Master {
         $random = str_shuffle(Text::random("alnum", 12) . Text::random("numeric", 4)) . "!";
 
         // Let's update....
-        $reset = ORM::factory("Account", $account_id);
-        $reset->security->value = $random;
-        $reset->security->created = gmdate("Y-m-d H:i:s");
-        $reset->security->expires = gmdate("Y-m-d H:i:s");
-        $reset->security->save();
+        $resetAccount = ORM::factory("Account", $account_id);
+        $resetAccount->security->value = $random;
+        $resetAccount->security->created = gmdate("Y-m-d H:i:s");
+        $resetAccount->security->expires = gmdate("Y-m-d H:i:s");
+        $resetAccount->security->save();
 
         // Now email them!
-        ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $reset->account->id, null, array("temp_password" => $random));
+        ORM::factory("Postmaster_Queue")->action_add("SSO_SLS_FORGOT", $resetAccount->id, null, array("temp_password" => $random));
         return true;
     }
 
