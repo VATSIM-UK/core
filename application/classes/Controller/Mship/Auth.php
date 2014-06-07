@@ -104,7 +104,7 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
         
         // Check the secondary password - do we need to enter it?
         if ($this->_current_account->security->loaded()) {
-            // Completel new password?
+            // Completely new password?
             if ($this->_current_account->security->value == NULL) {
                 $this->redirect("/mship/security/replace");
                 return true;
