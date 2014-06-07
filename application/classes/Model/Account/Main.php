@@ -235,6 +235,11 @@ class Model_Account_Main extends Model_Master {
         if (!$this->qualifications->check_has_qualification("atc", 1)) {
             $this->qualifications->addATCQualification($this, 1, $details['regdate']); // Add OBS to date they joined.
         }
+        
+        // Qualifications!
+        if (Arr::get($details, "rating_atc", null) != null) {
+            $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
+        }
     }
 
     /**
@@ -243,7 +248,7 @@ class Model_Account_Main extends Model_Master {
      * @param array $data If set, this data will be used instead.
      * @return boolean TRUE if successful, false otherwise.
      */
-    public function action_update_from_remote($data = null) {
+    public function action_xupdate_from_remote($data = null) {
         // Qualifications!
         if (Arr::get($details, "rating_atc", null) != null) {
             $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
