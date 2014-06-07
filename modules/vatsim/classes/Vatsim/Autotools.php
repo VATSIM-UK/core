@@ -14,7 +14,7 @@ class Vatsim_Autotools extends Vatsim {
 
     private $_actionDefault = "auths";
     private $_actions = array("auths" => "text", "email" => "text", "divdb" => "text", "regdb" => "text",
-                              "ratch" => "text", "xstat" => "xml");
+                              "ratch" => "text", "xstat" => "xml", "xprat" => "xml");
     private $_remoteInfoFields = array("name_first", "name_last", "rating", "regdate", "pilotrating", "region", "division");
 
     public function URICreate($action, $data = array()) {
@@ -157,6 +157,19 @@ class Vatsim_Autotools extends Vatsim {
 
         // Return the result!
         return $result;
+    }
+
+    public function getTrueRating($cid) {
+        // Get the result
+        $result = $this->runQuery("xprat", array($cid));
+
+        // False?
+        if (!$result) {
+            return array();
+        }
+        $result_raw = get_object_vars($result->user);
+
+        return Arr::get($result_raw, "rating", null);;
     }
 
     private function runQuery($action, $data) {

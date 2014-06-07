@@ -134,6 +134,11 @@ class Vatsim_Sso extends Vatsim {
         $member->emails->action_add_email($member, $details->email, 1, 1);
         $member->qualifications->addATCQualification($member, $details->rating->id);
         
+        // If the member still has no qualification, let's assume (crudly) that they're above SnrControl (SUP/ADM).
+        if($member->qualifications->find_all()->reset(FALSE)->count() < 1){
+            $member->qualifications->addATCQualification($member, Vatsim::factory("Sso")->getTrueRating($member->id));
+        }
+        
         // Pilot ratings are slightly funny in that we need to set each one!
         foreach($details->pilot_rating as $key => $rating){
             if($key == "rating"){ continue; }
