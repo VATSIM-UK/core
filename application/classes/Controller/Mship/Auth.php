@@ -12,6 +12,8 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
      * Allow the current user to login using their CID and password.
      */
     public function action_login() {
+        $this->session()->set("auth_lock", true);
+        
         // What's our return URL?
         if (!$this->request->query("return")) {
             $returnURL = "/mship/manage/display";
@@ -116,6 +118,7 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
         }
 
         // Handle the main redirect - later!
+        $this->session()->delete("auth_lock");
         $returnURL = $this->session()->get_once("return_url");
         $this->session()->delete("auth_lock");
         $this->redirect($returnURL);

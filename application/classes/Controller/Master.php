@@ -89,6 +89,15 @@ abstract class Controller_Master extends Controller_Template {
         $this->setTitle(ucfirst($this->_action));
         
         $this->loadAccount();
+        
+        // Are we locked into the authentication sequence?
+        if($this->_current_account->loaded() && $this->session()->get("auth_lock") === true){
+            $currentPage = strtolower($this->_area."/".$this->_controller);
+            if(!in_array($currentPage, array("mship/auth", "mship/security"))){
+                $this->redirect("/mship/auth/login");
+                return false;
+            }
+        }
     }
 
     public function after() {
