@@ -9,7 +9,7 @@ class Model_Sso_Email extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
         'account_email_id' => array('data_type' => 'bigint'),
-        'sso_system' => array("data_type" => "string"),
+        'sso_account_id' => array("data_type" => "smallint"),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -47,16 +47,16 @@ class Model_Sso_Email extends Model_Master {
      * @param string $system The SSO system to assign the email to.
      * @return void
      */
-    public function assign_email($account_email_id, $system){
+    public function assign_email($account_email_id, $sso_account_id){
         // Is there an email for this already?
-        if(ORM::factory("Sso_Email")->where("account_email_id", "=", $account_email_id)->where("sso_system", "=", $system)->find()->loaded()){
+        if(ORM::factory("Sso_Email")->where("account_email_id", "=", $account_email_id)->where("sso_account_id", "=", $sso_account_id)->find()->loaded()){
             return;
         }
         
         // Assign the new email
         $newEmail = ORM::factory("Sso_Email");
         $newEmail->account_email_id = $account_email_id;
-        $newEmail->sso_system = $system;
+        $newEmail->sso_account_id = $sso_account_id;
         $newEmail->save();
     }
 }
