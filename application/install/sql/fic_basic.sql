@@ -15,3 +15,21 @@ CREATE TABLE IF NOT EXISTS `fic_airfield` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=145 ;
 
 ALTER TABLE `fic_airfield` ADD `updated` TIMESTAMP NULL DEFAULT NULL AFTER `intro`;
+
+CREATE TABLE IF NOT EXISTS `fic_airfield_procedures` (
+  `id` int(10) unsigned NOT NULL,
+  `airfield_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `fic_navaid` (
+  `id` bigint(20) unsigned NOT NULL,
+  `identifier` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `fic_airfield_runway` (
+  `id` bigint(20) unsigned NOT NULL,
+  `airfield_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
