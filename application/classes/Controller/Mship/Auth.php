@@ -42,7 +42,7 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
         // This has been separated to prevent SSO errors being caught up with XML ones.
         try {
             $member = ORM::factory("Account", $details["id"]);
-            $member->data_from_remote($details);
+            $member->reload()->data_from_remote($details);
             $member->setSessionData();
         } catch (Exception $e) {
             // TODO: Log.

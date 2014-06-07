@@ -26,5 +26,4 @@ class Controller_Mship_Manage extends Controller_Mship_Master {
         // Set the account details
         $this->_data["_account"] = $this->_current_account;
     }
-
 }

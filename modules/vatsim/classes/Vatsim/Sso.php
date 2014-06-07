@@ -46,7 +46,7 @@ class Vatsim_Sso extends Vatsim {
     /*
      * cURL timeout (seconds) for all requests
      */
-    private $timeout = 10;
+    private $timeout = 3;
     
     /*
      * Holds the latest error information for the class
@@ -94,8 +94,8 @@ class Vatsim_Sso extends Vatsim {
         $details["id"] = $data->user->id;
         $details["name_first"] = $data->user->name_first;
         $details["name_last"] = $data->user->name_last;
-        $details["rating"] = $data->user->rating->id;
-        $details["pilot_rating"] = $data->user->pilot_rating->rating;
+        $details["rating_atc"] = $data->user->rating->id;
+        $details["rating_pilot"] = $data->user->pilot_rating->rating;
         $details["regdate"] = $data->user->reg_date;
         $details["experience"] = $data->user->experience;
         $details["email"] = $data->user->email;

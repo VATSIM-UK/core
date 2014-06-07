@@ -186,7 +186,7 @@ class Model_Account_Main extends Model_Master {
      * @return boolean True if it requires an update.
      */
     public function check_requires_cert_update() {
-        return ($this->loaded() && strtotime($this->checked . " GMT") <= strtotime("-36 hours"));
+        return ($this->checked == NULL OR strtotime($this->checked . " GMT") <= strtotime("-36 hours"));
     }
 
     /**
@@ -216,10 +216,8 @@ class Model_Account_Main extends Model_Master {
         // What are our data source(s) for this?
         if($data == null){
             $details = Vatsim::factory("autotools")->getInfo($this->id);
-            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE_XML", 707070, array(), Enum_Account_Note_Type::SYSTEM);
         } else {
             $details = $data;
-            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
         }
         
         // Basic details (name, age, location, etc).
@@ -240,27 +238,14 @@ class Model_Account_Main extends Model_Master {
         if (Arr::get($details, "rating_atc", null) != null) {
             $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
         }
-    }
-
-    /**
-     * Run an update from the CERT feeds.
-     * 
-     * @param array $data If set, this data will be used instead.
-     * @return boolean TRUE if successful, false otherwise.
-     */
-    public function action_xupdate_from_remote($data = null) {
-        // Qualifications!
-        if (Arr::get($details, "rating_atc", null) != null) {
-            $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
-        }
-
+        
         // Pilot ratings are slightly funny in that we need to set each one!
         if (Arr::get($details, "rating_pilot", null) != null && is_array($details["rating_pilot"])) {
             foreach ($details["rating_pilot"] as $prating) {
                 $this->qualifications->addPilotQualification($this, Enum_Account_Qualification_Pilot::IdToValue($prating[0]), NULL);
             }
         }
-
+        
         // Status?
         if (Arr::get($details, "rating_atc", 99) < 1) {
             if (Arr::get($details, "rating_atc", 99) == 0) {
@@ -277,7 +262,7 @@ class Model_Account_Main extends Model_Master {
             $this->unSetStatus(Enum_Account_Status::INACTIVE, true);
             $this->unSetStatus(Enum_Account_Status::NETWORK_SUSPENDED, true);
         }
-
+        
         // Work out what the state is!
         if (Arr::get($details, "division", null) != null && strcasecmp($details["division"], "GBR") == 0) {
             $this->states->addState($this, "DIVISION");
@@ -286,7 +271,14 @@ class Model_Account_Main extends Model_Master {
         } else {
             $this->states->addState($this, "INTERNATIONAL");
         }
-
+        
+        // What are our data source(s) for this?
+        if($data == null){
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE_XML", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        } else {
+            ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        }
+        
         $this->checked = gmdate("Y-m-d H:i:s");
         $this->save();
     }

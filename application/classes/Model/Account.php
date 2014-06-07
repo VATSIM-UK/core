@@ -26,7 +26,9 @@ class Model_Account extends Model_Account_Main {
         }
         
         // Do we need to run a data update?
-        $this->data_from_remote();
+        if($this->check_requires_cert_update()){
+            $this->data_from_remote();
+        }
         
         parent::__construct($id);
     }

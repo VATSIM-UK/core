@@ -72,10 +72,10 @@ class Model_Account_Email extends Model_Master {
         }
 
         // Let's check for this email on this account.
-        $email = $account->emails->where("email", "LIKE", $email)->where("deleted", "IS", NULL)->find();
-        if ($email->loaded()) {
-            if (!$email->primary && $primary) {
-                $email->set_primary();
+        $emailCheck = $account->emails->where("email", "LIKE", $email)->where("deleted", "IS", NULL)->find();
+        if ($emailCheck->loaded()) {
+            if (!$emailCheck->primary && $primary) {
+                $emailCheck->set_primary();
                 return true;
             }
             return true;
@@ -90,6 +90,8 @@ class Model_Account_Email extends Model_Master {
             $newEmail->created = gmdate("Y-m-d H:i:s");
             $newEmail->save();
         } catch (ORM_Validation_Exception $e) {
+            // TODO: Log.
+            print "<pre>"; var_dump($e->errors()); exit();
             return false;
         }
 

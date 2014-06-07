@@ -24,7 +24,7 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
         ));
 Route::set('default', '')
         ->defaults(array(
-            'directory' => 'Sso',
+            'directory' => 'Mship',
             'controller' => 'Manage',
-            'action' => 'display'
+            'action' => 'Display'
         ));
