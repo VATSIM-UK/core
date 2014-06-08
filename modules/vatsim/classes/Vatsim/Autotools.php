@@ -134,6 +134,23 @@ class Vatsim_Autotools extends Vatsim {
         // Return if right/wrong/etc.
         return (strcasecmp($result[0], "YES") == 0);
     }
+    
+    public function getPreviousRating($cid){
+        // Get the result
+        $result = $this->runQuery("xprat", array($cid));
+
+        // False?
+        if (!$result) {
+            return array();
+        }
+        $result_raw = get_object_vars($result->user);
+        
+        if(Arr::get($result_raw, "rating", null) != null){
+            return $result_raw["rating"];
+        }
+        
+        return false;
+    }
 
     public function getInfo($cid) {
         // Get the result

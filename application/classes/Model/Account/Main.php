@@ -244,6 +244,11 @@ class Model_Account_Main extends Model_Master {
         if (Arr::get($details, "rating_atc", null) != null) {
             $this->qualifications->addATCQualification($this, Arr::get($details, "rating_atc", 1));
         }
+        // Let's also just run a check for the previous rating too!
+        $prat = Vatsim::factory("autotools")->getPreviousRating($this->id);
+        if($prat !== false){
+            $this->qualifications->addATCQualification($this, $prat);
+        }
         
         // Pilot ratings are slightly funny in that we need to set each one!
         if (Arr::get($details, "rating_pilot", null) != null && is_array($details["rating_pilot"])) {

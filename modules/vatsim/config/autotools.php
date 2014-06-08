@@ -9,4 +9,5 @@ return array(
 	'autotools_url_regdb'  => '{autotools_url}divdbfullwpilot.php?{autotools_auth}&reg={auth.autotools.region}',
 	'autotools_url_ratch'  => '{autotools_url}ratch.php?{autotools_auth}&div={auth.autotools.division}&rating=%1$u',
 	'autotools_url_xstat'  => 'https://cert.vatsim.net/vatsimnet/idstatusint.php?cid=%1$u',
+	'autotools_url_xprat'  => 'https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=%1$u',
 );
