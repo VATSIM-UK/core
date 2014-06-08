@@ -118,6 +118,16 @@ class Model_Account_State extends Model_Master {
     public function getCurrent(){
         return $this->where("removed", "IS", NULL)->limit(1)->find();
     }
+    
+    /**
+     * 
+     * Check if account has previously been the given state.
+     * 
+     * @param int $state The state to check.
+     */
+    public function checkPrevious($state){
+        return ($this->where("removed", "IS NOT", NULL)->where("state", "=", $state)->reset(FALSE)->count_all() > 0);
+    }
         
     // Get the text for the endorsement
     public function __toString(){

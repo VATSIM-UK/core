@@ -208,6 +208,12 @@ class Model_Account_Main extends Model_Master {
      * @param array $data If set, this data will be used as the "remote" data.
      */
     public function data_from_remote($data=null){
+        if(!$this->loaded()){
+            $newAccount = true;
+        } else {
+            $newAccount = false;
+        }
+        
         // If this is a system account, ignore it!
         if ($this->isSystem()) {
             return false;
@@ -266,6 +272,12 @@ class Model_Account_Main extends Model_Master {
         // Work out what the state is!
         if (Arr::get($details, "division", null) != null && strcasecmp($details["division"], "GBR") == 0) {
             $this->states->addState($this, "DIVISION");
+            
+            // Since they're division, is this their first time?
+            if(!$this->states->checkPrevious($this->states->getCurrent()->state)){
+                ORM::factory("Postmaster_Queue")->action_add("NEW_DIVISON_MEM", $this->id, null, array());
+            }
+            
         } elseif (Arr::get($details, "region", null) != null && strcasecmp($details["region"], "EUR") == 0) {
             $this->states->addState($this, "REGION");
         } else {
@@ -277,6 +289,15 @@ class Model_Account_Main extends Model_Master {
             ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE_XML", 707070, array(), Enum_Account_Note_Type::SYSTEM);
         } else {
             ORM::factory("Account_Note")->writeNote($this, "ACCOUNT/AUTO_CERT_UPDATE", 707070, array(), Enum_Account_Note_Type::SYSTEM);
+        }
+        
+        if($newAccount){
+            // If this is their first SSO login (i.e. no IP address), welcome them!
+            ORM::factory("Postmaster_Queue")->action_add("SSO_CREATED", $this->id, null, array(
+                "account_state" => $this->getStatus(). " " .$this->states->getCurrent()->formatState(true),
+                "primary_email" => $this->emails->get_active_primary(false)->email,
+            ));
+
         }
         
         $this->checked = gmdate("Y-m-d H:i:s");

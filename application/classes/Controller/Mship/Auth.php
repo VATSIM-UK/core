@@ -13,7 +13,7 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
      */
     public function action_login() {
         $this->session()->set("auth_lock", true);
-        
+
         // What's our return URL?
         if (!$this->request->query("return")) {
             $returnURL = "/mship/manage/display";
@@ -39,15 +39,17 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
             $this->redirect("/error/generic/VATSIM_SSO_AUTH");
             return false;
         }
-        
+
         // Let's do the post-login staff.
         // This has been separated to prevent SSO errors being caught up with XML ones.
         try {
             $member = ORM::factory("Account", $details["id"]);
             $member->reload()->data_from_remote($details);
             $member->setSessionData();
+            $member->update_last_login_info();
         } catch (Exception $e) {
             // TODO: Log.
+            print "<pre>" . print_r($e->getMessage()."/".$e->getFile()."/".$e->getLine(), true); exit();
             $this->setMessage("Authentication Error", "There was an error updating your details, please try again later.", "error");
             $this->redirect("/error/generic/SSO_POST_AUTH_UPDATE");
             return false;
@@ -68,32 +70,11 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
             $this->_current_account->action_logout();
             $this->_current_account->security->action_deauthorise();
         }
-        
+
         // Redirect?
         $redirectURL = $this->session()->get_once("sso_logout_url", "/mship/manage/display");
         $this->redirect($redirectURL);
         return;
-    }
-
-    public function action_security_secondary() {
-        // If this user isn't authenticated, send them on their merry way.
-        if (!$this->_current_account->loaded()) {
-            $this->redirect("/mship/manage/display");
-            return false;
-        }
-
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method()) {
-            // Try and authenticate!
-            $result = $this->_current_account->security->action_authorise($this->request->post("password"));
-            if ($result) {
-                $this->postAuthRedirect();
-                return;
-            } else {
-                $this->setMessage("Security Authorisation Error", "The secondary password you entered was incorrect.", "error");
-            }
-        }
-        $this->setTitle("Secondary Password");
     }
 
     /**
@@ -101,25 +82,28 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
      */
     public function postAuthRedirect() {
         $this->loadAccount();
-        
+
         // If this person is banned (locally) tell them to disappear.
-        if($this->_current_account->isBanned()){
+        if ($this->_current_account->isBanned()) {
             $this->session()->delete("auth_lock");
             $this->redirect("/error/generic/SYSTEM_BANNED");
             return true;
         }
-        
+
         // Check the secondary password - do we need to enter it?
         if ($this->_current_account->security->loaded()) {
+            if ($this->_current_account->security->require_authorisation()) {
+                $this->redirect("/mship/security/auth");
+                return true;
+            }
             // Completely new password?
             if ($this->_current_account->security->value == NULL) {
                 $this->redirect("/mship/security/replace");
                 return true;
-            } elseif (!$this->_current_account->security->is_active()) {
+            }
+            // Password is no longer active?
+            if (!$this->_current_account->security->is_active()) {
                 $this->redirect("/mship/security/replace");
-                return true;
-            } elseif ($this->_current_account->security->require_authorisation()) {
-                $this->redirect("/mship/auth/security_secondary");
                 return true;
             }
         }

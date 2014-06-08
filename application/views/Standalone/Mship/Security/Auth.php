@@ -3,7 +3,7 @@
 </p>
 <div class="row">
     <div class="col-md-7 col-md-offset-2">
-        <form class="form-horizontal" method="POST" action="<?= URL::site("mship/auth/security_secondary") ?>">
+        <form class="form-horizontal" method="POST" action="<?= URL::site("mship/security/auth") ?>">
             <div class="form-group">
                 <label class="col-sm-5 control-label" for="password">Secondary Password</label>
                 <div class="col-sm-7">

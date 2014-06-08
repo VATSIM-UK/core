@@ -7,6 +7,28 @@ class Controller_Mship_Security extends Controller_Mship_Master {
     public function before() {
         parent::before();
     }
+    
+    public function action_auth() {
+        // If this user isn't authenticated, send them on their merry way.
+        if (!$this->_current_account->loaded()) {
+            $this->redirect("/mship/manage/display");
+            return false;
+        }
+
+        // Submitted the form?
+        if (HTTP_Request::POST == $this->request->method()) {
+            // Try and authenticate!
+            $result = $this->_current_account->security->action_authorise($this->request->post("password"));
+            if ($result) {
+                $this->redirect("/mship/auth/login");
+                return;
+            } else {
+                $this->setMessage("Security Authorisation Error", "The secondary password you entered was incorrect.", "error");
+            }
+        }
+        $this->setTitle("Secondary Password");
+    }
+
 
     /**
      * Reset a user's secondary password and send it to their register vatsim email.
@@ -67,19 +89,19 @@ class Controller_Mship_Security extends Controller_Mship_Master {
         // Submitted the form?
         if (HTTP_Request::POST == $this->request->method()) {
             // Try and authenticate the old password
-            if (!$this->_current_account->security->loaded() || $this->_current_account->security->value == null) {
+            /*if (!$this->_current_account->security->loaded() || $this->_current_account->security->value == null) {
                 $result = true;
             } else {
                 $result = $this->_current_account->security->action_authorise($this->request->post("old_password"));
-            }
+            }*/
 
-            // Continue?
-            if ($result) {
+
+            //if ($result) {
                 // Now we can set the new one!
                 if ($this->request->post("new_password") != $this->request->post("new_password2")) {
                     $this->setMessage("Security Authorisation Error", "The two new passwords do not match, please try again.", "error");
                 } elseif ($this->_current_account->security->loaded() && $this->_current_account->security->hash($this->request->post("new_password")) == $this->_current_account->security->value) {
-                    $this->setMessage("Security Authorisation Error", "Your new password cannot be the same as your old password.", "error");
+                    $this->setMessage("Security Authorisation Error", "Your new password cannot be the same as one of your old passwords.", "error");
                 } else {
                     // Update!
                     try {
@@ -94,9 +116,9 @@ class Controller_Mship_Security extends Controller_Mship_Master {
                     $this->redirect("/mship/auth/login");
                     return true;
                 }
-            } else {
+            /*} else {
                 $this->setMessage("Security Authorisation Error", "The existing secondary password you entered was incorrect.", "error");
-            }
+            }*/
         }
 
         // What are the requirements?

@@ -146,7 +146,6 @@ class Model_Account_Security extends Model_Master {
         $newSecurity->account_id = $account_id;
         $newSecurity->type = $type;
         $newSecurity->value = $password;
-        $newSecurity->created = gmdate("Y-m-d H:i:s");
         $newSecurity->save();
     }
 
@@ -244,15 +243,16 @@ class Model_Account_Security extends Model_Master {
     public function save(Validation $validation = NULL) {// Let's just update the expiry!
         $enum = "Enum_Account_Security_" . ucfirst(strtolower(Enum_Account_Security::valueToType($this->type)));
         if ($this->expires == null) {
-            $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+" . $enum::MIN_LIFE . " days")) : NULL;
             $this->created = gmdate("Y-m-d H:i:s");
+            $this->expires = ($enum::MIN_LIFE > 0) ? gmdate("Y-m-d H:i:s", strtotime("+" . $enum::MIN_LIFE . " days")) : NULL;
+            ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_CREATED", $this->id, array(), Enum_Account_Note_Type::AUTO);
         }
         parent::save($validation);
     }
     
     public function delete(){
         // Now log.
-        ORM::factory("Account_Note")->writeNote($this->account_id, "ACCOUNT/AUTH_SECONDARY_FAILURE", $this->id, array(), Enum_Account_Note_Type::AUTO);
+        ORM::factory("Account_Note")->writeNote($this->account, "ACCOUNT/AUTH_SECONDARY_DELETED", $this->id, array(), Enum_Account_Note_Type::AUTO);
         
         parent::delete();
     }
