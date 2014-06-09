@@ -89,11 +89,11 @@ class Controller_Mship_Security extends Controller_Mship_Master {
         // Submitted the form?
         if (HTTP_Request::POST == $this->request->method()) {
             // Try and authenticate the old password
-            /*if (!$this->_current_account->security->loaded() || $this->_current_account->security->value == null) {
-                $result = true;
-            } else {
+            if (strtotime($this->_current_account->security->expires) < time() && $this->_current_account->security->expires != NULL) {
                 $result = $this->_current_account->security->action_authorise($this->request->post("old_password"));
-            }*/
+            } else {
+                $result = true;
+            }
 
 
             //if ($result) {
@@ -113,6 +113,7 @@ class Controller_Mship_Security extends Controller_Mship_Master {
                     
                     // This has to be here, as the redirects generate exceptions thus will be caught.
                     // Send back and do some more checks!
+                    $this->setMessage("Success", "Your security password has been updated successfully.", "success");
                     $this->redirect("/mship/auth/login");
                     return true;
                 }
