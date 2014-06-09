@@ -12,7 +12,7 @@
 
 <?php if (isset($_requirements)): ?>
     <div class="alert alert-warning">
-        <strong>Please note, your password must:</strong>
+        <strong>Please note, your password must contain:</strong>
         <ul>
             <?php foreach ($_requirements as $r): ?>
                 &nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>

@@ -127,16 +127,16 @@ class Controller_Mship_Security extends Controller_Mship_Master {
         $requirements = array();
 
         if ($enum::MIN_LENGTH > 0) {
-            $requirements[] = "A minimum length of " . $enum::MIN_LENGTH;
+            $requirements[] = "at least " . $enum::MIN_LENGTH . " characters.";
         }
         if ($enum::MIN_ALPHA > 0) {
-            $requirements[] = "Contain a minimum of " . $enum::MIN_ALPHA . " alphabetical (A-Z) characters.";
+            $requirements[] = "a minimum of " . $enum::MIN_ALPHA . " alphabetical (A-Z) characters.";
         }
         if ($enum::MIN_NUMERIC > 0) {
-            $requirements[] = "Contain a minimum of " . $enum::MIN_NUMERIC . " numeric (0-9) digits.";
+            $requirements[] = "a minimum of " . $enum::MIN_NUMERIC . " numeric (0-9) digits.";
         }
         if ($enum::MIN_NON_ALPHANUM > 0) {
-            $requirements[] = "Contain a minimum of " . $enum::MIN_NON_ALPHANUM . " none alpha-numeric characters, for example !)(><.,";
+            $requirements[] = "a minimum of " . $enum::MIN_NON_ALPHANUM . " none alpha-numeric characters, for example !)(><.,";
         }
         $this->_data["_requirements"] = $requirements;
 
