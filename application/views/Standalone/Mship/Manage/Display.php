@@ -23,8 +23,8 @@
             <strong>
                 <?= $_account->emails->get_active_primary()->email ?>
             </strong>
-            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($_account->emails->get_active_primary()->created)) ?>">
-                <em>added <?= Date::fuzzy_span(strtotime($_account->emails->get_active_primary()->created)) ?></em>
+            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($_account->emails->get_active_primary()->created)) ?>">
+                <em>added <?= Date::fuzzy_span(strtotime($_account->emails->get_active_primary()->created." GMT")) ?></em>
             </a>
             <?php if(count($_account->emails->get_active_primary()->sso_email->find_all()) > 0): ?>
                 <br />
@@ -45,8 +45,8 @@
                     <strong>
                     <?= $email->email ?>
                     </strong>
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($email->created)) ?>">
-                        <em>added <?= Date::fuzzy_span(strtotime($email->created)) ?></em>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($email->created)) ?>">
+                        <em>added <?= Date::fuzzy_span(strtotime($email->created." GMT")) ?></em>
                     </a>
                     <?php if(count($email->sso_email->find_all()) > 0): ?>
                         <br />
@@ -88,8 +88,8 @@
         <td>
             <?php if ($_account->last_login_ip != 0): ?>
                 <strong><?= $_account->get_last_login_ip() ?></strong>
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($_account->last_login)) ?>">
-                    <em><?= Date::fuzzy_span(strtotime($_account->last_login)) ?></em> 
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($_account->last_login)) ?>">
+                    <em><?= Date::fuzzy_span(strtotime($_account->last_login." GMT")) ?></em> 
                 </a>
             <?php else: ?>
                 No login history available.
@@ -102,13 +102,13 @@
         <td> 
             <?php foreach ($_account->qualifications->get_all_admin(true, "created") as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created." GMT")) ?></em>
                 </a>
                 <?php if($qual->removed != NULL): ?>
                     -
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
-                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed." GMT")) ?></em>
                     </a>
                 <?php endif; ?>
                 <br />
@@ -122,14 +122,14 @@
             <?php foreach ($_account->qualifications->get_all_atc(true) as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
                 <em>awarded 
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <?= Date::fuzzy_span(strtotime($qual->created)) ?>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <?= Date::fuzzy_span(strtotime($qual->created." GMT")) ?>
                 </a>
                     
                 <?php if($qual->removed != null): ?>
                     - expired 
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
-                        <?= Date::fuzzy_span(strtotime($qual->removed)) ?>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <?= Date::fuzzy_span(strtotime($qual->removed." GMT")) ?>
                     </a>
                 <?php endif; ?>
                 .</em>
@@ -146,13 +146,13 @@
         <td> 
             <?php foreach ($_account->qualifications->get_all_training_atc(true, "created") as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created." GMT")) ?></em>
                 </a>
                 <?php if($qual->removed != NULL): ?>
                     -
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
-                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed." GMT")) ?></em>
                     </a>
                 <?php endif; ?>
                 <br />
@@ -166,14 +166,14 @@
             <?php foreach ($_account->qualifications->get_all_pilot(true) as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
                 <em>awarded 
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <?= Date::fuzzy_span(strtotime($qual->created)) ?>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <?= Date::fuzzy_span(strtotime($qual->created." GMT")) ?>
                 </a>
                     
                 <?php if($qual->removed != null): ?>
                     - expired 
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
-                        <?= Date::fuzzy_span(strtotime($qual->removed)) ?>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <?= Date::fuzzy_span(strtotime($qual->removed." GMT")) ?>
                     </a>
                 <?php endif; ?>
                 .</em>
@@ -190,13 +190,13 @@
         <td> 
             <?php foreach ($_account->qualifications->get_all_training_pilot(true, "created") as $qual): ?>
                 <?= $qual->formatQualification(true) ?> (<?= $qual ?>)
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
-                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created)) ?></em>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->created)) ?>">
+                    <em>granted <?= Date::fuzzy_span(strtotime($qual->created." GMT")) ?></em>
                 </a>
                 <?php if($qual->removed != NULL): ?>
                     -
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= gmdate("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
-                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed)) ?></em>
+                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="<?= date("D jS M Y \@ H:i:s \G\M\T", strtotime($qual->removed)) ?>">
+                        <em>revoked <?= Date::fuzzy_span(strtotime($qual->removed." GMT")) ?></em>
                     </a>
                 <?php endif; ?>
                 <br />

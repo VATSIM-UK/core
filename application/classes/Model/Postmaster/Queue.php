@@ -278,8 +278,8 @@ class Model_Postmaster_Queue extends Model_Master {
         
         // Set the to's, from's and reply_to's before sending!
         $email->to(strval($this->recipient->emails->get_active_primary()), strval($this->recipient->name_first." ".$this->recipient->name_last));
+        $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         if($this->email->reply_to == ""){
-            $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
             $this->sender_email = $this->sender->emails->get_active_primary();
         } else {
             $email->reply_to(strval($this->email->reply_to));
