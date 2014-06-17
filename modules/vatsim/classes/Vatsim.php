@@ -18,11 +18,13 @@ class Vatsim {
 	 */
 	public static function factory($interface=null)
 	{
+                // Figure out what we're after.
+                $class = "Vatsim_" . (($interface == null) ? Vatsim::$defaultInterface : ucfirst(strtolower($interface)));
+            
                 // Load the configuration file
-                $config = Kohana::$config->load('vatsim');
+                $config = Kohana::$config->load(strtolower(str_replace("Vatsim_", "", $class)));
 
                 // Create a new instance of whatever we're after
-                $class = "Vatsim_" . (($interface == null) ? Vatsim::$defaultInterface : ucfirst(strtolower($interface)));
                 $vatsim = new $class($config);
 
 		return $vatsim;
@@ -41,5 +43,9 @@ class Vatsim {
 		// Save the config in the object
 		$this->_config = $config;
 	}
+        
+        public function getConfig($key){
+            return $this->_config->get($key);
+        }
 
 } // End Vatsim

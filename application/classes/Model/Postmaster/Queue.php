@@ -9,7 +9,9 @@ class Model_Postmaster_Queue extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'int'),
         'recipient_id' => array('data_type' => 'int'),
+        'recipient_email_id' => array('data_type' => 'int'),
         'sender_id' => array('data_type' => 'int'),
+        'sender_email' => array('data_type' => 'varchar'),
         'email_id' => array('data_type' => 'int'),
         'priority' => array('data_type' => 'smallint'),
         'subject' => array('data_type' => 'varchar'),
@@ -88,6 +90,12 @@ class Model_Postmaster_Queue extends Model_Master {
             return false;
         }
         
+        // If the email isn't enabled, end it here!
+        if(!$email->enabled){
+            // TODO: Log.
+            return false;
+        }
+        
         // Recipient MUST be specified!
         if(is_numeric($recipient)){
             $recipient = ORM::factory("Account_Main", $recipient);
@@ -104,14 +112,17 @@ class Model_Postmaster_Queue extends Model_Master {
         // Let's validate the sender.  If they don't validate, default to default user.
         if(is_numeric($sender)){
             $sender = ORM::factory("Account_Main", $email);
+            $senderEmail = $sender->emails->get_active_primary();
             
             if(!$sender->loaded()){
                 $sender = null;
+                $senderEmail = null;
             }
         }
         if($sender == null){
             $sender = Kohana::$config->load('general')->get("system_user");
             $sender = ORM::factory("Account_Main", $sender);
+            $senderEmail = $sender->emails->get_active_primary();
         }
         
         // Now, let's just store it.
@@ -269,13 +280,15 @@ class Model_Postmaster_Queue extends Model_Master {
         $email->to(strval($this->recipient->emails->get_active_primary()), strval($this->recipient->name_first." ".$this->recipient->name_last));
         $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
         if($this->email->reply_to == ""){
-            $email->from(strval($this->sender->emails->get_active_primary()), strval($this->sender->name_first." ".$this->sender->name_last));
+            $this->sender_email = $this->sender->emails->get_active_primary();
         } else {
             $email->reply_to(strval($this->email->reply_to));
+            $this->sender_email = $this->email->reply_to;
         }
         
         // 3...2....1 LIFT OFF!
         if($email->send()){
+            $this->recipient_email_id = $this->recipient->emails->get_active_primary(true);
             $this->timestamp_sent = gmdate("Y-m-d H:i:s");
             $this->status = Enum_System_Postmaster_Queue_Status::DISPATCHED;
             $this->save();

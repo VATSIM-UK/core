@@ -16,6 +16,7 @@ class Model_Account_Note extends Model_Master {
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
         'body' => array('data_type' => 'varchar'),
         'data' => array('data_type' => 'varchar'),
+        'ip' => array('data_type' => 'int'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations
@@ -126,6 +127,7 @@ class Model_Account_Note extends Model_Master {
         $_ormAccountNote->created = ($date != null) ? $date : gmdate("Y-m-d H:i:s");
         $_ormAccountNote->body = vsprintf($format->string, $_data);
         $_ormAccountNote->data = $data;
+        $_ormAccountNote->ip = ip2long(Arr::get($_SERVER, "REMOTE_ADDR", "127.0.0.1"));
         $_ormAccountNote->save();
         
         return $_ormAccountNote->saved();

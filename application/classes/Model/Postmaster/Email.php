@@ -15,6 +15,7 @@ class Model_Postmaster_Email extends Model_Master {
         'body' => array('data_type' => 'varchar'),
         'reply_to' => array('data_type' => 'varchar'),
         'priority' => array('data_type' => 'smallint'),
+        'enabled' => array('data_type' => 'boolean'),
     );
     
     // fields mentioned here can be accessed like properties, but will not be referenced in write operations

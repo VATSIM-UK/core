@@ -32,10 +32,11 @@ class Task_Cert_Memberdownload extends Minion_Task
             
             // process!!
             Minion_CLI::write("Processing account ".$member["cid"]);
-            $_m = ORM::factory("Account", $cid);
+            $_m = ORM::factory("Account_Main", $cid);
+            $_m->id = $cid;
             Minion_CLI::write("\t-Email: ".$member["email"]);
             try {
-                $_m->action_update_from_remote($member);
+                $_m->data_from_remote($member);
                 Minion_CLI::write("\t-Processed successfully!");
                 $membersProcessed[] = $cid;
             } catch(ORM_Validation_Exception $e){

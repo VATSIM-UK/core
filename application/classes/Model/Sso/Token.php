@@ -9,7 +9,7 @@ class Model_Sso_Token extends Model_Master {
     protected $_table_columns = array(
         'id' => array('data_type' => 'bigint'),
         'token' => array('data_type' => 'varchar'),
-        'sso_key' => array('data_type' => 'varchar'),
+        'sso_account_id' => array('data_type' => 'smallint'),
         'return_url' => array('data_type' => 'varchar'),
         'account_id' => array('data_type' => 'int'),
         'created' => array('data_type' => 'timestamp', 'is_nullable' => TRUE),
@@ -23,8 +23,8 @@ class Model_Sso_Token extends Model_Master {
     // Belongs to relationships
     protected $_belongs_to = array(
         'account' => array(
-            'model' => 'Account',
-            'foreign_key' => 'account_id',
+            'model' => 'Sso_Account',
+            'foreign_key' => 'sso_account_id',
         ),
     );
     
@@ -44,42 +44,29 @@ class Model_Sso_Token extends Model_Master {
         return array();
     }
     
-    /**
-     * Check the token file exists for this token.
-     * 
-     * @param string $token The token to check against (optional).
-     * @return boolean TRUE if exists, FALSE otherwise.
-     */
-    public function check_token_file($token=null){
-        if($token == null){
-            $this->get_current_token();
-            $token = $this->token;
+    public function locate_user_active(){
+        if(!$this->loaded()){
+            return $this;
         }
-        return file_exists("/var/tokens/".$token);
+        
+        return $this->where("expires", ">", gmdate("Y-m-d H:i:s"));
     }
     
-    /**
-     * Get the contents of the token file.
-     * 
-     * @param string $token The token to get the contents of (optional)
-     * @return string The contents of the token file.
-     */
-    public function get_token_file($token=null){
-        if($token == null){
-            $this->get_current_token();
-            $token = $this->token;
-        }
-        return file_get_contents("/var/tokens/".$token);
+    public function locate($token){
+        return $this->where("token", "=", $token)->find();
     }
     
-    /**
-     * Generate the return data for a token file.
-     * 
-     * This will also write to the token file!
-     * 
-     * @param string $token The token to generate the return data for (optional).
-     * @return void
-     */
+    public function isExpired(){
+        if($this->loaded()){
+            if(time() - strtotime($this->expires." GMT") > 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public function generate_token_file_return_data($token=null){
         $this->get_current_token($token);
         $this->expire_current_token($token);
@@ -164,88 +151,6 @@ class Model_Sso_Token extends Model_Master {
         
         // Delete the session token
         $this->session()->delete(ORM::factory("Setting")->getValue("auth.sso.token.key"));
-    }
-    
-    /**
-     * Load the current or requested token.
-     * 
-     * @param string $token If set, this token will be loaded.
-     * @return Sso_Token ORM Object.
-     */
-    public function get_current_token($token=null){
-        if($token == null){
-            $token = $this->session()->get(ORM::factory("Setting")->getValue("auth.sso.token.key"), null);
-            if($token == NULL){
-                return $this;
-            }
-        }
-        
-        // Load it!
-        $token = ORM::factory("Sso_Token")
-                    ->where("token", "=", $token)
-                    ->where("expires", ">", gmdate("Y-m-d H:i:s"))
-                    ->limit(1)
-                    ->find();
-        
-        // Now, load THIS model properly!
-        $this->__construct($token->id);
-        return $this;
-    }
-    
-    /**
-     * Set the account idea for the current request.
-     * 
-     * @param int $cid The CID to set!
-     * @return void
-     */
-    public function set_account_id($cid){
-        $this->account_id = $cid;
-        $this->save();
-    }
-    
-    /**
-     * Start a new token for the current request.
-     * 
-     * This will also kill all old tokens if the session is currently set.
-     * 
-     * @param string $token The token to start.
-     * @param string $key The section/area/module key.
-     * @param string $returnURL The URL to return the member to.
-     * @param boolean True on success, false otherwise.
-     */
-    public function set_current_token($token, $key, $returnURL=null){
-        // First, let's kill the old token if it's currently set.
-        $oldToken = $this->get_current_token();
-        if($oldToken->loaded()){
-            $oldToken->expires = gmdate("Y-m-d H:i:s", strtotime("-30 seconds"));
-            $oldToken->save();
-        }
-        $this->session()->delete(ORM::factory("Setting")->getValue("auth.sso.token.key"));
-        
-        // Now, start a new one!
-        $newToken = ORM::factory("Sso_Token");
-        $newToken->token = $token;
-        $newToken->sso_key = $key;
-        $newToken->return_url = $returnURL;
-        $newToken->created = gmdate("Y-m-d H:i:s");
-        $newToken->expires = gmdate("Y-m-d H:i:s", strtotime("+".ORM::factory("Setting")->getValue("auth.sso.token.lifetime")));
-        $newToken->save();
-        
-        // Store this token!
-        $this->session()->set(ORM::factory("Setting")->getValue("auth.sso.token.key"), $token);
-        
-        return $newToken;
-    }
-    
-    /**
-     * For a token to expire.
-     * 
-     * @return void
-     */
-    public function expire_current_token($token=null){
-        $this->get_current_token($token);
-        $this->expires = gmdate("Y-m-d H:i:s");
-        $this->save();
     }
 }
 

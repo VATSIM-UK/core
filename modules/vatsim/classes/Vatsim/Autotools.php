@@ -14,7 +14,7 @@ class Vatsim_Autotools extends Vatsim {
 
     private $_actionDefault = "auths";
     private $_actions = array("auths" => "text", "email" => "text", "divdb" => "text", "regdb" => "text",
-                              "ratch" => "text", "xstat" => "xml");
+                              "ratch" => "text", "xstat" => "xml", "xprat" => "xml");
     private $_remoteInfoFields = array("name_first", "name_last", "rating", "regdate", "pilotrating", "region", "division");
 
     public function URICreate($action, $data = array()) {
@@ -46,7 +46,7 @@ class Vatsim_Autotools extends Vatsim {
         }
 
         // add provided variables to the URI
-        return $uri;
+        return urldecode($uri);
     }
 
     public function downloadDatabase($type = "div") {
@@ -105,10 +105,11 @@ class Vatsim_Autotools extends Vatsim {
             list($member["cid"], $member["rating_atc"], $member["rating_pilot"],
                  $member["name_first"], $member["name_last"],
                  $member["email"], $member["age"],
-                 $member["location_state"], $member["country"],
+                 $member["location"], $member["country"],
                  $member["experience"], $member["suspended_until"],
                  $member["regdate"], $member["region"],
-                 $member["division"],) = explode(",", $line);
+                 $member["division"]) = explode(",", $line);
+            $member["region"] = "EUR";
                     
             // Store!
             $response[$member["cid"]] = $member;
@@ -132,6 +133,23 @@ class Vatsim_Autotools extends Vatsim {
 
         // Return if right/wrong/etc.
         return (strcasecmp($result[0], "YES") == 0);
+    }
+    
+    public function getPreviousRating($cid){
+        // Get the result
+        $result = $this->runQuery("xprat", array($cid));
+
+        // False?
+        if (!$result) {
+            return array();
+        }
+        $result_raw = get_object_vars($result->user);
+        
+        if(Arr::get($result_raw, "rating", null) != null){
+            return $result_raw["rating"];
+        }
+        
+        return false;
     }
 
     public function getInfo($cid) {
@@ -157,6 +175,19 @@ class Vatsim_Autotools extends Vatsim {
 
         // Return the result!
         return $result;
+    }
+
+    public function getTrueRating($cid) {
+        // Get the result
+        $result = $this->runQuery("xprat", array($cid));
+
+        // False?
+        if (!$result) {
+            return array();
+        }
+        $result_raw = get_object_vars($result->user);
+
+        return Arr::get($result_raw, "rating", null);;
     }
 
     private function runQuery($action, $data) {
@@ -191,7 +222,7 @@ class Vatsim_Autotools extends Vatsim {
             return false;
         }
         
-        return $response;
+        return $response->body();
     }
 
     private function runQueryText($action, $data) {
@@ -213,7 +244,7 @@ class Vatsim_Autotools extends Vatsim {
         if(!$request){
             return false;
         }
-
+        
         // Return the XML file.
         return simplexml_load_string($request);
     }

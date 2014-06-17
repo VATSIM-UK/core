@@ -11,20 +11,23 @@ class Model_Account extends Model_Account_Main {
     public function __construct($id = NULL){
         parent::__construct($id);
         
-        if($id == NULL){
+        if($id == NULL OR $id == "" OR $id == 0){
             return $this;
         }
         
-        // Need to create account?
-        if(!$this->loaded()){
-            $this->id = $id;
-            $this->name_first = "Guest";
-            $this->name_last = "User";
-            $this->save();
+        // Ignore system accounts
+        if($this->isSystem()){
+            return $this;
         }
         
+        // If it's not loaded, set the ID
+        if(!$this->loaded()){
+            $this->id = $id;
+        }
+        
+        // Do we need to run a data update?
         if($this->check_requires_cert_update()){
-            $this->action_update_from_remote();
+            $this->data_from_remote();
         }
         
         parent::__construct($id);

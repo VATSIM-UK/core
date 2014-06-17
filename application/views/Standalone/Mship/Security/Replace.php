@@ -12,10 +12,10 @@
 
 <?php if (isset($_requirements)): ?>
     <div class="alert alert-warning">
-        <strong>Please note, your password must:</strong>
+        <strong>Please note, your password must contain:</strong>
         <ul>
             <?php foreach ($_requirements as $r): ?>
-                &nbsp;<strong>-</strong>&nbsp;&nbsp;<?= $r ?>
+                <li>&nbsp;&nbsp;<?= $r ?></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -23,8 +23,8 @@
 
 <div class="row">
     <div class="col-md-7 col-md-offset-2">
-        <form class="form-horizontal" method="POST" action="<?= URL::site("/sso/security/replace") ?>" role="form">
-            <?php if (isset($sls_type) && ($sls_type == "expired" || $sls_type == "change")): ?>
+        <form class="form-horizontal" method="POST" action="<?= URL::site("/mship/security/replace") ?>" role="form">
+            <?php if (isset($sls_type) && ($sls_type == "change")): ?>
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="old_password">Old Password</label>
                     <div class="col-sm-7">

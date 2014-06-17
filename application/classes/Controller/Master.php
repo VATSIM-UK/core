@@ -25,10 +25,6 @@ abstract class Controller_Master extends Controller_Template {
         $this->_current_account = ORM::factory("Account")->get_current_account();
     }
     
-    protected function loadToken(){
-        $this->_current_token = ORM::factory("Sso_Token")->get_current_token();
-    }
-
     public function hasPermission() {
         return true;
     }
@@ -93,10 +89,22 @@ abstract class Controller_Master extends Controller_Template {
         $this->setTitle(ucfirst($this->_action));
         
         $this->loadAccount();
-        $this->loadToken();
+        
+        // Are we locked into the authentication sequence?
+        if($this->_current_account->loaded() && $this->session()->get("auth_lock") === true){
+            $currentPage = strtolower($this->_area."/".$this->_controller);
+            if(!in_array($currentPage, array("mship/auth", "mship/security"))){
+                $this->redirect("/mship/auth/login");
+                return false;
+            }
+        }
     }
 
     public function after() {
+        if($this->template === FALSE){
+            return;
+        }
+        
         // Template setup!
         if($this->template == "template"){
             $this->setTemplate(null);
@@ -190,5 +198,10 @@ abstract class Controller_Master extends Controller_Template {
             $m->message = $message;
             $this->_messages[$type][] = $m;
         }
+    }
+    
+    public function respondJson($array=array()){
+        $this->template = FALSE;
+        $this->response->body(json_encode($array));
     }
 }
