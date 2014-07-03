@@ -1,0 +1,60 @@
+.msg_information {
+    background: url("main/information.png") no-repeat top right #CEDEF4;
+    border: 1px solid #00C;
+    margin: 10px;
+    padding: 0px 5px;
+}
+.msgb_information {
+    background: url("main/information.png") no-repeat top right #CEDEF4;
+    border: 1px solid #00C;
+    margin: 10px;
+    padding: 10px;
+}
+.msg_warning {
+    background: url("main/warning.png") no-repeat top right #FDF7D0;
+    border: 1px solid #FF9933;
+    margin: 10px;
+    padding: 0px 5px;
+}
+.msgb_warning {
+    background: url("main/warning.png") no-repeat top right #FDF7D0;
+    border: 1px solid #FF9933;
+    margin: 10px;
+    padding: 10px;
+}
+.msg_error {
+    background: url("main/error.png") no-repeat top right #FFCEB7;
+    border: 1px solid #FF0000;
+    margin: 10px;
+    padding: 0px 5px;
+}
+.msgb_error {
+    background: url("main/error.png") no-repeat top right #FFCEB7;
+    border: 1px solid #FF0000;
+    margin: 10px;
+    padding: 10px;
+}
+.msg_success {
+    background: url("main/success.png") no-repeat bottom right #E8FED3;
+    border: 1px solid #009966;
+    margin: 10px;
+    padding: 0px 5px;
+}
+.msgb_success {
+    background: url("main/success.png") no-repeat bottom right #E8FED3;
+    border: 1px solid #009966;
+    margin: 10px;
+    padding: 10px;
+}
+.msg_information p, .msg_information ul, .msg_information ol, .msg_warning p, .msg_warning ul, .msg_warning ol, .msg_error p, .msg_error ul, .msg_error ol, .msg_success p, .msg_success ul, .msg_success ol {
+    color: black;
+    padding: 3px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.5);
+}
+.msgb_information p, .msgb_information ul, .msgb_information ol, .msgb_warning p, .msgb_warning ul, .msgb_warning ol, .msgb_error p, .msgb_error ul, .msgb_error ol, .msgb_success p, .msgb_success ul, .msgb_success ol {
+    color: black;
+    padding: 5px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.5);
+}

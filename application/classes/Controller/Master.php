@@ -6,7 +6,10 @@ abstract class Controller_Master extends Controller_Template {
 
     protected $_config = array();
     protected $_permissions = NULL;
-    protected $view = NULL;
+    protected $_view = NULL;
+    protected $_view_fn = NULL;
+    protected $_template = NULL;
+    protected $_template_fn = NULL;
     protected $_wrapper = TRUE;
     protected $_templateDir = "V3";
     protected $_templateOverride = false;
@@ -20,22 +23,22 @@ abstract class Controller_Master extends Controller_Template {
     protected $_current_token = null;
     protected $_current_account = null;
     protected $_actual_account = null;
-    
-    protected function loadAccount(){
+
+    protected function loadAccount() {
         $this->_current_account = ORM::factory("Account")->get_current_account();
     }
     
     public function hasPermission() {
         return true;
     }
-    
-    public function session(){
+
+    public function session() {
         return Session::instance(ORM::factory("Setting")->getValue("system.session.type"));
     }
 
     public function __construct($request, $response) {
         parent::__construct($request, $response);
-        
+
         // Disable auto-rendering!
         $this->auto_render = FALSE;
 
@@ -43,6 +46,7 @@ abstract class Controller_Master extends Controller_Template {
         $this->_data = array(
             "title" => NULL,
             "breadcrumb" => array(),
+            "scripts" => array(),
         );
         // TODO: Get name from database.
         $this->addBreadcrumb("VATSIM-UK", "");
@@ -65,10 +69,13 @@ abstract class Controller_Master extends Controller_Template {
 
         // Now, let's get the membership details
         $this->_account = ORM::factory("Account_Main", $this->session()->get(ORM::factory("Setting")->getValue("auth.account.session.key")));
-        
+        //echo "<pre>" . print_r($this->_account, true); exit();
+        $this->loadAccount();
+        $this->loadToken();
+
         // Has the member changed the template they're using?
-        if($this->_templateDir != "Standalone" && !$this->_templateOverride && $this->_account->template != ""){
-            if(file_exists(APPPATH."views/".$this->_account->template)){
+        if ($this->_templateDir != "Standalone" && !$this->_templateOverride && $this->_account->template != "") {
+            if (file_exists(APPPATH . "views/" . $this->_account->template)) {
                 $this->_templateDir = $this->_account->template;
             }
         }
@@ -80,14 +87,14 @@ abstract class Controller_Master extends Controller_Template {
             die("NO PERMISSION!");
             return;
         }
-        
+
         // Add to the breadcrumb
         $this->addBreadcrumb($this->_area, "/");
         $this->addBreadcrumb($this->_controller, $this->_controller . "/");
         $this->addBreadcrumb($this->_action, $this->_controller . "/" . $this->_action . "/");
-        
+
         $this->setTitle(ucfirst($this->_action));
-        
+
         $this->loadAccount();
         
         // Are we locked into the authentication sequence?
@@ -106,18 +113,55 @@ abstract class Controller_Master extends Controller_Template {
         }
         
         // Template setup!
-        if($this->template == "template"){
+        if ($this->_template == "template" OR ($this->_view == NULL)) {
             $this->setTemplate(null);
         }
-        
+
+        // What about any Javascript files?
+        // Let's check for any JS specific to the VIEW
+        $_v_a = explode("/", $this->_view_fn);
+        $_cur = "";
+        foreach ($_v_a as $_) {
+            $_cur.= $_;
+            if (file_exists(DOCROOT . "media" . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . $_cur . ".js")) {
+                $this->_data["scripts"][] = "media/scripts/" . $_cur . ".js";
+            }
+            $_cur.= "/";
+            if (file_exists(DOCROOT . "media" . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . $_cur . "global.js")) {
+                $this->_data["scripts"][] = "media/scripts/" . $_cur . "global.js";
+            }
+        }
+
+        // Cheeck for JS specific to the TEMPLATE.
+        if ($this->_template != NULL) {
+            $_t_a = explode("/", $this->_template_fn);
+            $_cur = "";
+            foreach ($_t_a as $_) {
+                $_cur.= $_;
+                if (file_exists(DOCROOT . "media" . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . $_cur . ".js")) {
+                    $this->_data["scripts"][] = "media/scripts/" . $_cur . ".js";
+                }
+                $_cur.= "/";
+                if (file_exists(DOCROOT . "media" . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . $_cur . "global.js")) {
+                    $this->_data["scripts"][] = "media/scripts/" . $_cur . "global.js";
+                }
+            }
+
+            // Trim any duplicates!
+            $this->_data["scripts"] = array_unique($this->_data["scripts"]);
+        }
+
         // Now set all variables to view and/or template.
         foreach ($this->_data as $k => $v) {
             $this->_view->set($k, $v);
             if ($this->_wrapper === TRUE) {
-                $this->template->set($k, $v);
+                $this->_template->set($k, $v);
             }
         }
-        
+
+        // Load the flash messages
+        $this->_messages = unserialize($this->session()->get_once("flash_messages", serialize(array())));
+
         // Set the view template variables
         if ($this->request->is_initial()) {
             $this->_view->bind_global("_area", $this->_area);
@@ -126,16 +170,16 @@ abstract class Controller_Master extends Controller_Template {
             $this->_view->bind_global("_title", $this->_title);
             $this->_view->bind_global("_breadcrumbs", $this->_breadcrumbs);
             $this->_view->bind_global("_messages", $this->_messages);
-            $this->_view->bind_global("_account", $this->_account);
+            $this->_view->bind_global("_account", $this->_current_account);
             $this->_view->bind_global("_request", $this->request);
         }
 
         // If there's a wrapper, set the different elements to the template too!
         if ($this->_wrapper === TRUE) {
-            $this->template->set("_area", $this->_area);
-            $this->template->set("_controller", $this->_controller);
-            $this->template->set("_action", $this->_action);
-            $this->_view->set("_content", $this->template->render());
+            $this->_template->set("_area", $this->_area);
+            $this->_template->set("_controller", $this->_controller);
+            $this->_template->set("_action", $this->_action);
+            $this->_view->set("_content", $this->_template->render());
         }
 
         // Display the template.
@@ -145,24 +189,35 @@ abstract class Controller_Master extends Controller_Template {
     public function setTemplate($template = null) {
         // Template name
         if ($template == null) {
+            // Sort the final actions out.
             $_a = str_replace("_", "/", $this->_action);
             $actions = "";
-            foreach(explode("/", $_a) as $a){
-                $actions.= ucfirst($a)."/";
+            foreach (explode("/", $_a) as $a) {
+                $actions.= ucfirst($a) . "/";
             }
             $actions = rtrim($actions, "/");
-            $template = $this->_area . "/" . $this->_controller . "/" . $actions;
+            $template = $this->_area . "/" . str_replace("_", "/", $this->_controller) . "/" . $actions;
+        } else {
+            $_t = explode("/", $template);
+            $template = "";
+            foreach($_t as $_){
+                $template.= ucfirst($_)."/";
+            }
+            $template = rtrim($template, "/");
         }
-        
+
         // Add the template directory
         $template = $this->_templateDir . "/" . $template;
 
         // Now create and store the template. If there's no wrapper, it's the main view!
         if ($this->_wrapper === FALSE) {
-            $this->_view = View::factory($template);
+            $this->_view_fn = $template;
+            $this->_view = View::factory($this->_view_fn);
         } else {
-            $this->_view = View::factory($this->_templateDir . "/Global/Wrapper");
-            $this->template = View::factory($template);
+            $this->_view_fn = $this->_templateDir . "/Global/Wrapper";
+            $this->_view = View::factory($this->_view_fn);
+            $this->_template_fn = $template;
+            $this->_template = View::factory($this->_template_fn);
         }
     }
 
@@ -174,30 +229,33 @@ abstract class Controller_Master extends Controller_Template {
         $this->_title = $title;
     }
 
-    public function setMessage($title, $message, $type){
-        if(!is_array($this->_messages)){
+    public function setMessage($title, $message, $type) {
+        if (!is_array($this->_messages)) {
             $this->_messages = array();
         }
-        if(!isset($this->_messages[$type]) || !is_array($this->_messages[$type])){
+        if (!isset($this->_messages[$type]) || !is_array($this->_messages[$type])) {
             $this->_messages[$type] = array();
         }
-        
+
         // Do we need to append to a previous error? (same title)?
         $exists = false;
-        foreach($this->_messages[$type] as $key => $error){
-            if($error->title == $title){
+        foreach ($this->_messages[$type] as $key => $error) {
+            if ($error->title == $title) {
                 $exists = true;
                 $error->message .= "<br />" . $message;
                 $this->_messages[$type][$key] = $error;
             }
         }
-        
-        if(!$exists){
+
+        if (!$exists) {
             $m = new stdClass();
             $m->title = $title;
             $m->message = $message;
             $this->_messages[$type][] = $m;
         }
+
+        // Now let's make the messages a flash storage!
+        $this->session()->set("flash_messages", serialize($this->_messages));
     }
     
     public function respondJson($array=array()){

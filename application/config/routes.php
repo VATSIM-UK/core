@@ -22,6 +22,18 @@ Route::set('frontend_system_route', '<directory>(/)(<controller>(/)(<action>(/)(
             'action' => 'display',
             'area' => NULL,
         ));
+Route::set('error_system_route', 'error/<action>(/)')
+        ->defaults(array(
+            'controller' => 'Error',
+            'action' => 'unknown',
+            'area' => NULL,
+        ));
+Route::set('frontend_website', '((<action>(/)(<area>(/))))')
+        ->defaults(array(
+            'controller' => 'Site',
+            'action' => 'index',
+            'area' => NULL,
+        ));
 Route::set('default', '')
         ->defaults(array(
             'directory' => 'Mship',
