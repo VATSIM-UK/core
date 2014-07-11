@@ -17,10 +17,12 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
         // What's our return URL?
         if (!$this->request->query("return")) {
             $returnURL = "/mship/manage/display";
-            if ($this->request->query("returnURL")) {
+            if ($this->request->query("returnURL") != "") {
                 $returnURL = urldecode($this->request->query("returnURL"));
             }
-            $this->session()->set("return_url", $returnURL);
+            if($this->session()->get("return_url", NULL) == NULL){
+                $this->session()->set("return_url", $returnURL);
+            }
         }
 
         // Is this user already authenticated?
@@ -40,7 +42,7 @@ class Controller_Mship_Auth extends Controller_Mship_Master {
             return false;
         }
 
-        // Let's do the post-login staff.
+        // Let's do the post-login stuff.
         // This has been separated to prevent SSO errors being caught up with XML ones.
         try {
             $member = ORM::factory("Account", $details["id"]);
