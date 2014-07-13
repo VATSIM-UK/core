@@ -9,7 +9,7 @@ $useDB = (Kohana::$environment !== Kohana::PRODUCTION) ? "dev" : "prod";
 $dbOvr = array (
         "dev" => array (
             'connection' => array (
-                'hostname' => 'localhost',
+                'hostname' => '5.101.107.76',
                 'database' => 'dev_core',
                 'username' => 'dev',
                 'password' => 'Monk1esW111T4k3ov3R!',
