@@ -9,7 +9,7 @@ $useDB = (Kohana::$environment !== Kohana::PRODUCTION) ? "dev" : "prod";
 $dbOvr = array (
         "dev" => array (
             'connection' => array (
-                'hostname' => '5.101.107.76',
+                'hostname' => 'callisto.vatsim-uk.co.uk',
                 'database' => 'dev_core',
                 'username' => 'dev',
                 'password' => 'Monk1esW111T4k3ov3R!',
@@ -18,10 +18,10 @@ $dbOvr = array (
         ),
         "prod" => array (
             'connection' => array (
-                'hostname' => 'localhost',
+                'hostname' => 'callisto.vatsim-uk.co.uk',
                 'database' => 'prod_core',
                 'username' => 'prod_core',
-                'password' => 'zaJerNGdEwXfPnqD',
+                'password' => '4S9twpMG239N34MH',
                 'persistent' => TRUE,
             ),
         ),
