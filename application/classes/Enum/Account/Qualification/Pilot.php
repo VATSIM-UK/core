@@ -7,13 +7,13 @@ class Enum_Account_Qualification_Pilot extends Enum_Account_Qualification {
     const P0 = 0;
     const P1 = 1;
     const P2 = 2;
-    const P3 = 3;
-    const P4 = 4;
-    const P5 = 5;
-    const P6 = 6;
-    const P7 = 7;
-    const P8 = 8;
-    const P9 = 9;
+    const P3 = 4; //3
+    const P4 = 8; // 4
+    const P5 = 16; //5 
+    const P6 = 32; //6
+    const P7 = 64; //7
+    const P8 = 128; //8
+    const P9 = 256; //9
     
     public static function getDescription($value){
         switch($value){
