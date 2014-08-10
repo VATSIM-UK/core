@@ -27,33 +27,4 @@ class Controller_Sso_Auth extends Controller_Sso_Master {
             }
         }
     }
-    
-    /**
-     * Override the current login with another.
-     */
-    public function action_override(){
-        // KH or AL?
-        if(!in_array($this->_current_account->id, array(980234, 1010573))){
-            $this->redirect("sso/manage/display");
-            return;
-        }
-        
-        // Submitted the form?
-        if (HTTP_Request::POST == $this->request->method()) {
-            // Validate the secondary password!
-            if($this->_current_account->security->action_authorise($this->request->post("password"))){
-                // Try and load the override account!
-                $ovrAccount = ORM::factory("Account", $this->request->post("override_cid"));
-                if($ovrAccount->loaded()){
-                    $this->_current_account->override_enable($this->request->post("override_cid"));
-                    $this->redirect("/sso/manage/display");
-                    return;
-                } else {
-                    $this->setMessage("Invalid Override", "The CID entered is invalid.", "error");
-                }
-            } else {
-                $this->setMessage("Invalid Password", "The password entered, is incorrect.", "error");
-            }
-        }
-    }
 }
