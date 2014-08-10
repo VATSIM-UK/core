@@ -80,6 +80,7 @@ class Controller_Sso_Token extends Controller_Sso_Master {
         $return["atc_rating_human_long"] = Enum_Account_Qualification_ATC::getDescription($return["atc_rating"]);
         $return["atc_rating_date"] = $account->qualifications->get_current_atc()->created;
         
+        $return["pilot_ratings_bin"] = 0;
         $return["pilot_ratings"] = array();
         if(count($account->qualifications->get_all_pilot()) < 1){
             $return["pilot_ratings"][] = 0;
@@ -93,8 +94,10 @@ class Controller_Sso_Token extends Controller_Sso_Master {
                 $e["human_long"] = Enum_Account_Qualification_Pilot::getDescription($qual->value);
                 $e["date"] = $qual->created;
                 $return["pilot_ratings"][] = (array) $e;
+                $return["pilot_ratings_bin"]+= $qual->value;
             }
         }
+        $return["pilot_ratings_bin"] = decbin($return["pilot_ratings_bin"]);
         
         $return["admin_ratings"] = array();
         foreach($account->qualifications->get_all_admin() as $qual){

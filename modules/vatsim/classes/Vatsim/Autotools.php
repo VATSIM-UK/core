@@ -212,7 +212,7 @@ class Vatsim_Autotools extends Vatsim {
             $response = $request->execute();
         } catch(Exception $e){
             print $e->getMessage();
-            die();
+            return;
         }
 
 

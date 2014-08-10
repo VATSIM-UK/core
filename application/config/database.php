@@ -25,7 +25,8 @@ $dbOvr = array (
                 'persistent' => TRUE,
             ),
         ),
-    );
+    ),
+);
 
 // Default DB settings
 $dbDefs = array(

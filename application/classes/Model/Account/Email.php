@@ -91,7 +91,6 @@ class Model_Account_Email extends Model_Master {
             $newEmail->save();
         } catch (ORM_Validation_Exception $e) {
             // TODO: Log.
-            print "<pre>"; var_dump($e->errors()); exit();
             return false;
         }
 

@@ -97,7 +97,7 @@ class Model_Account_Note extends Model_Master {
         
         // If the format isn't loaded, error.
         if(!$format->loaded()){
-            die("NO FORMAT:".$format);
+            //die("NO FORMAT:".$format);
             return false;
         }
         

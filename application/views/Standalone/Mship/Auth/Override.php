@@ -14,7 +14,7 @@
 
 <div class="row">
     <div class="col-md-7 col-md-offset-2">
-        <form class="form-horizontal" method="POST" action="<?= URL::site("sso/auth/override") ?>">
+        <form class="form-horizontal" method="POST" action="<?= URL::site("mship/auth/override") ?>">
             <div class="form-group">
                 <label class="col-sm-5 control-label" for="override_cid">Account CID</label>
                 <div class="col-sm-7">
