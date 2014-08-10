@@ -17,6 +17,7 @@ class Task_Cert_Memberdownload extends Minion_Task
         // Download the division database from CERT
         if(Arr::get($params, "debug")) print "Download the division db file ";
         $members = Vatsim::factory("autotools")->downloadDatabase("div");
+
         if(Arr::get($params, "debug")) print "Done.\n\n";
         
         if(Arr::get($params, "debug")) print "The file contains ".Num::format(count($members), 0)." members to process.\n\n";
@@ -40,9 +41,11 @@ class Task_Cert_Memberdownload extends Minion_Task
                 Minion_CLI::write("\t-Processed successfully!");
                 $membersProcessed[] = $cid;
             } catch(ORM_Validation_Exception $e){
-                print_r($e->errors()); exit();
+                Minion_CLI::write("\t-Error: ".print_r($e->errors(), true));
+                continue;
             } catch(Exception $e){
                 Minion_CLI::write("\t-Error, skipping!");
+                continue;
             }
         }
         
