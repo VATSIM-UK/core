@@ -6,24 +6,23 @@ defined('SYSPATH') OR die('No direct access allowed.');
 $useDB = (Kohana::$environment !== Kohana::PRODUCTION) ? "dev" : "prod";
 
 // Differing DB settings
-$dbOvr = array (
-        "dev" => array (
-            'connection' => array (
-                'hostname' => 'callisto.vatsim-uk.co.uk',
-                'database' => 'dev_core',
-                'username' => 'dev',
-                'password' => 'Monk1esW111T4k3ov3R!',
-                'persistent' => TRUE,
-            ),
+$dbOvr = array(
+    "dev" => array(
+        'connection' => array(
+            'hostname' => 'callisto.vatsim-uk.co.uk',
+            'database' => 'dev_core',
+            'username' => 'dev',
+            'password' => 'Monk1esW111T4k3ov3R!',
+            'persistent' => TRUE,
         ),
-        "prod" => array (
-            'connection' => array (
-                'hostname' => 'callisto.vatsim-uk.co.uk',
-                'database' => 'prod_core',
-                'username' => 'prod_core',
-                'password' => '4S9twpMG239N34MH',
-                'persistent' => TRUE,
-            ),
+    ),
+    "prod" => array(
+        'connection' => array(
+            'hostname' => 'callisto.vatsim-uk.co.uk',
+            'database' => 'prod_core',
+            'username' => 'prod_core',
+            'password' => '4S9twpMG239N34MH',
+            'persistent' => TRUE,
         ),
     ),
 );
