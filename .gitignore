@@ -1,6 +1,2 @@
-application/cache/*
-application/logs/*
-!application/logs/.gitignore
-log.txt
-nbproject/
-docs/
+.env*
+!.env.sample.php
