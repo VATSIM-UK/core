@@ -11,7 +11,7 @@
                     {{ number_format(array_get($statistics, "members_total", 0)) }}
                 </h3>
                 <p>
-                    Total Members
+                    <small>Total Members</small>
                 </p>
             </div>
             <div class="icon">
@@ -30,7 +30,7 @@
                     {{ number_format(array_get($statistics, "members_active", 0)) }}
                 </h3>
                 <p>
-                    Active Members
+                    <small>Active Members</small>
                 </p>
             </div>
             <div class="icon">
@@ -49,7 +49,7 @@
                     {{ number_format(array_get($statistics, "members_division", 0)) }}
                 </h3>
                 <p>
-                    Division Members
+                    <small>Division Members</small>
                 </p>
             </div>
             <div class="icon">
@@ -68,7 +68,7 @@
                     {{ number_format(array_get($statistics, "members_nondivision", 0)) }}
                 </h3>
                 <p>
-                    None-Div Members
+                    <small>None-Div Members</small>
                 </p>
             </div>
             <div class="icon">
@@ -83,14 +83,14 @@
         <div class="small-box bg-maroon">
             <div class="inner">
                 <h3>
-                    {{ number_format(array_get($statistics, "members_emails", 0)) }}
+                    {{ number_format(array_get($statistics, "members_pending_update", 0)) }}
                 </h3>
                 <p>
-                    Member Emails
+                    <small>Pending Cert Updates</small>
                 </p>
             </div>
             <div class="icon">
-                <i class="ion ion-android-mail"></i>
+                <i class="ion ion-loop"></i>
             </div>
             <a href="#" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
@@ -105,7 +105,7 @@
                     {{ number_format(array_get($statistics, "members_qualifications", 0)) }}
                 </h3>
                 <p>
-                    Qualifications
+                    <small>Qualifications</small>
                 </p>
             </div>
             <div class="icon">

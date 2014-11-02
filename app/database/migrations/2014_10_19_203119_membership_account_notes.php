@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Statistics extends Migration {
+class MembershipAccountNotes extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,9 +12,19 @@ class Statistics extends Migration {
 	 */
 	public function up()
 	{
-            Schema::create("statistics", function($table){
-                $table->bigIncrements("statistic_id")->unsigned();
-                $table->string("key", 50);
+            Schema::create("mship_note_type", function($table){
+                $table->increments("note_type_id")->unsigned()->primary();
+                $table->string("code", 10);
+                $table->string("name", 50);
+                $table->boolean("is_system");
+                $table->timestamps();
+                $table->softDeletes();
+            });
+            Schema::create("mship_account_note", function($table){
+                $table->bigIncrements("account_note_id")->unsigned()->primary();
+                $table->integer("account_id")->unsigned();
+                $table->integer("note_type_id")->unsigned();
+                $table->text("content");
                 $table->timestamps();
                 $table->softDeletes();
             });
@@ -27,7 +37,8 @@ class Statistics extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists("statistics");
+		Schema::dropIfExists("mship_note_type");
+		Schema::dropIfExists("mship_account_note");
 	}
 
 }

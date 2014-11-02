@@ -117,6 +117,17 @@ class MembersCertImport extends aCommand {
                     $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
                 }
 
+                // If their rating is ABOVE INS1 (8+) then let's get their last.
+                if ($m[1] >= 8) {
+                    $_prevRat = VatsimXML::getData($m[0], "idstatusprat");
+                    if (isset($_prevRat->PreviousRatingInt)) {
+                        $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                        if ($_m->addQualification($prevAtcRating)) {
+                            $this->outputTableRow("atc_rating", "Previous", $prevAtcRating->code);
+                        }
+                    }
+                }
+
                 $pilotRatings = QualificationData::parseVatsimPilotQualifications($m[2]);
                 foreach ($pilotRatings as $pr) {
                     if ($_m->addQualification($pr)) {

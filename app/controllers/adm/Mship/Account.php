@@ -33,7 +33,9 @@ class Account extends \Controllers\Adm\AdmController {
         $sortDir = in_array($sort_dir, ["ASC", "DESC"]) ? $sort_dir : "ASC";
 
         // ORM it all!
-        $memberSearch = $memberSearch->orderBy($sortBy, $sortDir)->offset($offset)->limit($limit);
+        $memberSearch = $memberSearch->orderBy($sortBy, $sortDir)
+                                     ->offset($offset)
+                                     ->limit($limit);
 
         return $this->viewMake("adm.mship.account.index")
                     ->with("members", $memberSearch->get())

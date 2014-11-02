@@ -19,10 +19,12 @@ class Qualification extends \Eloquent {
                 $type = "training_atc";
             } elseif($network >= 11){
                 $type = "admin";
+            } else {
+                $type = 'atc';
             }
 
             // Sort out the pilot ratings
-            $netQ = Qualification::where("type", "=", "atc")->where("vatsim", "=", $network)->first();
+            $netQ = Qualification::where("type", "=", $type)->where("vatsim", "=", $network)->first();
             return $netQ;
         }
 
