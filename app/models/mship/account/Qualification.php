@@ -21,6 +21,6 @@ class Qualification extends \Eloquent {
         }
 
         public function __toString(){
-            return isset($this->attributes['name_long']) ? $this->attributes['name_long'] : "";
+            return isset($this->qualification->name_long) ? $this->qualification->name_long : "Unknown";
         }
 }

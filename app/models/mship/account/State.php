@@ -17,8 +17,12 @@ class State extends \Eloquent {
             return $this->belongsTo("\Models\Mship\Account\Account", "account_id", "account_id");
         }
 
-        public function __toString(){
+        public function getLabelAttribute(){
             return \Enums\Account\State::getDescription($this->state);
+        }
+
+        public function __toString(){
+            return $this->getLabelAttribute();
         }
 
         public function save(array $options = array()){

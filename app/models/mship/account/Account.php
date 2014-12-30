@@ -81,8 +81,13 @@ class Account extends \Models\aTimelineEntry {
         return $this->qualifications("atc");
     }
 
-    public function getQualificationAtcAttribute(){
+    public function getQualificationAtcObjAttribute(){
         $a = $this->qualificationsAtc()->orderBy("created_at", "DESC")->first();
+        return $a;
+    }
+
+    public function getQualificationAtcAttribute(){
+        $a = $this->qualificationsAtcObj();
         return $a ? $a->qualification->name_long : "";
     }
 
