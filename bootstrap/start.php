@@ -29,6 +29,7 @@ $env = $app->detectEnvironment(function() {
         "dev.vatsim-uk.co.uk" => "development",
         "beta.vatsim-uk.co.uk" => "testing",
         "core.vatsim-uk.co.uk" => "production",
+        "vatsim-uk.co.uk" => "production",
     );
     if (isset($_SERVER['SERVER_NAME'])) {
         if (isset($hosts[$_SERVER['SERVER_NAME']])) {
