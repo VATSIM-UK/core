@@ -120,7 +120,7 @@ class Authentication extends \Controllers\BaseController {
             Session::set("auth_account", 0);
             Session::set("auth_override", 0);
         }
-        print "<pre>" . print_r($this->_current_account, true); print_r($_SESSSION); exit();
+        print "<pre>" . print_r($this->_current_account, true); print_r(Session::all()); exit();
         return Redirect::to("/mship/manage/landing");
     }
 
