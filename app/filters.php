@@ -68,6 +68,7 @@ Route::filter('auth.user.basic', function() {
 
 Route::filter('auth.user.full', function() {
     if (!Session::get("auth_true", false) OR Session::get("auth_account", 0) == 0) {
+        print "<pre>" . print_r(Session::all(), true); exit();
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
         } else {
