@@ -24,7 +24,7 @@ class InitialSystem extends Migration {
                 });
 
                 Schema::create("sys_timeline_action", function($table){
-                    $table->increments("timeline_action_id")->unsigned()->primary();
+                    $table->increments("timeline_action_id")->unsigned();
                     $table->string("type", 30);
                     $table->string("key", 35);
                     $table->smallInteger("version");
@@ -34,7 +34,7 @@ class InitialSystem extends Migration {
                 });
 
                 Schema::create("sys_setting", function($table){
-                    $table->increments("setting_id")->unsigned()->primary();
+                    $table->increments("setting_id")->unsigned();
                     $table->string("name", 50);
                     $table->text("help_text");
                     $table->string("group", 40);

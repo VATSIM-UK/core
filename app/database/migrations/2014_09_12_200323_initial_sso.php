@@ -13,7 +13,7 @@ class InitialSso extends Migration {
 	public function up()
 	{
                 Schema::create("sso_account", function($table){
-                    $table->increments("sso_account_id")->unsigned()->primary();
+                    $table->increments("sso_account_id")->unsigned();
                     $table->string("username", 15);
                     $table->string("name", 15);
                     $table->string("api_key_public", 50);
