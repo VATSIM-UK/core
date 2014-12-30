@@ -61,7 +61,7 @@ Route::filter('auth.user.basic', function() {
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
         } else {
-            return Redirect::to("/");
+            return Redirect::to("/mship/manage/landing");
         }
     }
 });
@@ -71,7 +71,7 @@ Route::filter('auth.user.full', function() {
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
         } else {
-            return Redirect::to("/");
+            return Redirect::to("/mship/manage/landing");
         }
     }
 });
