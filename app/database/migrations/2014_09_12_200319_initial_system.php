@@ -13,7 +13,7 @@ class InitialSystem extends Migration {
 	public function up()
 	{
                 Schema::create("sys_timeline_entry", function($table){
-                    $table->bigIncrements("timeline_entry_id")->unsigned()->primary();
+                    $table->bigIncrements("timeline_entry_id")->unsigned();
                     $table->integer("timeline_action_id")->unsigned();
                     $table->morphs("owner");
                     $table->morphs("extra");

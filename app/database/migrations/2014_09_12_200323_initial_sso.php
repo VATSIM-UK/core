@@ -24,7 +24,7 @@ class InitialSso extends Migration {
                 });
 
                 Schema::create("sso_email", function($table){
-                    $table->bigIncrements("sso_email_id")->unsigned()->primary();
+                    $table->bigIncrements("sso_email_id")->unsigned();
                     $table->bigInteger("account_email_id")->unsigned();
                     $table->integer("sso_account_id")->unsigned();
                     $table->timestamps();
@@ -32,7 +32,7 @@ class InitialSso extends Migration {
                 });
 
                 Schema::create("sso_token", function($table){
-                    $table->bigIncrements("sso_token_id")->unsigned()->primary();
+                    $table->bigIncrements("sso_token_id")->unsigned();
                     $table->string("token", 120);
                     $table->integer("sso_account_id");
                     $table->text("return_url");
