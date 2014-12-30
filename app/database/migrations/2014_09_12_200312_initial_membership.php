@@ -31,7 +31,7 @@ class InitialMembership extends Migration {
 
                 Schema::create("mship_account_email", function($table){
                     $table->engine = 'MyISAM';
-                    $table->bigIncrements("account_email_id")->unsigned()->primary();
+                    $table->bigIncrements("account_email_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->string("email", 80);
                     $table->boolean("is_primary")->default(0);
@@ -42,7 +42,7 @@ class InitialMembership extends Migration {
 
                 Schema::create("mship_account_qualification", function($table){
                     $table->engine = 'MyISAM';
-                    $table->bigIncrements("account_qualification_id")->unsigned()->primary();
+                    $table->bigIncrements("account_qualification_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->enum("type", array("ATC", "Pilot", "Training_ATC", "Training_Pilot", "Admin"));
                     $table->smallInteger("value");
@@ -52,7 +52,7 @@ class InitialMembership extends Migration {
 
                 Schema::create("mship_account_security", function($table){
                     $table->engine = 'MyISAM';
-                    $table->bigIncrements("account_security_id")->unsigned()->primary();
+                    $table->bigIncrements("account_security_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->smallInteger("type");
                     $table->string("value", 40);
@@ -63,7 +63,7 @@ class InitialMembership extends Migration {
 
                 Schema::create("mship_account_state", function($table){
                     $table->engine = 'MyISAM';
-                    $table->bigIncrements("account_state_id")->unsigned()->primary();
+                    $table->bigIncrements("account_state_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->tinyInteger("state");
                     $table->timestamps();
