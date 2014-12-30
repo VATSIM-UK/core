@@ -9,7 +9,7 @@ use \Models\Mship\Account\Account;
 
 class Management extends \Controllers\BaseController {
     public function get_landing(){
-        if($this->_current_account){
+        if(isset($this->_current_account->exists) && $this->_current_account){
             return Redirect::to("/mship/auth/redirect");
         }
 

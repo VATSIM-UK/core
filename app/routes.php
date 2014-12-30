@@ -39,7 +39,6 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
     });
 });
 
-/** SSO * */
 Route::group(array("namespace" => "Controllers"), function() {
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
         // Guest access
@@ -56,6 +55,7 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::controller("manage", "Management");
         });
     });
+    
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
         Route::controller("auth", "Authentication");
         Route::controller("security", "Security");
