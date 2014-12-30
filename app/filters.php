@@ -13,8 +13,9 @@
 
 App::before(function($request)
 {
-	Log::info(Request::url());
-//
+    if(App::environment("development", "testing")){
+        Log::info(Request::url());
+    }
 });
 
 

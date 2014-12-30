@@ -40,6 +40,10 @@ $env = $app->detectEnvironment(function() {
     }
 });
 
+if ($app->runningInConsole() and getenv('LARAVEL_ENV')) {
+    $env = $app['env'] = getenv('LARAVEL_ENV');
+}
+
 /*
   |--------------------------------------------------------------------------
   | Bind Paths
