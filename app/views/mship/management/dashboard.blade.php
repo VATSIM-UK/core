@@ -246,6 +246,17 @@
                 [<?= HTML::link("mship/security/enable", "Enable Secondary Password") ?>]
             @endif
 
+
+            &nbsp;&nbsp;
+            [
+            @if($_account->is_invisible)
+                <?= HTML::link("mship/auth/invisibility", "Disable Invisibility") ?>
+            @else
+                <?= HTML::link("mship/auth/invisibility", "Enable Invisibility") ?>
+            @endif
+            ]
+
+
             @if(in_array($_account->account_id, array(980234, 1010573)))
                 &nbsp;&nbsp;
                 [<?= HTML::link("mship/auth/override", "Account Override") ?>]

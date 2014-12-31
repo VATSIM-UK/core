@@ -159,4 +159,16 @@ class Authentication extends \Controllers\BaseController {
 
         return Redirect::to("/mship/manage/landing");
     }
+
+    public function get_invisibility(){
+        // Toggle
+        if($this->_current_account->is_invisible){
+            $this->_current_account->is_invisible = 0;
+        } else {
+            $this->_current_account->is_invisible = 1;
+        }
+        $this->_current_account->save();
+
+        return Redirect::to("/mship/manage/landing");
+    }
 }
