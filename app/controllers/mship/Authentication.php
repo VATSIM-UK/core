@@ -69,6 +69,7 @@ class Authentication extends \Controllers\BaseController {
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
+            print "<pre>" . print_r($user, true); exit();
                     Session::forget('vatsimauth');
 
                     // At this point WE HAVE data in the form of $user;
@@ -94,6 +95,8 @@ class Authentication extends \Controllers\BaseController {
                         $account->is_network_banned = 0;
                     }
                     $account->session_id = Session::getId();
+                    $account->experience = $user->experience;
+                    $account->joined_at = $user->reg_date;
                     $account->save();
                     Session::set("auth_basic", true); // Basic auth - COMPLETE!
                     Session::set("auth_account", $user->id);

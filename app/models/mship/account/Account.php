@@ -12,8 +12,7 @@ class Account extends \Models\aTimelineEntry {
 
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden = ['salt'];
+    protected $dates = ['joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => 0];
 
