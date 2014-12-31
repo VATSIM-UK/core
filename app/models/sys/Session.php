@@ -2,17 +2,12 @@
 
 namespace Models\Sys;
 
-use Illuminate\Auth\UserTrait;
-use Illuminate\Auth\UserInterface;
-use Illuminate\Auth\Reminders\RemindableTrait;
-use Illuminate\Auth\Reminders\RemindableInterface;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
-
-class Session extends \Eloquent implements UserInterface, RemindableInterface {
-
-	use UserTrait, RemindableTrait, SoftDeletingTrait;
-        protected $table = "sys_session";
-        protected $primaryKey = "session_id";
-        protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+class Session extends \Models\aModel {
+        protected $table = "sys_sessions";
+        protected $primaryKey = "id";
         protected $hidden = ['session_id'];
+
+        public function account(){
+            return $this->belongsTo("\Models\Mship\Account\Account", "session_id", "id");
+        }
 }

@@ -93,6 +93,7 @@ class Authentication extends \Controllers\BaseController {
                     } else {
                         $account->is_network_banned = 0;
                     }
+                    $account->session_id = Session::getId();
                     $account->save();
                     Session::set("auth_basic", true); // Basic auth - COMPLETE!
                     Session::set("auth_account", $user->id);
