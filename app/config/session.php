@@ -16,7 +16,7 @@ return array(
 	|
 	*/
 
-	'driver' => 'file',
+	'driver' => 'database',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return array(
 	|
 	*/
 
-	'lifetime' => 360,
+	'lifetime' => 86400*2, // 2 days.
 
 	'expire_on_close' => false,
 
@@ -57,7 +57,7 @@ return array(
 	|
 	*/
 
-	'connection' => null,
+	'connection' => "mysql",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return array(
 	|
 	*/
 
-	'table' => 'sessions',
+	'table' => 'sys_sessions',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return array(
 	|
 	*/
 
-	'cookie' => 'laravel_session',
+	'cookie' => 'vatuk_core_session',
 
 	/*
 	|--------------------------------------------------------------------------
