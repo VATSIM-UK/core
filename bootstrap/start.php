@@ -24,7 +24,8 @@ $app = new Illuminate\Foundation\Application;
   |
  */
 
-$env = $app->detectEnvironment(function() {
+$env = $app['env'] = $app->detectEnvironment(function() {
+    global $app;
     $hosts = array(
         "dev.vatsim-uk.co.uk" => "development",
         "beta.vatsim-uk.co.uk" => "testing",
@@ -36,12 +37,19 @@ $env = $app->detectEnvironment(function() {
             return $hosts[$_SERVER['SERVER_NAME']];
         }
     } else {
-        return "development";
+        return "production";
     }
 });
 
-if ($app->runningInConsole() and getenv('LARAVEL_ENV')) {
-    $env = $app['env'] = getenv('LARAVEL_ENV');
+if ($app->runningInConsole()) {
+    $base_path = __DIR__;
+    if (preg_match("/\/dev\//i", $base_path) OR preg_match("/^\/home\//i", $base_path)) {
+        $env = $app['env'] = "development";
+    } else if (preg_match("/\/beta\//i", $base_path)) {
+        $env = $app['env'] = "testing";
+    } else {
+        $env = $app['env'] = "production";
+    }
 }
 
 /*
