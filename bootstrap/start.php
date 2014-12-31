@@ -28,7 +28,7 @@ $env = $app['env'] = $app->detectEnvironment(function() {
     global $app;
     $hosts = array(
         "dev.vatsim-uk.co.uk" => "development",
-        "beta.vatsim-uk.co.uk" => "testing",
+        "beta.vatsim-uk.co.uk" => "staging",
         "core.vatsim-uk.co.uk" => "production",
         "vatsim-uk.co.uk" => "production",
     );
@@ -46,7 +46,7 @@ if ($app->runningInConsole()) {
     if (preg_match("/\/dev\//i", $base_path) OR preg_match("/^\/home\//i", $base_path)) {
         $env = $app['env'] = "development";
     } else if (preg_match("/\/beta\//i", $base_path)) {
-        $env = $app['env'] = "testing";
+        $env = $app['env'] = "staging";
     } else {
         $env = $app['env'] = "production";
     }
