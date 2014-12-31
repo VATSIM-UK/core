@@ -115,7 +115,7 @@ class Security extends \Controllers\BaseController {
 
         // Check passwords match.
         if (Input::get("new_password") != Input::get("new_password2")) {
-            return Redirect::to("/mship/security/replace")->with("error", "You must enter your new password twice.  Please try again.");
+            return Redirect::to("/mship/security/replace")->with("error", "The two passwords you enter do not match - you must enter your old password twice.");
         }
         $newPassword = Input::get("new_password");
 
