@@ -11,6 +11,12 @@ return array(
     "db.mysql.charset" => "utf8",
     "db.mysql.collation" => "utf8_unicode_ci",
 
+    /** MailGun Config **/
+    "mailgun.user" => "",
+    "mailgun.pass" => "",
+    "mailgun.from.address" => "",
+    "mailgun.from.name" => "",
+
     /** AutoTools Account **/
     "vatsim.cert.at.user" => "",
     "vatsim.cert.at.pass" => "",
