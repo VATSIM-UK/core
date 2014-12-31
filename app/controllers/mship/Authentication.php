@@ -69,7 +69,6 @@ class Authentication extends \Controllers\BaseController {
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
-            print "<pre>" . print_r($user, true); exit();
                     Session::forget('vatsimauth');
 
                     // At this point WE HAVE data in the form of $user;
