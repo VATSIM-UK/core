@@ -23,5 +23,5 @@ return array(
       | your application so that it is used when running Artisan tasks.
       |
      */
-    'url' => 'http://core.vatsim-uk.co.uk/core/'
+    'url' => 'http://dev.vatsim-uk.co.uk/ALawrence/corel/'
 );

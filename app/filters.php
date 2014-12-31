@@ -57,6 +57,7 @@ Route::filter('auth.basic', function()
 });
 
 Route::filter('auth.user.basic', function() {
+    Log::info("Auth.User.Basic: " . Request::url());
     if (!Session::get("auth_basic", false)) {
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
@@ -68,14 +69,14 @@ Route::filter('auth.user.basic', function() {
 
 Route::filter('auth.user.full', function() {
     if (!Session::get("auth_true", false) OR Session::get("auth_account", 0) == 0) {
-        print "<pre>1" . print_r(Session::all(), true); exit();
+        Log::info("Auth.User.Full1: " . Request::url());
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
         } else {
             return Redirect::to("/mship/manage/landing");
         }
     } else {
-        print "<pre>2" . print_r(Session::all(), true); exit();
+        Log::info("Auth.User.Full2: " . Request::url());
     }
 });
 

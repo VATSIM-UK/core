@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'model' => 'User',
+	'model' => '\Models\Mship\Account\Account',
 
 	/*
 	|--------------------------------------------------------------------------
