@@ -119,6 +119,7 @@ class Security extends \Controllers\BaseController {
 
         $return["account_state"] = $account->current_state->label;
         $return["account_status"] = $account->status;
+        $return["is_invisible"] = boolval($account->is_invisible);
 
         // We want to return the token to the user for later use in their requests.
         return Response::json(json_encode(array("status" => "success", "data" => $return)));
