@@ -108,7 +108,7 @@ return array(
         'Illuminate\Workbench\WorkbenchServiceProvider',
         'Vatsim\OAuth\OAuthServiceProvider',
         'Vatsim\Xml\XmlServiceProvider',
-        'Cartalyst\Sentry\SentryServiceProvider',
+        'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
@@ -172,6 +172,5 @@ return array(
         'View' => 'Illuminate\Support\Facades\View',
         'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
         'VatsimXML' => 'Vatsim\Xml\Facades\XML',
-        'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
     ),
 );

@@ -8,7 +8,8 @@
         "vatsim/sso": "1.*",
         "nesbot/Carbon": "*",
         "vatsim/xml": "dev-master",
-        "cartalyst/sentry": "2.1.*"
+        "laravelbook/ardent": "2.*",
+        "fitztrev/laravel-html-minify": "1.*"
     },
     "autoload": {
         "classmap": [
