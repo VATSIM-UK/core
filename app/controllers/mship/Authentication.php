@@ -115,6 +115,14 @@ class Authentication extends \Controllers\BaseController {
 
     public function post_logout($force=false) {
         if (Input::get("processlogout", 0) == 1 OR $force) {
+
+            // If we're overriding, clicking logout should only cancel the override.
+            if(Session::get("auth_override", 0) > 0){
+                Session::set("auth_override", 0);
+                return Redirect::to("/mship/manage/landing");
+            }
+
+            // Actual logout.
             Session::set("auth_basic", false);
             Session::set("auth_extra", false);
             Session::set("auth_true", false);
@@ -137,13 +145,18 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // Check secondary password!
-        if(!$this->_current_account->current_security->verifyPassword(Input::get("extra_password"))){
+        if(!$this->_current_account->current_security->verifyPassword(Input::get("password"))){
             return Redirect::to("/mship/auth/override")->withError("No");
         }
 
         // All correct? Can we load this user?
         $_ovr = Account::find(Input::get("override_cid"));
 
-        dd($_ovr);
+        // Let's do something... like set the override!
+        if(is_object($_ovr) && isset($_ovr->exists) && $_ovr->exists){
+            Session::set("auth_override", $_ovr->account_id);
+        }
+
+        return Redirect::to("/mship/manage/landing");
     }
 }
