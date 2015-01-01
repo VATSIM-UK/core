@@ -109,6 +109,7 @@ return array(
         'Vatsim\OAuth\OAuthServiceProvider',
         'Vatsim\Xml\XmlServiceProvider',
         'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
+        'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
@@ -172,5 +173,6 @@ return array(
         'View' => 'Illuminate\Support\Facades\View',
         'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
         'VatsimXML' => 'Vatsim\Xml\Facades\XML',
+        'DbView'          => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
     ),
 );

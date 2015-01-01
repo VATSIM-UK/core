@@ -10,13 +10,6 @@ use \Input;
 
 abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry {
 
-    public static function boot() {
-        parent::boot();
-        self::created(array(get_called_class(), "eventCreated"));
-        self::updated(array(get_called_class(), "eventUpdated"));
-        self::deleted(array(get_called_class(), "eventDeleted"));
-    }
-
     public static function eventLog($logKey, $model, $extra=null, $data=null){
         if($extra == null){
             $extra = Account::find(Session::get("auth_account", 0));
@@ -34,6 +27,8 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     }
 
     public static function eventCreated($model, $extra=null, $data=null) {
+        parent::eventCreated($model);
+
         $logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_CREATED";
@@ -42,6 +37,8 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     }
 
     public static function eventUpdated($model, $extra=null, $data=null) {
+        parent::eventCreated($model);
+        
         $logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_UPDATED";
@@ -50,6 +47,8 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     }
 
     public static function eventDeleted($model, $extra=null, $data=null) {
+        parent::eventCreated($model);
+
         $logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_DELETED";

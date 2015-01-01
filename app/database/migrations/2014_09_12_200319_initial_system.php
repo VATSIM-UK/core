@@ -25,10 +25,12 @@ class InitialSystem extends Migration {
 
                 Schema::create("sys_timeline_action", function($table){
                     $table->increments("timeline_action_id")->unsigned();
-                    $table->string("type", 30);
+                    $table->string("area", 35);
                     $table->string("key", 35);
+                    $table->string("action", 35);
                     $table->smallInteger("version");
                     $table->text("entry");
+                    $table->boolean("enabled")->default(0);
                     $table->timestamps();
                     $table->softDeletes();
                 });

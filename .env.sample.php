@@ -16,6 +16,8 @@ return array(
     "mailgun.pass" => "",
     "mailgun.from.address" => "",
     "mailgun.from.name" => "",
+    "mailgun.domain" => "",
+    "mailgun.secret" => "",
 
     /** AutoTools Account **/
     "vatsim.cert.at.user" => "",
