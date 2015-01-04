@@ -51,12 +51,6 @@ class Email extends \Eloquent {
     }
 
     public function setIsPrimaryAttribute($value){
-        // First off, if this isn't a real email. Sod off.
-        if(!$this OR !$this->account){
-            \Log::info(__FILE__.":".__LINE__);
-            return false;
-        }
-
         // Are we just setting to false?
         if($value == 0 OR !$value){
             $this->attributes['is_primary'] = 0;
