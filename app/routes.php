@@ -11,8 +11,6 @@
   |
  */
 
-//\Log::info("URL Call: " . array_get($_SERVER, "REMOTE_ADDR", "127.0.0.1") . "/" . Request::method() . "/" . Request::path());
-
 Route::model("mshipAccount", "\Models\Mship\Account\Account", function() {
     Redirect::to("/adm/mship/account");
 });

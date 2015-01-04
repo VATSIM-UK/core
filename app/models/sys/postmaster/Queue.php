@@ -78,7 +78,6 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {
-        \Log::info("Queue::queue::" . __LINE__);
         // If the PostmasterTemplate isn't a class, we've been given the key.  Use it.
         if (!is_object($postmasterTemplate)) {
             $postmasterTemplate = \Models\Sys\Postmaster\Template::findFromKey($postmasterTemplate);
