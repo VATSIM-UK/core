@@ -12,23 +12,16 @@ abstract class aModel extends \Eloquent {
         self::deleted(array(get_called_class(), "eventDeleted"));
     }
 
-    private static function queueEmail($area_key, $action){
-        $area = substr($area_key, 0, strpos($area_key, "_"));
-        $key = substr($area_key, (strpos($area_key, "_") == 0 ? 0 : strpas($area_key, "_")));
-
-        Queue::push("PostMasterDispatch", array("area" => $area, "key" => $key, "action" => $action));
-    }
-
     public static function eventCreated($model) {
-        $this->queueEmail($model->getTable(), "CREATED");
+        return;
     }
 
     public static function eventUpdated($model) {
-        $this->queueEmail($model->getTable(), "UPDATED");
+        return;
     }
 
     public static function eventDeleted($model) {
-        $this->queueEmail($model->getTable(), "DELETED");
+        return;
     }
 
     public function toArray() {

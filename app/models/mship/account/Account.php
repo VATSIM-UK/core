@@ -3,7 +3,6 @@
 namespace Models\Mship\Account;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use \Enums\Account\Status;
 use \Carbon\Carbon;
 
 class Account extends \Models\aTimelineEntry {
@@ -12,12 +11,53 @@ class Account extends \Models\aTimelineEntry {
 
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
+    public $incrementing = false;
     protected $dates = ['joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
-    protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => 0];
+    protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE];
+
+    const STATUS_ACTIVE = 0; //b"00000";
+    const STATUS_SYSTEM_BANNED = 1; //b"0001";
+    const STATUS_NETWORK_SUSPENDED = 2; //b"0010";
+    const STATUS_INACTIVE = 4; //b"0100";
+    const STATUS_LOCKED = 8; //b"1000";
+    const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
+
+    public static function getStatusDescription($value) {
+        switch ($value) {
+            case self::STATUS_ACTIVE:
+                return "Active";
+            case self::STATUS_SYSTEM_BANNED:
+                return "Banned (LOCAL)";
+            case self::STATUS_NETWORK_SUSPENDED:
+                return "Suspended (NETWORK)";
+            case self::STATUS_INACTIVE:
+                return "Inactive";
+            case self::STATUS_LOCKED:
+            case self::STATUS_SYSTEM:
+                return "Locked/System";
+            default:
+                return "Unknown Status";
+        }
+    }
+
+    public static function eventCreated($model, $extra=null, $data=null){
+        parent::eventCreated($model, $extra, $data);
+
+        // Generate an email to the user to advise them of their new account at VATUK.
+        \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
+    }
 
     public function emails() {
         return $this->hasMany("\Models\Mship\Account\Email", "account_id", "account_id");
+    }
+
+    public function messagesReceived() {
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "recpient_id");
+    }
+
+    public function messagesSent() {
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "sender_id");
     }
 
     public function notes() {
@@ -80,12 +120,12 @@ class Account extends \Models\aTimelineEntry {
         return $this->qualifications("atc");
     }
 
-    public function getQualificationAtcObjAttribute(){
+    public function getQualificationAtcObjAttribute() {
         $a = $this->qualificationsAtc()->orderBy("created_at", "DESC")->first();
         return $a;
     }
 
-    public function getQualificationAtcAttribute(){
+    public function getQualificationAtcAttribute() {
         $a = $this->qualificationsAtcObj();
         return $a ? $a->qualification->name_long : "";
     }
@@ -98,10 +138,10 @@ class Account extends \Models\aTimelineEntry {
         return $this->qualifications("pilot");
     }
 
-    public function getQualificationPilotAttribute(){
+    public function getQualificationPilotAttribute() {
         $output = "None";
-        foreach($this->qualificationsPilot()->get() as $p){
-            $output.= $p->code.", ";
+        foreach ($this->qualificationsPilot()->get() as $p) {
+            $output.= $p->code . ", ";
         }
         return rtrim($output, ", ");
     }
@@ -155,7 +195,7 @@ class Account extends \Models\aTimelineEntry {
         $security->save();
     }
 
-    public function addEmail($newEmail, $verified = 0, $primary = 0) {
+    public function addEmail($newEmail, $verified = 0, $primary = 0, $returnID=false) {
         // Check this email doesn't exist for this user already.
         $check = $this->emails()->where("email", "LIKE", $newEmail);
         if ($check->count() < 1) {
@@ -175,11 +215,11 @@ class Account extends \Models\aTimelineEntry {
             $email->is_primary = 1;
             $email->save();
         }
-        return $isNewEmail;
+        return ($returnID ? $email->account_email_id : $isNewEmail);
     }
 
     public function addQualification($qualificationType) {
-        if(!$qualificationType){
+        if (!$qualificationType) {
             return false;
         }
 
@@ -210,27 +250,27 @@ class Account extends \Models\aTimelineEntry {
 
     public function getIsSystemBannedAttribute() {
         $status = $this->attributes['status'];
-        return (boolean) (Status::SYSTEM_BANNED & $status);
+        return (boolean) (self::STATUS_SYSTEM_BANNED & $status);
     }
 
     public function setIsSystemBannedAttribute($value) {
         if ($value && !$this->is_system_banned) {
-            $this->setStatusFlag(Status::SYSTEM_BANNED);
-        } elseif($this->is_system_banned) {
-            $this->unSetStatusFlag(Status::SYSTEM_BANNED);
+            $this->setStatusFlag(self::STATUS_SYSTEM_BANNED);
+        } elseif ($this->is_system_banned) {
+            $this->unSetStatusFlag(self::STATUS_SYSTEM_BANNED);
         }
     }
 
     public function getIsNetworkBannedAttribute() {
         $status = $this->attributes['status'];
-        return (boolean) ((Status::NETWORK_SUSPENDED & $status));
+        return (boolean) ((self::STATUS_NETWORK_SUSPENDED & $status));
     }
 
     public function setIsNetworkBannedAttribute($value) {
         if ($value && !$this->is_network_banned) {
-            $this->setStatusFlag(Status::NETWORK_SUSPENDED);
-        } elseif($this->is_network_banned) {
-            $this->unSetStatusFlag(Status::NETWORK_SUSPENDED);
+            $this->setStatusFlag(self::STATUS_NETWORK_SUSPENDED);
+        } elseif ($this->is_network_banned) {
+            $this->unSetStatusFlag(self::STATUS_NETWORK_SUSPENDED);
         }
     }
 
@@ -240,64 +280,65 @@ class Account extends \Models\aTimelineEntry {
 
     public function getIsInactive() {
         $status = $this->attributes['status'];
-        return (boolean) (Status::INACTIVE & $status);
+        return (boolean) (self::STATUS_INACTIVE & $status);
     }
 
     public function setIsInactiveAttribute($value) {
         if ($value && !$this->is_inactive) {
-            $this->setStatusFlag(Status::INACTIVE);
-        } elseif($this->is_inactive) {
-            $this->unSetStatusFlag(Status::INACTIVE);
+            $this->setStatusFlag(self::STATUS_INACTIVE);
+        } elseif ($this->is_inactive) {
+            $this->unSetStatusFlag(self::STATUS_INACTIVE);
         }
     }
 
     public function getIsSystem() {
         $status = $this->attributes['status'];
-        return (boolean) (Status::SYSTEM & $status);
+        return (boolean) (self::STATUS_SYSTEM & $status);
     }
 
     public function setIsSystemAttribute($value) {
         if ($value && !$this->is_system) {
-            $this->setStatusFlag(Status::SYSTEM);
-        } elseif($this->is_system) {
-            $this->unSetStatusFlag(Status::SYSTEM);
+            $this->setStatusFlag(self::STATUS_SYSTEM);
+        } elseif ($this->is_system) {
+            $this->unSetStatusFlag(self::STATUS_SYSTEM);
         }
     }
 
     public function getStatusAttribute() {
+        // It's done in a convoluted way, because it's in order of how they should be displayed!
         if ($this->is_system_banned) {
-            return Status::getDescription(Status::SYSTEM_BANNED);
+            return Account::getStatusDescription(self::STATUS_SYSTEM_BANNED);
         } elseif ($this->is_network_banned) {
-            return Status::getDescription(Status::NETWORK_SUSPENDED);
+            return Account::getStatusDescription(self::STATUS_NETWORK_SUSPENDED);
         } elseif ($this->is_inactive) {
-            return Status::getDescription(Status::INACTIVE);
+            return Account::getStatusDescription(self::STATUS_INACTIVE);
         } elseif ($this->is_system) {
-            return Status::getDescription(Status::SYSTEM);
+            return Account::getStatusDescription(self::STATUS_SYSTEM);
         } else {
-            return Status::getDescription(Status::ACTIVE);
+            return Account::getStatusDescription(self::STATUS_ACTIVE);
         }
     }
 
     public function getStatusArrayAttribute() {
         $stati = array();
         if ($this->is_system_banned) {
-            $stati[] = Status::getDescription(Status::SYSTEM_BANNED);
+            $stati[] = getStatusDescription(self::STATUS_SYSTEM_BANNED);
         }
 
         if ($this->is_network_banned) {
-            $stati[] = Status::getDescription(Status::NETWORK_SUSPENDED);
+            $stati[] = getStatusDescription(self::STATUS_NETWORK_SUSPENDED);
         }
 
         if ($this->is_inactive) {
-            $stati[] = Status::getDescription(Status::INACTIVE);
+            $stati[] = getStatusDescription(self::STATUS_INACTIVE);
         }
 
         if ($this->is_system) {
-            $stati[] = Status::getDescription(Status::SYSTEM);
+            $stati[] = getStatusDescription(self::STATUS_SYSTEM);
         }
 
         if (count($stati) < 1) {
-            $stati[] = Status::getDescription(Status::ACTIVE);
+            $stati[] = getStatusDescription(self::STATUS_ACTIVE);
         }
         return $stati;
     }
@@ -331,7 +372,7 @@ class Account extends \Models\aTimelineEntry {
         return new \Models\Mship\Account\Email();
     }
 
-    public function getSecondaryEmailAttribute(){
+    public function getSecondaryEmailAttribute() {
         return $this->emails()->where("is_primary", "=", "0")->get();
     }
 
@@ -347,10 +388,10 @@ class Account extends \Models\aTimelineEntry {
         $value = strtolower($value);
 
         // Let's fix McSomebody and MacSomebody
-        if(substr($value, 0, 2) == "mc"){
-            $value = "Mc".ucfirst(substr($value, 3));
-        } elseif(substr($value, 0, 3) == "mac"){
-            $value = "Mac".ucfirst(substr($value, 4));
+        if (substr($value, 0, 2) == "mc") {
+            $value = "Mc" . ucfirst(substr($value, 3));
+        } elseif (substr($value, 0, 3) == "mac") {
+            $value = "Mac" . ucfirst(substr($value, 4));
         } else {
             $value = ucfirst($value);
         }
@@ -381,7 +422,7 @@ class Account extends \Models\aTimelineEntry {
         $array['atc_rating'] = $this->qualificationsAtc()->orderBy("created_at", "DESC")->first();
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->qualification->name_long : "");
         $array['pilot_rating'] = array();
-        foreach($this->qualifications_pilot as $rp){
+        foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->qualification->code;
         }
         $array['pilot_rating'] = implode(", ", $array['pilot_rating']);
@@ -401,16 +442,17 @@ class Account extends \Models\aTimelineEntry {
         }
     }
 
-    public function determineState($region, $division){
-        if($region == "EUR" AND $division == "GBR"){
+    public function determineState($region, $division) {
+        if ($region == "EUR" AND $division == "GBR") {
             $state = \Enums\Account\State::DIVISION;
-        } elseif($region == "EUR"){
+        } elseif ($region == "EUR") {
             $state = \Enums\Account\State::REGION;
         } else {
             $state = \Enums\Account\State::INTERNATIONAL;
         }
-        if($this->account_id < 1){
-            print_r($this); exit();
+        if ($this->account_id < 1) {
+            print_r($this);
+            exit();
         }
         $this->states()->save(new State(array("state" => $state)));
     }

@@ -56,31 +56,38 @@ class RebuildModelDependencies extends aCommand {
             $realModel = basename($realModel, ".php");
             $realModel = strtoupper($realModel);
 
-            $area = substr($realModel, 0, strpos($realModel, "_"));
-            $key = substr($realModel, (strpos($realModel, "_") == 0 ? 0 : strpos($realModel, "_")+1));
+            $section = substr($realModel, 0, strpos($realModel, "_"));
+            $area = substr($realModel, (strpos($realModel, "_") == 0 ? 0 : strpos($realModel, "_")+1));
 
-            /** Insert all Postmaster Templates **/
-            // Now insert them into the database!
-            $actions = array("CREATED", "UPDATED", "DELETED");
+            /** Insert all postmaster templates. **/
+            /*$actions = array("CREATED", "UPDATED", "DELETED");
             foreach($actions as $a){
                 $exists = PostmasterTemplates::where("area", "LIKE", $area)
                                              ->where("key", "LIKE", $key)
                                              ->where("action", "LIKE", $a)
                                              ->count();
                 if($exists < 1){
-                    PostmasterTemplates::insert(array("area" => $area, "key" => $key, "action" => $a));
+                    $pmt = new PostmasterTemplates();
+                    $pmt->area = $area;
+                    $pmt->key = $key;
+                    $pmt->action = $a;
+                    $pmt->save();
                 }
-            }
+            }*/
 
             /** Insert all timeline actions. **/
             $actions = array("CREATED", "UPDATED", "DELETED");
             foreach($actions as $a){
-                $exists = TimelineActions::where("area", "LIKE", $area)
-                                         ->where("key", "LIKE", $key)
+                $exists = TimelineActions::where("section", "LIKE", $section)
+                                         ->where("area", "LIKE", $area)
                                          ->where("action", "LIKE", $a)
                                          ->count();
                 if($exists < 1){
-                    TimelineActions::insert(array("area" => $area, "key" => $key, "action" => $a));
+                    $tla = new TimelineActions();
+                    $tla->section = $section;
+                    $tla->area = $area;
+                    $tla->action = $a;
+                    $tla->save();
                 }
             }
         }

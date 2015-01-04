@@ -72,7 +72,11 @@ class Authentication extends \Controllers\BaseController {
                     Session::forget('vatsimauth');
 
                     // At this point WE HAVE data in the form of $user;
-                    $account = Account::firstOrNew(array("account_id" => $user->id));
+                    $account = Account::find($user->id);
+                    if(is_null($account)){
+                        $account = new Account();
+                        $account->account_id = $user->id;
+                    }
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
                     $account->addEmail($user->email, 1, 1);

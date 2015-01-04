@@ -73,7 +73,7 @@ class Entry extends \Models\aModel {
 
         public static function log($key, $owner, $extra=null, $data=array()){
             // Get the action
-            $action = Action::where(\DB::raw("CONCAT(`type`, '_', `key`)"), "=", $key)->first();
+            $action = Action::where(\DB::raw("CONCAT(`section`, '_', `area`, '_', `action`)"), "=", $key)->first();
             if(!$action){
                 return false;
             }

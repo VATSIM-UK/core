@@ -38,7 +38,7 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
 
     public static function eventUpdated($model, $extra=null, $data=null) {
         parent::eventCreated($model);
-        
+
         $logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_UPDATED";
