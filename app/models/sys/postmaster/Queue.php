@@ -159,21 +159,16 @@ class Queue extends \Models\aTimelineEntry {
         }
 
 
-        $this->subject = \DbView::make($this->template)
-                                ->field("subject")
-                                ->with("queue", $this)
-                                ->with("recipient", $this->recipient)
-                                ->with("sender", $this->sender)
-                                ->with("data", $this->data)
-                                ->render();
+        $template = Template::find($this->postmaster_template_id);
 
-        $this->body = \DbView::make($this->template)
-                             ->field("body")
-                             ->with("queue", $this)
-                             ->with("recipient", $this->recipient)
-                             ->with("sender", $this->sender)
-                             ->with("data", $this->data)
-                             ->render();
+        $templateData = array();
+        $templateData["queue"] = $this;
+        $templateData["recipient"] = $this->recipient;
+        $templateData["sender"] = $this->sender;
+        $templateData["data"] = $this->data;
+
+        $this->subject = \StringView::make(["template" => $template->subject, "cache_key" => "S".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
+        $this->body = \StringView::make(["template" => $template->body, "cache_key" => "B".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
 
         $this->status = self::STATUS_PARSED;
         return $this;
@@ -209,7 +204,7 @@ class Queue extends \Models\aTimelineEntry {
         $dataSet["template"] = $this->template;
         $dataSet["sender"] = $this->sender;
         $dataSet["recipient"] = $this->recipient;
-        $dataSet["emailContent"] = $this->body;
+        $dataSet["emailContent"] = nl2br($this->body);
         \Mail::send("emails.default", $dataSet, function($message){
             $message->sender($this->sender_email->email);
             $message->from($this->sender_email->email, $this->sender->name);
@@ -228,7 +223,7 @@ class Queue extends \Models\aTimelineEntry {
                 $message->replyTo(Account::find(VATUK_ACCOUNT_SYSTEM)->primary_email->email);
             }
 
-            $message->subject = $this->subject;
+            $message->subject($this->subject);
 
             $this->status = Queue::STATUS_SENT;
             $this->save();

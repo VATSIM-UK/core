@@ -3,6 +3,13 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
+    "repositories": [
+        {
+            "name": "wpb/string-blade-compiler",
+            "url": "https://github.com/TerrePorter/StringBladeCompiler.git",
+            "type": "git"
+        }
+    ],
     "require": {
         "laravel/framework": "4.2.*",
         "vatsim/sso": "1.*",
@@ -11,6 +18,7 @@
         "laravelbook/ardent": "2.*",
         "fitztrev/laravel-html-minify": "1.*",
         "flynsarmy/db-blade-compiler": "1.*",
+        "wpb/string-blade-compiler": "1.*@dev",
         "guzzlehttp/guzzle": "~4.0"
     },
     "autoload": {

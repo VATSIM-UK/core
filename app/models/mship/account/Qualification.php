@@ -23,4 +23,34 @@ class Qualification extends \Eloquent {
         public function __toString(){
             return isset($this->qualification->name_long) ? $this->qualification->name_long : "Unknown";
         }
+
+        public function scopeAtc($query){
+            return $query->whereHas("qualification", function($q){
+                $q->where("type", "=", "atc");
+            });
+        }
+
+        public function scopeAtcTraining($query){
+            return $query->whereHas("qualification", function($q){
+                $q->where("type", "=", "training_atc");
+            });
+        }
+
+        public function scopePilot($query){
+            return $query->whereHas("qualification", function($q){
+                $q->where("type", "=", "pilot");
+            });
+        }
+
+        public function scopePilotTraining($query){
+            return $query->whereHas("qualification", function($q){
+                $q->where("type", "=", "training_pilot");
+            });
+        }
+
+        public function scopeAdmin($query){
+            return $query->whereHas("qualification", function($q){
+                $q->where("type", "=", "admin");
+            });
+        }
 }

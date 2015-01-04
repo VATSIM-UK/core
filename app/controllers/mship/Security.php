@@ -163,7 +163,7 @@ class Security extends \Controllers\BaseController {
         $token = SystemToken::generate("mship_account_security_reset", false, $this->_current_account);
 
         // Let's send them an email with this information!
-
+        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_FORGOTTEN", $this->_current_account, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
 
         Session::flush();
         return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,

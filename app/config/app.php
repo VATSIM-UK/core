@@ -110,6 +110,7 @@ return array(
         'Vatsim\Xml\XmlServiceProvider',
         'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
+        'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

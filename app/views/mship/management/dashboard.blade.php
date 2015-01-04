@@ -110,22 +110,16 @@
             @endif
         </td>
     </tr>
-    @if(count($_account->qualificationsAdmin()->withTrashed()->get()) > 0)
+    @if(count($_account->qualification_admin) > 0)
         <tr>
             <th class='hidden-xs hidden-sm'>Administrative Ratings<br /><small>Past and Present</small></th>
             <td>
                 <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Admin Ratings</strong></span>
-                @foreach($_account->qualificationsAdmin()->withTrashed()->get() as $qual)
+                @foreach($_account->qualification_admin as $qual)
                     {{ $qual }}
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
                         <em>granted {{ $qual->created_at }}</em>
                     </a>
-                    @if($qual->deleted_at != NULL)
-                        -
-                        <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->deleted_at }}">
-                            <em>revoked {{ $qual->deleted_at }}</em>
-                        </a>
-                    @endif
                     <br />
                 @endforeach
             </td>
@@ -135,17 +129,11 @@
         <th class='hidden-xs hidden-sm'>ATC Qualifications<br /><small>Showing all achieved</small></th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>ATC Ratings</strong></span>
-            @foreach($_account->qualificationsAtc()->withTrashed()->get() as $qual)
+            @foreach($_account->qualifications_atc as $qual)
                     {{ $qual }}
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
                         <em>granted {{ $qual->created_at }}</em>
                     </a>
-                    @if($qual->deleted_at != NULL)
-                        -
-                        <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->deleted_at }}">
-                            <em>revoked {{ $qual->deleted_at }}</em>
-                        </a>
-                    @endif
                     <br />
                 @endforeach
             @if(count($_account->qualifications_atc) < 1)
@@ -153,22 +141,16 @@
             @endif
         </td>
     </tr>
-    @if(count($_account->qualificationsAtcTraining()->withTrashed()->get()) > 0)
+    @if(count($_account->qualifications_atc_training) > 0)
         <tr>
             <th class='hidden-xs hidden-sm'>ATC Training Ratings<br /><small>Past and Present</small></th>
             <td>
                 <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>ATC Training Ratings</strong></span>
-                @foreach($_account->qualificationsAtcTraining()->withTrashed()->get() as $qual)
+                @foreach($_account->qualifications_atc_training as $qual)
                     {{ $qual }}
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
                         <em>granted {{ $qual->created_at }}</em>
                     </a>
-                    @if($qual->deleted_at != NULL)
-                        -
-                        <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->deleted_at }}">
-                            <em>revoked {{ $qual->deleted_at }}</em>
-                        </a>
-                    @endif
                     <br />
                 @endforeach
             </td>
@@ -178,17 +160,11 @@
         <th class='hidden-xs hidden-sm'>Pilot Qualifications<br /><small>Showing all achieved</small></th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Pilot Ratings</strong></span>
-            @foreach($_account->qualificationsPilot()->withTrashed()->get() as $qual)
+            @foreach($_account->qualifications_pilot as $qual)
                     {{ $qual }}
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
                         <em>granted {{ $qual->created_at }}</em>
                     </a>
-                    @if($qual->deleted_at != NULL)
-                        -
-                        <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->deleted_at }}">
-                            <em>revoked {{ $qual->deleted_at }}</em>
-                        </a>
-                    @endif
                     <br />
                 @endforeach
             @if(count($_account->qualifications_pilot) < 1)
@@ -196,22 +172,16 @@
             @endif
         </td>
     </tr>
-    @if(count($_account->qualificationsPilotTraining()->withTrashed()->get()) > 0)
+    @if(count($_account->qualifications_pilot_training) > 0)
         <tr>
             <th class='hidden-xs hidden-sm'>Pilot Training Ratings<br /><small>Past and Present</small></th>
             <td>
                 <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Pilot Training Ratings</strong></span>
-                @foreach($_account->qualificationsPilotTraining()->withTrashed()->get() as $qual)
+                @foreach($_account->qualifications_pilot_training as $qual)
                     {{ $qual }}
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
                         <em>granted {{ $qual->created_at }}</em>
                     </a>
-                    @if($qual->deleted_at != NULL)
-                        -
-                        <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->deleted_at }}">
-                            <em>revoked {{ $qual->deleted_at }}</em>
-                        </a>
-                    @endif
                     <br />
                 @endforeach
             </td>

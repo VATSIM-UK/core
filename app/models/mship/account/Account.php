@@ -72,86 +72,45 @@ class Account extends \Models\aTimelineEntry {
         return $this->morphMany("\Models\Sys\Token", "related");
     }
 
-    public function qualifications($type = null) {
-        $query = $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id");
-
-        switch ($type):
-            case "atc":
-                $query->where(function($q) {
-                    $q->whereHas("qualification", function($p) {
-                        $p->where("type", "=", "atc");
-                    });
-                });
-                break;
-            case "pilot":
-                $query->where(function($q) {
-                    $q->whereHas("qualification", function($p) {
-                        $p->where("type", "=", "pilot");
-                    });
-                });
-                break;
-            case "training_atc":
-                $query->where(function($q) {
-                    $q->whereHas("qualification", function($p) {
-                        $p->where("type", "=", "training_atc");
-                    });
-                });
-                break;
-            case "training_pilot":
-                $query->where(function($q) {
-                    $q->whereHas("qualification", function($p) {
-                        $p->where("type", "=", "training_pilot");
-                    });
-                });
-                break;
-            case "admin":
-                $query->where(function($q) {
-                    $q->whereHas("qualification", function($p) {
-                        $p->where("type", "=", "admin");
-                    });
-                });
-                break;
-        endswitch;
-
-        return $query;
-    }
-
-    public function qualificationsAtc() {
-        return $this->qualifications("atc");
-    }
-
-    public function getQualificationAtcObjAttribute() {
-        $a = $this->qualificationsAtc()->orderBy("created_at", "DESC")->first();
-        return $a;
+    public function qualifications() {
+        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id");
     }
 
     public function getQualificationAtcAttribute() {
-        $a = $this->qualificationsAtcObj();
-        return $a ? $a->qualification->name_long : "";
+        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->first();
+        return $a;
     }
 
-    public function qualificationsAtcTraining() {
-        return $this->qualifications("training_atc");
+    public function getQualificationsAtcAttribute() {
+        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->get();
+        return $a;
     }
 
-    public function qualificationsPilot() {
-        return $this->qualifications("pilot");
+    public function getQualificationsAtcTrainingAttribute() {
+        return $this->qualifications()->atcTraining()->orderBy("created_at", "DESC")->get();
     }
 
-    public function getQualificationPilotAttribute() {
-        $output = "None";
-        foreach ($this->qualificationsPilot()->get() as $p) {
-            $output.= $p->code . ", ";
+    public function getQualificationsPilotAttribute() {
+        return $this->qualifications()->pilot()->orderBy("created_at", "DESC")->get();
+    }
+
+    public function getQualificationsPilotStringAttribute(){
+        $output = "";
+        foreach ($this->qualifications_pilot as $p) {
+            $output.= $p->qualification->code . ", ";
+        }
+        if($output == ""){
+            $output = "None";
         }
         return rtrim($output, ", ");
     }
 
-    public function qualificationsPilotTraining() {
-        return $this->qualifications("training_pilot");
+    public function getQualificationsPilotTrainingAttribute() {
+        return $this->qualifications()->pilotTraining()->orderBy("created_at", "DESC")->get();
     }
 
-    public function qualificationsAdmin() {
-        return $this->qualifications("admin");
+    public function getQualificationsAdminAttribute() {
+        return $this->qualifications()->admin()->orderBy("created_at", "DESC")->get();
     }
 
     public function states() {
