@@ -79,7 +79,7 @@ class Authentication extends \Controllers\BaseController {
                     }
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
-                    $account->addEmail($user->email, 1, 1);
+                    $account->addEmail($user->email, true, true);
                     $account->addQualification(QualificationType::where("type", "=", "atc")->where("vatsim", "=", $user->rating->id)->first());
                     for($i=1; $i<=256; $i*=2){
                         if($i & $user->pilot_rating->rating){

@@ -154,7 +154,7 @@ class Account extends \Models\aTimelineEntry {
         $security->save();
     }
 
-    public function addEmail($newEmail, $verified = 0, $primary = 0, $returnID=false) {
+    public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
         $check = $this->emails()->where("email", "LIKE", $newEmail);
         if ($check->count() < 1) {
@@ -323,16 +323,11 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function getPrimaryEmailAttribute() {
-        foreach ($this->emails as $e) {
-            if ($e->is_primary) {
-                return $e;
-            }
-        }
-        return new \Models\Mship\Account\Email();
+        return $this->emails()->primary()->first();
     }
 
     public function getSecondaryEmailAttribute() {
-        return $this->emails()->where("is_primary", "=", "0")->get();
+        return $this->emails()->secondary()->get();
     }
 
     public function setNameFirstAttribute($value) {
@@ -378,7 +373,7 @@ class Account extends \Models\aTimelineEntry {
         $array = parent::toArray();
         $array["name"] = $this->name;
         $array["email"] = $this->primary_email->email;
-        $array['atc_rating'] = $this->qualificationsAtc()->orderBy("created_at", "DESC")->first();
+        $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->qualification->name_long : "");
         $array['pilot_rating'] = array();
         foreach ($this->qualifications_pilot as $rp) {

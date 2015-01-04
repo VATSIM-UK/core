@@ -32,6 +32,7 @@ class InitialSystem extends Migration {
             $table->boolean("enabled")->default(0);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(array("section", "area", "action"));
         });
 
         Schema::create("sys_setting", function($table) {

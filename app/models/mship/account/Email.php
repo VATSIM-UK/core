@@ -20,6 +20,18 @@ class Email extends \Eloquent {
         return $this->belongsTo("\Models\Mship\Account\Account", "account_id", "account_id");
     }
 
+    public function scopePrimary($query){
+        return $query->where("primary", "=", 1);
+    }
+
+    public function scopeSecondary($query){
+        return $query->where("secondary", "=", 0);
+    }
+
+    public function scopeVerified($query){
+        return $query->where("verified", ">", "0000-00-00 00:00:00");
+    }
+
     public function ssoEmails() {
         return $this->hasMany("\Models\Sso\Email", "account_email_id", "account_email_id");
     }

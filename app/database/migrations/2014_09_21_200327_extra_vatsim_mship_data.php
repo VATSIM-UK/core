@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ExtraVatsimMShipData extends Migration {
+class ExtraVatsimMshipData extends Migration {
 
     /**
      * Run the migrations.

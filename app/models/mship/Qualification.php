@@ -12,6 +12,14 @@ class Qualification extends \Eloquent {
         protected $dates = ['created_at', 'deleted_at'];
         protected $hidden = ['qualification_id'];
 
+        public function scopeOfType($query, $type){
+            return $query->whereType($type);
+        }
+
+        public function scopeNetworkValue($query, $networkValue){
+            return $query->whereVatsim($networkValue);
+        }
+
         public static function parseVatsimATCQualification($network){
             if($network < 1){
                 return null;
@@ -23,8 +31,8 @@ class Qualification extends \Eloquent {
                 $type = 'atc';
             }
 
-            // Sort out the pilot ratings
-            $netQ = Qualification::where("type", "=", $type)->where("vatsim", "=", $network)->first();
+            // Sort out the atc ratings
+            $netQ = Qualification::ofType($type)->networkValue($network)->first();
             return $netQ;
         }
 
@@ -35,7 +43,7 @@ class Qualification extends \Eloquent {
             for($i=0; $i<=8; $i++){
                 $pow = pow(2, $i);
                 if(($pow & $network) == $pow){
-                    $ro = Qualification::where("type", "=", "pilot")->where("vatsim", "=", $pow)->first();
+                    $ro = Qualification::ofType("pilot")->networkValue($pow)->first();
                     if($ro){
                         $ratingsOutput[] = $ro;
                     }

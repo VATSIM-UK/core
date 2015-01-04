@@ -24,6 +24,7 @@ class SystemPostmasterInitial extends Migration {
             $table->boolean("enabled")->default(0);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(array("section", "area", "action"));
         });
 
         Schema::create("sys_postmaster_queue", function($table){
