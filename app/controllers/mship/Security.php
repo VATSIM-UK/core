@@ -92,7 +92,6 @@ class Security extends \Controllers\BaseController {
 
     public function post_replace($disable = false) {
         $currentSecurity = $this->_current_account->current_security;
-        $level = \Enums\Account\Security::MEMBER;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
             return Redirect::to("/mship/manage/dashboard")->with("error", "You cannot disable your secondary password.");
