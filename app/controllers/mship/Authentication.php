@@ -86,9 +86,9 @@ class Authentication extends \Controllers\BaseController {
                     if($atcRating > 7){
                         // Store the admin/ins rating.
                         if($atcRating >= 11){
-                            $account->addQualification(QualificationType::ofType("admin")->networkRating($atcRating)->first());
+                            $account->addQualification(QualificationType::ofType("admin")->networkValue($atcRating)->first());
                         } else {
-                            $account->addQualification(QualificationType::ofType("training_atc")->networkRating($atcRating)->first());
+                            $account->addQualification(QualificationType::ofType("training_atc")->networkValue($atcRating)->first());
                         }
 
                         $atcRatingInfo = \VatsimXML::getData($user->id, "idstatusprat");
