@@ -38,7 +38,7 @@ class PostmasterDispatch extends aCommand {
      */
     public function fire() {
         // Get all parsed, queued emails.
-        $unsent = Queue::parsed()->get();
+        $unsent = Queue::parsed()->limit(25)->get();
 
         foreach($unsent as $q){
             $q->dispatch();
