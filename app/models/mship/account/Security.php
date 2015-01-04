@@ -47,6 +47,11 @@ class Security extends \Eloquent {
             return ($hashed ? $this->hash($pw) : $pw);
         }
 
+        public function expire(){
+            $this->expires_at = Carbon::now()->toDateTimeString();
+            $this->save();
+        }
+
         public function save(Array $options = array()){
             // Set the expiry date!
             if($this->expires_at == NULL OR $this->expires_at == '0000-00-00 00:00:00'){
