@@ -1,6 +1,4 @@
-application/cache/*
-application/logs/*
-!application/logs/.gitignore
-log.txt
-nbproject/
-docs/
+.env*
+!.env.sample.php
+app/database/migrations/2014_10*
+app/database/migrations/2015*

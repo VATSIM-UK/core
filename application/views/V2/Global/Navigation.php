@@ -1,4 +1,0 @@
-<div class="bannerNavSupWrapper rtr rtl">
-                    <div class="bannerNavSubWrapper rtr rtl">
-                        <a class="bannerFirstLink" href="http://www.vatsim-uk.co.uk//" target="_parent">Home</a> &middot; <a  href="http://www.vatsim-uk.co.uk/notam/" target="_parent">News/NOTAMs</a> &middot; <a  href="http://rts.vatsim-uk.co.uk/" target="_tab">RTS System</a> &middot; <a  href="http://community.vatsim-uk.co.uk/" target="_tab">Forums</a> &middot; <a  href="http://rts.vatsim-uk.co.uk/home/validations.php" target="_tab">Major Validations</a> &middot; <a  href="http://helpdesk.vatsim-uk.co.uk/" target="_parent">Contact Us</a> &middot; <a  href="http://www.vatsim-uk.co.uk/download/fetch/?downloadID=00067" target="_tab">Division Policy</a></div>
-                </div>
