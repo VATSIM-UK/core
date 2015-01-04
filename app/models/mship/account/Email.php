@@ -53,6 +53,7 @@ class Email extends \Eloquent {
     public function setIsPrimaryAttribute($value){
         // First off, if this isn't a real email. Sod off.
         if(!$this OR !$this->account){
+            \Log::info(__FILE__.":".__LINE__);
             return false;
         }
 
@@ -60,11 +61,13 @@ class Email extends \Eloquent {
         if($value == 0 OR !$value){
             $this->attributes['is_primary'] = 0;
             $this->save();
-            return false;
+            \Log::info(__FILE__.":".__LINE__);
+            return true;
         }
 
         // Next, let's check if this email is already primary.  If it is, no chance.
         if($this->is_primary){
+            \Log::info(__FILE__.":".__LINE__);
             return false;
         }
 
@@ -72,11 +75,13 @@ class Email extends \Eloquent {
         foreach($this->account->emails as $e){
             $e->is_primary = 0;
             $e->save();
+            \Log::info(__FILE__.":".__LINE__);
         }
 
         // Now upgrade this!
         $this->attributes['is_primary'] = 1;
         $this->save();
+            \Log::info(__FILE__.":".__LINE__);
     }
 
     public function __toString(){
