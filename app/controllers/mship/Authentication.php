@@ -80,10 +80,27 @@ class Authentication extends \Controllers\BaseController {
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
                     $account->addEmail($user->email, true, true);
-                    $account->addQualification(QualificationType::where("type", "=", "atc")->where("vatsim", "=", $user->rating->id)->first());
+
+                    // Sort the ATC Rating out.
+                    $atcRating = $user->rating->id;
+                    if($atcRating > 7){
+                        // Store the admin/ins rating.
+                        if($atcRating >= 11){
+                            $account->addQualification(QualificationType::ofType("admin")->networkRating($atcRating)->first());
+                        } else {
+                            $account->addQualification(QualificationType::ofType("training_atc")->networkRating($atcRating)->first());
+                        }
+
+                        $atcRatingInfo = \VatsimXML::getData($user->id, "idstatusprat");
+                        if(isset($atcRatingInfo->PreviousRatingInt)){
+                            $atcRating = $atcRatingInfo->PreviousRatingInt;
+                        }
+                    }
+                    $account->addQualification(QualificationType::ofType("atc")->networkRating($atcRating)->first());
+
                     for($i=1; $i<=256; $i*=2){
                         if($i & $user->pilot_rating->rating){
-                            $account->addQualification(QualificationType::where("type", "=", "pilot")->where("vatsim", "=", $i)->first());
+                            $account->addQualification(QualificationType::ofType("pilot")->networkRating($i)->first());
                         }
                     }
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');

@@ -106,9 +106,16 @@ class Queue extends \Models\aTimelineEntry {
         }
 
         // Get the recipient email ID
-        $recipientEmailID = 0;
+        $recipientEmailIDs = [];
         if ($recipient->primary_email) {
-            $recipientEmailID = $recipient->primary_email->account_email_id;
+            $recipientEmailIDs[] = $recipient->primary_email->account_email_id;
+        }
+
+        // Do we want secondary emails too?
+        if($postmasterTemplate->secondary_emails){
+            foreach($recipient->secondary_email as $e){
+                $recipientEmailIDs[] = $e->account_email_id;
+            }
         }
 
         // Is the sender an ID, or is it a model?
@@ -132,15 +139,17 @@ class Queue extends \Models\aTimelineEntry {
             $senderEmailID = Account::find(VATUK_ACCOUNT_SYSTEM)->primary_email->account_email_id;
         }
 
-        $queue = new \Models\Sys\Postmaster\Queue();
-        $queue->recipient_id = $recipient->account_id;
-        $queue->recipient_email_id = $recipientEmailID;
-        $queue->sender_id = $sender->account_id;
-        $queue->sender_email_id = $senderEmailID;
-        $queue->postmaster_template_id = $postmasterTemplate->postmaster_template_id;
-        $queue->priority = $postmasterTemplate->priority;
-        $queue->data = $data;
-        $queue->save();
+        foreach($recipientEmailIDs as $recipientEmailID){
+            $queue = new \Models\Sys\Postmaster\Queue();
+            $queue->recipient_id = $recipient->account_id;
+            $queue->recipient_email_id = $recipientEmailID;
+            $queue->sender_id = $sender->account_id;
+            $queue->sender_email_id = $senderEmailID;
+            $queue->postmaster_template_id = $postmasterTemplate->postmaster_template_id;
+            $queue->priority = $postmasterTemplate->priority;
+            $queue->data = $data;
+            $queue->save();
+        }
     }
 
     public function parse() {
@@ -209,13 +218,6 @@ class Queue extends \Models\aTimelineEntry {
             $message->sender($this->sender_email->email);
             $message->from($this->sender_email->email, $this->sender->name);
             $message->to($this->recipient_email->email, $this->recipient->name);
-
-            // Does the user also want it to secondary emails?
-            if($this->template->secondary_emails){
-                foreach($this->recipient->secondary_email as $e){
-                    $message->cc($e->email, $this->recipient->name." (SECONDARY ADDRESS)");
-                }
-            }
 
             if($this->template->reply_to){
                 $message->replyTo($this->template->reply_to);
