@@ -162,17 +162,21 @@ class Account extends \Models\aTimelineEntry {
             $email->email = $newEmail;
             if ($verified) {
                 $email->verified = Carbon::now()->toDateTimeString();
+                \Log::info(__FILE__.":".__LINE__);
             }
             $this->emails()->save($email);
             $isNewEmail = true;
+            \Log::info(__FILE__.":".__LINE__);
         } else {
             $email = $check->first();
             $isNewEmail = false;
+            \Log::info(__FILE__.":".__LINE__);
         }
-
+\Log::info(__FILE__.":".__LINE__);
         if ($primary) {
             $email->is_primary = 1;
             $email->save();
+            \Log::info(__FILE__.":".__LINE__);
         }
         return ($returnID ? $email->account_email_id : $isNewEmail);
     }
