@@ -21,11 +21,11 @@ class Email extends \Eloquent {
     }
 
     public function scopePrimary($query){
-        return $query->where("primary", "=", 1);
+        return $query->where("is_primary", "=", 1);
     }
 
     public function scopeSecondary($query){
-        return $query->where("secondary", "=", 0);
+        return $query->where("is_primary", "=", 0);
     }
 
     public function scopeVerified($query){
