@@ -21,6 +21,14 @@ class Token extends \Models\aTimelineEntry {
             return Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
         }
 
+        public function scopeTokenValue($query, $tokenValue){
+            return $query->whereToken($tokenValue);
+        }
+
+        public function scopeValid($query){
+            return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
+        }
+
     public function getDisplayValueAttribute() {
         return "NOT YET DEFINED IN __TOKEN__ MODEL";
     }

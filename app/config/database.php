@@ -64,6 +64,18 @@ return array(
 			'prefix'    => $_ENV['db.mysql.prefix'],
 		),
 
+		'mysql.rts' => array(
+			'driver'    => 'mysql',
+			'host'      => $_ENV['db.mysql.host'],
+			'port'      => $_ENV['db.mysql.port'],
+			'database'  => $_ENV['db.mysql.name.rts'],
+			'username'  => $_ENV['db.mysql.user'],
+			'password'  => $_ENV['db.mysql.pass'],
+			'charset'   => $_ENV['db.mysql.charset'],
+			'collation' => $_ENV['db.mysql.collation'],
+			'prefix'    => $_ENV['db.mysql.prefix'],
+		),
+
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',

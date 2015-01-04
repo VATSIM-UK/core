@@ -7,6 +7,7 @@ return array(
     "db.mysql.user" => "user",
     "db.mysql.pass" => "Something",
     "db.mysql.name" => "my_database",
+    "db.mysql.name.rts" => "my_database",
     "db.mysql.prefix" => "",
     "db.mysql.charset" => "utf8",
     "db.mysql.collation" => "utf8_unicode_ci",

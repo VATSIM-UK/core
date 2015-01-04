@@ -47,7 +47,7 @@ class Security extends \Controllers\BaseController {
         // Check expired/invalid
         $accessToken = Input::get("access_token");
         try {
-            $accessToken = Token::where("token", "=", $accessToken)->firstOrFail();
+            $accessToken = Token::tokenValue($accessToken)->valid()->firstOrFail();
         } catch(Exception $e){
             die("TOKEN NOT FOUND");
         }
@@ -63,19 +63,19 @@ class Security extends \Controllers\BaseController {
         $return["name_last"] = $account->name_last;
         $return["name_full"] = $account->name;
         $return["email"] = $account->primary_email->email;
-        $return["atc_rating"] = $account->qualification_atc_obj->qualification->vatsim;
-        $return["atc_rating_human_short"] = $account->qualification_atc_obj->qualification->name_small;
-        $return["atc_rating_human_long"] = $account->qualification_atc_obj->qualification->name_long;
-        $return["atc_rating_date"] = $account->qualification_atc_obj->created_at->toDateTimeString();
+        $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
+        $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
+        $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;
+        $return["atc_rating_date"] = $account->qualification_atc->created_at->toDateTimeString();
 
         $return["pilot_ratings_bin"] = 0;
         $return["pilot_ratings"] = array();
-        if(count($account->qualificationsPilot()->get()) < 1){
+        if(count($account->qualifications_pilot) < 1){
             $return["pilot_ratings"][] = 0;
             $return["pilot_ratings_human_short"][] = "NA";
             $return["pilot_ratings_human_long"][] = "None Awarded";
         } else {
-            foreach($account->qualificationsPilot()->get() as $qual){
+            foreach($account->qualifications_pilot as $qual){
                 $e = array();
                 $e["rating"] = $qual->qualification->vatsim;
                 $e["human_short"] = $qual->qualification->name_small;
@@ -88,7 +88,7 @@ class Security extends \Controllers\BaseController {
         $return["pilot_ratings_bin"] = decbin($return["pilot_ratings_bin"]);
 
         $return["admin_ratings"] = array();
-        foreach($account->qualificationsAdmin()->get() as $qual){
+        foreach($account->qualifications_admin as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;
@@ -98,7 +98,7 @@ class Security extends \Controllers\BaseController {
         }
 
         $return["training_pilot_ratings"] = array();
-        foreach($account->qualificationsPilotTraining()->get() as $qual){
+        foreach($account->qualifications_pilot_training as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;
@@ -108,7 +108,7 @@ class Security extends \Controllers\BaseController {
         }
 
         $return["training_atc_ratings"] = array();
-        foreach($account->qualificationsAtcTraining()->get() as $qual){
+        foreach($account->qualifications_atc_training as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;
@@ -124,7 +124,7 @@ class Security extends \Controllers\BaseController {
         $return["reg_date"] = $account->joined_at->toDateTimeString();
 
         // We want to return the token to the user for later use in their requests.
-        return Response::json(json_encode(array("status" => "success", "data" => $return)));
+        return Response::json(array("status" => "success", "data" => $return));
     }
 
     public function security() {
