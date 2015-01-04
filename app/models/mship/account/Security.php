@@ -40,6 +40,13 @@ class Security extends \Eloquent {
             return sha1(sha1($value));
         }
 
+        public static function generate($hashed=false){
+            $pw = str_random(8)."8!-";
+            $pw = str_shuffle($pw);
+
+            return ($hashed ? $this->hash($pw) : $pw);
+        }
+
         public function save(Array $options = array()){
             // Set the expiry date!
             if($this->expires_at == NULL OR $this->expires_at == '0000-00-00 00:00:00'){

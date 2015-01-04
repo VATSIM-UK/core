@@ -172,8 +172,49 @@ class Security extends \Controllers\BaseController {
                 You can now close this window.");
     }
 
-    public function get_forgotten_link() {
-        print "Mship/Security/forgotten_link";
+    public function get_forgotten_link($code=null) {
+        // Search tokens for this code!
+        $token = SystemToken::where("code", "=", $code)->valid()->first();
+
+        // Is it valid? Has it expired? Etc?
+        if(!$token){
+            return $this->viewMake("mship.security.forgotten")->with("error", "1You have provided an invalid password reset token.");
+        }
+
+        // Is it valid? Has it expired? Etc?
+        if($token->is_used){
+            return $this->viewMake("mship.security.forgotten")->with("error", "2You have provided an invalid password reset token.");
+        }
+
+        // Is it valid? Has it expired? Etc?
+        if($token->is_expired){
+            return $this->viewMake("mship.security.forgotten")->with("error", "3You have provided an invalid password reset token.");
+        }
+
+        // Is it valid? Has it expired? Etc?
+        if(!$token->related){
+            return $this->viewMake("mship.security.forgotten")->with("error", "4You have provided an invalid password reset token.");
+        }
+
+        // Let's now consume this token.
+        $token->consume();
+
+        // Generate a new password for them and then email it across!
+        $password = \Models\Mship\Account\Security::generate(false);
+        $passwordType = $token->related->current_security ? $token->related->current_security : \Models\Mship\Security::getDefault();
+        $token->related->setPassword($password, $passwordType);
+
+        // We need to modify the expiry!
+        $token->related->current_security->expires_at = \Carbon\Carbon::now()->toDateTimeString();
+        $token->related->current_security->save();
+
+        // Now generate an email.
+        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $this->_current_account, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
+
+        Session::flush();
+        return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated
+            for you and emailed to your <strong>primary</strong> VATSIM email.<br />
+                You can now close this window.");
     }
 
 }

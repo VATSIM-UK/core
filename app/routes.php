@@ -47,6 +47,7 @@ Route::group(array("namespace" => "Controllers"), function() {
         Route::get("manage/landing", "Management@get_landing");
 
         Route::group(array("before" => "auth.user.basic"), function() {
+            Route::get("security/forgotten-link/{code}", "Security@get_forgotten_link")->where(array("code" => "\w+"));
             Route::controller("security", "Security");
         });
 
@@ -55,7 +56,7 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::controller("manage", "Management");
         });
     });
-    
+
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
         Route::controller("auth", "Authentication");
         Route::controller("security", "Security");
