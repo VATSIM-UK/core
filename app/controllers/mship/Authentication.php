@@ -96,11 +96,11 @@ class Authentication extends \Controllers\BaseController {
                             $atcRating = $atcRatingInfo->PreviousRatingInt;
                         }
                     }
-                    $account->addQualification(QualificationType::ofType("atc")->networkRating($atcRating)->first());
+                    $account->addQualification(QualificationType::ofType("atc")->networkValue($atcRating)->first());
 
                     for($i=1; $i<=256; $i*=2){
                         if($i & $user->pilot_rating->rating){
-                            $account->addQualification(QualificationType::ofType("pilot")->networkRating($i)->first());
+                            $account->addQualification(QualificationType::ofType("pilot")->networkValue($i)->first());
                         }
                     }
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
