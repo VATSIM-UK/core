@@ -44,8 +44,9 @@ Route::group(array("namespace" => "Controllers"), function() {
         Route::controller("auth", "Authentication"); // Legacy URL.  **DO NOT REMOVE**
         Route::get("manage/landing", "Management@get_landing");
 
+        // No auth needed for reset.
+        Route::get("security/forgotten-link/{code}", "Security@get_forgotten_link")->where(array("code" => "\w+"));
         Route::group(array("before" => "auth.user.basic"), function() {
-            Route::get("security/forgotten-link/{code}", "Security@get_forgotten_link")->where(array("code" => "\w+"));
             Route::controller("security", "Security");
         });
 

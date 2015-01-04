@@ -208,7 +208,7 @@ class Security extends \Controllers\BaseController {
         $token->related->current_security->save();
 
         // Now generate an email.
-        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $this->_current_account, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
+        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
 
         Session::flush();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated
