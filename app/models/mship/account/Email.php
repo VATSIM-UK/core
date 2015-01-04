@@ -55,27 +55,25 @@ class Email extends \Eloquent {
         if($value == 0 OR !$value){
             $this->attributes['is_primary'] = 0;
             $this->save();
-            \Log::info(__FILE__.":".__LINE__);
             return true;
         }
 
         // Next, let's check if this email is already primary.  If it is, no chance.
         if($this->is_primary){
-            \Log::info(__FILE__.":".__LINE__);
             return false;
         }
 
         // Finally, let's demote other primary emails.
-        foreach($this->account->emails as $e){
-            $e->is_primary = 0;
-            $e->save();
-            \Log::info(__FILE__.":".__LINE__);
+        if($this->account){
+            foreach($this->account->emails as $e){
+                $e->is_primary = 0;
+                $e->save();
+            }
         }
 
         // Now upgrade this!
         $this->attributes['is_primary'] = 1;
         $this->save();
-            \Log::info(__FILE__.":".__LINE__);
     }
 
     public function __toString(){
