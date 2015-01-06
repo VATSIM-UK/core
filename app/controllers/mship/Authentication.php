@@ -154,6 +154,8 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function get_logout($force = false) {
+        Session::set("logout_return", Input::get("returnURL", "/mship/manage/dashboard"));
+
         if ($force) {
             return $this->post_logout($force);
         }
@@ -176,7 +178,7 @@ class Authentication extends \Controllers\BaseController {
             Session::set("auth_account", 0);
             Session::set("auth_override", 0);
         }
-        return Redirect::to("/mship/manage/landing");
+        return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
     public function get_override() {

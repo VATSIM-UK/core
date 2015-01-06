@@ -6,7 +6,7 @@
 
 @section('content')
     <p>
-        You have now been logged out of the <?= Input::get('area', 'X') ?> system.  Would you like for your SSO session to be terminated, preventing future access to other services?
+        You have now been logged out of the <?= Input::get('ssoKey', 'X') ?> system.  Would you like for your SSO session to be terminated, preventing future access to other services?
     </p>
 
     <div class="row">
