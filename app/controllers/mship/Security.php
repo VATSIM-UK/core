@@ -31,6 +31,7 @@ class Security extends \Controllers\BaseController {
     public function post_auth() {
         if ($this->_current_account->current_security->verifyPassword(Input::get("password"))) {
             Session::set("auth_extra", true);
+            Session::set("auth_extra_time", \Carbon\Carbon::now()->toDateTimeString());
             return Redirect::to("/mship/auth/redirect");
         }
         return Redirect::to("/mship/security/auth")->with("error", "Invalid password entered - please try again.");
@@ -47,7 +48,7 @@ class Security extends \Controllers\BaseController {
             return Redirect::to("/mship/manage/dashboard")->with("error", "You cannot disable your secondary password.");
         } elseif ($disable && !$currentSecurity) {
             $disable = false;
-        } else {
+        } elseif($disable) {
             $this->_pageTitle = "Disable";
         }
 
@@ -60,14 +61,17 @@ class Security extends \Controllers\BaseController {
                 $slsType = "forced";
             } elseif (!$currentSecurity->is_active) {
                 $slsType = "expired";
-            } else {
+            } elseif(!$disable) {
                 $slsType = 'replace';
+                $this->_pageTitle = "Replace";
+            } else {
+                $this->_pageTitle = "Disable";
             }
         }
 
         // Now let's get the requirements
         if ($currentSecurity OR $currentSecurity != NULL) {
-            $securityType = SecurityType::find($currentSecurity->type);
+            $securityType = $currentSecurity->security;
         }
         if (!$currentSecurity OR $currentSecurity == NULL OR ! $securityType) {
             $securityType = SecurityType::getDefault();

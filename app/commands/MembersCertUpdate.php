@@ -102,7 +102,7 @@ class MembersCertUpdate extends aCommand {
 
                 // Sort their rating(s) out.
                 $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
-                $oldAtcRating = $_m->qualificationsAtc()->orderBy("created_at", "DESC")->first();
+                $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
                 if ($_m->addQualification($atcRating)) {
                     $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
                 }

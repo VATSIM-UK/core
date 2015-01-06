@@ -17,3 +17,4 @@ Artisan::add(new StatisticsDaily());
 Artisan::add(new RebuildModelDependencies());
 Artisan::add(new PostmasterParse());
 Artisan::add(new PostmasterDispatch());
+Artisan::add(new KohanaUpgrade());
