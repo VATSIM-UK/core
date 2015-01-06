@@ -125,6 +125,17 @@ class Account extends \Models\aTimelineEntry {
         return $this->states()->first();
     }
 
+    public function getAllStatesAttribute(){
+        $return = array();
+
+        foreach($this->states as $state){
+            $key = strtolower(\Enums\Account\State::valueToKey($state->state));
+            $return[$key] = 1;
+            $return[$key."_date"] = $state->created_at->toDateTimeString();
+        }
+        return $return;
+    }
+
     public function getPrimaryStateAttribute() {
         return $this->states()->first();
     }

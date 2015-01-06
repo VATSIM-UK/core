@@ -12,14 +12,14 @@ use \Models\Mship\Qualification as QualificationType;
 
 class Authentication extends \Controllers\BaseController {
 
-    public function get_redirect(){
+    public function get_redirect() {
         // If there's NO basic auth, send to login.
-        if(!Session::get("auth_basic", false)){
+        if (!Session::get("auth_basic", false)) {
             return Redirect::to("/mship/auth/login");
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if(!Session::get("auth_extra", false) && $this->_current_account->current_security){
+        if (!Session::get("auth_extra", false) && $this->_current_account->current_security) {
             return Redirect::to("/mship/security/auth");
         }
 
@@ -31,20 +31,44 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function get_login() {
+        Session::set("auth_return", Input::get("returnURL", "/mship/manage/dashboard"));
+
+        // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
+        if ($this->_current_account) {
+            Session::set("auth_basic", true);
+            Session::set("auth_true", true);
+            Session::set("auth_account", $this->_current_account->account_id);
+            Session::set("auth_override", 0);
+
+            // What about extra security?
+            try {
+                $lastCheck = \Carbon\Carbon::parse(Session::get("auth_extra_time", "0000-00-00 00:00:00"));
+                if($lastCheck->addHours(4)->isPast()){
+                    Session::set("auth_extra", false);
+                    Session::set("auth_extra_time", "0000-00-00 00:00:00");
+                } else {
+                    Session::set("auth_extra", true);
+                }
+            } catch (Exception $ex) {
+                Session::set("auth_extra", false);
+                Session::set("auth_extra_time", "0000-00-00 00:00:00");
+            }
+
+            return Redirect::to("/mship/auth/redirect");
+        }
+
         // Start the login process by disabling their auth!
         // Anyone playing with the URLs and ending up here is out of luck.
         Session::set("auth_basic", false);
         Session::set("auth_extra", false);
+        Session::set("auth_extra_time", "0000-00-00 00:00:00");
         Session::set("auth_true", false);
         Session::set("auth_account", 0);
         Session::set("auth_override", 0);
 
-        // Have we got a return URL, or just the account dashboard?
-        Session::set("auth_return", Input::get("returnURL", "/mship/manage/dashboard"));
-
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [Config::get('sso::config.return')."mship/auth/verify"], function($key, $secret, $url) {
+                        [Config::get('sso::config.return') . "mship/auth/verify"], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
@@ -73,7 +97,7 @@ class Authentication extends \Controllers\BaseController {
 
                     // At this point WE HAVE data in the form of $user;
                     $account = Account::find($user->id);
-                    if(is_null($account)){
+                    if (is_null($account)) {
                         $account = new Account();
                         $account->account_id = $user->id;
                     }
@@ -83,33 +107,33 @@ class Authentication extends \Controllers\BaseController {
 
                     // Sort the ATC Rating out.
                     $atcRating = $user->rating->id;
-                    if($atcRating > 7){
+                    if ($atcRating > 7) {
                         // Store the admin/ins rating.
-                        if($atcRating >= 11){
+                        if ($atcRating >= 11) {
                             $account->addQualification(QualificationType::ofType("admin")->networkValue($atcRating)->first());
                         } else {
                             $account->addQualification(QualificationType::ofType("training_atc")->networkValue($atcRating)->first());
                         }
 
                         $atcRatingInfo = \VatsimXML::getData($user->id, "idstatusprat");
-                        if(isset($atcRatingInfo->PreviousRatingInt)){
+                        if (isset($atcRatingInfo->PreviousRatingInt)) {
                             $atcRating = $atcRatingInfo->PreviousRatingInt;
                         }
                     }
                     $account->addQualification(QualificationType::ofType("atc")->networkValue($atcRating)->first());
 
-                    for($i=1; $i<=256; $i*=2){
-                        if($i & $user->pilot_rating->rating){
+                    for ($i = 1; $i <= 256; $i*=2) {
+                        if ($i & $user->pilot_rating->rating) {
                             $account->addQualification(QualificationType::ofType("pilot")->networkValue($i)->first());
                         }
                     }
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
-                    if($user->rating->id == 0){
+                    if ($user->rating->id == 0) {
                         $account->is_inactive = 1;
                     } else {
                         $account->is_inactive = 0;
                     }
-                    if($user->rating->id == -1){
+                    if ($user->rating->id == -1) {
                         $account->is_network_banned = 1;
                     } else {
                         $account->is_network_banned = 0;
@@ -129,18 +153,18 @@ class Authentication extends \Controllers\BaseController {
         );
     }
 
-    public function get_logout($force=false) {
-        if($force){
+    public function get_logout($force = false) {
+        if ($force) {
             return $this->post_logout($force);
         }
         return $this->viewMake("mship.authentication.logout");
     }
 
-    public function post_logout($force=false) {
+    public function post_logout($force = false) {
         if (Input::get("processlogout", 0) == 1 OR $force) {
 
             // If we're overriding, clicking logout should only cancel the override.
-            if(Session::get("auth_override", 0) > 0){
+            if (Session::get("auth_override", 0) > 0) {
                 Session::set("auth_override", 0);
                 return Redirect::to("/mship/manage/landing");
             }
@@ -156,19 +180,19 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function get_override() {
-        if(!in_array($this->_current_account->account_id, array(980234, 1010573))){
+        if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
             return Redirect::to("/mship/manage/dashboard");
         }
         return $this->viewMake("mship.authentication.override");
     }
 
     public function post_override() {
-        if(!in_array($this->_current_account->account_id, array(980234, 1010573))){
+        if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
             return Redirect::to("/mship/manage/dashboard");
         }
 
         // Check secondary password!
-        if(!$this->_current_account->current_security->verifyPassword(Input::get("password"))){
+        if (!$this->_current_account->current_security->verifyPassword(Input::get("password"))) {
             return Redirect::to("/mship/auth/override")->withError("No");
         }
 
@@ -176,16 +200,16 @@ class Authentication extends \Controllers\BaseController {
         $_ovr = Account::find(Input::get("override_cid"));
 
         // Let's do something... like set the override!
-        if(is_object($_ovr) && isset($_ovr->exists) && $_ovr->exists){
+        if (is_object($_ovr) && isset($_ovr->exists) && $_ovr->exists) {
             Session::set("auth_override", $_ovr->account_id);
         }
 
         return Redirect::to("/mship/manage/landing");
     }
 
-    public function get_invisibility(){
+    public function get_invisibility() {
         // Toggle
-        if($this->_current_account->is_invisible){
+        if ($this->_current_account->is_invisible) {
             $this->_current_account->is_invisible = 0;
         } else {
             $this->_current_account->is_invisible = 1;
@@ -194,4 +218,5 @@ class Authentication extends \Controllers\BaseController {
 
         return Redirect::to("/mship/manage/landing");
     }
+
 }

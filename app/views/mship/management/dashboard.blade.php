@@ -69,6 +69,7 @@
                             @endforeach
                         </em>
                     @endif
+                    <br />
                 @endif
             @endforeach
             @if(count($_account->emails) < 2)
@@ -209,7 +210,7 @@
                 @if($_account->current_security->security->optional)
                     <?= HTML::link("mship/security/replace/1", "Disable") ?> |
                 @endif
-                <?= HTML::link("mship/security/replace", "Modify") ?> Secondary Password
+                <?= HTML::link("mship/security/replace/0", "Modify") ?> Secondary Password
                 ]
             @elseif(!$_account->current_security)
                 &nbsp;&nbsp;
