@@ -13,7 +13,6 @@ class InitialMembership extends Migration {
 	public function up()
 	{
                 Schema::create("mship_account", function($table){
-                    $table->engine = 'MyISAM';
                     $table->integer("account_id")->unsigned()->primary();
                     $table->string("name_first", 50);
                     $table->string("name_last", 50);
@@ -30,7 +29,6 @@ class InitialMembership extends Migration {
                 });
 
                 Schema::create("mship_account_email", function($table){
-                    $table->engine = 'MyISAM';
                     $table->bigIncrements("account_email_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->string("email", 80);
@@ -41,7 +39,6 @@ class InitialMembership extends Migration {
                 });
 
                 Schema::create("mship_account_qualification", function($table){
-                    $table->engine = 'MyISAM';
                     $table->bigIncrements("account_qualification_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->enum("type", array("ATC", "Pilot", "Training_ATC", "Training_Pilot", "Admin"));
@@ -51,7 +48,6 @@ class InitialMembership extends Migration {
                 });
 
                 Schema::create("mship_account_security", function($table){
-                    $table->engine = 'MyISAM';
                     $table->bigIncrements("account_security_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->smallInteger("type");
@@ -62,7 +58,6 @@ class InitialMembership extends Migration {
                 });
 
                 Schema::create("mship_account_state", function($table){
-                    $table->engine = 'MyISAM';
                     $table->bigIncrements("account_state_id")->unsigned();
                     $table->integer("account_id")->unsigned();
                     $table->tinyInteger("state");

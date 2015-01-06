@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Models\Mship\Account\Account;
 use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
+use Models\Mship\Account\Security;
 use Models\Mship\Qualification as QualificationData;
 use Models\Mship\Account\Qualification;
 use \Cache;
@@ -41,46 +42,215 @@ class KohanaUpgrade extends aCommand {
      * @return mixed
      */
     public function fire() {
-        $this->upgradeAccounts();
+        if($this->argument("function") == "all"){
+            $this->upgradeMShipAccount();
+            $this->upgradeMShipAccountEmail();
+            $this->upgradeMShipAccountQualification();
+            $this->upgradeMShipAccountSecurity();
+            $this->upgradeMShipAccountState();
+        } else {
+            $this->{"upgrade".$this->argument("function")}();
+        }
     }
 
-    private function upgradeAccounts(){
-        $kohanaUsers = DB::table("kohana_mship_account")->get();
+    private function upgradeMShipAccount() {
+        DB::table("kohana_mship_account")->where("id", ">", "800000")->chunk(1000, function($kohanaUsers) {
+            $tableData = array();
 
-        foreach ($kohanaUsers as $key => $m) {
-            print "#" . $key . " Processing " . str_pad($m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
+            $this->info("");
+            $this->info("New chunk started!");
+            foreach ($kohanaUsers as $key => $m) {
 
-            DB::beginTransaction();
-            print "\tDB::beginTransaction\n";
-            try {
                 // We need to load the XML data so that the data is correct.
-                $xmlData = \VatsimXML::getData($kohanaUsers->id);
+                $xmlData = \VatsimXML::getData($m->id);
+
+                if ($xmlData->cid == "") {
+                    continue;
+                }
 
                 // Create a member with this data.
-                $member = Account::findOrNew($m->account_id);
-                $member->account_id = $xmlData->id;
-                $member->name_first = $xmlData->name_first;
-                $member->name_last = $xmlData->name_last;
-                $member->last_login = $xmlData->last_login;
-                $member->last_login_ip = $xmlData->last_login_ip;
-                $member->joined_at = $xmlData->regdate;
-                $member->created_at = $m->created;
-                $member->cert_checked_at = \Carbon\Carbon::now("UTC")->toDateTimeString();
-                $member->status = $m->status;
-                $member->save();
-            } catch (Exception $e) {
-                DB::rollback();
-                print "\tDB::rollback\n";
-                print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
-                continue;
-            } finally {
-                print "\t" . str_repeat("-", 89) . "\n";
-                DB::commit();
-                print "\tDB::commit\n";
+                $member = array();
+                $member["account_id"] = $xmlData->cid;
+                $member["name_first"] = $xmlData->name_first;
+                $member["name_last"] = $xmlData->name_last;
+                $member["last_login"] = $m->last_login;
+                $member["last_login_ip"] = $m->last_login_ip;
+                $member["joined_at"] = $xmlData->regdate;
+                $member["created_at"] = $m->created;
+                $member["cert_checked_at"] = \Carbon\Carbon::now("UTC")->toDateTimeString();
+                $member["status"] = $m->status;
+                $tableData[] = $member;
+
+                $this->info("Total members queued: " . count($tableData));
             }
 
-            print "\n";
-        }
+            DB::beginTransaction();
+            try {
+                Account::insert($tableData);
+            } catch (Exception $e) {
+                DB::rollback();
+                $this->error("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+                \Log::info("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+            } finally {
+                DB::commit();
+            }
+        });
+    }
+
+    private function upgradeMShipAccountEmail() {
+
+        DB::table("kohana_mship_account_email")->where("account_id", ">", "800000")->chunk(1000, function($kohanaData) {
+            $tableData = array();
+
+            $this->info("");
+            $this->info("New chunk started!");
+            foreach ($kohanaData as $key => $kd) {
+
+                $email = new Email();
+                $email->account_id = $kd->account_id;
+                $email->email = $kd->email;
+                $email->is_primary = $kd->primary;
+                $email->verified = $kd->verified;
+                $email->created_at = $kd->created;
+                $email->updated_at = $kd->verified ? $kd->verified : $kd->created;
+                $email->deleted_at = $kd->deleted;
+                $email->save();
+
+                // Create a member with this data.
+                $newData = array();
+                $newData["account_id"] = $kd->account_id;
+                $newData["email"] = $kd->email;
+                $newData["is_primary"] = $kd->primary;
+                $newData["verified"] = $kd->verified;
+                $newData["created_at"] = $kd->created;
+                $newData["updated_at"] = $kd->verified ? $kd->verified : $kd->created;
+                $newData["deleted_at"] = $kd->deleted;
+                $tableData[] = $newData;
+
+                $this->info("Total data queued: " . count($tableData));
+            }
+
+            DB::beginTransaction();
+            try {
+                Email::insert($tableData);
+            } catch (Exception $e) {
+                DB::rollback();
+                $this->error("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+                \Log::info("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+            } finally {
+                DB::commit();
+            }
+        });
+    }
+
+    private function upgradeMShipAccountQualification() {
+        DB::table("kohana_mship_account_qualification")->where("account_id", ">", "800000")->where("type", "=", "ATC")->chunk(1000, function($kohanaData) {
+            $tableData = array();
+
+            $this->info("");
+            $this->info("New chunk started!");
+            foreach ($kohanaData as $key => $kd) {
+                if ($kd->value == "7") {
+                    $kd->value == 6;
+                }
+
+                $newData = array();
+                $newData["account_id"] = $kd->account_id;
+                $newData["qualification_id"] = $kd->value;
+                $newData["created_at"] = $kd->created;
+                $newData["updated_at"] = $kd->created;
+                $tableData[] = $newData;
+
+                $this->info("Total data queued: " . count($tableData));
+            }
+
+            DB::beginTransaction();
+            try {
+                Qualification::insert($tableData);
+            } catch (Exception $e) {
+                DB::rollback();
+                $this->error("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+                \Log::info("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+            } finally {
+                DB::commit();
+            }
+        });
+    }
+
+    private function upgradeMShipAccountSecurity() {
+        DB::table("kohana_mship_account_security")->where("account_id", ">", "800000")->chunk(1000, function($kohanaData) {
+            $tableData = array();
+
+            $this->info("");
+            $this->info("New chunk started!");
+            foreach ($kohanaData as $key => $kd) {
+                $newData = array();
+                $newData["account_id"] = $kd->account_id;
+
+                if ($kd->type == 10) {
+                    $newData["security_id"] = 1;
+                } elseif ($kd->type == 20) {
+                    $newData["security_id"] = 2;
+                } elseif ($kd->type == 50) {
+                    $newData["security_id"] = 3;
+                } elseif ($kd->type == 100) {
+                    $newData["security_id"] = 4;
+                }
+
+                $newData["value"] = $kd->value;
+                $newData["created_at"] = $kd->created;
+                if ($kd->expires) {
+                    $newData["expires_at"] = $kd->expires;
+                }
+                $tableData[] = $newData;
+
+                $this->info("Total data queued: " . count($tableData));
+            }
+
+            DB::beginTransaction();
+            try {
+                Security::insert($tableData);
+            } catch (Exception $e) {
+                DB::rollback();
+                $this->error("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+                \Log::info("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+            } finally {
+                DB::commit();
+            }
+        });
+    }
+
+    private function upgradeMShipAccountState() {
+        DB::table("kohana_mship_account_state")->where("account_id", ">", "800000")->chunk(1000, function($kohanaData) {
+            $tableData = array();
+
+            $this->info("");
+            $this->info("New chunk started!");
+            foreach ($kohanaData as $key => $kd) {
+                $newData = array();
+
+                $newData["account_id"] = $kd->account_id;
+                $newData["state"] = $kd->state;
+                $newData["created_at"] = $kd->created;
+                $newData["updated_at"] = $kd->created;
+                $newData["deleted_at"] = $kd->removed;
+
+                $tableData[] = $newData;
+
+                $this->info("Total data queued: " . count($tableData));
+            }
+
+            DB::beginTransaction();
+            try {
+                State::insert($tableData);
+            } catch (Exception $e) {
+                DB::rollback();
+                $this->error("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+                \Log::info("Error: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile());
+            } finally {
+                DB::commit();
+            }
+        });
     }
 
     /**
@@ -90,6 +260,7 @@ class KohanaUpgrade extends aCommand {
      */
     protected function getArguments() {
         return array(
+            array("function", InputArgument::OPTIONAL, "The function to run on the upgrade script(s).", "all"),
         );
     }
 

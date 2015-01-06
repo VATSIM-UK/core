@@ -27,14 +27,14 @@ class State extends \Eloquent {
 
         public function save(array $options = array()){
             // Check it doesn't exist, first!
-            $check = State::where("account_id", "=", $this->account->account_id)->where("state", "=", $this->state);
+            $check = State::where("account_id", "=", $this->account_id)->where("state", "=", $this->state);
             if($check->count() > 0){
                 return $check->get();
             }
 
             parent::save($options);
 
-            $deleteOld = State::where("account_id", "=", $this->account->account_id)->where("state", "!=", $this->state)->get();
+            $deleteOld = State::where("account_id", "=", $this->account_id)->where("state", "!=", $this->state)->get();
             foreach($deleteOld as $do){
                 $do->delete();
             }
