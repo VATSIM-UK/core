@@ -117,7 +117,8 @@ class Security extends \Controllers\BaseController {
             $return["training_atc_ratings"][] = (array) $e;
         }
 
-        $return["account_state"] = $account->current_state->label;
+        $return["account_state"] = $account->all_states;
+        $return["account_state_current"] = $account->current_state->label;
         $return["account_status"] = $account->status;
         $return["is_invisible"] = boolval($account->is_invisible);
         $return["experience"] = $account->experience;

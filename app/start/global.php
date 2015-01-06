@@ -62,7 +62,7 @@ App::error(function(Exception $exception, $code) {
         unset($_ENV[$key]);
         unset($_SERVER[$key]);
     }
-    Log::error($exception->getFile().":".$exception->getFile()." --> ". $exception->getMessage());
+    Log::error($exception->getFile().":".$exception->getFile().":".$exception->getLine()." --> ". $exception->getMessage());
 });
 
 /*
