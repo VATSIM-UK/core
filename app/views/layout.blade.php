@@ -85,7 +85,8 @@
                 <div class="row">
                     <p>
                         VATSIM-UK &copy; 2013 -
-                        {{ HTML::link('http://status.vatsim-uk.co.uk', 'Version X', array('target' => '_blank')) }}
+                        {{ HTML::link('http://status.vatsim-uk.co.uk', 'Version '.exec("cd ".base_path()." && git describe --abbrev=0 --tags"), array('target' => '_blank')) }}
+                        ({{ gmdate("d/m/y H:i \G\M\T", filemtime(realpath(base_path()."/.git/"))) }})
                         <br align="center">
                         Got a problem? Email us: {{ HTML::link('http://helpdesk.vatsim-uk.co.uk', 'web-support][at][vatsim-uk.co.uk', array('target' => '_blank')) }}
                     </p>
