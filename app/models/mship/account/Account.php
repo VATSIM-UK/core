@@ -354,9 +354,9 @@ class Account extends \Models\aTimelineEntry {
 
         // Let's fix McSomebody and MacSomebody
         if (substr($value, 0, 2) == "mc") {
-            $value = "Mc" . ucfirst(substr($value, 3));
+            $value = "Mc" . ucfirst(substr($value, 2));
         } elseif (substr($value, 0, 3) == "mac") {
-            $value = "Mac" . ucfirst(substr($value, 4));
+            $value = "Mac" . ucfirst(substr($value, 3));
         } else {
             $value = ucfirst($value);
         }
