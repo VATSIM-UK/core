@@ -15,28 +15,6 @@ Route::model("mshipAccount", "\Models\Mship\Account\Account", function() {
     Redirect::to("/adm/mship/account");
 });
 
-/* * ** ADM *** */
-Route::group(array("namespace" => "Controllers\Adm"), function() {
-    Route::group(array("prefix" => "adm"), function() {
-        // Login is the only unauthenticated page.
-        Route::get("/", "Authentication@getLogin");
-        Route::controller("/authentication", "Authentication");
-
-        // Auth required
-        Route::group(array("before" => "auth.admin"), function() {
-            Route::controller("/dashboard", "Dashboard");
-            Route::controller("/system", "System");
-
-            Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
-                /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
-                  Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
-                Route::get("/account/{mshipAccount}", "Account@getDetail");
-                Route::controller("/account", "Account");
-            });
-        });
-    });
-});
-
 Route::group(array("namespace" => "Controllers"), function() {
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
         // Guest access
