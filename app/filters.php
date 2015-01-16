@@ -74,16 +74,6 @@ Route::filter('auth.user.full', function() {
     }
 });
 
-Route::filter('auth.admin', function() {
-    if (!Session::get("auth_adm_true", false)) {
-        if (Request::ajax()) {
-            return Response::make('Unauthorized', 401);
-        } else {
-            return Redirect::to("/adm/");
-        }
-    }
-});
-
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
