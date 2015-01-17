@@ -3,7 +3,7 @@
 namespace Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 
 class Queue extends \Models\aTimelineEntry {
 
@@ -46,7 +46,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function recipient() {
-        return $this->belongsTo("\Models\Mship\Account\Account", "recipient_id", "account_id");
+        return $this->belongsTo("\Models\Mship\Account", "recipient_id", "account_id");
     }
 
     public function recipientEmail() {
@@ -54,7 +54,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function sender() {
-        return $this->belongsTo("\Models\Mship\Account\Account", "sender_id", "account_id");
+        return $this->belongsTo("\Models\Mship\Account", "sender_id", "account_id");
     }
 
     public function senderEmail() {

@@ -4,7 +4,7 @@ namespace Controllers\Adm;
 
 use \Session;
 use \View;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Request;
 class AdmController extends \Controllers\BaseController {
 

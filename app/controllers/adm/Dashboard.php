@@ -2,7 +2,7 @@
 
 namespace Controllers\Adm;
 
-use Models\Mship\Account\Account;
+use Models\Mship\Account;
 use Models\Statistic;
 use \Session;
 use \Response;
@@ -15,11 +15,11 @@ class Dashboard extends \Controllers\Adm\AdmController {
     public function getIndex(){
         // All Stats
         $statistics = array();
-        $statistics['members_total'] = (\Models\Mship\Account\Account::count());
-        $statistics['members_active'] = (\Models\Mship\Account\Account::where("status", "=", 0)->count());
+        $statistics['members_total'] = (\Models\Mship\Account::count());
+        $statistics['members_active'] = (\Models\Mship\Account::where("status", "=", 0)->count());
         $statistics['members_division'] = (\Models\Mship\Account\State::where("state", "=", \Enums\Account\State::DIVISION)->count());
         $statistics['members_nondivision'] = (\Models\Mship\Account\State::where("state", "!=", \Enums\Account\State::DIVISION)->count());
-        $statistics['members_pending_update'] = (\Models\Mship\Account\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours(24)->toDateTimeString())->count());
+        $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours(24)->toDateTimeString())->count());
         $statistics['members_qualifications'] = (\Models\Mship\Account\Qualification::count());
 
         // API Requests

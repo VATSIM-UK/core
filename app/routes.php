@@ -11,7 +11,7 @@
   |
  */
 
-Route::model("mshipAccount", "\Models\Mship\Account\Account", function() {
+Route::model("mshipAccount", "\Models\Mship\Account", function() {
     Redirect::to("/adm/mship/account");
 });
 

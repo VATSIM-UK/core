@@ -6,7 +6,7 @@ use \Redirect;
 use \Session;
 use \Input;
 use \View;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Models\Mship\Account\Security as AccountSecurity;
 use \Models\Mship\Security as SecurityType;
 use \Models\Sys\Token as SystemToken;

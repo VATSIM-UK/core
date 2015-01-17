@@ -7,7 +7,7 @@ use \Input;
 use \Session;
 use \Redirect;
 use \VatsimSSO;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Models\Mship\Qualification as QualificationType;
 
 class Authentication extends \Controllers\BaseController {

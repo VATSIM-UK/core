@@ -3,7 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account\Account;
+use Models\Mship\Account;
 use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Account\Security;

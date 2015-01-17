@@ -5,7 +5,7 @@ namespace Controllers;
 use \View;
 use \Session;
 use \Request;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 
 class BaseController extends \Controller {
 

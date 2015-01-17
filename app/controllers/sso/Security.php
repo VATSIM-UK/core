@@ -6,7 +6,7 @@ use \Input;
 use \Response;
 use \Models\Sso\Account;
 use \Models\Sso\Token;
-use \Models\Mship\Account\Account as MemberAccount;
+use \Models\Mship\Account as MemberAccount;
 
 class Security extends \Controllers\BaseController {
 

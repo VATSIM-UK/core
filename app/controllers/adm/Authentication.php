@@ -10,7 +10,7 @@ use \View;
 use \VatsimSSO;
 use \Config;
 use \Redirect;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Models\Timeline\Entry;
 
 class Authentication extends \Controllers\Adm\AdmController {

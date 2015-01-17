@@ -4,7 +4,7 @@ namespace Models;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Models\Sys\Timeline\Entry;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Session;
 use \Input;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Mship\Account;
+namespace Models\Mship;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;

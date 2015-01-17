@@ -12,7 +12,7 @@ use \VatsimSSO;
 use \Config;
 use \Redirect;
 use \DB;
-use \Models\Mship\Account\Account as AccountData;
+use \Models\Mship\Account as AccountData;
 
 class Account extends \Controllers\Adm\AdmController {
 

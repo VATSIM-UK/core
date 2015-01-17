@@ -98,9 +98,9 @@ if(!App::runningInConsole()){
     // We need to ensure that the VATSIM UK System accounts are in existance.
     define("VATUK_ACCOUNT_SYSTEM", "707070");
 
-    $check = \Models\Mship\Account\Account::find(VATUK_ACCOUNT_SYSTEM);
+    $check = \Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);
     if(!is_object($check) OR !$check->exists){
-        $a = new \Models\Mship\Account\Account();
+        $a = new \Models\Mship\Account();
         $a->account_id = VATUK_ACCOUNT_SYSTEM;
         $a->name_first = "VATSIM";
         $a->name_last = "UK";

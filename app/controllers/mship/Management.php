@@ -5,7 +5,7 @@ namespace Controllers\Mship;
 use \Redirect;
 use \Session;
 use \View;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 
 class Management extends \Controllers\BaseController {
     public function get_landing(){
