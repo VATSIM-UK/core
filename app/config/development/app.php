@@ -23,5 +23,5 @@ return array(
       | your application so that it is used when running Artisan tasks.
       |
      */
-    'url' => 'http://dev.vatsim-uk.co.uk/ALawrence/corel/'
+    'url' => $_ENV['url']
 );
