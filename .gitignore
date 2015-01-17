@@ -2,3 +2,4 @@
 !.env.sample.php
 app/database/migrations/2014_10*
 app/database/migrations/2015*
+nbproject*
