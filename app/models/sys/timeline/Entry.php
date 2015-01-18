@@ -72,6 +72,8 @@ class Entry extends \Models\aModel {
         }
 
         public static function log($key, $owner, $extra=null, $data=array()){
+            $key = strtolower($key);
+
             // Get the action
             $action = Action::where(\DB::raw("CONCAT(`section`, '_', `area`, '_', `action`)"), "=", $key)->first();
             if(!$action){
