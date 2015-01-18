@@ -12,7 +12,7 @@ class MshipEmailsVerifiedAt extends Migration {
      */
     public function up() {
         Schema::table("mship_account_email", function($table){
-           $table->renameColumn("verified", "verified_at")->after("updated_at");
+           $table->renameColumn("verified", "verified_at");
         });
     }
 
