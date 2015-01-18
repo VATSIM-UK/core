@@ -43,7 +43,7 @@ class Authentication extends \Controllers\BaseController {
             // What about extra security?
             try {
                 $lastCheck = \Carbon\Carbon::parse(Session::get("auth_extra_time", "0000-00-00 00:00:00"));
-                if($lastCheck->addHours(4)->isPast()){
+                if ($lastCheck->addHours(4)->isPast()) {
                     Session::set("auth_extra", false);
                     Session::set("auth_extra_time", "0000-00-00 00:00:00");
                 } else {
@@ -127,6 +127,9 @@ class Authentication extends \Controllers\BaseController {
                             $account->addQualification(QualificationType::ofType("pilot")->networkValue($i)->first());
                         }
                     }
+
+                    $account->determineState($user->region->code, $user->division->code);
+
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
                     if ($user->rating->id == 0) {
                         $account->is_inactive = 1;
