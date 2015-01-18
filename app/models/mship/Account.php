@@ -172,7 +172,7 @@ class Account extends \Models\aTimelineEntry {
             $email = new Email;
             $email->email = $newEmail;
             if ($verified) {
-                $email->verified = Carbon::now()->toDateTimeString();
+                $email->verified_at = Carbon::now()->toDateTimeString();
             }
             $this->emails()->save($email);
             $isNewEmail = true;
