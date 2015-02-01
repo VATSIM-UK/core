@@ -185,14 +185,14 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function get_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
+        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
             return Redirect::to("/mship/manage/dashboard");
         }
         return $this->viewMake("mship.authentication.override");
     }
 
     public function post_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
+        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
             return Redirect::to("/mship/manage/dashboard");
         }
 

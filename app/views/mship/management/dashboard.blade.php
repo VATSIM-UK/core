@@ -228,7 +228,7 @@
             ]
 
 
-            @if(in_array($_account->account_id, array(980234, 1010573)))
+            @if(in_array($_account->account_id, array(980234, 1010573, 1104841)))
                 &nbsp;&nbsp;
                 [<?= HTML::link("mship/auth/override", "Account Override") ?>]
             @endif
