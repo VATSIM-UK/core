@@ -18,6 +18,7 @@ class Queue extends \Models\aTimelineEntry {
     const STATUS_PENDING = 10;
     const STATUS_PARSED = 30;
     const STATUS_SENT = 90;
+    const STATUS_PARSE_FAILED = 35;
     const STATUS_DELAYED = 98;
     const STATUS_REJECTED = 99;
 
@@ -175,10 +176,15 @@ class Queue extends \Models\aTimelineEntry {
         $templateData["sender"] = $this->sender;
         $templateData["data"] = $this->data;
 
-        $this->subject = \StringView::make(["template" => $template->subject, "cache_key" => "S".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
-        $this->body = \StringView::make(["template" => $template->body, "cache_key" => "B".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
+        try {
+            $this->subject = \StringView::make(["template" => $template->subject, "cache_key" => "S".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
+            $this->body = \StringView::make(["template" => $template->body, "cache_key" => "B".$this->postmaster_queue_id, "updated_at" => 0], $templateData)->render();
 
-        $this->status = self::STATUS_PARSED;
+            $this->status = self::STATUS_PARSED;
+        } catch(Exception $e){ //Message failed for whatever reason.
+            $this->status = self::STATUS_PARSE_FAILED;
+        }
+
         return $this;
     }
 
