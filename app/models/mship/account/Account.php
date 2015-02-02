@@ -343,14 +343,19 @@ class Account extends \Models\aTimelineEntry {
 
     public function setNameFirstAttribute($value) {
         $value = trim($value);
-        $value = strtolower($value);
-        $value = ucfirst($value);
+        //$value = strtolower($value);
+        //$value = ucfirst($value);
+
+        if ($value == strtoupper($value) || $value == strtolower($value)) {
+            $value = ucwords($value);
+        }
+
         $this->attributes["name_first"] = utf8_encode($value);
     }
 
     public function setNameLastAttribute($value) {
         $value = trim($value);
-        $value = strtolower($value);
+        /*$value = strtolower($value);
 
         // Let's fix McSomebody and MacSomebody
         if (substr($value, 0, 2) == "mc") {
@@ -359,6 +364,10 @@ class Account extends \Models\aTimelineEntry {
             $value = "Mac" . ucfirst(substr($value, 3));
         } else {
             $value = ucfirst($value);
+        }*/
+
+        if ($value == strtoupper($value) || $value == strtolower($value)) {
+            $value = ucwords($value);
         }
 
         $this->attributes["name_last"] = utf8_encode($value);
