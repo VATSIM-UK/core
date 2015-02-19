@@ -5,6 +5,7 @@ namespace Models;
 use \Models\Sys\Timeline\Entry;
 
 abstract class aModel extends \Eloquent {
+
     public static function boot() {
         parent::boot();
         self::created(array(get_called_class(), "eventCreated"));
@@ -31,6 +32,24 @@ abstract class aModel extends \Eloquent {
             unset($array['pivot']);
         }
         return $array;
+    }
+
+    public function save(array $options = array()) {
+        // Let's check the old data vs new data, so we can store data changes!
+        if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
+            // Get the changed values!
+            foreach ($this->getDirty() as $attribute => $value) {
+                $original = $this->getOriginal($attribute);
+
+                $dataChange = new \Models\Sys\Data\Change();
+                $dataChange->data_key = $attribute;
+                $dataChange->data_old = $original;
+                $dataChange->data_new = $value;
+                $this->dataChanges()->save($dataChange);
+            }
+        }
+
+        parent::save($options);
     }
 
 }
