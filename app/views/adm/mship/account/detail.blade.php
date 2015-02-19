@@ -226,8 +226,8 @@
                                         <label for="securityLevel">Security Level</label>
                                         <select name="securityLevel">
                                             @foreach($securityLevels as $sl)
-                                                <option value="{{ $sl->security_id }}" {{ $sl->security_id == $account->current_security->security_id ? "selected='selected'" : "" }}>
-                                                    {{ $sl->name }}  {{ $sl->security_id == $account->current_security->security_id ? "(current)" : "" }}
+                                                <option value="{{ $sl->security_id }}" {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "selected='selected'" : "" }}>
+                                                    {{ $sl->name }}  {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "(current)" : "" }}
                                                 </option>
                                             @endforeach
                                         </select>
