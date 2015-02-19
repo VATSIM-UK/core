@@ -24,7 +24,8 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
 
         // Auth required
         Route::group(array("before" => "auth.admin"), function() {
-            Route::controller("/dashboard", "Dashboard");
+            Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
+            Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
             Route::controller("/system", "System");
 
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {

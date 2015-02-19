@@ -3,6 +3,7 @@
 namespace Controllers\Adm;
 
 use Models\Mship\Account;
+use Models\Mship\Account\Email as AccountEmail;
 use Models\Statistic;
 use \Session;
 use \Response;
@@ -40,12 +41,36 @@ class Dashboard extends \Controllers\Adm\AdmController {
                     ->with("membershipStats", $membershipStats);
     }
 
-    public function postSearch(){
-        $searchQuery = Input::get("q", null);
+    public function anySearch($searchQuery=null){
+        if($searchQuery == null){
+            $searchQuery = Input::get("q", null);
+        }
 
-        // Member search?
+        if(strlen($searchQuery) < 2 OR $searchQuery == null){
+            return Redirect::route("adm.dashboard");
+        }
+
+        // Direct member?
         if(is_numeric($searchQuery) && Account::find($searchQuery)){
             return Redirect::to("/adm/mship/account/".$searchQuery);
         }
+
+        // Global searches!
+        $members = Account::where("account_id", "LIKE", "%".$searchQuery."%")
+                      ->orWhere("name_first", "LIKE", "%".$searchQuery."%")
+                      ->orWhere("name_last", "LIKE", "%".$searchQuery."%")
+                      ->remember(60)
+                      ->limit(25)
+                      ->get();
+        $emails = AccountEmail::withTrashed()
+                              ->where("email", "LIKE", "%".$searchQuery."%")
+                              ->remember(60)
+                              ->limit(25)
+                              ->get();
+
+        $this->_pageTitle = "Global Search Results: ".$searchQuery;
+        return $this->viewMake("adm.search")
+                    ->with("members", $members)
+                    ->with("emails", $emails);
     }
 }

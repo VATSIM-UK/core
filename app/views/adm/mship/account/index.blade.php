@@ -8,7 +8,7 @@
                 <div class="box-title">Search Criteria</div>
             </div>
             <div class="box-body">
-                
+
             </div>
         </div>
 
