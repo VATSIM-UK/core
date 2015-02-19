@@ -65,6 +65,7 @@ class Security extends \Controllers\BaseController {
                 $slsType = 'replace';
                 $this->_pageTitle = "Replace";
             } else {
+                $slsType = 'disable';
                 $this->_pageTitle = "Disable";
             }
         }
@@ -124,9 +125,9 @@ class Security extends \Controllers\BaseController {
 
         // Does the password meet the requirements?
         if ($currentSecurity OR $currentSecurity != NULL) {
-            $securityType = SecurityType::find($currentSecurity->type);
+            $securityType = SecurityType::find($currentSecurity->security_id);
         }
-        if (!$currentSecurity OR $currentSecurity == NULL OR ! $securityType) {
+        if (!$currentSecurity OR $currentSecurity == NULL OR !$securityType) {
             $securityType = SecurityType::getDefault();
         }
 
@@ -162,11 +163,7 @@ class Security extends \Controllers\BaseController {
             return Redirect::to("/mship/manage/dashboard");
         }
 
-        // Now generate a new token for the email.
-        $token = SystemToken::generate("mship_account_security_reset", false, $this->_current_account);
-
-        // Let's send them an email with this information!
-        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_FORGOTTEN", $this->_current_account, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+        $this->_current_account->resetPassword();
 
         Session::flush();
         return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
