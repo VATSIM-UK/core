@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class MshipEmailsVerifiedAt extends Migration {
+class DataChangesTracking extends Migration {
 
     /**
      * Run the migrations.
@@ -11,8 +11,14 @@ class MshipEmailsVerifiedAt extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table("mship_account_email", function($table){
-           $table->renameColumn("verified", "verified_at");
+        Schema::create("sys_data_change", function($table) {
+            $table->bigIncrements("data_change_id")->unsigned();
+            $table->morphs("model");
+            $table->string("data_key", 100);
+            $table->text("data_old");
+            $table->text("data_new");
+            $table->boolean("automatic")->default(0);
+            $table->timestamps();
         });
     }
 
@@ -22,9 +28,7 @@ class MshipEmailsVerifiedAt extends Migration {
      * @return void
      */
     public function down() {
-        Schema::table("mship_account_email", function($table){
-           $table->renameColumn("verified_at", "verified");
-        });
+        Schema::dropIfExists("sys_data_change");
     }
 
 }
