@@ -50,15 +50,9 @@ class Account extends \Controllers\Adm\AdmController {
                     ->with("paginationStart", ($page-2 > 0 ? $page-2 : 1));
     }
 
-    public function postGoToCid(){
-        $member = AccountData::find(Input::get("cid", 0));
-
-        return Redirect::to("/adm/mship/account/".$member->account_id);
-    }
-
     public function getDetail(AccountData $account, $tab="basic") {
         if (!$account) {
-            return Redirect::to("/adm/mship/account");
+            return Redirect::route("adm.account.index");
         }
 
         // Get all possible security levels.
@@ -74,7 +68,7 @@ class Account extends \Controllers\Adm\AdmController {
 
     public function postSecurityEnable(AccountData $account){
         if (!$account) {
-            return Redirect::to("/adm/mship/account");
+            return Redirect::route("adm.account.index");
         }
 
         // Let's check the user doesn't currently have security on their account.
@@ -103,7 +97,7 @@ class Account extends \Controllers\Adm\AdmController {
 
     public function postSecurityReset(AccountData $account){
         if (!$account) {
-            return Redirect::to("/adm/mship/account");
+            return Redirect::route("adm.account.index");
         }
 
         // Let's check the user doesn't currently have security on their account.
@@ -121,7 +115,7 @@ class Account extends \Controllers\Adm\AdmController {
 
     public function postSecurityChange(AccountData $account){
         if (!$account) {
-            return Redirect::to("/adm/mship/account");
+            return Redirect::route("adm.account.index");
         }
 
         // Check the selected security ID exists!

@@ -19,23 +19,31 @@ Route::model("mshipAccount", "\Models\Mship\Account", function() {
 Route::group(array("namespace" => "Controllers\Adm"), function() {
     Route::group(array("prefix" => "adm"), function() {
         // Login is the only unauthenticated page.
-        Route::get("/", "Authentication@getLogin");
-        Route::controller("/authentication", "Authentication");
+        Route::get("/", array("uses" => "Authentication@getLogin"));
+        Route::group(array("prefix" => "authentication"), function(){
+            Route::get("/login", array("as" => "adm.authentication.login", "uses" => "Authentication@getLogin"));
+            Route::post("/login", array("as" => "adm.authentication.login", "uses" => "Authentication@postLogin"));
+            Route::get("/logout", array("as" => "adm.authentication.logout", "uses" => "Authentication@getLogout"));
+            Route::get("/verify", array("as" => "adm.authentication.verify", "uses" => "Authentication@getVerify"));
+        });
 
         // Auth required
         Route::group(array("before" => "auth.admin"), function() {
             Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
             Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
-            Route::controller("/system", "System");
+
+            Route::group(array("prefix" => "system"), function(){
+                Route::get("/timeline", array("as" => "adm.system.timeline", "uses" => "System@getTimeline"));
+            });
 
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
+                Route::get("/account", ["as" => "adm.account.index", "uses" => "Account@getIndex"]);
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.account.details", "uses" => "Account@getDetail"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.account.security.reset", "uses" => "Account@postSecurityReset"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.account.security.change", "uses" => "Account@postSecurityChange"]);
-                Route::controller("/account", "Account");
             });
         });
     });

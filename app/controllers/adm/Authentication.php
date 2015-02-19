@@ -6,6 +6,7 @@ use \AuthException;
 use \Input;
 use \Session;
 use \Response;
+use \URL;
 use \View;
 use \VatsimSSO;
 use \Config;
@@ -25,7 +26,7 @@ class Authentication extends \Controllers\Adm\AdmController {
         Session::forget("auth_adm_account");
         Session::flush();
         Session::regenerate();
-        return Redirect::to("/adm/authentication/login");
+        return Redirect::route("adm.authentication.login");
     }
 
     public function postLogin() {
@@ -35,11 +36,11 @@ class Authentication extends \Controllers\Adm\AdmController {
         Session::set("auth_adm_account", 0);
 
         // Have we got a return URL, or just the account dashboard?
-        Session::set("auth_adm_return", Input::get("returnURL", "/adm/dashboard"));
+        Session::set("auth_adm_return", Input::get("returnURL", URL::route("adm.dashboard")));
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [Config::get('sso::config.return')."adm/authentication/verify"], function($key, $secret, $url) {
+                        [URL::route("adm.authentication.verify")], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {

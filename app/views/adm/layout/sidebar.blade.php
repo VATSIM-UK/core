@@ -25,12 +25,12 @@
 
     <ul class="sidebar-menu">
         <li {{ (\Request::is('adm/dashboard*') ? ' class="active"' : '') }}>
-            <a href="{{ URL::to('/adm/dashboard') }}">
+            <a href="{{ URL::route("adm.dashboard") }}">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
         </li>
         <li {{ (\Request::is('adm/system/timeline*') ? ' class="active"' : '') }}>
-            <a href="{{ URL::to('/adm/system/timeline') }}">
+            <a href="{{ URL::route("adm.system.timeline") }}">
                 <i class="fa fa-list"></i> <span>Timeline</span>
             </a>
         <!--</li>
@@ -88,7 +88,7 @@
             </a>
             <ul class="treeview-menu">
                 <li {{ (\Request::is('adm/mship/account') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::to('/adm/mship/account') }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
+                    <a href="{{ URL::route("adm.account.index") }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
                 </li>
             </ul>
         </li>
