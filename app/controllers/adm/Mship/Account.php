@@ -13,6 +13,8 @@ use \Config;
 use \Redirect;
 use \DB;
 use \Models\Mship\Account as AccountData;
+use \Models\Mship\Account\Security as AccountSecurityData;
+use Models\Mship\Security as SecurityData;
 
 class Account extends \Controllers\Adm\AdmController {
 
@@ -54,14 +56,100 @@ class Account extends \Controllers\Adm\AdmController {
         return Redirect::to("/adm/mship/account/".$member->account_id);
     }
 
-    public function getDetail(AccountData $account) {
+    public function getDetail(AccountData $account, $tab="basic") {
         if (!$account) {
             return Redirect::to("/adm/mship/account");
         }
 
+        // Get all possible security levels.
+        $securityLevels = SecurityData::all();
+
         $this->_pageTitle = "Account Details: " . $account->name;
 
         return $this->viewMake("adm.mship.account.detail")
-                        ->with("account", $account);
+                        ->with("selectedTab", $tab)
+                        ->with("account", $account)
+                        ->with("securityLevels", $securityLevels);
+    }
+
+    public function postSecurityEnable(AccountData $account){
+        if (!$account) {
+            return Redirect::to("/adm/mship/account");
+        }
+
+        // Let's check the user doesn't currently have security on their account.
+        // We don't want to just override it for no reason, as that's bad.
+        $currentSecurity = $account->current_security;
+
+        if($currentSecurity && $currentSecurity->exists){
+            return Redirect::route("adm.account.details", [$account->account_id, "security"])->withError("You cannot enable security on this account.");
+        }
+
+        // Check the selected security ID exists!
+        $security = SecurityData::find(Input::get("securityLevel", 0));
+
+        if(!$security){
+            return Redirect::route("adm.account.details", [$account->account_id, "security"])->withError("Invalid security ID specified.");
+        }
+
+        // Create them a blank security entry!
+        $newSecurity = new AccountSecurityData();
+        $newSecurity->save();
+        $account->security()->save($newSecurity);
+        $security->accountSecurity()->save($newSecurity);
+
+        return Redirect::route("adm.account.details", [$account->account_id, "security"])->withSuccess("Security enabled for this account.");
+    }
+
+    public function postSecurityReset(AccountData $account){
+        if (!$account) {
+            return Redirect::to("/adm/mship/account");
+        }
+
+        // Let's check the user doesn't currently have security on their account.
+        // We can't reset non-existant security!
+        $currentSecurity = $account->current_security;
+
+        if(!$currentSecurity OR !$currentSecurity->exists){
+            return Redirect::route("adm.account.details", [$account->account_id, "security"])->withError("You cannot reset non-existant security.");
+        }
+
+        $account->resetPassword(true);
+
+        return Redirect::route("adm.account.details", [$account->account_id, "security"])->withSuccess("Security reset requested - user will receive an email.");
+    }
+
+    public function postSecurityChange(AccountData $account){
+        if (!$account) {
+            return Redirect::to("/adm/mship/account");
+        }
+
+        // Check the selected security ID exists!
+        $security = SecurityData::find(Input::get("securityLevel", 0));
+
+        if(!$security){
+            return Redirect::route("adm.account.details", [$account->account_id, "security"])->withError("Invalid security ID specified.");
+        }
+
+        // Let's check the user doesn't currently have security on their account.
+        // We don't want to just override it for no reason, as that's bad.
+        $currentSecurity = $account->current_security;
+
+        // It's also pointless changing to the same security ID.
+        if(!$currentSecurity OR !$currentSecurity->exists OR $currentSecurity->security_id == $security->security_id){
+            return Redirect::route("adm.account.details", [$account->account_id, "security"])->withError("You cannot change security on this account.");
+        }
+
+        // Let's expire the current security
+        $currentSecurity->expire();
+        $currentSecurity->delete();
+
+        // Now, let's make a new one!
+        $newSecurity = new AccountSecurityData();
+        $newSecurity->save();
+        $account->security()->save($newSecurity);
+        $security->accountSecurity()->save($newSecurity);
+
+        return Redirect::route("adm.account.details", [$account->account_id, "security"])->withSuccess("Security has been upgraded on this account.");
     }
 }
