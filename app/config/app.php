@@ -112,6 +112,7 @@ return array(
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
         'Zizaco\Entrust\EntrustServiceProvider',
+        'Barryvdh\Debugbar\ServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
@@ -177,5 +178,6 @@ return array(
         'VatsimXML' => 'Vatsim\Xml\Facades\XML',
         'DbView'          => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
         'Entrust'    => 'Zizaco\Entrust\EntrustFacade',
+        'Debugbar' => 'Barryvdh\Debugbar\Facade',
     ),
 );
