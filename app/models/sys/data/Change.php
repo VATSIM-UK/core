@@ -1,13 +1,13 @@
 <?php
 
-namespace Models\Sys;
+namespace Models\Sys\Data;
 
-class Session extends \Models\aModel {
-        protected $table = "sys_sessions";
-        protected $primaryKey = "id";
-        protected $hidden = ['session_id'];
+class Change extends \Models\aModel {
+        protected $table = "sys_data_change";
+        protected $primaryKey = "data_change_id";
+        protected $hidden = ['data_change_id'];
 
-        public function account(){
-            return $this->belongsTo("\Models\Mship\Account", "session_id", "id");
+        public function model(){
+            return $this->morphTo();
         }
 }
