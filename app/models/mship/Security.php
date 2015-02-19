@@ -13,12 +13,8 @@ class Security extends \Eloquent {
         protected $dates = ['created_at', 'deleted_at'];
         protected $hidden = ['security_id'];
 
-        public function verifyPassword($value){
-            return $this->password == $this->hash($value);
-        }
-
-        private function hash($value){
-            return sha1(sha1($value));
+        public function accountSecurity(){
+            return $this->hasMany("\Models\Mship\Account\Security", "security_id", "security_id");
         }
 
         public static function getDefault(){

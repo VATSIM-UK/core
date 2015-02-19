@@ -4,6 +4,7 @@ namespace Models\Mship;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;
+use \Models\Sys\Token as SystemToken;
 
 class Account extends \Models\aTimelineEntry {
 
@@ -46,6 +47,10 @@ class Account extends \Models\aTimelineEntry {
 
         // Generate an email to the user to advise them of their new account at VATUK.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
+    }
+
+    public function dataChanges(){
+        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
 
     public function emails() {
@@ -158,11 +163,20 @@ class Account extends \Models\aTimelineEntry {
         }
 
         // Set a new one!
-        $security = new Security;
+        $security = new Account\Security();
         $security->account_id = $this->account_id;
         $security->security_id = $type->security_id;
         $security->value = $password;
         $security->save();
+    }
+
+    public function resetPassword($admin=false){
+        // Now generate a new token for the email.
+        $token = SystemToken::generate("mship_account_security_reset", false, $this);
+
+        // Let's send them an email with this information!
+        $email = $admin ? "MSHIP_SECURITY_FORGOTTEN_ADMIN" : "MSHIP_SECURITY_FORGOTTEN";
+        \Models\Sys\Postmaster\Queue::queue($email, $this, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
     }
 
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {

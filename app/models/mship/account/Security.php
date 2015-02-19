@@ -11,7 +11,7 @@ class Security extends \Eloquent {
 	use SoftDeletingTrait;
         protected $table = "mship_account_security";
         protected $primaryKey = "account_security_id";
-        protected $dates = ['created_at', 'deleted_at'];
+        protected $dates = ['created_at', 'expires_at', 'deleted_at'];
         protected $hidden = ['account_security_id'];
 
         public function account(){
@@ -33,7 +33,7 @@ class Security extends \Eloquent {
         public function getIsActiveAttribute(){
             if($this->expires_at == NULL){ return true; }
             elseif($this->value == ''){ return false; }
-            else { return Carbon::createFromFormat("Y-m-d H:i:s", $this->expires_at)->diffInDays() > 0; }
+            else { return $this->expires_at->diffInDays() > 0; }
         }
 
         private function hash($value){
