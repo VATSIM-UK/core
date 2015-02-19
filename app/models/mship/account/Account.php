@@ -347,7 +347,7 @@ class Account extends \Models\aTimelineEntry {
         //$value = ucfirst($value);
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords($value);
+            $value = ucwords(strtolower($value));
         }
 
         $this->attributes["name_first"] = utf8_encode($value);
@@ -367,7 +367,7 @@ class Account extends \Models\aTimelineEntry {
         }*/
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords($value);
+            $value = ucwords(strtolower($value));
         }
 
         $this->attributes["name_last"] = utf8_encode($value);
