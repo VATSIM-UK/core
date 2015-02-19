@@ -111,6 +111,7 @@ return array(
         'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
+        'Zizaco\Entrust\EntrustServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
@@ -175,5 +176,6 @@ return array(
         'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
         'VatsimXML' => 'Vatsim\Xml\Facades\XML',
         'DbView'          => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
+        'Entrust'    => 'Zizaco\Entrust\EntrustFacade',
     ),
 );
