@@ -24,12 +24,6 @@ return array(
 	'secret' => $_ENV['vatsimsso.secret'],
 
 	/*
-	 * The URL users will be redirected to after they log in, this should
-	 * be on the same server as the request
-	 */
-	'return' => $_ENV['vatsimsso.return'],
-
-	/*
 	 * The signing method you are using to encrypt your request signature.
 	 * Different options must be enabled on your account at VATSIM.
 	 * Options: RSA / HMAC
@@ -41,5 +35,5 @@ return array(
 	 * If you are not using RSA, this value can be anything (or not set)
 	 */
 	'cert' => $_ENV['vatsimsso.cert']
-    
+
 );

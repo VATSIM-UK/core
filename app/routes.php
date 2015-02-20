@@ -52,19 +52,41 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
 Route::group(array("namespace" => "Controllers"), function() {
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
         // Guest access
-        Route::controller("authentication", "Authentication");
-        Route::controller("auth", "Authentication"); // Legacy URL.  **DO NOT REMOVE**
-        Route::get("manage/landing", "Management@get_landing");
+        Route::group(array("prefix" => "auth"), function(){
+            Route::get("/redirect", ["as" => "mship.auth.redirect", "uses" => "Authentication@getRedirect"]);
+            Route::get("/login", ["as" => "mship.auth.login", "uses" => "Authentication@getLogin"]);
+            Route::get("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@getLogout"]);
+            Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
+            Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
 
-        // No auth needed for reset.
-        Route::get("security/forgotten-link/{code}", "Security@get_forgotten_link")->where(array("code" => "\w+"));
-        Route::group(array("before" => "auth.user.basic"), function() {
-            Route::controller("security", "Security");
+            // /mship/auth - fully authenticated.
+            Route::group(["before" => "auth.user.full"], function(){
+                Route::get("/override", ["as" => "mship.auth.override", "uses" => "Authentication@getOverride"]);
+                Route::post("/override", ["as" => "mship.auth.override", "uses" => "Authentication@postOverride"]);
+                Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
+            });
         });
 
-        Route::group(array("before" => "auth.user.full"), function() {
-            Route::get("manage/display", "Management@get_dashboard"); // Legacy URL.  **DO NOT REMOVE**
-            Route::controller("manage", "Management");
+        Route::group(["prefix" => "manage"], function(){
+            Route::get("/landing", ["as" => "mship.manage.landing", "uses" => "Management@getLanding"]);
+            Route::get("/dashboard", [
+                "as" => "mship.manage.dashboard",
+                "uses" => "Management@getDashboard",
+                "before" => "auth.user.full",
+                ]);
+        });
+
+        Route::group(["prefix" => "security"], function(){
+            Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
+
+            Route::group(["before" => "auth.user.basic"], function(){
+                Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
+                Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
+                Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
+                Route::get("/replace", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
+                Route::post("/replace", ["as" => "mship.security.replace", "uses" => "Security@postReplace"]);
+                Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
+            });
         });
     });
 
@@ -74,4 +96,4 @@ Route::group(array("namespace" => "Controllers"), function() {
     });
 });
 
-Route::get("/", "\Controllers\Mship\Management@get_landing");
+Route::get("/", "/mship/landing");

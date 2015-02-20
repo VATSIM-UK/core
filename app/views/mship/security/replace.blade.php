@@ -30,7 +30,7 @@
 
 <div class="row">
     <div class="col-md-7 col-md-offset-2">
-        <form class="form-horizontal" method="POST" action="<?= URL::to("/mship/security/replace/".$disable) ?>" role="form">
+        <form class="form-horizontal" method="POST" action="<?= URL::route("mship.security.replace", [$disable]) ?>" role="form">
             <?php if ((isset($sls_type) && ($sls_type == "replace" OR $sls_type == "expired")) OR $disable): ?>
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="old_password">Old Password</label>

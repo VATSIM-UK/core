@@ -3,6 +3,7 @@
 namespace Controllers\Mship;
 
 use \Config;
+use \URL;
 use \Input;
 use \Session;
 use \Redirect;
@@ -12,26 +13,26 @@ use \Models\Mship\Qualification as QualificationType;
 
 class Authentication extends \Controllers\BaseController {
 
-    public function get_redirect() {
+    public function getRedirect() {
         // If there's NO basic auth, send to login.
         if (!Session::get("auth_basic", false)) {
-            return Redirect::to("/mship/auth/login");
+            return Redirect::route("mship.auth.login");
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
         if (!Session::get("auth_extra", false) && $this->_current_account->current_security) {
-            return Redirect::to("/mship/security/auth");
+            return Redirect::route("mship.security.auth");
         }
 
         // If we're at this stage, we can go for FULL authentication.
         Session::set("auth_true", true);
 
         // Send them home!
-        return Redirect::to(Session::pull("auth_return", "/mship/manage/dashboard"));
+        return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
     }
 
-    public function get_login() {
-        Session::set("auth_return", Input::get("returnURL", "/mship/manage/dashboard"));
+    public function getLogin() {
+        Session::set("auth_return", Input::get("returnURL", URL::route("mship.manage.dashboard")));
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
         if ($this->_current_account) {
@@ -54,7 +55,7 @@ class Authentication extends \Controllers\BaseController {
                 Session::set("auth_extra_time", "0000-00-00 00:00:00");
             }
 
-            return Redirect::to("/mship/auth/redirect");
+            return Redirect::route("mship.auth.redirect");
         }
 
         // Start the login process by disabling their auth!
@@ -68,7 +69,7 @@ class Authentication extends \Controllers\BaseController {
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [Config::get('sso::config.return') . "mship/auth/verify"], function($key, $secret, $url) {
+                        [URL::route("mship.auth.verify")], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
@@ -77,7 +78,7 @@ class Authentication extends \Controllers\BaseController {
         );
     }
 
-    public function get_verify() {
+    public function getVerify() {
         if (!Session::has('vatsimauth')) {
             throw new \AuthException('Session does not exist');
         }
@@ -146,29 +147,29 @@ class Authentication extends \Controllers\BaseController {
                     Session::set("auth_account", $user->id);
 
                     // Let's send them over to the authentication redirect now.
-                    return Redirect::to("/mship/auth/redirect");
+                    return Redirect::route("mship.auth.redirect");
                 }, function($error) {
                     throw new \AuthException($error['message']);
                 }
         );
     }
 
-    public function get_logout($force = false) {
+    public function getLogout($force = false) {
         Session::set("logout_return", Input::get("returnURL", "/mship/manage/dashboard"));
 
         if ($force) {
-            return $this->post_logout($force);
+            return $this->postLogout($force);
         }
         return $this->viewMake("mship.authentication.logout");
     }
 
-    public function post_logout($force = false) {
+    public function postLogout($force = false) {
         if (Input::get("processlogout", 0) == 1 OR $force) {
 
             // If we're overriding, clicking logout should only cancel the override.
             if (Session::get("auth_override", 0) > 0) {
                 Session::set("auth_override", 0);
-                return Redirect::to("/mship/manage/landing");
+                return Redirect::route("mship.manage.landing");
             }
 
             // Actual logout.
@@ -181,21 +182,21 @@ class Authentication extends \Controllers\BaseController {
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
-    public function get_override() {
+    public function getOverride() {
         if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
-            return Redirect::to("/mship/manage/dashboard");
+            return Redirect::route("mship.manage.dashboard");
         }
         return $this->viewMake("mship.authentication.override");
     }
 
-    public function post_override() {
+    public function postOverride() {
         if (!in_array($this->_current_account->account_id, array(980234, 1010573))) {
-            return Redirect::to("/mship/manage/dashboard");
+            return Redirect::route("mship.manage.dashboard");
         }
 
         // Check secondary password!
         if (!$this->_current_account->current_security->verifyPassword(Input::get("password"))) {
-            return Redirect::to("/mship/auth/override")->withError("No");
+            return Redirect::route("mship.auth.override")->withError("No");
         }
 
         // All correct? Can we load this user?
@@ -206,10 +207,10 @@ class Authentication extends \Controllers\BaseController {
             Session::set("auth_override", $_ovr->account_id);
         }
 
-        return Redirect::to("/mship/manage/landing");
+        return Redirect::route("mship.manage.landing");
     }
 
-    public function get_invisibility() {
+    public function getInvisibility() {
         // Toggle
         if ($this->_current_account->is_invisible) {
             $this->_current_account->is_invisible = 0;
@@ -218,7 +219,7 @@ class Authentication extends \Controllers\BaseController {
         }
         $this->_current_account->save();
 
-        return Redirect::to("/mship/manage/landing");
+        return Redirect::route("mship.manage.landing");
     }
 
 }

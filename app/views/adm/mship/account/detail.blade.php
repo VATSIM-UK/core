@@ -19,90 +19,88 @@
 
                 <div class="tab-content">
                     <div class="tab-pane fade {{ $selectedTab == "basic" ? "in active" : "" }}" id="basic">
-                        <form role="form" method="POST" action="{{ URL::to('/adm/mship/account/'.$account->account_id) }}">
-                            <div class="col-md-4">
-                                <!-- general form elements -->
-                                <div class="box box-primary">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Basic Details</h3>
-                                    </div><!-- /.box-header -->
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label for="account_id">CID:</label>
-                                            {{ $account->account_id }}
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Name:</label>
-                                            {{ $account->name }}
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="primary_email">Primary Email:</label>
-                                            {{ $account->primary_email }}
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="secondary_email">Secondary Email(s):</label>
-                                            @if(count($account->secondary_email) < 1)
-                                            <em>There are no secondary emails.</em>
-                                            @else
-                                            <br />
-                                            @foreach($account->secondary_email as $se)
-                                            <em>{{ $se->email }}</em><br />
+                        <div class="col-md-4">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">Basic Details</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="account_id">CID:</label>
+                                        {{ $account->account_id }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Name:</label>
+                                        {{ $account->name }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="primary_email">Primary Email:</label>
+                                        {{ $account->primary_email }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="secondary_email">Secondary Email(s):</label>
+                                        @if(count($account->secondary_email) < 1)
+                                        <em>There are no secondary emails.</em>
+                                        @else
+                                        <br />
+                                        @foreach($account->secondary_email as $se)
+                                        <em>{{ $se->email }}</em><br />
+                                        @endforeach
+                                        @endif
+                                    </div>
+                                </div><!-- /.box-body -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">Membership Status</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="status">Status:</label>
+                                        {{ $account->status }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="state">State:</label>
+                                        {{ $account->current_state }}<br />
+                                        <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
+                                    </div>
+                                </div><!-- /.box-body -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">Qualifications</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <table class="table table-striped table-bordered table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Code</th>
+                                                <th>Achieved</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($account->qualifications as $q)
+                                            <tr>
+                                                <td>{{ $q->qualification->type }}</td>
+                                                <td>{{ $q->qualification->code }}</td>
+                                                <td>{{ $q->created_at->diffForHumans() }}, {{ $q->created_at }}</td>
+                                            </tr>
                                             @endforeach
-                                            @endif
-                                        </div>
-                                    </div><!-- /.box-body -->
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <!-- general form elements -->
-                                <div class="box box-primary">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Membership Status</h3>
-                                    </div><!-- /.box-header -->
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label for="status">Status:</label>
-                                            {{ $account->status }}
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="state">State:</label>
-                                            {{ $account->current_state }}<br />
-                                            <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
-                                        </div>
-                                    </div><!-- /.box-body -->
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <!-- general form elements -->
-                                <div class="box box-primary">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Qualifications</h3>
-                                    </div><!-- /.box-header -->
-                                    <div class="box-body">
-                                        <table class="table table-striped table-bordered table-condensed">
-                                            <thead>
-                                                <tr>
-                                                    <th>Type</th>
-                                                    <th>Code</th>
-                                                    <th>Achieved</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($account->qualifications as $q)
-                                                <tr>
-                                                    <td>{{ $q->qualification->type }}</td>
-                                                    <td>{{ $q->qualification->code }}</td>
-                                                    <td>{{ $q->created_at->diffForHumans() }}, {{ $q->created_at }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.box -->
-                            </div>
-                        </form>
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
                     </div>
                     <div class="tab-pane fade {{ $selectedTab == "security" ? "in active" : "" }}" id="security">
                         <!-- general form elements -->

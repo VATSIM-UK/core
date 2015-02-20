@@ -13,39 +13,39 @@ use \Models\Sys\Token as SystemToken;
 
 class Security extends \Controllers\BaseController {
 
-    public function get_auth() {
+    public function getAuth() {
         // Let's check whether we even NEED this.
         if (Session::get("auth_extra", false) OR ! $this->_current_account->current_security OR $this->_current_account->current_security == NULL) {
-            return Redirect::to("/mship/auth/redirect");
+            return Redirect::route("mship.auth.redirect");
         }
 
         // Next, do we need to replace/reset?
         if (!$this->_current_account->current_security->is_active) {
-            return Redirect::to("/mship/security/replace");
+            return Redirect::route("mship.security.replace");
         }
 
         // So we need it.  Let's go!
         return $this->viewMake("mship.security.auth");
     }
 
-    public function post_auth() {
+    public function postAuth() {
         if ($this->_current_account->current_security->verifyPassword(Input::get("password"))) {
             Session::set("auth_extra", true);
             Session::set("auth_extra_time", \Carbon\Carbon::now()->toDateTimeString());
-            return Redirect::to("/mship/auth/redirect");
+            return Redirect::route("mship.auth.redirect");
         }
-        return Redirect::to("/mship/security/auth")->with("error", "Invalid password entered - please try again.");
+        return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
     }
 
-    public function get_enable() {
-        return Redirect::to("/mship/security/replace");
+    public function getEnable() {
+        return Redirect::route("mship.security.replace");
     }
 
-    public function get_replace($disable = false) {
+    public function getReplace($disable = false) {
         $currentSecurity = $this->_current_account->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
-            return Redirect::to("/mship/manage/dashboard")->with("error", "You cannot disable your secondary password.");
+            return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         } elseif ($disable && !$currentSecurity) {
             $disable = false;
         } elseif($disable) {
@@ -95,31 +95,31 @@ class Security extends \Controllers\BaseController {
         return $this->viewMake("mship.security.replace")->with("sls_type", $slsType)->with("requirements", $requirements)->with("disable", $disable);
     }
 
-    public function post_replace($disable = false) {
+    public function postReplace($disable = false) {
         $currentSecurity = $this->_current_account->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
-            return Redirect::to("/mship/manage/dashboard")->with("error", "You cannot disable your secondary password.");
+            return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         }
 
         if ($currentSecurity && strlen($currentSecurity->value) > 1) {
             if (!$this->_current_account->current_security->verifyPassword(Input::get("old_password"))) {
-                return Redirect::to("/mship/security/replace".($disable ? "/1" : ""))->with("error", "Your old password is incorrect.  Please try again.");
+                return Redirect::route("mship.security.replace", [($disable ? "/1" : "")])->with("error", "Your old password is incorrect.  Please try again.");
             }
 
             if ($disable) {
                 $currentSecurity->delete();
-                return Redirect::to("/mship/manage/dashboard")->with("success", "Your secondary password has been deleted successfully.");
+                return Redirect::route("mship.manage.dashboard")->with("success", "Your secondary password has been deleted successfully.");
             }
 
             if (Input::get("old_password") == Input::get("new_password")) {
-                return Redirect::to("/mship/security/replace")->with("error", "Your new password cannot be the same as your old password.");
+                return Redirect::route("mship.security.replace")->with("error", "Your new password cannot be the same as your old password.");
             }
         }
 
         // Check passwords match.
         if (Input::get("new_password") != Input::get("new_password2")) {
-            return Redirect::to("/mship/security/replace")->with("error", "The two passwords you enter do not match - you must enter your old password twice.");
+            return Redirect::route("mship.security.replace")->with("error", "The two passwords you enter do not match - you must enter your old password twice.");
         }
         $newPassword = Input::get("new_password");
 
@@ -133,34 +133,34 @@ class Security extends \Controllers\BaseController {
 
         // Check the minimum length first.
         if (strlen($newPassword) < $securityType->length) {
-            return Redirect::to("/mship/security/replace")->with("error", "Your password does not meet the requirements [Length > " . $securityType->length . "]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Length > " . $securityType->length . "]");
         }
 
         // Check the number of alphabetical characters.
         if (preg_match_all("/[a-zA-Z]/", $newPassword) < $securityType->alpha) {
-            return Redirect::to("/mship/security/replace")->with("error", "Your password does not meet the requirements [Alpha > " . $securityType->alpha . "]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Alpha > " . $securityType->alpha . "]");
         }
 
         // Check the number of numeric characters.
         if (preg_match_all("/[0-9]/", $newPassword) < $securityType->numeric) {
-            return Redirect::to("/mship/security/replace")->with("error", "Your password does not meet the requirements [Numeric > " . $securityType->numeric . "]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Numeric > " . $securityType->numeric . "]");
         }
 
         // Check the number of symbols characters.
         if (preg_match_all("/[^a-zA-Z0-9]/", $newPassword) < $securityType->symbols) {
-            return Redirect::to("/mship/security/replace")->with("error", "Your password does not meet the requirements [Symbols > " . $securityType->symbols . "]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Symbols > " . $securityType->symbols . "]");
         }
 
         // All requirements met, set the password!
         $this->_current_account->setPassword($newPassword, $securityType);
 
         Session::set("auth_extra", true);
-        return Redirect::to("/mship/security/auth");
+        return Redirect::route("mship.security.auth");
     }
 
-    public function get_forgotten() {
+    public function getForgotten() {
         if (!$this->_current_account->current_security) {
-            return Redirect::to("/mship/manage/dashboard");
+            return Redirect::route("mship.manage.dashboard");
         }
 
         $this->_current_account->resetPassword();
@@ -172,7 +172,7 @@ class Security extends \Controllers\BaseController {
                 You can now close this window.");
     }
 
-    public function get_forgotten_link($code=null) {
+    public function getForgottenLink($code=null) {
         // Search tokens for this code!
         $token = SystemToken::where("code", "=", $code)->valid()->first();
 
