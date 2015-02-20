@@ -2,6 +2,7 @@
 
 namespace Controllers\Adm\Sys\Postmaster;
 
+use \Artisan;
 use \Input;
 use \Session;
 use \Response;
@@ -20,6 +21,25 @@ class Queue extends \Controllers\Adm\AdmController {
 
         return $this->viewMake("adm.sys.postmaster.queue.index")
                     ->with("queue", $queue);
+    }
+
+    public function getView(PostmasterQueueData $postmasterQueue){
+        if(!$postmasterQueue OR !$postmasterQueue->exists){
+            return Redirect::route("adm.sys.postmaster.queue.index")->withError("Postmaster queue entry doesn't exist.");
+        }
+
+        return $this->viewMake("adm.sys.postmaster.queue.view")
+                    ->with("queue", $postmasterQueue);
+    }
+
+    public function getParse(){
+        // Implement manual parsing.  To do this, we need to think carefully
+        // about how to lock the rows to avoid issues.
+    }
+
+    public function getDispatch(){
+        // Implement manual dispatch.  To do this, we need to think carefully
+        // about how to lock the rows to avoid issues.
     }
 
 }
