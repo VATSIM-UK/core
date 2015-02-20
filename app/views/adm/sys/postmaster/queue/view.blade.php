@@ -9,25 +9,35 @@
                     Queue Entry # {{ $queue->postmaster_queue_id }}
 
                     @if($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_LOW)
-                        <span class="label label-default">Priority: Low</span>
+                    <span class="label label-default">Priority: Low</span>
                     @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_MED)
-                        <span class="label label-primary">Priority: Normal</span>
+                    <span class="label label-primary">Priority: Normal</span>
                     @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_HIGH)
-                        <span class="label label-warning">Priority: High</span>
+                    <span class="label label-warning">Priority: High</span>
                     @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_NOW)
-                        <span class="label label-danger">Priority: Immediate</span>
+                    <span class="label label-danger">Priority: Immediate</span>
                     @endif
 
                     @if($queue->status == \Models\Sys\Postmaster\Queue::STATUS_PENDING)
-                        <span class="label label-default">Status: Pending</span>
+                    <span class="label label-default">Pending</span>
                     @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_PARSED)
-                        <span class="label label-primary">Status: Parsed</span>
+                    <span class="label label-primary">Parsed</span>
                     @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_SENT)
-                        <span class="label label-success">Status: Sent</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DELAYED)
-                        <span class="label label-warning">Status: Delayed</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_REJECTED)
-                        <span class="label label-danger">Status: Rejected</span>
+                    <span class="label label-success">Sent</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DELIVERED)
+                    <span class="label label-success">Delivered</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_CLICKED)
+                    <span class="label label-success">Clicked</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_OPENED)
+                    <span class="label label-success">Opened</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DROPPED)
+                    <span class="label label-warning">Dropped</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_SPAM)
+                    <span class="label label-warning">Spam</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_UNSUBSCRIBED)
+                    <span class="label label-warning">Unsubscribed</span>
+                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_BOUNCED)
+                    <span class="label label-danger">Bounced</span>
                     @endif
                 </h3>
             </div><!-- /.box-header -->
@@ -40,6 +50,18 @@
                         {{ nl2br($queue->body) }}
                     </div>
                 </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Recent Timeline Events</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body table-responsive">
+                @include('adm.sys.timeline.widget', array('entries' => $queue->timeline_entries_recent))
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div>

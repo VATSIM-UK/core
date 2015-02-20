@@ -14,4 +14,8 @@ class Action extends \Models\aModel {
         public function entries(){
             return $this->hasMany("Models\Sys\Timeline\Entry", "timeline_action_id", "timeline_action_id");
         }
+
+        public function getTypeAttribute(){
+            return array_get($this->attributes, "section").".".array_get($this->attributes, "area");
+        }
 }

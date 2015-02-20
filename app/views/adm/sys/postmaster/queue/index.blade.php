@@ -68,10 +68,20 @@
                                 <span class="label label-primary">Parsed</span>
                                 @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_SENT)
                                 <span class="label label-success">Sent</span>
-                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_DELAYED)
-                                <span class="label label-warning">Delayed</span>
-                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_REJECTED)
-                                <span class="label label-danger">Rejected</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_DELIVERED)
+                                <span class="label label-success">Delivered</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_CLICKED)
+                                <span class="label label-success">Clicked</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_OPENED)
+                                <span class="label label-success">Opened</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_DROPPED)
+                                <span class="label label-warning">Dropped</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_SPAM)
+                                <span class="label label-warning">Spam</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_UNSUBSCRIBED)
+                                <span class="label label-warning">Unsubscribed</span>
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_BOUNCED)
+                                <span class="label label-danger">Bounced</span>
                                 @endif
                             </td>
                             <td>{{ $q->created_at }}</td>

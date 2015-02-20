@@ -25,4 +25,8 @@ class Template extends \Models\aModel {
         return $this->belongsTo("\Models\Sys\Postmaster\Queue", "postmaster_template_id", "postmaster_template_id");
     }
 
+    public function getDisplayValueAttribute() {
+        return array_get($this->attributes, "section")."_".array_get($this->attributes, "area")."_".array_get($this->attributes, "action");
+    }
+
 }

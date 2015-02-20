@@ -92,7 +92,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function getDisplayValueAttribute() {
-        return "SOME GENERIC EMAIL ENTRY - NEEDS CHANGING.";
+        return array_get($this->attributes, "postmaster_queue_id").".".$this->template->display_value;
     }
 
     public function setDataAttribute($data) {
@@ -104,7 +104,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function setMessageIdAttribute($value){
-        $this->attributes['message_id'] = strpos($value, "@") ? substr($value, 0, strpos("@")) : $value;
+        $this->attributes['message_id'] = strpos($value, "@") ? substr($value, 0, strpos($value, "@")) : $value;
     }
 
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {

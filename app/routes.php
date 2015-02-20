@@ -11,6 +11,8 @@
   |
  */
 
+Log::info(Request::url());
+
 Route::model("mshipAccount", "\Models\Mship\Account", function() {
     Redirect::route("adm.mship.account.index");
 });
@@ -21,6 +23,13 @@ Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function(){
 
 Route::model("postmasterTemplate", "\Models\Sys\Postmaster\Template", function(){
     Redirect::route("adm.sys.postmaster.template.index");
+});
+
+/*** WEBHOOKS ***/
+Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], function(){
+    Route::group(["prefix" => "email", "namespace" => "Email"], function(){
+        Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
+    });
 });
 
 /* * ** ADM *** */

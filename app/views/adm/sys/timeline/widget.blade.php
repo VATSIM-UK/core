@@ -10,7 +10,7 @@
         <?php $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $entry->created_at)->toFormattedDateString(); ?>
     @endif
     <li>
-        @include('adm.system.timeline_entries.'.$entry->action->type, array('entry' => $entry))
+        @include('adm.sys.timeline_entries.'.$entry->action->type, array('entry' => $entry))
     </li>
     @endforeach
 </ul>
