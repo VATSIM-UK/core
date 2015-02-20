@@ -13,8 +13,10 @@ class EntrustSetupTables extends Migration {
         // Creates the roles table
         Schema::create('mship_role', function ($table) {
             $table->increments('role_id')->unsigned();
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->boolean("default")->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // Creates the assigned_roles (Many-to-Many relation) table
@@ -22,6 +24,9 @@ class EntrustSetupTables extends Migration {
             $table->increments('account_role_id')->unsigned();
             $table->integer('account_id')->unsigned();
             $table->integer('role_id')->unsigned();
+            $table->timestamps();
+            $table->softDeletes();
+
             $table->foreign('account_id')->references('account_id')->on('mship_account')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('role_id')->references('role_id')->on('mship_role');
         });
@@ -29,9 +34,10 @@ class EntrustSetupTables extends Migration {
         // Creates the permissions table
         Schema::create('mship_permission', function ($table) {
             $table->increments('permission_id')->unsigned();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('display_name');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // Creates the permission_role (Many-to-Many relation) table
@@ -39,8 +45,10 @@ class EntrustSetupTables extends Migration {
             $table->increments('permission_role_id')->unsigned();
             $table->integer('permission_id')->unsigned();
             $table->integer('role_id')->unsigned();
+            $table->timestamps();
+            $table->softDeletes();
+
             $table->foreign('permission_id')->references('permission_id')->on('mship_permission');
-            // assumes a users table
             $table->foreign('role_id')->references('role_id')->on('mship_role');
         });
     }
