@@ -78,6 +78,10 @@ class Queue extends \Models\aTimelineEntry {
         return ($this->attributes['data'] ? json_decode($this->attributes['data']) : array());
     }
 
+    public function setMessageIdAttribute($value){
+        $this->attributes['message_id'] = substr($value, 0, strpos($value, "@"));
+    }
+
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {
         // If the PostmasterTemplate isn't a class, we've been given the key.  Use it.
         if (!is_object($postmasterTemplate)) {
@@ -227,6 +231,7 @@ class Queue extends \Models\aTimelineEntry {
 
             $message->subject($this->subject);
 
+            $this->message_id = $message->getId();
             $this->status = Queue::STATUS_SENT;
             $this->save();
         });
