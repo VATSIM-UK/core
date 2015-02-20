@@ -58,11 +58,11 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function messagesReceived() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "recpient_id");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function messagesSent() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "sender_id");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function notes() {

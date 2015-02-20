@@ -11,6 +11,8 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
                     <li {{ $selectedTab == "security" ? "class='active'" : "" }}><a href="#security" role="tab" data-toggle="tab">Security Details</a></li>
+                    <li {{ $selectedTab == "receivedEmails" ? "class='active'" : "" }}><a href="#receivedEmails" role="tab" data-toggle="tab">Received Emails</a></li>
+                    <li {{ $selectedTab == "sentEmails" ? "class='active'" : "" }}><a href="#sentEmails" role="tab" data-toggle="tab">Sent Emails</a></li>
                     <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     <li {{ $selectedTab == "flags" ? "class='active'" : "" }}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
                     <li {{ $selectedTab == "datachanges" ? "class='active'" : "" }}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
@@ -241,7 +243,15 @@
                         {{ Form::close() }}
                     </div>
 
-                    <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes_info">Notes</div>
+                    <div class="tab-pane fade {{ $selectedTab == "receivedEmails" ? "in active" : "" }}" id="receivedEmails">
+                        <p>Only the last 25 emails this user has received have been displayed here.</p>
+                        @include('adm.sys.postmaster.queue.widget', array('queue' => $account->messagesReceived()->limit(25)->get()))
+                    </div>
+                    <div class="tab-pane fade {{ $selectedTab == "sentEmails" ? "in active" : "" }}" id="sentEmails">
+                        <p>Only the last 25 emails this user has sent have been displayed here.</p>
+                        @include('adm.sys.postmaster.queue.widget', array('queue' => $account->messagesSent()->limit(25)->get()))
+                    </div>
+                    <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">Notes</div>
                     <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
                     <div class="tab-pane fade {{ $selectedTab == "datachanges" ? "in active" : "" }}" id="datachanges">
                         <!-- general form elements -->
