@@ -39,6 +39,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                     Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
                     Route::get("/queue/view/{queueID}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
                     Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
+                    Route::get("/template/view/{templateID}", ["as" => "adm.sys.postmaster.template.view", "uses" => "Template@getView"]);
                 });
             });
 

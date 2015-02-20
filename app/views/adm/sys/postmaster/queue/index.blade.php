@@ -40,7 +40,13 @@
                     <tbody>
                         @foreach($queue as $q)
                         <tr>
-                            <td>{{ link_to_route('adm.sys.postmaster.queue.view', $q->postmaster_queue_id, [$q->postmaster_queue_id]) }}</td>
+                            <td>
+                                @if($q->status != \Models\Sys\Postmaster\Queue::STATUS_PENDING)
+                                    {{ link_to_route('adm.sys.postmaster.queue.view', $q->postmaster_queue_id, [$q->postmaster_queue_id]) }}
+                                @else
+                                    {{ $q->postmaster_queue_id }}
+                                @endif
+                            </td>
                             <td>{{ $q->recipient->name }} ({{ link_to_route("adm.mship.account.details", $q->recipient_id, [$q->recipient_id]) }})</td>
                             <td>{{ $q->sender->name }} ({{ link_to_route("adm.mship.account.details", $q->sender_id, [$q->sender_id]) }})</td>
                             <td>{{ Str::limit($q->subject, 25) }}</td>
