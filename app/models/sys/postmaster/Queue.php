@@ -27,23 +27,23 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function scopePending($query) {
-        return $query->whereStatus(self::STATUS_PENDING);
+        return $query->ofStatus(self::STATUS_PENDING);
     }
 
     public function scopeParsed($query) {
-        return $query->whereStatus(self::STATUS_PARSED);
+        return $query->ofStatus(self::STATUS_PARSED);
     }
 
     public function scopeSent($query) {
-        return $query->whereStatus(self::STATUS_SENT);
+        return $query->ofStatus(self::STATUS_SENT);
     }
 
     public function scopeDelayed($query) {
-        return $query->whereStatus(self::STATUS_DELAYED);
+        return $query->ofStatus(self::STATUS_DELAYED);
     }
 
     public function scopeRejected($query) {
-        return $query->whereStatus(self::STATUS_REJECTED);
+        return $query->ofStatus(self::STATUS_REJECTED);
     }
 
     public function recipient() {
