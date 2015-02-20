@@ -3,7 +3,7 @@
     <!-- Sidebar user panel -->
     <div class="user-panel">
         <div class="pull-left image">
-            <img src="img/avatar3.png" class="img-circle" alt="User Image" />
+            {{ HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle", "style" => "background: #FFFFFF;"]) }}
         </div>
         <div class="pull-left info">
             <p>Hello, {{ $_user->name_first }}</p>
