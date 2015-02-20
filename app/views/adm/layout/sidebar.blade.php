@@ -88,7 +88,7 @@
             </a>
             <ul class="treeview-menu">
                 <li {{ (\Request::is('adm/mship/account') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("adm.account.index") }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
+                    <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
                 </li>
             </ul>
         </li>

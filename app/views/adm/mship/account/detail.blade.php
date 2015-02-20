@@ -150,7 +150,7 @@
 
                     <!-- Modals -->
                     <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                        {{ Form::open(array("url" => URL::route("adm.account.security.enable", $account->account_id))) }}
+                        {{ Form::open(array("url" => URL::route("adm.mship.account.security.enable", $account->account_id))) }}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                        {{ Form::open(array("url" => URL::route("adm.account.security.reset", $account->account_id))) }}
+                        {{ Form::open(array("url" => URL::route("adm.mship.account.security.reset", $account->account_id))) }}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -206,7 +206,7 @@
                     </div>
 
                     <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                        {{ Form::open(array("url" => URL::route("adm.account.security.change", $account->account_id))) }}
+                        {{ Form::open(array("url" => URL::route("adm.mship.account.security.change", $account->account_id))) }}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">

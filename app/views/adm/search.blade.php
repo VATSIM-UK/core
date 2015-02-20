@@ -30,7 +30,7 @@
                         <tbody>
                             @foreach($members as $m)
                             <tr>
-                                <td>{{ link_to_route("adm.account.details", $m->account_id, [$m->account_id]) }}</td>
+                                <td>{{ link_to_route("adm.mship.account.details", $m->account_id, [$m->account_id]) }}</td>
                                 <td>{{ $m->name }}</td>
                                 <td>{{ $m->primary_email }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
@@ -72,7 +72,7 @@
                         <tbody>
                             @foreach($emails as $e)
                             <tr>
-                                <td>{{ link_to_route('adm.account.details', $e->account_id, [$e->account_id]) }}</td>
+                                <td>{{ link_to_route('adm.mship.account.details', $e->account_id, [$e->account_id]) }}</td>
                                 <td>{{ $e->account->name }}</td>
                                 <td>{{ $e->email }}</td>
                                 <td>{{ $e->is_primary ? '<span class="label label-success">Primary</span>' : '<span class="label label-default">Secondary</span>' }}</td>

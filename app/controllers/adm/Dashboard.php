@@ -52,7 +52,7 @@ class Dashboard extends \Controllers\Adm\AdmController {
 
         // Direct member?
         if(is_numeric($searchQuery) && Account::find($searchQuery)){
-            return Redirect::route("adm.account.details", [$searchQuery]);
+            return Redirect::route("adm.mship.account.details", [$searchQuery]);
         }
 
         // Global searches!

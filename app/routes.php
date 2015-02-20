@@ -39,11 +39,11 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
-                Route::get("/account", ["as" => "adm.account.index", "uses" => "Account@getIndex"]);
-                Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.account.details", "uses" => "Account@getDetail"]);
-                Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.account.security.enable", "uses" => "Account@postSecurityEnable"]);
-                Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.account.security.reset", "uses" => "Account@postSecurityReset"]);
-                Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.account.security.change", "uses" => "Account@postSecurityChange"]);
+                Route::get("/account", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
+                Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"]);
+                Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
+                Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);
+                Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"]);
             });
         });
     });
