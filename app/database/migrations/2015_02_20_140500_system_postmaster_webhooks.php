@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class SystemPostmasterQueueMessageId extends Migration {
+class SystemPostmasterWebhooks extends Migration {
 
     /**
      * Run the migrations.
