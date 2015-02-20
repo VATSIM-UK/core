@@ -18,9 +18,14 @@ class Queue extends \Models\aTimelineEntry {
 
     const STATUS_PENDING = 10;
     const STATUS_PARSED = 30;
-    const STATUS_SENT = 90;
-    const STATUS_DELAYED = 98;
-    const STATUS_REJECTED = 99;
+    const STATUS_SENT = 50;
+    const STATUS_DELIVERED = 60;
+    const STATUS_OPENED = 63;
+    const STATUS_CLICKED = 67;
+    const STATUS_DROPPED = 91;
+    const STATUS_BOUNCED = 92;
+    const STATUS_SPAM = 93;
+    const STATUS_UNSUBSCRIBED = 94;
 
     public function scopeOfStatus($query, $status) {
         return $query->where("status", "=", $status);
@@ -38,12 +43,32 @@ class Queue extends \Models\aTimelineEntry {
         return $query->ofStatus(self::STATUS_SENT);
     }
 
-    public function scopeDelayed($query) {
-        return $query->ofStatus(self::STATUS_DELAYED);
+    public function scopeDelivered($query) {
+        return $query->ofStatus(self::STATUS_DELIVERED);
     }
 
-    public function scopeRejected($query) {
-        return $query->ofStatus(self::STATUS_REJECTED);
+    public function scopeOpened($query) {
+        return $query->ofStatus(self::STATUS_OPENED);
+    }
+
+    public function scopeClicked($query) {
+        return $query->ofStatus(self::STATUS_CLICKED);
+    }
+
+    public function scopeDropped($query) {
+        return $query->ofStatus(self::STATUS_DROPPED);
+    }
+
+    public function scopeBounced($query) {
+        return $query->ofStatus(self::STATUS_BOUNCED);
+    }
+
+    public function scopeSpam($query) {
+        return $query->ofStatus(self::STATUS_SPAM);
+    }
+
+    public function scopeUnsubscribed($query) {
+        return $query->ofStatus(self::STATUS_UNSUBSCRIBED);
     }
 
     public function recipient() {
@@ -79,7 +104,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function setMessageIdAttribute($value){
-        $this->attributes['message_id'] = substr($value, 0, strpos($value, "@"));
+        $this->attributes['message_id'] = strpos($value, "@") ? substr($value, 0, strpos("@")) : $value;
     }
 
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {

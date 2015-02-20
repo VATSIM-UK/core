@@ -14,6 +14,9 @@ class SystemPostmasterQueueMessageId extends Migration {
         Schema::table("sys_postmaster_queue", function($table){
            $table->string("message_id")->after("postmaster_queue_id");
         });
+
+        // Let's also move all queue status from 90 => 50!
+        DB::update("UPDATE `sys_postmaster_queue` SET `status` = '50' WHERE `status` = '90'");
     }
 
     /**
@@ -25,6 +28,9 @@ class SystemPostmasterQueueMessageId extends Migration {
         Schema::table("sys_postmaster_queue", function($table){
            $table->dropColumn("message_id");
         });
+
+        // Let's also move all queue status from 50 => 90!
+        DB::update("UPDATE `sys_postmaster_queue` SET `status` = '90' WHERE `status` = '50'");
     }
 
 }
