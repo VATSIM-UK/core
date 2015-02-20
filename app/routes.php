@@ -32,11 +32,12 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
             Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
             Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
 
-            Route::group(array("prefix" => "system"), function(){
+            Route::group(array("prefix" => "system", "namespace" => "Sys"), function(){
                 Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "System@getTimeline"));
 
                 Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function(){
-                    Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
+                    Route::get("/queue/{page?}", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
+                    Route::get("/queue/view/{queueID}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
                     Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
                 });
             });

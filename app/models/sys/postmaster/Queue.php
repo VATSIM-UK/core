@@ -4,6 +4,7 @@ namespace Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Models\Mship\Account;
+use \Models\Sys\Postmaster\Template;
 
 class Queue extends \Models\aTimelineEntry {
 
