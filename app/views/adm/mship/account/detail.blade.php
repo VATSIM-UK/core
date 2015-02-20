@@ -317,7 +317,7 @@
                 <h3 class="box-title">Recent Timeline Events</h3>
             </div><!-- /.box-header -->
             <div class="box-body table-responsive">
-                @include('adm.system.timeline.widget', array('entries' => $account->timeline_entries_recent))
+                @include('adm.sys.timeline.widget', array('entries' => $account->timeline_entries_recent))
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div>
