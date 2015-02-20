@@ -36,7 +36,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "System@getTimeline"));
 
                 Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function(){
-                    Route::get("/queue/{page?}", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
+                    Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
                     Route::get("/queue/view/{queueID}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
                     Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
                 });
@@ -45,7 +45,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
-                Route::get("/account", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
+                Route::get("/account/{sortBy?}/{sortDir?}/", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);

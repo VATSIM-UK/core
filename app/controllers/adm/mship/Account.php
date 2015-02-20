@@ -18,36 +18,23 @@ use Models\Mship\Security as SecurityData;
 
 class Account extends \Controllers\Adm\AdmController {
 
-    public function getIndex($sort_by="account_id", $sort_dir="ASC", $page=1) {
+    public function getIndex($sort_by="account_id", $sort_dir="ASC") {
         $totalMembers = AccountData::count();
         $memberSearch = new AccountData;
 
-        // Pagination!
-        $limit = 50;
-        $minPage = 1;
-        $maxPage = ceil($totalMembers/$limit);
-        $page = ($page > $maxPage) ? $maxPage : $page;
-        $page = ($page < 1 ? 1 : $page);
-        $offset = ($page-1)*$limit;
-
         // Sorting and searching!
-        $sortBy = in_array($sort_by, ["account_id", "name_first", "name_last"]) ? $sort_by : "account_id";
-        $sortDir = in_array($sort_dir, ["ASC", "DESC"]) ? $sort_dir : "ASC";
+        $sortBy = in_array(Input::get("sort_by", $sort_by), ["account_id", "name_first", "name_last"]) ? Input::get("sort_by", $sort_by) : "account_id";
+        $sortDir = in_array(Input::get("sort_dir", $sort_dir), ["ASC", "DESC"]) ? Input::get("sort_dir", $sort_dir) : "ASC";
 
         // ORM it all!
-        $memberSearch = $memberSearch->orderBy($sortBy, $sortDir)
-                                     ->offset($offset)
-                                     ->limit($limit);
+        $memberSearch = AccountData::orderBy($sortBy, $sortDir)
+                                   ->paginate(50);
 
         return $this->viewMake("adm.mship.account.index")
-                    ->with("members", $memberSearch->get())
+                    ->with("members", $memberSearch)
                     ->with("sortBy", $sortBy)
                     ->with("sortDir", $sortDir)
-                    ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"))
-                    ->with("pageCur", $page)
-                    ->with("pageNext", ($page+1 < $maxPage ? $page+1 : null))
-                    ->with("pagePrev", ($page-1 > 1 ? $page-1 : null))
-                    ->with("paginationStart", ($page-2 > 0 ? $page-2 : 1));
+                    ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"));
     }
 
     public function getDetail(AccountData $account, $tab="basic") {
