@@ -3,6 +3,7 @@
 namespace Controllers\Adm;
 
 use \AuthException;
+use \Auth;
 use \Input;
 use \Session;
 use \Response;
@@ -22,10 +23,7 @@ class Authentication extends \Controllers\Adm\AdmController {
 
     public function getLogout(){
         //Entry::log("LOGOUT_SUCCESS", User::find(Session::get("auth_adm_account")));
-        Session::forget("auth_adm_true");
-        Session::forget("auth_adm_account");
-        Session::flush();
-        Session::regenerate();
+        Auth::admin()->logout();
         return Redirect::route("adm.authentication.login");
     }
 
@@ -70,10 +68,6 @@ class Authentication extends \Controllers\Adm\AdmController {
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
                     Session::forget('vatsimauth');
 
-                    if(!in_array($user->id, [1237658, 980234, 1155992, 1002707, 989754, 1104841, 1241909])){
-                        throw new \AuthException("You are not welcome here.");
-                    }
-
                     // At this point WE HAVE data in the form of $user;
                     $account = Account::find($user->id);
 
@@ -82,8 +76,7 @@ class Authentication extends \Controllers\Adm\AdmController {
                         throw new AuthException("You are not authorised to view this page.");
                     }
 
-                    Session::set("auth_adm_true", true);
-                    Session::set("auth_adm_account", $account->account_id);
+                    Auth::admin()->login($account);
 
                     //Entry::log("LOGIN_SUCCESS", $account);
 
