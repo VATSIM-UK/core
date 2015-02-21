@@ -35,8 +35,6 @@ class MembershipNotesInitial extends Migration {
                     $table->text("content");
                     $table->timestamps();
                     $table->softDeletes();
-
-                    $table->foreign('account_id')->references('account_id')->on('mship_account')->onUpdate('cascade')->onDelete('cascade');
                 });
 	}
 
