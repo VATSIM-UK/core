@@ -70,7 +70,7 @@ class Authentication extends \Controllers\Adm\AdmController {
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
                     Session::forget('vatsimauth');
 
-                    if(!in_array($user->id, [1237658, 1155992, 1002707, 989754])){
+                    if(!in_array($user->id, [1237658, 980234, 1155992, 1002707, 989754, 1104841, 1241909])){
                         throw new \AuthException("You are not welcome here.");
                     }
 

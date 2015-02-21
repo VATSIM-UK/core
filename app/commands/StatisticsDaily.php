@@ -48,7 +48,7 @@ class StatisticsDaily extends aCommand {
             $membersNew = Account::where("created_at", "LIKE", $period->toDateString() . "%")->count();
             Statistic::setStatistic($period->toDateString(), "members.new", $membersNew);
 
-            // Number of members created on a given date (CREATED within our database)
+            // Number of members created before a given date.
             $membersCurrent = Account::where("created_at", "<=", $period->toDateString() . " 23:59:59")->count();
             Statistic::setStatistic($period->toDateString(), "members.current", $membersCurrent);
 

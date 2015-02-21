@@ -57,8 +57,7 @@ class Dashboard extends \Controllers\Adm\AdmController {
 
         // Global searches!
         $members = Account::where("account_id", "LIKE", "%".$searchQuery."%")
-                      ->orWhere("name_first", "LIKE", "%".$searchQuery."%")
-                      ->orWhere("name_last", "LIKE", "%".$searchQuery."%")
+                      ->orWhere(\DB::raw("CONCAT(`name_first`, ' ', `name_last`)"), "LIKE", "%".$searchQuery."%")
                       ->remember(60)
                       ->limit(25)
                       ->get();
