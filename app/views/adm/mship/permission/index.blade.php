@@ -10,7 +10,7 @@
             <div class="box-body">
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {{ link_to_route("adm.mship.role.create", "Create Role", [], ["class" => "btn btn-success"]) }}
+                        {{ link_to_route("adm.mship.permission.create", "Create Permission", [], ["class" => "btn btn-success"]) }}
                     </div>
                 </div>
             </div>
@@ -32,34 +32,39 @@
                 </h3>
             </div><!-- /.box-header -->
             <div class="box-body">
+                <div align="center">
+                    {{ $permissions->links() }}
+                </div>
                 <table id="mship-roles" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>ID</th>
+                            <th>Display Name</th>
                             <th>Name</th>
-                            <th>Default</th>
-                            <th># Members</th>
-                            <th># Permissions</th>
+                            <th># Roles</th>
                             <th>Last Updated</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($roles as $r)
+                        @foreach($permissions as $p)
                         <tr>
-                            <td>{{ link_to_route('adm.mship.role.update', $r->role_id, [$r->role_id]) }}</td>
-                            <td>{{ $r->name }}</td>
-                            <td>{{ $r->default }}</td>
-                            <td>{{ count($r->accounts) }}</td>
-                            <td>{{ count($r->permissions) }}</td>
-                            <td>{{ $r->updated_at->toDateTimeString() }}</td>
+                            <td>{{ link_to_route('adm.mship.permission.update', $p->permission_id, [$p->permission_id]) }}</td>
+                            <td>{{ $p->display_name }}</td>
+                            <td>{{ $p->name }}</td>
+                            <td>{{ count($p->roles) }}</td>
+                            <td>{{ $p->updated_at->toDateTimeString() }}</td>
                         </tr>
                         @endforeach
-                        @if(count($roles) < 1)
+                        @if(count($permissions) < 1)
                         <tr>
-                            <td colspan="6" align="center">No roles to display :(</td>
+                            <td colspan="5" align="center">No permissions to display :(</td>
                         </tr>
                         @endif
                     </tbody>
                 </table>
+                <div align="center">
+                    {{ $permissions->links() }}
+                </div>
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div>

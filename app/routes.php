@@ -16,7 +16,11 @@ Route::model("mshipAccount", "\Models\Mship\Account", function() {
 });
 
 Route::model("mshipRole", "\Models\Mship\Role", function() {
-    Redirect::route("adm.mship.role.index");
+    Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
+});
+
+Route::model("mshipPermission", "\Models\Mship\Permission", function() {
+    Redirect::route("adm.mship.permission.index")->withError("Permission doesn't exist.");
 });
 
 Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function(){
@@ -81,7 +85,10 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::post("/role/{mshipRole}/update", ["as" => "adm.mship.role.update", "uses" => "Role@postUpdate"]);
                 Route::get("/role/", ["as" => "adm.mship.role.index", "uses" => "Role@getIndex"]);
 
-                Route::get("/permission/{mshipRole}", ["as" => "adm.mship.permission.view", "uses" => "Permission@getView"]);
+                Route::get("/permission/create", ["as" => "adm.mship.permission.create", "uses" => "Permission@getCreate"]);
+                Route::post("/permission/create", ["as" => "adm.mship.permission.create", "uses" => "Permission@postCreate"]);
+                Route::get("/permission/{mshipPermission}/update", ["as" => "adm.mship.permission.update", "uses" => "Permission@getUpdate"]);
+                Route::post("/permission/{mshipPermission}/update", ["as" => "adm.mship.permission.update", "uses" => "Permission@postUpdate"]);
                 Route::get("/permission/", ["as" => "adm.mship.permission.index", "uses" => "Permission@getIndex"]);
             });
         });

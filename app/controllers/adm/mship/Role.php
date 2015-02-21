@@ -20,7 +20,7 @@ class Role extends \Controllers\Adm\AdmController {
 
     public function getIndex() {
         // ORM it all!
-        $roles = RoleData::orderBy("name", "ASC")->paginate(50);
+        $roles = RoleData::orderBy("name", "ASC");
 
         return $this->viewMake("adm.mship.role.index")
                     ->with("roles", $roles);
