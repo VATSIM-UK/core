@@ -14,12 +14,13 @@ class Permission extends \Models\aModel {
         'name' => 'required',
         'display_name' => 'required|between:3,50',
     ];
+    public static $relationsData = [
+        "roles" => array(self::BELONGS_TO_MANY, "\Models\Mship\Role", "table" => "mship_permission_role")
+    ];
+    public $autoHydrateEntityFromInput = true;    // hydrates on new entries' validation
+    public $forceEntityHydrationFromInput = true; // hydrates whenever validation is called
 
     public function scopeIsName($query, $name){
         return $query->whereName($name);
-    }
-
-    public function roles(){
-        return $this->belongsToMany("\Models\Mship\Role", "mship_permission_role");
     }
 }

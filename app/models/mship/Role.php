@@ -3,7 +3,6 @@
 namespace Models\Mship;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-
 use \Models\Mship\Permission as PermissionData;
 
 class Role extends \Models\aModel {
@@ -16,14 +15,12 @@ class Role extends \Models\aModel {
     public static $rules = [
         'name' => 'required|between:4,40',
     ];
-
-    public function accounts(){
-        return $this->belongsToMany("\Models\Mship\Account", "mship_account_role");
-    }
-
-    public function permissions(){
-        return $this->belongsToMany("\Models\Mship\Permission", "mship_permission_role");
-    }
+    public static $relationsData = [
+        "accounts" => array(self::BELONGS_TO_MANY, "\Models\Mship\Account", "table" => "mship_account_role"),
+        "permissions" => array(self::BELONGS_TO_MANY, "\Models\Mship\Permission", "table" => "mship_permission_role"),
+    ];
+    public $autoHydrateEntityFromInput = true;    // hydrates on new entries' validation
+    public $forceEntityHydrationFromInput = true; // hydrates whenever validation is called
 
     public function hasPermission($permission) {
         if (is_object($permission)) {
