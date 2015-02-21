@@ -65,16 +65,14 @@ App::error(function(Exception $exception, $code) {
     Log::error($exception->getFile().":".$exception->getFile().":".$exception->getLine()." --> ". $exception->getMessage());
 });
 
-/*
-  |--------------------------------------------------------------------------
-  | Maintenance Mode Handler
-  |--------------------------------------------------------------------------
-  |
-  | The "down" Artisan command gives you the ability to put an application
-  | into maintenance mode. Here, you will define what is displayed back
-  | to the user if maintenance mode is in effect for the application.
-  |
- */
+App::missing(function($exception){
+    // Is it an admin request?
+    if(Request::is("adm*")){
+        $request = Request::create(URL::route("adm.error", [404], false));
+        return Route::dispatch($request);
+    }
+    throw $exception;
+});
 
 App::down(function() {
     return Response::make("Be right back!", 503);
@@ -93,7 +91,7 @@ App::down(function() {
 
 require app_path() . '/filters.php';
 
-
+// Create VATUK_ACCOUNT_SYSTEM
 if(!App::runningInConsole()){
     // We need to ensure that the VATSIM UK System accounts are in existance.
     define("VATUK_ACCOUNT_SYSTEM", "707070");

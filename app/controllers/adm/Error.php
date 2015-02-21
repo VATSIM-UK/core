@@ -8,8 +8,11 @@ use \View;
 
 class Error extends \Controllers\Adm\AdmController {
 
-    public function getUnauthorized(){
-        return View::make("adm.error.401");
+    public function getDisplay($code){
+        if(View::exists("adm.error.".$code)){
+            return $this->viewMake("adm.error.".$code);
+        }
+
+        return $this->viewMake("adm.error.default");
     }
 }
-    

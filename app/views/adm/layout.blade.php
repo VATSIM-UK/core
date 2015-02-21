@@ -39,41 +39,47 @@
         <![endif]-->
     </head>
     <body class="skin-black">
-        <header class="header">
-            <a href="index.html" class="logo">
-                <!-- Add the class icon to your logo image or logo icon to add the margining -->
-                VATSIM UK
-            </a>
-            <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top" role="navigation">
-                <!-- Sidebar toggle button-->
-                <!--<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>-->
-                <div class="navbar-right">
-                    @include('adm.layout.navbar')
-                </div>
-            </nav>
-        </header>
-        <div class="wrapper row-offcanvas row-offcanvas-left">
-            <!-- Left side column. contains the logo and sidebar -->
-            <aside class="left-side sidebar-offcanvas">
-                @include('adm.layout.sidebar')
-            </aside>
+        @if(!isset($shellOnly) OR !$shellOnly)
+            <header class="header">
+                <a href="index.html" class="logo">
+                    <!-- Add the class icon to your logo image or logo icon to add the margining -->
+                    VATSIM UK
+                </a>
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                    <!--<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>-->
+                    <div class="navbar-right">
+                        @include('adm.layout.navbar')
+                    </div>
+                </nav>
+            </header>
+            <div class="wrapper row-offcanvas row-offcanvas-left">
+                <!-- Left side column. contains the logo and sidebar -->
+                <aside class="left-side sidebar-offcanvas">
+                    @include('adm.layout.sidebar')
+                </aside>
 
-            <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">
-                @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
+                <!-- Right side column. Contains the navbar and content of the page -->
+                <aside class="right-side">
+                    @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
 
-                <!-- Main content -->
-                <section class="content">
-                    @yield('content')
-                </section><!-- /.content -->
-            </aside><!-- /.right-side -->
-        </div><!-- ./wrapper -->
+                    <!-- Main content -->
+                    <section class="content">
+                        @yield('content')
+                    </section><!-- /.content -->
+                </aside><!-- /.right-side -->
+            </div><!-- ./wrapper -->
+        @else
+            <section class="content">
+                @yield('content')
+            </section><!-- /.content -->
+        @endif
 
         <!-- add new calendar event modal -->
 
