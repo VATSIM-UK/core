@@ -1,3 +1,4 @@
 .env*
 !.env.sample.php
 nbproject*
+vendor/*
