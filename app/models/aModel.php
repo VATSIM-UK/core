@@ -2,9 +2,10 @@
 
 namespace Models;
 
+use LaravelBook\Ardent\Ardent;
 use \Models\Sys\Timeline\Entry;
 
-abstract class aModel extends \Eloquent {
+abstract class aModel extends Ardent {
 
     public static function boot() {
         parent::boot();

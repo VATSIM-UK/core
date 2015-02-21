@@ -13,6 +13,9 @@ class Role extends \Models\aModel {
     protected $table = "mship_role";
     protected $primaryKey = "role_id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    public static $rules = [
+        'name' => 'required|between:4,40',
+    ];
 
     public function accounts(){
         return $this->belongsToMany("\Models\Mship\Account", "mship_account_role");

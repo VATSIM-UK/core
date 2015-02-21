@@ -13,7 +13,7 @@ class MShipRolesPermissions extends Migration {
         // Creates the roles table
         Schema::create('mship_role', function ($table) {
             $table->increments('role_id')->unsigned();
-            $table->string('name');
+            $table->string('name', 40);
             $table->boolean("default")->default(0);
             $table->timestamps();
             $table->softDeletes();
@@ -35,7 +35,7 @@ class MShipRolesPermissions extends Migration {
         Schema::create('mship_permission', function ($table) {
             $table->increments('permission_id')->unsigned();
             $table->string('name');
-            $table->string('display_name');
+            $table->string('display_name', 50);
             $table->timestamps();
             $table->softDeletes();
         });
