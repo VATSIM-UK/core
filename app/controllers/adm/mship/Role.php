@@ -71,18 +71,16 @@ class Role extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.role.update")->withErrors($role->errors());
         }
 
-        if(count(Input::get("permissions")) > 0 && Auth::admin()->get()->hasPermission("adm/mship/permission/assign")){
-            foreach(Input::get("permissions") as $p){
-                // Detatch permissions!
-                foreach($role->permissions as $p){
-                    if(!in_array($p->permission_id, Input::get("permissions"))){
-                        $role->detachPermission($p);
-                    }
+        if(Auth::admin()->get()->hasPermission("adm/mship/permission/assign")){
+            // Detatch permissions!
+            foreach($role->permissions as $p){
+                if(!in_array($p->permission_id, Input::get("permissions", []))){
+                    $role->detachPermission($p);
                 }
-
-                // Attach all permissions.
-                $role->attachPermissions(Input::get("permissions"));
             }
+
+            // Attach all permissions.
+            $role->attachPermissions(Input::get("permissions", []));
         }
 
         return Redirect::route("adm.mship.role.index")->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");
