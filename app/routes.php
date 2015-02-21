@@ -83,6 +83,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::post("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@postCreate"]);
                 Route::get("/role/{mshipRole}/update", ["as" => "adm.mship.role.update", "uses" => "Role@getUpdate"]);
                 Route::post("/role/{mshipRole}/update", ["as" => "adm.mship.role.update", "uses" => "Role@postUpdate"]);
+                Route::any("/role/{mshipRole}/delete", ["as" => "adm.mship.role.delete", "uses" => "Role@anyDelete"]);
                 Route::get("/role/", ["as" => "adm.mship.role.index", "uses" => "Role@getIndex"]);
 
                 Route::get("/permission/create", ["as" => "adm.mship.permission.create", "uses" => "Permission@getCreate"]);

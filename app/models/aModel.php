@@ -2,10 +2,9 @@
 
 namespace Models;
 
-use LaravelBook\Ardent\Ardent;
 use \Models\Sys\Timeline\Entry;
 
-abstract class aModel extends Ardent {
+abstract class aModel extends \Eloquent {
     public $autoPurgeRedundantAttributes = true;
 
     public static function boot() {
@@ -36,7 +35,7 @@ abstract class aModel extends Ardent {
         return $array;
     }
 
-    public function save(array $rules = [], array $customMessages = [], array $options = [], Closure $beforeSave = NULL, Closure $afterSave = NULL) {
+    public function save(array $options = []) {
         // Let's check the old data vs new data, so we can store data changes!
         if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
             // Get the changed values!
@@ -51,7 +50,7 @@ abstract class aModel extends Ardent {
             }
         }
 
-        parent::save($options);
+        return parent::save($options);
     }
 
 }

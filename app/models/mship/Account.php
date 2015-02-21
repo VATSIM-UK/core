@@ -89,13 +89,17 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function hasPermission($permission){
-        if(is_object($permission)){
-            $permission = $permission->getKey();
+        if(!is_numeric($permission) AND !is_object($permission)){
+            $permission = preg_replace("/\d+/", "*", $permission);
+            $permission = PermissionData::where("name", "=", $permission)->first();
         }
+
+        // Get the "super" permission too...
+        $super = PermissionData::where("name", "=", "*")->first();
 
         // Let's check all roles for this permission!
         foreach($this->roles as $r){
-            if($r->permissions->contains($permission)){
+            if(($permission && $r->hasPermission($permission)) OR $r->hasPermission($super)){
                 return true;
             }
         }
@@ -106,14 +110,28 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function hasChildPermission($parent){
         if (is_object($parent)) {
             $parent = $parent->name;
+        } elseif(is_numeric($parent)){
+            $parent = PermissionData::find($parent);
+            $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
+        } elseif(!is_numeric($parent)){
+            $parent = preg_replace("/\d+/", "*", $parent);
+            $parent = PermissionData::where("name", "=", $parent)->first();
+            $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
         }
 
         $childPermissions = PermissionData::where("name", "LIKE", $parent."%")->get();
 
+        // Get the "super" permission too...
+        $super = PermissionData::where("name", "=", "*")->first();
+
         // Let's check all roles for this permission!
         foreach($this->roles as $r){
+            if($r->hasPermission($super)){
+                return true;
+            }
+
             foreach($childPermissions as $cp){
-                if($r->permissions->contains($cp)){
+                if($r->hasPermission($cp)){
                     return true;
                 }
             }

@@ -35,22 +35,37 @@
                 <table id="mship-roles" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Name</th>
                             <th>Default</th>
                             <th># Members</th>
                             <th># Permissions</th>
                             <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($roles as $r)
                         <tr>
                             <td>{{ link_to_route('adm.mship.role.update', $r->role_id, [$r->role_id]) }}</td>
-                            <td>{{ $r->name }}</td>
+                            <td>
+                                {{ $r->name }}
+                                @if($r->default)
+                                    <span class="label label-success">Default</span>
+                                @endif
+                            </td>
                             <td>{{ $r->default }}</td>
                             <td>{{ count($r->accounts) }}</td>
                             <td>{{ count($r->permissions) }}</td>
                             <td>{{ $r->updated_at->toDateTimeString() }}</td>
+                            <td>
+                                @if(Auth::admin()->get()->hasPermission("adm/mship/role/*/update"))
+                                    {{ link_to_route("adm.mship.role.update", "Edit", [$r->role_id], ["class" => "btn btn-xs btn-primary"]) }}
+                                @endif
+                                @if(Auth::admin()->get()->hasPermission("adm/mship/role/*/delete"))
+                                    {{ Form::button("Delete", ["data-href" => URL::route("adm.mship.role.delete", [$r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) }}
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                         @if(count($roles) < 1)

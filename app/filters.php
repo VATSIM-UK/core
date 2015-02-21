@@ -50,10 +50,7 @@ Route::filter('auth.admin', function() {
             return Redirect::route("adm");
         }
     } else {
-        // Find the permission for this URL!
-        $permission = \Models\Mship\Permission::isName(Request::decodedPath())->first();
-
-        if(!$permission OR !Auth::admin()->get()->hasPermission($permission)){
+        if(!Auth::admin()->get()->hasPermission(Request::decodedPath())){
             return Redirect::route("adm.error", [401]);
         }
     }

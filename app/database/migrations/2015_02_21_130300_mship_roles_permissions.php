@@ -25,10 +25,6 @@ class MShipRolesPermissions extends Migration {
             $table->integer('account_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->timestamps();
-            $table->softDeletes();
-
-            $table->foreign('account_id')->references('account_id')->on('mship_account')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('role_id')->references('role_id')->on('mship_role');
         });
 
         // Creates the permissions table
@@ -46,10 +42,6 @@ class MShipRolesPermissions extends Migration {
             $table->integer('permission_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->timestamps();
-            $table->softDeletes();
-
-            $table->foreign('permission_id')->references('permission_id')->on('mship_permission');
-            $table->foreign('role_id')->references('role_id')->on('mship_role');
         });
     }
 
@@ -58,14 +50,6 @@ class MShipRolesPermissions extends Migration {
      * @return void
      */
     public function down() {
-        Schema::table('mship_account_role', function (Blueprint $table) {
-            $table->dropForeign('mship_account_role_account_id_foreign');
-            $table->dropForeign('mship_account_role_role_id_foreign');
-        });
-        Schema::table('mship_permission_role', function (Blueprint $table) {
-            $table->dropForeign('mship_permission_role_permission_id_foreign');
-            $table->dropForeign('mship_permission_role_role_id_foreign');
-        });
         Schema::drop('mship_account_role');
         Schema::drop('mship_permission_role');
         Schema::drop('mship_role');

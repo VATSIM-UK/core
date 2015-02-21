@@ -15,7 +15,6 @@
         "vatsim/sso": "1.*",
         "nesbot/Carbon": "*",
         "vatsim/xml": "dev-master",
-        "laravelbook/ardent": "2.*",
         "fitztrev/laravel-html-minify": "1.*",
         "flynsarmy/db-blade-compiler": "1.*",
         "wpb/string-blade-compiler": "1.*@dev",
@@ -23,7 +22,8 @@
         "doctrine/dbal": "2.6.*@dev",
         "zizaco/entrust": "1.2.*@dev",
         "barryvdh/laravel-debugbar" : "~1.8",
-        "ollieread/multiauth": "dev-master"
+        "ollieread/multiauth": "dev-master",
+        "watson/validating": "0.10.*"
     },
     "autoload": {
         "classmap": [

@@ -71,6 +71,30 @@
 
                     <!-- Main content -->
                     <section class="content">
+
+                        @if(Session::has('error') OR isset($error))
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error!</strong> {{ Session::has('error') ? Session::pull("error") : $error }}
+                            </div>
+                        @endif
+
+                        @if(count($errors) > 0)
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error!</strong> There were some errors with your request:
+                                <ul>
+                                @foreach($errors->getMessages() as $e)
+                                    <li>{{ $e[0] }}</li>
+                                @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if(Session::has('success') OR isset($success))
+                            <div class="alert alert-success" role="alert">
+                                <strong>Success!</strong> {{ Session::has('success') ? Session::pull("success") : $success }}
+                            </div>
+                        @endif
+
                         @yield('content')
                     </section><!-- /.content -->
                 </aside><!-- /.right-side -->
@@ -109,6 +133,8 @@
         {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js') }}
         <!-- BootstrapSelect -->
         {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.js') }}
+        <!-- BootstrapConfirmation -->
+        {{ HTML::script('/assets/js/plugins/bootstrap-confirmation/bootstrap-confirmation.js') }}
         <!-- iCheck -->
         {{ HTML::script('/assets/js/plugins/iCheck/icheck.min.js') }}
 
@@ -117,6 +143,15 @@
 
         <script language="javascript" type="text/javascript">
             $('.selectpicker').selectpicker();
+        </script>
+
+        <script language="javascript" type="text/javascript">
+            $('[data-toggle="confirmation"]').confirmation({
+                placement : "top",
+                btnOkClass : "btn btn-xs btn-primary",
+                btnCancelClass : "btn btn-xs",
+                singleton : true,
+            });
         </script>
 
         @section('scripts')
