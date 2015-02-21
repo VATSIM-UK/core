@@ -115,10 +115,10 @@
                                 <div class="btn-toolbar">
                                     <div class="btn-group pull-right">
                                         @if($account->current_security)
-                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
+                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
                                         @else
-                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enforce</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enforce</button>
                                         @endif
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@
                                         <label for="securityLevel">Security Level</label>
                                         <select name="securityLevel">
                                             @foreach($securityLevels as $sl)
-                                                <option value="{{ $sl->security_id }}">{{ $sl->name }}</option>
+                                            <option value="{{ $sl->security_id }}">{{ $sl->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -226,9 +226,9 @@
                                         <label for="securityLevel">Security Level</label>
                                         <select name="securityLevel">
                                             @foreach($securityLevels as $sl)
-                                                <option value="{{ $sl->security_id }}" {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "selected='selected'" : "" }}>
-                                                    {{ $sl->name }}  {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "(current)" : "" }}
-                                                </option>
+                                            <option value="{{ $sl->security_id }}" {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "selected='selected'" : "" }}>
+                                                {{ $sl->name }}  {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "(current)" : "" }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -251,7 +251,114 @@
                         <p>Only the last 25 emails this user has sent have been displayed here.</p>
                         @include('adm.sys.postmaster.queue.widget', array('queue' => $account->messagesSent()->limit(25)->get()))
                     </div>
-                    <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">Notes</div>
+
+                    <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">
+                        <div class="col-md-12">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">Add New Note</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group pull-right">
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
+                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix">&nbsp;</div>
+
+                                    @foreach($account->notes as $note)
+                                        @if((array_key_exists($note->note_type_id, Input::get("filter")) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
+                                            <div class="panel panel-{{ $note->type->colour_code }} note-{{ $note->type->is_system ? "system" : "" }} note-type-{{ $note->note_type_id }}" id='note-{{ $note->account_note_id }}'>
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">
+                                                        {{ $note->type->name }} #{{ $note->account_note_id }}
+                                                        <span class="time pull-right">
+                                                            <small><i class="fa fa-clock-o"></i> {{ $note->created_at->diffForHumans() }}, {{ $note->created_at->toDateTimeString() }}</small>
+                                                        </span>
+                                                    </h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    {{ $note->content }}
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div><!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
+                        {{ Form::open(array("url" => URL::route("adm.mship.account.note.filter", $account->account_id))) }}
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Note Filter</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        @foreach($noteTypesAll as $nt)
+                                        <div class="col-sm-4">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="filter[]" value="{{ $nt->note_type_id }}" {{ Input::get("filter.".$nt->note_type_id) ? "checked='checked'" : "" }} />
+                                                    {{ $nt->name }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Apply Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+
+                    <div class="modal fade" id="modalNoteCreate" tabindex="-1" role="dialog" aria-labelledby="Create Note" aria-hidden="true">
+                        {{ Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->account_id))) }}
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Add New Note</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        You may add a new note to a user's account by completing the form below.
+                                    </p>
+                                    <div class="form-group">
+                                        <label for="note_type_id">Note Type</label>
+                                        <select name="note_type_id" class="form-control selectpicker">
+                                            @foreach($noteTypes as $nt)
+                                            <option value="{{ $nt->note_type_id }}">
+                                                {{ $nt->name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="content">Content</label>
+                                        <textarea name="content" class="form-control" rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Add Note</button>
+                                </div>
+                            </div>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+
                     <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
                     <div class="tab-pane fade {{ $selectedTab == "datachanges" ? "in active" : "" }}" id="datachanges">
                         <!-- general form elements -->
@@ -336,4 +443,18 @@
 
 @section('scripts')
 @parent
+
+<script language="javascript" type="text/javascript">
+    function test(el) {
+        console.log(el);
+    }
+
+    $(document).ready(function() {
+        $('input[type="checkbox"]').click(function() {
+            var item = $(this).attr('name');
+            console.log(item);
+        });
+    });
+</script>
+
 @stop

@@ -7,6 +7,7 @@ use \Input;
 use \Session;
 use \Response;
 use \Request;
+use \URL;
 use \View;
 use \VatsimSSO;
 use \Config;
@@ -15,6 +16,8 @@ use \DB;
 use \Models\Mship\Account as AccountData;
 use \Models\Mship\Account\Security as AccountSecurityData;
 use Models\Mship\Security as SecurityData;
+use Models\Mship\Account\Note as AccountNoteData;
+use Models\Mship\Note\Type as NoteTypeData;
 
 class Account extends \Controllers\Adm\AdmController {
 
@@ -45,12 +48,18 @@ class Account extends \Controllers\Adm\AdmController {
         // Get all possible security levels.
         $securityLevels = SecurityData::all();
 
+        // Get all possible note types.
+        $noteTypes = NoteTypeData::usable()->orderBy("name", "ASC")->get();
+        $noteTypesAll = NoteTypeData::withTrashed()->orderBy("name", "ASC")->get();
+
         $this->_pageTitle = "Account Details: " . $account->name;
 
         return $this->viewMake("adm.mship.account.detail")
                         ->with("selectedTab", $tab)
                         ->with("account", $account)
-                        ->with("securityLevels", $securityLevels);
+                        ->with("securityLevels", $securityLevels)
+                        ->with("noteTypes", $noteTypes)
+                        ->with("noteTypesAll", $noteTypesAll);
     }
 
     public function postSecurityEnable(AccountData $account){
@@ -132,5 +141,46 @@ class Account extends \Controllers\Adm\AdmController {
         $security->accountSecurity()->save($newSecurity);
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "security"])->withSuccess("Security has been upgraded on this account.");
+    }
+
+    public function postNoteCreate(AccountData $account){
+        if (!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        // Is there any content?
+        if(strlen(Input::get("content")) < 10){
+            return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])->withError("You cannot add such a short note!");
+        }
+
+        // Check this type exists!
+        $noteType = NoteTypeData::find(Input::get("note_type_id"));
+        if(!$noteType OR !$noteType->exists){
+            return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])->withError("You selected an invalid note type.");
+        }
+
+        // Let's make a note and attach it to the user!
+        $note = new AccountNoteData();
+        $note->account_id = $account->account_id;
+        $note->note_type_id = $noteType->note_type_id;
+        $note->content = Input::get("content");
+        $note->save();
+
+        return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])->withSuccess("The note has been saved successfully!");
+    }
+
+    public function postNoteFilter(AccountData $account){
+        if (!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        // Get all filters
+        $filters = Input::get("filter");
+        $qs = "";
+        foreach($filters as $f){
+            $qs.= "filter[".$f."]=1&";
+        }
+
+        return Redirect::to(URL::route("adm.mship.account.details", [$account->account_id, "notes"])."?".$qs);
     }
 }

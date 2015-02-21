@@ -108,6 +108,11 @@
 
         <!-- AdminLTE App -->
         {{ HTML::script('/assets/js/AdminLTE/app.js') }}
+
+        <script language="javascript" type="text/javascript">
+            $('.selectpicker').selectpicker();
+        </script>
+
         @section('scripts')
         @show
     </body>

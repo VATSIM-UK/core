@@ -66,11 +66,11 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function notes() {
-        return $this->hasMany("\Models\Mship\Account\Notes", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\Note", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
-    public function notesActioner() {
-        return $this->hasMany("\Models\Mship\Account\Notes", "actioner_id", "account_id");
+    public function noteWriter() {
+        return $this->hasMany("\Models\Mship\Account\Note", "writer_id", "account_id");
     }
 
     public function tokens() {

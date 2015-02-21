@@ -50,7 +50,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
             Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
 
             Route::group(array("prefix" => "system", "namespace" => "Sys"), function(){
-                Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "System@getTimeline"));
+                Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "Timeline@getIndex"));
 
                 Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function(){
                     Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
@@ -65,6 +65,8 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"]);
                 Route::get("/account/{sortBy?}/{sortDir?}/", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
+                Route::post("/account/{mshipAccount}/note/create", ["as" => "adm.mship.account.note.create", "uses" => "Account@postNoteCreate"]);
+                Route::post("/account/{mshipAccount}/note/filter", ["as" => "adm.mship.account.note.filter", "uses" => "Account@postNoteFilter"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"]);
