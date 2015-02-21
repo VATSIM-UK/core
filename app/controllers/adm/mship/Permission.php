@@ -30,18 +30,18 @@ class Permission extends \Controllers\Adm\AdmController {
     public function getCreate() {
         $roles = RoleData::orderBy("name", "ASC")->get();
 
-        return $this->viewMake("adm.mship.permision.create_or_update")
+        return $this->viewMake("adm.mship.permission.create_or_update")
                         ->with("roles", $roles);
     }
 
     public function postCreate() {
         // Let's create!
-        $permission = new PermissionData();
-        $permission->name = Input::get("name");
-        $permission->display_name = Input::get("display_name");
-        $permission->save();
+        $permission = new PermissionData(Input::all());
+        if(!$permission->save()){
+            return Redirect::route("adm.mship.permission.create")->withErrors($permission->errors());
+        }
 
-        if (count(Input::get("roles")) > 0) {
+        if (count(Input::get("roles")) > 0 && Auth::admin()->get()->hasPermission("adm/mship/permission/assign")) {
             $permission->attachRoles(Input::get("roles"));
         }
 
