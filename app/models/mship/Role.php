@@ -27,7 +27,7 @@ class Role extends \Models\aModel {
         foreach($model->accounts as $a){
             $model->accounts()->detach($a);
         }
-        
+
         $model->detachPermissions($model->permissions);
     }
 
@@ -49,6 +49,10 @@ class Role extends \Models\aModel {
             $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->get();
             if($def){ $def->delete(); }
         }
+    }
+
+    public static function scopeIsDefault($query){
+        return $query->whereDefault(1);
     }
 
     public function accounts(){
