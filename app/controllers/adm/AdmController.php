@@ -8,7 +8,6 @@ use \Models\Mship\Account;
 use \Request;
 class AdmController extends \Controllers\BaseController {
 
-    protected $_current_account = NULL;
     protected $_pageTitle = NULL;
     protected $_pageSubTitle = NULL;
 
@@ -27,19 +26,10 @@ class AdmController extends \Controllers\BaseController {
 
         public function __controller(){
             parent::__controller();
-            $this->_current_account = Account::find(Session::get("auth_adm_account", 0));
-        }
-
-        public static function currentAccount(){
-            return Account::find(Session::get("auth_adm_account", 0));
         }
 
         public function viewMake($view){
             $view = View::make($view);
-
-            if(Session::get("auth_adm_true", false)){
-                $view->with("_user", Account::find(Session::get("auth_adm_account")));
-            }
 
             // Let's also display the breadcrumb
             $breadcrumb = array();

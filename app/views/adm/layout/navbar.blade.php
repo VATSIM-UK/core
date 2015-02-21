@@ -3,15 +3,15 @@
     <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="glyphicon glyphicon-user"></i>
-            <span>{{ $_user->name_first . ' ' . $_user->name_last }}<i class="caret"></i></span>
+            <span>{{ Auth::admin()->get()->name_first . ' ' . Auth::admin()->get()->name_last }}<i class="caret"></i></span>
         </a>
         <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header bg-light-blue">
                 {{ HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle"]) }}
                 <p>
-                    {{ $_user->name_first . ' ' . $_user->name_last }}
-                    <small>Member since {{ $_user->created_at->diffForHumans() }} <br /><em> {{ $_user->created_at->toDateTimeString() }}</em></small>
+                    {{ Auth::admin()->get()->name_first . ' ' . Auth::admin()->get()->name_last }}
+                    <small>Member since {{ Auth::admin()->get()->created_at->diffForHumans() }} <br /><em> {{ Auth::admin()->get()->created_at->toDateTimeString() }}</em></small>
                 </p>
             </li>
             <!-- Menu Body -->
