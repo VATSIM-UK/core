@@ -11,10 +11,10 @@
             </div><!-- /.box-header -->
             <div class="box-body">
 
-                @if(isset($role))
-                    {{ Form::model($role, ['route' => ['adm.mship.role.update', $role->role_id]]) }}
+                @if(isset($permission))
+                    {{ Form::model($permission, ['route' => ['adm.mship.permission.update', $permission->permission_id]]) }}
                 @else
-                    {{ Form::open(["route" => "adm.mship.role.create"]) }}
+                    {{ Form::open(["route" => "adm.mship.permission.create"]) }}
                 @endif
 
                 <div class="form-group">
@@ -23,17 +23,22 @@
                 </div>
 
                 <div class="form-group">
-                    {{ Form::label("permissions[]", "Permissions") }}
+                    {{ Form::label("display_name", "Display Name") }}
+                    {{ Form::text("display_name", null, ["class" => "form-control"]) }}
+                </div>
+
+                <div class="form-group">
+                    {{ Form::label("roles[]", "Roles") }}
                     <div class="row">
-                        @foreach($permissions as $p)
+                        @foreach($roles as $r)
                             <div class="col-sm-4">
                                 <div class='checkbox'>
-                                    @if(isset($role))
-                                        {{ Form::checkbox("permissions[".$p->permission_id."]", $p->permission_id, ($role->hasPermission($p) OR Input::old("permissions.".$p->permission_id) ? "checked='checked'" : "")) }}
+                                    @if(isset($permission))
+                                        {{ Form::checkbox("roles[".$r->role_id."]", $r->role_id, ($r->hasPermission($permission) OR Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) }}
                                     @else
-                                        {{ Form::checkbox("permissions[".$p->permission_id."]", $p->permission_id, (Input::old("permissions.".$p->permission_id) ? "checked='checked'" : "")) }}
+                                        {{ Form::checkbox("roles[".$r->role_id."]", $r->role_id, (Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) }}
                                     @endif
-                                    {{ $p->name }}
+                                    {{ $r->name }}
                                 </div>
                             </div>
                         @endforeach

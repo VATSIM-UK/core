@@ -43,6 +43,7 @@
                             <th>Name</th>
                             <th># Roles</th>
                             <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +54,14 @@
                             <td>{{ $p->name }}</td>
                             <td>{{ count($p->roles) }}</td>
                             <td>{{ $p->updated_at->toDateTimeString() }}</td>
+                            <td>
+                                @if(Auth::admin()->get()->hasPermission("adm/mship/permission/*/update"))
+                                    {{ link_to_route("adm.mship.permission.update", "Edit", [$p->permission_id], ["class" => "btn btn-xs btn-primary"]) }}
+                                @endif
+                                @if(Auth::admin()->get()->hasPermission("adm/mship/permission/*/delete"))
+                                    {{ Form::button("Delete", ["data-href" => URL::route("adm.mship.permission.delete", [$p->permission_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) }}
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                         @if(count($permissions) < 1)

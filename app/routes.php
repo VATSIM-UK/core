@@ -90,6 +90,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::post("/permission/create", ["as" => "adm.mship.permission.create", "uses" => "Permission@postCreate"]);
                 Route::get("/permission/{mshipPermission}/update", ["as" => "adm.mship.permission.update", "uses" => "Permission@getUpdate"]);
                 Route::post("/permission/{mshipPermission}/update", ["as" => "adm.mship.permission.update", "uses" => "Permission@postUpdate"]);
+                Route::any("/permission/{mshipPermission}/delete", ["as" => "adm.mship.permission.delete", "uses" => "Permission@anyDelete"]);
                 Route::get("/permission/", ["as" => "adm.mship.permission.index", "uses" => "Permission@getIndex"]);
             });
         });

@@ -3,6 +3,7 @@
 namespace Controllers\Adm\Mship;
 
 use \AuthException;
+use \Auth;
 use \Input;
 use \Session;
 use \Response;
@@ -23,39 +24,76 @@ class Permission extends \Controllers\Adm\AdmController {
         $permissions = PermissionData::orderBy("name", "ASC")->paginate(20);
 
         return $this->viewMake("adm.mship.permission.index")
-                    ->with("permissions", $permissions);
+                        ->with("permissions", $permissions);
     }
 
     public function getCreate() {
         $roles = RoleData::orderBy("name", "ASC")->get();
 
         return $this->viewMake("adm.mship.permision.create_or_update")
-                    ->with("roles", $roles);
+                        ->with("roles", $roles);
     }
 
-    public function postCreate(){
+    public function postCreate() {
         // Let's create!
         $permission = new PermissionData();
         $permission->name = Input::get("name");
         $permission->display_name = Input::get("display_name");
         $permission->save();
 
-        if(count(Input::get("roles")) > 0){
+        if (count(Input::get("roles")) > 0) {
             $permission->attachRoles(Input::get("roles"));
         }
 
-        return Redirect::route("adm.mship.permission.index")->withSuccess("Permission '".$permission->display_name."' has been created - don't forget to attach it to some roles!");
+        return Redirect::route("adm.mship.permission.index")->withSuccess("Permission '" . $permission->display_name . "' has been created - don't forget to attach it to some roles!");
     }
 
     public function getUpdate(PermissionData $permission) {
-        if(!$permission OR !$permission->exists){
+        if (!$permission OR ! $permission->exists) {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
         $roles = RoleData::orderBy("name", "ASC")->get();
 
-        return $this->viewMake("adm.mship.permissions.create_or_update")
-                    ->with("permission", $permission)
-                    ->with("roles", $roles);
+        return $this->viewMake("adm.mship.permission.create_or_update")
+                        ->with("permission", $permission)
+                        ->with("roles", $roles);
     }
+
+    public function postUpdate(PermissionData $permission) {
+        if (!$permission OR ! $permission->exists) {
+            return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
+        }
+
+        // Let's create!
+        $permission = $permission->fill(Input::all());
+        if (!$permission->save()) {
+            return Redirect::route("adm.mship.permission.update")->withErrors($permission->errors());
+        }
+
+        if (Auth::admin()->get()->hasPermission("adm/mship/permission/assign")) {
+            // Detatch permissions!
+            foreach ($permission->roles as $r) {
+                if (!in_array($r->role_id, Input::get("roles", []))) {
+                    $permission->detachRole($r);
+                }
+            }
+
+            // Attach all permissions.
+            $permission->attachRoles(Input::get("roles", []));
+        }
+
+        return Redirect::route("adm.mship.permission.index")->withSuccess("Permission '" . $permission->display_name . "' has been updated - don't forget to set the roles properly!");
+    }
+
+    public function anyDelete(PermissionData $permission) {
+        if (!$permission OR ! $permission->exists) {
+            return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
+        }
+
+        // Let's delete!
+        $permission->delete();
+        return Redirect::route("adm.mship.permission.index")->withSuccess("Permission and associated roles deleted.");
+    }
+
 }
