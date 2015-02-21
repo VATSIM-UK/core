@@ -11,10 +11,12 @@
   |
  */
 
-Log::info(Request::url());
-
 Route::model("mshipAccount", "\Models\Mship\Account", function() {
     Redirect::route("adm.mship.account.index");
+});
+
+Route::model("mshipRole", "\Models\Mship\Role", function() {
+    Redirect::route("adm.mship.role.index");
 });
 
 Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function(){
@@ -44,6 +46,8 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
             Route::get("/verify", array("as" => "adm.authentication.verify", "uses" => "Authentication@getVerify"));
         });
 
+        Route::get("/error/{code?}", ["as" => "adm.error", "uses" => "Error@getDisplay"]);
+
         // Auth required
         Route::group(array("before" => "auth.admin"), function() {
             Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
@@ -70,6 +74,15 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"]);
+
+                Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);
+                Route::post("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@postCreate"]);
+                Route::get("/role/{mshipRole}/update", ["as" => "adm.mship.role.update", "uses" => "Role@getUpdate"]);
+                Route::post("/role/{mshipRole}/update", ["as" => "adm.mship.role.update", "uses" => "Role@postUpdate"]);
+                Route::get("/role/", ["as" => "adm.mship.role.index", "uses" => "Role@getIndex"]);
+
+                Route::get("/permission/{mshipRole}", ["as" => "adm.mship.permission.view", "uses" => "Permission@getView"]);
+                Route::get("/permission/", ["as" => "adm.mship.permission.index", "uses" => "Permission@getIndex"]);
             });
         });
     });

@@ -2,13 +2,16 @@
 
 namespace Models\Mship;
 
+use Illuminate\Auth\UserTrait;
+use Illuminate\Auth\UserInterface;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;
 use \Models\Sys\Token as SystemToken;
+use \Models\Mship\Permission as PermissionData;
 
-class Account extends \Models\aTimelineEntry {
+class Account extends \Models\aTimelineEntry implements UserInterface {
 
-    use SoftDeletingTrait;
+    use UserTrait, SoftDeletingTrait;
 
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
@@ -79,6 +82,44 @@ class Account extends \Models\aTimelineEntry {
 
     public function qualifications() {
         return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id");
+    }
+
+    public function roles(){
+        return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions");
+    }
+
+    public function hasPermission($permission){
+        if(is_object($permission)){
+            $permission = $permission->getKey();
+        }
+
+        // Let's check all roles for this permission!
+        foreach($this->roles as $r){
+            if($r->permissions->contains($permission)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasChildPermission($parent){
+        if (is_object($parent)) {
+            $parent = $parent->name;
+        }
+
+        $childPermissions = PermissionData::where("name", "LIKE", $parent."%")->get();
+
+        // Let's check all roles for this permission!
+        foreach($this->roles as $r){
+            foreach($childPermissions as $cp){
+                if($r->permissions->contains($cp)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function getQualificationAtcAttribute() {
