@@ -88,7 +88,7 @@ class MShipRolesPermissions extends Migration {
             $table->timestamps();
         });
 
-        DB::table("mship_role")->insert(array(
+        DB::table("mship_permission_role")->insert(array(
             ["role_id" => 1, "permission_id" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
         ));
     }
