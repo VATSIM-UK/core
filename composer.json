@@ -22,7 +22,8 @@
         "guzzlehttp/guzzle": "~4.0",
         "doctrine/dbal": "2.6.*@dev",
         "zizaco/entrust": "1.2.*@dev",
-        "barryvdh/laravel-debugbar" : "~1.8"
+        "barryvdh/laravel-debugbar" : "~1.8",
+        "ollieread/multiauth": "dev-master"
     },
     "autoload": {
         "classmap": [
