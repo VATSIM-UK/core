@@ -36,7 +36,7 @@ abstract class aModel extends Ardent {
         return $array;
     }
 
-    public function save(array $options = array()) {
+    public function save(array $rules = [], array $customMessages = [], array $options = [], Closure $beforeSave = NULL, Closure $afterSave = NULL) {
         // Let's check the old data vs new data, so we can store data changes!
         if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
             // Get the changed values!
