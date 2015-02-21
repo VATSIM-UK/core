@@ -72,12 +72,12 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"]);
-                Route::get("/account/{sortBy?}/{sortDir?}/", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
                 Route::post("/account/{mshipAccount}/note/create", ["as" => "adm.mship.account.note.create", "uses" => "Account@postNoteCreate"]);
                 Route::post("/account/{mshipAccount}/note/filter", ["as" => "adm.mship.account.note.filter", "uses" => "Account@postNoteFilter"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"]);
+                Route::get("/account/", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
 
                 Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);
                 Route::post("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@postCreate"]);
