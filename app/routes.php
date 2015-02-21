@@ -72,6 +72,8 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"]);
+                Route::post("/account/{mshipAccount}/role/attach", ["as" => "adm.mship.account.role.attach", "uses" => "Account@postRoleAttach"]);
+                Route::post("/account/{mshipAccount}/role/{mshipRole}/detach", ["as" => "adm.mship.account.role.detach", "uses" => "Account@postRoleDetach"]);
                 Route::post("/account/{mshipAccount}/note/create", ["as" => "adm.mship.account.note.create", "uses" => "Account@postNoteCreate"]);
                 Route::post("/account/{mshipAccount}/note/filter", ["as" => "adm.mship.account.note.filter", "uses" => "Account@postNoteFilter"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);

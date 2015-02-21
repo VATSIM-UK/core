@@ -15,6 +15,7 @@ use \Redirect;
 use \DB;
 use \Models\Mship\Account as AccountData;
 use \Models\Mship\Account\Security as AccountSecurityData;
+use Models\Mship\Role as RoleData;
 use Models\Mship\Security as SecurityData;
 use Models\Mship\Account\Note as AccountNoteData;
 use Models\Mship\Note\Type as NoteTypeData;
@@ -45,6 +46,9 @@ class Account extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.account.index");
         }
 
+        // Get all possible roles!
+        $availableRoles = RoleData::all()->diff($account->roles);
+
         // Get all possible security levels.
         $securityLevels = SecurityData::all();
 
@@ -57,9 +61,49 @@ class Account extends \Controllers\Adm\AdmController {
         return $this->viewMake("adm.mship.account.detail")
                         ->with("selectedTab", $tab)
                         ->with("account", $account)
+                        ->with("availableRoles", $availableRoles)
                         ->with("securityLevels", $securityLevels)
                         ->with("noteTypes", $noteTypes)
                         ->with("noteTypesAll", $noteTypesAll);
+    }
+
+    public function postRoleAttach(AccountData $account){
+        if (!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        // Let's try and load this RoleData
+        $role = RoleData::find(Input::get("role"));
+
+        if(!$role){
+            return Redirect::route("adm.mship.account.details", [$account->account_id], "role")->withError("The selected role does not exist.");
+        }
+
+        // Let's add!
+        if(!$account->roles->contains($role->role_id)){
+            $account->roles()->attach($role);
+        }
+
+        return Redirect::route("adm.mship.account.details", [$account->account_id, "role"])->withSuccess($role->name. " role attached successfully. This user inherited ".count($role->permissions)." permissions.");
+    }
+
+    public function postRoleDetach(AccountData $account, RoleData $role){
+        if (!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        if(!$role){
+            return Redirect::route("adm.mship.account.details", [$account->account_id], "role")->withError("The selected role does not exist.");
+        }
+
+        if(!$account->roles->contains($role->role_id)){
+            return Redirect::route("adm.mship.account.details", [$account->account_id], "role")->withError("This role is not attached to this user.");
+        }
+
+        // Let's remove!
+        $account->roles()->detach($role);
+
+        return Redirect::route("adm.mship.account.details", [$account->account_id, "role"])->withSuccess($role->name. " role detached successfully. This user lost ".count($role->permissions)." permissions.");
     }
 
     public function postSecurityEnable(AccountData $account){
@@ -175,7 +219,7 @@ class Account extends \Controllers\Adm\AdmController {
         }
 
         // Get all filters
-        $filters = Input::get("filter");
+        $filters = Input::get("filter", []);
         $qs = "";
         foreach($filters as $f){
             $qs.= "filter[".$f."]=1&";

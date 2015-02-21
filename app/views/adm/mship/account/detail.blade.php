@@ -10,6 +10,9 @@
             <div class="box-body">
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
+                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role"))
+                        <li {{ $selectedTab == "role" ? "class='active'" : "" }}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
+                    @endif
                     @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security"))
                         <li {{ $selectedTab == "security" ? "class='active'" : "" }}><a href="#security" role="tab" data-toggle="tab">Security Details</a></li>
                     @endif
@@ -119,37 +122,124 @@
                         </div>
                     </div>
 
+                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role"))
+                        <div class="tab-pane fade {{ $selectedTab == "role" ? "in active" : "" }}" id="role">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+
+                                    <div class="box-header">
+                                        <h3 class="box-title">Roles</h3>
+                                    </div><!-- /.box-header -->
+                                    <div class="box-body">
+
+                                        <div class="btn-toolbar">
+                                            <div class="btn-group pull-right">
+                                                @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role/attach"))
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRoleAttach">Add / Attach</button>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix">&nbsp;</div>
+
+                                        <table class="table table-striped table-bordered table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th># Permissions</th>
+                                                    <th>Added</th>
+                                                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role/*/detach"))
+                                                        <th>Delete</th>
+                                                    @endif
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($account->roles as $r)
+                                                <tr>
+                                                    <td>{{ $r->role_id }}</td>
+                                                    <td>{{ $r->name }}</td>
+                                                    <td>{{ count($r->permissions) }}</td>
+                                                    <td>{{ $r->created_at->toDateTimeString() }}</td>
+                                                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role/*/detach"))
+                                                        <td>{{ Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->account_id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) }}</td>
+                                                    @endif
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+                    @endif
+
+                    <!-- Modals -->
+                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/role/attach"))
+                        <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
+                            {{ Form::open(array("url" => URL::route("adm.mship.account.role.attach", $account->account_id))) }}
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Add / Attach Role</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            To add a new role to this user's account, please choose from the dropdown below.  If the user already has this role
+                                            it will *not* be added again.
+                                        </p>
+                                        <p>
+                                        <div class="form-group">
+                                            <label for="role">Role</label>
+                                            <select name="role">
+                                                @foreach($availableRoles as $ar)
+                                                <option value="{{ $ar->role_id }}">{{ $ar->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ Form::close() }}
+                        </div>
+                    @endif
+
                     @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security"))
                         <div class="tab-pane fade {{ $selectedTab == "security" ? "in active" : "" }}" id="security">
                             <!-- general form elements -->
                             <div class="box box-primary">
 
-                                <div class="btn-toolbar">
-                                    <div class="btn-group pull-right">
-                                        @if($account->current_security)
-                                            @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/reset"))
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
-                                            @endif
+                                <div class="box-header">
+                                    <h3 class="box-title">Security</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
 
-                                            @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/change"))
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group pull-right">
+                                            @if($account->current_security)
+                                                @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/reset"))
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
+                                                @endif
+
+                                                @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/change"))
+                                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
+                                                @endif
+                                            @else
+                                                @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/enable"))
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enable / Force</button>
+                                                @endif
                                             @endif
-                                        @else
-                                            @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/enable"))
-                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enable / Force</button>
-                                            @endif
-                                        @endif
+                                        </div>
                                     </div>
-                                </div>
 
-                                @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/view"))
-                                    <div class="box-header">
-                                        <h3 class="box-title">Security Setting History</h3>
-                                    </div><!-- /.box-header -->
-                                    <div class="box-body">
+                                    <div class="clearfix">&nbsp;</div>
 
-                                        <div class="clearfix">&nbsp;</div>
-
+                                    @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/security/view"))
                                         <table class="table table-striped table-bordered table-condensed">
                                             <thead>
                                                 <tr>
@@ -170,8 +260,8 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                    </div><!-- /.box-body -->
-                                @endif
+                                    @endif
+                                </div><!-- /.box-body -->
                             </div><!-- /.box -->
                         </div>
                     @endif
@@ -313,11 +403,11 @@
 
                                         @if(Auth::admin()->get()->hasPermission("adm/mship/account/*/note/view"))
                                             @foreach($account->notes as $note)
-                                                @if((array_key_exists($note->note_type_id, Input::get("filter")) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
+                                                @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
                                                     <div class="panel panel-{{ $note->type->colour_code }} note-{{ $note->type->is_system ? "system" : "" }} note-type-{{ $note->note_type_id }}" id='note-{{ $note->account_note_id }}'>
                                                         <div class="panel-heading">
                                                             <h3 class="panel-title">
-                                                                {{ $note->type->name }} #{{ $note->account_note_id }}
+                                                                {{ $note->type->name }}
                                                                 <span class="time pull-right">
                                                                     <small><i class="fa fa-clock-o"></i> {{ $note->created_at->diffForHumans() }}, {{ $note->created_at->toDateTimeString() }}</small>
                                                                 </span>
