@@ -34,6 +34,10 @@ class Permission extends \Models\aModel {
     }
 
     public function attachRole(RoleData $role){
+        if($this->roles->contains($role->getKey())){
+            return false;
+        }
+
         return $this->roles()->attach($role);
     }
 
@@ -48,6 +52,10 @@ class Permission extends \Models\aModel {
     }
 
     public function detachRole(RoleData $role){
+        if(!$this->roles->contains($role->getKey())){
+            return false;
+        }
+
         return $this->roles()->detach($role);
     }
 
