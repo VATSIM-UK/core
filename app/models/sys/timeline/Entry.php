@@ -21,6 +21,10 @@ class Entry extends \Models\aModel {
             return $this->morphTo()->withTrashed();
         }
 
+        public function action(){
+            return $this->belongsTo("Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
+        }
+
         public function getOwnerDisplayAttribute(){
             if($this->attributes['owner_id'] == NULL OR $this->attributes['owner_type'] == ""){
                 return "Unknown";
@@ -57,10 +61,6 @@ class Entry extends \Models\aModel {
 
         public function getEntryReplaceAttribute(){
             return $this->extra_display;
-        }
-
-        public function action(){
-            return $this->belongsTo("Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
         }
 
         public function setIpAttribute($value){
