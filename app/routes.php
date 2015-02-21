@@ -142,4 +142,6 @@ Route::group(array("namespace" => "Controllers"), function() {
     });
 });
 
-Route::get("/", "/mship/landing");
+Route::get("/", function(){
+    return Redirect::route("mship.manage.dashboard");
+});
