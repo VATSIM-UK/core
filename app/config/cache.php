@@ -2,7 +2,7 @@
 
 return array(
 
-	'driver' => 'fcache',
+	'driver' => 'apc',
 	'path' => storage_path().'/cache',
 	'connection' => null,
 	'table' => 'cache',

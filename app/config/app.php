@@ -118,7 +118,6 @@ return array(
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
         'Zizaco\Entrust\EntrustServiceProvider',
         'Barryvdh\Debugbar\ServiceProvider',
-        'Artdevue\Fcache\FcacheServiceProvider'
     ),
     /*
       |--------------------------------------------------------------------------
