@@ -55,8 +55,8 @@
                                 @endif
                             </td>
                             <td>{{ $r->default }}</td>
-                            <td>{{ count($r->accounts) }}</td>
-                            <td>{{ count($r->permissions) }}</td>
+                            <td>{{ $r->accounts->count() }}</td>
+                            <td>{{ $r->permissions->count() }}</td>
                             <td>{{ $r->updated_at->toDateTimeString() }}</td>
                             <td>
                                 @if(Auth::admin()->get()->hasPermission("adm/mship/role/*/update"))

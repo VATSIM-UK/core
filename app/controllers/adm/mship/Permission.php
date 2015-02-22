@@ -21,7 +21,9 @@ class Permission extends \Controllers\Adm\AdmController {
 
     public function getIndex() {
         // ORM it all!
-        $permissions = PermissionData::orderBy("name", "ASC")->paginate(20);
+        $permissions = PermissionData::orderBy("name", "ASC")
+                                     ->with("roles")
+                                     ->paginate(20);
 
         return $this->viewMake("adm.mship.permission.index")
                         ->with("permissions", $permissions);
@@ -53,7 +55,8 @@ class Permission extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
-        $roles = RoleData::orderBy("name", "ASC")->get();
+        $roles = RoleData::orderBy("name", "ASC")
+                         ->get();
 
         return $this->viewMake("adm.mship.permission.create_or_update")
                         ->with("permission", $permission)

@@ -21,7 +21,10 @@ class Role extends \Controllers\Adm\AdmController {
 
     public function getIndex() {
         // ORM it all!
-        $roles = RoleData::orderBy("name", "ASC")->get();
+        $roles = RoleData::orderBy("name", "ASC")
+                         ->with("permissions")
+                         ->with("accounts")
+                         ->get();
 
         return $this->viewMake("adm.mship.role.index")
                     ->with("roles", $roles);
@@ -53,7 +56,8 @@ class Role extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
         }
 
-        $permissions = PermissionData::orderBy("name", "ASC")->get();
+        $permissions = PermissionData::orderBy("name", "ASC")
+                                     ->get();
 
         return $this->viewMake("adm.mship.role.create_or_update")
                     ->with("role", $role)
