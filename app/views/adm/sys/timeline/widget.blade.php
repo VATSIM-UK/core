@@ -10,7 +10,11 @@
             <?php $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $entry->created_at)->toFormattedDateString(); ?>
         @endif
         <li>
-            @include('adm.sys.timeline_entries.'.$entry->action->type, array('entry' => $entry))
+            @if(View::exists('adm.sys.timeline_entries.'.$entry->action->type))
+                @include('adm.sys.timeline_entries.'.$entry->action->type, array('entry' => $entry))
+            @else
+                No view defined for {{ $entry->action->type }}. Probably should let web support know.
+            @endif
         </li>
     @endforeach
 </ul>
