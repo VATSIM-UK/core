@@ -98,7 +98,8 @@
         $(".tooltip_displays").tooltip();
     </script>
 
-    <script>
+      @if(App::environment() == "development" OR App::environment() == "staging")
+        <script>
               var _vengage = _vengage || [];
               (function(){
               var a, b, c;
@@ -116,7 +117,30 @@
         t.async = true;
         t.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://s3.amazonaws.com/vetrack/init.min.js';
         s.parentNode.insertBefore(t, s);
-        _vengage.push(['pubkey', '10903a80-4445-41e4-8940-f144137fcbe0']);
+        _vengage.push(['pubkey', 'bbcc20a3-02ea-44ec-9c28-e7b055dedff8']);
       })();
       </script>
+      @else
+      <script>
+              var _vengage = _vengage || [];
+              (function(){
+              var a, b, c;
+              a = function (f) {
+              return function () {
+              _vengage.push([f].concat(Array.prototype.slice.call(arguments, 0)));
+            };
+          };
+          b = ['load', 'addRule', 'addVariable', 'getURLParam', 'addRuleByParam', 'addVariableByParam', 'trackAction', 'submitFeedback', 'submitResponse', 'close', 'minimize', 'openModal', 'helpers'];
+          for (c = 0; c < b.length; c++) {
+          _vengage[b[c]] = a(b[c]);
+        }
+        var t = document.createElement('script'),
+        s = document.getElementsByTagName('script')[0];
+        t.async = true;
+        t.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://s3.amazonaws.com/vetrack/init.min.js';
+        s.parentNode.insertBefore(t, s);
+        _vengage.push(['pubkey', '6e575d09-616e-44a0-a78a-3f38b918d1c6']);
+      })();
+      </script>
+      @endif
 </html>
