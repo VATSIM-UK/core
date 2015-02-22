@@ -98,7 +98,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function qualifications() {
-        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id")->orderBy("created_at", "DESC")->with("qualification");
     }
 
     public function roles(){
@@ -106,7 +106,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function states() {
-        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function ssoTokens() {
@@ -114,25 +114,31 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function security() {
-        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function getQualificationAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->first();
-        return $a;
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "atc";
+        })->first();
     }
 
     public function getQualificationsAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->get();
-        return $a;
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "atc";
+        });
     }
 
     public function getQualificationsAtcTrainingAttribute() {
-        return $this->qualifications()->atcTraining()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "atc_training";
+        });
     }
 
     public function getQualificationsPilotAttribute() {
-        return $this->qualifications()->pilot()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "pilot";
+        });
     }
 
     public function getQualificationsPilotStringAttribute(){
@@ -147,19 +153,25 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function getQualificationsPilotTrainingAttribute() {
-        return $this->qualifications()->pilotTraining()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "training_pilot";
+        });
     }
 
     public function getQualificationsAdminAttribute() {
-        return $this->qualifications()->admin()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "admin";
+        });
     }
 
-    public function getIsStateAttribute($state) {
-        return $this->states()->where("state", "=", $state);
+    public function getIsStateAttribute($search) {
+        return !$this->states->filter(function($state) use ($search){
+            return $state->state == $search;
+        })->isEmpty();
     }
 
     public function getCurrentStateAttribute() {
-        return $this->states()->first();
+        return $this->states->first();
     }
 
     public function getAllStatesAttribute(){
@@ -174,24 +186,25 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function getPrimaryStateAttribute() {
-        return $this->states()->first();
+        return $this->current_state;
     }
 
     public function getCurrentSecurityAttribute() {
-        return $this->security()->first();
+        return $this->security->first();
     }
     public function hasPermission($permission){
-        if(!is_numeric($permission) AND !is_object($permission)){
+        if(is_numeric($permission)){
+            $permission = PermissionData::find($permission);
+            $permission = $permission ? $permission->name : "NOTHING";
+        } elseif(is_object($permission)){
+            $permission = $permission->name;
+        } else {
             $permission = preg_replace("/\d+/", "*", $permission);
-            $permission = PermissionData::where("name", "=", $permission)->first();
         }
-
-        // Get the "super" permission too...
-        $super = PermissionData::where("name", "=", "*")->first();
 
         // Let's check all roles for this permission!
         foreach($this->roles as $r){
-            if(($permission && $r->hasPermission($permission)) OR $r->hasPermission($super)){
+            if($r->hasPermission($permission)){
                 return true;
             }
         }
@@ -211,21 +224,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
         }
 
-        $childPermissions = PermissionData::where("name", "LIKE", $parent."%")->get();
-
-        // Get the "super" permission too...
-        $super = PermissionData::where("name", "=", "*")->first();
-
         // Let's check all roles for this permission!
         foreach($this->roles as $r){
-            if($r->hasPermission($super)){
+            if($r->hasPermission($parent)){
                 return true;
-            }
-
-            foreach($childPermissions as $cp){
-                if($r->hasPermission($cp)){
-                    return true;
-                }
             }
         }
 
@@ -423,11 +425,15 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function getPrimaryEmailAttribute() {
-        return $this->emails()->primary()->first();
+        return $this->emails->filter(function($email){
+            return $email->is_primary;
+        })->first();
     }
 
     public function getSecondaryEmailAttribute() {
-        return $this->emails()->secondary()->get();
+        return $this->emails->filter(function($email){
+            return !$email->is_primary;
+        });
     }
 
     public function setNameFirstAttribute($value) {

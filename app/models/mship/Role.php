@@ -69,12 +69,15 @@ class Role extends \Models\aModel {
         return $this->belongsToMany("\Models\Mship\Permission", "mship_permission_role");
     }
 
-    public function hasPermission(PermissionData $permission) {
-        if (is_object($permission)) {
-            $permission = $permission->getKey();
+    public function hasPermission($permission) {
+        if (is_object($permission) OR is_numeric($permission)) {
+            return $this->permissions->contains($permission);
         }
 
-        return $this->permissions->contains($permission);
+        // It's a string, let's be a bit more creative.
+        return !$this->permissions->filter(function($perm) use($permission){
+                return strcasecmp($perm->name, $permission) == 0 OR $perm->name == "*";
+        })->isEmpty();
     }
 
     public function attachPermission(PermissionData $permission){
