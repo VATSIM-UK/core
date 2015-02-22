@@ -72,6 +72,7 @@ class MembersCertUpdate extends aCommand {
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
             }
+            
             DB::beginTransaction();
             print "\tDB::beginTransaction\n";
             try {
