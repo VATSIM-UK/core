@@ -98,25 +98,25 @@
                     @endif
                     @if(Auth::admin()->get()->hasChildPermission("adm/mship/permission"))
                         <li {{ (\Request::is('adm/mship/permission*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.permission.index") }}"><i class="fa fa-angle-double-right"></i> Permissions List*</a>
+                            <a href="{{ URL::route("adm.mship.permission.index") }}"><i class="fa fa-angle-double-right"></i> Permissions List</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship"))
+                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Roles List*</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship"))
+                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Qualification Settings</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship"))
+                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/note*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Note Settings</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship"))
+                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/security*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Security Settings</a>
                         </li>

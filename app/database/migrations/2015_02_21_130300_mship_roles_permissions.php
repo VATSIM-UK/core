@@ -48,6 +48,9 @@ class MShipRolesPermissions extends Migration {
 
             ["name" => "adm/mship", "display_name" => "Admin / Membership ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
+            ["name" => "adm/mship/account", "display_name" => "Admin / Membership / Account", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/*", "display_name" => "Admin / Membership / Account / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/list", "display_name" => "Admin / Membership / Account / List", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/datachanges", "display_name" => "Admin / Membership / Account / Data Changes", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/datachanges/view", "display_name" => "Admin / Membership / Account / Data Changes / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/flag/view", "display_name" => "Admin / Membership / Account / Flag / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
