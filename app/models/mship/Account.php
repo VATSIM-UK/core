@@ -70,7 +70,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function dataChanges(){
-        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC")->with("morph");
+        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
 
     public function emails() {
