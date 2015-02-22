@@ -15,8 +15,8 @@ class DataChangesTracking extends Migration {
             $table->bigIncrements("data_change_id")->unsigned();
             $table->morphs("model");
             $table->string("data_key", 100);
-            $table->text("data_old");
-            $table->text("data_new");
+            $table->text("data_old")->nullable();
+            $table->text("data_new")->nullable();
             $table->boolean("automatic")->default(0);
             $table->timestamps();
         });
