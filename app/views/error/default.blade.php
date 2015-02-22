@@ -1,4 +1,4 @@
-@extends('layout', ['shellOnly' => !Auth::user()->check()])
+@extends('layout', ['shellOnly' => true])
 
 @section('content')
 <h1>
