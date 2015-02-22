@@ -61,6 +61,14 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
     }
 
+    public static function scopeIsSystem($query){
+        return $query->where(DB::raw(self::STATUS_SYSTEM."&`status", "=", self::STATUS_SYSTEM));
+    }
+
+    public static function scopeIsNotSystem($query){
+        return $query->where(DB::raw(self::STATUS_SYSTEM."&`status", "!=", self::STATUS_SYSTEM));
+    }
+
     public function dataChanges(){
         return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
@@ -97,6 +105,81 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions");
     }
 
+    public function states() {
+        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id");
+    }
+
+    public function ssoTokens() {
+        return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
+    }
+
+    public function security() {
+        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id");
+    }
+
+    public function getQualificationAtcAttribute() {
+        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->first();
+        return $a;
+    }
+
+    public function getQualificationsAtcAttribute() {
+        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->get();
+        return $a;
+    }
+
+    public function getQualificationsAtcTrainingAttribute() {
+        return $this->qualifications()->atcTraining()->orderBy("created_at", "DESC")->get();
+    }
+
+    public function getQualificationsPilotAttribute() {
+        return $this->qualifications()->pilot()->orderBy("created_at", "DESC")->get();
+    }
+
+    public function getQualificationsPilotStringAttribute(){
+        $output = "";
+        foreach ($this->qualifications_pilot as $p) {
+            $output.= $p->qualification->code . ", ";
+        }
+        if($output == ""){
+            $output = "None";
+        }
+        return rtrim($output, ", ");
+    }
+
+    public function getQualificationsPilotTrainingAttribute() {
+        return $this->qualifications()->pilotTraining()->orderBy("created_at", "DESC")->get();
+    }
+
+    public function getQualificationsAdminAttribute() {
+        return $this->qualifications()->admin()->orderBy("created_at", "DESC")->get();
+    }
+
+    public function getIsStateAttribute($state) {
+        return $this->states()->where("state", "=", $state);
+    }
+
+    public function getCurrentStateAttribute() {
+        return $this->states()->first();
+    }
+
+    public function getAllStatesAttribute(){
+        $return = array();
+
+        foreach($this->states as $state){
+            $key = strtolower(\Enums\Account\State::valueToKey($state->state));
+            $return[$key] = 1;
+            $return[$key."_date"] = $state->created_at->toDateTimeString();
+        }
+        return $return;
+    }
+
+    public function getPrimaryStateAttribute() {
+        return $this->states()->first();
+    }
+
+    public function getCurrentSecurityAttribute() {
+        return $this->security()->first();
+    }
     public function hasPermission($permission){
         if(!is_numeric($permission) AND !is_object($permission)){
             $permission = preg_replace("/\d+/", "*", $permission);
@@ -147,82 +230,6 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
 
         return false;
-    }
-
-    public function getQualificationAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->first();
-        return $a;
-    }
-
-    public function getQualificationsAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->get();
-        return $a;
-    }
-
-    public function getQualificationsAtcTrainingAttribute() {
-        return $this->qualifications()->atcTraining()->orderBy("created_at", "DESC")->get();
-    }
-
-    public function getQualificationsPilotAttribute() {
-        return $this->qualifications()->pilot()->orderBy("created_at", "DESC")->get();
-    }
-
-    public function getQualificationsPilotStringAttribute(){
-        $output = "";
-        foreach ($this->qualifications_pilot as $p) {
-            $output.= $p->qualification->code . ", ";
-        }
-        if($output == ""){
-            $output = "None";
-        }
-        return rtrim($output, ", ");
-    }
-
-    public function getQualificationsPilotTrainingAttribute() {
-        return $this->qualifications()->pilotTraining()->orderBy("created_at", "DESC")->get();
-    }
-
-    public function getQualificationsAdminAttribute() {
-        return $this->qualifications()->admin()->orderBy("created_at", "DESC")->get();
-    }
-
-    public function states() {
-        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id");
-    }
-
-    public function getIsStateAttribute($state) {
-        return $this->states()->where("state", "=", $state);
-    }
-
-    public function getCurrentStateAttribute() {
-        return $this->states()->first();
-    }
-
-    public function getAllStatesAttribute(){
-        $return = array();
-
-        foreach($this->states as $state){
-            $key = strtolower(\Enums\Account\State::valueToKey($state->state));
-            $return[$key] = 1;
-            $return[$key."_date"] = $state->created_at->toDateTimeString();
-        }
-        return $return;
-    }
-
-    public function getPrimaryStateAttribute() {
-        return $this->states()->first();
-    }
-
-    public function ssoTokens() {
-        return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
-    }
-
-    public function security() {
-        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id");
-    }
-
-    public function getCurrentSecurityAttribute() {
-        return $this->security()->first();
     }
 
     public function setPassword($password, $type) {

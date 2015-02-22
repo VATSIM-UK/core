@@ -31,7 +31,8 @@ class Account extends \Controllers\Adm\AdmController {
         $sortDir = in_array(Input::get("sort_dir", $sort_dir), ["ASC", "DESC"]) ? Input::get("sort_dir", $sort_dir) : "ASC";
 
         // ORM it all!
-        $memberSearch = AccountData::orderBy($sortBy, $sortDir)
+        $memberSearch = AccountData::isNotSystem()
+                                   ->orderBy($sortBy, $sortDir)
                                    ->paginate(50);
 
         return $this->viewMake("adm.mship.account.index")
