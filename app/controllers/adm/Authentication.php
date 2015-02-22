@@ -2,7 +2,6 @@
 
 namespace Controllers\Adm;
 
-use \AuthException;
 use \Auth;
 use \Input;
 use \Session;
@@ -43,26 +42,26 @@ class Authentication extends \Controllers\Adm\AdmController {
                     return Redirect::to($url);
                 }, function($error) {
                     //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getLogin"));
-                    throw new AuthException($error['message']);
+                    throw new Exception($error['message']);
                 }
         );
     }
 
     public function getVerify() {
         if (!Session::has('vatsimauth')) {
-            throw new AuthException('Session does not exist');
+            throw new Exception('Session does not exist');
         }
 
         $session = Session::get('vatsimauth');
 
         if (Input::get('oauth_token') !== $session['key']) {
             //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-            throw new AuthException('Returned token does not match');
+            throw new Exception('Returned token does not match');
         }
 
         if (!Input::has('oauth_verifier')) {
             //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-            throw new AuthException('No verification code provided');
+            throw new Exception('No verification code provided');
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
@@ -73,18 +72,16 @@ class Authentication extends \Controllers\Adm\AdmController {
 
                     if(!$account){
                         //Entry::log("LOGIN_FAILURE", $account, array("reason" => "Not authorised to login to the admin centre."));
-                        throw new AuthException("You are not authorised to view this page.");
+                        return Response::make("Unauthorised", 401);
                     }
 
                     Auth::admin()->login($account);
-
-                    //Entry::log("LOGIN_SUCCESS", $account);
 
                     // Let's send them over to the authentication redirect now.
                     return Redirect::to(Session::pull("auth_adm_return"));
                 }, function($error) {
                     //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-                    throw new AuthException($error['message']);
+                    throw new Exception($error['message']);
                 }
         );
     }

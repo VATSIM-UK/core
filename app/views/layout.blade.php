@@ -51,17 +51,19 @@
             <div class="container container-content">
                 <div class="content">
                     <div class="content-inner">
-                        @section('breadcrumb')
-                        <h1>
-                            @foreach($_breadcrumb as $_b => $b)
-                            @if($b != last($_breadcrumb))
-                            <small>{{ ucfirst($b[0]) }}</small>
-                            <small><span style='color: black'>&rsaquo;</span></small>
-                            @endif
-                            @endforeach
-                            {{ isset($_pageTitle) ? $_pageTitle : "No Page Title" }}
-                        </h1>
-                        @show
+                        @if(!isset($shellOnly) OR !$shellOnly)
+                            @section('breadcrumb')
+                            <h1>
+                                @foreach($_breadcrumb as $_b => $b)
+                                @if($b != last($_breadcrumb))
+                                <small>{{ ucfirst($b[0]) }}</small>
+                                <small><span style='color: black'>&rsaquo;</span></small>
+                                @endif
+                                @endforeach
+                                {{ isset($_pageTitle) ? $_pageTitle : "No Page Title" }}
+                            </h1>
+                            @show
+                        @endif
 
                         @if(Session::has('error') OR isset($error))
                         <div class="alert alert-danger" role="alert">

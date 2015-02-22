@@ -100,6 +100,8 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
 });
 
 Route::group(array("namespace" => "Controllers"), function() {
+    Route::get("/error/{code?}", ["as" => "error", "uses" => "Error@getDisplay"]);
+
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
         // Guest access
         Route::group(array("prefix" => "auth"), function(){

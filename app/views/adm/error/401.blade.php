@@ -1,7 +1,7 @@
 @extends('adm.error.default')
 
 @section('error_code')
-404
+401
 @stop
 
 @section('error_title')
