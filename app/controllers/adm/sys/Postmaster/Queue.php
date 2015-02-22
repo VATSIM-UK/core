@@ -17,7 +17,9 @@ class Queue extends \Controllers\Adm\AdmController {
     public function getIndex() {
         // Get all emails in the queue!
         $queue = PostmasterQueueData::orderBy("updated_at", "DESC")
-                                     ->paginate(50);
+                                    ->with("sender")
+                                    ->with("recipient")
+                                    ->paginate(50);
 
         return $this->viewMake("adm.sys.postmaster.queue.index")
                     ->with("queue", $queue);
@@ -27,6 +29,13 @@ class Queue extends \Controllers\Adm\AdmController {
         if(!$postmasterQueue OR !$postmasterQueue->exists){
             return Redirect::route("adm.sys.postmaster.queue.index")->withError("Postmaster queue entry doesn't exist.");
         }
+
+        $postmasterQueue->load(
+                "sender", "senderEmail",
+                "recipient", "recipientEmail",
+                "template",
+                "timelineEntriesOwner", "timelineEntriesExtra"
+        );
 
         return $this->viewMake("adm.sys.postmaster.queue.view")
                     ->with("queue", $postmasterQueue);
