@@ -7,6 +7,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;
 use \Models\Sys\Token as SystemToken;
+use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
 
 class Account extends \Models\aTimelineEntry implements UserInterface {
@@ -47,6 +48,12 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public static function eventCreated($model, $extra=null, $data=null){
         parent::eventCreated($model, $extra, $data);
+
+        // Add the user to the default role.
+        $defaultRole = RoleData::isDefault()->first();
+        if($defaultRole){
+            $model->roles()->attach($defaultRole);
+        }
 
         // Generate an email to the user to advise them of their new account at VATUK.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
