@@ -10,7 +10,17 @@ use \Models\Mship\Account;
 
 class BaseController extends \Controller {
 
+    protected $_account;
     protected $_pageTitle;
+
+    public function __construct(){
+        if(Auth::user()->check()){
+            $this->_account = Auth::user()->get();
+            $this->_account->load("roles", "roles.permissions");
+        } else {
+            $this->_account = new Account();
+        }
+    }
 
     /**
      * Setup the layout used by the controller.
@@ -27,7 +37,7 @@ class BaseController extends \Controller {
         $view = View::make($view);
 
         // Accounts!
-        $view->with("_account", Auth::user()->get());
+        $view->with("_account", $this->_account);
 
         // Let's also display the breadcrumb
         $breadcrumb = array();
