@@ -22,6 +22,15 @@
             @endif
         </p>
     </div>
+    @if(Session::has("error_message"))
+    <p>
+    <pre>
+        {{ Session::get("error_message", "No message provided.") }}
+        {{ Session::get("error_file", "No file provided.") }}
+        {{ Session::get("error_line", "No line provided.") }}
+    </pre>
+    </p>
+    @endif
 </div><!-- /.error-page -->
 @stop
 
