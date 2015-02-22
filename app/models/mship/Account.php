@@ -256,8 +256,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
-        $check = $this->emails()->where("email", "LIKE", $newEmail);
-        if ($check->count() < 1) {
+        $check = $this->emails->filter(function($email) use($newEmail){
+            return strcasecmp($email, $newEmail) == 0;
+        })->count() > 0;
+        if ($check) {
             $email = new AccountEmail;
             $email->email = $newEmail;
             if ($verified) {
@@ -283,7 +285,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
 
         // Does this rating already exist?
-        if ($this->qualifications()->where("qualification_id", "=", $qualificationType->qualification_id)->count() > 0) {
+        if ($this->qualifications->contains($qualificationType->qualification_id)) {
             return false;
         }
 
@@ -470,7 +472,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function getDisplayValueAttribute() {
-        return $this->getNameAttribute() . " (" . $this->attributes['account_id'] . ")";
+        return $this->name . " (" . $this->getKey() . ")";
     }
 
     public function toArray() {
