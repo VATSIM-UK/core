@@ -33,10 +33,10 @@ class Queue extends \Controllers\Adm\AdmController {
         }
 
         $postmasterQueue->load(
-                "sender", "senderEmail",
-                "recipient", "recipientEmail",
-                "template",
-                "timelineEntriesOwner", "timelineEntriesExtra"
+            "sender", "senderEmail",
+            "recipient", "recipientEmail",
+            "template",
+            "timelineEntriesOwner", "timelineEntriesExtra"
         );
 
         return $this->viewMake("adm.sys.postmaster.queue.view")

@@ -65,7 +65,7 @@
                             </th>
                             <th>E-Mail</th>
                             <th>ATC Rating</th>
-                            <th>Pilot Rating</th>
+                            <th>Pilot Rating(s)</th>
                             <th>State</th>
                             <th>Status</th>
                         </tr>
@@ -77,7 +77,7 @@
                             <td>{{ $m->name }}</td>
                             <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
                             <td>{{ $m->qualification_atc }}</td>
-                            <td>{{ $m->qualification_pilot }}</td>
+                            <td>{{ $m->qualifications_pilot_string }}</td>
                             <td>{{ $m->current_state }}</td>
                             <td>{{ $m->status }}</td>
                         </tr>
