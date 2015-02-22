@@ -220,8 +220,6 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
         } elseif(!is_numeric($parent)){
             $parent = preg_replace("/\d+/", "*", $parent);
-            $parent = PermissionData::where("name", "=", $parent)->first();
-            $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
         }
 
         // Let's check all roles for this permission!

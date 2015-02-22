@@ -69,6 +69,8 @@ class Role extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
         }
 
+        $role->load("permissions");
+
         // Let's create!
         $role = $role->fill(Input::all());
         if(!$role->save()){

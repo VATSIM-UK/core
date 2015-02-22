@@ -55,6 +55,8 @@ class Permission extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
+        $permission->load("roles");
+
         $roles = RoleData::orderBy("name", "ASC")
                          ->get();
 
