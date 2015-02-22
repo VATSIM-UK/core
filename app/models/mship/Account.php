@@ -286,7 +286,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
         // Does this rating already exist?
         $check = $this->qualifications->filter(function($qual) use($qualificationType){
-            return $qual->qualification_id == $qualification_type->qualification_id;
+            return $qual->qualification_id == $qualificationType->qualification_id;
         })->count() > 0;
         if ($check) {
             return false;
