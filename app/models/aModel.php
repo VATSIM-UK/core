@@ -5,8 +5,6 @@ namespace Models;
 use \Models\Sys\Timeline\Entry;
 
 abstract class aModel extends \Eloquent {
-    public $autoPurgeRedundantAttributes = true;
-
     public static function boot() {
         parent::boot();
         self::created(array(get_called_class(), "eventCreated"));

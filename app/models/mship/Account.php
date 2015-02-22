@@ -257,14 +257,14 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
         $check = $this->emails->filter(function($email) use($newEmail){
-            return strcasecmp($email, $newEmail) == 0;
+            return strcasecmp($email->email, $newEmail) == 0;
         })->first();
 
-        if (!$check) {
+        if (!$check OR !$check->exists) {
             $email = new AccountEmail;
             $email->email = $newEmail;
             if ($verified) {
-                $email->verified_at = Carbon::now()->toDateTimeString();
+                $email->verified_at = Carbon::now();
             }
             $this->emails()->save($email);
             $isNewEmail = true;
@@ -277,6 +277,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $email->is_primary = 1;
             $email->save();
         }
+
         return ($returnID ? $email->account_email_id : $isNewEmail);
     }
 
@@ -430,7 +431,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function getPrimaryEmailAttribute() {
         return $this->emails->filter(function($email){
-            return $email->is_primary;
+            return $email->is_primary == 1;
         })->first();
     }
 
@@ -482,7 +483,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function toArray() {
         $array = parent::toArray();
         $array["name"] = $this->name;
-        $array["email"] = $this->primary_email->email;
+        $array["email"] = $this->primary_email ? $this->primary_email->email : new Account\Email();
         $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->qualification->name_long : "");
         $array['pilot_rating'] = array();
@@ -515,6 +516,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $state = \Enums\Account\State::INTERNATIONAL;
         }
         if ($this->account_id < 1) {
+            print "UH OH!";
             print_r($this);
             exit();
         }
