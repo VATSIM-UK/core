@@ -37,7 +37,10 @@ class Role extends \Models\aModel {
         // Let's undefault any other default models.
         if($model->default){
             $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->get();
-            if($def){ $def->delete(); }
+            if($def){
+                $def->default = 0;
+                $def->save();
+            }
         }
     }
 
@@ -47,7 +50,10 @@ class Role extends \Models\aModel {
         // Let's undefault any other default models.
         if($model->default){
             $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->get();
-            if($def){ $def->delete(); }
+            if($def){
+                $def->default = 0;
+                $def->save();
+            }
         }
     }
 
@@ -75,7 +81,7 @@ class Role extends \Models\aModel {
         if($this->permissions->contains($permission->getKey())){
             return false;
         }
-        
+
         return $this->permissions()->attach($permission);
     }
 

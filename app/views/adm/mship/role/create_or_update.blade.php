@@ -42,7 +42,7 @@
                     </div>
                 </div>
 
-                @if(Auth::admin()->get()->hasPermission("adm/mship/permission/assign"))
+                @if(Auth::admin()->get()->hasPermission("adm/mship/permission/attach"))
                     <div class="form-group">
                         {{ Form::label("permissions[]", "Permissions") }}
                         <div class="row">
