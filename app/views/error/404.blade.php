@@ -13,7 +13,3 @@
     Looks like something went completely wrong!  But don't worry, it can happen to the best of us and it just happened to you.
 </p>
 @stop
-
-@section('error_image')
-
-@stop
