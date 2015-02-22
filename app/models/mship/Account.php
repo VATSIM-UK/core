@@ -258,7 +258,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         // Check this email doesn't exist for this user already.
         $check = $this->emails->filter(function($email) use($newEmail){
             return strcasecmp($email, $newEmail) == 0;
-        })->count() > 0;
+        })->first();
         if ($check) {
             $email = new AccountEmail;
             $email->email = $newEmail;
@@ -268,7 +268,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $this->emails()->save($email);
             $isNewEmail = true;
         } else {
-            $email = $check->first();
+            $email = $check;
             $isNewEmail = false;
         }
 
