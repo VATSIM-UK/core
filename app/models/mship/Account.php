@@ -6,6 +6,8 @@ use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;
+use \Models\Mship\Account\Email as AccountEmail;
+use \Models\Mship\Account\Qualification as AccountQualification;
 use \Models\Sys\Token as SystemToken;
 use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
@@ -249,7 +251,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         // Check this email doesn't exist for this user already.
         $check = $this->emails()->where("email", "LIKE", $newEmail);
         if ($check->count() < 1) {
-            $email = new Account\Email;
+            $email = new AccountEmail;
             $email->email = $newEmail;
             if ($verified) {
                 $email->verified_at = Carbon::now()->toDateTimeString();
@@ -279,7 +281,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
 
         // Let's add it!
-        $qual = new Qualification;
+        $qual = new AccountQualification;
         $qual->qualification_id = $qualificationType->qualification_id;
         $this->qualifications()->save($qual);
 
