@@ -17,6 +17,13 @@ class Management extends \Controllers\BaseController {
         return $this->viewMake("mship.management.landing");
     }
     public function getDashboard(){
+        // Load necessary data, early!
+        $this->_account->load(
+            "emails",
+            "qualifications", "qualifications.qualification",
+            "states"
+        );
+
         return $this->viewMake("mship.management.dashboard");
     }
 }

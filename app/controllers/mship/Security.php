@@ -160,6 +160,7 @@ class Security extends \Controllers\BaseController {
         $user = Auth::user()->get();
         $user->auth_extra = 1;
         $user->auth_extra_at = \Carbon\Carbon::now();
+        $user->save();
         return Redirect::route("mship.security.auth");
     }
 
