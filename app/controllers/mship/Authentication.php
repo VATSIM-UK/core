@@ -121,6 +121,7 @@ class Authentication extends \Controllers\BaseController {
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
                     $account->auth_extra = 1;
+                    $account->determineState($user->region->code, $user->division->code);
                     $account->save();
 
                     Auth::user()->login($account, true);

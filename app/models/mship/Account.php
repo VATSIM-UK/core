@@ -520,7 +520,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             print_r($this);
             exit();
         }
-        $this->states()->save(new State(array("state" => $state)));
+        $this->states()->save(new Account\State(array("state" => $state)));
     }
 
 }
