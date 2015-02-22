@@ -40,8 +40,7 @@ App::error(function(Exception $exception, $code) {
         Session::flash("error_message", $exception->getMessage());
         Session::flash("error_line", $exception->getLine());
         Session::flash("error_file", $exception->getFile());
-        $request = Request::create(URL::route("adm.error", [500], false));
-        return Route::dispatch($request);
+        return Redirect::route("adm.error", [500]);
     } else {
         Session::flash("error_message", $exception->getMessage());
         Session::flash("error_line", $exception->getLine());
