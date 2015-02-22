@@ -62,11 +62,11 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public static function scopeIsSystem($query){
-        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status", "=", self::STATUS_SYSTEM));
+        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status"), "=", self::STATUS_SYSTEM);
     }
 
     public static function scopeIsNotSystem($query){
-        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status", "!=", self::STATUS_SYSTEM));
+        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status"), "!=", self::STATUS_SYSTEM);
     }
 
     public function dataChanges(){
