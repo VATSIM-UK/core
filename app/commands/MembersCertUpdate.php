@@ -65,6 +65,13 @@ class MembersCertUpdate extends aCommand {
                 continue;
             }
 
+            // remove members that no longer exist in CERT
+            if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
+                    && $_xmlData->rating === "Suspended") {
+                $_m->delete();
+                print "\tMember no longer exists in CERT - deleted.\n";
+                continue;
+            }
             DB::beginTransaction();
             print "\tDB::beginTransaction\n";
             try {
