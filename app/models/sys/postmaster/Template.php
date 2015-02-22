@@ -11,7 +11,7 @@ class Template extends \Models\aModel {
     const PRIORITY_LOW = 10;
     const PRIORITY_MED = 50;
     const PRIORITY_HIGH = 70;
-    const PRIORITY_NOW = 99;
+    const PRIORITY_NOW = 90;
 
     protected $table = "sys_postmaster_template";
     protected $primaryKey = "postmaster_template_id";
