@@ -62,7 +62,8 @@ class Account extends \Controllers\Adm\AdmController {
                 "states",
                 "emails",
                 "security",
-                "security.security"
+                "security.security",
+                "timelineEntriesExtra", "timelineEntriesOwner"
         );
 
         // Get all possible roles!

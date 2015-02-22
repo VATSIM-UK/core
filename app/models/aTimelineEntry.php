@@ -29,9 +29,9 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     public static function eventCreated($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
-        $logKey.= "_CREATED";
+        $logKey.= "_CREATED";*/
 
         self::eventLog($logKey, $model, $extra, $data);
     }
@@ -39,9 +39,9 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     public static function eventUpdated($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
-        $logKey.= "_UPDATED";
+        $logKey.= "_UPDATED";*/
 
         self::eventLog($logKey, $model, $extra, $data);
     }
@@ -49,9 +49,9 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     public static function eventDeleted($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
-        $logKey.= "_DELETED";
+        $logKey.= "_DELETED";*/
 
         self::eventLog($logKey, $model, $extra, $data);
     }
