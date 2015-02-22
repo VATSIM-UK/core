@@ -259,7 +259,8 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         $check = $this->emails->filter(function($email) use($newEmail){
             return strcasecmp($email, $newEmail) == 0;
         })->first();
-        if ($check) {
+
+        if (!$check) {
             $email = new AccountEmail;
             $email->email = $newEmail;
             if ($verified) {
