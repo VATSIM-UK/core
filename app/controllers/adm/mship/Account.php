@@ -43,7 +43,7 @@ class Account extends \Controllers\Adm\AdmController {
     }
 
     public function getDetail(AccountData $account, $tab="basic") {
-        if (!$account) {
+        if (!$account OR $account->is_system) {
             return Redirect::route("adm.mship.account.index");
         }
 
