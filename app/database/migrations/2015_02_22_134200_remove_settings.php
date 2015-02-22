@@ -10,7 +10,7 @@ class RemoveSettings extends Migration {
      * @return void
      */
     public function up() {
-        Schema::drop('mship_account_role');
+        Schema::drop('sys_setting');
     }
 
     /**
