@@ -249,7 +249,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         // Check this email doesn't exist for this user already.
         $check = $this->emails()->where("email", "LIKE", $newEmail);
         if ($check->count() < 1) {
-            $email = new Email;
+            $email = new Account\Email;
             $email->email = $newEmail;
             if ($verified) {
                 $email->verified_at = Carbon::now()->toDateTimeString();
