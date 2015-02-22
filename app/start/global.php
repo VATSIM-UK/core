@@ -29,17 +29,19 @@ App::error(function(Exception $exception, $code) {
     Log::error($exception->getFile().":".$exception->getFile().":".$exception->getLine()." --> ". $exception->getMessage());
 
     // Is it an admin request?
-    if(Request::is("adm*")){
-        Session::flash("error_message", $exception->getMessage());
-        Session::flash("error_line", $exception->getLine());
-        Session::flash("error_file", $exception->getFile());
-        return Redirect::route("adm.error", [500]);
-    } else {
-        Session::flash("error_message", $exception->getMessage());
-        Session::flash("error_line", $exception->getLine());
-        Session::flash("error_file", $exception->getFile());
-        $request = Request::create(URL::route("error", [500], false));
-        return Route::dispatch($request);
+    if(App::environment() != "development"){
+        if(Request::is("adm*")){
+            Session::flash("error_message", $exception->getMessage());
+            Session::flash("error_line", $exception->getLine());
+            Session::flash("error_file", $exception->getFile());
+            return Redirect::route("adm.error", [500]);
+        } else {
+            Session::flash("error_message", $exception->getMessage());
+            Session::flash("error_line", $exception->getLine());
+            Session::flash("error_file", $exception->getFile());
+            $request = Request::create(URL::route("error", [500], false));
+            return Route::dispatch($request);
+        }
     }
 });
 
