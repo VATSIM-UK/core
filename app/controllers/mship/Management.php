@@ -18,7 +18,7 @@ class Management extends \Controllers\BaseController {
     }
     public function getDashboard(){
         // Load necessary data, early!
-        $this->_current_account->load(
+        $this->_account->load(
             "emails",
             "qualifications", "qualifications.qualification",
             "states"
