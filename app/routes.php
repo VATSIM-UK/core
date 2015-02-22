@@ -134,7 +134,7 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
             Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
             Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
-            Route::get("/replace", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
+            Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
             Route::post("/replace", ["as" => "mship.security.replace", "uses" => "Security@postReplace"]);
             Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
         });
