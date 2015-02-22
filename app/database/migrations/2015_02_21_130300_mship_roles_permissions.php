@@ -45,6 +45,7 @@ class MShipRolesPermissions extends Migration {
             ["name" => "*", "display_name" => "SUPERMAN POWERS", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["name" => "adm/dashboard", "display_name" => "Admin / Dashboard ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/search", "display_name" => "Admin / Search ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["name" => "adm/mship", "display_name" => "Admin / Membership ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 

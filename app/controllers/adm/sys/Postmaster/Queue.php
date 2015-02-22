@@ -17,7 +17,9 @@ class Queue extends \Controllers\Adm\AdmController {
     public function getIndex() {
         // Get all emails in the queue!
         $queue = PostmasterQueueData::orderBy("updated_at", "DESC")
+                                    ->has("sender")
                                     ->with("sender")
+                                    ->has("recipient")
                                     ->with("recipient")
                                     ->paginate(50);
 
