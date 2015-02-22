@@ -86,7 +86,9 @@
                                     <div class="form-group">
                                         <label for="state">State:</label>
                                         {{ $account->current_state }}<br />
-                                        <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
+                                        @if($account->current_state)
+                                            <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
+                                        @endif
                                     </div>
                                 </div><!-- /.box-body -->
                             </div>
