@@ -16,30 +16,23 @@ App::before(function($request)
 
 });
 
-
 App::after(function($request, $response)
 {
 	//
 });
 
-Route::filter('auth.user.basic', function() {
-    if (!Session::get("auth_basic", false)) {
-        if (Request::ajax()) {
-            return Response::make('Unauthorized', 401);
+Route::filter('auth.user', function() {
+    if(!Auth::user()->check()){
+        if(Request::ajax()){
+            return Response::make("Unauthorised", 401);
         } else {
-            return Redirect::to("/mship/manage/landing");
+            return Redirect::to("/");
         }
-    }
-});
-
-Route::filter('auth.user.full', function() {
-    if (!Session::get("auth_true", false) OR Session::get("auth_account", 0) == 0) {
-        if (Request::ajax()) {
-            return Response::make('Unauthorized', 401);
-        } else {
-            return Redirect::to("/mship/manage/landing");
+    }/* else {
+        if(!Auth::user()->get()->hasPermission(Request::decodedPath())){
+            return Redirect::route("error", [401]);
         }
-    }
+    }*/
 });
 
 Route::filter('auth.admin', function() {

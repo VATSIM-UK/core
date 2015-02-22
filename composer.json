@@ -29,6 +29,7 @@
         "classmap": [
             "app/commands",
             "app/controllers",
+            "app/library",
             "app/models",
             "app/enums",
             "app/interfaces",

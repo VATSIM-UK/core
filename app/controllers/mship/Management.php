@@ -3,13 +3,14 @@
 namespace Controllers\Mship;
 
 use \Redirect;
+use \Auth;
 use \Session;
 use \View;
 use \Models\Mship\Account;
 
 class Management extends \Controllers\BaseController {
     public function getLanding(){
-        if(isset($this->_current_account->exists) && $this->_current_account){
+        if(Auth::user()->check()){
             return Redirect::route("mship.auth.redirect");
         }
 

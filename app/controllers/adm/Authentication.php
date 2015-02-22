@@ -21,20 +21,11 @@ class Authentication extends \Controllers\Adm\AdmController {
     }
 
     public function getLogout(){
-        //Entry::log("LOGOUT_SUCCESS", User::find(Session::get("auth_adm_account")));
         Auth::admin()->logout();
         return Redirect::route("adm.authentication.login");
     }
 
     public function postLogin() {
-        // Start the login process by disabling their auth!
-        // Anyone playing with the URLs and ending up here is out of luck.
-        Session::set("auth_adm_true", false);
-        Session::set("auth_adm_account", 0);
-
-        // Have we got a return URL, or just the account dashboard?
-        Session::set("auth_adm_return", Input::get("returnURL", URL::route("adm.dashboard")));
-
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
                         [URL::route("adm.authentication.verify")], function($key, $secret, $url) {
@@ -78,7 +69,7 @@ class Authentication extends \Controllers\Adm\AdmController {
                     Auth::admin()->login($account);
 
                     // Let's send them over to the authentication redirect now.
-                    return Redirect::to(Session::pull("auth_adm_return"));
+                    return Redirect::route("adm.dashboard");
                 }, function($error) {
                     //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
                     throw new Exception($error['message']);

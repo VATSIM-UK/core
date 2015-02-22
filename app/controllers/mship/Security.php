@@ -3,6 +3,7 @@
 namespace Controllers\Mship;
 
 use \Redirect;
+use \Auth;
 use \Session;
 use \Input;
 use \View;
@@ -15,12 +16,12 @@ class Security extends \Controllers\BaseController {
 
     public function getAuth() {
         // Let's check whether we even NEED this.
-        if (Session::get("auth_extra", false) OR ! $this->_current_account->current_security OR $this->_current_account->current_security == NULL) {
+        if (Auth::user()->get()->auth_extra OR !Auth::user()->get()->current_security OR Auth::user()->get()->current_security == NULL) {
             return Redirect::route("mship.auth.redirect");
         }
 
         // Next, do we need to replace/reset?
-        if (!$this->_current_account->current_security->is_active) {
+        if (!Auth::user()->get()->current_security->is_active) {
             return Redirect::route("mship.security.replace");
         }
 
@@ -29,9 +30,11 @@ class Security extends \Controllers\BaseController {
     }
 
     public function postAuth() {
-        if ($this->_current_account->current_security->verifyPassword(Input::get("password"))) {
-            Session::set("auth_extra", true);
-            Session::set("auth_extra_time", \Carbon\Carbon::now()->toDateTimeString());
+        if (Auth::user()->get()->current_security->verifyPassword(Input::get("password"))) {
+            $user = Auth::user()->get();
+            $user->auth_extra = 1;
+            $user->auth_extra_at = \Carbon\Carbon::now();
+            $user->save();
             return Redirect::route("mship.auth.redirect");
         }
         return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
@@ -42,7 +45,7 @@ class Security extends \Controllers\BaseController {
     }
 
     public function getReplace($disable = false) {
-        $currentSecurity = $this->_current_account->current_security;
+        $currentSecurity = Auth::user()->get()->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
@@ -96,14 +99,14 @@ class Security extends \Controllers\BaseController {
     }
 
     public function postReplace($disable = false) {
-        $currentSecurity = $this->_current_account->current_security;
+        $currentSecurity = Auth::user()->get()->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         }
 
         if ($currentSecurity && strlen($currentSecurity->value) > 1) {
-            if (!$this->_current_account->current_security->verifyPassword(Input::get("old_password"))) {
+            if (!Auth::user()->get()->current_security->verifyPassword(Input::get("old_password"))) {
                 return Redirect::route("mship.security.replace", [($disable ? "/1" : "")])->with("error", "Your old password is incorrect.  Please try again.");
             }
 
@@ -152,20 +155,22 @@ class Security extends \Controllers\BaseController {
         }
 
         // All requirements met, set the password!
-        $this->_current_account->setPassword($newPassword, $securityType);
+        Auth::user()->get()->setPassword($newPassword, $securityType);
 
-        Session::set("auth_extra", true);
+        $user = Auth::user()->get();
+        $user->auth_extra = 1;
+        $user->auth_extra_at = \Carbon\Carbon::now();
         return Redirect::route("mship.security.auth");
     }
 
     public function getForgotten() {
-        if (!$this->_current_account->current_security) {
+        if (!Auth::user()->get()->current_security) {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        $this->_current_account->resetPassword();
+        Auth::user()->get()->resetPassword();
+        Auth::user()->logout();
 
-        Session::flush();
         return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
                 an authorisation link has been emailed to you.  Once you click this link to confirm this request
                 a new password will be generated and emailed to you.<br />
@@ -211,7 +216,7 @@ class Security extends \Controllers\BaseController {
         // Now generate an email.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
 
-        Session::flush();
+        Auth::user()->logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated
             for you and emailed to your <strong>primary</strong> VATSIM email.<br />
                 You can now close this window.");

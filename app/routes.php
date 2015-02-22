@@ -112,7 +112,7 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
 
             // /mship/auth - fully authenticated.
-            Route::group(["before" => "auth.user.full"], function(){
+            Route::group(["before" => "auth.user"], function(){
                 Route::get("/override", ["as" => "mship.auth.override", "uses" => "Authentication@getOverride"]);
                 Route::post("/override", ["as" => "mship.auth.override", "uses" => "Authentication@postOverride"]);
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
@@ -124,21 +124,19 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::get("/dashboard", [
                 "as" => "mship.manage.dashboard",
                 "uses" => "Management@getDashboard",
-                "before" => "auth.user.full",
+                "before" => "auth.user",
                 ]);
         });
 
         Route::group(["prefix" => "security"], function(){
             Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
 
-            Route::group(["before" => "auth.user.basic"], function(){
-                Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
-                Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
-                Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
-                Route::get("/replace", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
-                Route::post("/replace", ["as" => "mship.security.replace", "uses" => "Security@postReplace"]);
-                Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
-            });
+            Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
+            Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
+            Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
+            Route::get("/replace", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
+            Route::post("/replace", ["as" => "mship.security.replace", "uses" => "Security@postReplace"]);
+            Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
         });
     });
 
@@ -149,5 +147,5 @@ Route::group(array("namespace" => "Controllers"), function() {
 });
 
 Route::get("/", function(){
-    return Redirect::route("mship.manage.dashboard");
+    return Redirect::route("mship.manage.landing");
 });

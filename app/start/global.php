@@ -8,14 +8,7 @@ ClassLoader::addDirectories(array(
     app_path() . '/enums',
 ));
 
-Cache::extend('fcache', function($app)
-{
-    $store = new Artdevue\Fcache\Fcache;
-    return new Illuminate\Cache\Repository($store);
-});
-
 Log::useFiles(storage_path() . '/logs/laravel.log');
-
 
 class ValidationException extends Exception {
 }

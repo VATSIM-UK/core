@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use \Auth;
 use \View;
 use \Session;
 use \Request;
@@ -9,8 +10,6 @@ use \Models\Mship\Account;
 
 class BaseController extends \Controller {
 
-    protected $_current_account;
-    protected $_real_account;
     protected $_pageTitle;
 
     /**
@@ -28,12 +27,7 @@ class BaseController extends \Controller {
         $view = View::make($view);
 
         // Accounts!
-        $view->with("_account", $this->_current_account);
-        if (Session::get("auth_override", 0) != 0) {
-            $view->with("_account_override", true);
-        } else {
-            $view->with("_account_override", false);
-        }
+        $view->with("_account", Auth::user()->get());
 
         // Let's also display the breadcrumb
         $breadcrumb = array();
@@ -56,15 +50,4 @@ class BaseController extends \Controller {
 
         return $view;
     }
-
-    public function __construct() {
-        if (Session::get("auth_override", 0) != 0) {
-            $this->_current_account = Account::find(Session::get("auth_override", 0));
-            $this->_real_account = Account::find(Session::get("auth_account", 0));
-        } else {
-            $this->_current_account = Account::find(Session::get("auth_account", 0));
-            $this->_real_account = Account::find(Session::get("auth_account", 0));
-        }
-    }
-
 }
