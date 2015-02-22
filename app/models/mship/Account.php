@@ -70,7 +70,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function dataChanges(){
-        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
+        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC")->with("morph");
     }
 
     public function emails() {
@@ -78,11 +78,11 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function messagesReceived() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC")->with("sender");
     }
 
     public function messagesSent() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
     }
 
     public function notes() {

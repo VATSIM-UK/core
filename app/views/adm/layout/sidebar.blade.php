@@ -6,7 +6,7 @@
             {{ HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle", "style" => "background: #FFFFFF;"]) }}
         </div>
         <div class="pull-left info">
-            <p>Hello, {{ Auth::admin()->get()->name_first }}</p>
+            <p>Hello, {{ $_account->name_first }}</p>
 
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
@@ -24,7 +24,7 @@
     <!-- /.search form -->
 
     <ul class="sidebar-menu">
-        @if(Auth::admin()->get()->hasChildPermission("adm/dashboard"))
+        @if($_account->hasChildPermission("adm/dashboard"))
             <li {{ (\Request::is('adm/dashboard*') ? ' class="active"' : '') }}>
                 <a href="{{ URL::route("adm.dashboard") }}">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
@@ -79,44 +79,44 @@
                 <li><a href="#"><i class="fa fa-angle-double-right"></i> ATC Bookings</a></li>
             </ul>
         </li>-->
-        @if(Auth::admin()->get()->hasChildPermission("adm/mship"))
+        @if($_account->hasChildPermission("adm/mship"))
             <li class="treeview {{ (\Request::is('adm/mship*') ? 'active' : '') }}">
                 <a href="#">
                     <i class="ion ion-person-stalker"></i> <span>Members</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship/account"))
+                    @if($_account->hasChildPermission("adm/mship/account"))
                         <li {{ (\Request::is('adm/mship/account*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship/role"))
+                    @if($_account->hasChildPermission("adm/mship/role"))
                         <li {{ (\Request::is('adm/mship/role*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.role.index") }}"><i class="fa fa-angle-double-right"></i> Roles List</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mship/permission"))
+                    @if($_account->hasChildPermission("adm/mship/permission"))
                         <li {{ (\Request::is('adm/mship/permission*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.permission.index") }}"><i class="fa fa-angle-double-right"></i> Permissions List</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
+                    @if($_account->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Roles List*</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
+                    @if($_account->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Qualification Settings</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
+                    @if($_account->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/note*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Note Settings</a>
                         </li>
                     @endif
-                    @if(Auth::admin()->get()->hasChildPermission("adm/mshipx"))
+                    @if($_account->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/security*') ? ' class="active"' : '') }}>
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Security Settings</a>
                         </li>
@@ -125,7 +125,7 @@
             </li>
         @endif
 
-        @if(Auth::admin()->get()->hasChildPermission("adm/system"))
+        @if($_account->hasChildPermission("adm/system"))
             <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
                 <a href="#">
                     <i class="ion ion-gear-b"></i> <span>System</span>

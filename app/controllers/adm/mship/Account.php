@@ -33,8 +33,6 @@ class Account extends \Controllers\Adm\AdmController {
         // ORM it all!
         $memberSearch = AccountData::isNotSystem()
                                    ->orderBy($sortBy, $sortDir)
-                                   ->with("roles")
-                                   ->with("roles.permissions")
                                    ->with("qualifications")
                                    ->with("qualifications.qualification")
                                    ->with("states")
@@ -52,6 +50,20 @@ class Account extends \Controllers\Adm\AdmController {
         if (!$account OR $account->is_system) {
             return Redirect::route("adm.mship.account.index");
         }
+
+        // Lazy eager loading
+        $account->load(
+                "notes", "notes.type", "notes.writer",
+                "messagesReceived", "messagesReceived.sender",
+                "messagesSent", "messagesSent.recipient",
+                "dataChanges", "dataChanges.model",
+                "roles", "roles.permissions",
+                "qualifications", "qualifications.qualification",
+                "states",
+                "emails",
+                "security",
+                "security.security"
+        );
 
         // Get all possible roles!
         $availableRoles = RoleData::all()->diff($account->roles);

@@ -2,12 +2,14 @@
 
 namespace Controllers\Adm;
 
+use \Auth;
 use \Session;
 use \View;
 use \Models\Mship\Account;
 use \Request;
 class AdmController extends \Controllers\BaseController {
 
+    protected $_account = NULL;
     protected $_pageTitle = NULL;
     protected $_pageSubTitle = NULL;
 
@@ -30,6 +32,9 @@ class AdmController extends \Controllers\BaseController {
 
         public function viewMake($view){
             $view = View::make($view);
+
+            // Accounts!
+            $view->with("_account", $this->_account);
 
             // Let's also display the breadcrumb
             $breadcrumb = array();
@@ -63,6 +68,11 @@ class AdmController extends \Controllers\BaseController {
             $view->with("_pageSubTitle", $this->_pageSubTitle);
 
             return $view;
+        }
+
+        public function __construct(){
+            $this->_account = Auth::user()->get();
+            $this->_account->load("roles", "roles.permissions");
         }
 
 }

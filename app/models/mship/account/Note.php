@@ -16,7 +16,7 @@ class Note extends \Models\aModel {
         }
 
         public function writer(){
-            return $this->belongsTo("\Models\Mship\Account", "account_id", "writer_id");
+            return $this->belongsTo("\Models\Mship\Account", "writer_id", "account_id");
         }
 
         public function type(){
