@@ -4,6 +4,7 @@ namespace Controllers\Adm;
 
 use \Auth;
 use \Session;
+use \Route;
 use \View;
 use \Models\Mship\Account;
 use \Request;
@@ -50,7 +51,7 @@ class AdmController extends \Controllers\BaseController {
             }*/
             foreach($bcBase as $bc){
                 $uri.= "/".strtolower($bc);
-                $breadcrumb[] = [strtolower($bc), $uri];
+                $breadcrumb[] = [strtolower($bc), $uri, Route::has($uri)];
             }
             $view->with("_breadcrumb", $breadcrumb);
 

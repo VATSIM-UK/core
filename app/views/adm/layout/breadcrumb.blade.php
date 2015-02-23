@@ -10,8 +10,10 @@
         @foreach($breadcrumb as $b)
             @if(last($breadcrumb) == $b)
                 <li class="active">{{ ucfirst($b[0]) }}</li>
-            @else
+            @elseif($b[2])
                 <li><a href="{{ URL::to($b[1]) }}">{{ ucfirst($b[0]) }}</a></li>
+            @else
+                <li>{{ ucfirst($b[0]) }}</li>
             @endif
         @endforeach
     </ol>
