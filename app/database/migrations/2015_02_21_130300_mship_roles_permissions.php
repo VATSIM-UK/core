@@ -61,6 +61,7 @@ class MShipRolesPermissions extends Migration {
             ["name" => "adm/mship/account/*/roles/*/detach", "display_name" => "Admin / Membership / Account / Roles / Detach", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/note/create", "display_name" => "Admin / Membership / Account / Note / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/note/view", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/*/note/filter", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/notes", "display_name" => "Admin / Membership / Account / Note", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/receivedEmails", "display_name" => "Admin / Membership / Account / Received Emails", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/security", "display_name" => "Admin / Membership / Account / Security", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
