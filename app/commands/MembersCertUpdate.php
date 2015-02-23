@@ -44,6 +44,7 @@ class MembersCertUpdate extends aCommand {
      */
     public function fire() {
         $members = Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time_since_last"))->toDateTimeString())
+                ->orWhereNull("cert_checked_at")
                 ->orderBy("cert_checked_at", "ASC")
                 ->limit($this->argument("max_members"))
                 ->get();
@@ -54,6 +55,8 @@ class MembersCertUpdate extends aCommand {
         }
 
         foreach ($members as $pointer => $_m) {
+            if($_m->account_id == VATUK_ACCOUNT_SYSTEM){ continue; }
+
             print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
 
             // Let's load the details from VatsimXML!
@@ -72,7 +75,7 @@ class MembersCertUpdate extends aCommand {
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
             }
-            
+
             DB::beginTransaction();
             print "\tDB::beginTransaction\n";
             try {
