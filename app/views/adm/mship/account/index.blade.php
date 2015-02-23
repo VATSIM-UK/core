@@ -65,7 +65,10 @@
                             </th>
                             <th>E-Mail</th>
                             <th>ATC Rating</th>
+                            <th>ATC Training</th>
                             <th>Pilot Rating(s)</th>
+                            <th>Pilot Training</th>
+                            <th>Admin Rating</th>
                             <th>State</th>
                             <th>Status</th>
                         </tr>
@@ -77,7 +80,10 @@
                             <td>{{ $m->name }}</td>
                             <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
                             <td>{{ $m->qualification_atc }}</td>
+                            <td>{{ $m->qualifications_atc_training->first() }}</td>
                             <td>{{ $m->qualifications_pilot_string }}</td>
+                            <td>{{ $m->qualifications_pilot_training->first() }}</td>
+                            <td>{{ $m->qualifications_admin->first() }}</td>
                             <td>{{ $m->current_state }}</td>
                             <td>{{ $m->status_string }}</td>
                         </tr>

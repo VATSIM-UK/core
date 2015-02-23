@@ -131,7 +131,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function getQualificationsAtcTrainingAttribute() {
         return $this->qualifications->filter(function($qual){
-            return $qual->qualification->type == "atc_training";
+            return $qual->qualification->type == "training_atc";
         });
     }
 
