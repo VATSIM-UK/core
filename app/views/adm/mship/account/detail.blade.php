@@ -81,7 +81,7 @@
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label for="status">Status:</label>
-                                        {{ $account->status }}
+                                        {{ $account->status_string }}
                                     </div>
                                     <div class="form-group">
                                         <label for="state">State:</label>

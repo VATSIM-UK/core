@@ -79,7 +79,7 @@
                             <td>{{ $m->qualification_atc }}</td>
                             <td>{{ $m->qualifications_pilot_string }}</td>
                             <td>{{ $m->current_state }}</td>
-                            <td>{{ $m->status }}</td>
+                            <td>{{ $m->status_string }}</td>
                         </tr>
                         @endforeach
                     </tbody>

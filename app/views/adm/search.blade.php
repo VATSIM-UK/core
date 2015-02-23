@@ -36,7 +36,7 @@
                                 <td>{{ $m->qualification_atc }}</td>
                                 <td>{{ $m->qualification_pilot }}</td>
                                 <td>{{ $m->current_state }}</td>
-                                <td>{{ $m->status == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status.'</span>' }}</td>
+                                <td>{{ $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' }}</td>
                             </tr>
                             @endforeach
                         </tbody>

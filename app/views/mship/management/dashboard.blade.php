@@ -192,7 +192,7 @@
         <th class='hidden-xs hidden-sm'>Account Status</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Account Status</strong></span>
-            {{ $_account->status }} {{ $_account->current_state }}
+            {{ $_account->status_string }} {{ $_account->current_state }}
         </td>
     </tr>
     <tr>

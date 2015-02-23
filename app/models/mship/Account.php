@@ -370,7 +370,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
     }
 
-    public function getStatusAttribute() {
+    public function getStatusStringAttribute() {
         // It's done in a convoluted way, because it's in order of how they should be displayed!
         if ($this->is_system_banned) {
             return Account::getStatusDescription(self::STATUS_SYSTEM_BANNED);

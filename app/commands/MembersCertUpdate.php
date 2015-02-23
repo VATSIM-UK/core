@@ -61,7 +61,7 @@ class MembersCertUpdate extends aCommand {
 
             // Let's load the details from VatsimXML!
             try {
-                $_xmlData = VatsimXML::getData($_m->account_id);
+                $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
                 print "\tVatsimXML Data retrieved.\n";
             } catch (Exception $e) {
                 print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
@@ -70,7 +70,7 @@ class MembersCertUpdate extends aCommand {
 
             // remove members that no longer exist in CERT
             if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
-                    && $_xmlData->rating === "Suspended") {
+                    && ($_xmlData->rating == "0" OR $_xmlData->rating == "Suspended")) {
                 $_m->delete();
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
@@ -96,11 +96,11 @@ class MembersCertUpdate extends aCommand {
                 $_m = $_m->find($_m->account_id);
 
                 // Let's work out the user status.
-                $oldStatus = $_m->status;
+                $oldStatus = $_m->status_string;
                 $_m->setCertStatus($_xmlData->rating);
 
                 if ($oldStatus != $_m->status) {
-                    $this->outputTableRow("status", $oldStatus, $_m->status);
+                    $this->outputTableRow("status", $oldStatus, $_m->status_string);
                 }
 
                 // If they're in this feed, they're a division member.
