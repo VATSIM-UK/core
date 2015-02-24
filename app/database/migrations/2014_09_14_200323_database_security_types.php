@@ -41,10 +41,6 @@ class DatabaseSecurityTypes extends Migration {
             Schema::table("mship_account_security", function($table){
                 $table->dropColumn("type");
             });
-
-            DB::table("mship_account_security")->insert(array(
-                ["section" => "mship", "area" => "account", "action" => "impersonate", "entry" => "{owner} impersonated {extra} and logged into their basic user account.  A reason was given.", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ));
 	}
 
 	/**
