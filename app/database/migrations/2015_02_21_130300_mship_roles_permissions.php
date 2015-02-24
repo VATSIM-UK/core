@@ -72,6 +72,7 @@ class MShipRolesPermissions extends Migration {
             ["name" => "adm/mship/account/*/sentEmails", "display_name" => "Admin / Membership / Account / Sent Emails", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/timeline", "display_name" => "Admin / Membership / Account / Timeline", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/view/email", "display_name" => "Admin / Membership / Account / View / Email", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/*/impersonate", "display_name" => "Admin / Membership / Account / Impersonate", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["name" => "adm/mship/permission", "display_name" => "Admin / Membership / Permission", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/permission/create", "display_name" => "Admin / Membership / Permission / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
