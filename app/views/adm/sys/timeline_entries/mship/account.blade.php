@@ -9,12 +9,16 @@
             </span>
 
             <h3 class="timeline-header">
-                <a href="#">{{ $entry->owner_display }}</a>
-                {{ $entry->action->entry }}
+                {{ str_replace("{owner}", "<a href=''>".$entry->owner_display."</a>", str_replace("{extra}", "<a href=''>".$entry->extra_display."</a>", $entry->entry)) }}
             </h3>
 
             <div class="timeline-body">
-                {{ json_decode($entry->action->entry) }}
+                @foreach($entry->extra_data as $k => $ed)
+                    <strong>{{ ucwords($k) }}</strong>: <strong>{{ $ed  }}</strong>
+                    @if(last($entry->extra_data) != $ed)
+                        <br />
+                    @endif
+                @endforeach
             </div>
         </div>
     </li>
