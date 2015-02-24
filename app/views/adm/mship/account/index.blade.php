@@ -25,42 +25,42 @@
                 <table id="mship-accounts" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>
+                            <th class="col-md-1">
                                 @if($sortBy == "account_id")
                                     @if($sortDir == "ASC")
-                                        {{ link_to_route("adm.mship.account.index", "ID", ["account_id", "DESC"]) }}
+                                        {{ link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "DESC"]) }}
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {{ link_to_route("adm.mship.account.index", "ID", ["account_id", "ASC"]) }}
+                                        {{ link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) }}
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {{ link_to_route("adm.mship.account.index", "ID", ["account_id", "ASC"]) }}
+                                    {{ link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) }}
                                 @endif
                             </th>
-                            <th>
+                            <th class="col-md-3">
                                 @if($sortBy == "name_first")
                                     @if($sortDir == "ASC")
-                                        {{ link_to_route("adm.mship.account.index", "First Name", ["name_first", "DESC"]) }}
+                                        {{ link_to_route("adm.mship.account.index", "First Name", ["sort_by" => "name_first", "sort_dir" => "DESC"]) }}
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {{ link_to_route("adm.mship.account.index", "First Name", ["name_first", "ASC"]) }}
+                                        {{ link_to_route("adm.mship.account.index", "First Name", ["sort_by" => "name_first", "sort_dir" => "ASC"]) }}
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {{ link_to_route("adm.mship.account.index", "First Name", ["name_first", "ASC"]) }}
+                                    {{ link_to_route("adm.mship.account.index", "First Name", ["sort_by" => "name_first", "sort_dir" => "ASC"]) }}
                                 @endif
                                 &nbsp;/&nbsp;
                                 @if($sortBy == "name_last")
                                     @if($sortDir == "ASC")
-                                        {{ link_to_route('adm.mship.account.index', "Last Name", ["name_last", "DESC"]) }}
+                                        {{ link_to_route('adm.mship.account.index', "Last Name", ["sort_by" => "name_last", "sort_dir" => "DESC"]) }}
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {{ link_to_route('adm.mship.account.index', "Last Name", ["name_last", "ASC"]) }}
+                                        {{ link_to_route('adm.mship.account.index', "Last Name", ["sort_by" => "name_last", "sort_dir" => "ASC"]) }}
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {{ link_to_route('adm.mship.account.index', "Last Name", ["name_last", "ASC"]) }}
+                                    {{ link_to_route('adm.mship.account.index', "Last Name", ["sort_by" => "name_last", "sort_dir" => "ASC"]) }}
                                 @endif
                             </th>
                             <th>E-Mail</th>

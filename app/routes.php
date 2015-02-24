@@ -41,6 +41,7 @@ Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], func
 /* * ** ADM *** */
 Route::group(array("namespace" => "Controllers\Adm"), function() {
     Route::group(array("prefix" => "adm"), function() {
+
         // Login is the only unauthenticated page.
         Route::get("/", array("uses" => "Authentication@getLogin"));
         Route::group(array("prefix" => "authentication"), function(){

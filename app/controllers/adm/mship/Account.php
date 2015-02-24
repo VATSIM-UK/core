@@ -24,13 +24,13 @@ use Models\Sys\Timeline\Entry as TimelineEntryData;
 
 class Account extends \Controllers\Adm\AdmController {
 
-    public function getIndex($sort_by="account_id", $sort_dir="ASC") {
+    public function getIndex() {
         $totalMembers = AccountData::count();
         $memberSearch = new AccountData;
 
         // Sorting and searching!
-        $sortBy = in_array(Input::get("sort_by", $sort_by), ["account_id", "name_first", "name_last"]) ? Input::get("sort_by", $sort_by) : "account_id";
-        $sortDir = in_array(Input::get("sort_dir", $sort_dir), ["ASC", "DESC"]) ? Input::get("sort_dir", $sort_dir) : "ASC";
+        $sortBy = in_array(Input::get("sort_by"), ["account_id", "name_first", "name_last"]) ? Input::get("sort_by") : "account_id";
+        $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "ASC";
 
         // ORM it all!
         $memberSearch = AccountData::isNotSystem()

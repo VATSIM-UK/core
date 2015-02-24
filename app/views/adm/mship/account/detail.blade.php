@@ -440,7 +440,9 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
+                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/filter"))
+                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
+                                                @endif
 
                                                 @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create"))
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>
