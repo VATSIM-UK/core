@@ -36,7 +36,7 @@ class Role extends \Models\aModel {
 
         // Let's undefault any other default models.
         if($model->default){
-            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->get();
+            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->first();
             if($def){
                 $def->default = 0;
                 $def->save();
