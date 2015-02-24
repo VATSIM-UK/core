@@ -1,4 +1,4 @@
-@if(Session::get("success", false)))
+@if(Session::get("success", false))
     <div class='col-md-12'>
         <div class="alert alert-success">
             <i class="fa fa-ban"></i>
@@ -8,7 +8,7 @@
     </div>
 @endif
 
-@if(Session::get("error", false)))
+@if(Session::get("error", false))
     <div class='col-md-12'>
         <div class="alert alert-danger">
             <i class="fa fa-ban"></i>
