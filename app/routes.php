@@ -79,6 +79,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"]);
+                Route::post("/account/{mshipAccount}/impersonate", ["as" => "adm.mship.account.impersonate", "uses" => "Account@postImpersonate"]);
                 Route::get("/account/", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"]);
 
                 Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);

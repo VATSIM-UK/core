@@ -36,6 +36,18 @@
 
                 <div class="tab-content">
                     <div class="tab-pane fade {{ $selectedTab == "basic" ? "in active" : "" }}" id="basic">
+
+                        <div class="col-md-12">
+                            <div class="btn-toolbar">
+                                <div class="btn-group pull-right">
+                                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+
                         <div class="col-md-4">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -43,6 +55,7 @@
                                     <h3 class="box-title">Basic Details</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
+
                                     <div class="form-group">
                                         <label for="account_id">CID:</label>
                                         {{ $account->account_id }}
@@ -123,6 +136,40 @@
                             </div><!-- /.box -->
                         </div>
                     </div>
+
+                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
+                        <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
+                            {{ Form::open(array("url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank")) }}
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Impersonate User</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Clicking confirm will log you in as this user <strong>on the user facing side</strong> and log you out (if you're logged in).
+                                        </p>
+                                        <p>
+                                            This access is provided on the proviso that you do not misuse this, and that it is for a valid purpose.  To that end, we
+                                            monitor these and request that you enter a reason in the box below.
+                                        </p>
+                                        <p>
+                                        <div class="form-group">
+                                            {{ Form::Label("reason", "Reason") }}
+                                            {{ Form::textarea("reason", null, ["class" => "form-control"]) }}
+                                        </div>
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ Form::close() }}
+                        </div>
+                    @endif
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role"))
                         <div class="tab-pane fade {{ $selectedTab == "role" ? "in active" : "" }}" id="role">

@@ -4,6 +4,7 @@ namespace Controllers\Adm\Mship;
 
 use \AuthException;
 use \Input;
+use \Auth;
 use \Session;
 use \Response;
 use \Request;
@@ -245,5 +246,16 @@ class Account extends \Controllers\Adm\AdmController {
         }
 
         return Redirect::to(URL::route("adm.mship.account.details", [$account->account_id, "notes"])."?".$qs);
+    }
+
+    public function postImpersonate(AccountData $account){
+        if (!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        // Let's do the login!
+        Auth::admin()->impersonate("user", $account->account_id);
+
+        return Redirect::to(URL::route("mship.manage.dashboard"))->withSuccess("You are now impersonating this user - your reason has been logged. Be good!");
     }
 }
