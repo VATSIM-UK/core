@@ -20,6 +20,7 @@ use Models\Mship\Role as RoleData;
 use Models\Mship\Security as SecurityData;
 use Models\Mship\Account\Note as AccountNoteData;
 use Models\Mship\Note\Type as NoteTypeData;
+use Models\Sys\Timeline\Entry as TimelineEntryData;
 
 class Account extends \Controllers\Adm\AdmController {
 
@@ -224,11 +225,7 @@ class Account extends \Controllers\Adm\AdmController {
         }
 
         // Let's make a note and attach it to the user!
-        $note = new AccountNoteData();
-        $note->account_id = $account->account_id;
-        $note->note_type_id = $noteType->note_type_id;
-        $note->content = Input::get("content");
-        $note->save();
+        $account->addNote($noteType->note_type_id, Input::get("content"), Auth::admin()->get());
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])->withSuccess("The note has been saved successfully!");
     }
@@ -252,6 +249,8 @@ class Account extends \Controllers\Adm\AdmController {
         if (!$account) {
             return Redirect::route("adm.mship.account.index");
         }
+
+        TimelineEntryData::log("mship_account_impersonate", Auth::admin()->get(), $account, ["reason" => Input::get("reason")]);
 
         // Let's do the login!
         Auth::admin()->impersonate("user", $account->account_id);

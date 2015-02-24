@@ -11,6 +11,7 @@ use \Models\Mship\Account\Qualification as AccountQualification;
 use \Models\Sys\Token as SystemToken;
 use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
+use \Models\Mship\Account\Note as AccountNoteData;
 
 class Account extends \Models\aTimelineEntry implements UserInterface {
 
@@ -300,6 +301,25 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         $this->qualifications()->save($qual);
 
         return true;
+    }
+
+    public function addNote($noteType, $note, $writer=null){
+        if(is_object($noteType)){
+            $noteType = $noteType->getKey();
+        }
+
+        if($writer == null){
+            $writer = VATUK_ACCOUNT_SYSTEM;
+        } elseif(is_object($writer)){
+            $writer = $writer->getKey();
+        }
+
+        $note = new AccountNoteData();
+        $note->account_id = $this->account_id;
+        $note->writer_id = $writer;
+        $note->note_type_id = $noteType;
+        $note->content = $note;
+        return $note->save();
     }
 
     public function setStatusFlag($flag) {
