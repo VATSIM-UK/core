@@ -38,7 +38,7 @@ class PostmasterParse extends aCommand {
      */
     public function fire() {
         // Get all new, queued emails.
-        $newQueued = Queue::pending()->limit(100)->get();
+        $newQueued = Queue::pending()->orderBy("priority", "DESC")->orderBy("updated_at", "ASC")->limit(100)->get();
 
         foreach($newQueued as $q){
             $q->parseAndSave();

@@ -3,7 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account\Account;
+use Models\Mship\Account;
 use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Qualification as QualificationData;
@@ -44,6 +44,7 @@ class MembersCertUpdate extends aCommand {
      */
     public function fire() {
         $members = Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time_since_last"))->toDateTimeString())
+                ->orWhereNull("cert_checked_at")
                 ->orderBy("cert_checked_at", "ASC")
                 ->limit($this->argument("max_members"))
                 ->get();
@@ -54,11 +55,13 @@ class MembersCertUpdate extends aCommand {
         }
 
         foreach ($members as $pointer => $_m) {
+            if($_m->account_id == VATUK_ACCOUNT_SYSTEM){ continue; }
+
             print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
 
             // Let's load the details from VatsimXML!
             try {
-                $_xmlData = VatsimXML::getData($_m->account_id);
+                $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
                 print "\tVatsimXML Data retrieved.\n";
             } catch (Exception $e) {
                 print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
@@ -67,12 +70,12 @@ class MembersCertUpdate extends aCommand {
 
             // remove members that no longer exist in CERT
             if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
-                    && $_xmlData->rating === "Suspended") {
+                    && ($_xmlData->rating == "0" OR $_xmlData->rating == "Suspended")) {
                 $_m->delete();
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
             }
-            
+
             DB::beginTransaction();
             print "\tDB::beginTransaction\n";
             try {
@@ -93,11 +96,11 @@ class MembersCertUpdate extends aCommand {
                 $_m = $_m->find($_m->account_id);
 
                 // Let's work out the user status.
-                $oldStatus = $_m->status;
+                $oldStatus = $_m->status_string;
                 $_m->setCertStatus($_xmlData->rating);
 
                 if ($oldStatus != $_m->status) {
-                    $this->outputTableRow("status", $oldStatus, $_m->status);
+                    $this->outputTableRow("status", $oldStatus, $_m->status_string);
                 }
 
                 // If they're in this feed, they're a division member.

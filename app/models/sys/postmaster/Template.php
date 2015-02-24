@@ -11,7 +11,7 @@ class Template extends \Models\aModel {
     const PRIORITY_LOW = 10;
     const PRIORITY_MED = 50;
     const PRIORITY_HIGH = 70;
-    const PRIORITY_NOW = 99;
+    const PRIORITY_NOW = 90;
 
     protected $table = "sys_postmaster_template";
     protected $primaryKey = "postmaster_template_id";
@@ -23,6 +23,10 @@ class Template extends \Models\aModel {
 
     public function queuedEmails() {
         return $this->belongsTo("\Models\Sys\Postmaster\Queue", "postmaster_template_id", "postmaster_template_id");
+    }
+
+    public function getDisplayValueAttribute() {
+        return array_get($this->attributes, "section")."_".array_get($this->attributes, "area")."_".array_get($this->attributes, "action");
     }
 
 }

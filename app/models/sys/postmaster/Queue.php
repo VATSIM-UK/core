@@ -3,7 +3,8 @@
 namespace Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
+use \Models\Sys\Postmaster\Template;
 
 class Queue extends \Models\aTimelineEntry {
 
@@ -17,37 +18,61 @@ class Queue extends \Models\aTimelineEntry {
 
     const STATUS_PENDING = 10;
     const STATUS_PARSED = 30;
-    const STATUS_SENT = 90;
-    const STATUS_PARSE_FAILED = 35;
-    const STATUS_DELAYED = 98;
-    const STATUS_REJECTED = 99;
+    const STATUS_SENT = 50;
+    const STATUS_DELIVERED = 60;
+    const STATUS_OPENED = 63;
+    const STATUS_CLICKED = 67;
+    const STATUS_DROPPED = 91;
+    const STATUS_BOUNCED = 92;
+    const STATUS_SPAM = 93;
+    const STATUS_UNSUBSCRIBED = 94;
 
     public function scopeOfStatus($query, $status) {
         return $query->where("status", "=", $status);
     }
 
     public function scopePending($query) {
-        return $query->whereStatus(self::STATUS_PENDING);
+        return $query->ofStatus(self::STATUS_PENDING);
     }
 
     public function scopeParsed($query) {
-        return $query->whereStatus(self::STATUS_PARSED);
+        return $query->ofStatus(self::STATUS_PARSED);
     }
 
     public function scopeSent($query) {
-        return $query->whereStatus(self::STATUS_SENT);
+        return $query->ofStatus(self::STATUS_SENT);
     }
 
-    public function scopeDelayed($query) {
-        return $query->whereStatus(self::STATUS_DELAYED);
+    public function scopeDelivered($query) {
+        return $query->ofStatus(self::STATUS_DELIVERED);
     }
 
-    public function scopeRejected($query) {
-        return $query->whereStatus(self::STATUS_REJECTED);
+    public function scopeOpened($query) {
+        return $query->ofStatus(self::STATUS_OPENED);
+    }
+
+    public function scopeClicked($query) {
+        return $query->ofStatus(self::STATUS_CLICKED);
+    }
+
+    public function scopeDropped($query) {
+        return $query->ofStatus(self::STATUS_DROPPED);
+    }
+
+    public function scopeBounced($query) {
+        return $query->ofStatus(self::STATUS_BOUNCED);
+    }
+
+    public function scopeSpam($query) {
+        return $query->ofStatus(self::STATUS_SPAM);
+    }
+
+    public function scopeUnsubscribed($query) {
+        return $query->ofStatus(self::STATUS_UNSUBSCRIBED);
     }
 
     public function recipient() {
-        return $this->belongsTo("\Models\Mship\Account\Account", "recipient_id", "account_id");
+        return $this->belongsTo("\Models\Mship\Account", "recipient_id", "account_id");
     }
 
     public function recipientEmail() {
@@ -55,7 +80,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function sender() {
-        return $this->belongsTo("\Models\Mship\Account\Account", "sender_id", "account_id");
+        return $this->belongsTo("\Models\Mship\Account", "sender_id", "account_id");
     }
 
     public function senderEmail() {
@@ -67,7 +92,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function getDisplayValueAttribute() {
-        return "SOME GENERIC EMAIL ENTRY - NEEDS CHANGING.";
+        return array_get($this->attributes, "postmaster_queue_id").".".$this->template->display_value;
     }
 
     public function setDataAttribute($data) {
@@ -76,6 +101,10 @@ class Queue extends \Models\aTimelineEntry {
 
     public function getDataAttribute($data) {
         return ($this->attributes['data'] ? json_decode($this->attributes['data']) : array());
+    }
+
+    public function setMessageIdAttribute($value){
+        $this->attributes['message_id'] = strpos($value, "@") ? substr($value, 0, strpos($value, "@")) : $value;
     }
 
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {
@@ -232,6 +261,7 @@ class Queue extends \Models\aTimelineEntry {
 
             $message->subject($this->subject);
 
+            $this->message_id = $message->getId();
             $this->status = Queue::STATUS_SENT;
             $this->save();
         });

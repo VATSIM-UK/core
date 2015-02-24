@@ -35,6 +35,16 @@ class InitialSystem extends Migration {
             $table->unique(array("section", "area", "action"));
         });
 
+        DB::table("sys_timeline_action")->insert(array(
+            ["section" => "mship", "area" => "account", "action" => "created", "version" => 1, "entry" => "{owner}'s account was created!", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "mship", "area" => "account", "action" => "updated", "version" => 1, "entry" => "{owner}'s account was updated.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "sys", "area" => "postmaster_queue", "action" => "created", "version" => 1, "entry" => "{owner} email was queued for dispatch to {extra}.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "sys", "area" => "postmaster_queue", "action" => "updated", "version" => 1, "entry" => "{owner} email was updated.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "sys", "area" => "token", "action" => "created", "version" => 1, "entry" => "{owner} token created for {extra}.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "sys", "area" => "token", "action" => "updated", "version" => 1, "entry" => "{owner} token updated for {extra}.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "sys", "area" => "token", "action" => "deleted", "version" => 1, "entry" => "{owner} token deleted for {extra}.", "enabled" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+        ));
+
         Schema::create("sys_setting", function($table) {
             $table->increments("setting_id")->unsigned();
             $table->string("name", 50);

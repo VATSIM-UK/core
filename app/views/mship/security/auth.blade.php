@@ -6,7 +6,7 @@
     </p>
     <div class="row">
         <div class="col-md-7 col-md-offset-2">
-            <form class="form-horizontal" method="POST" action="{{ URL::to("mship/security/auth") }}">
+            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.security.auth") }}">
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="password">Secondary Password</label>
                     <div class="col-sm-7">
@@ -35,7 +35,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" id="confirm" onclick="javascript: window.location.href ='{{ URL::to("mship/security/forgotten") }}';">Confirm</button>
+            <button type="button" class="btn btn-danger" id="confirm" onclick="javascript: window.location.href ='{{ URL::route("mship.security.forgotten") }}';">Confirm</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

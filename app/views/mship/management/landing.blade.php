@@ -18,7 +18,7 @@
                     $("#timerCount").html(timeLeft);
                     setTimeout(runTimer, 1000);
                 } else {
-                    window.location.replace("<?=URL::to("/mship/auth/login")?>");
+                    window.location.replace("<?=URL::route("mship.auth.login")?>");
                 }
             }
             setTimeout(runTimer, 1000);

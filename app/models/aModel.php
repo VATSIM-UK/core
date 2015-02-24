@@ -13,14 +13,17 @@ abstract class aModel extends \Eloquent {
     }
 
     public static function eventCreated($model) {
+        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 
     public static function eventUpdated($model) {
+        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 
     public static function eventDeleted($model) {
+        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 
@@ -31,6 +34,24 @@ abstract class aModel extends \Eloquent {
             unset($array['pivot']);
         }
         return $array;
+    }
+
+    public function save(array $options = []) {
+        // Let's check the old data vs new data, so we can store data changes!
+        if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
+            // Get the changed values!
+            foreach ($this->getDirty() as $attribute => $value) {
+                $original = $this->getOriginal($attribute);
+
+                $dataChange = new \Models\Sys\Data\Change();
+                $dataChange->data_key = $attribute;
+                $dataChange->data_old = $original;
+                $dataChange->data_new = $value;
+                $this->dataChanges()->save($dataChange);
+            }
+        }
+
+        return parent::save($options);
     }
 
 }

@@ -27,6 +27,12 @@ class SystemPostmasterInitial extends Migration {
             $table->unique(array("section", "area", "action"));
         });
 
+        DB::table("sys_postmaster_template")->insert(array(
+            ["section" => "mship", "area" => "account", "action" => "created", "subject" => 'Membership Account Created - CID {{{ $recipient->account_id }}}', "body" => "", "secondary_emails" => 0, "reply_to" => "", "enabled" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "mship", "area" => "security", "action" => "forgotten", "subject" => 'SSO Secondary Password Reset', "body" => "", "secondary_emails" => 0, "reply_to" => "", "enabled" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["section" => "mship", "area" => "security", "action" => "reset", "subject" => 'SSO Secondary Password Reset', "body" => "", "secondary_emails" => 0, "reply_to" => "", "enabled" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+        ));
+
         Schema::create("sys_postmaster_queue", function($table){
             $table->bigIncrements("postmaster_queue_id")->unsigned();
             $table->integer("recipient_id")->unsigned();

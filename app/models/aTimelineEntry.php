@@ -4,7 +4,7 @@ namespace Models;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Models\Sys\Timeline\Entry;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Session;
 use \Input;
 
@@ -29,31 +29,31 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     public static function eventCreated($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_CREATED";
 
-        self::eventLog($logKey, $model, $extra, $data);
+        self::eventLog($logKey, $model, $extra, $data);*/
     }
 
     public static function eventUpdated($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_UPDATED";
 
-        self::eventLog($logKey, $model, $extra, $data);
+        self::eventLog($logKey, $model, $extra, $data);*/
     }
 
     public static function eventDeleted($model, $extra=null, $data=null) {
         parent::eventCreated($model);
 
-        $logKey = $model->getTable();
+        /*$logKey = $model->getTable();
         $logKey = strtoupper($logKey);
         $logKey.= "_DELETED";
 
-        self::eventLog($logKey, $model, $extra, $data);
+        self::eventLog($logKey, $model, $extra, $data);*/
     }
 
     public function timelineEntriesOwner() {
