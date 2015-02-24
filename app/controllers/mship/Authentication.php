@@ -156,16 +156,16 @@ class Authentication extends \Controllers\BaseController {
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
-    public function get_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
-            return Redirect::to("/mship/manage/dashboard");
+    public function getOverride() {
+        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
+            return Redirect::route("mship.manage.dashboard");
         }
         return $this->viewMake("mship.authentication.override");
     }
 
-    public function post_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
-            return Redirect::to("/mship/manage/dashboard");
+    public function postOverride() {
+        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
+            return Redirect::route("mship.manage.dashboard");
         }
 
         // Check secondary password!
