@@ -165,7 +165,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         });
     }
 
-    public function getIsStateAttribute($search) {
+    public function isState($search) {
         return !$this->states->filter(function($state) use ($search){
             return $state->state == $search;
         })->isEmpty();
@@ -365,7 +365,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->is_system_banned OR $this->is_network_banned;
     }
 
-    public function getIsInactive() {
+    public function getIsInactiveAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_INACTIVE & $status);
     }
@@ -378,7 +378,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
     }
 
-    public function getIsSystem() {
+    public function getIsSystemAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_SYSTEM & $status);
     }
