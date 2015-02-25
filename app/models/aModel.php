@@ -38,6 +38,7 @@ abstract class aModel extends \Eloquent {
 
     public function save(array $options = []) {
         // Let's check the old data vs new data, so we can store data changes!
+        // We check for the presence of the dataChanges relationship, to warrent tracking changes.
         if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
             // Get the changed values!
             foreach ($this->getDirty() as $attribute => $value) {

@@ -303,7 +303,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return true;
     }
 
-    public function addNote($noteType, $note, $writer=null){
+    public function addNote($noteType, $noteContent, $writer=null){
         if(is_object($noteType)){
             $noteType = $noteType->getKey();
         }
@@ -318,7 +318,8 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         $note->account_id = $this->account_id;
         $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content = $note;
+        $note->content = $noteContent;
+
         return $note->save();
     }
 
