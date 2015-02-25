@@ -13,7 +13,7 @@ class MshipAccountAuthInfo extends Migration {
     public function up() {
         Schema::table("mship_account", function($table){
            $table->boolean("auth_extra")->default(0)->after("remember_token");
-           $table->timestamp("auth_extra_at")->after("auth_extra");
+           $table->timestamp("auth_extra_at")->after("auth_extra")->nullable();
         });
     }
 
