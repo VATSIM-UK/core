@@ -58,7 +58,7 @@ class MembersCertUpdate extends aCommand {
 
             // Let's load the details from VatsimXML!
             try {
-                $_xmlData = VatsimXML::getData($_m->account_id);
+                $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
                 print "\tVatsimXML Data retrieved.\n";
             } catch (Exception $e) {
                 print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
