@@ -67,7 +67,12 @@ class RtsSync extends aCommand {
 
     protected function pullCoreData($cid, $ignoreRating=false) {
         // get account
-        $member = Account::where("account_id", "=", $cid)->first();
+        try {
+            $member = Account::findOrFail($cid);
+        } catch (Exception $e) {
+            echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
+            continue;
+        }
 
         // calculate pilot rating
         $pRating = 0;
@@ -81,7 +86,7 @@ class RtsSync extends aCommand {
         // set and process data
         $updateData = array(
             'name' => $member->name_first . ' ' . $member->name_last,
-            'email' => $member->emails->primary_email,
+            'email' => $member->primary_email,
             'rating' => $member->qualification_atc->qualification->vatsim,
             'prating' => $pRating,
             'last_cert_check' => $member->cert_checked_at
