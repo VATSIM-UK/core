@@ -54,6 +54,7 @@ class MembersCertUpdate extends aCommand {
         }
 
         foreach ($members as $pointer => $_m) {
+            if ($_m->account_id < 800000) continue;
             print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
 
             // Let's load the details from VatsimXML!
@@ -67,7 +68,7 @@ class MembersCertUpdate extends aCommand {
 
             // remove members that no longer exist in CERT
             if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
-                    && $_xmlData->rating === "Suspended") {
+                    && $_xmlData->email === "[hidden]") {
                 $_m->delete();
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
