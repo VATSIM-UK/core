@@ -26,6 +26,11 @@ App::error(function(Exception $exception, $code) {
         unset($_ENV[$key]);
         unset($_SERVER[$key]);
     }
+    if (extension_loaded('newrelic')) {
+      try {
+        newrelic_notice_error(null, $exception);
+      } catch (Exception $e) {}
+    }
     Log::error($exception->getFile().":".$exception->getFile().":".$exception->getLine()." --> ". $exception->getMessage());
 
     // Is it an admin request?
