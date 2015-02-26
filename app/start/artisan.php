@@ -18,3 +18,4 @@ Artisan::add(new PostmasterParse());
 Artisan::add(new PostmasterDispatch());
 Artisan::add(new KohanaUpgrade());
 Artisan::add(new RtsSync());
+Artisan::add(new CommunitySync());
