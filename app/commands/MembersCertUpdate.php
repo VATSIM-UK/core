@@ -43,8 +43,11 @@ class MembersCertUpdate extends aCommand {
      * @return mixed
      */
     public function fire() {
-        $members = Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time_since_last"))->toDateTimeString())
-                ->orWhereNull("cert_checked_at")
+        $members = Account::where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("logged_in_within"))->toDateTimeString())
+                ->where(function($query) {
+                    $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time_since_last_update"))->toDateTimeString())
+                          ->orWhereNull("cert_checked_at");
+                })
                 ->orderBy("cert_checked_at", "ASC")
                 ->limit($this->argument("max_members"))
                 ->get();
@@ -52,6 +55,8 @@ class MembersCertUpdate extends aCommand {
         if (count($members) < 1) {
             print "No members to process.\n\n";
             return;
+        } else {
+            echo count($members) . " retrieved.\n\n";
         }
 
         foreach ($members as $pointer => $_m) {
@@ -165,7 +170,7 @@ class MembersCertUpdate extends aCommand {
      */
     protected function getArguments() {
         return array(
-            array("max_members", InputArgument::OPTIONAL, "The number of members to process in a single run.", 100),
+            array("max_members", InputArgument::OPTIONAL, "The number of members to process in a single run.", 1000),
         );
     }
 
@@ -176,7 +181,8 @@ class MembersCertUpdate extends aCommand {
      */
     protected function getOptions() {
         return array(
-            array("time_since_last", "elapsed", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 24),
+            array("logged_in_within", "login-within", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that a user has to have logged in within to force an update.", 24*90),
+            array("time_since_last_update", "last-update", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 2),
         );
     }
 
