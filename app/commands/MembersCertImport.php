@@ -66,16 +66,11 @@ class MembersCertImport extends aCommand {
         // Let's cache the membership file, unless there's an overriding argument!
         if (Cache::has("cert.autotools.divdb.file")) {
             $members = Cache::get("cert.autotools.divdb.file");
-            $pointer = Cache::get("cert.autotools.divdb.pointer", 0);
         } else {
             $members = file("https://cert.vatsim.net/vatsimnet/admin/divdbfullwpilot.php?authid=" . $_ENV['vatsim.cert.at.user'] . "&authpassword=" . urlencode($_ENV['vatsim.cert.at.pass'])."&div=".$_ENV['vatsim.cert.at.div']);
             Cache::put("cert.autotools.divdb.file", $members, \Carbon\Carbon::now()->addHours(11)->addMinutes(30));
-            $pointer = 0;
             Cache::put("cert.autotools.divdb.pointer", 0, \Carbon\Carbon::now()->addHours(11)->addMinutes(30));
         }
-
-        // Now we've got the file in the cache, let's take a slice of it!
-        $members = array_slice($members, $pointer, 25000, true);
 
         // Get all current members of the database.
         $existingMembers = Account::select("account_id")->orderBy("account_id", "ASC")->get();
@@ -85,7 +80,7 @@ class MembersCertImport extends aCommand {
             return;
         }
 
-        $pointerStart = $pointer;
+        $pointerStart = 0;
         foreach ($members as $m) {
             $m = str_getcsv($m, ",", "");
 
@@ -182,7 +177,7 @@ class MembersCertImport extends aCommand {
             $this->out("\n");
         }
 
-        $this->out("Processed " . ($pointerStart - $pointer) . " members.  Pointer from " . $pointerStart . " to " . $pointer . "\n\n");
+        $this->out("Processed " . ($pointerStart - $pointer) . " members.\n\n");
     }
 
     private function outputTableRow($key, $old, $new) {
