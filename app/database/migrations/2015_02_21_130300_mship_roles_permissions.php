@@ -20,7 +20,7 @@ class MShipRolesPermissions extends Migration {
         });
 
         DB::table("mship_role")->insert(array(
-            ["name" => "Super Administrator", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "PrivAcc", "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "Members", "default" => "1", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
         ));
 

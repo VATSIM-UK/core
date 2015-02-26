@@ -26,5 +26,4 @@ class UpgradeV13V20 extends Migration {
           ->where(DB::raw("CONCAT(`section`, '_', `area`, '_', `action`)"), "=", "mship_account_impersonate")
           ->delete();
     }
-
 }
