@@ -3,7 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account\Account;
+use Models\Mship\Account;
 use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Qualification as QualificationData;
@@ -69,13 +69,13 @@ class CommunitySync extends aCommand {
                 continue;
             }
             echo $_member["member_id"] . " // " . $_member["name"] . ":";
-            
+
             if (!is_numeric($_member["name"])) {
                 $countFailure++;
                 echo "\tError: name is not a CID - member ID " . $_member["member_id"] . "\n";
                 continue;
             }
-            
+
             // retrieve member from core
             try {
                 $member = Account::findOrFail($_member["name"]);
@@ -84,7 +84,7 @@ class CommunitySync extends aCommand {
                 echo "\tError: cannot retrieve member " . $_member["member_id"] . "from Core - " . $e->getMessage() . "\n";
                 continue;
             }
-            
+
             // Sort out their email
             $emailLocal = false;
             $email = $member->primary_email;
@@ -92,19 +92,19 @@ class CommunitySync extends aCommand {
                 $email = $_member["email"];
                 $emailLocal = true;
             }
-            
+
             // State!
             //$state = $member->getIsStateAttribute(EnumState::DIVISION)->first()->state ? "Division Member" : "International Member";
             //$state = $member->getIsStateAttribute(EnumState::VISITOR)->first()->state ? "Visiting Member" : $state;
             $state = $member->states()->where("state", "=", EnumState::DIVISION)->first()->state ? "Division Member" : "International Member";
             $state = $member->states()->where("state", "=", EnumState::VISITOR)->first()->state ? "Visiting Member" : $state;
-            
+
             // ATC rating
             $aRatingString = $member->qualification_atc->qualification->name_long;
-            
+
             // Sort out the pilot rating.
             $pRatingString = $member->qualifications_pilot_string;
-            
+
             // Get extra and admin ratings
             $eRatingString = "";
             $eRatings = $member->qualifications_atc_training;
@@ -120,12 +120,12 @@ class CommunitySync extends aCommand {
                 $eRatingString .= $eRating->qualification->name_long . ", ";
             }
             $eRatingString = trim($eRatingString, ", ");
-            
+
             // Check for changes!
             $changeEmail = strcasecmp($_member["email"], $email);
             $changeName = strcmp($_member["members_display_name"], $member->name_first . " " . $member->name_last);
             $changeState = strcasecmp($_member["title"], $state);
-            
+
             // Confirm the data!
             echo "\tID: " . $member->account_id;
             echo "\tEmail (" . ($emailLocal ? "local" : "latest") . "):" . $email . ($changeEmail ? "(changed)" : "");
@@ -134,7 +134,7 @@ class CommunitySync extends aCommand {
             echo "\tATC rating: " . $aRatingString;
             echo "\tPilot ratings: " . $pRatingString;
             echo "\tExtra ratings: " . $eRatingString;
-            
+
             try {
                 IPSMember::save($_member["member_id"],
                                 array( 'members' => array(
