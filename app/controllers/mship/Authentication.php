@@ -130,6 +130,7 @@ class Authentication extends \Controllers\BaseController {
 
                     $account->determineState($user->region->code, $user->division->code);
 
+                    $account->last_login = \Carbon\Carbon::now();
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
                     if ($user->rating->id == 0) {
                         $account->is_inactive = 1;
