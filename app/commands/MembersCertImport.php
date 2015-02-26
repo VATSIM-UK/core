@@ -41,22 +41,6 @@ class MembersCertImport extends aCommand {
         }
     }
 
-    private function checkExists($x, $elements, $left, $right){
-        if ($left > $right) {
-            return false;
-        }
-
-        $mid = (int) (($left + $right)/2);
-
-        if ($elements[$mid]->account_id == $x) {
-            return true;
-        } elseif ($elements[$mid]->account_id > $x) {
-            return $this->checkExists($x, $elements, $left, $mid - 1);
-        } elseif ($elements[$mid]->account_id < $x) {
-            return $this->checkExists($x, $elements, $mid + 1, $right);
-        }
-    }
-
     /**
      * Execute the console command.
      *
@@ -80,14 +64,14 @@ class MembersCertImport extends aCommand {
             return;
         }
 
-        $pointerStart = 0;
+        $pointer = 0;
         foreach ($members as $m) {
             $m = str_getcsv($m, ",", "");
 
             $this->out("#" . $pointer . " Processing " . str_pad($m[0], 9, " ", STR_PAD_RIGHT) . "\t");
 
             // Do they currently exist? We only process new members!
-            if($this->checkExists($m[0], $existingMembers, 0, $existingMembers->count()-1)){
+            if(binary_search($m[0], $existingMembers, "account_id", 0, $existingMembers->count()-1)){
                 continue;
             }
 
