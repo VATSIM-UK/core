@@ -55,7 +55,7 @@ class MembersCertUpdate extends aCommand {
         }
 
         foreach ($members as $pointer => $_m) {
-            if($_m->account_id == VATUK_ACCOUNT_SYSTEM){ continue; }
+            if ($_m->account_id < 800000) continue;
 
             print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
 
@@ -70,7 +70,7 @@ class MembersCertUpdate extends aCommand {
 
             // remove members that no longer exist in CERT
             if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
-                    && ($_xmlData->rating == "0" OR $_xmlData->rating == "Suspended")) {
+                    && $_xmlData->email == "[hidden]") {
                 $_m->delete();
                 print "\tMember no longer exists in CERT - deleted.\n";
                 continue;
