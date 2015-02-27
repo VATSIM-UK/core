@@ -43,7 +43,7 @@ class MembersCertUpdate extends aCommand {
      * @return mixed
      */
     public function fire() {
-        if (!$this->option("logged-in-since") || !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
+        if (!$this->option("logged-in-since") && !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
         if ($this->option("debug")) $debug = TRUE;
 
         if ($this->option("force-update")) {
