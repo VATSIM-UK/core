@@ -23,8 +23,8 @@ class MembershipNotesInitial extends Migration {
                 });
 
                 DB::table("mship_note_type")->insert(array(
-                    ["name" => "System Generated", "is_system" => 1, "colour_code" => "default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-                    ["name" => "General", "is_available" => 1, "colour_code" => "info", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                    ["name" => "System Generated", "is_available" => 0, "is_system" => 1, "colour_code" => "default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                    ["name" => "General", "is_available" => 1, "is_system" => 0, "colour_code" => "info", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
                 ));
 
                 Schema::create("mship_account_note", function($table){

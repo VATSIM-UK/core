@@ -23,6 +23,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     protected $dates = ['last_login', 'auth_extra_at', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE];
+    protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     const STATUS_ACTIVE = 0; //b"00000";
     const STATUS_SYSTEM_BANNED = 1; //b"0001";
@@ -165,7 +166,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         });
     }
 
-    public function getIsStateAttribute($search) {
+    public function isState($search) {
         return !$this->states->filter(function($state) use ($search){
             return $state->state == $search;
         })->isEmpty();
@@ -303,7 +304,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return true;
     }
 
-    public function addNote($noteType, $note, $writer=null){
+    public function addNote($noteType, $noteContent, $writer=null){
         if(is_object($noteType)){
             $noteType = $noteType->getKey();
         }
@@ -318,7 +319,8 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         $note->account_id = $this->account_id;
         $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content = $note;
+        $note->content = $noteContent;
+
         return $note->save();
     }
 
@@ -364,7 +366,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->is_system_banned OR $this->is_network_banned;
     }
 
-    public function getIsInactive() {
+    public function getIsInactiveAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_INACTIVE & $status);
     }
@@ -377,7 +379,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
     }
 
-    public function getIsSystem() {
+    public function getIsSystemAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_SYSTEM & $status);
     }

@@ -12,7 +12,7 @@ class Security extends \Controllers\BaseController {
 
     private $_ssoAccount;
 
-    public function post_generate() {
+    public function postGenerate() {
         if ($x = $this->security()) {
             return $x;
         }
@@ -34,7 +34,7 @@ class Security extends \Controllers\BaseController {
         return Response::json(array("status" => "success", "token" => $_t, "timestamp" => strtotime($token->created_at)));
     }
 
-    public function post_details() {
+    public function postDetails() {
         if ($x = $this->security()) {
             return $x;
         }
@@ -128,7 +128,7 @@ class Security extends \Controllers\BaseController {
         return Response::json(array("status" => "success", "data" => $return));
     }
 
-    public function security() {
+    private function security() {
         if (!Input::get("username", false)) {
             return Response::json(array("status" => "error", "error" => "NO_USERNAME"));
         }

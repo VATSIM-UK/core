@@ -136,15 +136,16 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
             Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
             Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
-            Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"]);
-            Route::post("/replace", ["as" => "mship.security.replace", "uses" => "Security@postReplace"]);
+            Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"])->where(array("delete" => "[1|0]"));
+            Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
             Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
         });
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
-        Route::controller("auth", "Authentication");
-        Route::controller("security", "Security");
+        Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
+        Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
 });
 

@@ -23,7 +23,7 @@ return array(
       | your application so that it is used when running Artisan tasks.
       |
      */
-    'url' => 'http://core.vatsim-uk.co.uk',
+    'url' => $_ENV['url'],
     /*
       |--------------------------------------------------------------------------
       | Application Timezone
@@ -113,7 +113,7 @@ return array(
         'Illuminate\Workbench\WorkbenchServiceProvider',
         'Vatsim\OAuth\OAuthServiceProvider',
         'Vatsim\Xml\XmlServiceProvider',
-        //'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
+        'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
         'Zizaco\Entrust\EntrustServiceProvider',

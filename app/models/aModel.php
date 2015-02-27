@@ -5,6 +5,8 @@ namespace Models;
 use \Models\Sys\Timeline\Entry;
 
 abstract class aModel extends \Eloquent {
+    protected $doNotTrack = [];
+
     public static function boot() {
         parent::boot();
         self::created(array(get_called_class(), "eventCreated"));
@@ -38,9 +40,19 @@ abstract class aModel extends \Eloquent {
 
     public function save(array $options = []) {
         // Let's check the old data vs new data, so we can store data changes!
+        // We check for the presence of the dataChanges relationship, to warrent tracking changes.
         if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
             // Get the changed values!
             foreach ($this->getDirty() as $attribute => $value) {
+                // There are some values we might want to remove.  They may be stored in a variable
+                // called doNotTrack
+                if(isset($this->doNotTrack) && is_array($this->doNotTrack)){
+                    if(in_array($attribute, $this->doNotTrack)){
+                        continue; // We don't wish to track this :(
+                    }
+                }
+
+
                 $original = $this->getOriginal($attribute);
 
                 $dataChange = new \Models\Sys\Data\Change();

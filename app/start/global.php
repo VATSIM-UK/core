@@ -66,6 +66,7 @@ App::down(function() {
 });
 
 require app_path() . '/filters.php';
+require app_path() . '/start/helpers.php';
 
 // We need to ensure that the VATSIM UK System accounts are in existance.
 define("VATUK_ACCOUNT_SYSTEM", "707070");

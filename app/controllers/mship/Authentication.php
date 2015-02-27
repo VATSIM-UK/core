@@ -26,7 +26,7 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // What about if there's secondary, but it's expired?
-        if(Auth::user()->get()->auth_extra && Auth::user()->get()->auth_extra_at->addHours(4)->isPast()){
+        if(Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())){
             $user = Auth::user()->get();
             $user->auth_extra = 0;
             $user->save();
@@ -151,6 +151,7 @@ class Authentication extends \Controllers\BaseController {
         if (Auth::user()->check() && (Input::get("processlogout", 0) == 1 OR $force)) {
             $user = Auth::user()->get();
             $user->auth_extra = 0;
+            $user->auth_extra_at = NULL;
             $user->save();
             Auth::user()->logout();
         }

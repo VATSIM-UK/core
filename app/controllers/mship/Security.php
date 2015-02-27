@@ -107,7 +107,7 @@ class Security extends \Controllers\BaseController {
 
         if ($currentSecurity && strlen($currentSecurity->value) > 1) {
             if (!Auth::user()->get()->current_security->verifyPassword(Input::get("old_password"))) {
-                return Redirect::route("mship.security.replace", [($disable ? "/1" : "")])->with("error", "Your old password is incorrect.  Please try again.");
+                return Redirect::route("mship.security.replace", [(int)$disable])->with("error", "Your old password is incorrect.  Please try again.");
             }
 
             if ($disable) {

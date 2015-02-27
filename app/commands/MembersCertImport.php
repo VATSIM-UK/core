@@ -35,6 +35,12 @@ class MembersCertImport extends aCommand {
         parent::__construct();
     }
 
+    private function out($line){
+        if($this->option("debug") == true){
+            $this->info($line);
+        }
+    }
+
     /**
      * Execute the console command.
      *
@@ -44,45 +50,42 @@ class MembersCertImport extends aCommand {
         // Let's cache the membership file, unless there's an overriding argument!
         if (Cache::has("cert.autotools.divdb.file")) {
             $members = Cache::get("cert.autotools.divdb.file");
-            $pointer = Cache::get("cert.autotools.divdb.pointer", 0);
         } else {
             $members = file("https://cert.vatsim.net/vatsimnet/admin/divdbfullwpilot.php?authid=" . $_ENV['vatsim.cert.at.user'] . "&authpassword=" . urlencode($_ENV['vatsim.cert.at.pass'])."&div=".$_ENV['vatsim.cert.at.div']);
             Cache::put("cert.autotools.divdb.file", $members, \Carbon\Carbon::now()->addHours(11)->addMinutes(30));
-            $pointer = 0;
             Cache::put("cert.autotools.divdb.pointer", 0, \Carbon\Carbon::now()->addHours(11)->addMinutes(30));
         }
 
-        // Now we've got the file in the cache, let's take a slice of it!
-        $members = array_slice($members, $pointer, 5000, true);
+        // Get all current members of the database.
+        $existingMembers = Account::select("account_id")->orderBy("account_id", "ASC")->get();
 
         if (count($members) < 1) {
-            print "No members to process.\n\n";
+            $this->error("No members to process.\n\n");
             return;
         }
 
-        $pointerStart = $pointer;
+        $pointer = 0;
         foreach ($members as $m) {
             $m = str_getcsv($m, ",", "");
 
-            print "#" . $pointer . " Processing " . str_pad($m[0], 9, " ", STR_PAD_RIGHT) . "\t";
+            $this->out("#" . $pointer . " Processing " . str_pad($m[0], 9, " ", STR_PAD_RIGHT) . "\t");
 
-            // Find or create?{
-            try {
-                $_m = Account::findOrFail($m[0]);
-                print "Loaded existing acount\n";
-            } catch (Exception $e) {
-                $_m = new Account(array("account_id" => $m[0]));
-                print "Started new account\n";
+            // Do they currently exist? We only process new members!
+            if(binary_search($m[0], $existingMembers, "account_id", 0, $existingMembers->count()-1)){
+                continue;
             }
 
+            // Find or create?{
+            $_m = new Account(array("account_id" => $m[0]));
+
             DB::beginTransaction();
-            print "\tDB::beginTransaction\n";
+            $this->out("\tDB::beginTransaction\n");
             try {
                 $_m->name_first = $m[3];
                 $_m->name_last = $m[4];
 
-                print "\t" . str_repeat("-", 89) . "\n";
-                print "\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n";
+                $this->out("\t" . str_repeat("-", 89) . "\n");
+                $this->out("\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n");
                 if ($_m->isDirty()) {
                     $original = $_m->getOriginal();
                     foreach ($_m->getDirty() as $key => $newValue) {
@@ -106,7 +109,7 @@ class MembersCertImport extends aCommand {
                 $oldState = ($_m->current_state ? $_m->current_state->state : 0);
                 $_m->determineState($m[12], $m[13]);
 
-                if ($oldState != $_m->current_state->state) {
+                if ($_m->current_state && $oldState != $_m->current_state->state) {
                     $this->outputTableRow("state", $oldState, $_m->current_state);
                 }
 
@@ -144,25 +147,25 @@ class MembersCertImport extends aCommand {
                 $_m->save();
             } catch (Exception $e) {
                 DB::rollback();
-                print "\tDB::rollback\n";
-                print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
+                $this->out("\tDB::rollback\n");
+                $this->error("\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n");
             } finally {
-                print "\t" . str_repeat("-", 89) . "\n";
+                $this->out("\t" . str_repeat("-", 89) . "\n");
                 $pointer++;
                 Cache::put("cert.autotools.divdb.pointer", $pointer, \Carbon\Carbon::now()->addHours(11)->addMinutes(30));
 
                 DB::commit();
-                print "\tDB::commit\n";
+                $this->out("\tDB::commit\n");
             }
 
-            print "\n";
+            $this->out("\n");
         }
 
-        print "Processed " . ($pointerStart - $pointer) . " members.  Pointer from " . $pointerStart . " to " . $pointer . "\n\n";
+        $this->out("Processed " . ($pointerStart - $pointer) . " members.\n\n");
     }
 
     private function outputTableRow($key, $old, $new) {
-        print "\t| " . str_pad($key, 20, " ", STR_PAD_RIGHT) . "\t" . str_pad($old, 30, " ", STR_PAD_RIGHT) . "\t" . str_pad($new, 30, " ", STR_PAD_RIGHT) . "\t|\n";
+        $this->out("\t| " . str_pad($key, 20, " ", STR_PAD_RIGHT) . "\t" . str_pad($old, 30, " ", STR_PAD_RIGHT) . "\t" . str_pad($new, 30, " ", STR_PAD_RIGHT) . "\t|\n");
     }
 
     /**
@@ -182,6 +185,7 @@ class MembersCertImport extends aCommand {
      */
     protected function getOptions() {
         return array(
+            array("debug", "debug", InputOption::VALUE_OPTIONAL, "Turn on the debugging output.", false),
         );
     }
 

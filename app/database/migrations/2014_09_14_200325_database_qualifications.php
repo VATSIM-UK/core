@@ -41,12 +41,12 @@ class DatabaseQualifications extends Migration {
             ["code" => "P1", "type" => "pilot", "name_small" => "P1", "name_long" => "P1", "name_grp" => "Online Pilot", "vatsim" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "P2", "type" => "pilot", "name_small" => "P2", "name_long" => "P2", "name_grp" => "Flight Fundamentals", "vatsim" => 2, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "P3", "type" => "pilot", "name_small" => "P3", "name_long" => "P3", "name_grp" => "VFR Pilot", "vatsim" => 4, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P4", "name_long" => "P4", "name_grp" => "IFR Pilot", "vatsim" => 8, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P5", "name_long" => "P5", "name_grp" => "Advanced IFR Pilot", "vatsim" => 16, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P6", "name_long" => "P6", "name_grp" => "P6", "vatsim" => 32, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P7", "name_long" => "P7", "name_grp" => "P7", "vatsim" => 64, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P8", "name_long" => "P8", "name_grp" => "P8", "vatsim" => 128, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P9", "name_long" => "P9", "name_grp" => "Pilot Flight Instructor", "vatsim" => 256, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P4", "type" => "pilot", "name_small" => "P4", "name_long" => "P4", "name_grp" => "IFR Pilot", "vatsim" => 8, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P5", "type" => "pilot", "name_small" => "P5", "name_long" => "P5", "name_grp" => "Advanced IFR Pilot", "vatsim" => 16, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P6", "type" => "pilot", "name_small" => "P6", "name_long" => "P6", "name_grp" => "P6", "vatsim" => 32, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P7", "type" => "pilot", "name_small" => "P7", "name_long" => "P7", "name_grp" => "P7", "vatsim" => 64, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P8", "type" => "pilot", "name_small" => "P8", "name_long" => "P8", "name_grp" => "P8", "vatsim" => 128, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P9", "type" => "pilot", "name_small" => "P9", "name_long" => "P9", "name_grp" => "Pilot Flight Instructor", "vatsim" => 256, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
         ));
 
         Schema::table('mship_account_qualification', function($table) {

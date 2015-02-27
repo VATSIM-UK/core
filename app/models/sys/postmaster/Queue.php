@@ -184,6 +184,12 @@ class Queue extends \Models\aTimelineEntry {
             $queue->priority = $postmasterTemplate->priority;
             $queue->data = $data;
             $queue->save();
+
+            // We always dispatch "immedate" emails straight away.
+            if($postmasterTemplate->priority == Template::PRIORITY_NOW){
+                $queue->parseAndSave();
+                $queue->dispatch();
+            }
         }
     }
 

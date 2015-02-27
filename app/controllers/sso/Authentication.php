@@ -3,13 +3,14 @@
 namespace Controllers\Sso;
 
 use \Models\Sso\Token;
+use \Auth;
 use \Request;
 use \Redirect;
 use \Response;
 use \Input;
 
 class Authentication extends \Controllers\BaseController {
-    public function get_login(){
+    public function getLogin(){
         // Did we receive a token?  If we didn't get rid of them!
         if(!Input::get("token", false)){
             die("SOME GENERIC ERROR");
