@@ -22,8 +22,6 @@ class Role extends \Controllers\Adm\AdmController {
     public function getIndex() {
         // ORM it all!
         $roles = RoleData::orderBy("name", "ASC")
-                         ->with("permissions")
-                         ->with("accounts")
                          ->get();
 
         return $this->viewMake("adm.mship.role.index")
@@ -39,7 +37,12 @@ class Role extends \Controllers\Adm\AdmController {
 
     public function postCreate(){
         // Let's create!
-        $role = new RoleData(Input::all());
+        if(!$this->_account->hasPermission("adm/mship/role/default")){
+            $data = Input::except("default");
+        } else {
+            $data = Input::all();
+        }
+        $role = new RoleData($data);
         if(!$role->save()){
             return Redirect::route("adm.mship.role.create")->withErrors($role->errors());
         }
@@ -72,7 +75,12 @@ class Role extends \Controllers\Adm\AdmController {
         $role->load("permissions");
 
         // Let's create!
-        $role = $role->fill(Input::all());
+        if(!$this->_account->hasPermission("adm/mship/role/default")){
+            $data = Input::except("default");
+        } else {
+            $data = Input::all();
+        }
+        $role = $role->fill($data);
         if(!$role->save()){
             return Redirect::route("adm.mship.role.update")->withErrors($role->errors());
         }

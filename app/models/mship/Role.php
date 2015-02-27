@@ -62,11 +62,11 @@ class Role extends \Models\aModel {
     }
 
     public function accounts(){
-        return $this->belongsToMany("\Models\Mship\Account", "mship_account_role");
+        return $this->belongsToMany("\Models\Mship\Account", "mship_account_role")->withTimestamps();
     }
 
     public function permissions(){
-        return $this->belongsToMany("\Models\Mship\Permission", "mship_permission_role");
+        return $this->belongsToMany("\Models\Mship\Permission", "mship_permission_role")->withTimestamps();
     }
 
     public function hasPermission($permission) {
