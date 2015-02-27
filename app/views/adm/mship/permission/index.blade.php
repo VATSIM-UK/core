@@ -52,7 +52,7 @@
                             <td>{{ link_to_route('adm.mship.permission.update', $p->permission_id, [$p->permission_id]) }}</td>
                             <td>{{ $p->display_name }}</td>
                             <td>{{ $p->name }}</td>
-                            <td>{{ count($p->roles) }}</td>
+                            <td>{{ $p->roles()->count() }}</td>
                             <td>{{ $p->updated_at->toDateTimeString() }}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/permission/*/update"))
