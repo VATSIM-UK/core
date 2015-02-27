@@ -14,6 +14,7 @@
 Artisan::add(new TestCommand());
 Artisan::add(new MembersCertImport());
 Artisan::add(new MembersCertUpdate());
+Artisan::add(new StatisticsDaily());
 Artisan::add(new RebuildModelDependencies());
 Artisan::add(new PostmasterParse());
 Artisan::add(new PostmasterDispatch());
