@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-md-7 col-md-offset-2">
-            <form class="form-horizontal" method="POST" action="{{ URL::to('/mship/auth/override') }}">
+            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.auth.override") }}">
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="override_cid">Account CID</label>
                     <div class="col-sm-7">

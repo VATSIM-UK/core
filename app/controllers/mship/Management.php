@@ -3,19 +3,27 @@
 namespace Controllers\Mship;
 
 use \Redirect;
+use \Auth;
 use \Session;
 use \View;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 
 class Management extends \Controllers\BaseController {
-    public function get_landing(){
-        if(isset($this->_current_account->exists) && $this->_current_account){
-            return Redirect::to("/mship/auth/redirect");
+    public function getLanding(){
+        if(Auth::user()->check()){
+            return Redirect::route("mship.auth.redirect");
         }
 
         return $this->viewMake("mship.management.landing");
     }
-    public function get_dashboard(){
+    public function getDashboard(){
+        // Load necessary data, early!
+        $this->_account->load(
+            "emails",
+            "qualifications", "qualifications.qualification",
+            "states"
+        );
+
         return $this->viewMake("mship.management.dashboard");
     }
 }

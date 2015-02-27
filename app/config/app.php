@@ -23,7 +23,7 @@ return array(
       | your application so that it is used when running Artisan tasks.
       |
      */
-    'url' => 'http://core.vatsim-uk.co.uk',
+    'url' => $_ENV['url'],
     /*
       |--------------------------------------------------------------------------
       | Application Timezone
@@ -81,7 +81,10 @@ return array(
      */
     'providers' => array(
         'Illuminate\Foundation\Providers\ArtisanServiceProvider',
-        'Illuminate\Auth\AuthServiceProvider',
+
+        //'Illuminate\Auth\AuthServiceProvider',
+        "Ollieread\Multiauth\MultiauthServiceProvider",
+
         'Illuminate\Cache\CacheServiceProvider',
         'Illuminate\Session\CommandsServiceProvider',
         'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
@@ -90,8 +93,10 @@ return array(
         'Illuminate\Database\DatabaseServiceProvider',
         'Illuminate\Encryption\EncryptionServiceProvider',
         'Illuminate\Filesystem\FilesystemServiceProvider',
+
         'Illuminate\Hashing\HashServiceProvider',
         'Illuminate\Html\HtmlServiceProvider',
+
         'Illuminate\Log\LogServiceProvider',
         'Illuminate\Mail\MailServiceProvider',
         'Illuminate\Database\MigrationServiceProvider',
@@ -111,6 +116,8 @@ return array(
         'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
+        'Zizaco\Entrust\EntrustServiceProvider',
+        'Barryvdh\Debugbar\ServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
@@ -175,5 +182,7 @@ return array(
         'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
         'VatsimXML' => 'Vatsim\Xml\Facades\XML',
         'DbView'          => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
+        'Entrust'    => 'Zizaco\Entrust\EntrustFacade',
+        'Debugbar' => 'Barryvdh\Debugbar\Facade',
     ),
 );

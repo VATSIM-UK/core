@@ -3,7 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account\Account;
+use Models\Mship\Account;
 use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Account\Security;
@@ -110,7 +110,7 @@ class KohanaUpgrade extends aCommand {
                 $email->account_id = $kd->account_id;
                 $email->email = $kd->email;
                 $email->is_primary = $kd->primary;
-                $email->verified = $kd->verified;
+                $email->verified_at = $kd->verified;
                 $email->created_at = $kd->created;
                 $email->updated_at = $kd->verified ? $kd->verified : $kd->created;
                 $email->deleted_at = $kd->deleted;
@@ -121,7 +121,7 @@ class KohanaUpgrade extends aCommand {
                 $newData["account_id"] = $kd->account_id;
                 $newData["email"] = $kd->email;
                 $newData["is_primary"] = $kd->primary;
-                $newData["verified"] = $kd->verified;
+                $newData["verified_at"] = $kd->verified;
                 $newData["created_at"] = $kd->created;
                 $newData["updated_at"] = $kd->verified ? $kd->verified : $kd->created;
                 $newData["deleted_at"] = $kd->deleted;

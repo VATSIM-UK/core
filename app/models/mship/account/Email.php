@@ -17,7 +17,7 @@ class Email extends \Eloquent {
     protected $attributes = ['is_primary' => 0];
 
     public function account() {
-        return $this->belongsTo("\Models\Mship\Account\Account", "account_id", "account_id");
+        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function scopePrimary($query){
@@ -29,7 +29,7 @@ class Email extends \Eloquent {
     }
 
     public function scopeVerified($query){
-        return $query->where("verified", ">", "0000-00-00 00:00:00");
+        return $query->where("verified_at", ">", "0000-00-00 00:00:00");
     }
 
     public function ssoEmails() {
@@ -43,7 +43,7 @@ class Email extends \Eloquent {
     }
 
     public function getIsVerifiedAttribute(){
-        return $this->attributes['verified'] != NULL;
+        return $this->attributes['verified_at'] != NULL;
     }
 
     public function getIsPrimaryAttribute(){

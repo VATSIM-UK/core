@@ -3,72 +3,51 @@
 namespace Controllers\Mship;
 
 use \Config;
+use \Auth;
+use \URL;
 use \Input;
 use \Session;
 use \Redirect;
 use \VatsimSSO;
-use \Models\Mship\Account\Account;
+use \Models\Mship\Account;
 use \Models\Mship\Qualification as QualificationType;
 
 class Authentication extends \Controllers\BaseController {
 
-    public function get_redirect() {
+    public function getRedirect() {
         // If there's NO basic auth, send to login.
-        if (!Session::get("auth_basic", false)) {
-            return Redirect::to("/mship/auth/login");
+        if (!Auth::user()->check()) {
+            return Redirect::route("mship.auth.login");
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Session::get("auth_extra", false) && $this->_current_account->current_security) {
-            return Redirect::to("/mship/security/auth");
+        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security) {
+            return Redirect::route("mship.security.auth");
         }
 
-        // If we're at this stage, we can go for FULL authentication.
-        Session::set("auth_true", true);
+        // What about if there's secondary, but it's expired?
+        if(Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())){
+            $user = Auth::user()->get();
+            $user->auth_extra = 0;
+            $user->save();
+            return Redirect::route("mship.auth.redirect");
+        }
 
         // Send them home!
-        return Redirect::to(Session::pull("auth_return", "/mship/manage/dashboard"));
+        return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
     }
 
-    public function get_login() {
-        Session::set("auth_return", Input::get("returnURL", "/mship/manage/dashboard"));
+    public function getLogin() {
+        Session::set("auth_return", Input::get("returnURL", URL::route("mship.manage.dashboard")));
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
-        if ($this->_current_account) {
-            Session::set("auth_basic", true);
-            Session::set("auth_true", true);
-            Session::set("auth_account", $this->_current_account->account_id);
-            Session::set("auth_override", 0);
-
-            // What about extra security?
-            try {
-                $lastCheck = \Carbon\Carbon::parse(Session::get("auth_extra_time", "0000-00-00 00:00:00"));
-                if ($lastCheck->addHours(4)->isPast()) {
-                    Session::set("auth_extra", false);
-                    Session::set("auth_extra_time", "0000-00-00 00:00:00");
-                } else {
-                    Session::set("auth_extra", true);
-                }
-            } catch (Exception $ex) {
-                Session::set("auth_extra", false);
-                Session::set("auth_extra_time", "0000-00-00 00:00:00");
-            }
-
-            return Redirect::to("/mship/auth/redirect");
+        if (Auth::user()->check() OR Auth::user()->viaremember()) {
+            return Redirect::route("mship.auth.redirect");
         }
-
-        // Start the login process by disabling their auth!
-        // Anyone playing with the URLs and ending up here is out of luck.
-        Session::set("auth_basic", false);
-        Session::set("auth_extra", false);
-        Session::set("auth_extra_time", "0000-00-00 00:00:00");
-        Session::set("auth_true", false);
-        Session::set("auth_account", 0);
-        Session::set("auth_override", 0);
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [Config::get('sso::config.return') . "mship/auth/verify"], function($key, $secret, $url) {
+                        [URL::route("mship.auth.verify")], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
@@ -77,7 +56,7 @@ class Authentication extends \Controllers\BaseController {
         );
     }
 
-    public function get_verify() {
+    public function getVerify() {
         if (!Session::has('vatsimauth')) {
             throw new \AuthException('Session does not exist');
         }
@@ -145,61 +124,55 @@ class Authentication extends \Controllers\BaseController {
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
+                    $account->auth_extra = 1;
+                    $account->determineState($user->region->code, $user->division->code);
                     $account->save();
-                    Session::set("auth_basic", true); // Basic auth - COMPLETE!
-                    Session::set("auth_account", $user->id);
+
+                    Auth::user()->login($account, true);
 
                     // Let's send them over to the authentication redirect now.
-                    return Redirect::to("/mship/auth/redirect");
+                    return Redirect::route("mship.auth.redirect");
                 }, function($error) {
                     throw new \AuthException($error['message']);
                 }
         );
     }
 
-    public function get_logout($force = false) {
+    public function getLogout($force = false) {
         Session::set("logout_return", Input::get("returnURL", "/mship/manage/dashboard"));
 
         if ($force) {
-            return $this->post_logout($force);
+            return $this->postLogout($force);
         }
         return $this->viewMake("mship.authentication.logout");
     }
 
-    public function post_logout($force = false) {
-        if (Input::get("processlogout", 0) == 1 OR $force) {
-
-            // If we're overriding, clicking logout should only cancel the override.
-            if (Session::get("auth_override", 0) > 0) {
-                Session::set("auth_override", 0);
-                return Redirect::to("/mship/manage/landing");
-            }
-
-            // Actual logout.
-            Session::set("auth_basic", false);
-            Session::set("auth_extra", false);
-            Session::set("auth_true", false);
-            Session::set("auth_account", 0);
-            Session::set("auth_override", 0);
+    public function postLogout($force = false) {
+        if (Auth::user()->check() && (Input::get("processlogout", 0) == 1 OR $force)) {
+            $user = Auth::user()->get();
+            $user->auth_extra = 0;
+            $user->auth_extra_at = NULL;
+            $user->save();
+            Auth::user()->logout();
         }
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
-    public function get_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
-            return Redirect::to("/mship/manage/dashboard");
+    public function getOverride() {
+        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
+            return Redirect::route("mship.manage.dashboard");
         }
         return $this->viewMake("mship.authentication.override");
     }
 
-    public function post_override() {
-        if (!in_array($this->_current_account->account_id, array(980234, 1010573, 1104841))) {
-            return Redirect::to("/mship/manage/dashboard");
+    public function postOverride() {
+        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
+            return Redirect::route("mship.manage.dashboard");
         }
 
         // Check secondary password!
-        if (!$this->_current_account->current_security->verifyPassword(Input::get("password"))) {
-            return Redirect::to("/mship/auth/override")->withError("No");
+        if (!Auth::user()->get()->current_security->verifyPassword(Input::get("password"))) {
+            return Redirect::route("mship.auth.override")->withError("No");
         }
 
         // All correct? Can we load this user?
@@ -210,19 +183,19 @@ class Authentication extends \Controllers\BaseController {
             Session::set("auth_override", $_ovr->account_id);
         }
 
-        return Redirect::to("/mship/manage/landing");
+        return Redirect::route("mship.manage.landing");
     }
 
-    public function get_invisibility() {
+    public function getInvisibility() {
         // Toggle
-        if ($this->_current_account->is_invisible) {
-            $this->_current_account->is_invisible = 0;
+        if (Auth::user()->get()->is_invisible) {
+            Auth::user()->get()->is_invisible = 0;
         } else {
-            $this->_current_account->is_invisible = 1;
+            Auth::user()->get()->is_invisible = 1;
         }
-        $this->_current_account->save();
+        Auth::user()->get()->save();
 
-        return Redirect::to("/mship/manage/landing");
+        return Redirect::route("mship.manage.landing");
     }
 
 }

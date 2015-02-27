@@ -6,7 +6,7 @@
 <?php else: ?>
     <p>
         <?php if (isset($sls_type) && $sls_type == "forced"): ?>
-            An administrator has requested that you create a second password before continuing with your login.  You will not be able to use any services until this action has been completed.
+            An administrator has requested that you create a second password before continuing.  You will not be able to use any services until this action has been completed.
         <?php elseif (isset($sls_type) && $sls_type == "requested"): ?>
             You have requested to set a secondary password on your account.  Please complete the form below to complete this request.
         <?php elseif (isset($sls_type) && $sls_type == "expired"): ?>
@@ -30,8 +30,8 @@
 
 <div class="row">
     <div class="col-md-7 col-md-offset-2">
-        <form class="form-horizontal" method="POST" action="<?= URL::to("/mship/security/replace/".$disable) ?>" role="form">
-            <?php if (isset($sls_type) && ($sls_type == "replace" OR $sls_type == "expired")): ?>
+        {{ Form::open(["route" => ["mship.security.replace", $disable], "class" => "form-horizontal"]) }}
+            <?php if ((isset($sls_type) && ($sls_type == "replace" OR $sls_type == "expired")) OR $disable): ?>
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="old_password">Old Password</label>
                     <div class="col-sm-7">

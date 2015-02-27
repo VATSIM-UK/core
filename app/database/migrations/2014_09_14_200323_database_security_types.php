@@ -25,6 +25,15 @@ class DatabaseSecurityTypes extends Migration {
                 $table->timestamps();
                 $table->softDeletes();
             });
+
+            DB::table("mship_security")->insert(array(
+                ["name" => "Standard Member Security", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 0, "optional" => 1, "default" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                ["name" => "Fixed: Level 1", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 45, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                ["name" => "Fixed: Level 2", "alpha" => 4, "numeric" => 2, "symbols" => 0, "length" => 6, "expiry" => 35, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                ["name" => "Fixed: Level 3", "alpha" => 5, "numeric" => 2, "symbols" => 1, "length" => 8, "expiry" => 25, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+                ["name" => "Fixed: Level 4", "alpha" => 6, "numeric" => 2, "symbols" => 1, "length" => 10, "expiry" => 15, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ));
+
             Schema::table("mship_account_security", function($table){
                 $table->integer("security_id")->after("type");
             });

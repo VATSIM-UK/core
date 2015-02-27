@@ -38,7 +38,11 @@ class PostmasterDispatch extends aCommand {
      */
     public function fire() {
         // Get all parsed, queued emails.
-        $unsent = Queue::parsed()->limit(25)->get();
+        $unsent = Queue::parsed()
+                       ->orderBy("priority", "DESC")
+                       ->orderBy("updated_at", "ASC")
+                       ->limit($this->argument("number_to_process"))
+                       ->get();
 
         foreach($unsent as $q){
             $q->dispatch();
@@ -52,6 +56,7 @@ class PostmasterDispatch extends aCommand {
      */
     protected function getArguments() {
         return array(
+            array("number_to_process", InputArgument::OPTIONAL, "The number of emails to process in a single run.", 25),
         );
     }
 

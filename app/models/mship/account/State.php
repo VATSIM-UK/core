@@ -14,7 +14,7 @@ class State extends \Eloquent {
         protected $hidden = ['account_state_id'];
 
         public function account(){
-            return $this->belongsTo("\Models\Mship\Account\Account", "account_id", "account_id");
+            return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
         }
 
         public function getLabelAttribute(){

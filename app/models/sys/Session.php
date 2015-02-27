@@ -8,6 +8,6 @@ class Session extends \Models\aModel {
         protected $hidden = ['session_id'];
 
         public function account(){
-            return $this->belongsTo("\Models\Mship\Account\Account", "session_id", "id");
+            return $this->belongsTo("\Models\Mship\Account", "session_id", "id");
         }
 }

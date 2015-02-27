@@ -21,6 +21,10 @@ class Entry extends \Models\aModel {
             return $this->morphTo()->withTrashed();
         }
 
+        public function action(){
+            return $this->belongsTo("Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
+        }
+
         public function getOwnerDisplayAttribute(){
             if($this->attributes['owner_id'] == NULL OR $this->attributes['owner_type'] == ""){
                 return "Unknown";
@@ -59,10 +63,6 @@ class Entry extends \Models\aModel {
             return $this->extra_display;
         }
 
-        public function action(){
-            return $this->belongsTo("Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
-        }
-
         public function setIpAttribute($value){
             $this->attributes['ip'] = ip2long($value);
         }
@@ -72,6 +72,8 @@ class Entry extends \Models\aModel {
         }
 
         public static function log($key, $owner, $extra=null, $data=array()){
+            $key = strtolower($key);
+
             // Get the action
             $action = Action::where(\DB::raw("CONCAT(`section`, '_', `area`, '_', `action`)"), "=", $key)->first();
             if(!$action){

@@ -38,7 +38,11 @@ class PostmasterParse extends aCommand {
      */
     public function fire() {
         // Get all new, queued emails.
-        $newQueued = Queue::pending()->limit(100)->get();
+        $newQueued = Queue::pending()
+                          ->orderBy("priority", "DESC")
+                          ->orderBy("updated_at", "ASC")
+                          ->limit($this->argument("number_to_process"))
+                          ->get();
 
         foreach($newQueued as $q){
             $q->parseAndSave();
@@ -52,6 +56,7 @@ class PostmasterParse extends aCommand {
      */
     protected function getArguments() {
         return array(
+            array("number_to_process", InputArgument::OPTIONAL, "The number of emails to process in a single run.", 100),
         );
     }
 

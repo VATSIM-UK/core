@@ -13,7 +13,7 @@ class Qualification extends \Eloquent {
         protected $hidden = ['account_qualification_id'];
 
         public function account(){
-            return $this->belongsTo("\Models\Mship\Account\Account", "account_id", "account_id");
+            return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
         }
 
         public function qualification(){

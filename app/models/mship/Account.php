@@ -1,20 +1,29 @@
 <?php
 
-namespace Models\Mship\Account;
+namespace Models\Mship;
 
+use Illuminate\Auth\UserTrait;
+use Illuminate\Auth\UserInterface;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Carbon\Carbon;
+use \Models\Mship\Account\Email as AccountEmail;
+use \Models\Mship\Account\Qualification as AccountQualification;
+use \Models\Sys\Token as SystemToken;
+use \Models\Mship\Role as RoleData;
+use \Models\Mship\Permission as PermissionData;
+use \Models\Mship\Account\Note as AccountNoteData;
 
-class Account extends \Models\aTimelineEntry {
+class Account extends \Models\aTimelineEntry implements UserInterface {
 
-    use SoftDeletingTrait;
+    use UserTrait, SoftDeletingTrait;
 
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
     public $incrementing = false;
-    protected $dates = ['last_login', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['auth_extra_at', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE];
+    protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     const STATUS_ACTIVE = 0; //b"00000";
     const STATUS_SYSTEM_BANNED = 1; //b"0001";
@@ -44,8 +53,26 @@ class Account extends \Models\aTimelineEntry {
     public static function eventCreated($model, $extra=null, $data=null){
         parent::eventCreated($model, $extra, $data);
 
+        // Add the user to the default role.
+        $defaultRole = RoleData::isDefault()->first();
+        if($defaultRole){
+            $model->roles()->attach($defaultRole);
+        }
+
         // Generate an email to the user to advise them of their new account at VATUK.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
+    }
+
+    public static function scopeIsSystem($query){
+        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status`"), "=", self::STATUS_SYSTEM);
+    }
+
+    public static function scopeIsNotSystem($query){
+        return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status`"), "!=", self::STATUS_SYSTEM);
+    }
+
+    public function dataChanges(){
+        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
 
     public function emails() {
@@ -53,19 +80,19 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function messagesReceived() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "recpient_id");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC")->with("sender");
     }
 
     public function messagesSent() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "account_id", "sender_id");
+        return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
     }
 
     public function notes() {
-        return $this->hasMany("\Models\Mship\Account\Notes", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\Note", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
-    public function notesActioner() {
-        return $this->hasMany("\Models\Mship\Account\Notes", "actioner_id", "account_id");
+    public function noteWriter() {
+        return $this->hasMany("\Models\Mship\Account\Note", "writer_id", "account_id");
     }
 
     public function tokens() {
@@ -73,25 +100,47 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function qualifications() {
-        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id");
+        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id")->orderBy("created_at", "DESC")->with("qualification");
+    }
+
+    public function roles(){
+        return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions");
+    }
+
+    public function states() {
+        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
+    }
+
+    public function ssoTokens() {
+        return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
+    }
+
+    public function security() {
+        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function getQualificationAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->first();
-        return $a;
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "atc";
+        })->first();
     }
 
     public function getQualificationsAtcAttribute() {
-        $a = $this->qualifications()->atc()->orderBy("created_at", "DESC")->get();
-        return $a;
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "atc";
+        });
     }
 
     public function getQualificationsAtcTrainingAttribute() {
-        return $this->qualifications()->atcTraining()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "training_atc";
+        });
     }
 
     public function getQualificationsPilotAttribute() {
-        return $this->qualifications()->pilot()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "pilot";
+        });
     }
 
     public function getQualificationsPilotStringAttribute(){
@@ -106,23 +155,25 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function getQualificationsPilotTrainingAttribute() {
-        return $this->qualifications()->pilotTraining()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "training_pilot";
+        });
     }
 
     public function getQualificationsAdminAttribute() {
-        return $this->qualifications()->admin()->orderBy("created_at", "DESC")->get();
+        return $this->qualifications->filter(function($qual){
+            return $qual->qualification->type == "admin";
+        });
     }
 
-    public function states() {
-        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id");
-    }
-
-    public function getIsStateAttribute($state) {
-        return $this->states()->where("state", "=", $state);
+    public function isState($search) {
+        return !$this->states->filter(function($state) use ($search){
+            return $state->state == $search;
+        })->isEmpty();
     }
 
     public function getCurrentStateAttribute() {
-        return $this->states()->first();
+        return $this->states->first();
     }
 
     public function getAllStatesAttribute(){
@@ -137,19 +188,50 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function getPrimaryStateAttribute() {
-        return $this->states()->first();
-    }
-
-    public function ssoTokens() {
-        return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
-    }
-
-    public function security() {
-        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id");
+        return $this->current_state;
     }
 
     public function getCurrentSecurityAttribute() {
-        return $this->security()->first();
+        return $this->security->first();
+    }
+    public function hasPermission($permission){
+        if(is_numeric($permission)){
+            $permission = PermissionData::find($permission);
+            $permission = $permission ? $permission->name : "NOTHING";
+        } elseif(is_object($permission)){
+            $permission = $permission->name;
+        } else {
+            $permission = preg_replace("/\d+/", "*", $permission);
+        }
+
+        // Let's check all roles for this permission!
+        foreach($this->roles as $r){
+            if($r->hasPermission($permission)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasChildPermission($parent){
+        if (is_object($parent)) {
+            $parent = $parent->name;
+        } elseif(is_numeric($parent)){
+            $parent = PermissionData::find($parent);
+            $parent = $parent ? $parent->name : "NOTHING-AT-ALL";
+        } elseif(!is_numeric($parent)){
+            $parent = preg_replace("/\d+/", "*", $parent);
+        }
+
+        // Let's check all roles for this permission!
+        foreach($this->roles as $r){
+            if($r->hasPermission($parent)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function setPassword($password, $type) {
@@ -158,26 +240,38 @@ class Account extends \Models\aTimelineEntry {
         }
 
         // Set a new one!
-        $security = new Security;
+        $security = new Account\Security();
         $security->account_id = $this->account_id;
         $security->security_id = $type->security_id;
         $security->value = $password;
         $security->save();
     }
 
+    public function resetPassword($admin=false){
+        // Now generate a new token for the email.
+        $token = SystemToken::generate("mship_account_security_reset", false, $this);
+
+        // Let's send them an email with this information!
+        $email = $admin ? "MSHIP_SECURITY_FORGOTTEN_ADMIN" : "MSHIP_SECURITY_FORGOTTEN";
+        \Models\Sys\Postmaster\Queue::queue($email, $this, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+    }
+
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
-        $check = $this->emails()->where("email", "LIKE", $newEmail);
-        if ($check->count() < 1) {
-            $email = new Email;
+        $check = $this->emails->filter(function($email) use($newEmail){
+            return strcasecmp($email->email, $newEmail) == 0;
+        })->first();
+
+        if (!$check OR !$check->exists) {
+            $email = new AccountEmail;
             $email->email = $newEmail;
             if ($verified) {
-                $email->verified = Carbon::now()->toDateTimeString();
+                $email->verified_at = Carbon::now();
             }
             $this->emails()->save($email);
             $isNewEmail = true;
         } else {
-            $email = $check->first();
+            $email = $check;
             $isNewEmail = false;
         }
 
@@ -185,6 +279,7 @@ class Account extends \Models\aTimelineEntry {
             $email->is_primary = 1;
             $email->save();
         }
+
         return ($returnID ? $email->account_email_id : $isNewEmail);
     }
 
@@ -194,16 +289,39 @@ class Account extends \Models\aTimelineEntry {
         }
 
         // Does this rating already exist?
-        if ($this->qualifications()->where("qualification_id", "=", $qualificationType->qualification_id)->count() > 0) {
+        $check = $this->qualifications->filter(function($qual) use($qualificationType){
+            return $qual->qualification_id == $qualificationType->qualification_id;
+        })->count() > 0;
+        if ($check) {
             return false;
         }
 
         // Let's add it!
-        $qual = new Qualification;
+        $qual = new AccountQualification;
         $qual->qualification_id = $qualificationType->qualification_id;
         $this->qualifications()->save($qual);
 
         return true;
+    }
+
+    public function addNote($noteType, $noteContent, $writer=null){
+        if(is_object($noteType)){
+            $noteType = $noteType->getKey();
+        }
+
+        if($writer == null){
+            $writer = VATUK_ACCOUNT_SYSTEM;
+        } elseif(is_object($writer)){
+            $writer = $writer->getKey();
+        }
+
+        $note = new AccountNoteData();
+        $note->account_id = $this->account_id;
+        $note->writer_id = $writer;
+        $note->note_type_id = $noteType;
+        $note->content = $noteContent;
+
+        return $note->save();
     }
 
     public function setStatusFlag($flag) {
@@ -248,7 +366,7 @@ class Account extends \Models\aTimelineEntry {
         return $this->is_system_banned OR $this->is_network_banned;
     }
 
-    public function getIsInactive() {
+    public function getIsInactiveAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_INACTIVE & $status);
     }
@@ -261,7 +379,7 @@ class Account extends \Models\aTimelineEntry {
         }
     }
 
-    public function getIsSystem() {
+    public function getIsSystemAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_SYSTEM & $status);
     }
@@ -274,7 +392,7 @@ class Account extends \Models\aTimelineEntry {
         }
     }
 
-    public function getStatusAttribute() {
+    public function getStatusStringAttribute() {
         // It's done in a convoluted way, because it's in order of how they should be displayed!
         if ($this->is_system_banned) {
             return Account::getStatusDescription(self::STATUS_SYSTEM_BANNED);
@@ -334,11 +452,15 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function getPrimaryEmailAttribute() {
-        return $this->emails()->primary()->first();
+        return $this->emails->filter(function($email){
+            return $email->is_primary == 1;
+        })->first();
     }
 
     public function getSecondaryEmailAttribute() {
-        return $this->emails()->secondary()->get();
+        return $this->emails->filter(function($email){
+            return !$email->is_primary;
+        });
     }
 
     public function setNameFirstAttribute($value) {
@@ -347,7 +469,7 @@ class Account extends \Models\aTimelineEntry {
         //$value = ucfirst($value);
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords($value);
+            $value = ucwords(strtolower($value));
         }
 
         $this->attributes["name_first"] = utf8_encode($value);
@@ -367,7 +489,7 @@ class Account extends \Models\aTimelineEntry {
         }*/
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords($value);
+            $value = ucwords(strtolower($value));
         }
 
         $this->attributes["name_last"] = utf8_encode($value);
@@ -386,13 +508,13 @@ class Account extends \Models\aTimelineEntry {
     }
 
     public function getDisplayValueAttribute() {
-        return $this->getNameAttribute() . " (" . $this->attributes['account_id'] . ")";
+        return $this->name . " (" . $this->getKey() . ")";
     }
 
     public function toArray() {
         $array = parent::toArray();
         $array["name"] = $this->name;
-        $array["email"] = $this->primary_email->email;
+        $array["email"] = $this->primary_email ? $this->primary_email->email : new Account\Email();
         $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->qualification->name_long : "");
         $array['pilot_rating'] = array();
@@ -425,10 +547,11 @@ class Account extends \Models\aTimelineEntry {
             $state = \Enums\Account\State::INTERNATIONAL;
         }
         if ($this->account_id < 1) {
+            print "UH OH!";
             print_r($this);
             exit();
         }
-        $this->states()->save(new State(array("state" => $state)));
+        $this->states()->save(new Account\State(array("state" => $state)));
     }
 
 }
