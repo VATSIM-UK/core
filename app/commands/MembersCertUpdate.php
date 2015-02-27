@@ -43,120 +43,166 @@ class MembersCertUpdate extends aCommand {
      * @return mixed
      */
     public function fire() {
-        $members = Account::where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("logged_in_within"))->toDateTimeString())
-                ->where(function($query) {
-                    $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time_since_last_update"))->toDateTimeString())
-                          ->orWhereNull("cert_checked_at");
-                })
-                ->orderBy("cert_checked_at", "ASC")
-                ->limit($this->argument("max_members"))
-                ->get();
+        if (!$this->option("logged-in-since") && !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
+        if ($this->option("debug")) $debug = TRUE;
 
-        if (count($members) < 1) {
+        if ($this->option("force-update")) {
+            try {
+                $member = Account::findOrFail($this->option("force-update"));
+            } catch (Exception $e) {
+                echo "\tError: cannot retrieve member " . $this->option("force-update") . " during forced update - " . $e->getMessage();
+                exit(1);
+            }
+
+            $this->processMember($member);
+            exit(0);
+
+        } else {
+            /*
+             * REGULAR CHECKING:    php artisan Members:CertUpdate --logged-in-since --last-login=720
+             * OCCASIONAL CHECKING: php artisan Members:CertUpdate --not-logged-in-since --last-login=720
+             */
+            // never process a member who hasn't logged in for greater than 6 months
+            $members = Account::where("last_login", ">=", \Carbon\Carbon::now()->subHours(24*30*6));
+            // for regular/active member checking
+            // if set, AND process members who has logged in since x
+            if ($this->option("logged-in-since")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("logged-in-since"))->toDateTimeString());
+            // for irregular/less-active member checking
+            // if set, AND process members who haven't logged in since x, or haven't ever logged in and aren't suspended
+            elseif ($this->option("not-logged-in-since")) $members = $members->where(function($query) {
+                $query->where("last_login", "<=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString())
+                        ->orWhere(function($query) {
+                            $query->whereNull("last_login")
+                                  ->where("status", "=", "0");
+                        });
+            });
+            // AND only process members who haven't been updated recently, or ever
+            $members = $members->where(function($query) {
+                        $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
+                              ->orWhereNull("cert_checked_at");
+                    })
+                    ->orderBy("cert_checked_at", "ASC")
+                    ->limit($this->argument("max_members"))
+                    ->get();
+        }
+
+        if (count($members) < 1 && $debug) {
             print "No members to process.\n\n";
             return;
-        } else {
+        } elseif ($debug) {
             echo count($members) . " retrieved.\n\n";
         }
 
         foreach ($members as $pointer => $_m) {
+            // remove members we don't want to process
             if ($_m->account_id < 800000) continue;
 
-            print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
-
-            // Let's load the details from VatsimXML!
-            try {
-                $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
-                print "\tVatsimXML Data retrieved.\n";
-            } catch (Exception $e) {
-                print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
-                continue;
-            }
-
-            // remove members that no longer exist in CERT
-            if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
-                    && $_xmlData->email == "[hidden]") {
-                $_m->delete();
-                print "\tMember no longer exists in CERT - deleted.\n";
-                continue;
-            }
-
-            DB::beginTransaction();
-            print "\tDB::beginTransaction\n";
-            try {
-                $_m->name_first = $_xmlData->name_first;
-                $_m->name_last = $_xmlData->name_last;
-
-                print "\t" . str_repeat("-", 89) . "\n";
-                print "\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n";
-                if ($_m->isDirty()) {
-                    $original = $_m->getOriginal();
-                    foreach ($_m->getDirty() as $key => $newValue) {
-                        $this->outputTableRow($key, array_get($original, $key, ""), $newValue);
-                    }
-                }
-
-                $_m->cert_checked_at = \Carbon\Carbon::now()->toDateTimeString();
-                $_m->save();
-                $_m = $_m->find($_m->account_id);
-
-                // Let's work out the user status.
-                $oldStatus = $_m->status_string;
-                $_m->setCertStatus($_xmlData->rating);
-
-                if ($oldStatus != $_m->status) {
-                    $this->outputTableRow("status", $oldStatus, $_m->status_string);
-                }
-
-                // If they're in this feed, they're a division member.
-                $oldState = ($_m->current_state ? $_m->current_state->state : 0);
-                $_m->determineState($_xmlData->region, $_xmlData->division);
-
-                if ($oldState != $_m->current_state->state) {
-                    $this->outputTableRow("state", $oldState, $_m->current_state);
-                }
-
-                // Sort their rating(s) out.
-                $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
-                $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
-                if ($_m->addQualification($atcRating)) {
-                    $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
-                }
-
-                // If their rating is ABOVE INS1 (8+) then let's get their last.
-                if ($_xmlData->rating >= 8) {
-                    $_prevRat = VatsimXML::getData($_m->account_id, "idstatusprat");
-                    if (isset($_prevRat->PreviousRatingInt)) {
-                        $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                        if ($_m->addQualification($prevAtcRating)) {
-                            $this->outputTableRow("atc_rating", "Previous", $prevAtcRating->code);
-                        }
-                    }
-                }
-
-                $pilotRatings = QualificationData::parseVatsimPilotQualifications($_xmlData->pilotrating);
-                foreach ($pilotRatings as $pr) {
-                    if ($_m->addQualification($pr)) {
-                        $this->outputTableRow("pilot_rating", "n/a", $pr->code);
-                    }
-                }
-
-                $_m->save();
-            } catch (Exception $e) {
-                DB::rollback();
-                print "\tDB::rollback\n";
-                print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
-            } finally {
-                print "\t" . str_repeat("-", 89) . "\n";
-
-                DB::commit();
-                print "\tDB::commit\n";
-            }
-
-            print "\n";
+            $this->processMember($_m, $pointer);
         }
 
         print "Processed " . ($pointer + 1) . " members.\n\n";
+    }
+
+
+    private function processMember($_m, $pointer=0) {
+        print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
+
+        // Let's load the details from VatsimXML!
+        try {
+            $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
+            print "\tVatsimXML Data retrieved.\n";
+        } catch (Exception $e) {
+            print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
+            return;
+        }
+
+        if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
+                && $_xmlData->email == "[hidden]") {
+            $_m->delete();
+            print "\t" . $_m->account_id . " no longer exists in CERT - deleted.\n";
+            return;
+        }
+
+        DB::beginTransaction();
+        print "\tDB::beginTransaction\n";
+        try {
+            $_m->name_first = $_xmlData->name_first;
+            $_m->name_last = $_xmlData->name_last;
+
+            print "\t" . str_repeat("-", 89) . "\n";
+            print "\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n";
+            if ($_m->isDirty()) {
+                $original = $_m->getOriginal();
+                foreach ($_m->getDirty() as $key => $newValue) {
+                    $this->outputTableRow($key, array_get($original, $key, ""), $newValue);
+                }
+            }
+
+            $_m->cert_checked_at = \Carbon\Carbon::now()->toDateTimeString();
+            $_m->save();
+            $_m = $_m->find($_m->account_id);
+
+            // Let's work out the user status.
+            $oldStatus = $_m->status_string;
+            $_m->setCertStatus($_xmlData->rating);
+
+            if ($oldStatus != $_m->status) {
+                $this->outputTableRow("status", $oldStatus, $_m->status_string);
+            }
+
+            // Set their VATSIM registration date.
+            $oldDate = $_m->joined_at;
+            $newDate = $_xmlData->regdate;
+            if ($oldDate != $newDate) {
+                $_m->joined_at = $newDate;
+                $this->outputTableRow("joined_at", $oldDate, $newDate);
+            }
+
+            // If they're in this feed, they're a division member.
+            $oldState = ($_m->current_state ? $_m->current_state->state : 0);
+            $_m->determineState($_xmlData->region, $_xmlData->division);
+
+            if ($oldState != $_m->current_state->state) {
+                $this->outputTableRow("state", $oldState, $_m->current_state);
+            }
+
+            // Sort their rating(s) out.
+            $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
+            $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
+            if ($_m->addQualification($atcRating)) {
+                $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
+            }
+
+            // If their rating is ABOVE INS1 (8+) then let's get their last.
+            if ($_xmlData->rating >= 8) {
+                $_prevRat = VatsimXML::getData($_m->account_id, "idstatusprat");
+                if (isset($_prevRat->PreviousRatingInt)) {
+                    $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                    if ($_m->addQualification($prevAtcRating)) {
+                        $this->outputTableRow("atc_rating", "Previous", $prevAtcRating->code);
+                    }
+                }
+            }
+
+            $pilotRatings = QualificationData::parseVatsimPilotQualifications($_xmlData->pilotrating);
+            foreach ($pilotRatings as $pr) {
+                if ($_m->addQualification($pr)) {
+                    $this->outputTableRow("pilot_rating", "n/a", $pr->code);
+                }
+            }
+
+            $_m->save();
+        } catch (Exception $e) {
+            DB::rollback();
+            print "\tDB::rollback\n";
+            print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
+        }
+
+        print "\t" . str_repeat("-", 89) . "\n";
+
+        DB::commit();
+        print "\tDB::commit\n";
+        print "\n";
     }
 
     private function outputTableRow($key, $old, $new) {
@@ -181,9 +227,12 @@ class MembersCertUpdate extends aCommand {
      */
     protected function getOptions() {
         return array(
-            array("logged_in_within", "login-within", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that a user has to have logged in within to force an update.", 24*90),
-            array("time_since_last_update", "last-update", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 2),
+            array("last-login", "l", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that a user has to have logged in within to force an update.", 24*90),
+            array("logged-in-since", "s", InputOption::VALUE_NONE, "Process members that have logged in since the specified login time."),
+            array("not-logged-in-since", "o", InputOption::VALUE_NONE, "Process members that have not logged in since the specified login time."),
+            array("time-since-last", "t", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 2),
+            array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
+            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
     }
-
 }
