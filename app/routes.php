@@ -143,8 +143,9 @@ Route::group(array("namespace" => "Controllers"), function() {
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
-        Route::controller("auth", "Authentication");
-        Route::controller("security", "Security");
+        Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
+        Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
 });
 
