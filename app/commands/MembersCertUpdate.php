@@ -45,6 +45,7 @@ class MembersCertUpdate extends aCommand {
     public function fire() {
         if (!$this->option("logged-in-since") && !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
         if ($this->option("debug")) $debug = TRUE;
+        else $debug = FALSE;
 
         if ($this->option("force-update")) {
             try {
@@ -58,12 +59,17 @@ class MembersCertUpdate extends aCommand {
             exit(0);
 
         } else {
+
             /*
              * REGULAR CHECKING:    php artisan Members:CertUpdate --logged-in-since --last-login=720
              * OCCASIONAL CHECKING: php artisan Members:CertUpdate --not-logged-in-since --last-login=720
              */
+            $members = Account::where(function($query) {
+                $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
+                      ->orWhereNull("cert_checked_at");
+            });
             // never process a member who hasn't logged in for greater than 6 months
-            $members = Account::where("last_login", ">=", \Carbon\Carbon::now()->subHours(24*30*6));
+            if (!$this->option("remove-hard-limit")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours(24*30*6));
             // for regular/active member checking
             // if set, AND process members who has logged in since x
             if ($this->option("logged-in-since")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("logged-in-since"))->toDateTimeString());
@@ -71,19 +77,15 @@ class MembersCertUpdate extends aCommand {
             // if set, AND process members who haven't logged in since x, or haven't ever logged in and aren't suspended
             elseif ($this->option("not-logged-in-since")) $members = $members->where(function($query) {
                 $query->where("last_login", "<=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString())
-                        ->orWhere(function($query) {
+                      ->orWhere(function($query) {
                             $query->whereNull("last_login")
                                   ->where("status", "=", "0");
-                        });
+                      });
             });
             // AND only process members who haven't been updated recently, or ever
-            $members = $members->where(function($query) {
-                        $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
-                              ->orWhereNull("cert_checked_at");
-                    })
-                    ->orderBy("cert_checked_at", "ASC")
-                    ->limit($this->argument("max_members"))
-                    ->get();
+            $members = $members->orderBy("cert_checked_at", "ASC")
+                               ->limit($this->argument("max_members"))
+                               ->get();
         }
 
         if (count($members) < 1 && $debug) {
@@ -231,6 +233,7 @@ class MembersCertUpdate extends aCommand {
             array("logged-in-since", "s", InputOption::VALUE_NONE, "Process members that have logged in since the specified login time."),
             array("not-logged-in-since", "o", InputOption::VALUE_NONE, "Process members that have not logged in since the specified login time."),
             array("time-since-last", "t", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 2),
+            array("remove-hard-limit", "r", InputOption::VALUE_OPTIONAL, "Removes the hard time limit of 6 months.", 2),
             array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
