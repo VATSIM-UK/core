@@ -20,7 +20,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
     public $incrementing = false;
-    protected $dates = ['auth_extra_at', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['auth_extra_at', 'last_login', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE];
     protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
