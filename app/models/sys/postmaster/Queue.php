@@ -71,6 +71,12 @@ class Queue extends \Models\aTimelineEntry {
         return $query->ofStatus(self::STATUS_UNSUBSCRIBED);
     }
 
+    public function scopeAllDispatched($query){
+        $dispatchedStati = [self::STATUS_SENT, self::STATUS_DELIVERED, self::STATUS_OPENED, self::STATUS_CLICKED, self::STATUS_DROPPED, self::STATUS_BOUNCED, self::STATUS_SPAM, self::STATUS_UNSUBSCRIBED];
+
+        return $this->where("status", "IN", $dispatchedStati);
+    }
+
     public function recipient() {
         return $this->belongsTo("\Models\Mship\Account", "recipient_id", "account_id");
     }
