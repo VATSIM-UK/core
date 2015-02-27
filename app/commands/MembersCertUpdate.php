@@ -150,6 +150,14 @@ class MembersCertUpdate extends aCommand {
                 $this->outputTableRow("status", $oldStatus, $_m->status_string);
             }
 
+            // Set their VATSIM registration date.
+            $oldDate = $_m->joined_at;
+            $newDate = $_xmlData->regdate;
+            if ($oldDate != $newDate) {
+                $_m->joined_at = $newDate;
+                $this->outputTableRow("joined_at", $oldDate, $newDate);
+            }
+
             // If they're in this feed, they're a division member.
             $oldState = ($_m->current_state ? $_m->current_state->state : 0);
             $_m->determineState($_xmlData->region, $_xmlData->division);
