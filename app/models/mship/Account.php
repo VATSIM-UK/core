@@ -104,7 +104,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function roles(){
-        return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions");
+        return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions")->withTimestamps();
     }
 
     public function states() {
