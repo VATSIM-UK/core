@@ -43,6 +43,7 @@ class MembersCertUpdate extends aCommand {
      * @return mixed
      */
     public function fire() {
+        global $debug;
         if (!$this->option("logged-in-since") && !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
@@ -64,7 +65,7 @@ class MembersCertUpdate extends aCommand {
              * REGULAR CHECKING:    php artisan Members:CertUpdate --logged-in-since --last-login=720
              * OCCASIONAL CHECKING: php artisan Members:CertUpdate --not-logged-in-since --last-login=720
              */
-            $members = Account::where(function($query) {
+            $members = Account::with('status')->with('emails')->with('qualifications')->where(function($query) {
                 $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
                       ->orWhereNull("cert_checked_at");
             });
@@ -88,8 +89,8 @@ class MembersCertUpdate extends aCommand {
                                ->get();
         }
 
-        if (count($members) < 1 && $debug) {
-            print "No members to process.\n\n";
+        if (count($members) < 1) {
+            if ($debug) print "No members to process.\n\n";
             return;
         } elseif ($debug) {
             echo count($members) . " retrieved.\n\n";
@@ -102,19 +103,20 @@ class MembersCertUpdate extends aCommand {
             $this->processMember($_m, $pointer);
         }
 
-        print "Processed " . ($pointer + 1) . " members.\n\n";
+        if ($debug) print "Processed " . ($pointer + 1) . " members.\n\n";
     }
 
 
     private function processMember($_m, $pointer=0) {
-        print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
+        global $debug;
+        if ($debug) print "#" . ($pointer + 1) . " Processing " . str_pad($_m->account_id, 9, " ", STR_PAD_RIGHT) . "\t";
 
         // Let's load the details from VatsimXML!
         try {
             $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
-            print "\tVatsimXML Data retrieved.\n";
+            if ($debug) print "\tVatsimXML Data retrieved.\n";
         } catch (Exception $e) {
-            print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
+            if ($debug) print "\tVatsimXML Data *NOT* retrieved.  ERROR.\n";
             return;
         }
 
@@ -126,13 +128,13 @@ class MembersCertUpdate extends aCommand {
         }
 
         DB::beginTransaction();
-        print "\tDB::beginTransaction\n";
+        if ($debug) print "\tDB::beginTransaction\n";
         try {
-            $_m->name_first = $_xmlData->name_first;
-            $_m->name_last = $_xmlData->name_last;
+            if (!empty($_xmlData->name_first) && is_string($_xmlData->name_first)) $_m->name_first = $_xmlData->name_first;
+            if (!empty($_xmlData->name_last) && is_string($_xmlData->name_last)) $_m->name_last = $_xmlData->name_last;
 
-            print "\t" . str_repeat("-", 89) . "\n";
-            print "\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n";
+            if ($debug) print "\t" . str_repeat("-", 89) . "\n";
+            if ($debug) print "\t| Data Field\t\tOld Value\t\t\tNew Value\t\t\t|\n";
             if ($_m->isDirty()) {
                 $original = $_m->getOriginal();
                 foreach ($_m->getDirty() as $key => $newValue) {
@@ -198,17 +200,19 @@ class MembersCertUpdate extends aCommand {
             DB::rollback();
             print "\tDB::rollback\n";
             print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
+            print "\tCID: " . $_m->account_id . "\n";
         }
 
-        print "\t" . str_repeat("-", 89) . "\n";
+        if ($debug) print "\t" . str_repeat("-", 89) . "\n";
 
         DB::commit();
-        print "\tDB::commit\n";
-        print "\n";
+        if ($debug) print "\tDB::commit\n";
+        if ($debug) print "\n";
     }
 
     private function outputTableRow($key, $old, $new) {
-        print "\t| " . str_pad($key, 20, " ", STR_PAD_RIGHT) . "\t" . str_pad($old, 30, " ", STR_PAD_RIGHT) . "\t" . str_pad($new, 30, " ", STR_PAD_RIGHT) . "\t|\n";
+        global $debug;
+        if ($debug) print "\t| " . str_pad($key, 20, " ", STR_PAD_RIGHT) . "\t" . str_pad($old, 30, " ", STR_PAD_RIGHT) . "\t" . str_pad($new, 30, " ", STR_PAD_RIGHT) . "\t|\n";
     }
 
     /**
