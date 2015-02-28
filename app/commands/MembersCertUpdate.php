@@ -70,14 +70,14 @@ class MembersCertUpdate extends aCommand {
                       ->orWhereNull("cert_checked_at");
             });
             // never process a member who hasn't logged in for greater than 6 months
-            if (!$this->option("remove-hard-limit")) $members = $members->where("last_login", "<=", \Carbon\Carbon::now()->subHours(24*30*6));
+            if (!$this->option("remove-hard-limit")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours(24*30*6));
             // for regular/active member checking
             // if set, AND process members who has logged in since x
-            if ($this->option("logged-in-since")) $members = $members->where("last_login", "<=", \Carbon\Carbon::now()->subHours($this->option("logged-in-since"))->toDateTimeString());
+            if ($this->option("logged-in-since")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString());
             // for irregular/less-active member checking
             // if set, AND process members who haven't logged in since x, or haven't ever logged in and aren't suspended
             elseif ($this->option("not-logged-in-since")) $members = $members->where(function($query) {
-                $query->where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString())
+                $query->where("last_login", "<=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString())
                       ->orWhere(function($query) {
                             $query->whereNull("last_login")
                                   ->where("status", "=", "0");
