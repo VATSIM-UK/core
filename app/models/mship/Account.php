@@ -344,7 +344,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function setIsSystemBannedAttribute($value) {
         if ($value && !$this->is_system_banned) {
             $this->setStatusFlag(self::STATUS_SYSTEM_BANNED);
-        } elseif ($this->is_system_banned) {
+        } elseif (!$value && $this->is_system_banned) {
             $this->unSetStatusFlag(self::STATUS_SYSTEM_BANNED);
         }
     }
@@ -357,7 +357,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function setIsNetworkBannedAttribute($value) {
         if ($value && !$this->is_network_banned) {
             $this->setStatusFlag(self::STATUS_NETWORK_SUSPENDED);
-        } elseif ($this->is_network_banned) {
+        } elseif (!$value && $this->is_network_banned) {
             $this->unSetStatusFlag(self::STATUS_NETWORK_SUSPENDED);
         }
     }
@@ -374,7 +374,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function setIsInactiveAttribute($value) {
         if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
-        } elseif ($this->is_inactive) {
+        } elseif (!$value && $this->is_inactive) {
             $this->unSetStatusFlag(self::STATUS_INACTIVE);
         }
     }
@@ -387,7 +387,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function setIsSystemAttribute($value) {
         if ($value && !$this->is_system) {
             $this->setStatusFlag(self::STATUS_SYSTEM);
-        } elseif ($this->is_system) {
+        } elseif (!$value && $this->is_system) {
             $this->unSetStatusFlag(self::STATUS_SYSTEM);
         }
     }
