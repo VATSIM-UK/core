@@ -169,7 +169,7 @@ class MembersCertUpdate extends aCommand {
             $oldStatus = $_m->status_string;
             $_m->setCertStatus($_xmlData->rating);
 
-            if ($oldStatus != $_m->status) {
+            if ($oldStatus != $_m->status_string) {
                 $this->outputTableRow("status", $oldStatus, $_m->status_string);
             }
 
