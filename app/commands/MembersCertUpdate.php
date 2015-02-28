@@ -65,7 +65,7 @@ class MembersCertUpdate extends aCommand {
              * REGULAR CHECKING:    php artisan Members:CertUpdate --logged-in-since --last-login=720
              * OCCASIONAL CHECKING: php artisan Members:CertUpdate --not-logged-in-since --last-login=720
              */
-            $members = Account::with('status')->with('emails')->with('qualifications')->where(function($query) {
+            $members = Account::with('states')->with('emails')->with('qualifications')->where(function($query) {
                 $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
                       ->orWhereNull("cert_checked_at");
             });
