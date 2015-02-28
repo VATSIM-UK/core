@@ -11,6 +11,7 @@ use Models\Mship\Account\Qualification;
 use \Cache;
 use \VatsimXML;
 use \VatsimSSO;
+use \Carbon\Carbon;
 
 class MembersCertUpdate extends aCommand {
 
@@ -44,10 +45,16 @@ class MembersCertUpdate extends aCommand {
      */
     public function fire() {
         global $debug;
-        if (!$this->option("logged-in-since") && !$this->option("not-logged-in-since")) exit("Please specify either --logged-in-since or --not-logged-in-since.");
+
+        // if specified, turn debug mode on
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
 
+        // set the maximum number of members to load, with a hard limit of 10,000
+        if ($this->argument('max_members') > 10000) $max_members = 10000;
+        else $max_members = $this->argument('max_members');
+
+        // if we only want to force update a specific member, process them and exit
         if ($this->option("force-update")) {
             try {
                 $member = Account::findOrFail($this->option("force-update"));
@@ -58,36 +65,48 @@ class MembersCertUpdate extends aCommand {
 
             $this->processMember($member);
             exit(0);
-
-        } else {
-
-            /*
-             * REGULAR CHECKING:    php artisan Members:CertUpdate --logged-in-since --last-login=720
-             * OCCASIONAL CHECKING: php artisan Members:CertUpdate --not-logged-in-since --last-login=720
-             */
-            $members = Account::with('states')->with('emails')->with('qualifications')->where(function($query) {
-                $query->where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours($this->option("time-since-last"))->toDateTimeString())
-                      ->orWhereNull("cert_checked_at");
-            });
-            // never process a member who hasn't logged in for greater than 6 months
-            if (!$this->option("remove-hard-limit")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours(24*30*6));
-            // for regular/active member checking
-            // if set, AND process members who has logged in since x
-            if ($this->option("logged-in-since")) $members = $members->where("last_login", ">=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString());
-            // for irregular/less-active member checking
-            // if set, AND process members who haven't logged in since x, or haven't ever logged in and aren't suspended
-            elseif ($this->option("not-logged-in-since")) $members = $members->where(function($query) {
-                $query->where("last_login", "<=", \Carbon\Carbon::now()->subHours($this->option("last-login"))->toDateTimeString())
-                      ->orWhere(function($query) {
-                            $query->whereNull("last_login")
-                                  ->where("status", "=", "0");
-                      });
-            });
-            // AND only process members who haven't been updated recently, or ever
-            $members = $members->orderBy("cert_checked_at", "ASC")
-                               ->limit($this->argument("max_members"))
-                               ->get();
         }
+
+        // all accounts should be loaded with their states, emails, and qualifications
+        $members = Account::with('states')->with('emails')->with('qualifications');
+
+        // add parameters based on the cron type
+        $type = $this->option("type")[0];
+        switch($type) {
+            case "h":
+                // members who have logged in in the last 30 days or who have never been checked
+                $members = $members->where('last_login', '>=', Carbon::now()->subMonth()->toDateTimeString())
+                                   ->orWhereNull('cert_checked_at');
+                if ($debug) echo "Hourly cron.\n";
+                break;
+            case "d":
+                // members who have logged in in the last 90 days and haven't been checked today
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subDay()->toDateTimeString())
+                                   ->where('last_login', '>=', Carbon::now()->subMonths(3)->toDateTimeString());
+                if ($debug) echo "Daily cron.\n";
+                break;
+            case "w":
+                // members who have logged in in the last 180 days and haven't been checked this week
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subWeek()->toDateTimeString())
+                                   ->where('last_login', '>=', Carbon::now()->subMonths(6)->toDateTimeString());
+                if ($debug) echo "Weekly cron.\n";
+                break;
+            case "m":
+                // members who have never logged in and haven't been checked this month, but are still active VATSIM members
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subMonth()->toDateTimeString())
+                                   ->whereNull('last_login')
+                                   ->where("status", "=", "0");
+                if ($debug) echo "Monthly cron.\n";
+                break;
+            default:
+                // all members
+                if ($debug) echo "Full cron.\n";
+                break;
+        }
+
+        $members = $members->orderBy('cert_checked_at', 'ASC')
+                           ->limit($max_members)
+                           ->get();
 
         if (count($members) < 1) {
             if ($debug) print "No members to process.\n\n";
@@ -233,12 +252,8 @@ class MembersCertUpdate extends aCommand {
      */
     protected function getOptions() {
         return array(
-            array("last-login", "l", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that a user has to have logged in within to force an update.", 24*90),
-            array("logged-in-since", "s", InputOption::VALUE_NONE, "Process members that have logged in since the specified login time."),
-            array("not-logged-in-since", "o", InputOption::VALUE_NONE, "Process members that have not logged in since the specified login time."),
-            array("time-since-last", "t", InputOption::VALUE_OPTIONAL, "The amount of time (in hours) that has to have lapsed to force an update.", 2),
-            array("remove-hard-limit", "r", InputOption::VALUE_OPTIONAL, "Removes the hard time limit of 6 months.", 2),
             array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
+            array("type", "t", InputOption::VALUE_OPTIONAL, "Which update are we running? Hourly, Daily, Weekly or Monthly?", "hourly"),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
     }
