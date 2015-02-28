@@ -196,6 +196,38 @@
         </td>
     </tr>
     <tr>
+        <th class='hidden-xs hidden-sm'>TeamSpeak Registrations</th>
+        <td>
+            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations</strong></span>
+            <!-- loop for teamspeak registrations will go here -->
+            [ New Registration ]<br /><br />
+            <div style="float: left; padding-right: 15px;">
+                Created: 1970-01-01 00:00:01<br />
+                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
+                Last IP: 127.0.0.1<br />
+                Last login: 1970-01-01 00:00:01<br />
+                Operating System: Mac OSX<br />
+                [ Remove Registration ]<br />&nbsp;
+            </div>
+            <div style="float: left; padding-right: 15px;">
+                Created: 1970-01-01 00:00:01<br />
+                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
+                Last IP: 127.0.0.1<br />
+                Last login: 1970-01-01 00:00:01<br />
+                Operating System: Mac OSX<br />
+                [ Remove Registration ]<br />&nbsp;
+            </div>
+            <div style="float: left; padding-right: 15px;">
+                Created: 1970-01-01 00:00:01<br />
+                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
+                Last IP: 127.0.0.1<br />
+                Last login: 1970-01-01 00:00:01<br />
+                Operating System: Mac OSX<br />
+                [ Remove Registration ]<br />&nbsp;
+            </div>
+        </td>
+    </tr>
+    <tr>
         <th class='hidden-xs hidden-sm'>Actions</th>
         <td>
             @if(1 == 2)

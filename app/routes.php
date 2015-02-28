@@ -142,6 +142,12 @@ Route::group(array("namespace" => "Controllers"), function() {
         });
     });
 
+    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak"], function() {
+        Route::get("/new", ["before" => "auth.user", "as" => "teamspeak.new", "uses" => "Registration@getNew"]);
+        Route::post("/{:any}/create", ["before" => "auth.user", "as" => "teamspeak.create", "uses" => "Registration@postCreate"]);
+        Route::post("/{:any}/delete", ["before" => "auth.user", "as" => "teamspeak.delete", "uses" => "Registration@postDelete"]);
+    });
+
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
         Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);

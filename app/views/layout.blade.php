@@ -9,6 +9,7 @@
         @section('styles')
         {{ HTML::style('http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') }}
         {{ HTML::style('http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css') }}
+        {{ HTML::style('http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css') }}
         {{ HTML::style('assets/style/Standalone/design.css') }}
         {{ HTML::style('http://fonts.googleapis.com/css?family=Yellowtail') }}
         {{ HTML::style('http://fonts.googleapis.com/css?family=Josefin+Slab:600') }}
