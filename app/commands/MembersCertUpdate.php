@@ -161,7 +161,7 @@ class MembersCertUpdate extends aCommand {
                 }
             }
 
-            $_m->cert_checked_at = \Carbon\Carbon::now()->toDateTimeString();
+            $_m->cert_checked_at = Carbon::now()->toDateTimeString();
             $_m->save();
             $_m = $_m->find($_m->account_id);
 
