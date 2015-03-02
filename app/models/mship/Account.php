@@ -12,6 +12,7 @@ use \Models\Sys\Token as SystemToken;
 use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
 use \Models\Mship\Account\Note as AccountNoteData;
+use \Models\Teamspeak\Registration;
 
 class Account extends \Models\aTimelineEntry implements UserInterface {
 
@@ -94,6 +95,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function noteWriter() {
         return $this->hasMany("\Models\Mship\Account\Note", "writer_id", "account_id");
     }
+	
+	public function teamspeakRegistrations() {
+		return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
+	}
 
     public function tokens() {
         return $this->morphMany("\Models\Sys\Token", "related");
@@ -555,5 +560,9 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
+	
+	public function getNewRegistrationAttribute() {
+		return $this->teamspeakRegistrations()->where('status', '=', 'new')->first();
+	}
 
 }

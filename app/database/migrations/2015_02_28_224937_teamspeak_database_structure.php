@@ -23,7 +23,7 @@ class TeamspeakDatabaseStructure extends Migration {
 		// create table structures
 
 		Schema::create('teamspeak_alias', function($table) {
-			$table->smallInteger('id')->primary()->unsigned()->increments();
+			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unique()->unsigned();
 			$table->string('display_name', 30);
 			$table->string('notes', 255)->nullable();
@@ -31,7 +31,7 @@ class TeamspeakDatabaseStructure extends Migration {
 		});
 
 		Schema::create('teamspeak_ban', function($table) {
-			$table->smallInteger('id')->primary()->unsigned()->increments();
+			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unsigned()->index();
 			$table->mediumInteger('duration')->unsigned();
 			$table->string('reason', 255);
@@ -40,22 +40,22 @@ class TeamspeakDatabaseStructure extends Migration {
 		});
 
 		Schema::create('teamspeak_confirmation', function($table) {
-			$table->mediumInteger('registration_id')->primary()->unsigned()->increments();
+			$table->integer('registration_id')->unsigned();
 			$table->string('privilege_key', 50);
 			$table->string('confirmation_string', 50)->nullable();
 			$table->timestamps();
 		});
 
 		Schema::create('teamspeak_log', function($table) {
-			$table->integer('id')->primary()->unsigned()->increments();
-			$table->mediumInteger('registration_id')->unsigned()->nullable();
+			$table->increments('id')->unsigned();
+			$table->integer('registration_id')->unsigned()->nullable();
 			$table->string('type', 20); // switch to enum?
 			$table->string('message', 255);
 			$table->timestamps();
 		});
 
 		Schema::create('teamspeak_registration', function($table) {
-			$table->mediumInteger('id')->primary()->unsigned()->increments();
+			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unsigned()->index();
 			$table->bigInteger('registration_ip')->unique();
 			$table->bigInteger('last_ip')->nullable();

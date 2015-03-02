@@ -19,8 +19,8 @@ Should you need to manually configure TeamSpeak (either due to the link not work
 
 Connection Image
 Server Address: ts.vatsim-uk.co.uk
-Nickname: Neil Farrington
-One-Time Privilege Key: cG+K4H72NDzLSf3vDTZfADzPeRFPrm9DCcNtOjKi
+Nickname: {{ $_account->name_first . " " . $_account->name_last }}
+One-Time Privilege Key: {{ $_registration->privilege_key }}
 4: Fill in the details as shown above, then click "Connect"</pre>
 
 <h3>Manual</h3>
