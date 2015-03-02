@@ -23,7 +23,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public $incrementing = false;
     protected $dates = ['auth_extra_at', 'last_login', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
-    protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE];
+    protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE, 'last_login_ip' => '127.0.0.1'];
     protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     const STATUS_ACTIVE = 0; //b"00000";
@@ -478,7 +478,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $value = ucwords(strtolower($value));
         }
 
-        $this->attributes["name_first"] = utf8_encode($value);
+        $this->attributes["name_first"] = $value;
     }
 
     public function setNameLastAttribute($value) {
@@ -499,7 +499,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $value = ucwords(strtolower($value));
         }
 
-        $this->attributes["name_last"] = utf8_encode($value);
+        $this->attributes["name_last"] = $value;
     }
 
     public function getNameAttribute() {

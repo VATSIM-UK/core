@@ -161,15 +161,14 @@ class MembersCertUpdate extends aCommand {
                 }
             }
 
-            $_m->cert_checked_at = \Carbon\Carbon::now()->toDateTimeString();
+            $_m->cert_checked_at = Carbon::now()->toDateTimeString();
             $_m->save();
             $_m = $_m->find($_m->account_id);
 
             // Let's work out the user status.
-            $oldStatus = $_m->status_string;
+            $oldStatus = $_m->status;
             $_m->setCertStatus($_xmlData->rating);
-
-            if ($oldStatus != $_m->status_string) {
+            if ($oldStatus != $_m->status) {
                 $this->outputTableRow("status", $oldStatus, $_m->status_string);
             }
 
@@ -205,6 +204,11 @@ class MembersCertUpdate extends aCommand {
                         $this->outputTableRow("atc_rating", "Previous", $prevAtcRating->code);
                     }
                 }
+            } else {
+                // remove any extra ratings
+                foreach (($q = $_m->qualifications_atc_training) as $qual) $qual->delete(); 
+                foreach (($q = $_m->qualifications_pilot_training) as $qual) $qual->delete(); 
+                foreach (($q = $_m->qualifications_admin) as $qual) $qual->delete();
             }
 
             $pilotRatings = QualificationData::parseVatsimPilotQualifications($_xmlData->pilotrating);

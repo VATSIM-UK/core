@@ -2,3 +2,4 @@
 !.env.sample.php
 nbproject*
 vendor/*
+.idea*
