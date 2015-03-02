@@ -40,7 +40,7 @@ Route::filter('auth.admin', function() {
         if(Request::ajax()){
             return Response::make("Unauthorised", 401);
         } else {
-            return Redirect::route("adm");
+            return Redirect::route("adm.authentication.login");
         }
     } else {
         if(!Auth::admin()->get()->hasPermission(Request::decodedPath())){
