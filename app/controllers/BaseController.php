@@ -17,18 +17,18 @@ class BaseController extends \Controller {
         if(Auth::user()->check()){
             $this->_account = Auth::user()->get();
             $this->_account->load("roles", "roles.permissions");
+            
+            // if last login recorded is older than 45 minutes, record the new timestamp
+            if ($this->_account->last_login < \Carbon\Carbon::now()->subMinutes(45)->toDateTimeString()) {
+                $this->_account->last_login = \Carbon\Carbon::now();
+                // if the ip has changed, record this too
+                if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
+                    $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                }
+                $this->_account->save();
+            }
         } else {
             $this->_account = new Account();
-        }
-
-        // if last login recorded is older than 45 minutes, record the new timestamp
-        if ($this->_account->last_login < \Carbon\Carbon::now()->subMinutes(45)->toDateTimeString()) {
-            $this->_account->last_login = \Carbon\Carbon::now();
-            // if the ip has changed, record this too
-            if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
-                $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
-            }
-            $this->_account->save();
         }
     }
 
