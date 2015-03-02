@@ -173,7 +173,7 @@ class CommunitySync extends aCommand {
             } else {
                 if ($debug) echo "\tNo changes required.";
             }
-            echo "\n";
+            if ($debug) echo "\n";
         }
 
         if ($debug) echo "Run Results:";
