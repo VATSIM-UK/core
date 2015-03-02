@@ -473,7 +473,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $value = ucwords(strtolower($value));
         }
 
-        $this->attributes["name_first"] = utf8_encode($value);
+        $this->attributes["name_first"] = $value;
     }
 
     public function setNameLastAttribute($value) {
@@ -494,7 +494,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
             $value = ucwords(strtolower($value));
         }
 
-        $this->attributes["name_last"] = utf8_encode($value);
+        $this->attributes["name_last"] = $value;
     }
 
     public function getNameAttribute() {
