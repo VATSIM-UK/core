@@ -47,7 +47,7 @@ class Authentication extends \Controllers\BaseController {
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [URL::route("mship.auth.verify")], function($key, $secret, $url) {
+                        [URL::route("mship.auth.verify"), "suspended" => true, "inactive" => true], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
