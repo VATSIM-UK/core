@@ -20,7 +20,7 @@ class Mailgun extends \Controllers\Webhook\Email\EmailWebhookController {
         $encHmac = hash_hmac("sha256", $ts_token, $_ENV['mailgun.secret']);
 
         if($encHmac != Input::get("signature")){
-            return Response::make("Not acceptable", 406);
+            return Response::make("Unauthorised", 406);
         }
         // END OF VERIFICATION
 
@@ -35,7 +35,7 @@ class Mailgun extends \Controllers\Webhook\Email\EmailWebhookController {
         $this->queueEntry = Queue::whereMessageId($this->messageId)->first();
 
         if(!$this->queueEntry OR !$this->queueEntry->exists){
-            return Response::make("Not acceptable", 406);
+            return Response::make("Accepted, but email doesn't exist.", 200);
         }
 
         // Now, let's deal with the message itself.
