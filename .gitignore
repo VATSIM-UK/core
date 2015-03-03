@@ -3,3 +3,4 @@
 nbproject*
 vendor/*
 .idea*
+/bootstrap/compiled.php
