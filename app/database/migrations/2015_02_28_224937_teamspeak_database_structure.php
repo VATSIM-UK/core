@@ -40,7 +40,7 @@ class TeamspeakDatabaseStructure extends Migration {
 		});
 
 		Schema::create('teamspeak_confirmation', function($table) {
-			$table->integer('registration_id')->unsigned();
+			$table->integer('registration_id')->primary()->unsigned();
 			$table->string('privilege_key', 50);
 			$table->string('confirmation_string', 50)->nullable();
 			$table->timestamps();
