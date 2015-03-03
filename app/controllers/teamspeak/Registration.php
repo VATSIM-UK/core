@@ -12,6 +12,11 @@ use \Models\Teamspeak\Confirmation as ConfirmationModel;
 
 class Registration extends \Controllers\BaseController {
 
+    public function postNew() {
+        $this->_account->new_registration->delete();
+        return Redirect::route('teamspeak.new');
+    }
+
     public function getNew() {
 		if (count($this->_account->teamspeak_registrations) >= 3) return Redirect::route("mship.manage.dashboard");
 		

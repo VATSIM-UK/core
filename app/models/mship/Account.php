@@ -562,7 +562,9 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 	
 	public function getNewRegistrationAttribute() {
-		return $this->teamspeakRegistrations->where('status', '=', 'new')->first();
+		return $this->teamspeak_registrations->filter(function($reg) {
+            return $reg->status == "new";
+        })->first();
 	}
 
 }
