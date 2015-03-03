@@ -53,6 +53,11 @@ class Account extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.account.index");
         }
 
+        // Do they have permission to view their own profile?
+        if(!$this->_account->hasPermission("adm/mship/account/own")){
+            return Redirect::route("adm.mship.account.index")->withError("You cannot view or manage your own profile.");
+        }
+
         // Lazy eager loading
         $account->load(
                 "notes", "notes.type", "notes.writer",
@@ -254,6 +259,7 @@ class Account extends \Controllers\Adm\AdmController {
 
         // Let's do the login!
         Auth::admin()->impersonate("user", $account->account_id);
+        Session::set("auth_override", true);
 
         return Redirect::to(URL::route("mship.manage.dashboard"))->withSuccess("You are now impersonating this user - your reason has been logged. Be good!");
     }

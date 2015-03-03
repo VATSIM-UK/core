@@ -13,7 +13,7 @@
             @if(View::exists('adm.sys.timeline_entries.'.$entry->action->type))
                 @include('adm.sys.timeline_entries.'.$entry->action->type, array('entry' => $entry))
             @else
-                No view defined for {{ $entry->action->type }}. Probably should let web support know.
+                No view defined for {{ $entry->action ? $entry->action->type : "UNKNOWN ACTION" }}. Probably should let web support know.
             @endif
         </li>
     @endforeach

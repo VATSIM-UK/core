@@ -40,19 +40,19 @@ class Authentication extends \Controllers\Adm\AdmController {
 
     public function getVerify() {
         if (!Session::has('vatsimauth')) {
-            throw new Exception('Session does not exist');
+            throw new \Exception('Session does not exist');
         }
 
         $session = Session::get('vatsimauth');
 
         if (Input::get('oauth_token') !== $session['key']) {
             //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-            throw new Exception('Returned token does not match');
+            throw new \Exception('Returned token does not match');
         }
 
         if (!Input::has('oauth_verifier')) {
             //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-            throw new Exception('No verification code provided');
+            throw new \Exception('No verification code provided');
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function($user, $request) {
@@ -72,7 +72,7 @@ class Authentication extends \Controllers\Adm\AdmController {
                     return Redirect::route("adm.dashboard");
                 }, function($error) {
                     //Entry::log("EXCEPTION", 0, array("error" => $error['message'], "file" => __FILE__, "method" => "getVerify"));
-                    throw new Exception($error['message']);
+                    throw new \Exception($error['message']);
                 }
         );
     }

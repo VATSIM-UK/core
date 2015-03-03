@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpgradeV20V201 extends Migration {
+class UpgradeV2005V206 extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class UpgradeV20V201 extends Migration {
      */
     public function up() {
         DB::table("mship_permission")->insert(array(
-            ["name" => "adm/mship/role/default", "display_name" => "Admin / Membership / Roles / Set Default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/own", "display_name" => "Admin / Membership / Account / View & Manage Own", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
         ));
     }
 
@@ -23,7 +23,7 @@ class UpgradeV20V201 extends Migration {
      */
     public function down() {
         DB::table("mship_permission")
-          ->where("name", "=", "adm/mship/role/default")
+          ->where("name", "=", "adm/mship/account/own")
           ->delete();
     }
 }
