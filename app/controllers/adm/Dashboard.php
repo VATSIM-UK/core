@@ -22,7 +22,9 @@ class Dashboard extends \Controllers\Adm\AdmController {
             $statistics['members_active'] = (\Models\Mship\Account::where("status", "=", 0)->count());
             $statistics['members_division'] = (\Models\Mship\Account\State::where("state", "=", \Enums\Account\State::DIVISION)->count());
             $statistics['members_nondivision'] = (\Models\Mship\Account\State::where("state", "!=", \Enums\Account\State::DIVISION)->count());
-            $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subDays(7)->toDateTimeString())->count());
+            $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
+                ->subDay()->toDateTimeString())->where('last_login', '>=', \Carbon\Carbon::now()
+                ->subMonths(3)->toDateTimeString())->count());
             $statistics['members_qualifications'] = (\Models\Mship\Account\Qualification::count());
             return $statistics;
         });
