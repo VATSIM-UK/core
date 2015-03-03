@@ -23,7 +23,7 @@ To successfully register, your current IP address must be identical to the one y
         <li>Click the "More" tab so that you are presented with a screen similar to the image below</li>
 
         <ul class='list-unstyled' style="margin-left: 20px">
-            <li><br>{{ HTML::image('assets/images/ts_connect.png', 'Connection Screenshot') }}</li>
+            <li><br>{{ HTML::image('assets/images/ts_connect.png', 'Connection Screenshot', ['style' => 'box-shadow: 10px 10px 35px #777']) }}</li>
             <li><br>Server Address: ts.vatsim-uk.co.uk</li>
             <li>Nickname: {{ $_account->name_first . " " . $_account->name_last }}</li>
             <li>One-Time Privilege Key: {{ $_confirmation->privilege_key }}</li>
@@ -36,9 +36,19 @@ To successfully register, your current IP address must be identical to the one y
 </div>
 
 <h3>Register Manually</h3>
-<p>Alternatively, please enter your UUID in the box below:</p>
+<p>Alternatively, please enter your TeamSpeak unique ID in the box below. Your unique ID can be found within TeamSpeak, by clicking 'Settings' -> 'Identities':</p>
 
-
+{{ Form::open(array('route' => 'teamspeak.manual', $_registration->id), 'POST') }}
+    <div class='row'>
+        <div class="col-md-4">
+            <div class="form-group">
+            {{ Form::label('uid', 'TeamSpeak Unique ID:') }}
+            {{ Form::text('uid', '', ['class' => 'form-control']) }}
+            </div>
+        {{ Form::submit('Submit Registration', ['class' => 'btn btn-primary']) }}
+        </div>
+    </div>
+{{ Form::close() }}
 
 
 @stop
