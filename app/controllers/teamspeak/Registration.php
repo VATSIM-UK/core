@@ -17,28 +17,20 @@ class Registration extends \Controllers\BaseController {
 		
         // find or obtain registration
         // to do - check if confirmation exists for registration
-		if (!$this->_account->new_registration) {
-            $_registration = new RegistrationModel();
-			$_registration->account_id = $this->_account->account_id;
-            $_registration->registration_ip = $this->_account->last_login_ip;
-            $_registration->save();
+		if (!$this->_account->new_registration)
+            $_registration = $this->createRegistration($this->_account->account_id, $this->_account->last_login_ip);
+        else
+            $_registration = $this->_account->new_registration;
 
-            $_confirmation = new ConfirmationModel();
-            $_confirmation->registration_id = $_registration->id;
-            $_confirmation->confirmation_string = md5(ip2long($_registration->registration_ip) 
-                                                                                        + $_registration->created_at->timestamp);
-            $_confirmation->save();
-		} else {
-			$_registration = $this->_account->new_registration;
-		}
+        if (!$_registration->confirmation)
+            $_confirmation = $this->createConfirmation($_registration->id, 'placeholder', md5($_registration->created_at->timestamp));
+		else
+            $_confirmation = $_registration->confirmation;
 
-        // obtain the registration confirmation
-
-
-		
         $this->_pageTitle = "New Registration";
         $view = $this->viewMake("teamspeak.new");
 		$view->_registration = $_registration;
+        $view->_confirmation = $_confirmation;
 		return $view;
     }
 
@@ -49,5 +41,23 @@ class Registration extends \Controllers\BaseController {
 
     public function postDelete($uuid) {
 
+    }
+
+    public function createRegistration($accountID, $registrationIP) {
+        $_registration = new RegistrationModel();
+        $_registration->account_id = $accountID;
+        $_registration->registration_ip = $registrationIP;
+        $_registration->status = "new";
+        $_registration->save();
+        return $_registration;
+    }
+
+    public function createConfirmation($registrationID, $privilegeKey, $confirmationString) {
+        $_confirmation = new ConfirmationModel();
+        $_confirmation->registration_id = $registrationID;
+        $_confirmation->privilege_key = $privilegeKey;
+        $_confirmation->confirmation_string = $confirmationString;
+        $_confirmation->save();
+        return $_confirmation;
     }
 }

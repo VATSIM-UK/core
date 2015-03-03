@@ -57,7 +57,7 @@ class TeamspeakDatabaseStructure extends Migration {
 		Schema::create('teamspeak_registration', function($table) {
 			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unsigned()->index();
-			$table->bigInteger('registration_ip')->unique();
+			$table->bigInteger('registration_ip');
 			$table->bigInteger('last_ip')->nullable();
 			$table->timestamp('last_login')->nullable();
 			$table->string('last_os', 15)->nullable();

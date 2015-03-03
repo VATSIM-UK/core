@@ -13,11 +13,15 @@ class Registration extends \Models\aModel {
 	protected $fillable = ['*'];
     protected $attributes = ['registration_ip' => '127.0.0.1'];
 
+    public function confirmation() {
+        return $this->hasOne("\Models\Teamspeak\Confirmation", "registration_id", "id");
+    }
+
     public function setRegistrationIpAttribute($value) {
         $this->attributes['registration_ip'] = ip2long($value);
     }
 
-    public function getRegistrationIpAttribute($value) {
+    public function getRegistrationIpAttribute() {
         return long2ip($this->attributes['registration_ip']);
     }
 

@@ -199,32 +199,19 @@
         <th class='hidden-xs hidden-sm'>TeamSpeak Registrations</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations</strong></span>
-            <!-- loop for teamspeak registrations will go here -->
-            [ New Registration ]<br /><br />
+            @if (count($_account->teamspeak_registrations) < 3)
+            [ {{ link_to_route('teamspeak.new', 'New Registration') }} ]<br /><br />
+            @endif
+            @foreach ($_account->teamspeak_registrations as $tsreg)
             <div style="float: left; padding-right: 15px;">
-                Created: 1970-01-01 00:00:01<br />
-                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
-                Last IP: 127.0.0.1<br />
-                Last login: 1970-01-01 00:00:01<br />
-                Operating System: Mac OSX<br />
-                [ Remove Registration ]<br />&nbsp;
+                Created: {{ $tsreg->created_at }}<br />
+                UUID: {{ $tsreg->uuid }}<br />
+                Last IP: {{ $tsreg->last_ip }}<br />
+                Last login: {{ $tsreg->last_login }}<br />
+                Operating System: {{ $tsreg->last_os }}<br />
+                [ {{ link_to_route("teamspeak.delete", "Remove Registration", [$tsreg->id]) }} ]<br />&nbsp;
             </div>
-            <div style="float: left; padding-right: 15px;">
-                Created: 1970-01-01 00:00:01<br />
-                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
-                Last IP: 127.0.0.1<br />
-                Last login: 1970-01-01 00:00:01<br />
-                Operating System: Mac OSX<br />
-                [ Remove Registration ]<br />&nbsp;
-            </div>
-            <div style="float: left; padding-right: 15px;">
-                Created: 1970-01-01 00:00:01<br />
-                UUID: uU3xRICKhNq/ZZwwy0RNw8pl3GU=<br />
-                Last IP: 127.0.0.1<br />
-                Last login: 1970-01-01 00:00:01<br />
-                Operating System: Mac OSX<br />
-                [ Remove Registration ]<br />&nbsp;
-            </div>
+            @endforeach
         </td>
     </tr>
     <tr>
