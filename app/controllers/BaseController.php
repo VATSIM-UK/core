@@ -17,6 +17,11 @@ class BaseController extends \Controller {
         if(Auth::user()->check()){
             $this->_account = Auth::user()->get();
             $this->_account->load("roles", "roles.permissions");
+
+            // Do we need to do some debugging on this user?
+            if($this->_account->debug){
+                \Debugbar::enable();
+            }
             
             // if last login recorded is older than 45 minutes, record the new timestamp
             if ($this->_account->last_login < \Carbon\Carbon::now()->subMinutes(45)->toDateTimeString()) {

@@ -13,4 +13,5 @@ return array(
      */
 
     'debug' => true,
+    'debug_inject' => true,
 );
