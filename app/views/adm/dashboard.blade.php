@@ -17,12 +17,13 @@
             <div class="icon">
                 <i class="ion ion-person-stalker"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("adm.mship.account.index", ["scope" => "all"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
     </div><!-- ./col -->
     <div class="col-lg-2 col-xs-5">
+
         <!-- small box -->
         <div class="small-box bg-red">
             <div class="inner">
@@ -36,7 +37,7 @@
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("adm.mship.account.index", ["scope" => "active"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -55,7 +56,7 @@
             <div class="icon">
                 <i class="ion ion-home"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("adm.mship.account.index", ["scope" => "division"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -74,7 +75,7 @@
             <div class="icon">
                 <i class="ion ion-earth"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("adm.mship.account.index", ["scope" => "nondivision"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -93,7 +94,7 @@
                 <i class="ion ion-loop"></i>
             </div>
             <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
+                &nbsp;
             </a>
         </div>
     </div><!-- ./col -->
@@ -112,7 +113,7 @@
                 <i class="ion ion-trophy"></i>
             </div>
             <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
+                &nbsp;
             </a>
         </div>
     </div><!-- ./col -->

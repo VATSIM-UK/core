@@ -20,7 +20,7 @@
             </div><!-- /.box-header -->
             <div class="box-body">
                 <div align="center">
-                    {{ $members->links() }}
+                    {{ $membersQuery->links() }}
                 </div>
                 <table id="mship-accounts" class="table table-bordered table-striped">
                     <thead>
@@ -91,7 +91,7 @@
                     </tbody>
                 </table>
                 <div align="center">
-                    {{ $members->links() }}
+                    {{ $membersQuery->links() }}
                 </div>
             </div><!-- /.box-body -->
         </div><!-- /.box -->
