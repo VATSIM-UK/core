@@ -2,9 +2,9 @@
 
 namespace Controllers\Adm;
 
-use Models\Mship\Account;
-use Models\Mship\Account\Email as AccountEmail;
-use Models\Statistic;
+use \Models\Mship\Account;
+use \Models\Statistic;
+use \Models\Mship\Account\Email as AccountEmail;
 use \Session;
 use \Response;
 use \Redirect;
