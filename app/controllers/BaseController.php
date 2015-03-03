@@ -2,27 +2,33 @@
 
 namespace Controllers;
 
-use \Auth;
-use \View;
-use \Session;
-use \Request;
-use \Models\Mship\Account;
+use Auth;
+use Models\Mship\Account;
+use Request;
+use Session;
+use View;
 
 class BaseController extends \Controller {
 
     protected $_account;
     protected $_pageTitle;
 
-    public function __construct(){
-        if(Auth::user()->check()){
-            $this->_account = Auth::user()->get();
+    public function __construct() {
+        if(Auth::user()
+               ->check()
+        ) {
+            $this->_account = Auth::user()
+                                  ->get();
             $this->_account->load("roles", "roles.permissions");
-            
+
             // if last login recorded is older than 45 minutes, record the new timestamp
-            if ($this->_account->last_login < \Carbon\Carbon::now()->subMinutes(45)->toDateTimeString()) {
+            if($this->_account->last_login < \Carbon\Carbon::now()
+                                                           ->subMinutes(45)
+                                                           ->toDateTimeString()
+            ) {
                 $this->_account->last_login = \Carbon\Carbon::now();
                 // if the ip has changed, record this too
-                if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
+                if($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
                     $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
                 }
                 $this->_account->save();
@@ -32,13 +38,12 @@ class BaseController extends \Controller {
         }
     }
 
-    /**
-     * Setup the layout used by the controller.
-     *
-     * @return void
-     */
+    public function setTitle($title) {
+        $this->_pageTitle = $title;
+    }
+
     protected function setupLayout() {
-        if (!is_null($this->layout)) {
+        if(!is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }
@@ -50,11 +55,11 @@ class BaseController extends \Controller {
         $view->with("_account", $this->_account);
 
         // Let's also display the breadcrumb
-        $breadcrumb = array();
+        $breadcrumb = [];
         $uri = "/adm/";
-        for($i=1; $i<=10; $i++){
-            if(Request::segment($i) != NULL){
-                $uri.= Request::segment($i);
+        for($i = 1; $i <= 10; $i++) {
+            if(Request::segment($i) != null) {
+                $uri .= Request::segment($i);
                 $b = [Request::segment($i)];
                 $b[1] = rtrim($uri, "/");
                 $breadcrumb[] = $b;
@@ -63,7 +68,7 @@ class BaseController extends \Controller {
         $view->with("_breadcrumb", $breadcrumb);
 
         // Page titles
-        if($this->_pageTitle == NULL){
+        if($this->_pageTitle == null) {
             $this->_pageTitle = last($breadcrumb)[0];
         }
         $view->with("_pageTitle", ucfirst($this->_pageTitle));

@@ -56,24 +56,24 @@ class Security extends \Controllers\BaseController {
         } elseif ($disable && !$currentSecurity) {
             $disable = false;
         } elseif($disable) {
-            $this->_pageTitle = "Disable";
+            $this->setTitle("Disable");
         }
 
         if (!$currentSecurity OR $currentSecurity == NULL) {
-            $this->_pageTitle = "Create";
+            $this->setTitle("Create");
             $slsType = 'requested';
         } else {
             if (strlen($currentSecurity->value) < 1) {
-                $this->_pageTitle = "Create";
+                $this->setTitle("Create");
                 $slsType = "forced";
             } elseif (!$currentSecurity->is_active) {
                 $slsType = "expired";
             } elseif(!$disable) {
                 $slsType = 'replace';
-                $this->_pageTitle = "Replace";
+                $this->setTitle("Replace");
             } else {
                 $slsType = 'disable';
-                $this->_pageTitle = "Disable";
+                $this->setTitle("Disable");
             }
         }
 

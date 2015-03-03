@@ -83,7 +83,7 @@ class Account extends \Controllers\Adm\AdmController {
         $noteTypes = NoteTypeData::usable()->orderBy("name", "ASC")->get();
         $noteTypesAll = NoteTypeData::withTrashed()->orderBy("name", "ASC")->get();
 
-        $this->_pageTitle = "Account Details: " . $account->name;
+        $this->setTitle("Account Details: " . $account->name);
 
         return $this->viewMake("adm.mship.account.detail")
                         ->with("selectedTab", $tab)
