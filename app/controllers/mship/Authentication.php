@@ -21,12 +21,12 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security) {
+        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security && !Session::has("auth_override")) {
             return Redirect::route("mship.security.auth");
         }
 
         // What about if there's secondary, but it's expired?
-        if(Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())){
+        if(!Session::has("auth_override") && Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())){
             $user = Auth::user()->get();
             $user->auth_extra = 0;
             $user->save();
@@ -47,7 +47,7 @@ class Authentication extends \Controllers\BaseController {
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [URL::route("mship.auth.verify")], function($key, $secret, $url) {
+                        [URL::route("mship.auth.verify"), "suspended" => true, "inactive" => true], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
