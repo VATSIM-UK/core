@@ -11,7 +11,7 @@ class UpgradeV2011V2012 extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table("mship_account_email", function($table){
+        Schema::table("mship_account", function($table){
             $table->boolean("debug")->default(false)->after("is_invisible");
         });
     }
@@ -22,7 +22,7 @@ class UpgradeV2011V2012 extends Migration {
      * @return void
      */
     public function down() {
-        Schema::table("mship_account_email", function($table){
+        Schema::table("mship_account", function($table){
             $table->dropColumn("debug");
         });
     }
