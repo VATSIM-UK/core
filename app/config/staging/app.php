@@ -13,6 +13,7 @@ return array(
      */
 
     'debug' => true,
+    'debug_inject' => false,
     /*
       |--------------------------------------------------------------------------
       | Application URL
