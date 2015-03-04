@@ -81,19 +81,19 @@ class MembersCertUpdate extends aCommand {
                 break;
             case "d":
                 // members who have logged in in the last 90 days and haven't been checked today
-                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subDay()->toDateTimeString())
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subHours(23)->toDateTimeString())
                                    ->where('last_login', '>=', Carbon::now()->subMonths(3)->toDateTimeString());
                 if ($debug) echo "Daily cron.\n";
                 break;
             case "w":
                 // members who have logged in in the last 180 days and haven't been checked this week
-                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subWeek()->toDateTimeString())
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subDays(6)->toDateTimeString())
                                    ->where('last_login', '>=', Carbon::now()->subMonths(6)->toDateTimeString());
                 if ($debug) echo "Weekly cron.\n";
                 break;
             case "m":
                 // members who have never logged in and haven't been checked this month, but are still active VATSIM members
-                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subMonth()->toDateTimeString())
+                $members = $members->where('cert_checked_at', '<=', Carbon::now()->subDays(25)->toDateTimeString())
                                    ->whereNull('last_login')
                                    ->where("status", "=", "0");
                 if ($debug) echo "Monthly cron.\n";
