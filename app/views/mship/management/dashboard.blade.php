@@ -206,7 +206,7 @@
             @foreach ($_account->teamspeak_registrations as $tsreg)
             <div style="float: left; padding-right: 15px;">
                 Created: {{ $tsreg->created_at }}<br />
-                UUID: {{ $tsreg->uuid }}<br />
+                Unique ID: {{ $tsreg->uid }}<br />
                 Last IP: {{ $tsreg->last_ip }}<br />
                 Last login: {{ $tsreg->last_login }}<br />
                 Operating System: {{ $tsreg->last_os }}<br />

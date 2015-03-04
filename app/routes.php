@@ -145,8 +145,6 @@ Route::group(array("namespace" => "Controllers"), function() {
     Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak"], function() {
         Route::model('tsreg', '\Models\Teamspeak\Registration');
         Route::get("/new", ["before" => "auth.user", "as" => "teamspeak.new", "uses" => "Registration@getNew"]);
-        Route::get("/new/reset", ["before" => "auth.user", "as" => "teamspeak.forcenew", "uses" => "Registration@getReset"]);
-        Route::post("/new/manual", ["before" => "auth.user", "as" => "teamspeak.manual", "uses" => "Registration@postManual"]);
         Route::get("/{tsreg}/delete", ["before" => "auth.user", "as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);
     });
 

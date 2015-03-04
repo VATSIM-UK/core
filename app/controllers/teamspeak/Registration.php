@@ -6,6 +6,7 @@ use \Redirect;
 use \Auth;
 use \Session;
 use \View;
+use \Input;
 use \Models\Mship\Account;
 use \Models\Teamspeak\Registration as RegistrationModel;
 use \Models\Teamspeak\Confirmation as ConfirmationModel;
@@ -23,7 +24,7 @@ class Registration extends \Controllers\BaseController {
             $_registration = $this->_account->new_registration->load('confirmation');
 
         if (!$_registration->confirmation)
-            $_confirmation = $this->createConfirmation($_registration->id, 'placeholder', md5($_registration->created_at->timestamp), $this->_account->account_id);
+            $_confirmation = $this->createConfirmation($_registration->id, md5($_registration->created_at->timestamp), $this->_account->account_id);
 		else
             $_confirmation = $_registration->confirmation;
 
@@ -51,11 +52,10 @@ class Registration extends \Controllers\BaseController {
     }
 
     // create a new confirmation model
-    protected function createConfirmation($registrationID, $privilegeKey, $confirmationString, $accountID) {
+    protected function createConfirmation($registrationID, $confirmationString, $accountID) {
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID: " . $accountID, 'testcustomset');
-        $_confirmation->confirmation_string = $confirmationString;
+        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID: " . $accountID, 'ident=registration_id\svalue=' . $registrationID);
         $_confirmation->save();
         return $_confirmation;
     }

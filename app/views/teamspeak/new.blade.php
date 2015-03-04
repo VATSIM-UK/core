@@ -27,22 +27,7 @@ To successfully register, your current IP address must be identical to the one y
         <li>&nbsp;</li>
     </ul>
 
-    <li>Fill in the details as shown above, then click "Connect" and await further instructions.</li>
+    <li>Fill in the details as shown above, then click "Connect" and wait for your registration to be automatically completed.</li>
 </ol>
-
-<h3>Register Manually</h3>
-<p>Alternatively, please enter your TeamSpeak unique ID in the box below. Your unique ID can be found within TeamSpeak, by clicking 'Settings' -> 'Identities'.</p>
-
-{{ Form::open(array('route' => 'teamspeak.manual', $_registration->id), 'POST') }}
-    <div class='row'>
-        <div class="col-md-4">
-            <div class="form-group">
-            {{ Form::label('uid', 'TeamSpeak Unique ID:') }}
-            {{ Form::text('uid', '', ['class' => 'form-control']) }}
-            </div>
-        {{ Form::submit('Submit Registration', ['class' => 'btn btn-primary']) }}
-        </div>
-    </div>
-{{ Form::close() }}
 
 @stop
