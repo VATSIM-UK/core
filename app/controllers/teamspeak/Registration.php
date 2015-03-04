@@ -9,26 +9,21 @@ use \View;
 use \Models\Mship\Account;
 use \Models\Teamspeak\Registration as RegistrationModel;
 use \Models\Teamspeak\Confirmation as ConfirmationModel;
+use \Controllers\Teamspeak\TeamspeakAdapter;
 
 class Registration extends \Controllers\BaseController {
 
-    public function postNew() {
-        $this->_account->new_registration->delete();
-        return Redirect::route('teamspeak.new');
-    }
-
+    // create new registration process
     public function getNew() {
 		if (count($this->_account->teamspeak_registrations) >= 3) return Redirect::route("mship.manage.dashboard");
 		
-        // find or obtain registration
-        // to do - check if confirmation exists for registration
 		if (!$this->_account->new_registration)
             $_registration = $this->createRegistration($this->_account->account_id, $this->_account->last_login_ip);
         else
-            $_registration = $this->_account->new_registration;
+            $_registration = $this->_account->new_registration->load('confirmation');
 
         if (!$_registration->confirmation)
-            $_confirmation = $this->createConfirmation($_registration->id, 'placeholder', md5($_registration->created_at->timestamp));
+            $_confirmation = $this->createConfirmation($_registration->id, 'placeholder', md5($_registration->created_at->timestamp), $this->_account->account_id);
 		else
             $_confirmation = $_registration->confirmation;
 
@@ -39,16 +34,14 @@ class Registration extends \Controllers\BaseController {
 		return $view;
     }
 
-    public function postCreate($uuid) {
-		if (count($this->_account->registrations) >= 3) return Redirect::route("mship.manage.dashboard");
-		$_registration = new Registration($this->_account->account_id);
+    // delete registration (if owned)
+    public function getDelete($registration) {
+        if ($this->_account->account_id == $registration->account_id) $registration->delete();
+        return Redirect::back();
     }
 
-    public function postDelete($uuid) {
-
-    }
-
-    public function createRegistration($accountID, $registrationIP) {
+    // create a new registration model
+    protected function createRegistration($accountID, $registrationIP) {
         $_registration = new RegistrationModel();
         $_registration->account_id = $accountID;
         $_registration->registration_ip = $registrationIP;
@@ -57,10 +50,11 @@ class Registration extends \Controllers\BaseController {
         return $_registration;
     }
 
-    public function createConfirmation($registrationID, $privilegeKey, $confirmationString) {
+    // create a new confirmation model
+    protected function createConfirmation($registrationID, $privilegeKey, $confirmationString, $accountID) {
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = $privilegeKey;
+        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID: " . $accountID, 'testcustomset');
         $_confirmation->confirmation_string = $confirmationString;
         $_confirmation->save();
         return $_confirmation;

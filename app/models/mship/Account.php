@@ -567,4 +567,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         })->first();
 	}
 
+    public function getConfirmedRegistrationsAttribute() {
+        return $this->teamspeak_registrations->filter(function($reg) {
+            return $reg->status != "new";
+        });
+    }
+
 }

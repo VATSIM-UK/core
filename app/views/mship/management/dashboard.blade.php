@@ -202,6 +202,7 @@
             @if (count($_account->teamspeak_registrations) < 3)
             [ {{ link_to_route('teamspeak.new', 'New Registration') }} ]<br /><br />
             @endif
+            <!--foreach ($_account->confirmed_registrations as $tsreg)-->
             @foreach ($_account->teamspeak_registrations as $tsreg)
             <div style="float: left; padding-right: 15px;">
                 Created: {{ $tsreg->created_at }}<br />

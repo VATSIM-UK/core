@@ -62,7 +62,7 @@ class TeamspeakDatabaseStructure extends Migration {
 			$table->timestamp('last_login')->nullable();
 			$table->string('last_os', 15)->nullable();
 			$table->timestamp('last_bot_pm')->nullable();
-			$table->string('uuid', 50)->nullable();
+			$table->string('uid', 50)->nullable();
 			$table->smallInteger('database_id')->unsigned()->nullable();
 			$table->enum('status', ['new', 'detected', 'active', 'deleted']);
 			$table->timestamps();

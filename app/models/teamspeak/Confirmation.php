@@ -6,10 +6,8 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 class Confirmation extends \Models\aModel {
 
-    //use SoftDeletingTrait;
-
     protected $table = 'teamspeak_confirmation';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'registration_id';
 	protected $fillable = ['*'];
 
     public function registration() {

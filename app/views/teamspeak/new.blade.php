@@ -2,9 +2,9 @@
 
 @section('content')
 
-@if (array_get($_SERVER, 'REMOTE_ADDR') != $_registration->registration_ip)
+@if (array_get($_SERVER, 'REMOTE_ADDR') != $_registration->registration_ip || TRUE)
 <div class="alert alert-danger" role="alert"><strong>Warning!</strong> Your current IP address ({{ array_get($_SERVER, 'REMOTE_ADDR') }}) is different to the IP address you used to create this registration ({{ $_registration->registration_ip }}).<br>
-To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.forcenew', 'Click here', [], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
+To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
 @endif
 
 <h3>Register via TeamSpeak (Automatic)</h3>
@@ -13,30 +13,25 @@ To successfully register, your current IP address must be identical to the one y
 
 <h3><small>If the above button does not work for you, please follow the instructions below:</small></h3>
 <h3>Register via TeamSpeak (Manual)</h3>
-<!--h4><span style="cursor: pointer; text-decoration: none" onclick="document.getElementById('manual-connection').style.display='block'">Click here to show TeamSpeak connection instructions.</a></h4-->
 
-<div id="manual-connection" class="not-a-well" style="display: block">
+<ol style="margin-left: 40px">
+    <li>Open Teamspeak 3</li>
+    <li>Click "Connections" > "Connect"</li>
+    <li>Click the "More" tab so that you are presented with a screen similar to the image below</li>
 
-    <ol style="margin-left: 40px">
-        <li>Open Teamspeak 3</li>
-        <li>Click "Connections" > "Connect"</li>
-        <li>Click the "More" tab so that you are presented with a screen similar to the image below</li>
+    <ul class='list-unstyled' style="margin-left: 20px">
+        <li><br>{{ HTML::image('assets/images/ts_connect.png', 'Connection Screenshot', ['style' => 'box-shadow: 10px 10px 35px #777']) }}</li>
+        <li><br>Server Address: ts.vatsim-uk.co.uk</li>
+        <li>Nickname: {{ $_account->name_first . " " . $_account->name_last }}</li>
+        <li>One-Time Privilege Key: {{ $_confirmation->privilege_key }}</li>
+        <li>&nbsp;</li>
+    </ul>
 
-        <ul class='list-unstyled' style="margin-left: 20px">
-            <li><br>{{ HTML::image('assets/images/ts_connect.png', 'Connection Screenshot', ['style' => 'box-shadow: 10px 10px 35px #777']) }}</li>
-            <li><br>Server Address: ts.vatsim-uk.co.uk</li>
-            <li>Nickname: {{ $_account->name_first . " " . $_account->name_last }}</li>
-            <li>One-Time Privilege Key: {{ $_confirmation->privilege_key }}</li>
-            <li>&nbsp;</li>
-        </ul>
-
-        <li>Fill in the details as shown above, then click "Connect"</li>
-    </ol>
-
-</div>
+    <li>Fill in the details as shown above, then click "Connect" and await further instructions.</li>
+</ol>
 
 <h3>Register Manually</h3>
-<p>Alternatively, please enter your TeamSpeak unique ID in the box below. Your unique ID can be found within TeamSpeak, by clicking 'Settings' -> 'Identities':</p>
+<p>Alternatively, please enter your TeamSpeak unique ID in the box below. Your unique ID can be found within TeamSpeak, by clicking 'Settings' -> 'Identities'.</p>
 
 {{ Form::open(array('route' => 'teamspeak.manual', $_registration->id), 'POST') }}
     <div class='row'>
@@ -49,6 +44,5 @@ To successfully register, your current IP address must be identical to the one y
         </div>
     </div>
 {{ Form::close() }}
-
 
 @stop

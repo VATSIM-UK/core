@@ -3,6 +3,7 @@
 namespace Models\Teamspeak;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Controllers\Teamspeak\TeamspeakAdapter;
 
 class Registration extends \Models\aModel {
 
@@ -12,6 +13,12 @@ class Registration extends \Models\aModel {
     protected $primaryKey = 'id';
 	protected $fillable = ['*'];
     protected $attributes = ['registration_ip' => '127.0.0.1'];
+
+    public function delete() {
+        TeamspeakAdapter::run()->privilegeKeyDelete($this->confirmation->privilege_key);
+        $this->confirmation->delete();
+        parent::delete();
+    }
 
     public function confirmation() {
         return $this->hasOne("\Models\Teamspeak\Confirmation", "registration_id", "id");
