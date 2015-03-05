@@ -35,6 +35,7 @@ class TeamspeakDatabaseStructure extends Migration {
 			$table->integer('account_id')->unsigned()->index();
 			$table->mediumInteger('duration')->unsigned();
 			$table->string('reason', 255);
+			$table->integer('authorizd_by')->unsigned();
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -63,7 +64,7 @@ class TeamspeakDatabaseStructure extends Migration {
 			$table->timestamp('last_bot_pm')->nullable();
 			$table->string('uid', 50)->nullable();
 			$table->smallInteger('database_id')->unsigned()->nullable();
-			$table->enum('status', ['new', 'detected', 'active', 'deleted']);
+			$table->enum('status', ['new', 'active', 'deleted']);
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -76,6 +77,7 @@ class TeamspeakDatabaseStructure extends Migration {
 
 		Schema::table('teamspeak_ban', function($table) {
 			$table->foreign('account_id')->references('account_id')->on('mship_account');
+			$table->foreign('account_id')->references('authorized_by')->on('mship_account');
 		});
 
 		Schema::table('teamspeak_confirmation', function($table) {

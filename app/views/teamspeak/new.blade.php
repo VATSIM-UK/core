@@ -7,6 +7,8 @@
 To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
 @endif
 
+<!-- Add warning for used privilege key -->
+
 <h3>Register via TeamSpeak (Automatic)</h3>
 <p>Please click the button below to connect to TeamSpeak. If you have problems with this link, follow the 'Manual' instructions further down the page. You will receive a Private Message shortly after you enter TeamSpeak with further instructions.</p>
 <a class="btn btn-primary" href="ts3server://ts.vatsim-uk.co.uk?nickname={{ $_account->name_first . "%20" . $_account->name_last }}">Connect to TeamSpeak</a>

@@ -24,6 +24,10 @@ class Registration extends \Models\aModel {
         return $this->hasOne("\Models\Teamspeak\Confirmation", "registration_id", "id");
     }
 
+    public function account() {
+        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+    }
+
     public function setRegistrationIpAttribute($value) {
         $this->attributes['registration_ip'] = ip2long($value);
     }

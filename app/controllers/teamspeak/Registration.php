@@ -55,7 +55,7 @@ class Registration extends \Controllers\BaseController {
     protected function createConfirmation($registrationID, $confirmationString, $accountID) {
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID: " . $accountID, 'ident=registration_id\svalue=' . $registrationID);
+        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID:" . $accountID . " RegID:" . $registrationID, "ident=registration_id value=" . $registrationID);
         $_confirmation->save();
         return $_confirmation;
     }

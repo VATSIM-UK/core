@@ -95,10 +95,6 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function noteWriter() {
         return $this->hasMany("\Models\Mship\Account\Note", "writer_id", "account_id");
     }
-	
-	public function teamspeakRegistrations() {
-		return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
-	}
 
     public function tokens() {
         return $this->morphMany("\Models\Sys\Token", "related");
@@ -122,6 +118,14 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function security() {
         return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
+    }
+
+    public function teamspeakBans() {
+        return $this->hasMany("\Models\Teamspeak\Ban", "account_id", "account_id");
+    }
+
+    public function teamspeakRegistrations() {
+        return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
     }
 
     public function getQualificationAtcAttribute() {
@@ -369,6 +373,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function getIsBannedAttribute() {
         return $this->is_system_banned OR $this->is_network_banned;
+    }
+
+    public function getIsTeamspeakBannedAttribute() {
+        return (boolean) ($this->teamspeak_bans->first());
     }
 
     public function getIsInactiveAttribute() {
