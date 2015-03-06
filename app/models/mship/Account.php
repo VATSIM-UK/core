@@ -376,7 +376,16 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function getIsTeamspeakBannedAttribute() {
-        return (boolean) ($this->teamspeak_bans->first());
+        //if ($this->teamspeak_bans->first()) {
+        $greatest = Carbon::createFromTimeStampUTC(0);
+            foreach ($this->teamspeak_bans as $ban) {
+                if ($greatest->lt($ban->expires_at)) {
+                    $greatest = $ban->expires_at;
+                }
+            }
+        if ($greatest->gt(Carbon::now())) return $greatest->diffInSeconds(Carbon::now());
+        else return FALSE;
+        //}
     }
 
     public function getIsInactiveAttribute() {

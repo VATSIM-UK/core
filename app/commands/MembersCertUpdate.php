@@ -44,16 +44,6 @@ class MembersCertUpdate extends aCommand {
      * @return mixed
      */
     public function fire() {
-    foreach(get_declared_classes() as $name)
-        echo $name . "\n";
-exit();
-
-
-
-
-
-
-
         global $debug;
 
         // if specified, turn debug mode on

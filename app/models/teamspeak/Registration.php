@@ -15,8 +15,10 @@ class Registration extends \Models\aModel {
     protected $attributes = ['registration_ip' => '127.0.0.1'];
 
     public function delete() {
-        TeamspeakAdapter::run()->privilegeKeyDelete($this->confirmation->privilege_key);
-        $this->confirmation->delete();
+        if ($this->confirmation) {
+            TeamspeakAdapter::run()->privilegeKeyDelete($this->confirmation->privilege_key);
+            $this->confirmation->delete();
+        }
         parent::delete();
     }
 

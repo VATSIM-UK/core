@@ -3,12 +3,10 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
+
 use Controllers\Teamspeak\TeamspeakAdapter;
+use Models\Mship\Account;
+use Models\Mship\Qualification;
 use Models\Teamspeak\Registration;
 use Models\Teamspeak\Ban;
 
@@ -65,25 +63,51 @@ class TeamspeakManager extends aCommand {
          *     Report online statistics
          * Database maintenance:
          *     Remove old privilege keys from SQL and TS
+         *
+         * Remember:
+         *      Check if regid on the client matches the account, verify name/ip etc.
+         *      When a registration is removed, check for existing dbid on the server
+         *      Add logging
          */
+try {
+        $channels_protected = [];
+        $channels_semi_protected = [];
 
         $tscon = TeamSpeakAdapter::run();
 
+        $qualifications = Qualification::all();
+        $server_groups = $tscon->serverGroupList();
+        $server_group_ids = array();
+        $server_group_map = array();
+
+        foreach ($qualifications as $qual) {
+            foreach ($server_groups as $group) {
+                if (preg_match('/'.$qual->code.'/', $group['name'])) {
+                    $server_group_map[$qual->code] = $group;
+                    $server_group_ids[$qual->code] = $group->getId();
+                }
+            }
+        }
+
+        var_dump($server_group_ids);
+
         // get all clients and initiate loop
         $clients = $tscon->clientList();
-
         foreach ($clients as $client) {
 
             try {
                 $client_custominfo = $client->customInfo();
             } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                 echo "Caught . " . $e->getMessage();
+                $client_custominfo = array();
             }
 
             foreach ($client_custominfo as $custominfo) {
-                if ($custominfo['ident'] != "registration_id") continue;
+                if ($custominfo['ident'] != "registration_id")
+                    continue;
+
                 $new_client = Registration::where('id', '=', $custominfo['value'])
-                                ->where('status', '=', 'new')->first();
+                                          ->where('status', '=', 'new')->first();
                 break;
             }
 
@@ -101,19 +125,58 @@ class TeamspeakManager extends aCommand {
                 $client_account = $client_registration->account;
 
                 if ($client_account->is_banned) {
-                    // remove registration
-                    // kick
-                    // remove from database
+                    try {
+                        $client->kick(TeamSpeak3::KICK_SERVER, "You are currently serving a VATSIM ban.");
+                        $client->deleteDb();
+                        $client_registration->delete();
+                    } catch (Exception $e) {
+                        if ($debug) echo "Error: " . $e->getMessage();
+                    }
                 } elseif ($client_account->is_teamspeak_banned) {
-                    // ban
-                    // log
+                    try {
+                        $client->ban($client_account->is_teamspeak_banned, "You are currently serving a TeamSpeak ban.");
+                    } catch (Exception $e) {
+                        if ($debug) echo "Error: " . $e->getMessage();
+                    }
                 }
 
+                if (!in_array($client['client_channel_group_id'], $channels_protected)) {
+
+                    $atc_rating = $client_account->qualification_atc->qualification->code;
+                    $pilot_ratings = array();
+                    foreach ($client_account->qualifications_pilot as $qualification) {
+                        $pilot_ratings[] = $qualification->qualification->code;
+                    }
+                    $client_server_groups = explode(",", $client["client_servergroups"]);
+
+                    // add missing groups
+                    if (!($index = array_search($server_group_ids[$atc_rating], $client_server_groups))) {
+                        $server_group_map[$atc_rating]->clientAdd($client['client_database_id']);
+                    } else {
+                        unset($client_server_groups[$index]);
+                    }
+
+                    foreach ($pilot_ratings as $pilot_rating) {
+                        if (!($index = array_search($server_group_ids[$pilot_rating], $client_server_groups))) {
+                            $server_group_map[$pilot_rating]->clientAdd($client['client_database_id']);
+                        } else {
+                            unset($client_server_groups[$index]);
+                        }
+                    }
+
+                    // check any remaining groups they have
+                    foreach ($client_server_groups as $group) {
+                        if ($index = array_search($group, $server_group_ids)) {
+                            $server_group_map[$index]->clientDel($client['client_database_id']);
+                        }
+                    }
+                }
+
+
+
+
+
             }
-
-            // if they're not a protected client
-
-                // update user credentials
 
                 // enforce
 
@@ -124,6 +187,8 @@ class TeamspeakManager extends aCommand {
                 // poke -- registration not found, please re-register or contact support
                 // kick (No registration found.)
                 // delete from TS database
+                $client->kick(TeamSpeak3::KICK_SERVER, "No registration found.");
+                $client->deleteDb();
                 continue;
             }
         }
@@ -131,6 +196,12 @@ class TeamspeakManager extends aCommand {
         // record online statistics
 
         // check and process database
+
+} catch (Exception $e) {
+    echo $e->getTraceAsString();
+    echo "\nOccurred on line: " . $e->getLine() . "\n";
+    echo $e->getMessage() . "\n";
+}
     }
 
     /**

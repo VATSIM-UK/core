@@ -33,10 +33,10 @@ class TeamspeakDatabaseStructure extends Migration {
 		Schema::create('teamspeak_ban', function($table) {
 			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unsigned()->index();
-			$table->mediumInteger('duration')->unsigned();
 			$table->string('reason', 255);
 			$table->integer('authorizd_by')->unsigned();
 			$table->timestamps();
+			$table->timestamp('expires_at');
 			$table->softDeletes();
 		});
 
