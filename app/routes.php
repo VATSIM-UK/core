@@ -108,6 +108,8 @@ Route::group(array("namespace" => "Controllers"), function() {
         // Guest access
         Route::group(array("prefix" => "auth"), function(){
             Route::get("/redirect", ["as" => "mship.auth.redirect", "uses" => "Authentication@getRedirect"]);
+            Route::get("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@getLoginAlternative"]);
+            Route::post("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@postLoginAlternative"]);
             Route::get("/login", ["as" => "mship.auth.login", "uses" => "Authentication@getLogin"]);
             Route::get("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@getLogout"]);
             Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
