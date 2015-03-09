@@ -120,6 +120,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
+    public function teamspeakAliases() {
+        return $this->hasMany("\Models\Teamspeak\Alias", "account_id", "account_id");
+    }
+
     public function teamspeakBans() {
         return $this->hasMany("\Models\Teamspeak\Ban", "account_id", "account_id");
     }
@@ -588,6 +592,15 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->teamspeak_registrations->filter(function($reg) {
             return $reg->status != "new";
         });
+    }
+
+    public function isValidTeamspeakAlias($tAlias) {
+        foreach ($this->teamspeak_aliases as $rAlias) {
+            if ($rAlias->display_name == $tAlias) return TRUE;
+        }
+
+        return FALSE;
+        
     }
 
 }

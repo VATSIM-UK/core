@@ -49,8 +49,8 @@ class TeamspeakDatabaseStructure extends Migration {
 		Schema::create('teamspeak_log', function($table) {
 			$table->increments('id')->unsigned();
 			$table->integer('registration_id')->unsigned()->nullable();
-			$table->string('type', 20); // switch to enum?
-			$table->string('message', 255);
+			$table->enum('type', ['idle_message', 'idle_poke', 'idle_kick']); // switch to enum?
+			//$table->string('message', 255);
 			$table->timestamps();
 		});
 
