@@ -2,9 +2,9 @@
 
 namespace Controllers\Adm;
 
-use Models\Mship\Account;
-use Models\Mship\Account\Email as AccountEmail;
-use Models\Statistic;
+use \Models\Mship\Account;
+use \Models\Statistic;
+use \Models\Mship\Account\Email as AccountEmail;
 use \Session;
 use \Response;
 use \Redirect;
@@ -22,7 +22,9 @@ class Dashboard extends \Controllers\Adm\AdmController {
             $statistics['members_active'] = (\Models\Mship\Account::where("status", "=", 0)->count());
             $statistics['members_division'] = (\Models\Mship\Account\State::where("state", "=", \Enums\Account\State::DIVISION)->count());
             $statistics['members_nondivision'] = (\Models\Mship\Account\State::where("state", "!=", \Enums\Account\State::DIVISION)->count());
-            $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()->subHours(24)->toDateTimeString())->count());
+            $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
+                ->subDay()->toDateTimeString())->where('last_login', '>=', \Carbon\Carbon::now()
+                ->subMonths(3)->toDateTimeString())->count());
             $statistics['members_qualifications'] = (\Models\Mship\Account\Qualification::count());
             return $statistics;
         });
@@ -73,7 +75,7 @@ class Dashboard extends \Controllers\Adm\AdmController {
                 ->limit(25)
                 ->get();
 
-        $this->_pageTitle = "Global Search Results: " . $searchQuery;
+        $this->setTitle("Global Search Results: " . $searchQuery);
         return $this->viewMake("adm.search")
                         ->with("members", $members)
                         ->with("emails", $emails);

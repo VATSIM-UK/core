@@ -21,12 +21,12 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security) {
+        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security && !Session::has("auth_override")) {
             return Redirect::route("mship.security.auth");
         }
 
         // What about if there's secondary, but it's expired?
-        if(Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())){
+        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
             $user = Auth::user()->get();
             $user->auth_extra = 0;
             $user->save();
@@ -35,6 +35,52 @@ class Authentication extends \Controllers\BaseController {
 
         // Send them home!
         return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
+    }
+
+    public function getLoginAlternative() {
+        if (!Session::has("cert_offline")) {
+            return Redirect::route("mship.auth.login");
+        }
+
+        // Display an alternative login form.
+        $this->_pageTitle = "Alternative Login";
+        return $this->viewMake("mship.authentication.login_alternative");
+    }
+
+    public function postLoginAlternative() {
+        if (!Session::has("cert_offline")) {
+            return Redirect::route("mship.auth.login");
+        }
+
+        if (!Input::get("cid", false) OR ! Input::get("password", false)) {
+            return Redirect::route("mship.auth.loginAlternative")->withError("You must enter a cid and password.");
+        }
+
+        // Let's find the member.
+        $account = Account::find(Input::get("cid"));
+
+        if (!$account) {
+            return Redirect::route("mship.auth.loginAlternative")->withError("You must enter a valid cid and password combination.");
+        }
+
+        // Let's get their current security and verify...
+        if (!$account->current_security OR !$account->current_security->verifyPassword(Input::get("password"))) {
+            return Redirect::route("mship.auth.loginAlternative")->withError("You must enter a valid cid and password combination.");
+        }
+
+        // We're in!
+        // Let's do lots of logins....
+        $account->last_login = \Carbon\Carbon::now();
+        $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+        $account->auth_extra = 1;
+        $account->auth_extra_at = \Carbon\Carbon::now();
+        $account->save();
+
+        Auth::user()->login($account, true);
+        Session::forget("cert_offline");
+
+        // Let's send them over to the authentication redirect now.
+        return Redirect::route("mship.auth.redirect");
     }
 
     public function getLogin() {
@@ -47,11 +93,12 @@ class Authentication extends \Controllers\BaseController {
 
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-                        [URL::route("mship.auth.verify")], function($key, $secret, $url) {
+                        [URL::route("mship.auth.verify"), "suspended" => true, "inactive" => true], function($key, $secret, $url) {
                     Session::put('vatsimauth', compact('key', 'secret'));
                     return Redirect::to($url);
                 }, function($error) {
-                    throw new AuthException($error['message']);
+                    Session::set("cert_offline", true);
+                    return Redirect::route("mship.auth.loginAlternative");
                 }
         );
     }
@@ -124,7 +171,7 @@ class Authentication extends \Controllers\BaseController {
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
-                    $account->auth_extra = 1;
+                    $account->auth_extra = 0;
                     $account->determineState($user->region->code, $user->division->code);
                     $account->save();
 

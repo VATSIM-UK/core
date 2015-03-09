@@ -10,8 +10,6 @@ use \Models\Mship\Account;
 use \Request;
 class AdmController extends \Controllers\BaseController {
 
-    protected $_account = NULL;
-    protected $_pageTitle = NULL;
     protected $_pageSubTitle = NULL;
 
 	/**
@@ -57,7 +55,7 @@ class AdmController extends \Controllers\BaseController {
 
             // Page titles
             if($this->_pageTitle == NULL){
-                $this->_pageTitle = last($breadcrumb)[0];
+                $this->setTitle(last($breadcrumb)[0]);
             }
             $view->with("_pageTitle", ucfirst($this->_pageTitle));
             if($this->_pageSubTitle == NULL){

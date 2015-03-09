@@ -20,7 +20,7 @@
             </div><!-- /.box-header -->
             <div class="box-body">
                 <div align="center">
-                    {{ $members->links() }}
+                    {{ $membersQuery->links() }}
                 </div>
                 <table id="mship-accounts" class="table table-bordered table-striped">
                     <thead>
@@ -85,13 +85,13 @@
                             <td>{{ $m->qualifications_pilot_training->first() }}</td>
                             <td>{{ $m->qualifications_admin->first() }}</td>
                             <td>{{ $m->current_state }}</td>
-                            <td>{{ $m->status_string }}</td>
+                            <td>{{ $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
                 <div align="center">
-                    {{ $members->links() }}
+                    {{ $membersQuery->links() }}
                 </div>
             </div><!-- /.box-body -->
         </div><!-- /.box -->

@@ -457,18 +457,6 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $stati;
     }
 
-    public function getRequiresCertUpdateAttribute() {
-        if ($this->attributes['checked'] == NULL) {
-            return true;
-        }
-
-        if (Carbon::createFromFormat("Y-m-d H:i:s")->diffInDays() > '2') {
-            return true;
-        }
-
-        return false;
-    }
-
     public function getLastLoginIpAttribute() {
         return long2ip($this->attributes['last_login_ip']);
     }

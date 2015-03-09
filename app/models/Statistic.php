@@ -2,8 +2,8 @@
 
 namespace Models;
 
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Carbon\Carbon;
+use \Illuminate\Database\Eloquent\SoftDeletingTrait;
+use \Carbon\Carbon;
 
 class Statistic extends \Models\aModel {
 
