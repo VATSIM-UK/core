@@ -25,4 +25,12 @@ class Log extends \Models\aModel {
         return $query->where('type', '=', 'idle_kick');
     }
 
+    public function scopeNickWarn($query) {
+        return $query->where('type', '=', 'nick_warn');
+    }
+
+    public function scopeNickKick($query) {
+        return $query->where('type', '=', 'nick_kick');
+    }
+
 }

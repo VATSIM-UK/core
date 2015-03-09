@@ -34,7 +34,7 @@ class TeamspeakDatabaseStructure extends Migration {
 			$table->increments('id')->unsigned();
 			$table->integer('account_id')->unsigned()->index();
 			$table->string('reason', 255);
-			$table->integer('authorizd_by')->unsigned();
+			$table->integer('authorised_by')->unsigned();
 			$table->timestamps();
 			$table->timestamp('expires_at');
 			$table->softDeletes();
@@ -49,7 +49,7 @@ class TeamspeakDatabaseStructure extends Migration {
 		Schema::create('teamspeak_log', function($table) {
 			$table->increments('id')->unsigned();
 			$table->integer('registration_id')->unsigned()->nullable();
-			$table->enum('type', ['idle_message', 'idle_poke', 'idle_kick']); // switch to enum?
+			$table->enum('type', ['idle_message', 'idle_poke', 'idle_kick', 'nick_warn', 'nick_kick']); // switch to enum?
 			//$table->string('message', 255);
 			$table->timestamps();
 		});
@@ -63,7 +63,7 @@ class TeamspeakDatabaseStructure extends Migration {
 			$table->string('last_os', 15)->nullable();
 			$table->timestamp('last_bot_pm')->nullable();
 			$table->string('uid', 50)->nullable();
-			$table->smallInteger('database_id')->unsigned()->nullable();
+			$table->smallInteger('dbid')->unsigned()->nullable();
 			$table->enum('status', ['new', 'active', 'deleted']);
 			$table->timestamps();
 			$table->softDeletes();
@@ -77,7 +77,7 @@ class TeamspeakDatabaseStructure extends Migration {
 
 		Schema::table('teamspeak_ban', function($table) {
 			$table->foreign('account_id')->references('account_id')->on('mship_account');
-			$table->foreign('account_id')->references('authorized_by')->on('mship_account');
+			$table->foreign('authorised_by')->references('account_id')->on('mship_account');
 		});
 
 		Schema::table('teamspeak_confirmation', function($table) {

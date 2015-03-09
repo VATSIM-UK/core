@@ -584,7 +584,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function isValidTeamspeakAlias($tAlias) {
         foreach ($this->teamspeak_aliases as $rAlias) {
-            if ($rAlias->display_name == $tAlias) return TRUE;
+            if (strcasecmp($rAlias->display_name, $tAlias) == 0) return TRUE;
         }
 
         return FALSE;

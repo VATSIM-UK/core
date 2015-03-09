@@ -15,12 +15,22 @@ class Registration extends \Models\aModel {
     protected $primaryKey = 'id';
 	protected $fillable = ['*'];
     protected $attributes = ['registration_ip' => '127.0.0.1'];
+    protected $dates = ['created_at', 'updated_at'];
 
     public function delete() {
+        $tscon = TeamspeakAdapter::run();
         if ($this->confirmation) {
-            TeamspeakAdapter::run()->privilegeKeyDelete($this->confirmation->privilege_key);
+            $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
             $this->confirmation->delete();
         }
+
+        foreach ($tscon->clientList() as $client){
+            if ($client['client_database_id'] == $this->dbid || $client['client_unique_identifier'] == $this->UID) {
+                $client->kick("Registration deleted.");
+            }
+        }
+        if (is_numeric($this->dbid)) $tscon->clientDeleteDb($this->dbid);
+
         parent::delete();
     }
 
@@ -45,13 +55,25 @@ class Registration extends \Models\aModel {
     }
 
     public function getLastIdleMessageAttribute() {
-        $m = $this->logs()->idleMessage()->first();
+        $m = $this->logs()->idleMessage()->orderBy('created_at', 'desc')->first();
         if (!$m) return Carbon::createFromTimeStampUTC(0);
         else return $m->created_at;
     }
 
     public function getLastIdlePokeAttribute() {
-        $m = $this->logs()->idlePoke()->first();
+        $m = $this->logs()->idlePoke()->orderBy('created_at', 'desc')->first();
+        if (!$m) return Carbon::createFromTimeStampUTC(0);
+        else return $m->created_at;
+    }
+
+    public function getLastNicknameWarnAttribute() {
+        $m = $this->logs()->nickWarn()->orderBy('created_at', 'desc')->first();
+        if (!$m) return Carbon::createFromTimeStampUTC(0);
+        else return $m->created_at;
+    }
+
+    public function getLastNicknameKickAttribute() {
+        $m = $this->logs()->nickKick()->orderBy('created_at', 'desc')->first();
         if (!$m) return Carbon::createFromTimeStampUTC(0);
         else return $m->created_at;
     }
