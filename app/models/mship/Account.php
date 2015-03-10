@@ -478,7 +478,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function setNameFirstAttribute($value) {
-        $value = utf8_decode($value);
+        //$value = utf8_decode($value);
         $value = trim($value);
         //$value = strtolower($value);
         //$value = ucfirst($value);
@@ -491,7 +491,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     }
 
     public function setNameLastAttribute($value) {
-        $value = utf8_decode($value);
+        //$value = utf8_decode($value);
         $value = trim($value);
         /*$value = strtolower($value);
 
