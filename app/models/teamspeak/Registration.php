@@ -5,6 +5,7 @@ namespace Models\Teamspeak;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Controllers\Teamspeak\TeamspeakAdapter;
 use Models\Teamspeak\Log;
+use TeamSpeak3;
 use Carbon\Carbon;
 
 class Registration extends \Models\aModel {
@@ -13,8 +14,8 @@ class Registration extends \Models\aModel {
 
     protected $table = 'teamspeak_registration';
     protected $primaryKey = 'id';
-	protected $fillable = ['*'];
-    protected $attributes = ['registration_ip' => '127.0.0.1'];
+    protected $fillable = ['*'];
+    protected $attributes = ['registration_ip' => '2130706433', 'last_ip' => '2130706433'];
     protected $dates = ['created_at', 'updated_at'];
 
     public function delete() {
@@ -24,12 +25,15 @@ class Registration extends \Models\aModel {
             $this->confirmation->delete();
         }
 
-        foreach ($tscon->clientList() as $client){
-            if ($client['client_database_id'] == $this->dbid || $client['client_unique_identifier'] == $this->UID) {
-                $client->kick("Registration deleted.");
+        foreach ($tscon->clientList() as $client) {
+            if ($client['client_database_id'] == $this->dbid || $client['client_unique_identifier'] == $this->uid) {
+                $client->kick(TeamSpeak3::KICK_SERVER, "Registration deleted.");
             }
         }
         if (is_numeric($this->dbid)) $tscon->clientDeleteDb($this->dbid);
+
+        $this->status = 'deleted';
+        $this->save();
 
         parent::delete();
     }
@@ -52,6 +56,14 @@ class Registration extends \Models\aModel {
 
     public function getRegistrationIpAttribute() {
         return long2ip($this->attributes['registration_ip']);
+    }
+
+    public function setLastIpAttribute($value) {
+        $this->attributes['last_ip'] = ip2long($value);
+    }
+
+    public function getLastIpAttribute() {
+        return long2ip($this->attributes['last_ip']);
     }
 
     public function getLastIdleMessageAttribute() {
