@@ -48,7 +48,7 @@ class TeamspeakManager extends aCommand {
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);
 
-        $tscon = TeamSpeakAdapter::run();
+        $tscon = TeamSpeakAdapter::run("VATSIM UK Management Bot");
 
         // define protected channels (listed channels and their subchannels)
         $protected_channels = array();
@@ -88,15 +88,18 @@ class TeamspeakManager extends aCommand {
         }
 
         // get all clients and initiate loop
+        $counter = 0;
         $clients = $tscon->clientList();
         foreach ($clients as $client) {
+            $counter++;
+            //echo "Processing client $counter\n";
             // general try-catch -- catches any general TeamSpeak API issues
             try {
                 // obtain the client's registration ID
                 try {
                     $client_custominfo = $client->customInfo();
                 } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
-                    echo "Caught: " . $e->getMessage();
+                    //echo "Caught (likely empty custominfo): " . $e->getMessage() . "\n";
                     $client_custominfo = array();
                 }
 
@@ -116,6 +119,14 @@ class TeamspeakManager extends aCommand {
 
                 // if the client is a new client, complete their registration details
                 if ($new_client) {
+                    $existing = Registration::where('uid', '=', $client['client_unique_identifier'])
+                                    ->orWhere('dbid', '=', $client['client_database_id'])->first();
+                    if ($existing) {
+                        //$client->kick(TeamSpeak3::KICK_SERVER,
+                        //            "You already have an active registration for this identity.");
+                        $new_client->delete();
+                        continue;
+                    }
                     if ($new_client->confirmation) $new_client->confirmation->delete();
                     $new_client->uid = $client['client_unique_identifier'];
                     $new_client->dbid = $client['client_database_id'];
@@ -333,12 +344,6 @@ class TeamspeakManager extends aCommand {
                 mail("neil.farrington@vatsim-uk.co.uk", $subject, $message);
             }
         }
-
-        // record online statistics
-        $viewer = new TeamSpeak3_Viewer_Html("images/viewer/", "images/flags/", "data:image");
-        $viewer_file = "/home/NFarrington/httpdocs/teamspeak_viewer.html";
-        file_put_contents($viewer_file, $tscon->getViewer($viewer));
-
     }
 
     /**

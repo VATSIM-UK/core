@@ -10,7 +10,7 @@ To successfully register, your current IP address must be identical to the one y
 <!-- Add warning for used privilege key -->
 
 <h3>Register via TeamSpeak (Automatic)</h3>
-<p>Please click the button below to connect to TeamSpeak. If you have problems with this link, follow the 'Manual' instructions further down the page. You will receive a Private Message shortly after you enter TeamSpeak with further instructions.</p>
+<p>Please click the button below to connect to TeamSpeak. If you have problems with this link, follow the 'Manual' instructions further down the page. Once connected, please wait for your registration to be automatically completed.</p>
 <a class="btn btn-primary" href="ts3server://{{ $_ENV['ts.host'] }}?nickname={{ $_account->name_first }}%20{{ $_account->name_last }}&amp;token={{ $_confirmation->privilege_key }}">Connect to TeamSpeak</a>
 
 <h3><small>If the above button does not work for you, please follow the instructions below:</small></h3>

@@ -15,11 +15,11 @@ class Registration extends \Models\aModel {
     protected $table = 'teamspeak_registration';
     protected $primaryKey = 'id';
     protected $fillable = ['*'];
-    protected $attributes = ['registration_ip' => '2130706433', 'last_ip' => '2130706433'];
+    protected $attributes = ['registration_ip' => '0', 'last_ip' => '0'];
     protected $dates = ['created_at', 'updated_at'];
 
     public function delete() {
-        $tscon = TeamspeakAdapter::run();
+        $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
         if ($this->confirmation) {
             $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
             $this->confirmation->delete();
