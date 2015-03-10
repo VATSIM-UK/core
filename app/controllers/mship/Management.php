@@ -21,7 +21,7 @@ class Management extends \Controllers\BaseController {
         $this->_account->load(
             "emails",
             "qualifications", "qualifications.qualification",
-            "states"
+            "states", "teamspeakRegistrations"
         );
 
         return $this->viewMake("mship.management.dashboard");

@@ -3,12 +3,14 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
         <title>VATSIM-UK Core System</title>
 
         <!-- CSS -->
         @section('styles')
         {{ HTML::style('http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') }}
         {{ HTML::style('http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css') }}
+        {{ HTML::style('http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css') }}
         {{ HTML::style('assets/style/Standalone/design.css') }}
         {{ HTML::style('http://fonts.googleapis.com/css?family=Yellowtail') }}
         {{ HTML::style('http://fonts.googleapis.com/css?family=Josefin+Slab:600') }}
@@ -86,7 +88,7 @@
             <div class="footer">
                 <div class="row">
                     <p>
-                        VATSIM-UK &copy; 2013 -
+                        VATSIM-UK &copy; {{ date("Y") }} -
                         {{ HTML::link('http://status.vatsim-uk.co.uk', 'Version '.exec("cd ".base_path()." && git describe --abbrev=0 --tags"), array('target' => '_blank')) }}
                         ({{ gmdate("d/m/y H:i \G\M\T", filemtime(realpath(base_path()."/.git/"))) }})
                         <br align="center">

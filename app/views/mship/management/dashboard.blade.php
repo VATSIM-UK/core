@@ -196,12 +196,36 @@
         </td>
     </tr>
     <tr>
+        <th class='hidden-xs hidden-sm'>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {{ link_to_route('teamspeak.new', 'New Registration') }} ]</small>@endif</th>
+        <td>
+            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {{ link_to_route('teamspeak.new', 'New Registration') }} ]</small>@endif</strong></span>
+            @if (count($_account->teamspeak_registrations) == 0)
+                    No registrations found.
+            @endif
+            @foreach ($_account->teamspeak_registrations as $tsreg)
+            <div style="float: left; padding-right: 15px;">
+                [ Registration #{{ $tsreg->id }} ]<br />
+                Created: {{ $tsreg->created_at }}<br />
+                @if ($tsreg->status == "new")
+                    Status: {{ link_to_route('teamspeak.new', 'New Registration') }}<br />
+                @elseif ($tsreg->status == "active")
+                    Unique ID: {{ $tsreg->uid }}<br />
+                    Last IP: {{ $tsreg->last_ip }}<br />
+                    Last login: {{ $tsreg->last_login }}<br />
+                    Operating System: {{ $tsreg->last_os }}<br />
+                @endif
+                [ {{ link_to_route("teamspeak.delete", "Remove Registration", [$tsreg->id]) }} ]<br />&nbsp;
+            </div>
+            @endforeach
+        </td>
+    </tr>
+    <tr>
         <th class='hidden-xs hidden-sm'>Actions</th>
         <td>
             @if(1 == 2)
-                [<?= HTML::link("mship/auth/logout?override=1", "Cancel Override") ?>]
+                [ <?= HTML::link("mship/auth/logout?override=1", "Cancel Override") ?> ]
             @else
-                [<?= HTML::link("mship/auth/logout/1", "Logout") ?>]
+                [ <?= HTML::link("mship/auth/logout/1", "Logout") ?> ]
             @endif
 
             @if($_account->current_security)
@@ -230,7 +254,7 @@
 
             @if(in_array($_account->account_id, array(980234, 1010573, 1104841)))
                 &nbsp;&nbsp;
-                [<?= HTML::link("mship/auth/override", "Account Override") ?>]
+                [ <?= HTML::link("mship/auth/override", "Account Override") ?> ]
             @endif
         </td>
     </tr>
