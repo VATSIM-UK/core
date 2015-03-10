@@ -85,6 +85,10 @@ class TeamspeakManager extends aCommand {
                 $server_group_map['Admin'] = $group;
                 $server_group_ids['Admin'] = $group->getId();
             }
+            if (preg_match('/P0/', $group['name'])) {
+                $server_group_map['P0'] = $group;
+                $server_group_ids['P0'] = $group->getId();
+            }
         }
 
         // get all clients and initiate loop
@@ -182,6 +186,7 @@ class TeamspeakManager extends aCommand {
                         $pilot_ratings = array();
                         foreach ($client_account->qualifications_pilot as $qualification)
                             $pilot_ratings[] = $qualification->qualification->code;
+                        if (empty($pilot_ratings)) $pilot_ratings[] = "P0";
                         $client_server_groups = explode(",", $client["client_servergroups"]);
 
                         // do they have server admin privileges?
