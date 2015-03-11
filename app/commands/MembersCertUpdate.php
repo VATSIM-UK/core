@@ -206,8 +206,8 @@ class MembersCertUpdate extends aCommand {
                 }
             } else {
                 // remove any extra ratings
-                foreach (($q = $_m->qualifications_atc_training) as $qual) $qual->delete(); 
-                foreach (($q = $_m->qualifications_pilot_training) as $qual) $qual->delete(); 
+                foreach (($q = $_m->qualifications_atc_training) as $qual) $qual->delete();
+                foreach (($q = $_m->qualifications_pilot_training) as $qual) $qual->delete();
                 foreach (($q = $_m->qualifications_admin) as $qual) $qual->delete();
             }
 
@@ -257,7 +257,7 @@ class MembersCertUpdate extends aCommand {
     protected function getOptions() {
         return array(
             array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
-            array("type", "t", InputOption::VALUE_OPTIONAL, "Which update are we running? Hourly, Daily, Weekly or Monthly?", "hourly"),
+            array("type", "t", InputOption::VALUE_OPTIONAL, "Which update are we running? Hourly, Daily, Weekly or Monthly?", "all"),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
     }
