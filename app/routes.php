@@ -148,6 +148,7 @@ Route::group(array("namespace" => "Controllers"), function() {
         Route::model('tsreg', '\Models\Teamspeak\Registration');
         Route::get("/new", ["before" => "auth.user", "as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/{tsreg}/delete", ["before" => "auth.user", "as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);
+        Route::post("/{tsreg}/status", ["before" => "auth.user", "as" => "teamspeak.status", "uses" => "Registration@postStatus"]);
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {

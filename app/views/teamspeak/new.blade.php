@@ -32,4 +32,25 @@ To successfully register, your current IP address must be identical to the one y
     <li>Fill in the details as shown above, then click "Connect" and wait for your registration to be automatically completed.</li>
 </ol>
 
+<script type="text/javascript">
+function requestData(url, callback) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            callback(xmlhttp);
+        }
+    }
+    xmlhttp.open("POST", url, true);
+    xmlhttp.send(null);
+}
+
+function checkStatus(xmlhttp) {
+    if (xmlhttp.responseText == "active") window.location.href = "{{ route('mship.manage.dashboard') }}";
+}
+
+window.setInterval(function() {
+    requestData("{{ route('teamspeak.status', $_registration->id) }}", checkStatus);
+}, 5000);
+
+</script>
 @stop
