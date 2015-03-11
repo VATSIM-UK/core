@@ -161,7 +161,7 @@ class MembersCertImport extends aCommand {
             $this->out("\n");
         }
 
-        $this->out("Processed " . ($pointerStart - $pointer) . " members.\n\n");
+        //$this->out("Processed " . ($pointerStart - $pointer) . " members.\n\n");
     }
 
     private function outputTableRow($key, $old, $new) {
