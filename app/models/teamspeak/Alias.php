@@ -6,7 +6,6 @@ class Alias extends \Models\aModel {
 
     protected $table = 'teamspeak_alias';
     protected $primaryKey = 'id';
-    protected $fillable = ['*'];
     protected $dates = ['created_at', 'updated_at'];
 
     public function account() {

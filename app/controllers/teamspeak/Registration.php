@@ -4,10 +4,6 @@ namespace Controllers\Teamspeak;
 
 use Redirect;
 use Response;
-use Auth;
-use Session;
-use View;
-use Input;
 use Models\Mship\Account;
 use Models\Teamspeak\Registration as RegistrationModel;
 use Models\Teamspeak\Confirmation as ConfirmationModel;
@@ -17,15 +13,18 @@ class Registration extends \Controllers\BaseController {
 
     // create new registration process
     public function getNew() {
-        if (count($this->_account->teamspeak_registrations) >= 3) return Redirect::route("mship.manage.dashboard");
+        if (count($this->_account->teamspeak_registrations) >= 3)
+            return Redirect::route("mship.manage.dashboard");
 
         if (!$this->_account->new_registration)
-            $_registration = $this->createRegistration($this->_account->account_id, $this->_account->last_login_ip);
+            $_registration = $this->createRegistration($this->_account->account_id,
+                                                                    $this->_account->last_login_ip);
         else
             $_registration = $this->_account->new_registration->load('confirmation');
 
         if (!$_registration->confirmation)
-            $_confirmation = $this->createConfirmation($_registration->id, md5($_registration->created_at->timestamp), $this->_account->account_id);
+            $_confirmation = $this->createConfirmation($_registration->id,
+                md5($_registration->created_at->timestamp), $this->_account->account_id);
         else
             $_confirmation = $_registration->confirmation;
 
@@ -44,7 +43,8 @@ class Registration extends \Controllers\BaseController {
 
     // get status of registration
     public function postStatus($registration) {
-        if ($this->_account->account_id == $registration->account_id) return Response::make($registration->status);
+        if ($this->_account->account_id == $registration->account_id)
+            return Response::make($registration->status);
         else return Response::make("Cannot retrieve registration status.");
     }
 
@@ -60,9 +60,13 @@ class Registration extends \Controllers\BaseController {
 
     // create a new confirmation model
     protected function createConfirmation($registrationID, $confirmationString, $accountID) {
+        $key_description = "CID:" . $accountID . " RegID:" . $registrationID;
+        $key_custominfo = "ident=registration_id value=" . $registrationID;
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = TeamspeakAdapter::run()->serverGroupGetByName('New')->privilegeKeyCreate("CID:" . $accountID . " RegID:" . $registrationID, "ident=registration_id value=" . $registrationID);
+        $_confirmation->privilege_key = TeamspeakAdapter::run()
+                                      ->serverGroupGetByName('New')
+                                      ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();
         return $_confirmation;
     }
