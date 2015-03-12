@@ -283,8 +283,8 @@ class TeamspeakManager extends aCommand {
                             && !$client_account->hasPermission("teamspeak/idle/permanent")) {
 
                             if ($idle_time > 60) {
-                                $client->kick(TeamSpeak3::KICK_SERVER,
-                                    self::getMessageString(TS_IDLE_KICK, "60 minutes"));
+                                $client->message(self::getMessageString(TS_IDLE_KICK, "60 minutes"));
+                                $client->kick(TeamSpeak3::KICK_SERVER, "Idle timeout exceeded.");
                                 Log::create(['registration_id' => $client_registration->id,
                                     'type' => 'idle_kick']);
                                 continue;
@@ -314,8 +314,8 @@ class TeamspeakManager extends aCommand {
                         } elseif ($client_account->hasPermission("teamspeak/idle/extended")) {
 
                             if ($idle_time > 120) {
-                                $client->kick(TeamSpeak3::KICK_SERVER,
-                                    self::getMessageString(TS_IDLE_KICK, "2 hours"));
+                                $client->message(self::getMessageString(TS_IDLE_KICK, "2 hours"));
+                                $client->kick(TeamSpeak3::KICK_SERVER, "Idle timeout exceeded.");
                                 Log::create(['registration_id' => $client_registration->id,
                                     'type' => 'idle_kick']);
                                 continue;
