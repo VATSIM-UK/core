@@ -339,7 +339,6 @@ class TeamspeakManager extends aCommand {
 
                 // if no registration has been found
                 if (!$new_client && !$client_registration) {
-                    if (empty($client_custominfo)) continue; // old registration, ignore
                     $client->poke("We cannot find your TeamSpeak registration. "
                         . "To register, please visit http://core.vatsim-uk.co.uk/");
                     $client->poke("Please note, your current IP address must be the same as the IP "
