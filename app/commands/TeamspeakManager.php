@@ -67,25 +67,25 @@ class TeamspeakManager extends aCommand {
         $server_group_map = array();
         foreach ($server_groups as $group) {
             foreach ($qualifications as $qual) {
-                if (preg_match('/'.$qual->code.'/', $group['name'])) {
+                if (preg_match('/^'.$qual->code.'/', $group['name'])) {
                     $server_group_map[$qual->code] = $group;
                     $server_group_ids[$qual->code] = $group->getId();
                     continue;
                 }
             }
-            if (preg_match('/New/', $group['name'])) {
+            if (preg_match('/^New/', $group['name'])) {
                 $server_group_map['New'] = $group;
                 $server_group_ids['New'] = $group->getId();
             }
-            if (preg_match('/Member/', $group['name'])) {
+            if (preg_match('/^Member/', $group['name'])) {
                 $server_group_map['Member'] = $group;
                 $server_group_ids['Member'] = $group->getId();
             }
-            if (preg_match('/Server Admin/', $group['name'])) {
+            if (preg_match('/^Server Admin/', $group['name'])) {
                 $server_group_map['Admin'] = $group;
                 $server_group_ids['Admin'] = $group->getId();
             }
-            if (preg_match('/P0/', $group['name'])) {
+            if (preg_match('/^P0/', $group['name'])) {
                 $server_group_map['P0'] = $group;
                 $server_group_ids['P0'] = $group->getId();
             }
@@ -187,6 +187,9 @@ class TeamspeakManager extends aCommand {
                         foreach ($client_account->qualifications_pilot as $qualification)
                             $pilot_ratings[] = $qualification->qualification->code;
                         if (empty($pilot_ratings)) $pilot_ratings[] = "P0";
+                        $atc_training = array();
+                        foreach ($client_account->qualifications_atc_training as $qualification)
+                                $atc_training[] = $qualification->qualification->code;
                         $client_server_groups = explode(",", $client["client_servergroups"]);
 
                         // do they have server admin privileges?
@@ -211,6 +214,14 @@ class TeamspeakManager extends aCommand {
 
                         // do they have their appropriate pilot ratings?
                         foreach ($pilot_ratings as $rating) {
+                            if (($index = array_search($server_group_ids[$rating],
+                                                                $client_server_groups)) === FALSE)
+                                $server_group_map[$rating]->clientAdd($client['client_database_id']);
+                            else unset($client_server_groups[$index]);
+                        }
+
+                        // do they have their appropriate atc training ratings?
+                        foreach ($atc_training as $rating) {
                             if (($index = array_search($server_group_ids[$rating],
                                                                 $client_server_groups)) === FALSE)
                                 $server_group_map[$rating]->clientAdd($client['client_database_id']);
