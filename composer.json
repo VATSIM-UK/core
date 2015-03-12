@@ -24,6 +24,7 @@
         "barryvdh/laravel-debugbar" : "~1.8",
         "ollieread/multiauth": "dev-master",
         "watson/validating": "0.10.*",
+        "planetteamspeak/ts3-php-framework": "dev-master",
         "jonathansudhakar/botdetector": "dev-master"
     },
     "autoload": {
