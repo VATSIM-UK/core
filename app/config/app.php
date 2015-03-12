@@ -119,6 +119,7 @@ return array(
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
         'Zizaco\Entrust\EntrustServiceProvider',
         'Barryvdh\Debugbar\ServiceProvider',
+        'Jonathansudhakar\Botdetector\BotdetectorServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

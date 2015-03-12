@@ -75,7 +75,7 @@ class Dashboard extends \Controllers\Adm\AdmController {
                 ->limit(25)
                 ->get();
 
-        $this->_pageTitle = "Global Search Results: " . $searchQuery;
+        $this->setTitle("Global Search Results: " . $searchQuery);
         return $this->viewMake("adm.search")
                         ->with("members", $members)
                         ->with("emails", $emails);
