@@ -393,7 +393,7 @@ class TeamspeakManager extends aCommand {
             $message =  "You have been removed from our TeamSpeak server for remaining idle for "
                      . "more than $param2. You are welcome to re-connect to the server whenever "
                      . "you wish, though please remember not to remain idle for extended periods.";
-            return $message();
+            return $message;
         }
     }
 }
