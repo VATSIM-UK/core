@@ -270,7 +270,8 @@ class TeamspeakManager extends aCommand {
                         $description = $client_account->name_first ." "
                                      . $client_account->name_last ." ("
                                      . $client_account->account_id .")";
-                        if ($client['client_description'] != $description)
+                        $client_info = $client->infoDb();
+                        if ($client_info['client_description'] != $description)
                             $client->modify(['client_description' => $description]);
 
                         // if this is a new registration, don't process anything after this
@@ -352,6 +353,7 @@ class TeamspeakManager extends aCommand {
             } catch (Exception $e) {
                 $subject = "TeaMan has failed you. Hire a new butler.";
                 $message = "TeaMan has encountered a previously unhandled error:\r\n\r\n"
+                         . "Client: " . $description . "\r\n\r\n"
                          . "Stack trace:\r\n\r\n"
                          . $e->getTraceAsString()
                          . "\r\nError message: " . $e->getMessage() . "\r\n";
