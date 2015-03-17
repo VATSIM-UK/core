@@ -55,13 +55,23 @@ class TeamspeakManager extends aCommand {
         $tscon = TeamSpeakAdapter::run("VATSIM UK Management Bot");
 
         // define protected channels (listed channels and their subchannels)
-        $protected_channels = array();
+        $protected_clients = array();
         $protected_channel_names = ['Staff Room', 'Exam Rooms'];
+        // for each protected channel
         foreach ($protected_channel_names as $channel_name) {
             $channel = $tscon->channelGetByName($channel_name);
-            $protected_channels[] = $channel->getId();
-            foreach ($channel->subChannelList() as $channel)
-                $protected_channels[] = $channel->getId();
+
+            // get clients and add to array
+            $client_list = $channel->clientList();
+            foreach ($client_list as $client)
+                $protected_clients[] = $client['client_database_id'];
+
+            // get clients of subchannels and add to array
+            foreach ($channel->subChannelList() as $channel) {
+                $client_list = $channel->clientList();
+                foreach ($client_list as $client)
+                    $protected_clients[] = $client['client_database_id'];
+            }
         }
 
         // map qualifications to their server groups
@@ -183,8 +193,9 @@ class TeamspeakManager extends aCommand {
                         }
                     }
 
-                    // if the client isn't in a protected channel, check their groups and idle time
-                    if (!in_array($client['client_channel_group_id'], $protected_channels)) {
+                    // if the client isn't protected, check their groups and idle time
+
+                    if (!in_array($client['client_database_id'], $protected_clients)) {
 
                         $atc_rating = $client_account->qualification_atc->qualification->code;
                         $pilot_ratings = array();
