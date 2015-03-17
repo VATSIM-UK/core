@@ -44,6 +44,10 @@ class TeamspeakManager extends aCommand {
      */
     public function fire() {
 
+        // if specified, turn debug mode on
+        if ($this->option("debug")) $debug = TRUE;
+        else $debug = FALSE;
+
         define("TS_IDLE_MESSAGE", 1);
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);
