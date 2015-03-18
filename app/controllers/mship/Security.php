@@ -212,11 +212,7 @@ class Security extends \Controllers\BaseController {
         // Generate a new password for them and then email it across!
         $password = \Models\Mship\Account\Security::generate(false);
         $passwordType = $token->related->current_security ? $token->related->current_security : \Models\Mship\Security::getDefault();
-        $token->related->setPassword($password, $passwordType);
-
-        // We need to modify the expiry!
-        $token->related->current_security->expires_at = \Carbon\Carbon::now()->toDateTimeString();
-        $token->related->current_security->save();
+        $token->related->setPassword($password, $passwordType, TRUE);
 
         // Now generate an email.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
