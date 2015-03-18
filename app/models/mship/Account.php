@@ -247,7 +247,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return false;
     }
 
-    public function setPassword($password, $type) {
+    public function setPassword($password, $type, $temp = FALSE) {
         if ($this->current_security) {
             $this->current_security->delete();
         }
@@ -257,6 +257,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         $security->account_id = $this->account_id;
         $security->security_id = $type->security_id;
         $security->value = $password;
+        if ($temp) $security->expires_at = Carbon::now()->toDateTimeString();
         $security->save();
     }
 
@@ -569,7 +570,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
-	
+
 	public function getNewRegistrationAttribute() {
 		return $this->teamspeak_registrations->filter(function($reg) {
             return $reg->status == "new";
@@ -588,7 +589,7 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         }
 
         return FALSE;
-        
+
     }
 
 }
