@@ -25,6 +25,7 @@ return array(
 	'files' => storage_path().'/sessions',
 
 	'connection' => "mysql",
+
 	'table' => 'sys_sessions',
 
 	'lottery' => array(20, 100),
@@ -33,7 +34,7 @@ return array(
 
 	'path' => '/',
 
-	'domain' => $_ENV['url'],
+	'domain' => null,
 
 	'secure' => false,
 
