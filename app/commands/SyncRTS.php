@@ -37,7 +37,7 @@ class SyncRTS extends aCommand {
      */
     public function fire() {
         //set_time_limit(0);
-        require '/var/www/rts/config/config.php';
+        require_once '/var/www/rts/config/config.php';
         print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
         if ($this->option("force-update")) {
