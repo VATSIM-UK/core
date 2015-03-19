@@ -149,6 +149,7 @@ class MembersCertUpdate extends aCommand {
         DB::beginTransaction();
         if ($debug) print "\tDB::beginTransaction\n";
         try {
+            $changed = FALSE;
             if (!empty($_xmlData->name_first) && is_string($_xmlData->name_first)) $_m->name_first = $_xmlData->name_first;
             if (!empty($_xmlData->name_last) && is_string($_xmlData->name_last)) $_m->name_last = $_xmlData->name_last;
 
@@ -170,6 +171,7 @@ class MembersCertUpdate extends aCommand {
             $_m->setCertStatus($_xmlData->rating);
             if ($oldStatus != $_m->status) {
                 $this->outputTableRow("status", $oldStatus, $_m->status_string);
+                $changed = TRUE;
             }
 
             // Set their VATSIM registration date.
@@ -178,6 +180,7 @@ class MembersCertUpdate extends aCommand {
             if ($oldDate != $newDate) {
                 $_m->joined_at = $newDate;
                 $this->outputTableRow("joined_at", $oldDate, $newDate);
+                $changed = TRUE;
             }
 
             // If they're in this feed, they're a division member.
@@ -186,6 +189,7 @@ class MembersCertUpdate extends aCommand {
 
             if ($oldState != $_m->current_state->state) {
                 $this->outputTableRow("state", $oldState, $_m->current_state);
+                $changed = TRUE;
             }
 
             // Sort their rating(s) out.
@@ -193,6 +197,7 @@ class MembersCertUpdate extends aCommand {
             $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
             if ($_m->addQualification($atcRating)) {
                 $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
+                $changed = TRUE;
             }
 
             // If their rating is ABOVE INS1 (8+) then let's get their last.
@@ -202,23 +207,40 @@ class MembersCertUpdate extends aCommand {
                     $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
                     if ($_m->addQualification($prevAtcRating)) {
                         $this->outputTableRow("atc_rating", "Previous", $prevAtcRating->code);
+                        $changed = TRUE;
                     }
                 }
             } else {
                 // remove any extra ratings
-                foreach (($q = $_m->qualifications_atc_training) as $qual) $qual->delete();
-                foreach (($q = $_m->qualifications_pilot_training) as $qual) $qual->delete();
-                foreach (($q = $_m->qualifications_admin) as $qual) $qual->delete();
+                foreach (($q = $_m->qualifications_atc_training) as $qual) {
+                    $changed = TRUE;
+                    $qual->delete();
+                }
+                foreach (($q = $_m->qualifications_pilot_training) as $qual) {
+                    $changed = TRUE;
+                    $qual->delete();
+                }
+                foreach (($q = $_m->qualifications_admin) as $qual) {
+                    $changed = TRUE;
+                    $qual->delete();
+                }
             }
 
             $pilotRatings = QualificationData::parseVatsimPilotQualifications($_xmlData->pilotrating);
             foreach ($pilotRatings as $pr) {
                 if ($_m->addQualification($pr)) {
+                    $changed = TRUE;
                     $this->outputTableRow("pilot_rating", "n/a", $pr->code);
                 }
             }
 
             $_m->save();
+
+            if ($changed) {
+                $this->call('Sync:RTS', ['--force-update' => $_m->account_id]);
+                $this->call('Sync:Community', ['--force-update' => $_m->account_id]);
+            }
+
         } catch (Exception $e) {
             DB::rollback();
             print "\tDB::rollback\n";
