@@ -4,15 +4,9 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
-use \Cache;
-use \VatsimSSO;
-use \Enums\Account\State as EnumState;
+use Enums\Account\State as EnumState;
 
-class CommunitySync extends aCommand {
+class SyncCommunity extends aCommand {
 
     /**
      * The console command name.
@@ -26,7 +20,7 @@ class CommunitySync extends aCommand {
      *
      * @var string
      */
-    protected $description = 'Core member database import for Community.';
+    protected $description = 'Sync membership data from Core to Community.';
 
     /**
      * Create a new command instance.
@@ -45,6 +39,8 @@ class CommunitySync extends aCommand {
     public function fire() {
         // setup
         if ($this->option("debug")) $debug = TRUE;
+        else $debug = FALSE;
+
         define('IN_ACP', TRUE);
         define('IPS_ENFORCE_ACCESS', TRUE);
         define('IPB_THIS_SCRIPT', 'private');
@@ -52,18 +48,22 @@ class CommunitySync extends aCommand {
         require_once(IPS_ROOT_PATH . 'sources/base/ipsRegistry.php');
         require_once(IPS_ROOT_PATH . 'sources/base/ipsController.php');
 
+        $members_sql = array();
+        $members_sql['select'] = 'm.member_id, m.name, m.email, m.members_display_name, m.title';
+        $members_sql['from'] = ['members' => 'm'];
+        if ($this->option("force-update"))
+            $members_sql['where'] = "name = {$this->option('force-update')}";
+        $members_sql['add_join'] = [
+            [
+            'select' => 'p.field_12, p.field_13, p.field_14, p.field_16',
+            'from' => array('pfields_content' => 'p'),
+            'where' => 'm.member_id = p.member_id',
+            'type' => 'left'
+            ]
+        ];
+
         ipsRegistry::init();
-        ipsRegistry::DB()->build(
-                    array(
-                        'select' => 'm.member_id, m.name, m.email, m.members_display_name, m.title',
-                        'from' => array('members' => 'm'),
-                        'add_join' => array(array(
-                            'select' => 'p.field_12, p.field_13, p.field_14, p.field_16',
-                            'from' => array('pfields_content' => 'p'),
-                            'where' => 'm.member_id = p.member_id',
-                            'type' => 'left'
-                            )),
-                    ));
+        ipsRegistry::DB()->build($members_sql);
         $_members = ipsRegistry::DB()->execute();
         $countTotal = ipsRegistry::DB()->getTotalRows();
         $countSuccess = 0;
@@ -189,6 +189,7 @@ class CommunitySync extends aCommand {
      */
     protected function getOptions() {
         return array(
+            array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
     }
