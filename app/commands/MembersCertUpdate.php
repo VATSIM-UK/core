@@ -158,6 +158,7 @@ class MembersCertUpdate extends aCommand {
             if ($_m->isDirty()) {
                 $original = $_m->getOriginal();
                 foreach ($_m->getDirty() as $key => $newValue) {
+                    $changed = TRUE;
                     $this->outputTableRow($key, array_get($original, $key, ""), $newValue);
                 }
             }
