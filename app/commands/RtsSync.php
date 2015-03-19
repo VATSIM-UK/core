@@ -3,22 +3,16 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
-use \Cache;
-use \VatsimSSO;
+use Models\Mship\Account;
 
-class RtsSync extends aCommand {
+class SyncRTS extends aCommand {
 
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'RTS:MemberSync';
+    protected $name = 'Sync:RTS';
 
     /**
      * The console command description.
@@ -71,7 +65,7 @@ class RtsSync extends aCommand {
             $member = Account::findOrFail($cid);
         } catch (Exception $e) {
             echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
-            continue;
+            return FALSE;
         }
 
         // calculate pilot rating
@@ -101,6 +95,6 @@ class RtsSync extends aCommand {
 
         updateUser($member->id, $updateData);
 
-        return true;
+        return TRUE;
     }
 }

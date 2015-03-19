@@ -12,7 +12,7 @@ use \Cache;
 use \VatsimSSO;
 use \Enums\Account\State as EnumState;
 
-class CommunitySync extends aCommand {
+class SyncCommunity extends aCommand {
 
     /**
      * The console command name.
