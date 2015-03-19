@@ -37,7 +37,10 @@ class SyncRTS extends aCommand {
      */
     public function fire() {
 
-        print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
+        if ($this->option("debug")) $debug = TRUE;
+        else $debug = FALSE;
+
+        if ($debug) print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
         $members = DB::connection('mysql.rts')->table('members');
         if ($this->option("force-update")) {
@@ -50,20 +53,22 @@ class SyncRTS extends aCommand {
 
         $members = $members->get();
 
-        print "Querying members...";
+        if ($debug) print "Querying members...";
         $numupdated = 0;
 
-        print "OK.\n\n";
+        if ($debug) print "OK.\n\n";
 
         foreach ($members as $mem) {
-            print "Updating {$mem->cid} ";
-            if (self::pullCoreData($mem->cid, $mem->visiting)) print "...... Successful\n";
-            else print "...... FAILED\n";
+            if ($debug) print "Updating {$mem->cid} ";
+            if (self::pullCoreData($mem->cid, $mem->visiting)) {
+              if ($debug) print "...... Successful\n";
+            }
+            elseif ($debug) print "...... FAILED\n";
             $numupdated++;
         }
-        print "\n\n";
-        print "$numupdated members were updated";
-        print "\nRTS SYNC COMPLETED\n\n";
+        if ($debug) print "\n\n";
+        if ($debug) print "$numupdated members were updated";
+        if ($debug) print "\nRTS SYNC COMPLETED\n\n";
 
     }
 
@@ -72,7 +77,7 @@ class SyncRTS extends aCommand {
         try {
             $member = Account::findOrFail($cid);
         } catch (Exception $e) {
-            echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
+            if ($debug) echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
             return FALSE;
         }
 

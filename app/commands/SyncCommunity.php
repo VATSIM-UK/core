@@ -39,6 +39,8 @@ class SyncCommunity extends aCommand {
     public function fire() {
         // setup
         if ($this->option("debug")) $debug = TRUE;
+        else $debug = FALSE;
+
         define('IN_ACP', TRUE);
         define('IPS_ENFORCE_ACCESS', TRUE);
         define('IPB_THIS_SCRIPT', 'private');
