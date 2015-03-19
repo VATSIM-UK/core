@@ -37,7 +37,18 @@ class SyncRTS extends aCommand {
      */
     public function fire() {
         //set_time_limit(0);
-        require_once '/var/www/rts/config/config.php';
+        require_once '/var/www/rts/config/rtsconfig.php';
+
+        $rtsdb = mysql_connect(
+                "{$db_prodrts['host']}:{$db_prodrts['port']}",
+                $db_prodrts['user'],
+                $db_prodrts['pass']
+        ) or trigger_error(mysql_error(),E_USER_ERROR);
+        mysql_select_db($db_prodrts['name'], $rtsdb);
+
+        require_once '/var/www/rts/scripts/databaseSQL.php';
+        require_once '/var/www/rts/scripts/updateUser.php';
+
         print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
         if ($this->option("force-update")) {
