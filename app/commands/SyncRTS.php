@@ -36,39 +36,28 @@ class SyncRTS extends aCommand {
      * @return mixed
      */
     public function fire() {
-        //set_time_limit(0);
-
-        $rtsdb = mysql_connect(
-                "{$_ENV['db.mysql.host']}:{$_ENV['db.mysql.port']}",
-                $_ENV['db.mysql.user.rts'],
-                $_ENV['db.mysql.pass.rts']
-        ) or trigger_error(mysql_error(),E_USER_ERROR);
-        mysql_select_db($_ENV['db.mysql.name.rts'], $rtsdb);
-
-        require_once '/var/www/rts/scripts/databaseSQL.php';
-        require_once '/var/www/rts/scripts/updateUser.php';
 
         print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
+        $members = DB::connection('mysql.rts')->table('members');
         if ($this->option("force-update")) {
-            $members_q = mysql_query("SELECT * FROM `members`
-                                      WHERE `cid` = {$this->option('force-update')}
-                                      AND `deleted` = 0", $rtsdb);
+            $members->where('cid', '=', $this->option('force-update'))
+                    ->where('deleted', '=', '0');
         } else {
-            $members_q = mysql_query("SELECT * FROM `members`
-                                      WHERE `deleted` = 0
-                                      ORDER BY `cid` ASC", $rtsdb);
+            $members->where('deleted', '=', '0')
+                    ->orderBy('cid');
         }
+
+        $members = $members->get();
 
         print "Querying members...";
         $numupdated = 0;
 
         print "OK.\n\n";
 
-        while ($mem = mysql_fetch_assoc($members_q)) {
-            print "Updating {$mem['cid']} ";
-            ob_flush();
-            if (self::pullCoreData($mem['cid'], $mem['visiting'])) print "...... Successful\n";
+        foreach ($members as $mem) {
+            print "Updating {$mem->cid} ";
+            if (self::pullCoreData($mem->cid, $mem->visiting)) print "...... Successful\n";
             else print "...... FAILED\n";
             $numupdated++;
         }
@@ -112,7 +101,10 @@ class SyncRTS extends aCommand {
         }
         if (empty($updateData['email'])) unset($updateData['email']);
 
-        updateUser($member->id, $updateData);
+        $members = DB::connection('mysql.rts')
+                        ->table('members')
+                        ->where('cid', '=', $cid)
+                        ->update($updateData);
 
         return TRUE;
     }
