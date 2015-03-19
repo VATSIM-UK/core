@@ -4,13 +4,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
-use \Cache;
-use \VatsimSSO;
-use \Enums\Account\State as EnumState;
+use Enums\Account\State as EnumState;
 
 class SyncCommunity extends aCommand {
 
@@ -26,7 +20,7 @@ class SyncCommunity extends aCommand {
      *
      * @var string
      */
-    protected $description = 'Core member database import for Community.';
+    protected $description = 'Sync membership data from Core to Community.';
 
     /**
      * Create a new command instance.
@@ -189,6 +183,7 @@ class SyncCommunity extends aCommand {
      */
     protected function getOptions() {
         return array(
+            array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
         );
     }

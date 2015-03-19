@@ -19,7 +19,7 @@ class SyncRTS extends aCommand {
      *
      * @var string
      */
-    protected $description = 'Core member database import for RTS system.';
+    protected $description = 'Sync membership data from Core to the RTS system.';
 
     /**
      * Create a new command instance.
@@ -36,12 +36,21 @@ class SyncRTS extends aCommand {
      * @return mixed
      */
     public function fire() {
-        set_time_limit(0);
+        //set_time_limit(0);
         require '/var/www/rts/config/config.php';
         print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
-        print "Querying all members (not deleted)...";
-        $members_q = mysql_query("SELECT * FROM `members` WHERE `deleted` = 0 ORDER BY `cid` ASC", $rtsdb);
+        if ($this->option("force-update")) {
+            $members_q = mysql_query("SELECT * FROM `members`
+                                      WHERE `cid` = {$this->option('force-update')}
+                                      AND `deleted` = 0", $rtsdb);
+        } else {
+            $members_q = mysql_query("SELECT * FROM `members`
+                                      WHERE `deleted` = 0
+                                      ORDER BY `cid` ASC", $rtsdb);
+        }
+
+        print "Querying members...";
         $numupdated = 0;
 
         print "OK.\n\n";
@@ -55,7 +64,7 @@ class SyncRTS extends aCommand {
         }
         print "\n\n";
         print "$numupdated members were updated";
-        print "\n\rRTS DIVISION DATABASE IMPORT COMPLETED\n\n";
+        print "\nRTS SYNC COMPLETED\n\n";
 
     }
 
@@ -96,5 +105,17 @@ class SyncRTS extends aCommand {
         updateUser($member->id, $updateData);
 
         return TRUE;
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions() {
+        return array(
+            array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
+            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
+        );
     }
 }
