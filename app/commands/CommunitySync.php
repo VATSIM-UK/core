@@ -46,18 +46,22 @@ class SyncCommunity extends aCommand {
         require_once(IPS_ROOT_PATH . 'sources/base/ipsRegistry.php');
         require_once(IPS_ROOT_PATH . 'sources/base/ipsController.php');
 
+        $members_sql = array();
+        $members_sql['select'] = 'm.member_id, m.name, m.email, m.members_display_name, m.title';
+        $members_sql['from'] = ['members' => 'm'];
+        if ($this->option("force-update"))
+            $members_sql['where'] = "name = {$this->option('force-update')}";
+        $members_sql['add_join'] = [
+            [
+            'select' => 'p.field_12, p.field_13, p.field_14, p.field_16',
+            'from' => array('pfields_content' => 'p'),
+            'where' => 'm.member_id = p.member_id',
+            'type' => 'left'
+            ]
+        ];
+
         ipsRegistry::init();
-        ipsRegistry::DB()->build(
-                    array(
-                        'select' => 'm.member_id, m.name, m.email, m.members_display_name, m.title',
-                        'from' => array('members' => 'm'),
-                        'add_join' => array(array(
-                            'select' => 'p.field_12, p.field_13, p.field_14, p.field_16',
-                            'from' => array('pfields_content' => 'p'),
-                            'where' => 'm.member_id = p.member_id',
-                            'type' => 'left'
-                            )),
-                    ));
+        ipsRegistry::DB()->build($members_sql);
         $_members = ipsRegistry::DB()->execute();
         $countTotal = ipsRegistry::DB()->getTotalRows();
         $countSuccess = 0;
