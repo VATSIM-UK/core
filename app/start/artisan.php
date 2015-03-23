@@ -21,3 +21,4 @@ Artisan::add(new PostmasterDispatch());
 Artisan::add(new SyncRTS());
 Artisan::add(new SyncCommunity());
 Artisan::add(new TeamspeakManager());
+Artisan::add(new TeamspeakCleanup());
