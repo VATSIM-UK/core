@@ -57,12 +57,16 @@ class TeamspeakCleanup extends Command {
                 $registered = Registration::
                                   where('uid', '=', $client['client_unique_identifier'])
                                 ->where('dbid', '=', $client['cldbid'])
-                                ->first();
-                var_dump($registered);
+                                ->exists();
                 if (!$registered) {
-                    //$client->kick(TeamSpeak3::KICK_SERVER, "No registration found.");
-                    //$client->deleteDb();
-                    if ($debug) echo "No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                    try {
+                        $tscon->clientDeleteDb($client['cldbid']);
+                        if ($debug) echo "No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                        $offset--;
+                    } catch (Exception $e) {
+                        if ($debug) echo $e->getMessage();
+                        if ($debug) echo "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                    }
                 } elseif ($debug) {
                     echo "Registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
                 }
@@ -79,7 +83,7 @@ class TeamspeakCleanup extends Command {
                           ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
                 })->get();
         foreach ($old_registrations as $registration) {
-            //$registration->delete();
+            $registration->delete();
             if ($debug) echo "Old registration deleted: {$registration->id}\n";
         }
     }
