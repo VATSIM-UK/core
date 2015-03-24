@@ -35,6 +35,10 @@ class Registration extends \Controllers\BaseController {
         return $view;
     }
 
+    public function getConfirmed() {
+        return $this->viewMake("teamspeak.success");
+    }
+
     // delete registration (if owned)
     public function getDelete($registration) {
         if ($this->_account->account_id == $registration->account_id) $registration->delete();
