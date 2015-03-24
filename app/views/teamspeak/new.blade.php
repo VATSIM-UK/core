@@ -7,6 +7,8 @@
 To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
 @endif
 
+<div id="helpmessage" class="alert alert-danger" role="alert" style="display:none">Having trouble? <a href="http://helpdesk.vatsim-uk.co.uk" class="alert-link">Contact Us</a></div>
+
 <!-- Add warning for used privilege key -->
 
 <h3>Register via TeamSpeak (Automatic)</h3>
@@ -51,6 +53,10 @@ function checkStatus(xmlhttp) {
 window.setInterval(function() {
     requestData("{{ route('teamspeak.status', $_registration->id) }}", checkStatus);
 }, 5000);
+
+window.setTimeout(function() {
+    document.getElementById('helpmessage').style.display = "inherit";
+}, 300000);
 
 </script>
 @stop
