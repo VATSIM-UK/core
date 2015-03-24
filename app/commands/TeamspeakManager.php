@@ -142,7 +142,7 @@ class TeamspeakManager extends aCommand {
                     if ($existing) {
                         //$client->kick(TeamSpeak3::KICK_SERVER,
                         //            "You already have an active registration for this identity.");
-                        $new_client->delete();
+                        $new_client->delete($tscon);
                         continue;
                     }
                     if ($new_client->confirmation) $new_client->confirmation->delete();
@@ -174,7 +174,7 @@ class TeamspeakManager extends aCommand {
                                           . "https://cert.vatsim.net/vatsimnet/statcheck.html";
                             $client->kick(TeamSpeak3::KICK_SERVER, $message);
                             $client->deleteDb();
-                            $client_registration->delete();
+                            $client_registration->delete($tscon);
                             continue;
                         } catch (Exception $e) {
                             if ($debug) echo "Error: " . $e->getMessage();
@@ -185,7 +185,7 @@ class TeamspeakManager extends aCommand {
                                 "You are currently serving a TeamSpeak ban.");
                             if ($client_account->is_teamspeak_banned > 60 * 60 * 24 * 2) {
                                 $client->deleteDb();
-                                $client_registration->delete();
+                                $client_registration->delete($tscon);
                             }
                             continue;
                         } catch (Exception $e) {
