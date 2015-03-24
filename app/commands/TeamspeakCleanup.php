@@ -83,7 +83,7 @@ class TeamspeakCleanup extends Command {
                           ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
                 })->get();
         foreach ($old_registrations as $registration) {
-            $registration->delete();
+            $registration->delete($tscon);
             if ($debug) echo "Old registration deleted: {$registration->id}\n";
         }
     }

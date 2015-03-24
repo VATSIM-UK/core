@@ -18,8 +18,8 @@ class Registration extends \Models\aModel {
     protected $attributes = ['registration_ip' => '0', 'last_ip' => '0'];
     protected $dates = ['created_at', 'updated_at'];
 
-    public function delete() {
-        $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
+    public function delete($tscon = NULL) {
+        if ($tscon == NULL) $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
         if ($this->confirmation) {
             $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
             $this->confirmation->delete();
