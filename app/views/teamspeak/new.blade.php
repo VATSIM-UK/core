@@ -45,7 +45,7 @@ function requestData(url, callback) {
 }
 
 function checkStatus(xmlhttp) {
-    if (xmlhttp.responseText == "active") window.location.href = "{{ route('mship.manage.dashboard') }}";
+    if (xmlhttp.responseText == "active") window.location.href = "{{ route('teamspeak.success') }}";
 }
 
 window.setInterval(function() {
