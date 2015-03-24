@@ -7,9 +7,7 @@
 To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
 @endif
 
-<div id="helpmessage" class="alert alert-danger" role="alert" style="display:none">Having trouble? <a href="http://helpdesk.vatsim-uk.co.uk" class="alert-link">Contact Us</a></div>
-
-<!-- Add warning for used privilege key -->
+<div id="helpmessage" class="alert alert-danger" role="alert" style="display:none">Having trouble with your registration? Please feel free to <a href="http://helpdesk.vatsim-uk.co.uk" class="alert-link">contact us</a> with any queries or issues.</div>
 
 <h3>Register via TeamSpeak (Automatic)</h3>
 <p>Please click the button below to connect to TeamSpeak. If you have problems with this link, follow the 'Manual' instructions further down the page. Once connected, please wait for your registration to be automatically completed.</p>
