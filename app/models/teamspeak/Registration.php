@@ -30,7 +30,6 @@ class Registration extends \Models\aModel {
                 $client->kick(TeamSpeak3::KICK_SERVER, "Registration deleted.");
             }
         }
-        if (is_numeric($this->dbid)) $tscon->clientDeleteDb($this->dbid);
 
         $this->status = 'deleted';
         $this->save();
