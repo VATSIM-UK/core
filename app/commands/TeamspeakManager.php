@@ -366,6 +366,9 @@ class TeamspeakManager extends aCommand {
                     continue;
                 }
             } catch (Exception $e) {
+                $description = $client_account->name_first ." "
+                                     . $client_account->name_last ." ("
+                                     . $client_account->account_id .")";
                 $subject = "TeaMan has failed you. Hire a new butler.";
                 $message = "TeaMan has encountered a previously unhandled error:\r\n\r\n"
                          . "Client: " . $description . "\r\n\r\n"
@@ -376,6 +379,9 @@ class TeamspeakManager extends aCommand {
                 mail("neil.farrington@vatsim-uk.co.uk", $subject, $message);
             }
         }
+
+        $tscon = null;
+
     }
 
     /**
