@@ -8,6 +8,7 @@ use \Request;
 use \Redirect;
 use \Response;
 use \Input;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Authentication extends \Controllers\BaseController {
     public function getLogin(){
@@ -20,7 +21,7 @@ class Authentication extends \Controllers\BaseController {
         $ssoToken = Input::get("token");
         try {
             $ssoToken = Token::where("token", "=", $ssoToken)->firstOrFail();
-        } catch(Exception $e){
+        } catch (ModelNotFoundException $e) {
             die("TOKEN NOT FOUND");
         }
 
