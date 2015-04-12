@@ -7,6 +7,7 @@ use \Response;
 use \Models\Sso\Account;
 use \Models\Sso\Token;
 use \Models\Mship\Account as MemberAccount;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Security extends \Controllers\BaseController {
 
@@ -48,7 +49,7 @@ class Security extends \Controllers\BaseController {
         $accessToken = Input::get("access_token");
         try {
             $accessToken = Token::tokenValue($accessToken)->valid()->firstOrFail();
-        } catch(Exception $e){
+        } catch (ModelNotFoundException $e) {
             die("TOKEN NOT FOUND");
         }
 
