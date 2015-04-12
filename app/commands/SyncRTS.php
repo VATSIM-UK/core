@@ -36,7 +36,7 @@ class SyncRTS extends aCommand {
      * @return mixed
      */
     public function fire() {
-
+        global $debug;
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
 
@@ -73,6 +73,7 @@ class SyncRTS extends aCommand {
     }
 
     protected function pullCoreData($cid, $ignoreRating=false) {
+        global $debug;
         // get account
         try {
             $member = Account::findOrFail($cid);
