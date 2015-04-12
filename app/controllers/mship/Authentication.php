@@ -104,8 +104,13 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function getVerify() {
+
+        if (Input::get('oauth_cancel') !== null) {
+            return Redirect::away('http://vatsim-uk.co.uk');
+        }
+
         if (!Session::has('vatsimauth')) {
-            throw new \AuthException('Session does not exist');
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $session = Session::get('vatsimauth');
