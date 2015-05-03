@@ -12,7 +12,11 @@
  */
 
 Route::group(['domain' => 'vats.im'], function () {
-    Route::any('{request_url?}', function ($request_url) {
+    Route::any('/', function () {
+        return "vats.im homepage";
+    });
+
+    Route::any('{request_url}', function ($request_url) {
         // check 'Request::path();' against model 'Route'
         $success = \Models\Short\ShortURL::where('url', '=', $request_url)->first();
         // if successful, redirect, else throw 404
