@@ -236,11 +236,13 @@ class TeamspeakManager extends aCommand {
                         }
 
                         // do they have their appropriate atc training ratings?
-                        foreach ($atc_training as $rating) {
-                            if (($index = array_search($server_group_ids[$rating],
-                                                                $client_server_groups)) === FALSE)
-                                $server_group_map[$rating]->clientAdd($client['client_database_id']);
-                            else unset($client_server_groups[$index]);
+                        if ($client_account->isState(\Enums\Account\State::DIVISION)) {
+                            foreach ($atc_training as $rating) {
+                                if (($index = array_search($server_group_ids[$rating],
+                                                                    $client_server_groups)) === FALSE)
+                                    $server_group_map[$rating]->clientAdd($client['client_database_id']);
+                                else unset($client_server_groups[$index]);
+                            }
                         }
 
                         // remove any remaining groups that: weren't checked; have been mapped;
