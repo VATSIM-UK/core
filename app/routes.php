@@ -11,6 +11,24 @@
   |
  */
 
+Route::group(['domain' => 'vats.im'], function () {
+    Route::any('/', function () {
+        return "vats.im homepage";
+    });
+
+    Route::any('{request_url}', function ($request_url) {
+        // check 'Request::path();' against model 'Route'
+        $success = \Models\Short\ShortURL::where('url', '=', $request_url)->first();
+        // if successful, redirect, else throw 404
+        if ($success) {
+            header("Location: {$success->forward_url}");
+            exit();
+        } else {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+    });
+});
+
 Route::model("mshipAccount", "\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
