@@ -162,4 +162,3 @@ Route::group(array("namespace" => "Controllers"), function () {
 Route::get("/", function () {
     return Redirect::route("mship.manage.landing");
 });
-
