@@ -228,11 +228,13 @@ class TeamspeakManager extends aCommand {
                         else unset($client_server_groups[$index]);
 
                         // do they have their appropriate pilot ratings?
-                        foreach ($pilot_ratings as $rating) {
-                            if (($index = array_search($server_group_ids[$rating],
-                                                                $client_server_groups)) === FALSE)
-                                $server_group_map[$rating]->clientAdd($client['client_database_id']);
-                            else unset($client_server_groups[$index]);
+                        if ($client_account->current_state == \Enums\Account\State::DIVISION) {
+                            foreach ($pilot_ratings as $rating) {
+                                if (($index = array_search($server_group_ids[$rating],
+                                                                    $client_server_groups)) === FALSE)
+                                    $server_group_map[$rating]->clientAdd($client['client_database_id']);
+                                else unset($client_server_groups[$index]);
+                            }
                         }
 
                         // do they have their appropriate atc training ratings?
