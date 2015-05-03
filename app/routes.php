@@ -11,40 +11,40 @@
   |
  */
 
-Route::model("mshipAccount", "\Models\Mship\Account", function() {
+Route::model("mshipAccount", "\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
 
-Route::model("mshipRole", "\Models\Mship\Role", function() {
+Route::model("mshipRole", "\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
 });
 
-Route::model("mshipPermission", "\Models\Mship\Permission", function() {
+Route::model("mshipPermission", "\Models\Mship\Permission", function () {
     Redirect::route("adm.mship.permission.index")->withError("Permission doesn't exist.");
 });
 
-Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function(){
+Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function () {
     Redirect::route("adm.sys.postmaster.queue.index");
 });
 
-Route::model("postmasterTemplate", "\Models\Sys\Postmaster\Template", function(){
+Route::model("postmasterTemplate", "\Models\Sys\Postmaster\Template", function () {
     Redirect::route("adm.sys.postmaster.template.index");
 });
 
 /*** WEBHOOKS ***/
-Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], function(){
-    Route::group(["prefix" => "email", "namespace" => "Email"], function(){
+Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], function () {
+    Route::group(["prefix" => "email", "namespace" => "Email"], function () {
         Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
     });
 });
 
 /* * ** ADM *** */
-Route::group(array("namespace" => "Controllers\Adm"), function() {
-    Route::group(array("prefix" => "adm"), function() {
+Route::group(array("namespace" => "Controllers\Adm"), function () {
+    Route::group(array("prefix" => "adm"), function () {
 
         // Login is the only unauthenticated page.
         Route::get("/", array("uses" => "Authentication@getLogin"));
-        Route::group(array("prefix" => "authentication"), function(){
+        Route::group(array("prefix" => "authentication"), function () {
             Route::get("/login", array("as" => "adm.authentication.login", "uses" => "Authentication@getLogin"));
             Route::post("/login", array("as" => "adm.authentication.login", "uses" => "Authentication@postLogin"));
             Route::get("/logout", array("as" => "adm.authentication.logout", "uses" => "Authentication@getLogout"));
@@ -54,14 +54,14 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
         Route::get("/error/{code?}", ["as" => "adm.error", "uses" => "Error@getDisplay"]);
 
         // Auth required
-        Route::group(array("before" => "auth.admin"), function() {
+        Route::group(array("before" => "auth.admin"), function () {
             Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
             Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
 
-            Route::group(array("prefix" => "system", "namespace" => "Sys"), function(){
+            Route::group(array("prefix" => "system", "namespace" => "Sys"), function () {
                 Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "Timeline@getIndex"));
 
-                Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function(){
+                Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function () {
                     Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
                     Route::get("/queue/{postmasterQueue}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
                     Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
@@ -69,7 +69,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
                 });
             });
 
-            Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
+            Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
                 Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"])->where(["mshipAccount" => "\d+"]);
@@ -101,12 +101,12 @@ Route::group(array("namespace" => "Controllers\Adm"), function() {
     });
 });
 
-Route::group(array("namespace" => "Controllers"), function() {
+Route::group(array("namespace" => "Controllers"), function () {
     Route::get("/error/{code?}", ["as" => "error", "uses" => "Error@getDisplay"]);
 
-    Route::group(array("prefix" => "mship", "namespace" => "Mship"), function() {
+    Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
         // Guest access
-        Route::group(array("prefix" => "auth"), function(){
+        Route::group(array("prefix" => "auth"), function () {
             Route::get("/redirect", ["as" => "mship.auth.redirect", "uses" => "Authentication@getRedirect"]);
             Route::get("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@getLoginAlternative"]);
             Route::post("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@postLoginAlternative"]);
@@ -116,14 +116,14 @@ Route::group(array("namespace" => "Controllers"), function() {
             Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
 
             // /mship/auth - fully authenticated.
-            Route::group(["before" => "auth.user"], function(){
+            Route::group(["before" => "auth.user"], function () {
                 Route::get("/override", ["as" => "mship.auth.override", "uses" => "Authentication@getOverride"]);
                 Route::post("/override", ["as" => "mship.auth.override", "uses" => "Authentication@postOverride"]);
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
             });
         });
 
-        Route::group(["prefix" => "manage"], function(){
+        Route::group(["prefix" => "manage"], function () {
             Route::get("/landing", ["as" => "mship.manage.landing", "uses" => "Management@getLanding"]);
             Route::get("/dashboard", [
                 "as" => "mship.manage.dashboard",
@@ -132,7 +132,7 @@ Route::group(array("namespace" => "Controllers"), function() {
                 ]);
         });
 
-        Route::group(["prefix" => "security"], function(){
+        Route::group(["prefix" => "security"], function () {
             Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
 
             Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
@@ -144,7 +144,7 @@ Route::group(array("namespace" => "Controllers"), function() {
         });
     });
 
-    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak"], function() {
+    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak"], function () {
         Route::model('tsreg', '\Models\Teamspeak\Registration');
         Route::get("/new", ["before" => "auth.user", "as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/success", ["before" => "auth.user", "as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
@@ -152,13 +152,13 @@ Route::group(array("namespace" => "Controllers"), function() {
         Route::post("/{tsreg}/status", ["before" => "auth.user", "as" => "teamspeak.status", "uses" => "Registration@postStatus"]);
     });
 
-    Route::group(array("prefix" => "sso", "namespace" => "Sso"), function() {
+    Route::group(array("prefix" => "sso", "namespace" => "Sso"), function () {
         Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
         Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
 });
 
-Route::get("/", function(){
+Route::get("/", function () {
     return Redirect::route("mship.manage.landing");
 });
