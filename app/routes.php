@@ -163,18 +163,3 @@ Route::get("/", function () {
     return Redirect::route("mship.manage.landing");
 });
 
-/*
- * VATS.IM URL ROUTING:
- */
-
-Route::group(['domain' => 'vats.im'], function () {
-    // check 'Request::path();' against model 'Route'
-    $success = \Models\Short\ShortURL::where('url', '=', Request::path())->first();
-    // if successful, redirect, else throw 404
-    if ($success) {
-        header("Location: {$success->forward_url}");
-        exit();
-    } else {
-        throw new \HttpNotFoundException();
-    }
-});
