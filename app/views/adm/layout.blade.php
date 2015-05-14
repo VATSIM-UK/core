@@ -9,7 +9,7 @@
         <!-- font Awesome -->
         {{ HTML::style('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css') }}
         <!-- Ionicons -->
-        {{ HTML::style('http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css') }}
+        {{ HTML::style('//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css') }}
 
         <!-- Morris chart -->
         {{ HTML::style('/assets/css/morris/morris.css') }}

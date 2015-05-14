@@ -11,23 +11,23 @@
         {{ HTML::style('//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') }}
         {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css') }}
         {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css') }}
-        {{ HTML::style('assets/style/Standalone/design.css', [], Request::secure()) }}
+        {{ HTML::style('assets/style/Standalone/design.css') }}
         {{ HTML::style('//fonts.googleapis.com/css?family=Yellowtail') }}
         {{ HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') }}
         {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css') }}
-        {{ HTML::style('assets/bootstrap/3/css/summernote.css', [], Request::secure()) }}
-        {{ HTML::style('assets/bootstrap/3/css/summernote-bs3.css', [], Request::secure()) }}
-        {{ HTML::style('assets/bootstrap/3/css/bootstrap-switch.min.css', [], Request::secure()) }}
+        {{ HTML::style('assets/bootstrap/3/css/summernote.css') }}
+        {{ HTML::style('assets/bootstrap/3/css/summernote-bs3.css') }}
+        {{ HTML::style('assets/bootstrap/3/css/bootstrap-switch.min.css') }}
         @show
 
         <!-- Javascript -->
         @section('scripts')
         {{ HTML::script('//code.jquery.com/jquery-1.9.1.min.js') }}
-        {{ HTML::script('assets/jquery/js/jquery.cookie.js', [], Request::secure()) }}
+        {{ HTML::script('assets/jquery/js/jquery.cookie.js') }}
         {{ HTML::script('//code.jquery.com/ui/1.10.1/jquery-ui.js') }}
         {{ HTML::script('//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js') }}
-        {{ HTML::script('assets/bootstrap/3/js/summernote.min.js', [], Request::secure()) }}
-        {{ HTML::script('assets/bootstrap/3/js/bootstrap-switch.min.js', [], Request::secure()) }}
+        {{ HTML::script('assets/bootstrap/3/js/summernote.min.js') }}
+        {{ HTML::script('assets/bootstrap/3/js/bootstrap-switch.min.js') }}
         @show
     </head>
     <body>
