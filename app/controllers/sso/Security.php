@@ -3,6 +3,7 @@
 namespace Controllers\Sso;
 
 use \Input;
+use \Session;
 use \Response;
 use \Models\Sso\Account;
 use \Models\Sso\Token;
@@ -124,6 +125,7 @@ class Security extends \Controllers\BaseController {
         $return["is_invisible"] = boolval($account->is_invisible);
         $return["experience"] = $account->experience;
         $return["reg_date"] = $account->joined_at->toDateTimeString();
+        $return["impersonation"] = Session::get("auth_override", false);
 
         // We want to return the token to the user for later use in their requests.
         return Response::json(array("status" => "success", "data" => $return));
