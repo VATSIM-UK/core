@@ -34,6 +34,14 @@ class Registration extends \Models\aModel {
         $this->status = 'deleted';
         $this->save();
 
+        try {
+            if (is_numeric($this->dbid)) {
+                $tscon->clientDeleteDb($this->dbid);
+            }
+        } catch (\Exception $e) {
+            //
+        }
+
         parent::delete();
     }
 
