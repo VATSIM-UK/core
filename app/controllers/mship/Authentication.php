@@ -4,6 +4,7 @@ namespace Controllers\Mship;
 
 use \Config;
 use \Auth;
+use \Request;
 use \URL;
 use \Input;
 use \Session;
@@ -20,20 +21,36 @@ class Authentication extends \Controllers\BaseController {
             return Redirect::route("mship.auth.login");
         }
 
+        // Has this user logged in from a similar IP as somebody else?
+        $check = Account::withIp(Auth::user()->get()->last_login_ip)
+                        ->where("last_login", ">=", \Carbon\Carbon::now()->subHours(4))
+                        ->where("account_id", "!=", Auth::user()->get()->account_id)
+                        ->count();
+
+        if($check > 0 && !Session::get("auth_duplicate_ip", false)){
+            $user = Auth::user()->get();
+            $user->auth_extra = 0;
+            $user->auth_extra_at = null;
+            $user->save();
+            Session::set("auth_duplicate_ip", true);
+        }
+
         // If there's NO secondary, but it's needed, send to secondary.
         if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security && !Session::has("auth_override")) {
             return Redirect::route("mship.security.auth");
         }
 
         // What about if there's secondary, but it's expired?
-        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
+        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (!Auth::user()->get()->auth_extra_at OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
             $user = Auth::user()->get();
             $user->auth_extra = 0;
+            $user->auth_extra_at = null;
             $user->save();
             return Redirect::route("mship.auth.redirect");
         }
 
         // Send them home!
+        Session::forget("auth_duplicate_ip");
         return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
     }
 
@@ -88,6 +105,15 @@ class Authentication extends \Controllers\BaseController {
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
         if (Auth::user()->check() OR Auth::user()->viaremember()) {
+
+            // Let's just check we're not demanding forceful re-authentication via secondary!
+            if(Request::query("force", false)){
+                $user = Auth::user()->get();
+                $user->auth_extra = 0;
+                $user->auth_extra_at = null;
+                $user->save();
+            }
+
             return Redirect::route("mship.auth.redirect");
         }
 

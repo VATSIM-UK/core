@@ -72,6 +72,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status`"), "!=", self::STATUS_SYSTEM);
     }
 
+    public static function scopeWithIp($query, $ip){
+        return $query->where("last_login_ip", "=", ip2long($ip));
+    }
+
     public function dataChanges(){
         return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
