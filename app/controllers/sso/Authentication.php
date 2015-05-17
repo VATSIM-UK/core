@@ -32,7 +32,7 @@ class Authentication extends \Controllers\BaseController {
             $ssoToken->save();
 
             // Now let's send them off to the login shizzle!
-            return Redirect::to("/mship/auth/login?returnURL=".urlencode(url("/sso/auth/login?token=".Request::query("token")."&return=1")));
+            return Redirect::to("/mship/auth/login?returnURL=".urlencode(url("/sso/auth/login?token=".Request::query("token")."&return=1"))."&force=".Request::query("force", 0));
         } else {
             // We're successfully authenticated it seems... We can now return the access token.
             $ssoToken->account_id = Auth::user()->get()->account_id;

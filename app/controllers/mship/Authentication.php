@@ -4,6 +4,7 @@ namespace Controllers\Mship;
 
 use \Config;
 use \Auth;
+use \Request;
 use \URL;
 use \Input;
 use \Session;
@@ -26,7 +27,7 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // What about if there's secondary, but it's expired?
-        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (Auth::user()->get()->auth_extra_at == NULL OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
+        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (!Auth::user()->get()->auth_extra_at OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
             $user = Auth::user()->get();
             $user->auth_extra = 0;
             $user->save();
@@ -88,6 +89,15 @@ class Authentication extends \Controllers\BaseController {
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
         if (Auth::user()->check() OR Auth::user()->viaremember()) {
+
+            // Let's just check we're not demanding forceful re-authentication via secondary!
+            if(Request::query("force", false)){
+                $user = Auth::user()->get();
+                $user->auth_extra = 0;
+                $user->auth_extra_at = null;
+                $user->save();
+            }
+
             return Redirect::route("mship.auth.redirect");
         }
 
