@@ -35,6 +35,7 @@ Route::model("mshipAccount", "\Models\Mship\Account", function () {
 
 Route::model("mshipAccountEmail", "\Models\Mship\Account\Email");
 Route::model("ssoEmail", "\Models\Sso\Email");
+Route::model("sysNotification", "\Models\Sys\Notification");
 
 Route::model("mshipRole", "\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
@@ -142,6 +143,11 @@ Route::group(array("namespace" => "Controllers"), function () {
                 Route::post("/override", ["as" => "mship.auth.override", "uses" => "Authentication@postOverride"]);
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
             });
+        });
+
+        Route::group(["prefix" => "notification"], function(){
+            Route::get("/list", ["as" => "mship.notification.list", "uses" => "Notification@getList"]);
+            Route::post("/acknowledge/{sysNotification}", ["as" => "mship.notification.acknowledge", "uses" => "Notification@postAcknowledge"]);
         });
 
         Route::group(["prefix" => "manage"], function () {

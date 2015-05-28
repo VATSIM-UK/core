@@ -13,6 +13,7 @@ use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
 use \Models\Mship\Account\Note as AccountNoteData;
 use \Models\Teamspeak\Registration;
+use \Models\Sys\Notification as SysNotification;
 
 class Account extends \Models\aTimelineEntry implements UserInterface {
 
@@ -138,6 +139,45 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function teamspeakRegistrations() {
         return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
+    }
+
+    public function readNotifications(){
+        return $this->belongsToMany("\Models\Sys\Notification", "sys_notification_read", "account_id", "notification_id")->orderBy("status", "DESC")->orderBy("effective_at", "DESC")->withTimestamps();
+    }
+
+    public function getUnreadNotificationsAttribute(){
+        // Get all read notifications
+        $readNotifications = $this->readNotifications;
+
+        // Get all notifications
+        $allNotifications = SysNotification::published()
+                                           ->since($this->created_at)
+                                           ->orderBy("status", "DESC")
+                                           ->orderBy("effective_at", "DESC")
+                                           ->get();
+
+        // The difference between the two MUST be the ones that are unread, right?
+        return $allNotifications->diff($readNotifications);
+    }
+
+    public function getHasUnreadNotificationsAttribute(){
+        return $this->unread_notifications->count() > 0;
+    }
+
+    public function getHasUnreadImportantNotificationsAttribute(){
+        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+            return $notice->status == \Models\Sys\Notification::STATUS_IMPORTANT;
+        });
+
+        return $unreadNotifications->count() > 0;
+    }
+
+    public function getHasUnreadMustAcknowledgeNotificationsAttribute(){
+        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+            return $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE;
+        });
+
+        return $unreadNotifications->count() > 0;
     }
 
     public function getQualificationAtcAttribute() {

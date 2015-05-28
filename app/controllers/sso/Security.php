@@ -29,7 +29,7 @@ class Security extends \Controllers\BaseController {
         $token->token = md5($_t . $this->_ssoAccount->api_key_private);
         $token->return_url = Input::get("return_url");
         $token->created_at = \Carbon\Carbon::now()->toDateTimeString();
-        $token->expires_at = \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString();
+        $token->expires_at = \Carbon\Carbon::now()->addMinutes(30)->toDateTimeString();
         $this->_ssoAccount->tokens()->save($token);
 
         // We want to return the token to the user for later use in their requests.
