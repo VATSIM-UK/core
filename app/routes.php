@@ -33,6 +33,9 @@ Route::model("mshipAccount", "\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
 
+Route::model("mshipAccountEmail", "\Models\Mship\Account\Email");
+Route::model("ssoEmail", "\Models\Sso\Email");
+
 Route::model("mshipRole", "\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
 });
@@ -160,11 +163,8 @@ Route::group(array("namespace" => "Controllers"), function () {
                     Route::get("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@getEmailDelete"]);
                     Route::post("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@postEmailDelete"]);
 
-                    Route::get("/assign", ["as" => "mship.manage.email.assign", "uses" => "Management@getEmailAssign"]);
-                    Route::post("/assign", ["as" => "mship.manage.email.assign", "uses" => "Management@postEmailAssign"]);
-
-                    Route::get("/unassign", ["as" => "mship.manage.email.unassign", "uses" => "Management@getEmailUnassign"]);
-                    Route::post("/unassign", ["as" => "mship.manage.email.unassign", "uses" => "Management@postEmailUnassign"]);
+                    Route::get("/assignments", ["as" => "mship.manage.email.assignments", "uses" => "Management@getEmailAssignments"]);
+                    Route::post("/assignments", ["as" => "mship.manage.email.assignments", "uses" => "Management@postEmailAssignments"]);
                 });
             });
         });

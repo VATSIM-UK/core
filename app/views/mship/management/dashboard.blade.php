@@ -64,15 +64,16 @@
 
                     @if($email->verified_at == null)
                         <em><strong>Unverified</strong></em>
-                    @else
-                        [ {{ HTML::link("mship.manage.display", "Test") }} ]
                     @endif
 
                     @if(count($email->sso_emails) > 0)
                         <br />
                         <em style="margin-left: 25px;">Assigned to:
-                            @foreach($email->sso_emails as $ssoE)
-                                {{ $ssoE->sso_account->name }},
+                            @foreach($email->sso_emails as $count => $ssoE)
+                                {{ $ssoE->sso_account->name }}
+                                @if($count+1 < $email->sso_emails->count())
+                                    ,
+                                @endif
                             @endforeach
                         </em>
                     @endif
@@ -83,7 +84,8 @@
                 You have no secondary email addresses.
                 <br />
             @endif
-            [ {{ HTML::link(route("mship.manage.email.add"), "Add Secondary Email") }} ]
+            <br />
+            [ {{ HTML::link(route("mship.manage.email.add"), "Add Secondary Email") }} | {{ HTML::link(route("mship.manage.email.assignments"), "Manage SSO Assignments") }}]
         </td>
     </tr>
     <tr>

@@ -496,6 +496,12 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         });
     }
 
+    public function getSecondaryEmailVerifiedAttribute() {
+        return $this->emails->filter(function($email){
+            return !$email->is_primary && $email->verified_at != null;
+        });
+    }
+
     public function setNameFirstAttribute($value) {
         //$value = utf8_decode($value);
         $value = trim($value);
