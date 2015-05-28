@@ -116,6 +116,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
+    public function ssoEmails() {
+        return $this->hasMany("\Models\Sso\Email", "account_id", "account_id");
+    }
+
     public function ssoTokens() {
         return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
     }

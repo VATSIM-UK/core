@@ -64,7 +64,17 @@ class Security extends \Controllers\BaseController {
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
         $return["name_full"] = $account->name;
+
+        // Let's get their email for this system (if they've got one set).
         $return["email"] = $account->primary_email->email;
+        $ssoEmailAssigned = $account->sso_emails->filter(function($ssoemail) use ($accessToken) {
+            return $ssoemail->sso_account_id == $accessToken->sso_account_id;
+        });
+
+        if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
+            $return['email'] = $ssoEmailAssigned[0]->email->email;
+        }
+
         $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
         $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
         $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;
