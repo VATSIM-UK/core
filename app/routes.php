@@ -148,6 +148,25 @@ Route::group(array("namespace" => "Controllers"), function () {
                 "uses" => "Management@getDashboard",
                 "before" => "auth.user",
                 ]);
+
+            Route::group(["prefix" => "email"], function(){
+
+                Route::get("/verify/{code}", ["as" => "mship.manage.email.verify", "uses" => "Management@getVerifyEmail"]);
+
+                Route::group(["before" => "auth.user"], function(){
+                    Route::get("/add", ["as" => "mship.manage.email.add", "uses" => "Management@getEmailAdd"]);
+                    Route::post("/add", ["as" => "mship.manage.email.add", "uses" => "Management@postEmailAdd"]);
+
+                    Route::get("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@getEmailDelete"]);
+                    Route::post("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@postEmailDelete"]);
+
+                    Route::get("/assign", ["as" => "mship.manage.email.assign", "uses" => "Management@getEmailAssign"]);
+                    Route::post("/assign", ["as" => "mship.manage.email.assign", "uses" => "Management@postEmailAssign"]);
+
+                    Route::get("/unassign", ["as" => "mship.manage.email.unassign", "uses" => "Management@getEmailUnassign"]);
+                    Route::post("/unassign", ["as" => "mship.manage.email.unassign", "uses" => "Management@postEmailUnassign"]);
+                });
+            });
         });
 
         Route::group(["prefix" => "security"], function () {

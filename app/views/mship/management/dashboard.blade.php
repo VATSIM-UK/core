@@ -61,6 +61,13 @@
                     <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
                         <em>added {{ $email->created_at }}</em>
                     </a>
+
+                    @if($email->verified_at == null)
+                        <em><strong>Unverified</strong></em>
+                    @else
+                        [ {{ HTML::link("mship.manage.display", "Test") }} ]
+                    @endif
+
                     @if(count($email->sso_emails) > 0)
                         <br />
                         <em style="margin-left: 25px;">Assigned to:
@@ -74,7 +81,9 @@
             @endforeach
             @if(count($_account->emails) < 2)
                 You have no secondary email addresses.
+                <br />
             @endif
+            [ {{ HTML::link(route("mship.manage.email.add"), "Add Secondary Email") }} ]
         </td>
     </tr>
     <tr>

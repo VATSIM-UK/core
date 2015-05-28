@@ -4,6 +4,7 @@ namespace Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Models\Mship\Account;
+use \Models\Mship\Account\Email as AccountEmail;
 use \Models\Sys\Postmaster\Template;
 
 class Queue extends \Models\aTimelineEntry {
@@ -133,6 +134,15 @@ class Queue extends \Models\aTimelineEntry {
         // Is the recipient an ID, or is it a model?
         if (is_numeric($recipient)) {
             $recipient = Account::find($recipient);
+        } else {
+            // Since it's a model, is it an email model? If so, we need to load the user
+            if($recipient instanceof AccountEmail){
+                $specifiedEmail = $recipient->account_email_id;
+
+                $recipient = $recipient->account;
+            } else {
+                $specifiedEmail = 0;
+            }
         }
 
         // Recipient loaded OK?
@@ -140,16 +150,21 @@ class Queue extends \Models\aTimelineEntry {
             return false;
         }
 
-        // Get the recipient email ID
-        $recipientEmailIDs = [];
-        if ($recipient->primary_email) {
-            $recipientEmailIDs[] = $recipient->primary_email->account_email_id;
-        }
+        // If we've not specified an email, let's just use that
+        if($specifiedEmail){
+            $recipientEmailIDs = [$specifiedEmail];
+        } else {
+            // Get the recipient email ID
+            $recipientEmailIDs = [];
+            if ($recipient->primary_email) {
+                $recipientEmailIDs[] = $recipient->primary_email->account_email_id;
+            }
 
-        // Do we want secondary emails too?
-        if($postmasterTemplate->secondary_emails){
-            foreach($recipient->secondary_email as $e){
-                $recipientEmailIDs[] = $e->account_email_id;
+            // Do we want secondary emails too?
+            if($postmasterTemplate->secondary_emails){
+                foreach($recipient->secondary_email as $e){
+                    $recipientEmailIDs[] = $e->account_email_id;
+                }
             }
         }
 

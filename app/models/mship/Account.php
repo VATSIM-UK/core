@@ -287,7 +287,17 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
                 $email->verified_at = Carbon::now();
             }
             $this->emails()->save($email);
+
             $isNewEmail = true;
+
+            // Verify if it's not primary.
+            if(!$primary){
+                // Let's now send a verification link to this email!
+                $token = SystemToken::generate("mship_account_email_verify", false, $email);
+
+                // Let's send them an email with this information!
+                \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_EMAIL_ADD", $email, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+            }
         } else {
             $email = $check;
             $isNewEmail = false;

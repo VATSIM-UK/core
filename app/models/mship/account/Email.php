@@ -17,7 +17,11 @@ class Email extends \Eloquent {
     protected $attributes = ['is_primary' => 0];
 
     public function account() {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->hasOne("\Models\Mship\Account", "account_id", "account_id");
+    }
+
+    public function tokens() {
+        return $this->morphMany("\Models\Sys\Token", "related");
     }
 
     public function scopePrimary($query){
