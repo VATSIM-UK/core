@@ -6,6 +6,12 @@
     All current notifications are listed below.  We have separated them into "Unread" and "read".
 </p>
 
+@if(Session::has("force_notification_read_return_url"))
+    <div class="alert alert-danger" role="alert">
+        You have been redirected to this page in order to confirm that you have read some important changes.  You will <strong>not</strong> be able to login to any services until this is done.
+    </div>
+@endif
+
 <div class="row">
 
     <div class="col-md-12">

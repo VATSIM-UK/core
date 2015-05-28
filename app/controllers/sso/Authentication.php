@@ -28,7 +28,7 @@ class Authentication extends \Controllers\BaseController {
         // Got the token, let's do something.
         if(!Request::query("return")){
             // Let's extend the expiry of this token for a minute or two....
-            $ssoToken->expires_at = \Carbon\Carbon::now("GMT")->addMinutes(3)->toDateTimeString();
+            $ssoToken->expires_at = \Carbon\Carbon::now("GMT")->addMinutes(60)->toDateTimeString();
             $ssoToken->save();
 
             // Now let's send them off to the login shizzle!
