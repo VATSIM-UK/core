@@ -28,11 +28,17 @@ Route::filter('auth.user', function() {
         } else {
             return Redirect::to("/");
         }
-    }/* else {
-        if(!Auth::user()->get()->hasPermission(Request::decodedPath())){
-            return Redirect::route("error", [401]);
+    }
+});
+
+Route::filter('auth.user.full', function() {
+    if(!Auth::user()->check() OR !Auth::user()->get()->auth_extra){
+        if(Request::ajax()){
+            return Response::make("Unauthorised", 401);
+        } else {
+            return Redirect::to("/mship/auth/redirect");
         }
-    }*/
+    }
 });
 
 Route::filter('auth.admin', function() {

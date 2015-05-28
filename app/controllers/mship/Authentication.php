@@ -49,6 +49,13 @@ class Authentication extends \Controllers\BaseController {
             return Redirect::route("mship.auth.redirect");
         }
 
+        // What about if there's no secondary? We can set this to not required!
+        if(!Auth::user()->get()->current_security){
+            $user = Auth::user()->get();
+            $user->auth_extra = 2;
+            $user->save();
+        }
+
         // Send them home!
         Session::forget("auth_duplicate_ip");
         return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
