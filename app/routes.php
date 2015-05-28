@@ -175,14 +175,14 @@ Route::group(array("namespace" => "Controllers"), function () {
 
         Route::group(["prefix" => "security"], function () {
             Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
+            Route::get("/forgotten", ["before" => "auth.user", "as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
 
-            Route::group(["before" => "auth.user"], function(){
+            Route::group(["before" => "auth.user.full"], function(){
                 Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
                 Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
                 Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
                 Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"])->where(array("delete" => "[1|0]"));
                 Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
-                Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
             });
         });
     });
