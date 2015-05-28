@@ -243,34 +243,6 @@ class Authentication extends \Controllers\BaseController {
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
-    public function getOverride() {
-        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
-            return Redirect::route("mship.manage.dashboard");
-        }
-        return $this->viewMake("mship.authentication.override");
-    }
-
-    public function postOverride() {
-        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
-            return Redirect::route("mship.manage.dashboard");
-        }
-
-        // Check secondary password!
-        if (!Auth::user()->get()->current_security->verifyPassword(Input::get("password"))) {
-            return Redirect::route("mship.auth.override")->withError("No");
-        }
-
-        // All correct? Can we load this user?
-        $_ovr = Account::find(Input::get("override_cid"));
-
-        // Let's do something... like set the override!
-        if (is_object($_ovr) && isset($_ovr->exists) && $_ovr->exists) {
-            Session::set("auth_override", $_ovr->account_id);
-        }
-
-        return Redirect::route("mship.manage.landing");
-    }
-
     public function getInvisibility() {
         // Toggle
         if (Auth::user()->get()->is_invisible) {

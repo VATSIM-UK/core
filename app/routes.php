@@ -133,9 +133,9 @@ Route::group(array("namespace" => "Controllers"), function () {
             Route::get("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@getLoginAlternative"]);
             Route::post("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@postLoginAlternative"]);
             Route::get("/login", ["as" => "mship.auth.login", "uses" => "Authentication@getLogin"]);
+            Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
             Route::get("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@getLogout"]);
             Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
-            Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
 
             // /mship/auth - fully authenticated.
             Route::group(["before" => "auth.user.full"], function () {
@@ -199,7 +199,7 @@ Route::group(array("namespace" => "Controllers"), function () {
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function () {
-        Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::get("auth/login", ["before" => "user.unread.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
         Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
