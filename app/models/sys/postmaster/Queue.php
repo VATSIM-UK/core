@@ -4,6 +4,7 @@ namespace Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Models\Mship\Account;
+use \Models\Mship\Account\Email as AccountEmail;
 use \Models\Sys\Postmaster\Template;
 
 class Queue extends \Models\aTimelineEntry {
@@ -18,7 +19,9 @@ class Queue extends \Models\aTimelineEntry {
 
     const STATUS_PENDING = 10;
     const STATUS_PARSED = 30;
-    const STATUS_SENT = 50;
+    const STATUS_PARSE_ERROR = 35;
+    const STATUS_DISPATCH_ERROR = 55;
+    const STATUS_DISPATCHED = 50; // Deprecated const.
     const STATUS_DELIVERED = 60;
     const STATUS_OPENED = 63;
     const STATUS_CLICKED = 67;
@@ -39,8 +42,8 @@ class Queue extends \Models\aTimelineEntry {
         return $query->ofStatus(self::STATUS_PARSED);
     }
 
-    public function scopeSent($query) {
-        return $query->ofStatus(self::STATUS_SENT);
+    public function scopeDispatched($query) {
+        return $query->ofStatus(self::STATUS_DISPATCHED);
     }
 
     public function scopeDelivered($query) {
@@ -72,7 +75,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function scopeAllDispatched($query){
-        $dispatchedStati = [self::STATUS_SENT, self::STATUS_DELIVERED, self::STATUS_OPENED, self::STATUS_CLICKED, self::STATUS_DROPPED, self::STATUS_BOUNCED, self::STATUS_SPAM, self::STATUS_UNSUBSCRIBED];
+        $dispatchedStati = [self::STATUS_DISPATCHED, self::STATUS_DELIVERED, self::STATUS_OPENED, self::STATUS_CLICKED, self::STATUS_DROPPED, self::STATUS_BOUNCED, self::STATUS_SPAM, self::STATUS_UNSUBSCRIBED];
 
         return $this->where("status", "IN", $dispatchedStati);
     }
@@ -106,7 +109,7 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function getDataAttribute($data) {
-        return ($this->attributes['data'] ? json_decode($this->attributes['data']) : array());
+        return ($this->attributes['data'] ? json_decode($this->attributes['data']) : []);
     }
 
     public function setMessageIdAttribute($value){
@@ -133,6 +136,15 @@ class Queue extends \Models\aTimelineEntry {
         // Is the recipient an ID, or is it a model?
         if (is_numeric($recipient)) {
             $recipient = Account::find($recipient);
+        } else {
+            // Since it's a model, is it an email model? If so, we need to load the user
+            if($recipient instanceof AccountEmail){
+                $specifiedEmail = $recipient->account_email_id;
+
+                $recipient = $recipient->account;
+            } else {
+                $specifiedEmail = 0;
+            }
         }
 
         // Recipient loaded OK?
@@ -140,16 +152,21 @@ class Queue extends \Models\aTimelineEntry {
             return false;
         }
 
-        // Get the recipient email ID
-        $recipientEmailIDs = [];
-        if ($recipient->primary_email) {
-            $recipientEmailIDs[] = $recipient->primary_email->account_email_id;
-        }
+        // If we've not specified an email, let's just use that
+        if($specifiedEmail){
+            $recipientEmailIDs = [$specifiedEmail];
+        } else {
+            // Get the recipient email ID
+            $recipientEmailIDs = [];
+            if ($recipient->primary_email) {
+                $recipientEmailIDs[] = $recipient->primary_email->account_email_id;
+            }
 
-        // Do we want secondary emails too?
-        if($postmasterTemplate->secondary_emails){
-            foreach($recipient->secondary_email as $e){
-                $recipientEmailIDs[] = $e->account_email_id;
+            // Do we want secondary emails too?
+            if($postmasterTemplate->secondary_emails){
+                foreach($recipient->secondary_email as $e){
+                    $recipientEmailIDs[] = $e->account_email_id;
+                }
             }
         }
 
@@ -211,7 +228,7 @@ class Queue extends \Models\aTimelineEntry {
 
         $template = Template::find($this->postmaster_template_id);
 
-        $templateData = array();
+        $templateData = [];
         $templateData["queue"] = $this;
         $templateData["recipient"] = $this->recipient;
         $templateData["sender"] = $this->sender;
@@ -254,7 +271,7 @@ class Queue extends \Models\aTimelineEntry {
         }
 
         // Let us dispatch!
-        $dataSet = array();
+        $dataSet = [];
         $dataSet["queue"] = $this;
         $dataSet["template"] = $this->template;
         $dataSet["sender"] = $this->sender;
@@ -274,7 +291,7 @@ class Queue extends \Models\aTimelineEntry {
             $message->subject($this->subject);
 
             $this->message_id = $message->getId();
-            $this->status = Queue::STATUS_SENT;
+            $this->status = Queue::STATUS_DISPATCHED;
             $this->save();
         });
     }

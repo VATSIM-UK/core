@@ -2,6 +2,7 @@
 
 namespace Models\Mship\Account;
 
+use \Models\Sso\Email as SSOEmail;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use \Validator;
 
@@ -12,12 +13,15 @@ class Email extends \Eloquent {
     protected $table = "mship_account_email";
     protected $primaryKey = "account_email_id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden = ['account_email_id'];
     protected $fillable = ['email'];
     protected $attributes = ['is_primary' => 0];
 
     public function account() {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->hasOne("\Models\Mship\Account", "account_id", "account_id");
+    }
+
+    public function tokens() {
+        return $this->morphMany("\Models\Sys\Token", "related");
     }
 
     public function scopePrimary($query){
@@ -34,6 +38,25 @@ class Email extends \Eloquent {
 
     public function ssoEmails() {
         return $this->hasMany("\Models\Sso\Email", "account_email_id", "account_email_id");
+    }
+
+    public function assignToSso($ssoAccount){
+        // Let's just check it's not already assigned.
+        $alreadyAssigned = $this->sso_emails->filter(function($email) use($ssoAccount) {
+            return $email->sso_account_id == $ssoAccount->sso_account_id;
+        });
+
+        if($alreadyAssigned && count($alreadyAssigned) > 0){
+            return true;
+        }
+
+        $ssoEmail = new SSOEmail;
+        $ssoEmail->account_id = $this->account->account_id;
+        $ssoEmail->account_email_id = $this->getKey();
+        $ssoEmail->sso_account_id = $ssoAccount->getKey();
+        $ssoEmail->save();
+
+        return true;
     }
 
     public function setEmailAttribute($value) {

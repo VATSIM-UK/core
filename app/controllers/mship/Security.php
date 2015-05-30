@@ -188,22 +188,22 @@ class Security extends \Controllers\BaseController {
 
         // Is it valid? Has it expired? Etc?
         if(!$token){
-            return $this->viewMake("mship.security.forgotten")->with("error", "1You have provided an invalid password reset token.");
+            return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Is it valid? Has it expired? Etc?
         if($token->is_used){
-            return $this->viewMake("mship.security.forgotten")->with("error", "2You have provided an invalid password reset token.");
+            return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Is it valid? Has it expired? Etc?
         if($token->is_expired){
-            return $this->viewMake("mship.security.forgotten")->with("error", "3You have provided an invalid password reset token.");
+            return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
-        // Is it valid? Has it expired? Etc?
-        if(!$token->related){
-            return $this->viewMake("mship.security.forgotten")->with("error", "4You have provided an invalid password reset token.");
+        // Is it related and for the right thing?!
+        if(!$token->related OR $token->type != "mship_account_security_reset"){
+            return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Let's now consume this token.

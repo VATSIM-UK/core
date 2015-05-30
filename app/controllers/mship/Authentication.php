@@ -22,36 +22,46 @@ class Authentication extends \Controllers\BaseController {
         }
 
         // Has this user logged in from a similar IP as somebody else?
-        $check = Account::withIp(Auth::user()->get()->last_login_ip)
+        $check = Account::withIp($this->_account->last_login_ip)
                         ->where("last_login", ">=", \Carbon\Carbon::now()->subHours(4))
-                        ->where("account_id", "!=", Auth::user()->get()->account_id)
+                        ->where("account_id", "!=", $this->_account->account_id)
                         ->count();
 
         if($check > 0 && !Session::get("auth_duplicate_ip", false)){
-            $user = Auth::user()->get();
-            $user->auth_extra = 0;
-            $user->auth_extra_at = null;
-            $user->save();
+            $this->_account->auth_extra = 0;
+            $this->_account->auth_extra_at = null;
+            $this->_account->save();
             Session::set("auth_duplicate_ip", true);
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Auth::user()->get()->auth_extra && Auth::user()->get()->current_security && !Session::has("auth_override")) {
+        if (!$this->_account->auth_extra && $this->_account->current_security && !Session::has("auth_override")) {
             return Redirect::route("mship.security.auth");
         }
 
         // What about if there's secondary, but it's expired?
-        if (!Session::has("auth_override") && Auth::user()->get()->auth_extra && (!Auth::user()->get()->auth_extra_at OR Auth::user()->get()->auth_extra_at->addHours(4)->isPast())) {
-            $user = Auth::user()->get();
-            $user->auth_extra = 0;
-            $user->auth_extra_at = null;
-            $user->save();
+        if (!Session::has("auth_override") && $this->_account->auth_extra && (!$this->_account->auth_extra_at OR $this->_account->auth_extra_at->addHours(4)->isPast())) {
+            $this->_account->auth_extra = 0;
+            $this->_account->auth_extra_at = null;
+            $this->_account->save();
             return Redirect::route("mship.auth.redirect");
+        }
+
+        // What about if there's no secondary? We can set this to not required!
+        if(!$this->_account->current_security){
+            $this->_account->auth_extra = 2;
+            $this->_account->save();
         }
 
         // Send them home!
         Session::forget("auth_duplicate_ip");
-        return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
+
+        $returnURL = Session::pull("auth_return", URL::route("mship.manage.dashboard"));
+        if($returnURL == URL::route("mship.manage.dashboard") && $this->_account->has_unread_notifications){
+            Session::put("force_notification_read_return_url", $returnURL);
+            $returnURL = URL::route("mship.notification.list");
+        }
+        return Redirect::to($returnURL);
     }
 
     public function getLoginAlternative() {
@@ -234,34 +244,6 @@ class Authentication extends \Controllers\BaseController {
             Auth::user()->logout();
         }
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
-    }
-
-    public function getOverride() {
-        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
-            return Redirect::route("mship.manage.dashboard");
-        }
-        return $this->viewMake("mship.authentication.override");
-    }
-
-    public function postOverride() {
-        if (!in_array(Auth::user()->get()->account_id, array(980234, 1010573))) {
-            return Redirect::route("mship.manage.dashboard");
-        }
-
-        // Check secondary password!
-        if (!Auth::user()->get()->current_security->verifyPassword(Input::get("password"))) {
-            return Redirect::route("mship.auth.override")->withError("No");
-        }
-
-        // All correct? Can we load this user?
-        $_ovr = Account::find(Input::get("override_cid"));
-
-        // Let's do something... like set the override!
-        if (is_object($_ovr) && isset($_ovr->exists) && $_ovr->exists) {
-            Session::set("auth_override", $_ovr->account_id);
-        }
-
-        return Redirect::route("mship.manage.landing");
     }
 
     public function getInvisibility() {
