@@ -52,7 +52,7 @@ class PostmasterParse extends aCommand {
                 $q->status = Queue::STATUS_PARSE_ERROR;
                 $q->save();
 
-                Entry::log("SYS_POSTMASTER_PARSE_ERROR", $q->recipient, $q, $e);
+                Entry::log("SYS_POSTMASTER_ERROR_PARSE", $q->recipient, $q, $e);
             }
         }
     }
