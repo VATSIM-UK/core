@@ -45,7 +45,14 @@ class PostmasterDispatch extends aCommand {
                        ->get();
 
         foreach($unsent as $q){
+            try {
             $q->dispatch();
+        } catch(Exception $e){
+            $q->status = Queue::STATUS_DISPATCH_ERROR;
+            $q->save();
+
+            Entry::log("SYS_POSTMASTER_DISPATCH_ERROR", $q->recipient, $q, $e);
+        }
         }
     }
 
