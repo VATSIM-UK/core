@@ -13,6 +13,7 @@ use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
 use \Models\Mship\Account\Note as AccountNoteData;
 use \Models\Teamspeak\Registration;
+use \Models\Sys\Notification as SysNotification;
 
 class Account extends \Models\aTimelineEntry implements UserInterface {
 
@@ -116,6 +117,10 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
         return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
+    public function ssoEmails() {
+        return $this->hasMany("\Models\Sso\Email", "account_id", "account_id");
+    }
+
     public function ssoTokens() {
         return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
     }
@@ -134,6 +139,45 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
 
     public function teamspeakRegistrations() {
         return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
+    }
+
+    public function readNotifications(){
+        return $this->belongsToMany("\Models\Sys\Notification", "sys_notification_read", "account_id", "notification_id")->orderBy("status", "DESC")->orderBy("effective_at", "DESC")->withTimestamps();
+    }
+
+    public function getUnreadNotificationsAttribute(){
+        // Get all read notifications
+        $readNotifications = $this->readNotifications;
+
+        // Get all notifications
+        $allNotifications = SysNotification::published()
+                                           //->since($this->created_at) TODO: Add back AFTER we've launched new T&Cs.
+                                           ->orderBy("status", "DESC")
+                                           ->orderBy("effective_at", "DESC")
+                                           ->get();
+
+        // The difference between the two MUST be the ones that are unread, right?
+        return $allNotifications->diff($readNotifications);
+    }
+
+    public function getHasUnreadNotificationsAttribute(){
+        return $this->unread_notifications->count() > 0;
+    }
+
+    public function getHasUnreadImportantNotificationsAttribute(){
+        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+            return $notice->status == \Models\Sys\Notification::STATUS_IMPORTANT;
+        });
+
+        return $unreadNotifications->count() > 0;
+    }
+
+    public function getHasUnreadMustAcknowledgeNotificationsAttribute(){
+        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+            return $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE;
+        });
+
+        return $unreadNotifications->count() > 0;
     }
 
     public function getQualificationAtcAttribute() {
@@ -287,7 +331,17 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
                 $email->verified_at = Carbon::now();
             }
             $this->emails()->save($email);
+
             $isNewEmail = true;
+
+            // Verify if it's not primary.
+            if(!$primary){
+                // Let's now send a verification link to this email!
+                $token = SystemToken::generate("mship_account_email_verify", false, $email);
+
+                // Let's send them an email with this information!
+                \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_EMAIL_ADD", $email, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+            }
         } else {
             $email = $check;
             $isNewEmail = false;
@@ -479,6 +533,12 @@ class Account extends \Models\aTimelineEntry implements UserInterface {
     public function getSecondaryEmailAttribute() {
         return $this->emails->filter(function($email){
             return !$email->is_primary;
+        });
+    }
+
+    public function getSecondaryEmailVerifiedAttribute() {
+        return $this->emails->filter(function($email){
+            return !$email->is_primary && $email->verified_at != null;
         });
     }
 

@@ -29,7 +29,7 @@ class Security extends \Controllers\BaseController {
         $token->token = md5($_t . $this->_ssoAccount->api_key_private);
         $token->return_url = Input::get("return_url");
         $token->created_at = \Carbon\Carbon::now()->toDateTimeString();
-        $token->expires_at = \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString();
+        $token->expires_at = \Carbon\Carbon::now()->addMinutes(30)->toDateTimeString();
         $this->_ssoAccount->tokens()->save($token);
 
         // We want to return the token to the user for later use in their requests.
@@ -64,7 +64,17 @@ class Security extends \Controllers\BaseController {
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
         $return["name_full"] = $account->name;
+
+        // Let's get their email for this system (if they've got one set).
         $return["email"] = $account->primary_email->email;
+        $ssoEmailAssigned = $account->sso_emails->filter(function($ssoemail) use ($accessToken) {
+            return $ssoemail->sso_account_id == $accessToken->sso_account_id;
+        });
+
+        if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
+            $return['email'] = $ssoEmailAssigned[0]->email->email;
+        }
+
         $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
         $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
         $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;
@@ -123,6 +133,8 @@ class Security extends \Controllers\BaseController {
         $return["account_state_current"] = $account->current_state->label;
         $return["account_status"] = $account->status;
         $return["is_invisible"] = boolval($account->is_invisible);
+        $return["is_banned"] = boolval($account->is_banned);
+        $return["is_inactive"] = boolval($account->is_inactive);
         $return["experience"] = $account->experience;
         $return["reg_date"] = $account->joined_at->toDateTimeString();
         $return["impersonation"] = Session::get("auth_override", false);

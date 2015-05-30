@@ -5,6 +5,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Sys\Postmaster\Queue;
 use \Cache;
+use Models\Sys\Timeline\Entry;
 
 class PostmasterDispatch extends aCommand {
 
@@ -45,7 +46,14 @@ class PostmasterDispatch extends aCommand {
                        ->get();
 
         foreach($unsent as $q){
+            try {
             $q->dispatch();
+        } catch(Exception $e){
+            $q->status = Queue::STATUS_DISPATCH_ERROR;
+            $q->save();
+
+            Entry::log("SYS_POSTMASTER_ERROR_DISPATCH", $q->recipient, $q, ["file" => $e->getFile(), "line" => $e->getLine(), "message" => $e->getMessage()]);
+        }
         }
     }
 

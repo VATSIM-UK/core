@@ -5,6 +5,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Sys\Postmaster\Queue;
 use \Cache;
+use Models\Sys\Timeline\Entry;
 
 class PostmasterParse extends aCommand {
 
@@ -45,7 +46,14 @@ class PostmasterParse extends aCommand {
                           ->get();
 
         foreach($newQueued as $q){
-            $q->parseAndSave();
+            try {
+                $q->parseAndSave();
+            } catch(Exception $e){
+                $q->status = Queue::STATUS_PARSE_ERROR;
+                $q->save();
+
+                Entry::log("SYS_POSTMASTER_ERROR_PARSE", $q->recipient, $q, ["file" => $e->getFile(), "line" => $e->getLine(), "message" => $e->getMessage()]);
+            }
         }
     }
 

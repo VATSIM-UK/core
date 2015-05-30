@@ -40,7 +40,7 @@
                                 <span class="label label-default">Pending</span>
                                 @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_PARSED)
                                 <span class="label label-primary">Parsed</span>
-                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_SENT)
+                                @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_DISPATCHED)
                                 <span class="label label-success">Sent</span>
                                 @elseif($q->status == \Models\Sys\Postmaster\Queue::STATUS_DELIVERED)
                                 <span class="label label-success">Delivered</span>

@@ -33,6 +33,10 @@ Route::model("mshipAccount", "\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
 
+Route::model("mshipAccountEmail", "\Models\Mship\Account\Email");
+Route::model("ssoEmail", "\Models\Sso\Email");
+Route::model("sysNotification", "\Models\Sys\Notification");
+
 Route::model("mshipRole", "\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
 });
@@ -129,16 +133,19 @@ Route::group(array("namespace" => "Controllers"), function () {
             Route::get("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@getLoginAlternative"]);
             Route::post("/login-alternative", ["as" => "mship.auth.loginAlternative", "uses" => "Authentication@postLoginAlternative"]);
             Route::get("/login", ["as" => "mship.auth.login", "uses" => "Authentication@getLogin"]);
+            Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
             Route::get("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@getLogout"]);
             Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
-            Route::get("/verify", ["as" => "mship.auth.verify", "uses" => "Authentication@getVerify"]);
 
             // /mship/auth - fully authenticated.
-            Route::group(["before" => "auth.user"], function () {
-                Route::get("/override", ["as" => "mship.auth.override", "uses" => "Authentication@getOverride"]);
-                Route::post("/override", ["as" => "mship.auth.override", "uses" => "Authentication@postOverride"]);
+            Route::group(["before" => "auth.user.full"], function () {
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
             });
+        });
+
+        Route::group(["prefix" => "notification"], function(){
+            Route::get("/list", ["before" => "auth.user.full", "as" => "mship.notification.list", "uses" => "Notification@getList"]);
+            Route::post("/acknowledge/{sysNotification}", ["before" => "auth.user.full", "as" => "mship.notification.acknowledge", "uses" => "Notification@postAcknowledge"]);
         });
 
         Route::group(["prefix" => "manage"], function () {
@@ -146,32 +153,53 @@ Route::group(array("namespace" => "Controllers"), function () {
             Route::get("/dashboard", [
                 "as" => "mship.manage.dashboard",
                 "uses" => "Management@getDashboard",
-                "before" => "auth.user",
+                "before" => "auth.user.full",
                 ]);
+
+            Route::group(["prefix" => "email"], function(){
+
+                Route::get("/verify/{code}", ["as" => "mship.manage.email.verify", "uses" => "Management@getVerifyEmail"]);
+
+                Route::group(["before" => "auth.user.full"], function(){
+                    Route::get("/add", ["as" => "mship.manage.email.add", "uses" => "Management@getEmailAdd"]);
+                    Route::post("/add", ["as" => "mship.manage.email.add", "uses" => "Management@postEmailAdd"]);
+
+                    Route::get("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@getEmailDelete"]);
+                    Route::post("/delete", ["as" => "mship.manage.email.delete", "uses" => "Management@postEmailDelete"]);
+
+                    Route::get("/assignments", ["as" => "mship.manage.email.assignments", "uses" => "Management@getEmailAssignments"]);
+                    Route::post("/assignments", ["as" => "mship.manage.email.assignments", "uses" => "Management@postEmailAssignments"]);
+                });
+            });
         });
 
         Route::group(["prefix" => "security"], function () {
             Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
 
-            Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
-            Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
-            Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
-            Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"])->where(array("delete" => "[1|0]"));
-            Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
-            Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
+            Route::group(["before" => "auth.user"], function(){
+                Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
+                Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
+                Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
+                Route::get("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@getReplace"])->where(array("delete" => "[1|0]"));
+                Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
+            });
+
+            Route::group(["before" => "auth.user.full"], function(){
+                Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
+            });
         });
     });
 
-    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak"], function () {
+    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => "auth.user.full"], function () {
         Route::model('tsreg', '\Models\Teamspeak\Registration');
-        Route::get("/new", ["before" => "auth.user", "as" => "teamspeak.new", "uses" => "Registration@getNew"]);
-        Route::get("/success", ["before" => "auth.user", "as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
-        Route::get("/{tsreg}/delete", ["before" => "auth.user", "as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);
-        Route::post("/{tsreg}/status", ["before" => "auth.user", "as" => "teamspeak.status", "uses" => "Registration@postStatus"]);
+        Route::get("/new", ["as" => "teamspeak.new", "uses" => "Registration@getNew"]);
+        Route::get("/success", ["as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
+        Route::get("/{tsreg}/delete", ["as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);
+        Route::post("/{tsreg}/status", ["as" => "teamspeak.status", "uses" => "Registration@postStatus"]);
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function () {
-        Route::get("auth/login", ["as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::get("auth/login", ["before" => "user.unread.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
         Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
