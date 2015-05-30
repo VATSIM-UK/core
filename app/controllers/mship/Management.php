@@ -3,6 +3,7 @@
 namespace Controllers\Mship;
 
 use \Redirect;
+use \Validator;
 use \Input;
 use \Auth;
 use \Session;
@@ -40,6 +41,17 @@ class Management extends \Controllers\BaseController {
     public function postEmailAdd(){
         $email = strtolower(Input::get("new_email"));
         $email2 = strtolower(Input::get("new_email2"));
+
+        // Make our validator
+        // TODO look at putting this into models in some way.
+        $validator = Validator::make(
+            array("email" => $email),
+            array("email" => ["required", "email"])
+        );
+
+        if($validator->fails()){
+            return Redirect::route("mship.manage.email.add")->withError("You have entered an invalid email address.");
+        }
 
         // Check they match!
         if(strcasecmp($email, $email2) != 0){
