@@ -134,6 +134,7 @@ class Security extends \Controllers\BaseController {
         $return["account_status"] = $account->status;
         $return["is_invisible"] = boolval($account->is_invisible);
         $return["is_banned"] = boolval($account->is_banned);
+        $return["is_inactive"] = boolval($account->is_inactive);
         $return["experience"] = $account->experience;
         $return["reg_date"] = $account->joined_at->toDateTimeString();
         $return["impersonation"] = Session::get("auth_override", false);
