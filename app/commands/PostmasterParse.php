@@ -48,12 +48,11 @@ class PostmasterParse extends aCommand {
         foreach($newQueued as $q){
             try {
                 $q->parseAndSave();
-                print "Parsed, ".$q->postmaster_queue_id;
             } catch(Exception $e){
                 $q->status = Queue::STATUS_PARSE_ERROR;
                 $q->save();
 
-                Entry::log("SYS_POSTMASTER_ERROR_PARSE", $q->recipient, $q, $e);
+                Entry::log("SYS_POSTMASTER_ERROR_PARSE", $q->recipient, $q, ["file" => $e->getFile(), "line" => $e->getLine(), "message" => $e->getMessage()]);
             }
         }
     }

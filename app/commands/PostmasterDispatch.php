@@ -52,7 +52,7 @@ class PostmasterDispatch extends aCommand {
             $q->status = Queue::STATUS_DISPATCH_ERROR;
             $q->save();
 
-            Entry::log("SYS_POSTMASTER_ERROR_DISPATCH", $q->recipient, $q, $e);
+            Entry::log("SYS_POSTMASTER_ERROR_DISPATCH", $q->recipient, $q, ["file" => $e->getFile(), "line" => $e->getLine(), "message" => $e->getMessage()]);
         }
         }
     }
