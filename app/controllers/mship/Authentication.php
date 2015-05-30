@@ -61,6 +61,7 @@ class Authentication extends \Controllers\BaseController {
 
         $returnURL = Session::pull("auth_return", URL::route("mship.manage.dashboard"));
         if($returnURL == URL::route("mship.manage.dashboard") && $user->has_unread_notifications){
+            Session::put("force_notification_read_return_url", $returnURL);
             $returnURL = URL::route("mship.notification.list");
         }
         return Redirect::to($returnURL);
