@@ -35,7 +35,7 @@ class Authentication extends \Controllers\BaseController {
             return Redirect::to("/mship/auth/login?returnURL=".urlencode(url("/sso/auth/login?token=".Request::query("token")."&return=1"))."&force=".Request::query("force", 0));
         } else {
             // We're successfully authenticated it seems... We can now return the access token.
-            $ssoToken->account_id = Auth::user()->get()->account_id;
+            $ssoToken->account_id = $this->_account->account_id;
             $ssoToken->expires_at = \Carbon\Carbon::now("GMT")->addSeconds(30)->toDateTimeString();
             $ssoToken->save();
 
