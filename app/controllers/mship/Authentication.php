@@ -58,7 +58,12 @@ class Authentication extends \Controllers\BaseController {
 
         // Send them home!
         Session::forget("auth_duplicate_ip");
-        return Redirect::to(Session::pull("auth_return", URL::route("mship.manage.dashboard")));
+
+        $returnURL = Session::pull("auth_return", URL::route("mship.manage.dashboard"));
+        if($returnURL == URL::route("mship.manage.dashboard") && $user->has_unread_notifications){
+            $returnURL = URL::route("mship.notification.list");
+        }
+        return Redirect::to($returnURL);
     }
 
     public function getLoginAlternative() {
