@@ -96,7 +96,7 @@ class UpgradeV2109V2110 extends Migration {
         Schema::dropIfExists("sys_notification_read");
 
         // Delete the email verification, email.
-
+        DB::table("sys_postmaster_template")->whereSection("MSHIP")->whereArea("ACCOUNT")->whereAction("EMAIL_ADD")->delete();
 
         // Delete new timeline actions
         DB::table("sys_timeline_action")->where("area", "=", "postmaster_error")->delete();
