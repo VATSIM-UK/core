@@ -18,7 +18,7 @@ class Registration extends \Controllers\BaseController
         }
 
         if (!$this->_account->new_registration) {
-            $registration_ip = $this->_account->last_login_ip;
+            $registration_ip = $_SERVER['REMOTE_ADDR'];
             $_registration = $this->createRegistration($this->_account->account_id, $registration_ip);
         } else {
             $_registration = $this->_account->new_registration->load('confirmation');
