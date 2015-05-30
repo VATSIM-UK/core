@@ -65,7 +65,7 @@ class UpgradeV2109V2110 extends Migration {
             [
                 "section" => "MSHIP", "area" => "ACCOUNT", "action" => "EMAIL_ADD",
                 "subject" => "New Email Added - Verification Required",
-                "body" => @file_get_contents(storage_path()."migrationdata/2015_05_17_183500_upgrade_v2109_v2110_sys_postmaster_template_mship_account_email_add.txt"),
+                "body" => @file_get_contents(storage_path()."/migrationdata/2015_05_17_183500_upgrade_v2109_v2110_sys_postmaster_template_mship_account_email_add.txt"),
                 "priority" => 50, "secondary_emails" => 0, "reply_to" => "community@vatsim-uk.co.uk",
                 "enabled" => 1, "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()
             ]);
