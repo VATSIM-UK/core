@@ -72,9 +72,19 @@ class UpgradeV2109V2110 extends Migration {
 
         // Add the extra timeline_entries.
         DB::table("sys_timeline_action")->insert(array(
-            ["section" => "sys", "area" => "postmaster_error", "action" => "parse", "version" => 1, "entry" => "Email #{extra} failed to parse when being prepared for {owner}."],
-            ["section" => "sys", "area" => "postmaster_error", "action" => "dispatch", "version" => 1, "entry" => "Email #{extra} failed to send to {owner}."],
+            ["section" => "sys", "area" => "postmaster_error", "action" => "parse", "version" => 1, "entry" => "Email #{extra} failed to parse when being prepared for {owner}.", "enabled" => 1, "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
+            ["section" => "sys", "area" => "postmaster_error", "action" => "dispatch", "version" => 1, "entry" => "Email #{extra} failed to send to {owner}.", "enabled" => 1, "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
         ));
+
+        // Fix previous bad migration that was missing enabling of postmaster logs.
+        DB::table("sys_timeline_action")
+          ->where("area", "LIKE", "postmaster_queue")
+          ->update(["enabled" => 1]);
+
+        // Fix previous bad migration that was missing creation dates.
+        DB::table("sys_timeline_action")
+            ->where("created_at", "=", "0000-00-00 00:00:00")
+            ->update(["created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()]);
     }
 
     /**
