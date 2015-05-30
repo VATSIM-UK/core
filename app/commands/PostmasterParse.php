@@ -48,6 +48,7 @@ class PostmasterParse extends aCommand {
         foreach($newQueued as $q){
             try {
                 $q->parseAndSave();
+                print "Parsed, ".$q->postmaster_queue_id;
             } catch(Exception $e){
                 $q->status = Queue::STATUS_PARSE_ERROR;
                 $q->save();
