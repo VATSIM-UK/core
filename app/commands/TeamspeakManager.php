@@ -26,7 +26,7 @@ class TeamspeakManager extends aCommand {
      *
      * @var string
      */
-    protected $description = 'TeamSpeak Management script.';
+    protected $description = 'TeamSpeak Management script Dev.';
 
     /**
      * Create a new command instance.
@@ -159,6 +159,11 @@ class TeamspeakManager extends aCommand {
                 if ($client_registration) {
                     $client_account = $client_registration->account;
 
+                    if(!$client_account OR $client_account->account_id != 980234){
+                        continue;
+                    }
+                    $this->info("Processing ".$client_account->account_id);
+
                     // save their current login details
                     $client_registration->last_login = Carbon::now();
                     $client_registration->last_ip = $client['connection_client_ip'];
@@ -195,7 +200,7 @@ class TeamspeakManager extends aCommand {
 
                     // if the client isn't protected, check their groups and idle time
 
-                    if (!in_array($client['client_database_id'], $protected_clients)) {
+                    if (true OR !in_array($client['client_database_id'], $protected_clients)) {
 
                         $atc_rating = $client_account->qualification_atc->qualification->code;
                         $pilot_ratings = array();
@@ -257,30 +262,94 @@ class TeamspeakManager extends aCommand {
                             && !$client_account->isValidTeamspeakAlias($client['client_nickname'])) {
 
                             if (Carbon::now()->subMinutes(5)->
-                                    gt($client_registration->last_nickname_warn)
+                                gt($client_registration->last_nickname_warn)
                                 && Carbon::now()->subMinutes(15)->
-                                    lt($client_registration->last_nickname_warn)
+                                lt($client_registration->last_nickname_warn)
                                 && Carbon::now()->subMinutes(2)->
-                                    gt($client_registration->last_nickname_kick)) {
+                                gt($client_registration->last_nickname_kick)) {
                                 $client->poke("Please use your full VATSIM-registered name - "
-                                    . "you may check this at http://core.vatsim-uk.co.uk/");
+                                              . "you may check this at http://core.vatsim-uk.co.uk/");
                                 $client->poke("If you believe this is a mistake, please contact "
-                                    . "Web Services via http://helpdesk.vatsim-uk.co.uk/");
+                                              . "Web Services via http://helpdesk.vatsim-uk.co.uk/");
                                 $client->kick(TeamSpeak3::KICK_SERVER, "Please use your full "
-                                    . "VATSIM-registered name.");
+                                                                     . "VATSIM-registered name.");
                                 Log::create(['registration_id' => $client_registration->id,
                                              'type' => 'nick_kick']);
                                 continue;
                             } elseif (Carbon::now()->subMinutes(15)->
-                                    gt($client_registration->last_nickname_warn)) {
+                            gt($client_registration->last_nickname_warn)) {
                                 $client->message("Please use your full VATSIM-registered name - "
-                                    . "you may check this at http://core.vatsim-uk.co.uk/");
+                                                 . "you may check this at http://core.vatsim-uk.co.uk/");
                                 $client->message("You will be removed from the server if "
-                                    . "you do not change your name.");
+                                                 . "you do not change your name.");
                                 Log::create(['registration_id' => $client_registration->id,
                                              'type' => 'nick_warn']);
                             }
 
+                        }
+
+                        // Check that this user doesn't have must_acknowledge notifications currently.
+                        if ($client_account->has_unread_must_acknowledge_notifications) {
+                            // We give the user 3 chances:
+                            // 1) Warning as soon as this flag is true.
+                            // 2) Warning after connection + 5 minutes.
+                            // 3) Warning after connection + 10 minutes.
+                            // 4) Removal after connection + 15 minutes.
+                            // 5) Any future reconnections will be terminated instantly.
+
+                            $clientLastConnected = Carbon::createFromTimeStampUTC($client['client_lastconnected']);
+
+                            // Firstly, if they've reconnected after being warned multiple times then they can just go.
+                            if(Carbon::now()->subHours(6)->lt($client_registration->last_notification_must_acknowledge_kick) && Carbon::now()->gt($client_registration->last_notification_must_acknowledge_kick)){
+                                $client->poke("You cannot reconnect until you read the notifications.");
+                                $client->poke("You can do this by visiting http://core.vatsim-uk.co.uk");
+                                $client->kick(TeamSpeak3::KICK_SERVER, "You must accept the latest important notifications.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_ma_kick']);
+                                continue;
+                            }
+
+                            // 15 minutes since connection + between 5 mins and 6 hours since last warning = KICK
+                            if(Carbon::now()->subMinutes(15)->gt($clientLastConnected) && Carbon::now()->subMinutes(5)->gt($client_registration->last_notification_must_acknowledge_poke) && Carbon::now()->subHours(6)->lt($client_registration->last_notification_must_acknowledge_poke)){
+                                $client->poke("You must read the notifications published at http://core.vatsim-uk.co.uk");
+                                $client->poke("You will not be permitted to reconnect until you do this.");
+                                $client->kick(TeamSpeak3::KICK_SERVER, "You must accept the latest important notifications.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_ma_kick']);
+                                continue;
+
+                                // 10 minutes since last connection + between 5 minutes and 6 hours since last warning = WARN AGAIN
+                            } elseif(Carbon::now()->subMinutes(10)->gt($clientLastConnected) && Carbon::now()->subMinutes(5)->gt($client_registration->last_notification_must_acknowledge_poke) && Carbon::now()->subHours(6)->lt($client_registration->last_notification_must_acknowledge_poke)){
+                                $client->poke("You must accept the new notifications that are published at http://core.vatsim-uk.co.uk");
+                                $client->poke("You will be removed in 5 minutes, unless these are read.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_ma_poke']);
+
+                                // 5 minutes since last connection + between 5 minutes and 6 hours since last warning = WARN AGAIN
+                            } elseif(Carbon::now()->subMinutes(5)->gt($clientLastConnected) && Carbon::now()->subMinutes(5)->gt($client_registration->last_notification_must_acknowledge_poke) && Carbon::now()->subHours(6)->lt($client_registration->last_notification_must_acknowledge_poke)){
+                                $client->poke("You must accept the new notifications that are published at http://core.vatsim-uk.co.uk");
+                                $client->poke("You will be removed in 10 minutes, unless these are read.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_ma_poke']);
+
+                                // Recent connection within 5 minutes.
+                            } elseif(Carbon::now()->subMinutes(5)->lt($clientLastConnected) && Carbon::now()->subHours(6)->gt($client_registration->last_notification_must_acknowledge_poke)) {
+                                $client->poke("There are new notifications available for you to read.");
+                                $client->poke("You can read them at http://core.vatsim-uk.co.uk");
+                                $client->poke("You must read and accept within 15 minutes.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_ma_poke']);
+                            }
+                        } elseif ($client_account->has_unread_important_notifications) {
+
+                            // For important notifications, we'll just warn the member every 15 minutes that they need to read them.
+                            if(Carbon::now()->subMinutes(15)->gt($client_registration->last_notification_important_poke)){
+                                $client->poke("You must accept the new notifications that are published at http://core.vatsim-uk.co.uk");
+                                $client->poke("These notifications are highly relevent.  Please go and read them.");
+                                Log::create(['registration_id' => $client_registration->id,
+                                             'type' => 'notification_i_poke']);
+
+                            }
                         }
 
                         // check client description
@@ -350,7 +419,6 @@ class TeamspeakManager extends aCommand {
                                 Log::create(['registration_id' => $client_registration->id,
                                     'type' => 'idle_message']);
                             }
-
                         }
                     }
                 }
