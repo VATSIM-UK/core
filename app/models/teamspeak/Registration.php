@@ -97,4 +97,16 @@ class Registration extends \Models\aModel {
         else return $m->created_at;
     }
 
+    public function getLastNotificationMustAcknowledgeWarnAttribute() {
+        $m = $this->logs()->notificationMustAcknowledgeWarn()->orderBy('created_at', 'desc')->first();
+        if (!$m) return Carbon::createFromTimeStampUTC(0);
+        else return $m->created_at;
+    }
+
+    public function getLastNotificationMustAcknowledgeKickAttribute() {
+        $m = $this->logs()->notificationMustAcknowledgeKick()->orderBy('created_at', 'desc')->first();
+        if (!$m) return Carbon::createFromTimeStampUTC(0);
+        else return $m->created_at;
+    }
+
 }

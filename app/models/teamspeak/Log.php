@@ -33,4 +33,15 @@ class Log extends \Models\aModel {
         return $query->where('type', '=', 'nick_kick');
     }
 
+    public function scopeNotificationImportantMessage($query) {
+        return $query->where('type', '=', 'notification_i_message');
+    }
+
+    public function scopeNotificationMustAcknowledgeWarn($query) {
+        return $query->where('type', '=', 'notification_ma_warn');
+    }
+
+    public function scopeNotificationMustAcknowledgeKick($query) {
+        return $query->where('type', '=', 'notification_ma_kick');
+    }
 }
