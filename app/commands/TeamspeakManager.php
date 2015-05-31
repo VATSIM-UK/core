@@ -194,8 +194,7 @@ class TeamspeakManager extends aCommand {
                     }
 
                     // if the client isn't protected, check their groups and idle time
-
-                    if (true OR !in_array($client['client_database_id'], $protected_clients)) {
+                    if (!in_array($client['client_database_id'], $protected_clients)) {
 
                         $atc_rating = $client_account->qualification_atc->qualification->code;
                         $pilot_ratings = array();
