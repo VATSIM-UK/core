@@ -26,7 +26,7 @@ class TeamspeakManager extends aCommand {
      *
      * @var string
      */
-    protected $description = 'TeamSpeak Management script Dev.';
+    protected $description = 'TeamSpeak Management script.';
 
     /**
      * Create a new command instance.
