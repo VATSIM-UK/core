@@ -138,14 +138,14 @@ Route::group(array("namespace" => "Controllers"), function () {
             Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
 
             // /mship/auth - fully authenticated.
-            Route::group(["before" => "auth.user.full"], function () {
+            Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function () {
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
             });
         });
 
-        Route::group(["prefix" => "notification"], function(){
-            Route::get("/list", ["before" => "auth.user.full", "as" => "mship.notification.list", "uses" => "Notification@getList"]);
-            Route::post("/acknowledge/{sysNotification}", ["before" => "auth.user.full", "as" => "mship.notification.acknowledge", "uses" => "Notification@postAcknowledge"]);
+        Route::group(["before" => "auth.user.full", "prefix" => "notification"], function(){
+            Route::get("/list", ["as" => "mship.notification.list", "uses" => "Notification@getList"]);
+            Route::post("/acknowledge/{sysNotification}", ["as" => "mship.notification.acknowledge", "uses" => "Notification@postAcknowledge"]);
         });
 
         Route::group(["prefix" => "manage"], function () {
@@ -153,14 +153,14 @@ Route::group(array("namespace" => "Controllers"), function () {
             Route::get("/dashboard", [
                 "as" => "mship.manage.dashboard",
                 "uses" => "Management@getDashboard",
-                "before" => "auth.user.full",
+                "before" => ["auth.user.full", "user.must.read.notifications"],
                 ]);
 
             Route::group(["prefix" => "email"], function(){
 
                 Route::get("/verify/{code}", ["as" => "mship.manage.email.verify", "uses" => "Management@getVerifyEmail"]);
 
-                Route::group(["before" => "auth.user.full"], function(){
+                Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function(){
                     Route::get("/add", ["as" => "mship.manage.email.add", "uses" => "Management@getEmailAdd"]);
                     Route::post("/add", ["as" => "mship.manage.email.add", "uses" => "Management@postEmailAdd"]);
 
@@ -184,13 +184,13 @@ Route::group(array("namespace" => "Controllers"), function () {
                 Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
             });
 
-            Route::group(["before" => "auth.user.full"], function(){
+            Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function(){
                 Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
             });
         });
     });
 
-    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => "auth.user.full"], function () {
+    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => ["auth.user.full", "user.must.read.notifications"]], function () {
         Route::model('tsreg', '\Models\Teamspeak\Registration');
         Route::get("/new", ["as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/success", ["as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
@@ -199,7 +199,7 @@ Route::group(array("namespace" => "Controllers"), function () {
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function () {
-        Route::get("auth/login", ["before" => "user.unread.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::get("auth/login", ["before" => "user.must.read.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
         Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
