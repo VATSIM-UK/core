@@ -181,6 +181,10 @@ class Management extends \Controllers\BaseController {
         $token->related->save();
 
         // Consumed, let's send away!
-        return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (".$token->related->email.") has been verified!");
+        if($this->_account){
+            return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (".$token->related->email.") has been verified!");
+        } else {
+            return $this->viewMake("mship.management.email.verify")->with("success", "Your new email address (".$token->related->email.") has been verified!");
+        }
     }
 }

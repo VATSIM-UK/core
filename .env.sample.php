@@ -18,6 +18,14 @@ return [
     'db.mysql.charset'     => 'utf8',
     'db.mysql.collation'   => 'utf8_unicode_ci',
 
+    /** TeamSpeak Config **/
+    "ts.host" => "",
+    "ts.user" => "serveradmin",
+    "ts.pass" => "",
+    "ts.port" => "9987",
+    "ts.query.port" => "61234",
+
+
     /** MailGun Config **/
     'mailgun.user'         => '',
     'mailgun.pass'         => '',

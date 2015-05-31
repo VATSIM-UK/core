@@ -41,7 +41,7 @@ Route::filter('auth.user.full', function() {
     }
 });
 
-Route::filter("user.unread.notifications", function(){
+Route::filter("user.must.read.notifications", function(){
     if(Auth::user()->check() && Auth::user()->get()->auth_extra && (Auth::user()->get()->has_unread_important_notifications OR Auth::user()->get()->has_unread_must_acknowledge_notifications)){
         Session::set("force_notification_read_return_url", Request::fullUrl());
         return Redirect::route("mship.notification.list");
