@@ -159,11 +159,6 @@ class TeamspeakManager extends aCommand {
                 if ($client_registration) {
                     $client_account = $client_registration->account;
 
-                    if(!$client_account OR $client_account->account_id != 980234){
-                        continue;
-                    }
-                    $this->info("Processing ".$client_account->account_id);
-
                     // save their current login details
                     $client_registration->last_login = Carbon::now();
                     $client_registration->last_ip = $client['connection_client_ip'];
