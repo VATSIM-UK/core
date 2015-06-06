@@ -4,7 +4,6 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Sys\Postmaster\Queue;
-use \Cache;
 use Models\Sys\Timeline\Entry;
 
 class PostmasterParse extends aCommand {

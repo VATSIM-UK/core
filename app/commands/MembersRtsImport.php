@@ -8,7 +8,6 @@ use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Qualification as QualificationData;
 use Models\Mship\Account\Qualification;
-use \Cache;
 
 class MembersRtsImport extends aCommand {
 
