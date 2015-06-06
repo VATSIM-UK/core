@@ -8,10 +8,7 @@ use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Qualification as QualificationData;
 use Models\Mship\Account\Qualification;
-use \Cache;
-use \VatsimXML;
-use \VatsimSSO;
-use \Carbon\Carbon;
+use Carbon\Carbon;
 
 class MembersCertUpdate extends aCommand {
 

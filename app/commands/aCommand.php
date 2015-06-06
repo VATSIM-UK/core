@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Console\Command;
-use \Session;
 
 class aCommand extends Command {
     /**

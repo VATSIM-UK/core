@@ -9,7 +9,6 @@ use Models\Mship\Account\State;
 use Models\Mship\Account\Security;
 use Models\Mship\Qualification as QualificationData;
 use Models\Mship\Account\Qualification;
-use \Cache;
 
 class KohanaUpgrade extends aCommand {
 
