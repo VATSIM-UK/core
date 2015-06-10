@@ -37,6 +37,14 @@ class SyncCommunity extends aCommand {
      * @return mixed
      */
     public function fire() {
+        /**
+         *
+         * NOTICE: THIS SCRIPT IS CURRENTLY DISABLED UNTIL IT IS UPDATED.
+         *
+         */
+        return;
+
+
         // setup
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
