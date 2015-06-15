@@ -69,7 +69,7 @@ class Security extends \Controllers\BaseController {
         $return["email"] = $account->primary_email->email;
         $ssoEmailAssigned = $account->sso_emails->filter(function($ssoemail) use ($accessToken) {
             return $ssoemail->sso_account_id == $accessToken->sso_account_id;
-        });
+        })->values();
 
         if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
             $return['email'] = $ssoEmailAssigned[0]->email->email;
