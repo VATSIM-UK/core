@@ -23,7 +23,6 @@ class StaffManagement extends Migration
         Schema::create('staff_positions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('department_id')->unsigned();
-            $table->integer('reports_to')->unsigned()->nullable();
             $table->string('name', 50);
             $table->timestamps();
         });
@@ -62,7 +61,6 @@ class StaffManagement extends Migration
 
         Schema::table('staff_positions', function ($table) {
             $table->foreign('department_id')->references('id')->on('staff_departments');
-            $table->foreign('reports_to')->references('id')->on('staff_positions');
         });
 
         Schema::table('staff_account_position', function ($table) {
@@ -98,7 +96,6 @@ class StaffManagement extends Migration
 
         Schema::table('staff_positions', function ($table) {
             $table->dropForeign('staff_positions_department_id_foreign');
-            $table->dropForeign('staff_positions_reports_to_foreign');
         });
 
         Schema::table('staff_account_position', function ($table) {
@@ -122,6 +119,7 @@ class StaffManagement extends Migration
 
         Schema::drop('staff_attributes');
         Schema::drop('staff_positions');
+        Schema::drop('staff_account_position');
         Schema::drop('staff_attribute_position');
         Schema::drop('staff_departments');
         Schema::drop('staff_services');
