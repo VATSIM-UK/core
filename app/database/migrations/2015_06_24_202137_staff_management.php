@@ -22,7 +22,8 @@ class StaffManagement extends Migration
 
         Schema::create('staff_positions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('department_id')->unsigned();
+            $table->integer('parent_id')->unsigned()->nullable();
+            $table->string('type', 1);
             $table->string('name', 50);
             $table->timestamps();
         });
@@ -41,14 +42,6 @@ class StaffManagement extends Migration
             $table->timestamps();
         });
 
-        Schema::create('staff_departments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->integer('position_id')->unsigned()->nullable();
-            $table->string('name', 50);
-            $table->timestamps();
-        });
-
         Schema::create('staff_services', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 50);
@@ -60,7 +53,7 @@ class StaffManagement extends Migration
         });
 
         Schema::table('staff_positions', function ($table) {
-            $table->foreign('department_id')->references('id')->on('staff_departments');
+            $table->foreign('parent_id')->references('id')->on('staff_positions');
         });
 
         Schema::table('staff_account_position', function ($table) {
@@ -70,11 +63,6 @@ class StaffManagement extends Migration
 
         Schema::table('staff_attribute_position', function ($table) {
             $table->foreign('attribute_id')->references('id')->on('staff_attributes');
-            $table->foreign('position_id')->references('id')->on('staff_positions');
-        });
-
-        Schema::table('staff_departments', function ($table) {
-            $table->foreign('parent_id')->references('id')->on('staff_departments');
             $table->foreign('position_id')->references('id')->on('staff_positions');
         });
 
@@ -95,7 +83,7 @@ class StaffManagement extends Migration
         });
 
         Schema::table('staff_positions', function ($table) {
-            $table->dropForeign('staff_positions_department_id_foreign');
+            $table->dropForeign('staff_positions_parent_id_foreign');
         });
 
         Schema::table('staff_account_position', function ($table) {
@@ -108,11 +96,6 @@ class StaffManagement extends Migration
             $table->dropForeign('staff_attribute_position_position_id_foreign');
         });
 
-        Schema::table('staff_departments', function ($table) {
-            $table->dropForeign('staff_departments_parent_id_foreign');
-            $table->dropForeign('staff_departments_position_id_foreign');
-        });
-
         Schema::table('staff_services', function ($table) {
             //
         });
@@ -121,7 +104,6 @@ class StaffManagement extends Migration
         Schema::drop('staff_positions');
         Schema::drop('staff_account_position');
         Schema::drop('staff_attribute_position');
-        Schema::drop('staff_departments');
         Schema::drop('staff_services');
     }
 }
