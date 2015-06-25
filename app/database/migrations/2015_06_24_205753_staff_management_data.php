@@ -105,15 +105,31 @@ class StaffManagementData extends Migration
             ['parent_id' => $department_webservices_assistants, 'name' => 'Systems Administrator', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
         ));
 
-        DB::table('staff_services')->insert(array(
-            ['name' => 'Core', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Community (Forum)', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Events', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Helpdesk', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Moodle', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'RTS System', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Status', 'created_at' => $date, 'updated_at' => $date],
-            ['name' => 'Website', 'created_at' => $date, 'updated_at' => $date],
+        $service_community = DB::table('staff_services')->insertGetId(['name' => 'Community (Forum)', 'created_at' => $date, 'updated_at' => $date]);
+        $service_core = DB::table('staff_services')->insertGetId(['name' => 'Core', 'created_at' => $date, 'updated_at' => $date]);
+        $service_events = DB::table('staff_services')->insertGetId(['name' => 'Events', 'created_at' => $date, 'updated_at' => $date]);
+        $service_helpdesk = DB::table('staff_services')->insertGetId(['name' => 'Helpdesk', 'created_at' => $date, 'updated_at' => $date]);
+        $service_moodle = DB::table('staff_services')->insertGetId(['name' => 'Moodle', 'created_at' => $date, 'updated_at' => $date]);
+        $service_rts = DB::table('staff_services')->insertGetId(['name' => 'RTS System', 'created_at' => $date, 'updated_at' => $date]);
+        $service_servers = DB::table('staff_services')->insertGetId(['name' => 'Servers', 'created_at' => $date, 'updated_at' => $date]);
+        $service_status = DB::table('staff_services')->insertGetId(['name' => 'Status', 'created_at' => $date, 'updated_at' => $date]);
+        $service_site = DB::table('staff_services')->insertGetId(['name' => 'Website', 'created_at' => $date, 'updated_at' => $date]);
+
+        DB::table('staff_attributes')->insert(array(
+            ['service_id' => $service_community, 'name' => 'ACP Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_core, 'name' => 'Admin Access (Backend)', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_events, 'name' => 'Git Repository Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_helpdesk, 'name' => 'SCP Access (Department Specific)', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_helpdesk, 'name' => 'SCP Admin Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_moodle, 'name' => 'Admin Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_rts, 'name' => 'Git Repository Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_rts, 'name' => 'Mentoring Access (RTS Specific)', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_rts, 'name' => 'RTSM/Lead Mentor Access (RTS Specific)', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_rts, 'name' => 'Examiner Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_rts, 'name' => 'Administrator Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_servers, 'name' => 'Privileged Access', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_servers, 'name' => 'Elevated Access (SSH User Account)', 'created_at' => $date, 'updated_at' => $date],
+            ['service_id' => $service_site, 'name' => 'ACP Access', 'created_at' => $date, 'updated_at' => $date],
         ));
 
     }
@@ -127,6 +143,8 @@ class StaffManagementData extends Migration
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         DB::table('staff_positions')->truncate();
+        DB::table('staff_services')->truncate();
+        DB::table('staff_attributes')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
