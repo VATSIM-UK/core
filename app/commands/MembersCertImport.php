@@ -92,10 +92,11 @@ class MembersCertImport extends aCommand
         $member->name_first = $member_data[3];
         $member->name_last = $member_data[4];
         $member->joined_at = $member_data[11];
+        $member->setCertStatus($member_data[1]);
         $member->save();
         $member->addEmail($member_data[5], true, true);
-        $member->setCertStatus($member_data[1]);
         $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
+        $member->determineState($member_data[12], $member_data[13]);
         // anything else should be processed by the Members:CertUpdate script
     }
 
@@ -133,8 +134,6 @@ class MembersCertImport extends aCommand
      */
     protected function getOptions()
     {
-        return array(
-            //array('verbose', 'v', InputOption::VALUE_NONE, 'Enable verbose output.'),
-        );
+        return array();
     }
 }
