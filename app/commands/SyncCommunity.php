@@ -72,7 +72,7 @@ class SyncCommunity extends aCommand
             }
 
             if ($verbose) {
-                $this->output->write('<info>' . str_pad($member['member_id'], 4) . ' // ' . str_pad($member['vatsim_cid'], 7) . '</info>');
+                $this->output->write($member['member_id'] . ' // ' . $member['vatsim_cid']);
             }
 
             $member_core = Account::where('account_id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
@@ -147,15 +147,15 @@ class SyncCommunity extends aCommand
                     }
 
                     if ($verbose) {
-                        $this->output->writeln(' // <info>Details saved successfully.</info>');
+                        $this->output->writeln(' // Details saved successfully.');
                     }
                     $countSuccess++;
                 } catch (Exception $e) {
                     $countFailure++;
-                    $this->output->writeln(' // <error>Error saving ' . $member_core->account_id . ' details to forum.</error>' . $e->getMessage());
+                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->account_id . ' details to forum.</error>' . $e->getMessage());
                 }
             } elseif ($verbose) {
-                $this->output->writeln(' // <info>No changes required.</info>');
+                $this->output->writeln(' // No changes required.');
             }
         }
 
@@ -168,14 +168,14 @@ class SyncCommunity extends aCommand
     }
 
     /**
-     * Get the console command optionmship_account_state.
+     * Get the console command options.
      *
      * @return array
      */
     protected function getOptions()
     {
         return array(
-            array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
+            //array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
         );
     }
 }
