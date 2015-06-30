@@ -84,7 +84,6 @@ class SyncCommunity extends aCommand
                 continue;
             }
 
-            // Sort out their email
             $emailLocal = false;
             $email = $member_core->primary_email;
             if (empty($email)) {
@@ -92,16 +91,9 @@ class SyncCommunity extends aCommand
                 $emailLocal = true;
             }
 
-            // State
-            //$state = $member_core->getIsStateAttribute(EnumState::DIVISION)->first()->state ? 'Division Member' : 'International Member';
-            //$state = $member_core->getIsStateAttribute(EnumState::VISITOR)->first()->state ? 'Visiting Member' : $state;
             $state = $member_core->states()->where('state', '=', EnumState::DIVISION)->first()->state ? 'Division Member' : 'International Member';
             $state = $member_core->states()->where('state', '=', EnumState::VISITOR)->first()->state ? 'Visiting Member' : $state;
-
-            // ATC rating
             $aRatingString = $member_core->qualification_atc->qualification->name_long;
-
-            // Sort out the pilot rating.
             $pRatingString = $member_core->qualifications_pilot_string;
 
             // Check for changes
@@ -114,7 +106,6 @@ class SyncCommunity extends aCommand
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
                               || $changeARating || $changePRating || $changeERating;
 
-            // Confirm the data
             if ($verbose) {
                 $this->output->write(' // ID: ' . $member_core->account_id);
                 $this->output->write(' // Email (' . ($emailLocal ? 'local' : "latest") . "):" . $email . ($changeEmail ? "(changed)" : ""));
