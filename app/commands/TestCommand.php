@@ -8,6 +8,7 @@ use Models\Mship\Account\Email;
 use Models\Mship\Account\State;
 use Models\Mship\Qualification as QualificationData;
 use Models\Mship\Account\Qualification;
+use Models\Staff\Position;
 
 class TestCommand extends aCommand {
 
@@ -40,22 +41,11 @@ class TestCommand extends aCommand {
      * @return mixed
      */
     public function fire() {
-        $routes = \Route::getRoutes();
-        foreach($routes as $r){
-            $r_raw = $r->getPath();
-            $r_cut = explode("/", $r_raw);
-
-            if(count($r_cut) < 2){
-                continue;
-            }
-
-            if(array_get($r_cut, 0) == "adm"){
-                if(!in_array(array_get($r_cut, 1), ["authentication", "error", "dashboard", "search"])){
-                    $r_raw = preg_replace("/\{.*?\}/", "*", $r_raw);
-                    $this->info($r_raw);
-                }
-            }
-        }
+        $position = Position::find(1);
+        var_dump($position->parent);
+        //echo $position . PHP_EOL;
+        //echo $position->parent . PHP_EOL;
+        //echo $position->children . PHP_EOL;
     }
 
     /**

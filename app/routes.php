@@ -118,6 +118,9 @@ Route::group(array("namespace" => "Controllers\Adm"), function () {
                 Route::post("/permission/{mshipPermission}/update", ["as" => "adm.mship.permission.update", "uses" => "Permission@postUpdate"]);
                 Route::any("/permission/{mshipPermission}/delete", ["as" => "adm.mship.permission.delete", "uses" => "Permission@anyDelete"]);
                 Route::get("/permission/", ["as" => "adm.mship.permission.index", "uses" => "Permission@getIndex"]);
+
+                Route::get('/staff', ["as" => "adm.mship.staff.index", "uses" => "Staff@getIndex"]);
+
             });
         });
     });

@@ -3,10 +3,12 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+
 use Models\Mship\Account;
 use Enums\Account\State as EnumState;
 
-class SyncCommunity extends aCommand {
+class SyncCommunity extends aCommand
+{
 
     /**
      * The console command name.
@@ -27,7 +29,8 @@ class SyncCommunity extends aCommand {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -36,158 +39,123 @@ class SyncCommunity extends aCommand {
      *
      * @return mixed
      */
-    public function fire() {
-        /**
-         *
-         * NOTICE: THIS SCRIPT IS CURRENTLY DISABLED UNTIL IT IS UPDATED.
-         *
-         */
-        return;
+    public function fire()
+    {
+        if ($this->option('verbose')) {
+            $verbose = true;
+        } else {
+            $verbose = false;
+        }
 
+        require_once('/var/www/community_beta/init.php');
+        require_once(IPS\ROOT_PATH . '/system/Member/Member.php');
+        require_once(IPS\ROOT_PATH . '/system/Db/Db.php');
 
-        // setup
-        if ($this->option("debug")) $debug = TRUE;
-        else $debug = FALSE;
+        $members = \IPS\Db::i()->select('m.member_id, m.vatsim_cid, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14', ['core_members', 'm'])
+                               ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
 
-        define('IN_ACP', TRUE);
-        define('IPS_ENFORCE_ACCESS', TRUE);
-        define('IPB_THIS_SCRIPT', 'private');
-        require_once('/var/www/community/initdata.php');
-        require_once(IPS_ROOT_PATH . 'sources/base/ipsRegistry.php');
-        require_once(IPS_ROOT_PATH . 'sources/base/ipsController.php');
-
-        $members_sql = array();
-        $members_sql['select'] = 'm.member_id, m.name, m.email, m.members_display_name, m.title';
-        $members_sql['from'] = ['members' => 'm'];
-        if ($this->option("force-update"))
-            $members_sql['where'] = "name = {$this->option('force-update')}";
-        $members_sql['add_join'] = [
-            [
-            'select' => 'p.field_12, p.field_13, p.field_14, p.field_16',
-            'from' => array('pfields_content' => 'p'),
-            'where' => 'm.member_id = p.member_id',
-            'type' => 'left'
-            ]
-        ];
-
-        ipsRegistry::init();
-        ipsRegistry::DB()->build($members_sql);
-        $_members = ipsRegistry::DB()->execute();
-        $countTotal = ipsRegistry::DB()->getTotalRows();
+        $countTotal = $members->count();
         $countSuccess = 0;
         $countFailure = 0;
 
-        // loop through members
-        while ($_member = ipsRegistry::DB()->fetch($_members)) {
-            if (!$_member["member_id"] || !$_member["name"]) {
+        for ($i = 0; $i < $countTotal; $i++) {
+            $members->next();
+
+            $member = $members->current();
+
+            if (empty($member['vatsim_cid']) || !is_numeric($member['vatsim_cid'])) {
+                if ($verbose) {
+                    $this->output->writeln('<error>FAILURE: ' . $member['member_id'] . ' has no valid CID.</error>');
+                }
                 $countFailure++;
                 continue;
             }
-            if ($debug) echo $_member["member_id"] . " // " . $_member["name"] . ":";
 
-            if (!is_numeric($_member["name"])) {
+            if ($verbose) {
+                $this->output->write($member['member_id'] . ' // ' . $member['vatsim_cid']);
+            }
+
+            $member_core = Account::where('account_id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
+            if ($member_core === NULL) {
+                if ($verbose) {
+                    $this->output->writeln(' // <error>FAILURE: cannot retrieve member ' . $member['member_id'] . ' from Core.</error>');
+                }
                 $countFailure++;
-                if ($debug) echo "\tError: name is not a CID - member ID " . $_member["member_id"] . "\n";
                 continue;
             }
 
-            // retrieve member from core
-            try {
-                $member = Account::findOrFail($_member["name"]);
-            } catch (Exception $e) {
-                $countFailure++;
-                echo "\tError: cannot retrieve member " . $_member["member_id"] . "from Core - " . $e->getMessage() . "\n";
-                continue;
-            }
-
-            // Sort out their email
             $emailLocal = false;
-            $email = $member->primary_email;
+            $email = $member_core->primary_email;
             if (empty($email)) {
-                $email = $_member["email"];
+                $email = $member['email'];
                 $emailLocal = true;
             }
 
-            // State
-            //$state = $member->getIsStateAttribute(EnumState::DIVISION)->first()->state ? "Division Member" : "International Member";
-            //$state = $member->getIsStateAttribute(EnumState::VISITOR)->first()->state ? "Visiting Member" : $state;
-            $state = $member->states()->where("state", "=", EnumState::DIVISION)->first()->state ? "Division Member" : "International Member";
-            $state = $member->states()->where("state", "=", EnumState::VISITOR)->first()->state ? "Visiting Member" : $state;
-
-            // ATC rating
-            $aRatingString = $member->qualification_atc->qualification->name_long;
-
-            // Sort out the pilot rating.
-            $pRatingString = $member->qualifications_pilot_string;
-
-            // Get extra and admin ratings
-            $eRatingString = "";
-            $eRatings = $member->qualifications_atc_training;
-            foreach($eRatings as $eRating){
-                $eRatingString .= $eRating->qualification->name_long . ", ";
-            }
-            $eRatings = $member->qualifications_pilot_training;
-            foreach($eRatings as $eRating){
-                $eRatingString .= $eRating->qualification->name_long . ", ";
-            }
-            $eRatings = $member->qualifications_admin;
-            foreach($eRatings as $eRating){
-                $eRatingString .= $eRating->qualification->name_long . ", ";
-            }
-            $eRatingString = trim($eRatingString, ", ");
+            $state = $member_core->states()->where('state', '=', EnumState::DIVISION)->first()->state ? 'Division Member' : 'International Member';
+            $state = $member_core->states()->where('state', '=', EnumState::VISITOR)->first()->state ? 'Visiting Member' : $state;
+            $aRatingString = $member_core->qualification_atc->qualification->name_long;
+            $pRatingString = $member_core->qualifications_pilot_string;
 
             // Check for changes
-            $changeEmail = strcasecmp($_member["email"], $email);
-            $changeName = strcmp($_member["members_display_name"], $member->name_first . " " . $member->name_last);
-            $changeState = strcasecmp($_member["title"], $state);
-            $changeCID = strcmp($_member["field_12"], $member->account_id);
-            $changeARating = strcmp($_member["field_13"], $aRatingString);
-            $changePRating = strcmp($_member["field_14"], $pRatingString);
-            $changeERating = strcmp($_member["field_16"], $eRatingString);
+            $changeEmail = strcasecmp($member['email'], $email);
+            $changeName = strcmp($member['name'], $member_core->name_first . ' ' . $member_core->name_last);
+            $changeState = strcasecmp($member['member_title'], $state);
+            $changeCID = strcmp($member['field_12'], $member_core->account_id);
+            $changeARating = strcmp($member['field_13'], $aRatingString);
+            $changePRating = strcmp($member['field_14'], $pRatingString);
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
                               || $changeARating || $changePRating || $changeERating;
 
-            // Confirm the data
-            if ($debug) {
-                echo "\tID: " . $member->account_id;
-                echo "\tEmail (" . ($emailLocal ? "local" : "latest") . "):" . $email . ($changeEmail ? "(changed)" : "");
-                echo "\tDisplay: " . $member->name_first . " " . $member->name_last . ($changeName ? "(changed)" : "");
-                echo "\tState: " . $state . ($changeState ? "(changed)" : "");
-                echo "\tATC rating: " . $aRatingString;
-                echo "\tPilot ratings: " . $pRatingString;
-                echo "\tExtra ratings: " . $eRatingString;
+            if ($verbose) {
+                $this->output->write(' // ID: ' . $member_core->account_id);
+                $this->output->write(' // Email (' . ($emailLocal ? 'local' : "latest") . "):" . $email . ($changeEmail ? "(changed)" : ""));
+                $this->output->write(' // Display: ' . $member_core->name_first . " " . $member_core->name_last . ($changeName ? "(changed)" : ""));
+                $this->output->write(' // State: ' . $state . ($changeState ? "(changed)" : ""));
+                $this->output->write(' // ATC rating: ' . $aRatingString);
+                $this->output->write(' // Pilot ratings: ' . $pRatingString);
+                $this->output->write(' // Extra ratings: ' . $eRatingString);
             }
 
             if ($changesPending) {
                 try {
-                    IPSMember::save($_member["member_id"],
-                                    array( 'members' => array(
-                                                'email'  => $email,
-                                                'members_display_name' => $member->name_first . " " . $member->name_last,
-                                                'title' => $state,
-                                        ),
-                                        'pfields_content' => array(
-                                            'field_12' => $member->account_id, // VATSIM CID
-                                            'field_13' => $aRatingString, // Controller Rating
-                                            'field_14' => $pRatingString, // Pilot Ratings
-                                            'field_16' => $eRatingString, // Extra Ratings
-                                        )));
+                    // ActiveRecord / Member fields
+                    $ips_member = \IPS\Member::load($member['member_id']);
+                    $ips_member->name = $member_core->name_first . ' ' . $member_core->name_last;
+                    $ips_member->email = $email;
+                    $ips_member->member_title = $state;
+                    $ips_member->save();
+
+                    // Profile fields (raw update)
+                    $update = [
+                        'field_12' => $member_core->account_id, // VATSIM CID
+                        'field_13' => $aRatingString, // Controller Rating
+                        'field_14' => $pRatingString, // Pilot Ratings
+                    ];
+                    $updated_rows = \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $member['member_id']]);
+
+                    if ($updated_rows !== 1) {
+                        throw new Exception($updated_rows . ' profile field records updated for member ' . $member['member_id'] . '.');
+                    }
+
+                    if ($verbose) {
+                        $this->output->writeln(' // Details saved successfully.');
+                    }
                     $countSuccess++;
-                    if ($debug) echo "\tSaved details.";
                 } catch (Exception $e) {
                     $countFailure++;
-                    echo "\tError saving " . $member->account_id . "details to forum.";
+                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->account_id . ' details to forum.</error>' . $e->getMessage());
                 }
-            } else {
-                if ($debug) echo "\tNo changes required.";
+            } elseif ($verbose) {
+                $this->output->writeln(' // No changes required.');
             }
-            if ($debug) echo "\n";
         }
 
-        if ($debug) echo "Run Results:";
-        if ($debug) echo "Total Accounts: ".$countTotal;
-        if ($debug) echo "Successful Updates: ".$countSuccess;
-        if ($debug) echo "Failed Updates: ".$countFailure;
+        if ($verbose) {
+            $this->output->writeln('Run Results:');
+            $this->output->writeln('Total Accounts: '.$countTotal);
+            $this->output->writeln('Successful Updates: '.$countSuccess);
+            $this->output->writeln('Failed Updates: '.$countFailure);
+        }
     }
 
     /**
@@ -195,10 +163,10 @@ class SyncCommunity extends aCommand {
      *
      * @return array
      */
-    protected function getOptions() {
+    protected function getOptions()
+    {
         return array(
-            array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
-            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
+            //array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
         );
     }
 }
