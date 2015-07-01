@@ -153,7 +153,7 @@ class Queue extends \Models\aTimelineEntry {
         }
 
         // If we've not specified an email, let's just use that
-        if($specifiedEmail){
+        if(isset($specifiedEmail) && !empty($specifiedEmail)){
             $recipientEmailIDs = [$specifiedEmail];
         } else {
             // Get the recipient email ID
