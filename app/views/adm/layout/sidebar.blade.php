@@ -101,9 +101,18 @@
                             <a href="{{ URL::route("adm.mship.permission.index") }}"><i class="fa fa-angle-double-right"></i> Permissions List</a>
                         </li>
                     @endif
+                    @if($_account->hasChildPermission("adm/mship/staff"))
+                        <li {{ (\Request::is('adm/mship/staff*') ? ' class="active"' : '') }}>
+                            <a href="{{ URL::route("adm.mship.staff.index") }}"><i class="fa fa-angle-double-right"></i> Staff List / Layout</a>
+                        </li>
+                    @endif
+
+
+
+                    {{--
                     @if($_account->hasChildPermission("adm/mshipx"))
                         <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Roles List*</a>
+                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Qualifications List*</a>
                         </li>
                     @endif
                     @if($_account->hasChildPermission("adm/mshipx"))
@@ -121,6 +130,7 @@
                             <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Security Settings</a>
                         </li>
                     @endif
+                    --}}
                 </ul>
             </li>
         @endif
