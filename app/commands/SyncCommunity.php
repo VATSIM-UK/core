@@ -47,7 +47,7 @@ class SyncCommunity extends aCommand
             $verbose = false;
         }
 
-        require_once('/var/www/community_beta/init.php');
+        require_once('/var/www/community/init.php');
         require_once(IPS\ROOT_PATH . '/system/Member/Member.php');
         require_once(IPS\ROOT_PATH . '/system/Db/Db.php');
 
