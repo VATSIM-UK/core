@@ -124,7 +124,7 @@ class SyncCommunity extends aCommand
                 $this->output->write(' // Pilot ratings: ' . $pRatingString);
             }
 
-            /*if ($changesPending) {
+            if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
                     $ips_member = \IPS\Member::load($member['member_id']);
@@ -151,7 +151,7 @@ class SyncCommunity extends aCommand
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');
-            }*/
+            }
         }
 
         if ($verbose) {
