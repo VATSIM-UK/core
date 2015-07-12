@@ -58,6 +58,7 @@ class SyncCommunity extends aCommand
         $countSuccess = 0;
         $countFailure = 0;
 
+        $sso_account_id = DB::table('sso_account')->where('username', 'vuk.community')->first()->id;
         for ($i = 0; $i < $countTotal; $i++) {
             $members->next();
 
@@ -84,8 +85,16 @@ class SyncCommunity extends aCommand
                 continue;
             }
 
-            $emailLocal = false;
             $email = $member_core->primary_email;
+            $ssoEmailAssigned = $member_core->sso_emails->filter(function ($ssoemail) use ($sso_account_id) {
+                return $ssoemail->sso_account_id == $sso_account_id;
+            })->values();
+
+            if ($ssoEmailAssigned && count($ssoEmailAssigned) > 0) {
+                $email = $ssoEmailAssigned[0]->email->email;
+            }
+
+            $emailLocal = false;
             if (empty($email)) {
                 $email = $member['email'];
                 $emailLocal = true;
@@ -115,7 +124,7 @@ class SyncCommunity extends aCommand
                 $this->output->write(' // Pilot ratings: ' . $pRatingString);
             }
 
-            if ($changesPending) {
+            /*if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
                     $ips_member = \IPS\Member::load($member['member_id']);
@@ -142,7 +151,7 @@ class SyncCommunity extends aCommand
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');
-            }
+            }*/
         }
 
         if ($verbose) {
