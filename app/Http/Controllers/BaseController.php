@@ -7,8 +7,12 @@ use Models\Mship\Account;
 use Request;
 use Session;
 use View;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class BaseController extends \Controller {
+class BaseController extends \Illuminate\Routing\Controller {
+
+    use DispatchesJobs, ValidatesRequests;
 
     protected $_account;
     protected $_pageTitle;
