@@ -2,6 +2,11 @@
 
 namespace App\Exceptions;
 
+use App;
+use Redirect;
+use Request;
+use Route;
+use Session;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -27,6 +32,14 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
+        if (extension_loaded('newrelic')) {
+            try {
+                newrelic_notice_error(null, $e);
+            } catch (Exception $e) {
+                //
+            }
+        }
+
         return parent::report($e);
     }
 

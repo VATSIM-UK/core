@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env('APP_URL', 'http://undefined'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomString'),
+    'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -115,6 +115,7 @@ return [
          */
         Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
+        //Ollieread\Multiauth\MultiauthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
@@ -144,6 +145,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        'Vatsim\OAuth\OAuthServiceProvider',
+        /*'Vatsim\Xml\XmlServiceProvider',
+        'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
+        'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
+        'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
+        'Zizaco\Entrust\EntrustServiceProvider',*/
+        'Barryvdh\Debugbar\ServiceProvider',
     ],
 
     /*
@@ -191,6 +199,12 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+
+        'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
+        /*'VatsimXML' => 'Vatsim\Xml\Facades\XML',
+        'DbView'    => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
+        'Entrust'   => 'Zizaco\Entrust\EntrustFacade',*/
+        'Debugbar'  => 'Barryvdh\Debugbar\Facade',
 
     ],
 

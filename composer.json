@@ -4,10 +4,25 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/NFarrington/VatsimXML.git"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
+        "vatsim/xml": "dev-master",
+        "vatsim/sso": "2.*",
         "laravel/framework": "5.1.*",
-        "doctrine/dbal": "~2.5"
+        "flynsarmy/db-blade-compiler": "1.*",
+        "wpb/string-blade-compiler": "1.*@dev",
+        "guzzlehttp/guzzle": "~4.0",
+        "doctrine/dbal": "~2.5",
+        "barryvdh/laravel-debugbar" : "~2.0",
+        "watson/validating": "0.10.*",
+        "planetteamspeak/ts3-php-framework": "dev-master",
+        "laravelcollective/html": "~5.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -21,6 +36,7 @@
             "app/Console/Commands",
             "app/Enums",
             "app/Http/Controllers",
+            "app/Interfaces",
             "app/Models"
         ],
         "psr-4": {

@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => App\User::class,
+    'model' => Models\Mship\Account::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'table' => 'users',
+    'table' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -59,8 +59,8 @@ return [
     */
 
     'password' => [
-        'email' => 'emails.password',
-        'table' => 'password_resets',
+        'email' => 'emails.auth.reminder',
+        'table' => 'password_reminders',
         'expire' => 60,
     ],
 

@@ -1,6 +1,0 @@
-.env*
-!.env.sample.php
-nbproject*
-vendor/*
-.idea*
-/bootstrap/compiled.php
