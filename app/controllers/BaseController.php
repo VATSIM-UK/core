@@ -78,8 +78,6 @@ class BaseController extends \Controller {
         }
         $view->with("_pageTitle", ucfirst($this->_pageTitle));
 
-        $view->header("Content-Type", "text/html; charset=iso-8859-1");
-
         return $view;
     }
 }
