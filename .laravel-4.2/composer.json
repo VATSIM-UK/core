@@ -1,0 +1,60 @@
+{
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "repositories": [
+        {
+            "name": "wpb/string-blade-compiler",
+            "url": "https://github.com/TerrePorter/StringBladeCompiler.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "laravel/framework": "4.2.*",
+        "vatsim/sso": "1.*",
+        "nesbot/Carbon": "*",
+        "vatsim/xml": "dev-master",
+        "fitztrev/laravel-html-minify": "1.*",
+        "flynsarmy/db-blade-compiler": "1.*",
+        "wpb/string-blade-compiler": "1.*@dev",
+        "guzzlehttp/guzzle": "~4.0",
+        "doctrine/dbal": "2.6.*@dev",
+        "zizaco/entrust": "1.2.*@dev",
+        "barryvdh/laravel-debugbar" : "~1.8",
+        "ollieread/multiauth": "dev-master",
+        "watson/validating": "0.10.*",
+        "planetteamspeak/ts3-php-framework": "dev-master",
+        "jonathansudhakar/botdetector": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "app/commands",
+            "app/controllers",
+            "app/models",
+            "app/enums",
+            "app/interfaces",
+            "app/providers",
+            "app/database/migrations",
+            "app/database/seeds",
+            "app/tests/TestCase.php"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan clear-compiled",
+            "php artisan optimize"
+        ],
+        "post-update-cmd": [
+            "php artisan clear-compiled",
+            "php artisan optimize"
+        ],
+        "post-create-project-cmd": [
+            "php artisan key:generate"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "stable"
+}
