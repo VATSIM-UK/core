@@ -5,7 +5,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Models\Mship\Account;
 
-class SyncRTS extends aCommand {
+class SyncRTS extends aCommand
+{
 
     /**
      * The console command name.
@@ -21,12 +22,16 @@ class SyncRTS extends aCommand {
      */
     protected $description = 'Sync membership data from Core to the RTS system.';
 
+    protected $sso_account_id;
+
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
+        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->sso_account_id;
         parent::__construct();
     }
 
@@ -35,7 +40,8 @@ class SyncRTS extends aCommand {
      *
      * @return mixed
      */
-    public function fire() {
+    public function fire()
+    {
         global $debug;
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
@@ -79,7 +85,7 @@ class SyncRTS extends aCommand {
             $member = Account::findOrFail($cid);
         } catch (Exception $e) {
             if ($debug) echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
-            return FALSE;
+            return false;
         }
 
         // calculate pilot rating
@@ -92,9 +98,19 @@ class SyncRTS extends aCommand {
         }
 
         // set and process data
+        $email = $member->primary_email;
+        $sso_account_id = $this->sso_account_id;
+        $ssoEmailAssigned = $member->sso_emails->filter(function ($ssoemail) use ($sso_account_id) {
+            return $ssoemail->sso_account_id == $sso_account_id;
+        })->values();
+
+        if ($ssoEmailAssigned && count($ssoEmailAssigned) > 0) {
+            $email = $ssoEmailAssigned[0]->email->email;
+        }
+
         $updateData = array(
             'name' => $member->name_first . ' ' . $member->name_last,
-            'email' => $member->primary_email,
+            'email' => $email,
             'rating' => $member->qualification_atc->qualification->vatsim,
             'prating' => $pRating,
             'last_cert_check' => $member->cert_checked_at
@@ -112,7 +128,7 @@ class SyncRTS extends aCommand {
                         ->where('cid', '=', $cid)
                         ->update($updateData);
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -120,7 +136,8 @@ class SyncRTS extends aCommand {
      *
      * @return array
      */
-    protected function getOptions() {
+    protected function getOptions()
+    {
         return array(
             array("force-update", "f", InputOption::VALUE_OPTIONAL, "If specified, only this CID will be checked.", 0),
             array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),

@@ -47,7 +47,7 @@ class SyncCommunity extends aCommand
             $verbose = false;
         }
 
-        require_once('/var/www/community_beta/init.php');
+        require_once('/var/www/community/init.php');
         require_once(IPS\ROOT_PATH . '/system/Member/Member.php');
         require_once(IPS\ROOT_PATH . '/system/Db/Db.php');
 
@@ -58,6 +58,7 @@ class SyncCommunity extends aCommand
         $countSuccess = 0;
         $countFailure = 0;
 
+        $sso_account_id = DB::table('sso_account')->where('username', 'vuk.community')->first()->sso_account_id;
         for ($i = 0; $i < $countTotal; $i++) {
             $members->next();
 
@@ -84,8 +85,16 @@ class SyncCommunity extends aCommand
                 continue;
             }
 
-            $emailLocal = false;
             $email = $member_core->primary_email;
+            $ssoEmailAssigned = $member_core->sso_emails->filter(function ($ssoemail) use ($sso_account_id) {
+                return $ssoemail->sso_account_id == $sso_account_id;
+            })->values();
+
+            if ($ssoEmailAssigned && count($ssoEmailAssigned) > 0) {
+                $email = $ssoEmailAssigned[0]->email->email;
+            }
+
+            $emailLocal = false;
             if (empty($email)) {
                 $email = $member['email'];
                 $emailLocal = true;
@@ -104,7 +113,7 @@ class SyncCommunity extends aCommand
             $changeARating = strcmp($member['field_13'], $aRatingString);
             $changePRating = strcmp($member['field_14'], $pRatingString);
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
-                              || $changeARating || $changePRating || $changeERating;
+                              || $changeARating || $changePRating;
 
             if ($verbose) {
                 $this->output->write(' // ID: ' . $member_core->account_id);
@@ -113,7 +122,6 @@ class SyncCommunity extends aCommand
                 $this->output->write(' // State: ' . $state . ($changeState ? "(changed)" : ""));
                 $this->output->write(' // ATC rating: ' . $aRatingString);
                 $this->output->write(' // Pilot ratings: ' . $pRatingString);
-                $this->output->write(' // Extra ratings: ' . $eRatingString);
             }
 
             if ($changesPending) {
@@ -132,10 +140,6 @@ class SyncCommunity extends aCommand
                         'field_14' => $pRatingString, // Pilot Ratings
                     ];
                     $updated_rows = \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $member['member_id']]);
-
-                    if ($updated_rows !== 1) {
-                        throw new Exception($updated_rows . ' profile field records updated for member ' . $member['member_id'] . '.');
-                    }
 
                     if ($verbose) {
                         $this->output->writeln(' // Details saved successfully.');
