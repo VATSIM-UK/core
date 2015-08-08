@@ -28,6 +28,7 @@ $env = $app['env'] = $app->detectEnvironment(function() {
     global $app;
     $hosts = array(
         "dev.vatsim-uk.co.uk" => "development",
+        "localhost" => "development",
         "beta.vatsim-uk.co.uk" => "staging",
         "core.vatsim-uk.co.uk" => "production",
         "vatsim-uk.co.uk" => "production",
