@@ -30,7 +30,7 @@ function outputPosition($position, $all_positions)
 @section('content')
 
 @foreach ($ordered_positions as $position)
-    {{ outputPosition($position, $positions) }}
+    {!! outputPosition($position, $positions) !!}
 @endforeach
 
 <script type="text/javascript">

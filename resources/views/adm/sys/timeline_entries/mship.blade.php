@@ -9,7 +9,7 @@
             </span>
 
             <h3 class="timeline-header">
-                {{ str_replace("{owner}", "<a href=''>".$entry->owner_display."</a>", str_replace("{extra}", "<a href=''>".$entry->extra_display."</a>", $entry->entry)) }}
+                {!! str_replace("{owner}", "<a href=''>".$entry->owner_display."</a>", str_replace("{extra}", "<a href=''>".$entry->extra_display."</a>", $entry->entry)) !!}
             </h3>
 
             <div class="timeline-body">

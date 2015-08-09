@@ -4,7 +4,7 @@
 
 @if (array_get($_SERVER, 'REMOTE_ADDR') != $_registration->registration_ip)
 <div class="alert alert-danger" role="alert"><strong>Warning!</strong> Your current IP address ({{ array_get($_SERVER, 'REMOTE_ADDR') }}) is different to the IP address you used to create this registration ({{ $_registration->registration_ip }}).<br>
-To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{{ link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) }}</strong> to start a new registration.</div>
+To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{!! link_to_route('teamspeak.delete', 'Click here', [$_registration->id], ['class' => 'alert-link']) !!}</strong> to start a new registration.</div>
 @endif
 
 <div id="helpmessage" class="alert alert-danger" role="alert" style="display:none">Having trouble with your registration? Please feel free to <a href="http://helpdesk.vatsim-uk.co.uk" class="alert-link">contact us</a> with any queries or issues.</div>

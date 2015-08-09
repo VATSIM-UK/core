@@ -9,7 +9,7 @@
         </span>
 
         <h3 class="timeline-header">
-            {{ str_replace("{owner}", "<a href='".URL::route("adm.mship.account.details", [$entry->owner_id])."'>".$entry->owner_display."</a>", str_replace("{extra}", "<a href='".URL::route("adm.sys.postmaster.queue.view", [$entry->extra_id])."'>".$entry->extra_display."</a>", $entry->entry)) }}
+            {!! str_replace("{owner}", "<a href='".URL::route("adm.mship.account.details", [$entry->owner_id])."'>".$entry->owner_display."</a>", str_replace("{extra}", "<a href='".URL::route("adm.sys.postmaster.queue.view", [$entry->extra_id])."'>".$entry->extra_display."</a>", $entry->entry)) !!}
         </h3>
 
         <div class="timeline-body">

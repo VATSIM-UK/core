@@ -209,7 +209,7 @@
     <tr>
         <th class='hidden-xs hidden-sm'>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {!! link_to_route('teamspeak.new', 'New Registration') !!} ]</small>@endif</th>
         <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {{ link_to_route('teamspeak.new', 'New Registration') }} ]</small>@endif</strong></span>
+            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {!! link_to_route('teamspeak.new', 'New Registration') !!} ]</small>@endif</strong></span>
             @if (count($_account->teamspeak_registrations) == 0)
                     No registrations found.
             @endif

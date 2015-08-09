@@ -21,7 +21,7 @@
             <div class="box-body">
                 <div class="row">
                     <div align="center">
-                        {{ $templates->links() }}
+                        {!! $templates->render() !!}
                     </div>
                 </div>
                 <table id="mship-accounts" class="table table-bordered table-striped">
@@ -41,7 +41,7 @@
                     <tbody>
                         @foreach($templates as $t)
                         <tr>
-                            <td> {{ link_to_route('adm.sys.postmaster.template.view', $t->postmaster_template_id, [$t->postmaster_template_id]) }} </td>
+                            <td> {!! link_to_route('adm.sys.postmaster.template.view', $t->postmaster_template_id, [$t->postmaster_template_id]) !!} </td>
                             <td>{{ $t->section }}</td>
                             <td>{{ $t->area }}</td>
                             <td>{{ $t->action }}</td>
@@ -78,7 +78,7 @@
                 </table>
                 <div class="row">
                     <div align="center">
-                        {{ $templates->links() }}
+                        {!! $templates->render() !!}
                     </div>
                 </div>
             </div><!-- /.box-body -->

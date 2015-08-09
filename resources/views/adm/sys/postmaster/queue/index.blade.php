@@ -21,13 +21,13 @@
             <div class="box-body">
                 <div class="row">
                     <div align="center">
-                        {{ $queue->links() }}
+                        {!! $queue->render() !!}
                     </div>
                 </div>
                 @include('adm.sys.postmaster.queue.widget', array('queue' => $queue))
                 <div class="row">
                     <div align="center">
-                        {{ $queue->links() }}
+                        {!! $queue->render() !!}
                     </div>
                 </div>
             </div><!-- /.box-body -->

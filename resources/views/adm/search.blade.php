@@ -30,13 +30,13 @@
                         <tbody>
                             @foreach($members as $m)
                             <tr>
-                                <td>{{ link_to_route("adm.mship.account.details", $m->account_id, [$m->account_id]) }}</td>
+                                <td>{!! link_to_route("adm.mship.account.details", $m->account_id, [$m->account_id]) !!}</td>
                                 <td>{{ $m->name }}</td>
                                 <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
                                 <td>{{ $m->qualification_pilot }}</td>
                                 <td>{{ $m->current_state }}</td>
-                                <td>{{ $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' }}</td>
+                                <td>{!! $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' !!}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -72,10 +72,10 @@
                         <tbody>
                             @foreach($emails as $e)
                             <tr>
-                                <td>{{ link_to_route('adm.mship.account.details', $e->account_id, [$e->account_id]) }}</td>
+                                <td>{!! link_to_route('adm.mship.account.details', $e->account_id, [$e->account_id]) !!}</td>
                                 <td>{{ $e->account->name }}</td>
                                 <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $e->email : "[ No Permission ]" }}</td>
-                                <td>{{ $e->is_primary ? '<span class="label label-success">Primary</span>' : '<span class="label label-default">Secondary</span>' }}</td>
+                                <td>{!! $e->is_primary ? '<span class="label label-success">Primary</span>' : '<span class="label label-default">Secondary</span>' !!}</td>
                                 <td>{{ $e->created_at }}</td>
                                 <td>{{ $e->verified_at }}</td>
                                 <td>{{ $m->deleted_at ? $m->deleted_at : "Not Deleted" }}</td>

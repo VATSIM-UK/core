@@ -462,7 +462,7 @@
                                                                 <span class="time pull-right">
                                                                     <small>
                                                                         <i class="fa fa-user"></i>
-                                                                        {{ $note->writer->name }} ({{ link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) }})
+                                                                        {{ $note->writer->name }} ({!! link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!})
 
                                                                         <i class="fa fa-clock-o"></i>
                                                                         {{ $note->created_at->diffForHumans() }}, {{ $note->created_at->toDateTimeString() }}

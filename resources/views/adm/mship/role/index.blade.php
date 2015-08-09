@@ -10,7 +10,7 @@
             <div class="box-body">
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {{ link_to_route("adm.mship.role.create", "Create Role", [], ["class" => "btn btn-success"]) }}
+                        {!! link_to_route("adm.mship.role.create", "Create Role", [], ["class" => "btn btn-success"]) !!}
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <tbody>
                         @foreach($roles as $r)
                         <tr>
-                            <td>{{ link_to_route('adm.mship.role.update', $r->role_id, [$r->role_id]) }}</td>
+                            <td>{!! link_to_route('adm.mship.role.update', $r->role_id, [$r->role_id]) !!}</td>
                             <td>
                                 {{ $r->name }}
                                 @if($r->default)
@@ -60,7 +60,7 @@
                             <td>{{ $r->updated_at->toDateTimeString() }}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/role/*/update"))
-                                    {{ link_to_route("adm.mship.role.update", "Edit", [$r->role_id], ["class" => "btn btn-xs btn-primary"]) }}
+                                    {!! link_to_route("adm.mship.role.update", "Edit", [$r->role_id], ["class" => "btn btn-xs btn-primary"]) !!}
                                 @endif
                                 @if($_account->hasPermission("adm/mship/role/*/delete"))
                                     {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.role.delete", [$r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
