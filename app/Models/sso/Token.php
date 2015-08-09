@@ -2,7 +2,6 @@
 
 namespace Models\Sso;
 
-
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 class Token extends \Models\aTimelineEntry {
@@ -18,7 +17,7 @@ class Token extends \Models\aTimelineEntry {
         }
 
         public function getIsExpiredAttribute(){
-            return Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
+            return \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
         }
 
         public function scopeTokenValue($query, $tokenValue){

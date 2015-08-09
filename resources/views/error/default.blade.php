@@ -15,7 +15,7 @@
         </p>
     @show
     <p>
-        If you keep experiencing this issue, please let the web services team know by emailing {{ HTML::mailto('web-support@vatsim-uk.co.uk') }}.
+        If you keep experiencing this issue, please let the web services team know by emailing {!! HTML::mailto('web-support@vatsim-uk.co.uk') !!}.
         @if(Auth::check())
              Meanwhile, you may {{ link_to("/mship/manage/dashboard", "return to the dashboard") }}.
         @endif
@@ -23,7 +23,7 @@
 
     @section('error_image')
         <p align='center'>
-            {{ HTML::image("/assets/images/error.jpg") }}
+            {!! HTML::image("/assets/images/error.jpg") !!}
         </p>
     @show
 

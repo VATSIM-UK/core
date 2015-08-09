@@ -12,6 +12,7 @@
     <div class="row">
         <div class="col-md-7 col-md-offset-4">
             <form class="form-horizontal" method="POST" action="{{ URL::route("mship.auth.logout") }}">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group col-md-offset-3">
                     <div class="btn-group">
                         <button type="submit" class="btn btn-success btn-lg" name="processlogout" value="1">YES, please!</button>

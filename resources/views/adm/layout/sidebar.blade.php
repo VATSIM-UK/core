@@ -3,7 +3,7 @@
     <!-- Sidebar user panel -->
     <div class="user-panel">
         <div class="pull-left image">
-            {{ HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle", "style" => "background: #FFFFFF;"]) }}
+            {!! HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle", "style" => "background: #FFFFFF;"]) !!}
         </div>
         <div class="pull-left info">
             <p>Hello, {{ $_account->name_first }}</p>
@@ -13,14 +13,14 @@
     </div>
 
     <!-- search form -->
-    {{ Form::open(array("url" => URL::route("adm.search"), "method" => "GET", "class" => "sidebar-form")) }}
+    {!! Form::open(array("url" => URL::route("adm.search"), "method" => "GET", "class" => "sidebar-form")) !!}
     <div class="input-group">
         <input type="text" name="q" class="form-control" placeholder="Search..."/>
         <span class="input-group-btn">
             <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
         </span>
     </div>
-    {{ Form::close() }}
+    {!! Form::close() !!}
     <!-- /.search form -->
 
     <ul class="sidebar-menu">

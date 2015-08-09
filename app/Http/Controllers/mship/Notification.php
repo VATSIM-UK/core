@@ -30,8 +30,8 @@ class Notification extends \Controllers\BaseController {
 
     public function getList() {
         // Get all unread notifications.
-        $unreadNotifications = $this->_account->unread_notifications;
-        $readNotifications = $this->_account->read_notifications;
+        $unreadNotifications = $this->_account->unreadNotifications;
+        $readNotifications = $this->_account->readNotifications;
 
         return $this->viewMake("mship.notification.list")
                     ->with("unreadNotifications", $unreadNotifications)

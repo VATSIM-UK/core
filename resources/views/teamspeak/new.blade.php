@@ -22,7 +22,7 @@ To successfully register, your current IP address must be identical to the one y
     <li>Click the "More" tab so that you are presented with a screen similar to the image below</li>
 
     <ul class='list-unstyled' style="margin-left: 20px">
-        <li><br>{{ HTML::image('assets/images/ts_connect.png', 'Connection Screenshot', ['style' => 'box-shadow: 10px 10px 35px #777']) }}</li>
+        <li><br>{!! HTML::image('assets/images/ts_connect.png', 'Connection Screenshot', ['style' => 'box-shadow: 10px 10px 35px #777']) !!}</li>
         <li><br>Server Address: {{ $_ENV['ts.host'] }}</li>
         <li>Nickname: {{ $_account->name_first . " " . $_account->name_last }}</li>
         <li>One-Time Privilege Key: {{ $_confirmation->privilege_key }}</li>

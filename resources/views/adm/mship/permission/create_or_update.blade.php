@@ -12,31 +12,31 @@
             <div class="box-body">
 
                 @if(isset($permission))
-                    {{ Form::model($permission, ['route' => ['adm.mship.permission.update', $permission->permission_id]]) }}
+                    {!! Form::model($permission, ['route' => ['adm.mship.permission.update', $permission->permission_id]]) !!}
                 @else
-                    {{ Form::open(["route" => "adm.mship.permission.create"]) }}
+                    {!! Form::open(["route" => "adm.mship.permission.create"]) !!}
                 @endif
 
                 <div class="form-group">
-                    {{ Form::label("name", "Name") }}
-                    {{ Form::text("name", null, ["class" => "form-control"]) }}
+                    {!! Form::label("name", "Name") !!}
+                    {!! Form::text("name", null, ["class" => "form-control"]) !!}
                 </div>
 
                 <div class="form-group">
-                    {{ Form::label("display_name", "Display Name") }}
-                    {{ Form::text("display_name", null, ["class" => "form-control"]) }}
+                    {!! Form::label("display_name", "Display Name") !!}
+                    {!! Form::text("display_name", null, ["class" => "form-control"]) !!}
                 </div>
 
                 <div class="form-group">
-                    {{ Form::label("roles[]", "Roles") }}
+                    {!! Form::label("roles[]", "Roles") !!}
                     <div class="row">
                         @foreach($roles as $r)
                             <div class="col-sm-4">
                                 <div class='checkbox'>
                                     @if(isset($permission))
-                                        {{ Form::checkbox("roles[".$r->role_id."]", $r->role_id, ($r->hasPermission($permission) OR Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) }}
+                                        {!! Form::checkbox("roles[".$r->role_id."]", $r->role_id, ($r->hasPermission($permission) OR Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) !!}
                                     @else
-                                        {{ Form::checkbox("roles[".$r->role_id."]", $r->role_id, (Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) }}
+                                        {!! Form::checkbox("roles[".$r->role_id."]", $r->role_id, (Input::old("roles.".$r->role_id) ? "checked='checked'" : "")) !!}
                                     @endif
                                     {{ $r->name }}
                                 </div>
@@ -47,11 +47,11 @@
 
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {{ Form::submit("Create Role", ["class" => "btn btn-primary"]) }}
+                        {!! Form::submit("Create Role", ["class" => "btn btn-primary"]) !!}
                     </div>
                 </div>
 
-                {{ Form::close() }}
+                {!! Form::close() !!}
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div>
@@ -60,5 +60,5 @@
 
 @section('scripts')
 @parent
-{{ HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') }}
+{!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
 @stop

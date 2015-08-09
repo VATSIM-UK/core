@@ -161,11 +161,11 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function getHasUnreadNotificationsAttribute(){
-        return $this->unread_notifications->count() > 0;
+        return $this->unreadNotifications->count() > 0;
     }
 
     public function getHasUnreadImportantNotificationsAttribute(){
-        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+        $unreadNotifications = $this->unreadNotifications->filter(function($notice){
             return $notice->status == \Models\Sys\Notification::STATUS_IMPORTANT;
         });
 
@@ -173,7 +173,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function getHasUnreadMustAcknowledgeNotificationsAttribute(){
-        $unreadNotifications = $this->unread_notifications->filter(function($notice){
+        $unreadNotifications = $this->unreadNotifications->filter(function($notice){
             return $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE;
         });
 

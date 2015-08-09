@@ -139,7 +139,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank")) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank")) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -156,8 +156,8 @@
                                         </p>
                                         <p>
                                         <div class="form-group">
-                                            {{ Form::Label("reason", "Reason") }}
-                                            {{ Form::textarea("reason", null, ["class" => "form-control"]) }}
+                                            {!! Form::Label("reason", "Reason") !!}
+                                            {!! Form::textarea("reason", null, ["class" => "form-control"]) !!}
                                         </div>
                                         </p>
                                     </div>
@@ -167,7 +167,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
@@ -211,7 +211,7 @@
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
                                                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/".$r->role_id."/detach"))
-                                                        <td>{{ Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->account_id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) }}</td>
+                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->account_id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
                                                 @endforeach
@@ -225,7 +225,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.role.attach", $account->account_id))) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.role.attach", $account->account_id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -254,7 +254,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
@@ -318,7 +318,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/enable"))
                         <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.security.enable", $account->account_id))) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.enable", $account->account_id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -347,13 +347,13 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/reset"))
                         <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.security.reset", $account->account_id))) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.reset", $account->account_id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -372,13 +372,13 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/change"))
                         <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.security.change", $account->account_id))) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.change", $account->account_id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -410,7 +410,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
@@ -484,7 +484,7 @@
                     @endif
 
                     <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
-                        {{ Form::open(array("url" => URL::route("adm.mship.account.note.filter", $account->account_id))) }}
+                        {!! Form::open(array("url" => URL::route("adm.mship.account.note.filter", $account->account_id))) !!}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -510,12 +510,12 @@
                                 </div>
                             </div>
                         </div>
-                        {{ Form::close() }}
+                        {!! Form::close() !!}
                     </div>
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create"))
                         <div class="modal fade" id="modalNoteCreate" tabindex="-1" role="dialog" aria-labelledby="Create Note" aria-hidden="true">
-                            {{ Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->account_id))) }}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->account_id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -548,7 +548,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{ Form::close() }}
+                            {!! Form::close() !!}
                         </div>
                     @endif
 

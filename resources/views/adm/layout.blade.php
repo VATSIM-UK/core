@@ -5,28 +5,28 @@
         <title>VATSIM UK :: Administration Panel</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- bootstrap 3.0.2 -->
-        {{ HTML::style('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css') }}
+        {!! HTML::style('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css') !!}
         <!-- font Awesome -->
-        {{ HTML::style('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css') }}
+        {!! HTML::style('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css') !!}
         <!-- Ionicons -->
-        {{ HTML::style('//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css') }}
+        {!! HTML::style('//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css') !!}
 
         <!-- Morris chart -->
-        {{ HTML::style('/assets/css/morris/morris.css') }}
+        {!! HTML::style('/assets/css/morris/morris.css') !!}
         <!-- jvectormap -->
-        {{ HTML::style('/assets/css/jvectormap/jquery-jvectormap-1.2.2.css') }}
+        {!! HTML::style('/assets/css/jvectormap/jquery-jvectormap-1.2.2.css') !!}
         <!-- Date Picker -->
-        {{ HTML::style('/assets/css/datepicker/datepicker3.css') }}
+        {!! HTML::style('/assets/css/datepicker/datepicker3.css') !!}
         <!-- Daterange picker -->
-        {{ HTML::style('/assets/css/daterangepicker/daterangepicker-bs3.css') }}
+        {!! HTML::style('/assets/css/daterangepicker/daterangepicker-bs3.css') !!}
         <!-- bootstrap wysihtml5 - text editor -->
-        {{ HTML::style('/assets/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}
+        {!! HTML::style('/assets/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') !!}
         <!-- bootstrapSwitch -->
-        {{ HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/css/bootstrap3/bootstrap-switch.min.css') }}
+        {!! HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/css/bootstrap3/bootstrap-switch.min.css') !!}
         <!-- bootstrapSelect -->
-        {{ HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css') }}
+        {!! HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css') !!}
         <!-- Theme style -->
-        {{ HTML::style('/assets/css/AdminLTE.css') }}
+        {!! HTML::style('/assets/css/AdminLTE.css') !!}
 
         @section('styles')
         @show
@@ -108,38 +108,38 @@
         <!-- add new calendar event modal -->
 
         <!-- jQuery 2.0.2 -->
-        {{ HTML::script('https://code.jquery.com/jquery-2.1.1.min.js') }}
+        {!! HTML::script('https://code.jquery.com/jquery-2.1.1.min.js') !!}
         <!-- jQuery UI 1.10.3 -->
-        {{ HTML::script('https://code.jquery.com/ui/1.11.1/jquery-ui.min.js') }}
+        {!! HTML::script('https://code.jquery.com/ui/1.11.1/jquery-ui.min.js') !!}
         <!-- Bootstrap -->
-        {{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
+        {!! HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') !!}
         <!-- Morris.js charts -->
-        {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js') }}
-        {{ HTML::script('/assets/js/plugins/morris/morris.min.js') }}
+        {!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js') !!}
+        {!! HTML::script('/assets/js/plugins/morris/morris.min.js') !!}
         <!-- Sparkline -->
-        {{ HTML::script('/assets/js/plugins/sparkline/jquery.sparkline.min.js') }}
+        {!! HTML::script('/assets/js/plugins/sparkline/jquery.sparkline.min.js') !!}
         <!-- jvectormap -->
-        {{ HTML::script('/assets/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}
-        {{ HTML::script('/assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}
+        {!! HTML::script('/assets/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') !!}
+        {!! HTML::script('/assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') !!}
         <!-- jQuery Knob Chart -->
-        {{ HTML::script('/assets/js/plugins/jqueryKnob/jquery.knob.js') }}
+        {!! HTML::script('/assets/js/plugins/jqueryKnob/jquery.knob.js') !!}
         <!-- daterangepicker -->
-        {{ HTML::script('/assets/js/plugins/daterangepicker/daterangepicker.js') }}
+        {!! HTML::script('/assets/js/plugins/daterangepicker/daterangepicker.js') !!}
         <!-- datepicker -->
-        {{ HTML::script('/assets/js/plugins/datepicker/bootstrap-datepicker.js') }}
+        {!! HTML::script('/assets/js/plugins/datepicker/bootstrap-datepicker.js') !!}
         <!-- Bootstrap WYSIHTML5 -->
-        {{ HTML::script('/assets/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}
+        {!! HTML::script('/assets/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') !!}
         <!-- BootstrapSwitch -->
-        {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js') }}
+        {!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js') !!}
         <!-- BootstrapSelect -->
-        {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.js') }}
+        {!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.js') !!}
         <!-- BootstrapConfirmation -->
-        {{ HTML::script('/assets/js/plugins/bootstrap-confirmation/bootstrap-confirmation.js') }}
+        {!! HTML::script('/assets/js/plugins/bootstrap-confirmation/bootstrap-confirmation.js') !!}
         <!-- iCheck -->
-        {{ HTML::script('/assets/js/plugins/iCheck/icheck.min.js') }}
+        {!! HTML::script('/assets/js/plugins/iCheck/icheck.min.js') !!}
 
         <!-- AdminLTE App -->
-        {{ HTML::script('/assets/js/AdminLTE/app.js') }}
+        {!! HTML::script('/assets/js/AdminLTE/app.js') !!}
 
         <script language="javascript" type="text/javascript">
             $('.selectpicker').selectpicker();

@@ -7,6 +7,7 @@ use Auth;
 use Request;
 use Response;
 use Redirect;
+use Session;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 

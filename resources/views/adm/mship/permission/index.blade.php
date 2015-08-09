@@ -59,7 +59,7 @@
                                     {{ link_to_route("adm.mship.permission.update", "Edit", [$p->permission_id], ["class" => "btn btn-xs btn-primary"]) }}
                                 @endif
                                 @if($_account->hasPermission("adm/mship/permission/*/delete"))
-                                    {{ Form::button("Delete", ["data-href" => URL::route("adm.mship.permission.delete", [$p->permission_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) }}
+                                    {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.permission.delete", [$p->permission_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                 @endif
                             </td>
                         </tr>
@@ -82,5 +82,5 @@
 
 @section('scripts')
 @parent
-{{ HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') }}
+{!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
 @stop

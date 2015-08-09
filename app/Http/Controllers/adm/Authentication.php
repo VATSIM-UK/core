@@ -2,17 +2,18 @@
 
 namespace Controllers\Adm;
 
-use \Auth;
-use \Input;
-use \Session;
-use \Response;
-use \URL;
-use \View;
-use \VatsimSSO;
-use \Config;
-use \Redirect;
-use \Models\Mship\Account;
-use \Models\Timeline\Entry;
+use Auth;
+use Exception;
+use Input;
+use Session;
+use Response;
+use URL;
+use View;
+use VatsimSSO;
+use Config;
+use Redirect;
+use Models\Mship\Account;
+use Models\Timeline\Entry;
 
 class Authentication extends \Controllers\Adm\AdmController {
 
