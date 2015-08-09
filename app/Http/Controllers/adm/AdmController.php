@@ -70,8 +70,8 @@ class AdmController extends \Controllers\BaseController {
         }
 
         public function __construct(){
-            if(Auth::admin()->check()){
-                $this->_account = Auth::admin()->get();
+            if(Auth::check()){
+                $this->_account = Auth::user();
                 $this->_account->load("roles", "roles.permissions");
             } else {
                 $this->_account = new Account();

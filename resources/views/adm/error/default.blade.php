@@ -1,4 +1,4 @@
-@extends('adm.layout', ['shellOnly' => !Auth::admin()->check()])
+@extends('adm.layout', ['shellOnly' => !Auth::check()])
 
 @section('content')
 <div class="error-page">
@@ -17,7 +17,7 @@
         @show
         <p>
             If you keep experiencing this issue, please let the web services team know by emailing {{ HTML::mailto('web-support@vatsim-uk.co.uk') }}.
-            @if(Auth::admin()->check())
+            @if(Auth::check())
                  Meanwhile, you may {{ link_to_route("adm.dashboard", "return to the dashboard") }}.
             @endif
         </p>

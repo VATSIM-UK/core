@@ -21,7 +21,7 @@ class Authentication extends \Controllers\Adm\AdmController {
     }
 
     public function getLogout(){
-        Auth::admin()->logout();
+        Auth::logout();
         return Redirect::route("adm.authentication.login");
     }
 
@@ -66,7 +66,7 @@ class Authentication extends \Controllers\Adm\AdmController {
                         return Response::make("Unauthorised", 401);
                     }
 
-                    Auth::admin()->login($account);
+                    Auth::login($account);
 
                     // Let's send them over to the authentication redirect now.
                     return Redirect::route("adm.dashboard");

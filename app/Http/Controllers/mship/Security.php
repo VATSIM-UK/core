@@ -174,7 +174,7 @@ class Security extends \Controllers\BaseController {
         }
 
         Auth::user()->resetPassword();
-        Auth::user()->logout();
+        Auth::logout();
 
         return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
                 an authorisation link has been emailed to you.  Once you click this link to confirm this request

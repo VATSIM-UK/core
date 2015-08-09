@@ -57,14 +57,14 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::filter('auth.admin', function() {
-            if(!Auth::admin()->check()){
+            if(!Auth::check()){
                 if(Request::ajax()){
                     return Response::make("Unauthorised", 401);
                 } else {
                     return Redirect::route("adm.authentication.login");
                 }
             } else {
-                if(!Auth::admin()->get()->hasPermission(Request::decodedPath())){
+                if(!Auth::user()->hasPermission(Request::decodedPath())){
                     return Redirect::route("adm.error", [401]);
                 }
             }

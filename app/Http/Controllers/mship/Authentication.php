@@ -216,7 +216,7 @@ class Authentication extends \Controllers\BaseController {
                     $account->determineState($user->region->code, $user->division->code);
                     $account->save();
 
-                    Auth::user()->login($account, true);
+                    Auth::login($account, true);
 
                     // Let's send them over to the authentication redirect now.
                     return Redirect::route("mship.auth.redirect");

@@ -299,8 +299,7 @@ class Account extends \Controllers\Adm\AdmController {
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType->note_type_id, Input::get("content"), Auth::admin()
-                                                                              ->get());
+        $account->addNote($noteType->note_type_id, Input::get("content"), Auth::user());
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])
                        ->withSuccess("The note has been saved successfully!");
@@ -326,12 +325,10 @@ class Account extends \Controllers\Adm\AdmController {
             return Redirect::route("adm.mship.account.index");
         }
 
-        TimelineEntryData::log("mship_account_impersonate", Auth::admin()
-                                                                ->get(), $account, ["reason" => Input::get("reason")]);
+        TimelineEntryData::log("mship_account_impersonate", Auth::user(), $account, ["reason" => Input::get("reason")]);
 
         // Let's do the login!
-        Auth::admin()
-            ->impersonate("user", $account->account_id);
+        Auth::impersonate("user", $account->account_id);
         Session::set("auth_override", true);
 
         return Redirect::to(URL::route("mship.manage.dashboard"))
