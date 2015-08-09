@@ -18,11 +18,8 @@ class BaseController extends \Illuminate\Routing\Controller {
     protected $_pageTitle;
 
     public function __construct() {
-        if(Auth::user()
-               ->check()
-        ) {
-            $this->_account = Auth::user()
-                                  ->get();
+        if(Auth::check()) {
+            $this->_account = Auth::user();
             $this->_account->load("roles", "roles.permissions");
 
             // Do we need to do some debugging on this user?

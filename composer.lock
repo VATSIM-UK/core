@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ec058e40273c3e1456573ba2b24649e5",
+    "hash": "a22dce761050768f86bb01fceba5750a",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -1687,6 +1687,57 @@
                 "shell"
             ],
             "time": "2015-07-16 15:26:57"
+        },
+        {
+            "name": "sboo/multiauth",
+            "version": "v4.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sboo/multiauth.git",
+                "reference": "1420d7536215a359c05d3aa59a8c1addd302bf3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sboo/multiauth/zipball/1420d7536215a359c05d3aa59a8c1addd302bf3e",
+                "reference": "1420d7536215a359c05d3aa59a8c1addd302bf3e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "~5.0|~5.1",
+                "illuminate/console": "~5.0|~5.1",
+                "illuminate/database": "~5.0|~5.1",
+                "illuminate/filesystem": "~5.0|~5.1",
+                "illuminate/support": "~5.0|~5.1",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ollieread\\Multiauth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ollie Read",
+                    "email": "labs@ollieread.com"
+                },
+                {
+                    "name": "Ramon Ackermann",
+                    "email": "ramon.ackermann@sboo.eu"
+                }
+            ],
+            "description": "Multiple auth driver for Laravel 5",
+            "keywords": [
+                "auth",
+                "laravel",
+                "laravel 5",
+                "multi"
+            ],
+            "time": "2015-06-16 14:13:03"
         },
         {
             "name": "swiftmailer/swiftmailer",

@@ -19,7 +19,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\Controllers';
+    protected $namespace = null;
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         Route::filter('auth.user', function() {
-            if(!Auth::user()->check()){
+            if(!Auth::check()){
                 if(Request::ajax()){
                     return Response::make("Unauthorised", 401);
                 } else {
@@ -40,7 +40,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::filter('auth.user.full', function() {
-            if(!Auth::user()->check() OR !Auth::user()->get()->auth_extra){
+            if(!Auth::check() OR !Auth::user()->auth_extra){
                 if(Request::ajax()){
                     return Response::make("Unauthorised", 401);
                 } else {
@@ -50,7 +50,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::filter("user.must.read.notifications", function(){
-            if(Auth::user()->check() && Auth::user()->get()->auth_extra && (Auth::user()->get()->has_unread_important_notifications OR Auth::user()->get()->has_unread_must_acknowledge_notifications)){
+            if(Auth::check() && Auth::user()->auth_extra && (Auth::user()->has_unread_important_notifications OR Auth::user()->has_unread_must_acknowledge_notifications)){
                 Session::set("force_notification_read_return_url", Request::fullUrl());
                 return Redirect::route("mship.notification.list");
             }

@@ -17,7 +17,7 @@ class Authentication extends \Controllers\BaseController {
 
     public function getRedirect() {
         // If there's NO basic auth, send to login.
-        if (!Auth::user()->check()) {
+        if (!Auth::check()) {
             return Redirect::route("mship.auth.login");
         }
 
@@ -103,7 +103,7 @@ class Authentication extends \Controllers\BaseController {
         $account->auth_extra_at = \Carbon\Carbon::now();
         $account->save();
 
-        Auth::user()->login($account, true);
+        Auth::login($account, true);
         Session::forget("cert_offline");
 
         // Let's send them over to the authentication redirect now.
@@ -114,11 +114,11 @@ class Authentication extends \Controllers\BaseController {
         Session::set("auth_return", Input::get("returnURL", URL::route("mship.manage.dashboard")));
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
-        if (Auth::user()->check() OR Auth::user()->viaremember()) {
+        if (Auth::check() OR Auth::viaRemember()) {
 
             // Let's just check we're not demanding forceful re-authentication via secondary!
             if(Request::query("force", false)){
-                $user = Auth::user()->get();
+                $user = Auth::user();
                 $user->auth_extra = 0;
                 $user->auth_extra_at = null;
                 $user->save();
@@ -236,24 +236,24 @@ class Authentication extends \Controllers\BaseController {
     }
 
     public function postLogout($force = false) {
-        if (Auth::user()->check() && (Input::get("processlogout", 0) == 1 OR $force)) {
-            $user = Auth::user()->get();
+        if (Auth::check() && (Input::get("processlogout", 0) == 1 OR $force)) {
+            $user = Auth::user();
             $user->auth_extra = 0;
             $user->auth_extra_at = NULL;
             $user->save();
-            Auth::user()->logout();
+            Auth::logout();
         }
         return Redirect::to(Session::pull("logout_return", "/mship/manage/landing"));
     }
 
     public function getInvisibility() {
         // Toggle
-        if (Auth::user()->get()->is_invisible) {
-            Auth::user()->get()->is_invisible = 0;
+        if (Auth::user()->is_invisible) {
+            Auth::user()->is_invisible = 0;
         } else {
-            Auth::user()->get()->is_invisible = 1;
+            Auth::user()->is_invisible = 1;
         }
-        Auth::user()->get()->save();
+        Auth::user()->save();
 
         return Redirect::route("mship.manage.landing");
     }

@@ -17,7 +17,7 @@ use \Models\Sso\Token as SSOToken;
 
 class Management extends \Controllers\BaseController {
     public function getLanding(){
-        if(Auth::user()->check()){
+        if(Auth::check()){
             return Redirect::route("mship.auth.redirect");
         }
 

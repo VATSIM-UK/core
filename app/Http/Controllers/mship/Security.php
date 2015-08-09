@@ -20,12 +20,12 @@ class Security extends \Controllers\BaseController {
         }
 
         // Let's check whether we even NEED this.
-        if (Auth::user()->get()->auth_extra OR !Auth::user()->get()->current_security OR Auth::user()->get()->current_security == NULL) {
+        if (Auth::user()->auth_extra OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
             return Redirect::route("mship.auth.redirect");
         }
 
         // Next, do we need to replace/reset?
-        if (!Auth::user()->get()->current_security->is_active) {
+        if (!Auth::user()->current_security->is_active) {
             return Redirect::route("mship.security.replace");
         }
 
@@ -34,8 +34,8 @@ class Security extends \Controllers\BaseController {
     }
 
     public function postAuth() {
-        if (Auth::user()->get()->current_security->verifyPassword(Input::get("password"))) {
-            $user = Auth::user()->get();
+        if (Auth::user()->current_security->verifyPassword(Input::get("password"))) {
+            $user = Auth::user();
             $user->auth_extra = 1;
             $user->auth_extra_at = \Carbon\Carbon::now();
             $user->save();
@@ -49,7 +49,7 @@ class Security extends \Controllers\BaseController {
     }
 
     public function getReplace($disable = false) {
-        $currentSecurity = Auth::user()->get()->current_security;
+        $currentSecurity = Auth::user()->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
@@ -103,14 +103,14 @@ class Security extends \Controllers\BaseController {
     }
 
     public function postReplace($disable = false) {
-        $currentSecurity = Auth::user()->get()->current_security;
+        $currentSecurity = Auth::user()->current_security;
 
         if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         }
 
         if ($currentSecurity && strlen($currentSecurity->value) > 1) {
-            if (!Auth::user()->get()->current_security->verifyPassword(Input::get("old_password"))) {
+            if (!Auth::user()->current_security->verifyPassword(Input::get("old_password"))) {
                 return Redirect::route("mship.security.replace", [(int)$disable])->with("error", "Your old password is incorrect.  Please try again.");
             }
 
@@ -159,9 +159,9 @@ class Security extends \Controllers\BaseController {
         }
 
         // All requirements met, set the password!
-        Auth::user()->get()->setPassword($newPassword, $securityType);
+        Auth::user()->setPassword($newPassword, $securityType);
 
-        $user = Auth::user()->get();
+        $user = Auth::user();
         $user->auth_extra = 1;
         $user->auth_extra_at = \Carbon\Carbon::now();
         $user->save();
@@ -169,11 +169,11 @@ class Security extends \Controllers\BaseController {
     }
 
     public function getForgotten() {
-        if (!Auth::user()->get()->current_security) {
+        if (!Auth::user()->current_security) {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        Auth::user()->get()->resetPassword();
+        Auth::user()->resetPassword();
         Auth::user()->logout();
 
         return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
@@ -217,7 +217,7 @@ class Security extends \Controllers\BaseController {
         // Now generate an email.
         \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
 
-        Auth::user()->logout();
+        Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated
             for you and emailed to your <strong>primary</strong> VATSIM email.<br />
                 You can now close this window.");

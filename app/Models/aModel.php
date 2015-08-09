@@ -4,7 +4,7 @@ namespace Models;
 
 use \Models\Sys\Timeline\Entry;
 
-abstract class aModel extends \Eloquent {
+abstract class aModel extends \Illuminate\Database\Eloquent\Model {
     protected $doNotTrack = [];
 
     public static function boot() {

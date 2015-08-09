@@ -8,26 +8,26 @@
 
     <!-- CSS -->
     @section('styles')
-        {{ HTML::style('//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') }}
-        {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css') }}
-        {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css') }}
-        {{ HTML::style('assets/style/Standalone/design.css') }}
-        {{ HTML::style('//fonts.googleapis.com/css?family=Yellowtail') }}
-        {{ HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') }}
-        {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css') }}
-        {{ HTML::style('assets/bootstrap/3/css/summernote.css') }}
-        {{ HTML::style('assets/bootstrap/3/css/summernote-bs3.css') }}
-        {{ HTML::style('assets/bootstrap/3/css/bootstrap-switch.min.css') }}
+        {!! HTML::style('//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') !!}
+        {!! HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css') !!}
+        {!! HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css') !!}
+        {!! HTML::style('assets/style/Standalone/design.css') !!}
+        {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
+        {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
+        {!! HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css') !!}
+        {!! HTML::style('assets/bootstrap/3/css/summernote.css') !!}
+        {!! HTML::style('assets/bootstrap/3/css/summernote-bs3.css') !!}
+        {!! HTML::style('assets/bootstrap/3/css/bootstrap-switch.min.css') !!}
         @show
 
                 <!-- Javascript -->
     @section('scripts')
-        {{ HTML::script('//code.jquery.com/jquery-1.9.1.min.js') }}
-        {{ HTML::script('assets/jquery/js/jquery.cookie.js') }}
-        {{ HTML::script('//code.jquery.com/ui/1.10.1/jquery-ui.js') }}
-        {{ HTML::script('//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js') }}
-        {{ HTML::script('assets/bootstrap/3/js/summernote.min.js') }}
-        {{ HTML::script('assets/bootstrap/3/js/bootstrap-switch.min.js') }}
+        {!! HTML::script('//code.jquery.com/jquery-1.9.1.min.js') !!}
+        {!! HTML::script('assets/jquery/js/jquery.cookie.js') !!}
+        {!! HTML::script('//code.jquery.com/ui/1.10.1/jquery-ui.js') !!}
+        {!! HTML::script('//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js') !!}
+        {!! HTML::script('assets/bootstrap/3/js/summernote.min.js') !!}
+        {!! HTML::script('assets/bootstrap/3/js/bootstrap-switch.min.js') !!}
     @show
 </head>
 <body>
@@ -35,12 +35,12 @@
     <div class="row">
         <div class="col-md-4 header-left">
             <p align="left">
-                {{ HTML::image("assets/style/global/images/logo.png") }}
+                {!! HTML::image("assets/style/global/images/logo.png") !!}
             </p>
         </div>
         <div class="col-md-8 header-right hidden-xs hidden-sm">
             <p align="right">
-                {{ HTML::image("assets/style/global/images/slogan.png") }}
+                {!! HTML::image("assets/style/global/images/slogan.png") !!}
             </p>
         </div>
     </div>
@@ -79,9 +79,9 @@
                     </div>
                 @endif
 
-                @if(Auth::user()->check() && $_account->auth_extra && !Request::is("mship/notification*") && $_account->has_unread_notifications)
+                @if(Auth::check() && $_account->auth_extra && !Request::is("mship/notification*") && $_account->has_unread_notifications)
                     <div class="alert alert-warning" role="alert">
-                        You currently have unread notifications. You can view them on the "{{ HTML::link(route("mship.notification.list"), "notifications page") }}".
+                        You currently have unread notifications. You can view them on the "{!! HTML::link(route("mship.notification.list"), "notifications page") !!}".
                     </div>
                 @endif
 
@@ -95,11 +95,11 @@
         <div class="row">
             <p>
                 VATSIM-UK &copy; {{ date("Y") }} -
-                {{ HTML::link('http://status.vatsim-uk.co.uk', 'Version '.exec("cd ".base_path()." && git describe --abbrev=0 --tags"), ['target' => '_blank']) }}
+                {!! HTML::link('http://status.vatsim-uk.co.uk', 'Version '.exec("cd ".base_path()." && git describe --abbrev=0 --tags"), ['target' => '_blank']) !!}
                 ({{ gmdate("d/m/y H:i \G\M\T", filemtime(realpath(base_path()."/.git/"))) }})
                 <br align="center">
                 Got a problem? Email
-                us: {{ HTML::link('http://helpdesk.vatsim-uk.co.uk', 'web-support][at][vatsim-uk.co.uk', ['target' => '_blank']) }}
+                us: {!! HTML::link('http://helpdesk.vatsim-uk.co.uk', 'web-support][at][vatsim-uk.co.uk', ['target' => '_blank']) !!}
             </p>
         </div>
     </div>

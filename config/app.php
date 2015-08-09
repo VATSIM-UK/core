@@ -114,8 +114,8 @@ return [
          * Laravel Framework Service Providers...
          */
         Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
-        Illuminate\Auth\AuthServiceProvider::class,
-        //Ollieread\Multiauth\MultiauthServiceProvider::class,
+        //Illuminate\Auth\AuthServiceProvider::class,
+        Ollieread\Multiauth\MultiauthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
@@ -132,7 +132,8 @@ return [
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        //Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Ollieread\Multiauth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -145,13 +146,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        'Vatsim\OAuth\OAuthServiceProvider',
+        Collective\Html\HtmlServiceProvider::class,
+        Vatsim\OAuth\OAuthServiceProvider::class,
         /*'Vatsim\Xml\XmlServiceProvider',
         'Fitztrev\LaravelHtmlMinify\LaravelHtmlMinifyServiceProvider',
         'Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider',
         'Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider',
         'Zizaco\Entrust\EntrustServiceProvider',*/
-        'Barryvdh\Debugbar\ServiceProvider',
+        Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -200,11 +202,14 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
-        'VatsimSSO' => 'Vatsim\OAuth\Facades\SSO',
+
+        'Form'      => Collective\Html\FormFacade::class,
+        'HTML'      => Collective\Html\HtmlFacade::class,
+        'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         /*'VatsimXML' => 'Vatsim\Xml\Facades\XML',
         'DbView'    => 'Flynsarmy\DbBladeCompiler\Facades\DbView',
         'Entrust'   => 'Zizaco\Entrust\EntrustFacade',*/
-        'Debugbar'  => 'Barryvdh\Debugbar\Facade',
+        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
 
     ],
 

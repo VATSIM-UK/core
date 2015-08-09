@@ -20,7 +20,7 @@ class Notification extends \Controllers\BaseController {
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if(Session::has("force_notification_read_return_url")){
-            if(!Auth::user()->get()->has_unread_important_notifications AND !Auth::user()->get()->get_unread_must_read_notifications){
+            if(!Auth::user()->has_unread_important_notifications AND !Auth::user()->get_unread_must_read_notifications){
                 return Redirect::to(Session::pull("force_notification_read_return_url"));
             }
         }
@@ -36,7 +36,7 @@ class Notification extends \Controllers\BaseController {
         return $this->viewMake("mship.notification.list")
                     ->with("unreadNotifications", $unreadNotifications)
                     ->with("readNotifications", $readNotifications)
-                    ->with("allowedToLeave", (!Session::has("force_notification_read_return_url") OR (!Auth::user()->get()->has_unread_important_notifications AND !Auth::user()->get()->get_unread_must_read_notifications)));
+                    ->with("allowedToLeave", (!Session::has("force_notification_read_return_url") OR (!Auth::user()->has_unread_important_notifications AND !Auth::user()->get_unread_must_read_notifications)));
     }
 
 }

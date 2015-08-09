@@ -2,8 +2,8 @@
 
 namespace Models\Mship;
 
-use Illuminate\Auth\UserTrait;
-use Illuminate\Auth\UserInterface;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use \Carbon\Carbon;
 use \Models\Mship\Account\Email as AccountEmail;
@@ -15,9 +15,9 @@ use \Models\Mship\Account\Note as AccountNoteData;
 use \Models\Teamspeak\Registration;
 use \Models\Sys\Notification as SysNotification;
 
-class Account extends \Models\aTimelineEntry implements UserInterface {
+class Account extends \Models\aTimelineEntry implements AuthenticatableContract {
 
-    use UserTrait, SoftDeletingTrait;
+    use SoftDeletingTrait, Authenticatable;
 
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
