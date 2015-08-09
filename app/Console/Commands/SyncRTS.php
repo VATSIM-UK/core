@@ -100,7 +100,7 @@ class SyncRTS extends aCommand
         // set and process data
         $email = $member->primary_email;
         $sso_account_id = $this->sso_account_id;
-        $ssoEmailAssigned = $member->sso_emails->filter(function ($ssoemail) use ($sso_account_id) {
+        $ssoEmailAssigned = $member->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
             return $ssoemail->sso_account_id == $sso_account_id;
         })->values();
 

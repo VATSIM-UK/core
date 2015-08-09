@@ -41,11 +41,9 @@ class TestCommand extends aCommand {
      * @return mixed
      */
     public function fire() {
-        $position = Position::find(1);
-        var_dump($position->parent);
-        //echo $position . PHP_EOL;
-        //echo $position->parent . PHP_EOL;
-        //echo $position->children . PHP_EOL;
+        Mail::raw('Test email', function ($message) {
+            $message->to('test@apache-portal.com');
+        });
     }
 
     /**

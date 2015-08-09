@@ -10,7 +10,7 @@
 <div class="row">
 
     <div class="col-md-7 col-md-offset-2">
-        {{ Form::open(["route" => ["mship.manage.email.add"], "class" => "form-horizontal"]) }}
+        {!! Form::open(["route" => ["mship.manage.email.add"], "class" => "form-horizontal"]) !!}
         <div class="form-group">
             <label class="col-sm-5 control-label" for="new_email">New Email</label>
 

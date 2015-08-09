@@ -42,7 +42,7 @@ class Email extends \Eloquent {
 
     public function assignToSso($ssoAccount){
         // Let's just check it's not already assigned.
-        $alreadyAssigned = $this->sso_emails->filter(function($email) use($ssoAccount) {
+        $alreadyAssigned = $this->ssoEmails->filter(function($email) use($ssoAccount) {
             return $email->sso_account_id == $ssoAccount->sso_account_id;
         });
 

@@ -77,7 +77,7 @@ class Management extends \Controllers\BaseController {
         $userVerifiedEmails = $this->_account->secondary_email_verified;
 
         // Get user SSO email assignments!
-        $userSsoEmails = $this->_account->sso_emails;
+        $userSsoEmails = $this->_account->ssoEmails;
 
         // Now build the user's matrix!
         $userMatrix = array();
@@ -115,7 +115,7 @@ class Management extends \Controllers\BaseController {
         $userVerifiedEmails = $this->_account->secondary_email_verified;
 
         // Get user SSO email assignments!
-        $userSsoEmails = $this->_account->sso_emails;
+        $userSsoEmails = $this->_account->ssoEmails;
 
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!

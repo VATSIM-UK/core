@@ -225,7 +225,6 @@ class Queue extends \Models\aTimelineEntry {
             return false;
         }
 
-
         $template = Template::find($this->postmaster_template_id);
 
         $templateData = [];
@@ -278,9 +277,9 @@ class Queue extends \Models\aTimelineEntry {
         $dataSet["recipient"] = $this->recipient;
         $dataSet["emailContent"] = nl2br($this->body);
         \Mail::send("emails.default", $dataSet, function($message){
-            $message->sender($this->sender_email->email);
-            $message->from($this->sender_email->email, $this->sender->name);
-            $message->to($this->recipient_email->email, $this->recipient->name);
+            $message->sender($this->senderEmail->email);
+            $message->from($this->senderEmail->email, $this->sender->name);
+            $message->to($this->recipientEmail->email, $this->recipient->name);
 
             if($this->template->reply_to){
                 $message->replyTo($this->template->reply_to);

@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => env('MAILGUN_FROM_ADDRESS'), 'name' => env('MAILGUN_FROM_NAME')],
+    'from' => ['address' => env('MAIL_FROM_ADDRESS'), 'name' => env('MAIL_FROM_NAME')],
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'username' => env('MAILGUN_USER'),
+    'username' => env('MAIL_USER'),
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'password' => env('MAILGUN_PASS'),
+    'password' => env('MAIL_PASS'),
 
     /*
     |--------------------------------------------------------------------------

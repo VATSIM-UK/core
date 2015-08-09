@@ -45,7 +45,7 @@
                             <div class="panel-body">
                                 {{ nl2br($notice->content) }}
 
-                                {{ Form::open(["route" => ["mship.notification.acknowledge", $notice->notification_id], "class" => "form-horizontal"]) }}
+                                {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->notification_id], "class" => "form-horizontal"]) !!}
                                     @if($notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
                                         <div class="form-group">
                                             <div class="col-sm-offset-5 col-sm-7">
@@ -65,7 +65,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                {{ Form::close() }}
+                                {!! Form::close() !!}
                             </div>
                         </div>
                     </div>

@@ -8,22 +8,22 @@
         <div class="container container-header">
             <div class="col-md-4 header-left">
                 <p align="left" style="width: 40%; float: left;">
-                    {{ HTML::image("media/style/global/images/logo.png") }}
+                    {!! HTML::image("media/style/global/images/logo.png") !!}
                 </p>
                 <p align="right" style="padding-top: 20px; width: 60%; float: right;">
-                    {{ HTML::image("media/style/global/images/slogan.png") }}
+                    {!! HTML::image("media/style/global/images/slogan.png") !!}
                 </p>
             </div>
             <p style="clear: both;">&nbsp;</p>
         </div>
         <div class="container container-content" style="text-align: left; width: 90%; margin: 0px auto; padding: 15px; border: 1px dashed #333; background-color: #eee;">
             <p align="left" style="padding: 5px; font-family: 'Josefin Slab', serif;">
-                {{ $emailContent }}<br />
+                {!! $emailContent !!}<br />
                 <br />
                 Kind regards,<br />
                 <strong>VATSIM UK</strong><br />
-                {{ link_to("http://www.vatsim-uk.co.uk", "http://www.vatsim-uk.co.uk") }}<br />
-                {{ link_to("http://twitter.com/vatsimuk", "@vatsimuk") }}<br />
+                {!! link_to("http://www.vatsim-uk.co.uk", "http://www.vatsim-uk.co.uk") !!}<br />
+                {!! link_to("http://twitter.com/vatsimuk", "@vatsimuk") !!}<br />
             </p>
             <p align="left" style="border-top: 1px dashed black; font-family: 'Josefin Slab', serif;">
                 This email was automatically sent from our system at <?= gmdate("H:i:s D jS M Y") ?> GMT.<br />

@@ -15,7 +15,7 @@
         expires (or becomes unverified after a period of time) we will default back to your primary email.
     </p>
 
-    {{ Form::open(["route" => ["mship.manage.email.assignments"], "class" => "form-horizontal"]) }}
+    {!! Form::open(["route" => ["mship.manage.email.assignments"], "class" => "form-horizontal"]) !!}
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -68,6 +68,6 @@
         </div>
     </div>
 
-    {{ Form::close() }}
+    {!! Form::close() !!}
 
 @stop
