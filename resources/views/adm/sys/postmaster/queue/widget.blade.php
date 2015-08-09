@@ -23,7 +23,7 @@
                             </td>
                             <td>{{ $q->recipient->name }} ({!! link_to_route("adm.mship.account.details", $q->recipient_id, [$q->recipient_id]) !!})</td>
                             <td>{{ $q->sender->name }} ({!! link_to_route("adm.mship.account.details", $q->sender_id, [$q->sender_id]) !!})</td>
-                            <td>{{ Str::limit($q->subject, 25) }}</td>
+                            <td>{{ str_limit($q->subject, 25) }}</td>
                             <td align="center">
                                 @if($q->priority == \Models\Sys\Postmaster\Template::PRIORITY_LOW)
                                 <span class="label label-default">Low</span>
