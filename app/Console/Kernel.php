@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         \RebuildModelDependencies::class,
         \PostmasterParse::class,
         \PostmasterDispatch::class,
-        //\SyncRTS::class,
+        \SyncRTS::class,
         \SyncCommunity::class,
         \TeamspeakManager::class,
         \TeamspeakCleanup::class,

@@ -17,7 +17,7 @@ class Mailgun extends \Controllers\Webhook\Email\EmailWebhookController {
         $token = Input::get("token");
         $ts_token = $timestamp.$token;
 
-        $encHmac = hash_hmac("sha256", $ts_token, $_ENV['mailgun.secret']);
+        $encHmac = hash_hmac("sha256", $ts_token, env('MAILGUN_SECRET'));
 
         if($encHmac != Input::get("signature")){
             return Response::make("Unauthorised", 406);

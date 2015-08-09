@@ -58,9 +58,9 @@ class MembersCertImport extends aCommand
 
         // get cert data file
         $certURL = 'https://cert.vatsim.net/vatsimnet/admin/divdbfullwpilot.php?';
-        $certURL.= 'authid=' . $_ENV['vatsim.cert.at.user'].'&';
-        $certURL.= 'authpassword=' . urlencode($_ENV['vatsim.cert.at.pass']).'&';
-        $certURL.= 'div='.$_ENV['vatsim.cert.at.div'].'&';
+        $certURL.= 'authid=' . env('VATSIM_CERT_AT_USER') .'&';
+        $certURL.= 'authpassword=' . urlencode(env('VATSIM_CERT_AT_PASS')).'&';
+        $certURL.= 'div='.env('VATSIM_CERT_AT_DIV').'&';
         $members = file($certURL);
 
         foreach ($members as $member) {
