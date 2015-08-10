@@ -2551,12 +2551,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NFarrington/VatsimXML.git",
-                "reference": "6dbbb37e78aa84396e84d63d47abeb1354d1afa2"
+                "reference": "e6ba353b263442c6e18083cb789f6a25c5798bf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NFarrington/VatsimXML/zipball/6dbbb37e78aa84396e84d63d47abeb1354d1afa2",
-                "reference": "6dbbb37e78aa84396e84d63d47abeb1354d1afa2",
+                "url": "https://api.github.com/repos/NFarrington/VatsimXML/zipball/e6ba353b263442c6e18083cb789f6a25c5798bf2",
+                "reference": "e6ba353b263442c6e18083cb789f6a25c5798bf2",
                 "shasum": ""
             },
             "require": {
@@ -2593,7 +2593,7 @@
                 "wiki": "https://github.com/A-Lawrence/VatsimXML/wiki",
                 "source": "https://github.com/NFarrington/VatsimXML/tree/master"
             },
-            "time": "2015-07-27 20:55:03"
+            "time": "2015-08-10 00:21:47"
         },
         {
             "name": "vlucas/phpdotenv",

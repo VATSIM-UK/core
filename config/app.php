@@ -146,7 +146,7 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
         Vatsim\OAuth\OAuthServiceProvider::class,
-        //Vatsim\Xml\XmlServiceProvider::class
+        Vatsim\Xml\XmlServiceProvider::class,
         Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
     ],
@@ -201,7 +201,7 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
-        //'VatsimXML' => Vatsim\Xml\Facades\XML::class,
+        'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
 
     ],
