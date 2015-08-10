@@ -636,24 +636,23 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
 	public function getNewRegistrationAttribute() {
-		return $this->teamspeak_registrations->filter(function($reg) {
+		return $this->teamspeakRegistrations->filter(function($reg) {
             return $reg->status == "new";
         })->first();
 	}
 
     public function getConfirmedRegistrationsAttribute() {
-        return $this->teamspeak_registrations->filter(function($reg) {
+        return $this->teamspeakRegistrations->filter(function($reg) {
             return $reg->status != "new";
         });
     }
 
     public function isValidTeamspeakAlias($tAlias) {
-        foreach ($this->teamspeak_aliases as $rAlias) {
+        foreach ($this->teamspeakAliases as $rAlias) {
             if (strcasecmp($rAlias->display_name, $tAlias) == 0) return TRUE;
         }
 
         return FALSE;
-
     }
 
 }

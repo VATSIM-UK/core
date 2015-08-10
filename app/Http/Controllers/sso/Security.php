@@ -75,19 +75,19 @@ class Security extends \Controllers\BaseController {
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        $return["atc_rating"] = $account->qualificationAtc->qualification->vatsim;
-        $return["atc_rating_human_short"] = $account->qualificationAtc->qualification->name_small;
-        $return["atc_rating_human_long"] = $account->qualificationAtc->qualification->name_long;
-        $return["atc_rating_date"] = $account->qualificationAtc->created_at->toDateTimeString();
+        $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
+        $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
+        $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;
+        $return["atc_rating_date"] = $account->qualification_atc->created_at->toDateTimeString();
 
         $return["pilot_ratings_bin"] = 0;
         $return["pilot_ratings"] = array();
-        if(count($account->qualificationsPilot) < 1){
+        if(count($account->qualifications_pilot) < 1){
             $return["pilot_ratings"][] = 0;
             $return["pilot_ratings_human_short"][] = "NA";
             $return["pilot_ratings_human_long"][] = "None Awarded";
         } else {
-            foreach($account->qualificationsPilot as $qual){
+            foreach($account->qualifications_pilot as $qual){
                 $e = array();
                 $e["rating"] = $qual->qualification->vatsim;
                 $e["human_short"] = $qual->qualification->name_small;
@@ -100,7 +100,7 @@ class Security extends \Controllers\BaseController {
         $return["pilot_ratings_bin"] = decbin($return["pilot_ratings_bin"]);
 
         $return["admin_ratings"] = array();
-        foreach($account->qualificationsAdmin as $qual){
+        foreach($account->qualifications_admin as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;
@@ -110,7 +110,7 @@ class Security extends \Controllers\BaseController {
         }
 
         $return["training_pilot_ratings"] = array();
-        foreach($account->qualificationsPilotTraining as $qual){
+        foreach($account->qualifications_pilot_training as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;
@@ -120,7 +120,7 @@ class Security extends \Controllers\BaseController {
         }
 
         $return["training_atc_ratings"] = array();
-        foreach($account->qualificationsAtcTraining as $qual){
+        foreach($account->qualifications_atc_training as $qual){
             $e = array();
             $e["rating"] = $qual->qualification->vatsim;
             $e["human_short"] = $qual->qualification->name_small;

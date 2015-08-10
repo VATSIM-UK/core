@@ -41,9 +41,7 @@ class TestCommand extends aCommand {
      * @return mixed
      */
     public function fire() {
-        Mail::raw('Test email', function ($message) {
-            $message->to('test@apache-portal.com');
-        });
+        //
     }
 
     /**
