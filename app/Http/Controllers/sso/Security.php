@@ -83,7 +83,7 @@ class Security extends \Controllers\BaseController {
         $return["pilot_ratings_bin"] = 0;
         $return["pilot_ratings"] = array();
         if(count($account->qualifications_pilot) < 1){
-            $return["pilot_ratings"][] = 0;
+            $return["pilot_ratings"][]= 0;
             $return["pilot_ratings_human_short"][] = "NA";
             $return["pilot_ratings_human_long"][] = "None Awarded";
         } else {
