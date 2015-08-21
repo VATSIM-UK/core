@@ -1,6 +1,7 @@
 /vendor
 /node_modules
 Homestead.yaml
-.env
+.env*
+!.env.example
 nbproject*
 .idea*
