@@ -93,6 +93,14 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
     }
 
+    public function bans() {
+        return $this->hasMany("\Models\Mship\Account\Ban", "account_id", "account_id")->orderBy("created_at", "DESC");
+    }
+
+    public function bansAsInstigator() {
+        return $this->hasMany("\Models\Mship\Account\Ban", "banned_by", "account_id")->orderBy("created_at", "DESC");
+    }
+
     public function notes() {
         return $this->hasMany("\Models\Mship\Account\Note", "account_id", "account_id")->orderBy("created_at", "DESC");
     }

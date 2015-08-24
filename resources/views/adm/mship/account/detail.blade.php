@@ -22,6 +22,9 @@
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/sentEmails"))
                         <li {{ $selectedTab == "sentEmails" ? "class='active'" : "" }}><a href="#sentEmails" role="tab" data-toggle="tab">Sent Emails</a></li>
                     @endif
+                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/bans"))
+                        <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
+                    @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/notes"))
                         <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endif
@@ -85,7 +88,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 danger">
                             <!-- general form elements -->
                             <div class="box box-primary">
                                 <div class="box-header">
@@ -428,6 +431,62 @@
                         </div>
                     @endif
 
+                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/bans"))
+                        <div class="tab-pane fade {{ $selectedTab == "bans" ? "in active" : "" }}" id="bans">
+                            <div class="col-md-12">
+                                <!-- general form elements -->
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Bans</h3>
+                                    </div><!-- /.box-header -->
+                                    <div class="box-body">
+
+                                        <div class="btn-toolbar">
+                                            <div class="btn-group pull-right">
+                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add"))
+                                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBanAdd">Add Ban</button>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix">&nbsp;</div>
+
+                                        @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/view"))
+                                            @foreach($account->bans as $ban)
+                                                <div class="panel panel-danger" id='ban-{{ $ban->account_ban_id }}'>
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            {!! $ban->type_string !!} - {!! $ban->period_amount !!} {!! $ban->period_unit_string !!}
+                                                            <span class="time pull-right">
+                                                            <small>
+                                                                <i class="fa fa-user"></i>
+                                                                {{ $ban->banner->name }} ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!})
+
+                                                                <i class="fa fa-clock-o"></i>
+                                                                {{ $ban->created_at->diffForHumans() }}, {{ $ban->created_at->toDateTimeString() }}
+                                                            </small>
+                                                        </span>
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <p>
+                                                            <strong>Ban Start:</strong> {{ $ban->period_start->diffForHumans() }}, {{ $ban->period_start->toDateTimeString() }}<br />
+                                                            <strong>Ban Finish:</strong> {{ $ban->period_finish->diffForHumans() }}, {{ $ban->period_finish->toDateTimeString() }}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Reason</strong>
+                                                            <br />{{ $ban->reason_extra }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div><!-- /.box-body -->
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/notes"))
                         <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">
                             <div class="col-md-12">
@@ -574,7 +633,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($account->data_changes as $dc)
+                                            @foreach($account->dataChanges as $dc)
                                             <tr>
                                                 <td>{{ $dc->data_key }}</td>
                                                 <td>{{ $_account->hasPermission("adm/mship/account/".$account->account_id."/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
