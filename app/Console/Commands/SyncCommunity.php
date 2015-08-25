@@ -5,7 +5,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 use Models\Mship\Account;
-use Enums\Account\State as EnumState;
 
 class SyncCommunity extends aCommand
 {
@@ -100,8 +99,8 @@ class SyncCommunity extends aCommand
                 $emailLocal = true;
             }
 
-            $state = $member_core->states()->where('state', '=', EnumState::DIVISION)->first()->state ? 'Division Member' : 'International Member';
-            $state = $member_core->states()->where('state', '=', EnumState::VISITOR)->first()->state ? 'Visiting Member' : $state;
+            $state = $member_core->states()->where('state', '=', Models\Mship\Account\State::STATE_DIVISION)->first()->state ? 'Division Member' : 'International Member';
+            $state = $member_core->states()->where('state', '=', Models\Mship\Account\State::STATE_VISITOR)->first()->state ? 'Visiting Member' : $state;
             $aRatingString = $member_core->qualification_atc->qualification->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
 

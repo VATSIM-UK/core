@@ -9,6 +9,15 @@ return [
     'account.status.system' => 'System Account',
     'account.status.unknown' => 'Unknown Status',
 
+    // Account States
+    'account.state.guest' => 'Guest',
+    'account.state.division' => 'Division Member',
+    'account.state.international' => 'International Member',
+    'account.state.region' => 'Region Member',
+    'account.state.visitor' => 'Visiting Member',
+    'account.state.transfer' => 'Trasnferring Member',
+    'account.state.unknown' => 'Unknown',
+
     // Ban Language
     'ban.type.local' => 'Local Ban',
     'ban.type.network' => 'Network Suspension',

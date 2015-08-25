@@ -43,7 +43,7 @@ class AccountBans extends Migration {
               ["name" => "adm/mship/account/*/ban/add", "display_name" => "Admin / Membership / Account / Ban / Add", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
               ["name" => "adm/mship/account/*/ban/edit", "display_name" => "Admin / Membership / Account / Ban / Edit", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
               ["name" => "adm/mship/account/*/ban/view", "display_name" => "Admin / Membership / Account / Ban / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-              ["name" => "adm/mship/account/*/ban/reverse", "display_name" => "Admin / Membership / Account / Ban / Reverse / ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+              ["name" => "adm/mship/account/*/ban/reverse", "display_name" => "Admin / Membership / Account / Ban / Reverse", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
           ));
 
     }

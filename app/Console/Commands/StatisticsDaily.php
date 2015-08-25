@@ -52,13 +52,13 @@ class StatisticsDaily extends aCommand {
             Statistic::setStatistic($period->toDateString(), "members.current", $membersCurrent);
 
             // Number of division members CREATED on a given day (i.e. number of members joining our division).
-            $divisionCreated = State::where("state", "=", Enums\Account\State::DIVISION)
+            $divisionCreated = State::where("state", "=", Models\Mship\Account\State::STATE_DIVISION)
                                     ->where("created_at", "LIKE", $period->toDateString() . "%")
                                     ->count();
             Statistic::setStatistic($period->toDateString(), "members.division.new", $divisionCreated);
 
             // Number of division members on a given day (i.e. number of members currently within the division).
-            $divisionCurrent = State::where("state", "=", Enums\Account\State::DIVISION)
+            $divisionCurrent = State::where("state", "=", Models\Mship\Account\State::STATE_DIVISION)
                                     ->where("created_at", "<=", $period->toDateString() . " 23:59:59")
                                     ->count();
             Statistic::setStatistic($period->toDateString(), "members.division.current", $divisionCurrent);

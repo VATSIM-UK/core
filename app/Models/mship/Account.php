@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use \Carbon\Carbon;
 use \Models\Mship\Account\Email as AccountEmail;
 use \Models\Mship\Account\Qualification as AccountQualification;
+use Models\Mship\Account\State;
 use \Models\Sys\Token as SystemToken;
 use \Models\Mship\Role as RoleData;
 use \Models\Mship\Permission as PermissionData;
@@ -231,7 +232,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         $return = array();
 
         foreach($this->states as $state){
-            $key = strtolower(\Enums\Account\State::valueToKey($state->state));
+            $key = strtolower(State::getStateKeyFromValue($state->state));
             $return[$key] = 1;
             $return[$key."_date"] = $state->created_at->toDateTimeString();
         }
@@ -581,11 +582,11 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
     public function determineState($region, $division) {
         if ($region == "EUR" AND $division == "GBR") {
-            $state = \Enums\Account\State::DIVISION;
+            $state = \Models\Mship\Account\State::STATE_DIVISION;
         } elseif ($region == "EUR") {
-            $state = \Enums\Account\State::REGION;
+            $state = \Models\Mship\Account\State::STATE_REGION;
         } else {
-            $state = \Enums\Account\State::INTERNATIONAL;
+            $state = \Models\Mship\Account\State::STATE_INTERNATIONALE;
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
