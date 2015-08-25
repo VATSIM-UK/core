@@ -8,13 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ban extends \Models\aTimelineEntry
 {
 
-    protected $table      = 'mship_account_ban';
-    protected $primaryKey = "account_ban_id";
-    public    $timestamps = true;
-
     use SoftDeletes;
 
-    protected $dates = ['period_start', 'period_finish', 'created_at', 'updated_at', 'deleted_at'];
+    protected $table      = 'mship_account_ban';
+    protected $primaryKey = "account_ban_id";
+    protected $dates      = ['period_start', 'period_finish', 'created_at', 'updated_at', 'deleted_at'];
+    protected $touches    = ['account'];
 
     const TYPE_LOCAL   = 80;
     const TYPE_NETWORK = 90;
