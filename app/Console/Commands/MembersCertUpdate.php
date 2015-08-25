@@ -190,12 +190,14 @@ class MembersCertUpdate extends aCommand {
                 $changed = TRUE;
             }
 
-            // Sort their rating(s) out.
-            $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
-            $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
-            if ($_m->addQualification($atcRating)) {
-                $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
-                $changed = TRUE;
+            // Sort their rating(s) out - we're not permitting instructor ratings if they're NONE UK members.
+            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \Models\Mship\Account\State::STATE_DIVISION){
+                $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
+                $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
+                if ($_m->addQualification($atcRating)) {
+                    $this->outputTableRow("atc_rating", ($oldAtcRating ? $oldAtcRating->code : "None"), $atcRating->code);
+                    $changed = TRUE;
+                }
             }
 
             // If their rating is ABOVE INS1 (8+) then let's get their last.

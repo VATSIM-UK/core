@@ -95,8 +95,20 @@ class MembersCertImport extends aCommand
         $member->setCertStatus($member_data[1]);
         $member->save();
         $member->addEmail($member_data[5], true, true);
-        $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
         $member->determineState($member_data[12], $member_data[13]);
+
+        // If they're NONE UK and an Instructor we need their old rating.
+        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \Models\Mship\Account\State::STATE_DIVISION) {
+            $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
+        } else {
+            // Since they're an instructor AND NONE-UK
+            $_prevRat = VatsimXML::getData($member->account_id, "idstatusprat");
+            if (isset($_prevRat->PreviousRatingInt)) {
+                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                $member->addQualification($prevAtcRating);
+            }
+        }
+
         // anything else should be processed by the Members:CertUpdate script
     }
 
