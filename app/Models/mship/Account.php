@@ -28,29 +28,11 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     const STATUS_ACTIVE = 0; //b"00000";
-    const STATUS_SYSTEM_BANNED = 1; //b"0001";
-    const STATUS_NETWORK_SUSPENDED = 2; //b"0010";
+    //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2
+    //const STATUS_NETWORK_SUSPENDED = 2; //b"0010"; @deprecated in version 2.2
     const STATUS_INACTIVE = 4; //b"0100";
     const STATUS_LOCKED = 8; //b"1000";
-    const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
-
-    public static function getStatusDescription($value) {
-        switch ($value) {
-            case self::STATUS_ACTIVE:
-                return "Active";
-            case self::STATUS_SYSTEM_BANNED:
-                return "Banned (LOCAL)";
-            case self::STATUS_NETWORK_SUSPENDED:
-                return "Suspended (NETWORK)";
-            case self::STATUS_INACTIVE:
-                return "Inactive";
-            case self::STATUS_LOCKED:
-            case self::STATUS_SYSTEM:
-                return "Locked/System";
-            default:
-                return "Unknown Status";
-        }
-    }
+        const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
 
     public static function eventCreated($model, $extra=null, $data=null){
         parent::eventCreated($model, $extra, $data);
@@ -417,29 +399,13 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function getIsSystemBannedAttribute() {
-        $status = $this->attributes['status'];
-        return (boolean) (self::STATUS_SYSTEM_BANNED & $status);
-    }
-
-    public function setIsSystemBannedAttribute($value) {
-        if ($value && !$this->is_system_banned) {
-            $this->setStatusFlag(self::STATUS_SYSTEM_BANNED);
-        } elseif (!$value && $this->is_system_banned) {
-            $this->unSetStatusFlag(self::STATUS_SYSTEM_BANNED);
-        }
+        $bans = $this->bans()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
+        return (boolean) $bans->count() > 0;
     }
 
     public function getIsNetworkBannedAttribute() {
-        $status = $this->attributes['status'];
-        return (boolean) ((self::STATUS_NETWORK_SUSPENDED & $status));
-    }
-
-    public function setIsNetworkBannedAttribute($value) {
-        if ($value && !$this->is_network_banned) {
-            $this->setStatusFlag(self::STATUS_NETWORK_SUSPENDED);
-        } elseif (!$value && $this->is_network_banned) {
-            $this->unSetStatusFlag(self::STATUS_NETWORK_SUSPENDED);
-        }
+        $bans = $this->bans()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
+        return (boolean) $bans->count() > 0;
     }
 
     public function getIsBannedAttribute() {
@@ -488,38 +454,38 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     public function getStatusStringAttribute() {
         // It's done in a convoluted way, because it's in order of how they should be displayed!
         if ($this->is_system_banned) {
-            return Account::getStatusDescription(self::STATUS_SYSTEM_BANNED);
+            return trans("mship.account.status.ban.local");
         } elseif ($this->is_network_banned) {
-            return Account::getStatusDescription(self::STATUS_NETWORK_SUSPENDED);
+            return trans("mship.account.status.ban.network");
         } elseif ($this->is_inactive) {
-            return Account::getStatusDescription(self::STATUS_INACTIVE);
+            return trans("mship.account.status.inactive");
         } elseif ($this->is_system) {
-            return Account::getStatusDescription(self::STATUS_SYSTEM);
+            return trans("mship.account.status.system");
         } else {
-            return Account::getStatusDescription(self::STATUS_ACTIVE);
+            return trans("mship.account.status.active");
         }
     }
 
     public function getStatusArrayAttribute() {
         $stati = array();
         if ($this->is_system_banned) {
-            $stati[] = getStatusDescription(self::STATUS_SYSTEM_BANNED);
+            $stati[] = trans("mship.account.status.ban.local");
         }
 
         if ($this->is_network_banned) {
-            $stati[] = getStatusDescription(self::STATUS_NETWORK_SUSPENDED);
+            $stati[] = trans("mship.account.status.ban.network");
         }
 
         if ($this->is_inactive) {
-            $stati[] = getStatusDescription(self::STATUS_INACTIVE);
+            $stati[] = trans("mship.account.status.inactive");
         }
 
         if ($this->is_system) {
-            $stati[] = getStatusDescription(self::STATUS_SYSTEM);
+            $stati[] = trans("mship.account.status.system");
         }
 
         if (count($stati) < 1) {
-            $stati[] = getStatusDescription(self::STATUS_ACTIVE);
+            $stati[] = trans("mship.account.status.active");
         }
         return $stati;
     }
@@ -551,10 +517,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function setNameFirstAttribute($value) {
-        //$value = utf8_decode($value);
         $value = trim($value);
-        //$value = strtolower($value);
-        //$value = ucfirst($value);
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
             $value = ucwords(strtolower($value));
@@ -564,18 +527,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function setNameLastAttribute($value) {
-        //$value = utf8_decode($value);
         $value = trim($value);
-        /*$value = strtolower($value);
-
-        // Let's fix McSomebody and MacSomebody
-        if (substr($value, 0, 2) == "mc") {
-            $value = "Mc" . ucfirst(substr($value, 2));
-        } elseif (substr($value, 0, 3) == "mac") {
-            $value = "Mac" . ucfirst(substr($value, 3));
-        } else {
-            $value = ucfirst($value);
-        }*/
 
         if ($value == strtoupper($value) || $value == strtolower($value)) {
             $value = ucwords(strtolower($value));
@@ -634,11 +586,6 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
             $state = \Enums\Account\State::REGION;
         } else {
             $state = \Enums\Account\State::INTERNATIONAL;
-        }
-        if ($this->account_id < 1) {
-            print "UH OH!";
-            print_r($this);
-            exit();
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
