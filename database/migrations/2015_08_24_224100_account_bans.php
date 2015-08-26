@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use \Models\Mship\Account;
+use \Models\Mship\Account\Ban as AccountBan;
 
 class AccountBans extends Migration {
 
@@ -45,6 +47,55 @@ class AccountBans extends Migration {
               ["name" => "adm/mship/account/*/ban/view", "display_name" => "Admin / Membership / Account / Ban / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
               ["name" => "adm/mship/account/*/ban/reverse", "display_name" => "Admin / Membership / Account / Ban / Reverse", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
           ));
+
+        // Migrate the TS bans into thew new ban structure.
+        $tsBans = DB::table('teamspeak_ban')->get();
+        foreach($tsBans as $tsb){
+            // Add these bans into the NEW structure.
+            $newBan = new AccountBan();
+            $newBan->type = AccountBan::TYPE_LOCAL;
+            $newBan->reason_extra = $tsb->reason;
+
+            // Calculate the period.
+            $newBan->period_start = $tsb->created_at;
+            $newBan->period_finish =  $tsb->expires_at;
+
+            $diff = $newBan->period_start->diff($newBan->period_finish);
+
+            /**
+             * IF:
+             * - We have hours AND minutes; OR
+             * - We have days AND (minutes OR hours).
+             * THEN:
+             * - Whole thing is minutes.
+             */
+            if(($diff->h > 0 AND $diff->i != 0) OR ($diff->d > 0 AND ($diff->i != 0 OR $diff->h != 0))){
+                $newBan->period_amount = $newBan->period_start->diffInMinutes($newBan->period_finish);
+                $newBan->period_unit = 'M';
+            } elseif($diff->d > 0){
+                $newBan->period_amount = $newBan->period_start->diffInDays($newBan->period_finish);
+                $newBan->period_unit = 'D';
+            } elseif($diff->h > 0) {
+                $newBan->period_amount = $newBan->period_start->diffInHours($newBan->period_finish);
+                $newBan->period_unit = 'H';
+            } else {
+                $newBan->period_amount = $newBan->period_start->diffInMinutes($newBan->period_finish);
+                $newBan->period_unit = 'M';
+            }
+
+            // Carry over timestamps.
+            $newBan->created_at = $tsb->created_at;
+            $newBan->updated_at = $tsb->updated_at;
+            $newBan->deleted_at = $tsb->deleted_at;
+            $newBan->save();
+
+            // Attach these bans to the relevant members.
+            $banee = Account::find($tsb->account_id);
+            $banee->bans()->save($newBan);
+
+            $baner = Account::find($tsb->authorised_by);
+            $baner->bansAsInstigator()->save($newBan);
+        }
 
     }
 
