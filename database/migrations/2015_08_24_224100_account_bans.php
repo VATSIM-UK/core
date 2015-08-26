@@ -59,29 +59,7 @@ class AccountBans extends Migration {
             // Calculate the period.
             $newBan->period_start = $tsb->created_at;
             $newBan->period_finish =  $tsb->expires_at;
-
-            $diff = $newBan->period_start->diff($newBan->period_finish);
-
-            /**
-             * IF:
-             * - We have hours AND minutes; OR
-             * - We have days AND (minutes OR hours).
-             * THEN:
-             * - Whole thing is minutes.
-             */
-            if(($diff->h > 0 AND $diff->i != 0) OR ($diff->d > 0 AND ($diff->i != 0 OR $diff->h != 0))){
-                $newBan->period_amount = $newBan->period_start->diffInMinutes($newBan->period_finish);
-                $newBan->period_unit = 'M';
-            } elseif($diff->d > 0){
-                $newBan->period_amount = $newBan->period_start->diffInDays($newBan->period_finish);
-                $newBan->period_unit = 'D';
-            } elseif($diff->h > 0) {
-                $newBan->period_amount = $newBan->period_start->diffInHours($newBan->period_finish);
-                $newBan->period_unit = 'H';
-            } else {
-                $newBan->period_amount = $newBan->period_start->diffInMinutes($newBan->period_finish);
-                $newBan->period_unit = 'M';
-            }
+            $newBan->setPeriodAmountFromTS();
 
             // Carry over timestamps.
             $newBan->created_at = $tsb->created_at;
