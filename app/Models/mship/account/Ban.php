@@ -41,6 +41,31 @@ class Ban extends \Models\aTimelineEntry
         return $this->belongsTo('\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
     }
 
+    public function setPeriodAmountFromTS(){
+        $diff = $this->period_start->diff($this->period_finish);
+
+        /**
+         * IF:
+         * - We have hours AND minutes; OR
+         * - We have days AND (minutes OR hours).
+         * THEN:
+         * - Whole thing is minutes.
+         */
+        if(($diff->h > 0 AND $diff->i != 0) OR ($diff->d > 0 AND ($diff->i != 0 OR $diff->h != 0))){
+            $this->period_amount = $this->period_start->diffInMinutes($this->period_finish);
+            $this->period_unit = 'M';
+        } elseif($diff->d > 0){
+            $this->period_amount = $this->period_start->diffInDays($this->period_finish);
+            $this->period_unit = 'D';
+        } elseif($diff->h > 0) {
+            $this->period_amount = $this->period_start->diffInHours($this->period_finish);
+            $this->period_unit = 'H';
+        } else {
+            $this->period_amount = $this->period_start->diffInMinutes($this->period_finish);
+            $this->period_unit = 'M';
+        }
+    }
+
     public function getTypeStringAttribute()
     {
         switch ($this->attributes['type']) {
