@@ -166,10 +166,33 @@ class MembersCertUpdate extends aCommand {
 
             // Let's work out the user status.
             $oldStatus = $_m->status;
-            $_m->setCertStatus($_xmlData->rating);
+            $_m->is_inactive = (boolean) ($_xmlData->rating < 0);
             if ($oldStatus != $_m->status) {
                 $this->outputTableRow("status", $oldStatus, $_m->status_string);
                 $changed = TRUE;
+            }
+
+            // Are they network banned, but unbanned in our system?
+            // Add it!
+            if($_xmlData->rating == 0 && $_m->is_network_banned === false){
+                // Add a ban.
+                $newBan = new \Models\Mship\Account\Ban();
+                $newBan->type = \Models\Mship\Account\Ban::TYPE_NETWORK;
+                $newBan->reason_extra = "Network ban discovered via Cert update scripts.";
+                $newBan->period_start = \Carbon\Carbon::now();
+                $newBan->save();
+
+                $_m->bans()->save($newBan);
+                Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
+            }
+
+            // Are they banned in our system (for a network ban) but unbanned on the network?
+            // Then expire the ban.
+            if($_m->is_network_banned === true && $_xmlData->rating > 0){
+                $ban = $_m->network_ban;
+                $ban->period_finish = \Carbon\Carbon::now();
+                $ban->setPeriodAmountFromTS();
+                $ban->save();
             }
 
             // Set their VATSIM registration date.

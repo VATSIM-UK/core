@@ -404,9 +404,19 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         return (boolean) $bans->count() > 0;
     }
 
+    public function getSystemBanAttribute(){
+        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
+        return $bans->first();
+    }
+
     public function getIsNetworkBannedAttribute() {
         $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
         return (boolean) $bans->count() > 0;
+    }
+
+    public function getNetworkBanAttribute(){
+        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
+        return $bans->first();
     }
 
     public function getIsBannedAttribute() {
@@ -565,19 +575,6 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         }
         $array['pilot_rating'] = implode(", ", $array['pilot_rating']);
         return $array;
-    }
-
-    public function setCertStatus($certRatingInt) {
-        if ($certRatingInt < 0) {
-            $this->is_inactive = true;
-            $this->is_network_banned = false;
-        } elseif ($certRatingInt == 0) {
-            $this->is_network_banned = true;
-            $this->is_inactive = false;
-        } else {
-            $this->is_inactive = false;
-            $this->is_network_banned = false;
-        }
     }
 
     public function determineState($region, $division) {

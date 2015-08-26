@@ -92,7 +92,7 @@ class MembersCertImport extends aCommand
         $member->name_first = $member_data[3];
         $member->name_last = $member_data[4];
         $member->joined_at = $member_data[11];
-        $member->setCertStatus($member_data[1]);
+        $member->is_inactive = (boolean) ($member_data[1] < 0);
         $member->save();
         $member->addEmail($member_data[5], true, true);
         $member->determineState($member_data[12], $member_data[13]);
