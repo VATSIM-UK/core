@@ -400,12 +400,12 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function getIsSystemBannedAttribute() {
-        $bans = $this->bans()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
+        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
         return (boolean) $bans->count() > 0;
     }
 
     public function getIsNetworkBannedAttribute() {
-        $bans = $this->bans()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
+        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
         return (boolean) $bans->count() > 0;
     }
 

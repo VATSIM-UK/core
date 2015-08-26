@@ -18,6 +18,14 @@ class Ban extends \Models\aTimelineEntry
     const TYPE_LOCAL   = 80;
     const TYPE_NETWORK = 90;
 
+    public static function scopeIsActive($query){
+        return $query->where("period_finish", ">=", \Carbon\Carbon::now());
+    }
+
+    public static function scopeIsHistoric($query){
+        return $query->where("period_finish", "<", \Carbon\Carbon::now());
+    }
+
     public function account()
     {
         return $this->belongsTo('Models\Mship\Account', 'account_id', 'account_id');
