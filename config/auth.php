@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => Models\Mship\Account::class,
+    'model' => App\Models\Mship\Account::class,
 
     /*
     |--------------------------------------------------------------------------
