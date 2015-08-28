@@ -31,7 +31,7 @@ class UpgradeV2109V2110 extends Migration {
         DB::statement("ALTER TABLE `sso_email` MODIFY `account_email_id` BIGINT UNSIGNED NULL DEFAULT NULL;"); // Add NULL
 
         // Since we only previously associated email_id, we now need to add account_id too!
-        $unassocAccounts = \Models\Sso\Email::where("account_id", "=", 0)->get();
+        $unassocAccounts = \App\Models\Sso\Email::where("account_id", "=", 0)->get();
         foreach($unassocAccounts as $ua){
             $ua->account_id = $ua->email->account_id;
             $ua->save();

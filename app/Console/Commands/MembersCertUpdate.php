@@ -178,8 +178,8 @@ class MembersCertUpdate extends aCommand {
             // Add it!
             if($_xmlData->rating == 0 && $_m->is_network_banned === false){
                 // Add a ban.
-                $newBan = new \Models\Mship\Account\Ban();
-                $newBan->type = \Models\Mship\Account\Ban::TYPE_NETWORK;
+                $newBan = new \App\Models\Mship\Account\Ban();
+                $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
                 $newBan->reason_extra = "Network ban discovered via Cert update scripts.";
                 $newBan->period_start = \Carbon\Carbon::now();
                 $newBan->save();
@@ -216,7 +216,7 @@ class MembersCertUpdate extends aCommand {
             }
 
             // Sort their rating(s) out - we're not permitting instructor ratings if they're NONE UK members.
-            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \Models\Mship\Account\State::STATE_DIVISION){
+            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION){
                 $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
                 $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
                 if ($_m->addQualification($atcRating)) {

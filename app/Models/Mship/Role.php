@@ -6,7 +6,7 @@ use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Permission as PermissionData;
 
-class Role extends \Models\aModel {
+class Role extends \App\Models\aModel {
 
     use SoftDeletingTrait, ValidatingTrait;
 

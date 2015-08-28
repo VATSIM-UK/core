@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Role as RoleData;
 
 
-class Permission extends \Models\aModel {
+class Permission extends \App\Models\aModel {
     use SoftDeletingTrait;
 
     protected $table = "mship_permission";

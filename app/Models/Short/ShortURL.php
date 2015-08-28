@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class ShortURL extends \Models\aModel
+class ShortURL extends \App\Models\aModel
 {
     use SoftDeletingTrait;
 

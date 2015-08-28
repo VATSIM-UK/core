@@ -4,7 +4,7 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Read extends \Models\aModel {
+class Read extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

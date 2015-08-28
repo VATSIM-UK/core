@@ -4,7 +4,7 @@ namespace App\Models\Mship\Account;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Note extends \Models\aModel
+class Note extends \App\Models\aModel
 {
 
     use SoftDeletingTrait;

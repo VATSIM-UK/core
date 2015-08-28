@@ -4,7 +4,7 @@ namespace App\Models\Teamspeak;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Ban extends \Models\aModel {
+class Ban extends \App\Models\aModel {
 
     protected $table = 'teamspeak_ban';
     protected $primaryKey = 'id';

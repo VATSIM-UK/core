@@ -5,7 +5,7 @@ namespace App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Ban extends \Models\aTimelineEntry
+class Ban extends \App\Models\aTimelineEntry
 {
 
     use SoftDeletes;
@@ -38,7 +38,7 @@ class Ban extends \Models\aTimelineEntry
 
     public function reason()
     {
-        return $this->belongsTo('\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
+        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
     }
 
     public function setPeriodAmountFromTS(){

@@ -8,7 +8,7 @@ use App\Models\Teamspeak\Log;
 use TeamSpeak3;
 use Carbon\Carbon;
 
-class Registration extends \Models\aModel {
+class Registration extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

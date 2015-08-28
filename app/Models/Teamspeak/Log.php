@@ -2,7 +2,7 @@
 
 namespace App\Models\Teamspeak;
 
-class Log extends \Models\aModel {
+class Log extends \App\Models\aModel {
 
     protected $table = 'teamspeak_log';
     protected $primaryKey = 'id';

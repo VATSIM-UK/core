@@ -17,7 +17,7 @@ use App\Models\Teamspeak\Registration;
 use App\Models\Sys\Notification as SysNotification;
 use App\Models\Sys\Postmaster\Queue;
 
-class Account extends \Models\aTimelineEntry implements AuthenticatableContract {
+class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
 
     use SoftDeletingTrait, Authenticatable;
 
@@ -307,7 +307,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
         // Let's send them an email with this information!
         $email = $admin ? "MSHIP_SECURITY_FORGOTTEN_ADMIN" : "MSHIP_SECURITY_FORGOTTEN";
-        \Models\Sys\Postmaster\Queue::queue($email, $this, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+        \App\Models\Sys\Postmaster\Queue::queue($email, $this, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
     }
 
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
@@ -332,7 +332,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
                 $token = SystemToken::generate("mship_account_email_verify", false, $email);
 
                 // Let's send them an email with this information!
-                \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_EMAIL_ADD", $email, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+                \App\Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_EMAIL_ADD", $email, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
             }
         } else {
             $email = $check;
@@ -401,22 +401,22 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function getIsSystemBannedAttribute() {
-        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
+        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_LOCAL);
         return (boolean) $bans->count() > 0;
     }
 
     public function getSystemBanAttribute(){
-        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_LOCAL);
+        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_LOCAL);
         return $bans->first();
     }
 
     public function getIsNetworkBannedAttribute() {
-        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
+        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_NETWORK);
         return (boolean) $bans->count() > 0;
     }
 
     public function getNetworkBanAttribute(){
-        $bans = $this->bans()->isActive()->where("type", "=", \Models\Mship\Account\Ban::TYPE_NETWORK);
+        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_NETWORK);
         return $bans->first();
     }
 
@@ -580,11 +580,11 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
     public function determineState($region, $division) {
         if ($region == "EUR" AND $division == "GBR") {
-            $state = \Models\Mship\Account\State::STATE_DIVISION;
+            $state = \App\Models\Mship\Account\State::STATE_DIVISION;
         } elseif ($region == "EUR") {
-            $state = \Models\Mship\Account\State::STATE_REGION;
+            $state = \App\Models\Mship\Account\State::STATE_REGION;
         } else {
-            $state = \Models\Mship\Account\State::STATE_INTERNATIONALE;
+            $state = \App\Models\Mship\Account\State::STATE_INTERNATIONALE;
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }

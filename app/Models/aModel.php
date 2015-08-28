@@ -55,7 +55,7 @@ abstract class aModel extends \Illuminate\Database\Eloquent\Model {
 
                 $original = $this->getOriginal($attribute);
 
-                $dataChange = new \Models\Sys\Data\Change();
+                $dataChange = new \App\Models\Sys\Data\Change();
                 $dataChange->data_key = $attribute;
                 $dataChange->data_old = $original;
                 $dataChange->data_new = $value;

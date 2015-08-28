@@ -210,12 +210,12 @@ class Security extends \Controllers\BaseController {
         $token->consume();
 
         // Generate a new password for them and then email it across!
-        $password = \Models\Mship\Account\Security::generate(false);
-        $passwordType = $token->related->current_security ? $token->related->current_security : \Models\Mship\Security::getDefault();
+        $password = \App\Models\Mship\Account\Security::generate(false);
+        $passwordType = $token->related->current_security ? $token->related->current_security : \App\Models\Mship\Security::getDefault();
         $token->related->setPassword($password, $passwordType, TRUE);
 
         // Now generate an email.
-        \Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
+        \App\Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated

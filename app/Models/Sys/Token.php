@@ -4,7 +4,7 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Token extends \Models\aTimelineEntry {
+class Token extends \App\Models\aTimelineEntry {
 
     use SoftDeletingTrait;
 

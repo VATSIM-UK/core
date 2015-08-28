@@ -51,7 +51,7 @@ class Account extends \Controllers\Adm\AdmController {
                 $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED), "=", AccountData::STATUS_NETWORK_SUSPENDED);
                 break;
             case "nondivision":
-                $memberSearch = \Models\Mship\Account\State::where("state", "!=", \Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = \App\Models\Mship\Account\State::where("state", "!=", \App\Models\Mship\Account\State::STATE_DIVISION)
                                                            ->with("account")
                                                            ->with("account.qualifications")
                                                            ->with("account.qualifications.qualification")
@@ -61,7 +61,7 @@ class Account extends \Controllers\Adm\AdmController {
                 break;
             case "division":
             default:
-                $memberSearch = \Models\Mship\Account\State::where("state", "=", \Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = \App\Models\Mship\Account\State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
                                                            ->with("account")
                                                            ->with("account.qualifications")
                                                            ->with("account.qualifications.qualification")

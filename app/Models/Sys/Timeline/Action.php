@@ -4,7 +4,7 @@ namespace App\Models\Sys\Timeline;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Action extends \Models\aModel {
+class Action extends \App\Models\aModel {
 
 	use SoftDeletingTrait;
         protected $table = "sys_timeline_action";

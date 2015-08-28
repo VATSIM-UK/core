@@ -7,7 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Postmaster\Template;
 
-class Queue extends \Models\aTimelineEntry {
+class Queue extends \App\Models\aTimelineEntry {
 
     use SoftDeletingTrait;
 
@@ -119,7 +119,7 @@ class Queue extends \Models\aTimelineEntry {
     public static function queue($postmasterTemplate, $recipient, $sender, $data) {
         // If the PostmasterTemplate isn't a class, we've been given the key.  Use it.
         if (!is_object($postmasterTemplate)) {
-            $postmasterTemplate = \Models\Sys\Postmaster\Template::findFromKey($postmasterTemplate);
+            $postmasterTemplate = \App\Models\Sys\Postmaster\Template::findFromKey($postmasterTemplate);
         }
 
         // Check the postmasterTemplate is real, first.
@@ -192,7 +192,7 @@ class Queue extends \Models\aTimelineEntry {
         }
 
         foreach($recipientEmailIDs as $recipientEmailID){
-            $queue = new \Models\Sys\Postmaster\Queue();
+            $queue = new \App\Models\Sys\Postmaster\Queue();
             $queue->recipient_id = $recipient->account_id;
             $queue->recipient_email_id = $recipientEmailID;
             $queue->sender_id = $sender->account_id;

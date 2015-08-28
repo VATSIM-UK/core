@@ -4,7 +4,7 @@ namespace App\Models\Sso;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Account extends \Models\aTimelineEntry {
+class Account extends \App\Models\aTimelineEntry {
 
 	use SoftDeletingTrait;
         protected $table = "sso_account";

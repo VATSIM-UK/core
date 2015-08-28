@@ -8,7 +8,7 @@ use App\Models\Mship\Account;
 use Session;
 use Input;
 
-abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry {
+abstract class aTimelineEntry extends \App\Models\aModel implements \iTimelineEntry {
 
     public static function eventLog($logKey, $model, $extra=null, $data=null){
         if($extra == null){

@@ -4,7 +4,7 @@ namespace App\Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Template extends \Models\aModel {
+class Template extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

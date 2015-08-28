@@ -1,6 +1,6 @@
 <?php namespace App\Models\Staff;
 
-class Position extends \Models\aModel
+class Position extends \App\Models\aModel
 {
     protected $table = 'staff_positions';
     protected $primaryKey = 'id';
@@ -17,22 +17,22 @@ class Position extends \Models\aModel
 
     public function parent()
     {
-        return $this->belongsTo('\Models\Staff\Position');
+        return $this->belongsTo('\App\Models\Staff\Position');
     }
 
     public function children()
     {
-        return $this->hasMany('\Models\Staff\Position', 'parent_id', 'id');
+        return $this->hasMany('\App\Models\Staff\Position', 'parent_id', 'id');
     }
 
     public function attributes()
     {
-        return $this->belongsToMany('\Models\Staff\Attribute', 'staff_attribute_position');
+        return $this->belongsToMany('\App\Models\Staff\Attribute', 'staff_attribute_position');
     }
 
     public function filledBy()
     {
-        return $this->belongsToMany('\Models\Mship\Account', 'staff_account_position');
+        return $this->belongsToMany('\App\Models\Mship\Account', 'staff_account_position');
     }
 
     /**
@@ -42,7 +42,7 @@ class Position extends \Models\aModel
      * possible, a collection of all positions should be provided, especially
      * when making repeated calls to this function.
      *
-     * @param  \Models\Staff\Position                    $position
+     * @param  \App\Models\Staff\Position                    $position
      * @param  \Illuminate\Database\Eloquent\Collection  $all_positions
      * @return integer
      */

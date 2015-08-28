@@ -2,7 +2,7 @@
 
 namespace App\Models\Teamspeak;
 
-class Alias extends \Models\aModel {
+class Alias extends \App\Models\aModel {
 
     protected $table = 'teamspeak_alias';
     protected $primaryKey = 'id';

@@ -46,13 +46,13 @@
                             <td>{{ $t->area }}</td>
                             <td>{{ $t->action }}</td>
                             <td align="center">
-                                @if($t->priority == \Models\Sys\Postmaster\Template::PRIORITY_LOW)
+                                @if($t->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_LOW)
                                     <span class="label label-default">Low</span>
-                                @elseif($t->priority == \Models\Sys\Postmaster\Template::PRIORITY_MED)
+                                @elseif($t->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_MED)
                                     <span class="label label-primary">Normal</span>
-                                @elseif($t->priority == \Models\Sys\Postmaster\Template::PRIORITY_HIGH)
+                                @elseif($t->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_HIGH)
                                     <span class="label label-warning">High</span>
-                                @elseif($t->priority == \Models\Sys\Postmaster\Template::PRIORITY_NOW)
+                                @elseif($t->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_NOW)
                                     <span class="label label-danger">Immediate</span>
                                 @endif
                             </td>

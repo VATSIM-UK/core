@@ -2,7 +2,7 @@
 
 namespace App\Models\Sys;
 
-class Session extends \Models\aModel {
+class Session extends \App\Models\aModel {
         protected $table = "sys_sessions";
         protected $primaryKey = "id";
         protected $hidden = ['session_id'];

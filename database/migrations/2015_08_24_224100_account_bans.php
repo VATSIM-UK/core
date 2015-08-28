@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use \Models\Mship\Account;
-use \Models\Mship\Account\Ban as AccountBan;
+use \App\Models\Mship\Account;
+use \App\Models\Mship\Account\Ban as AccountBan;
 
 class AccountBans extends Migration {
 

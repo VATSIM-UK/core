@@ -7,7 +7,7 @@ Route::group(['domain' => 'vats.im'], function () {
 
     Route::any('{request_url}', function ($request_url) {
         // check 'Request::path();' against model 'Route'
-        $success = \Models\Short\ShortURL::where('url', '=', $request_url)->first();
+        $success = \App\Models\Short\ShortURL::where('url', '=', $request_url)->first();
         // if successful, redirect, else throw 404
         if ($success) {
             header("Location: {$success->forward_url}");
@@ -183,7 +183,7 @@ Route::group(array("namespace" => "Controllers"), function () {
     });
 
     Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => ["auth.user.full", "user.must.read.notifications"]], function () {
-        Route::model('tsreg', '\Models\Teamspeak\Registration');
+        Route::model('tsreg', '\App\Models\Teamspeak\Registration');
         Route::get("/new", ["as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/success", ["as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
         Route::get("/{tsreg}/delete", ["as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);

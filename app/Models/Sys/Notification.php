@@ -4,7 +4,7 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Notification extends \Models\aModel {
+class Notification extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

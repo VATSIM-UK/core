@@ -100,7 +100,7 @@ class MembersCertImport extends aCommand
         $member->determineState($member_data[12], $member_data[13]);
 
         // If they're NONE UK and an Instructor we need their old rating.
-        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \Models\Mship\Account\State::STATE_DIVISION) {
+        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION) {
             $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
         } else {
             // Since they're an instructor AND NONE-UK

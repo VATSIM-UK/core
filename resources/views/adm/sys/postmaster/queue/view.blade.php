@@ -8,35 +8,35 @@
                 <h3 class="box-title ">
                     Queue Entry # {{ $queue->postmaster_queue_id }}
 
-                    @if($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_LOW)
+                    @if($queue->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_LOW)
                     <span class="label label-default">Priority: Low</span>
-                    @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_MED)
+                    @elseif($queue->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_MED)
                     <span class="label label-primary">Priority: Normal</span>
-                    @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_HIGH)
+                    @elseif($queue->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_HIGH)
                     <span class="label label-warning">Priority: High</span>
-                    @elseif($queue->priority == \Models\Sys\Postmaster\Template::PRIORITY_NOW)
+                    @elseif($queue->priority == \App\Models\Sys\Postmaster\Template::PRIORITY_NOW)
                     <span class="label label-danger">Priority: Immediate</span>
                     @endif
 
-                    @if($queue->status == \Models\Sys\Postmaster\Queue::STATUS_PENDING)
+                    @if($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_PENDING)
                     <span class="label label-default">Pending</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_PARSED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_PARSED)
                     <span class="label label-primary">Parsed</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DISPATCHED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_DISPATCHED)
                     <span class="label label-success">Sent</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DELIVERED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_DELIVERED)
                     <span class="label label-success">Delivered</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_CLICKED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_CLICKED)
                     <span class="label label-success">Clicked</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_OPENED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_OPENED)
                     <span class="label label-success">Opened</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_DROPPED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_DROPPED)
                     <span class="label label-warning">Dropped</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_SPAM)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_SPAM)
                     <span class="label label-warning">Spam</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_UNSUBSCRIBED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_UNSUBSCRIBED)
                     <span class="label label-warning">Unsubscribed</span>
-                    @elseif($queue->status == \Models\Sys\Postmaster\Queue::STATUS_BOUNCED)
+                    @elseif($queue->status == \App\Models\Sys\Postmaster\Queue::STATUS_BOUNCED)
                     <span class="label label-danger">Bounced</span>
                     @endif
                 </h3>

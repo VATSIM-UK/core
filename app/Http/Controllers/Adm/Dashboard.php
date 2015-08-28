@@ -15,17 +15,17 @@ use Cache;
 class Dashboard extends \Controllers\Adm\AdmController {
 
     public function getIndex() {
-        $statistics = Cache::tags((new \Models\Mship\Account())->getTable())->remember("statistics.mship", 60, function() {
+        $statistics = Cache::tags((new \App\Models\Mship\Account())->getTable())->remember("statistics.mship", 60, function() {
             // All Stats
             $statistics = array();
-            $statistics['members_total'] = (\Models\Mship\Account::count());
-            $statistics['members_active'] = (\Models\Mship\Account::where("status", "=", 0)->count());
-            $statistics['members_division'] = (\Models\Mship\Account\State::where("state", "=", \Models\Mship\Account\State::STATE_DIVISION)->count());
-            $statistics['members_nondivision'] = (\Models\Mship\Account\State::where("state", "!=", \Models\Mship\Account\State::STATE_DIVISION)->count());
-            $statistics['members_pending_update'] = (\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
+            $statistics['members_total'] = (\App\Models\Mship\Account::count());
+            $statistics['members_active'] = (\App\Models\Mship\Account::where("status", "=", 0)->count());
+            $statistics['members_division'] = (\App\Models\Mship\Account\State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)->count());
+            $statistics['members_nondivision'] = (\App\Models\Mship\Account\State::where("state", "!=", \App\Models\Mship\Account\State::STATE_DIVISION)->count());
+            $statistics['members_pending_update'] = (\App\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
                 ->subDay()->toDateTimeString())->where('last_login', '>=', \Carbon\Carbon::now()
                 ->subMonths(3)->toDateTimeString())->count());
-            $statistics['members_qualifications'] = (\Models\Mship\Account\Qualification::count());
+            $statistics['members_qualifications'] = (\App\Models\Mship\Account\Qualification::count());
             return $statistics;
         });
 
