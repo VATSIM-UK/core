@@ -43,14 +43,14 @@ Route::model("postmasterTemplate", "\App\Models\Sys\Postmaster\Template", functi
 });
 
 /*** WEBHOOKS ***/
-Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], function () {
+Route::group(["prefix" => "webhook", "namespace" => "Webhook"], function () {
     Route::group(["prefix" => "email", "namespace" => "Email"], function () {
         Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
     });
 });
 
 /* * ** ADM *** */
-Route::group(array("namespace" => "Controllers\Adm"), function () {
+Route::group(array("namespace" => "Adm"), function () {
     Route::group(array("prefix" => "adm"), function () {
 
         // Login is the only unauthenticated page.
@@ -115,7 +115,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function () {
     });
 });
 
-Route::group(array("namespace" => "Controllers"), function () {
+Route::group([], function () {
     Route::get("/error/{code?}", ["as" => "error", "uses" => "Error@getDisplay"]);
 
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
