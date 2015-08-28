@@ -1,16 +1,16 @@
 <?php
 
-namespace Controllers\Adm;
+namespace App\Http\Controllers\Adm;
 
-use \Models\Mship\Account;
-use \Models\Statistic;
-use \Models\Mship\Account\Email as AccountEmail;
-use \Session;
-use \Response;
-use \Redirect;
-use \View;
-use \Input;
-use \Cache;
+use App\Models\Mship\Account;
+use App\Models\Statistic;
+use App\Models\Mship\Account\Email as AccountEmail;
+use Session;
+use Response;
+use Redirect;
+use View;
+use Input;
+use Cache;
 
 class Dashboard extends \Controllers\Adm\AdmController {
 

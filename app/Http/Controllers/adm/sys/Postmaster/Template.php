@@ -1,15 +1,15 @@
 <?php
 
-namespace Controllers\Adm\Sys\Postmaster;
+namespace App\Http\Controllers\Adm\Sys\Postmaster;
 
-use \Input;
-use \Session;
-use \Response;
-use \Request;
-use \Config;
-use \Redirect;
-use \DB;
-use \Models\Sys\Postmaster\Template as PostmasterTemplateData;
+use Input;
+use Session;
+use Response;
+use Request;
+use Config;
+use Redirect;
+use DB;
+use App\Models\Sys\Postmaster\Template as PostmasterTemplateData;
 
 class Template extends \Controllers\Adm\AdmController {
 

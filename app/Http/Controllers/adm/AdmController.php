@@ -1,13 +1,13 @@
 <?php
 
-namespace Controllers\Adm;
+namespace App\Http\Controllers\Adm;
 
-use \Auth;
-use \Session;
-use \Route;
-use \View;
-use \Models\Mship\Account;
-use \Request;
+use Auth;
+use Session;
+use Route;
+use View;
+use App\Models\Mship\Account;
+use Request;
 class AdmController extends \Controllers\BaseController {
 
     protected $_pageSubTitle = NULL;

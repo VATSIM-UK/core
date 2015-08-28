@@ -13,17 +13,17 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \TestCommand::class,
-        \MembersCertImport::class,
-        \MembersCertUpdate::class,
-        \StatisticsDaily::class,
-        \RebuildModelDependencies::class,
-        \PostmasterParse::class,
-        \PostmasterDispatch::class,
-        \SyncRTS::class,
-        \SyncCommunity::class,
-        \TeamspeakManager::class,
-        \TeamspeakCleanup::class,
+        Commands\TestCommand::class,
+        Commands\MembersCertImport::class,
+        Commands\MembersCertUpdate::class,
+        Commands\StatisticsDaily::class,
+        Commands\RebuildModelDependencies::class,
+        Commands\PostmasterParse::class,
+        Commands\PostmasterDispatch::class,
+        Commands\SyncRTS::class,
+        Commands\SyncCommunity::class,
+        Commands\TeamspeakManager::class,
+        Commands\TeamspeakCleanup::class,
     ];
 
     /**

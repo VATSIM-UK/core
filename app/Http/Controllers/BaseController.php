@@ -1,9 +1,9 @@
 <?php
 
-namespace Controllers;
+namespace App\Http\Controllers;
 
 use Auth;
-use Models\Mship\Account;
+use App\Models\Mship\Account;
 use Request;
 use Session;
 use View;

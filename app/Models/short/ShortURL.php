@@ -1,4 +1,4 @@
-<?php namespace Models\Short;
+<?php namespace App\Models\Short;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 

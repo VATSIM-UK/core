@@ -1,10 +1,10 @@
 <?php
 
-namespace Models\Mship;
+namespace App\Models\Mship;
 
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Permission as PermissionData;
 
 class Role extends \Models\aModel {
 

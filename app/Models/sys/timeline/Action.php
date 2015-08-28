@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sys\Timeline;
+namespace App\Models\Sys\Timeline;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 

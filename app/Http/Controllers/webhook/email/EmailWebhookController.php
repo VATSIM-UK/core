@@ -1,14 +1,14 @@
 <?php
 
-namespace Controllers\Webhook\Email;
+namespace App\Http\Controllers\Webhook\Email;
 
-use Models\Sys\Timeline\Entry;
-use Models\Sys\Postmaster\Queue;
-use \Session;
-use \Response;
-use \Redirect;
-use \View;
-use \Input;
+use App\Models\Sys\Timeline\Entry;
+use App\Models\Sys\Postmaster\Queue;
+use Session;
+use Response;
+use Redirect;
+use View;
+use Input;
 
 class EmailWebhookController extends \Controllers\Webhook\WebhookController {
     protected $messageId = null;

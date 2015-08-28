@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Mship\Account\Note;
+namespace App\Models\Mship\Account\Note;
 
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;

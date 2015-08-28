@@ -1,10 +1,10 @@
 <?php
 
-namespace Models\Mship\Account;
+namespace App\Models\Mship\Account;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
-use \Models\Mship\Security as SecurityType;
+use App\Models\Mship\Security as SecurityType;
 
 class Security extends \Eloquent
 {

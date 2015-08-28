@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers\Webhook;
+namespace App\Http\Controllers\Webhook;
 
 class WebhookController extends \Controller {
 

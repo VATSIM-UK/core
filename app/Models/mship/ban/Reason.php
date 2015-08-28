@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Mship\Ban;
+namespace App\Models\Mship\Ban;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

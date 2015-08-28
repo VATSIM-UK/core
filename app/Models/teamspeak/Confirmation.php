@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Teamspeak;
+namespace App\Models\Teamspeak;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 

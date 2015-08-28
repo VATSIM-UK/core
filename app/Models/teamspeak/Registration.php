@@ -1,10 +1,10 @@
 <?php
 
-namespace Models\Teamspeak;
+namespace App\Models\Teamspeak;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Controllers\Teamspeak\TeamspeakAdapter;
-use Models\Teamspeak\Log;
+use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Models\Teamspeak\Log;
 use TeamSpeak3;
 use Carbon\Carbon;
 

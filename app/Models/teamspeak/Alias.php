@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Teamspeak;
+namespace App\Models\Teamspeak;
 
 class Alias extends \Models\aModel {
 

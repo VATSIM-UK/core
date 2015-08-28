@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sys\Data;
+namespace App\Models\Sys\Data;
 
 class Change extends \Models\aModel {
         protected $table = "sys_data_change";

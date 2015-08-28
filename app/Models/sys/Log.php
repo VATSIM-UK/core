@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sys;
+namespace App\Models\Sys;
 
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;

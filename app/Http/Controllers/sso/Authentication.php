@@ -1,13 +1,13 @@
 <?php
 
-namespace Controllers\Sso;
+namespace App\Http\Controllers\Sso;
 
-use \Models\Sso\Token;
-use \Auth;
-use \Request;
-use \Redirect;
-use \Response;
-use \Input;
+use App\Models\Sso\Token;
+use Auth;
+use Request;
+use Redirect;
+use Response;
+use Input;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Authentication extends \Controllers\BaseController {

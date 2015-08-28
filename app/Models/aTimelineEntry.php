@@ -1,12 +1,12 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Models\Sys\Timeline\Entry;
-use \Models\Mship\Account;
-use \Session;
-use \Input;
+use App\Models\Sys\Timeline\Entry;
+use App\Models\Mship\Account;
+use Session;
+use Input;
 
 abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry {
 

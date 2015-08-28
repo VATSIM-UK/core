@@ -1,6 +1,6 @@
-<?php namespace Controllers\Adm\Mship;
+<?php namespace App\Http\Controllers\Adm\Mship;
 
-use Models\Staff\Position;
+use App\Models\Staff\Position;
 
 class Staff extends \Controllers\Adm\AdmController
 {

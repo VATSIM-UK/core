@@ -1,16 +1,16 @@
 <?php
 
-namespace Controllers\Adm\Sys\Postmaster;
+namespace App\Http\Controllers\Adm\Sys\Postmaster;
 
-use \Artisan;
-use \Input;
-use \Session;
-use \Response;
-use \Request;
-use \Config;
-use \Redirect;
-use \DB;
-use \Models\Sys\Postmaster\Queue as PostmasterQueueData;
+use Artisan;
+use Input;
+use Session;
+use Response;
+use Request;
+use Config;
+use Redirect;
+use DB;
+use App\Models\Sys\Postmaster\Queue as PostmasterQueueData;
 
 class Queue extends \Controllers\Adm\AdmController {
 

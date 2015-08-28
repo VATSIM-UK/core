@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers\Teamspeak;
+namespace App\Http\Controllers\Teamspeak;
 
 use TeamSpeak3 as TSAPI;
 

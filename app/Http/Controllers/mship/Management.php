@@ -1,19 +1,19 @@
 <?php
 
-namespace Controllers\Mship;
+namespace App\Http\Controllers\Mship;
 
-use \Redirect;
-use \Validator;
-use \Input;
-use \Auth;
-use \Session;
-use \View;
-use \Models\Mship\Account;
-use \Models\Mship\Account\Email as AccountEmail;
-use \Models\Sys\Token as SystemToken;
-use \Models\Sso\Account as SSOSystem;
-use \Models\Sso\Email as SSOEmail;
-use \Models\Sso\Token as SSOToken;
+use Redirect;
+use Validator;
+use Input;
+use Auth;
+use Session;
+use View;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Sys\Token as SystemToken;
+use App\Models\Sso\Account as SSOSystem;
+use App\Models\Sso\Email as SSOEmail;
+use App\Models\Sso\Token as SSOToken;
 
 class Management extends \Controllers\BaseController {
     public function getLanding(){

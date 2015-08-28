@@ -1,10 +1,10 @@
 <?php
 
-namespace Controllers;
+namespace App\Http\Controllers;
 
-use \Session;
-use \Response;
-use \View;
+use Session;
+use Response;
+use View;
 
 class Error extends \Controllers\BaseController {
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace Controllers\Mship;
+namespace App\Http\Controllers\Mship;
 
-use \Redirect;
-use \Auth;
-use \Session;
-use \Input;
-use \View;
-use \Models\Mship\Account;
-use \Models\Mship\Account\Security as AccountSecurity;
-use \Models\Mship\Security as SecurityType;
-use \Models\Sys\Token as SystemToken;
+use Redirect;
+use Auth;
+use Session;
+use Input;
+use View;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Security as AccountSecurity;
+use App\Models\Mship\Security as SecurityType;
+use App\Models\Sys\Token as SystemToken;
 
 class Security extends \Controllers\BaseController {
 

@@ -1,19 +1,19 @@
 <?php
 
-namespace Controllers\Adm\Mship;
+namespace App\Http\Controllers\Adm\Mship;
 
 use Auth;
 use Config;
 use DB;
 use Illuminate\Support\Collection;
 use Input;
-use Models\Mship\Account as AccountData;
-use Models\Mship\Account\Note as AccountNoteData;
-use Models\Mship\Account\Security as AccountSecurityData;
-use Models\Mship\Note\Type as NoteTypeData;
-use Models\Mship\Role as RoleData;
-use Models\Mship\Security as SecurityData;
-use Models\Sys\Timeline\Entry as TimelineEntryData;
+use App\Models\Mship\Account as AccountData;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Models\Mship\Account\Security as AccountSecurityData;
+use App\Models\Mship\Note\Type as NoteTypeData;
+use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\Security as SecurityData;
+use App\Models\Sys\Timeline\Entry as TimelineEntryData;
 use Redirect;
 use Request;
 use Response;

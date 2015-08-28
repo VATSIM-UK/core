@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sys;
+namespace App\Models\Sys;
 
 class Session extends \Models\aModel {
         protected $table = "sys_sessions";

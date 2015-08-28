@@ -1,10 +1,10 @@
 <?php
 
-namespace Models\Mship\Account;
+namespace App\Models\Mship\Account;
 
-use \Models\Sso\Email as SSOEmail;
+use App\Models\Sso\Email as SSOEmail;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Validator;
+use Validator;
 
 class Email extends \Eloquent
 {

@@ -1,21 +1,21 @@
 <?php
 
-namespace Controllers\Adm\Mship;
+namespace App\Http\Controllers\Adm\Mship;
 
-use \AuthException;
-use \Auth;
-use \Input;
-use \Session;
-use \Response;
-use \Request;
-use \URL;
-use \View;
-use \VatsimSSO;
-use \Config;
-use \Redirect;
-use \DB;
-use \Models\Mship\Role as RoleData;
-use \Models\Mship\Permission as PermissionData;
+use AuthException;
+use Auth;
+use Input;
+use Session;
+use Response;
+use Request;
+use URL;
+use View;
+use VatsimSSO;
+use Config;
+use Redirect;
+use DB;
+use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\Permission as PermissionData;
 
 class Role extends \Controllers\Adm\AdmController {
 

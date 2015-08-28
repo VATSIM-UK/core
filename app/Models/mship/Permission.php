@@ -1,9 +1,9 @@
 <?php
 
-namespace Models\Mship;
+namespace App\Models\Mship;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Models\Mship\Role as RoleData;
+use App\Models\Mship\Role as RoleData;
 
 
 class Permission extends \Models\aModel {

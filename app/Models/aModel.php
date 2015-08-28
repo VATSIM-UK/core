@@ -1,8 +1,8 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
-use \Models\Sys\Timeline\Entry;
+use App\Models\Sys\Timeline\Entry;
 
 abstract class aModel extends \Illuminate\Database\Eloquent\Model {
     protected $doNotTrack = [];

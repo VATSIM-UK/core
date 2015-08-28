@@ -1,17 +1,17 @@
 <?php
 
-namespace Controllers\Mship;
+namespace App\Http\Controllers\Mship;
 
-use \Config;
-use \Auth;
-use \Request;
-use \URL;
-use \Input;
-use \Session;
-use \Redirect;
-use \VatsimSSO;
-use \Models\Mship\Account;
-use \Models\Mship\Qualification as QualificationType;
+use Config;
+use Auth;
+use Request;
+use URL;
+use Input;
+use Session;
+use Redirect;
+use VatsimSSO;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification as QualificationType;
 
 class Notification extends \Controllers\BaseController {
 

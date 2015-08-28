@@ -1,16 +1,18 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Carbon\Carbon;
 
-use Controllers\Teamspeak\TeamspeakAdapter;
-use Models\Mship\Account;
-use Models\Mship\Qualification;
-use Models\Teamspeak\Registration;
-use Models\Teamspeak\Ban;
-use Models\Teamspeak\Log;
+use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Teamspeak\Registration;
+use App\Models\Teamspeak\Ban;
+use App\Models\Teamspeak\Log;
 
 class TeamspeakManager extends aCommand {
 

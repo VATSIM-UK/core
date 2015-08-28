@@ -1,10 +1,12 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Sys\Postmaster\Queue;
-use Models\Sys\Timeline\Entry;
+use App\Models\Sys\Postmaster\Queue;
+use App\Models\Sys\Timeline\Entry;
 
 class PostmasterDispatch extends aCommand {
 

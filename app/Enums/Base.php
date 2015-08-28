@@ -1,6 +1,6 @@
 <?php
 
-namespace Enums;
+namespace App\Enums;
 
 class Base {
     const CURRENT_VERSION = "1.2.4";

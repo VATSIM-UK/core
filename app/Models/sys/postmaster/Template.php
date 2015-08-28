@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sys\Postmaster;
+namespace App\Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 

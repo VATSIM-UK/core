@@ -1,6 +1,6 @@
 <?php
 
-namespace Models\Sso;
+namespace App\Models\Sso;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers\Adm;
+namespace App\Http\Controllers\Adm;
 
 use Auth;
 use Exception;
@@ -12,8 +12,8 @@ use View;
 use VatsimSSO;
 use Config;
 use Redirect;
-use Models\Mship\Account;
-use Models\Timeline\Entry;
+use App\Models\Mship\Account;
+use App\Models\Timeline\Entry;
 
 class Authentication extends \Controllers\Adm\AdmController {
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Controllers\Sso;
+namespace App\Http\Controllers\Sso;
 
-use \Input;
-use \Session;
-use \Response;
-use \Models\Sso\Account;
-use \Models\Sso\Token;
-use \Models\Mship\Account as MemberAccount;
+use Input;
+use Session;
+use Response;
+use App\Models\Sso\Account;
+use App\Models\Sso\Token;
+use App\Models\Mship\Account as MemberAccount;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Security extends \Controllers\BaseController {

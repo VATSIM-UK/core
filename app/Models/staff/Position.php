@@ -1,4 +1,4 @@
-<?php namespace Models\Staff;
+<?php namespace App\Models\Staff;
 
 class Position extends \Models\aModel
 {

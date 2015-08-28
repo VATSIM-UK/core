@@ -1,10 +1,12 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-use Models\Mship\Account;
+use App\Models\Mship\Account;
 
 class SyncCommunity extends aCommand
 {

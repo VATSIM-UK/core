@@ -1,20 +1,20 @@
 <?php
 
-namespace Models\Mship;
+namespace App\Models\Mship;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Carbon\Carbon;
-use \Models\Mship\Account\Email as AccountEmail;
-use \Models\Mship\Account\Qualification as AccountQualification;
-use Models\Mship\Account\State;
-use \Models\Sys\Token as SystemToken;
-use \Models\Mship\Role as RoleData;
-use \Models\Mship\Permission as PermissionData;
-use \Models\Mship\Account\Note as AccountNoteData;
-use \Models\Teamspeak\Registration;
-use \Models\Sys\Notification as SysNotification;
+use Carbon\Carbon;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Mship\Account\Qualification as AccountQualification;
+use App\Models\Mship\Account\State;
+use App\Models\Sys\Token as SystemToken;
+use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Models\Teamspeak\Registration;
+use App\Models\Sys\Notification as SysNotification;
 
 class Account extends \Models\aTimelineEntry implements AuthenticatableContract {
 

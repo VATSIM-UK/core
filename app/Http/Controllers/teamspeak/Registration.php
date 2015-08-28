@@ -1,11 +1,11 @@
-<?php namespace Controllers\Teamspeak;
+<?php namespace App\Http\Controllers\Teamspeak;
 
 use Redirect;
 use Response;
-use Models\Mship\Account;
-use Models\Teamspeak\Registration as RegistrationModel;
-use Models\Teamspeak\Confirmation as ConfirmationModel;
-use Controllers\Teamspeak\TeamspeakAdapter;
+use App\Models\Mship\Account;
+use App\Models\Teamspeak\Registration as RegistrationModel;
+use App\Models\Teamspeak\Confirmation as ConfirmationModel;
+use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 
 class Registration extends \Controllers\BaseController
 {

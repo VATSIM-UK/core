@@ -1,11 +1,11 @@
 <?php
 
-namespace Models\Sys\Postmaster;
+namespace App\Models\Sys\Postmaster;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Models\Mship\Account;
-use \Models\Mship\Account\Email as AccountEmail;
-use \Models\Sys\Postmaster\Template;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Sys\Postmaster\Template;
 
 class Queue extends \Models\aTimelineEntry {
 

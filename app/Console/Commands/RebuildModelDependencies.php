@@ -1,10 +1,12 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use \Models\Sys\Postmaster\Template as PostmasterTemplates;
-use \Models\Sys\Timeline\Action as TimelineActions;
+use App\Models\Sys\Postmaster\Template as PostmasterTemplates;
+use App\Models\Sys\Timeline\Action as TimelineActions;
 
 class RebuildModelDependencies extends aCommand {
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace Controllers\Adm\Sys;
+namespace App\Http\Controllers\Adm\Sys;
 
-use \AuthException;
-use \Input;
-use \Session;
-use \Response;
-use \View;
-use \VatsimSSO;
-use \Config;
-use \Redirect;
-use \Models\Sys\Timeline\Entry;
+use AuthException;
+use Input;
+use Session;
+use Response;
+use View;
+use VatsimSSO;
+use Config;
+use Redirect;
+use App\Models\Sys\Timeline\Entry;
 
 class Timeline extends \Controllers\Adm\AdmController {
 

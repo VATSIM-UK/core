@@ -1,10 +1,10 @@
 <?php
 
-namespace Controllers\Adm;
+namespace App\Http\Controllers\Adm;
 
-use \Session;
-use \Response;
-use \View;
+use Session;
+use Response;
+use View;
 
 class Error extends \Controllers\Adm\AdmController {
 
