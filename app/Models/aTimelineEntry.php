@@ -57,11 +57,11 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     }
 
     public function timelineEntriesOwner() {
-        return $this->morphMany("\Models\Sys\Timeline\Entry", "owner");
+        return $this->morphMany("\App\Models\Sys\Timeline\Entry", "owner");
     }
 
     public function timelineEntriesExtra() {
-        return $this->morphMany("\Models\Sys\Timeline\Entry", "extra");
+        return $this->morphMany("\App\Models\Sys\Timeline\Entry", "extra");
     }
 
     public function getTimelineEntriesRecentAttribute() {

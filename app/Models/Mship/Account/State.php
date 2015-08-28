@@ -38,7 +38,7 @@ class State extends \Eloquent
 
     public function account()
     {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function getLabelAttribute()

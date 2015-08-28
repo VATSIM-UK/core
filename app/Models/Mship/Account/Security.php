@@ -20,12 +20,12 @@ class Security extends \Eloquent
 
     public function account()
     {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function security()
     {
-        return $this->belongsTo("\Models\Mship\Security", "security_id", "security_id");
+        return $this->belongsTo("\App\Models\Mship\Security", "security_id", "security_id");
     }
 
     public function setValueAttribute($value)

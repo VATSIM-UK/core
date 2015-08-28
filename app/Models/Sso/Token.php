@@ -13,7 +13,7 @@ class Token extends \Models\aTimelineEntry {
         protected $hidden = ['token_id'];
 
         public function account(){
-            return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+            return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
         }
 
         public function getIsExpiredAttribute(){

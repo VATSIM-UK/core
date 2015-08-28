@@ -10,7 +10,7 @@ class Confirmation extends \Models\aModel {
     protected $primaryKey = 'registration_id';
 
     public function registration() {
-        return $this->belongsTo("\Models\Teamspeak\Registration", "registration_id", "id");
+        return $this->belongsTo("\App\Models\Teamspeak\Registration", "registration_id", "id");
     }
 
 }

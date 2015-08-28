@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Session;
 use Illuminate\Console\Command;
 
 class aCommand extends Command {

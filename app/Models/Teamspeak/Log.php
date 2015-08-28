@@ -10,7 +10,7 @@ class Log extends \Models\aModel {
     protected $dates = ['created_at', 'updated_at'];
 
     public function registration() {
-        return $this->belongsTo("\Models\Teamspeak\Registration", "registration_id", "id");
+        return $this->belongsTo("\App\Models\Teamspeak\Registration", "registration_id", "id");
     }
 
     public function scopeIdleMessage($query) {

@@ -9,7 +9,7 @@ class Alias extends \Models\aModel {
     protected $dates = ['created_at', 'updated_at'];
 
     public function account() {
-        return $this->belongsTo("\Models\Teamspeak\Registration", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Teamspeak\Registration", "account_id", "account_id");
     }
 
 }

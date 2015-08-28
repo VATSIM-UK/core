@@ -30,7 +30,7 @@ class Permission extends \Models\aModel {
     }
 
     public function roles(){
-        return $this->belongsToMany("\Models\Mship\Role", "mship_permission_role")->withTimestamps();
+        return $this->belongsToMany("\App\Models\Mship\Role", "mship_permission_role")->withTimestamps();
     }
 
     public function attachRole(RoleData $role){

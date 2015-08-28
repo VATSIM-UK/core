@@ -24,6 +24,6 @@ class Type extends \Eloquent {
         }
 
         public function notes(){
-            return $this->hasMany("\Models\Mship\Account\Note", "note_type_id", "note_type_id");
+            return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "note_type_id");
         }
 }

@@ -14,7 +14,7 @@ class Security extends \Eloquent {
         protected $hidden = ['security_id'];
 
         public function accountSecurity(){
-            return $this->hasMany("\Models\Mship\Account\Security", "security_id", "security_id");
+            return $this->hasMany("\App\Models\Mship\Account\Security", "security_id", "security_id");
         }
 
         public static function getDefault(){

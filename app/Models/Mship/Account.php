@@ -15,6 +15,7 @@ use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Teamspeak\Registration;
 use App\Models\Sys\Notification as SysNotification;
+use App\Models\Sys\Postmaster\Queue;
 
 class Account extends \Models\aTimelineEntry implements AuthenticatableContract {
 
@@ -45,7 +46,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         }
 
         // Generate an email to the user to advise them of their new account at VATUK.
-        \Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
+        Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
     }
 
     public static function scopeIsSystem($query){
@@ -61,79 +62,79 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
     }
 
     public function dataChanges(){
-        return $this->morphMany("\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
+        return $this->morphMany("\App\Models\Sys\Data\Change", "model")->orderBy("created_at", "DESC");
     }
 
     public function emails() {
-        return $this->hasMany("\Models\Mship\Account\Email", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Mship\Account\Email", "account_id", "account_id");
     }
 
     public function messagesReceived() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC")->with("sender");
+        return $this->hasMany("\App\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC")->with("sender");
     }
 
     public function messagesSent() {
-        return $this->hasMany("\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
+        return $this->hasMany("\App\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
     }
 
     public function bans() {
-        return $this->hasMany("\Models\Mship\Account\Ban", "account_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\App\Models\Mship\Account\Ban", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function bansAsInstigator() {
-        return $this->hasMany("\Models\Mship\Account\Ban", "banned_by", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\App\Models\Mship\Account\Ban", "banned_by", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function notes() {
-        return $this->hasMany("\Models\Mship\Account\Note", "account_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\App\Models\Mship\Account\Note", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function noteWriter() {
-        return $this->hasMany("\Models\Mship\Account\Note", "writer_id", "account_id");
+        return $this->hasMany("\App\Models\Mship\Account\Note", "writer_id", "account_id");
     }
 
     public function tokens() {
-        return $this->morphMany("\Models\Sys\Token", "related");
+        return $this->morphMany("\App\Models\Sys\Token", "related");
     }
 
     public function qualifications() {
-        return $this->hasMany("\Models\Mship\Account\Qualification", "account_id", "account_id")->orderBy("created_at", "DESC")->with("qualification");
+        return $this->hasMany("\App\Models\Mship\Account\Qualification", "account_id", "account_id")->orderBy("created_at", "DESC")->with("qualification");
     }
 
     public function roles(){
-        return $this->belongsToMany("\Models\Mship\Role", "mship_account_role")->with("permissions")->withTimestamps();
+        return $this->belongsToMany("\App\Models\Mship\Role", "mship_account_role")->with("permissions")->withTimestamps();
     }
 
     public function states() {
-        return $this->hasMany("\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\App\Models\Mship\Account\State", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function ssoEmails() {
-        return $this->hasMany("\Models\Sso\Email", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Sso\Email", "account_id", "account_id");
     }
 
     public function ssoTokens() {
-        return $this->hasMany("\Models\Sso\Token", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Sso\Token", "account_id", "account_id");
     }
 
     public function security() {
-        return $this->hasMany("\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
+        return $this->hasMany("\App\Models\Mship\Account\Security", "account_id", "account_id")->orderBy("created_at", "DESC");
     }
 
     public function teamspeakAliases() {
-        return $this->hasMany("\Models\Teamspeak\Alias", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Teamspeak\Alias", "account_id", "account_id");
     }
 
     public function teamspeakBans() {
-        return $this->hasMany("\Models\Teamspeak\Ban", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Teamspeak\Ban", "account_id", "account_id");
     }
 
     public function teamspeakRegistrations() {
-        return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
+        return $this->hasMany("\App\Models\Teamspeak\Registration", "account_id", "account_id");
     }
 
     public function readNotifications(){
-        return $this->belongsToMany("\Models\Sys\Notification", "sys_notification_read", "account_id", "notification_id")->orderBy("status", "DESC")->orderBy("effective_at", "DESC")->withTimestamps();
+        return $this->belongsToMany("\App\Models\Sys\Notification", "sys_notification_read", "account_id", "notification_id")->orderBy("status", "DESC")->orderBy("effective_at", "DESC")->withTimestamps();
     }
 
     public function getUnreadNotificationsAttribute(){
@@ -157,7 +158,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
     public function getHasUnreadImportantNotificationsAttribute(){
         $unreadNotifications = $this->unreadNotifications->filter(function($notice){
-            return $notice->status == \Models\Sys\Notification::STATUS_IMPORTANT;
+            return $notice->status == SysNotification::STATUS_IMPORTANT;
         });
 
         return $unreadNotifications->count() > 0;
@@ -165,7 +166,7 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
     public function getHasUnreadMustAcknowledgeNotificationsAttribute(){
         $unreadNotifications = $this->unreadNotifications->filter(function($notice){
-            return $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE;
+            return $notice->status == SysNotification::STATUS_MUST_ACKNOWLEDGE;
         });
 
         return $unreadNotifications->count() > 0;

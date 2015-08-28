@@ -16,16 +16,16 @@ class Note extends \Models\aModel
 
     public function account()
     {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function writer()
     {
-        return $this->belongsTo("\Models\Mship\Account", "writer_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "writer_id", "account_id");
     }
 
     public function type()
     {
-        return $this->belongsTo("\Models\Mship\Note\Type", "note_type_id", "note_type_id");
+        return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "note_type_id");
     }
 }

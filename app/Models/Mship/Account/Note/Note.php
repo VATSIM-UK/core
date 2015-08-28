@@ -13,19 +13,19 @@ class Note extends \Eloquent implements UserInterface, RemindableInterface {
         protected $hidden = ['account_note_id'];
         
         public function user(){
-            return $this->belongsTo("\Models\Account\Account", "account_id", "account_id");
+            return $this->belongsTo("\App\Models\Account\Account", "account_id", "account_id");
         }
         
         public function actioner(){
-            return $this->belongsTo("\Models\Account\Account", "account_id", "actioner_id");
+            return $this->belongsTo("\App\Models\Account\Account", "account_id", "actioner_id");
         }
         
         public function flag(){
-            return $this->hasOne("\Models\Account\Note\Flag", "account_note_id", "account_note_id");
+            return $this->hasOne("\App\Models\Account\Note\Flag", "account_note_id", "account_note_id");
         }
         
         public function format(){
-            return $this->hasOne("\Models\Account\Note\Format", "account_note_id", "account_note_id");
+            return $this->hasOne("\App\Models\Account\Note\Format", "account_note_id", "account_note_id");
         }
         
         public function setDataAttribute($value){

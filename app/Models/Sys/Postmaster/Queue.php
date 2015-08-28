@@ -81,23 +81,23 @@ class Queue extends \Models\aTimelineEntry {
     }
 
     public function recipient() {
-        return $this->belongsTo("\Models\Mship\Account", "recipient_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "recipient_id", "account_id");
     }
 
     public function recipientEmail() {
-        return $this->belongsTo("\Models\Mship\Account\Email", "recipient_email_id", "account_email_id");
+        return $this->belongsTo("\App\Models\Mship\Account\Email", "recipient_email_id", "account_email_id");
     }
 
     public function sender() {
-        return $this->belongsTo("\Models\Mship\Account", "sender_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "sender_id", "account_id");
     }
 
     public function senderEmail() {
-        return $this->belongsTo("\Models\Mship\Account\Email", "sender_email_id", "account_email_id");
+        return $this->belongsTo("\App\Models\Mship\Account\Email", "sender_email_id", "account_email_id");
     }
 
     public function template() {
-        return $this->belongsTo("\Models\Sys\Postmaster\Template", "postmaster_template_id", "postmaster_template_id");
+        return $this->belongsTo("\App\Models\Sys\Postmaster\Template", "postmaster_template_id", "postmaster_template_id");
     }
 
     public function getDisplayValueAttribute() {

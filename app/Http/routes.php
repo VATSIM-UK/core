@@ -18,27 +18,27 @@ Route::group(['domain' => 'vats.im'], function () {
     });
 });
 
-Route::model("mshipAccount", "\Models\Mship\Account", function () {
+Route::model("mshipAccount", "\App\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
 
-Route::model("mshipAccountEmail", "\Models\Mship\Account\Email");
-Route::model("ssoEmail", "\Models\Sso\Email");
-Route::model("sysNotification", "\Models\Sys\Notification");
+Route::model("mshipAccountEmail", "\App\Models\Mship\Account\Email");
+Route::model("ssoEmail", "\App\Models\Sso\Email");
+Route::model("sysNotification", "\App\Models\Sys\Notification");
 
-Route::model("mshipRole", "\Models\Mship\Role", function () {
+Route::model("mshipRole", "\App\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
 });
 
-Route::model("mshipPermission", "\Models\Mship\Permission", function () {
+Route::model("mshipPermission", "\App\Models\Mship\Permission", function () {
     Redirect::route("adm.mship.permission.index")->withError("Permission doesn't exist.");
 });
 
-Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function () {
+Route::model("postmasterQueue", "\App\Models\Sys\Postmaster\Queue", function () {
     Redirect::route("adm.sys.postmaster.queue.index");
 });
 
-Route::model("postmasterTemplate", "\Models\Sys\Postmaster\Template", function () {
+Route::model("postmasterTemplate", "\App\Models\Sys\Postmaster\Template", function () {
     Redirect::route("adm.sys.postmaster.template.index");
 });
 

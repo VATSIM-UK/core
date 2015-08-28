@@ -46,15 +46,15 @@ class Registration extends \Models\aModel {
     }
 
     public function confirmation() {
-        return $this->hasOne("\Models\Teamspeak\Confirmation", "registration_id", "id");
+        return $this->hasOne("\App\Models\Teamspeak\Confirmation", "registration_id", "id");
     }
 
     public function account() {
-        return $this->belongsTo("\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function logs() {
-        return $this->hasMany("\Models\Teamspeak\Log", "registration_id", "id");
+        return $this->hasMany("\App\Models\Teamspeak\Log", "registration_id", "id");
     }
 
     public function setRegistrationIpAttribute($value) {

@@ -22,7 +22,7 @@ class Template extends \Models\aModel {
     }
 
     public function queuedEmails() {
-        return $this->belongsTo("\Models\Sys\Postmaster\Queue", "postmaster_template_id", "postmaster_template_id");
+        return $this->belongsTo("\App\Models\Sys\Postmaster\Queue", "postmaster_template_id", "postmaster_template_id");
     }
 
     public function getDisplayValueAttribute() {

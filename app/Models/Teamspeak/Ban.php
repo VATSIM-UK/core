@@ -12,7 +12,7 @@ class Ban extends \Models\aModel {
 
 
     public function account() {
-        return $this->belongsTo("\Models\Teamspeak\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Teamspeak\Account", "account_id", "account_id");
     }
 
 }

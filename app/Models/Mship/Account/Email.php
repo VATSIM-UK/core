@@ -20,12 +20,12 @@ class Email extends \Eloquent
 
     public function account()
     {
-        return $this->hasOne("\Models\Mship\Account", "account_id", "account_id");
+        return $this->hasOne("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
     public function tokens()
     {
-        return $this->morphMany("\Models\Sys\Token", "related");
+        return $this->morphMany("\App\Models\Sys\Token", "related");
     }
 
     public function scopePrimary($query)
@@ -45,7 +45,7 @@ class Email extends \Eloquent
 
     public function ssoEmails()
     {
-        return $this->hasMany("\Models\Sso\Email", "account_email_id", "account_email_id");
+        return $this->hasMany("\App\Models\Sso\Email", "account_email_id", "account_email_id");
     }
 
     public function assignToSso($ssoAccount)

@@ -13,7 +13,7 @@ class Account extends \Models\aTimelineEntry {
         protected $hidden = ['account_id'];
 
         public function tokens(){
-            return $this->hasMany("\Models\Sso\Token", "sso_account_id", "sso_account_id");
+            return $this->hasMany("\App\Models\Sso\Token", "sso_account_id", "sso_account_id");
         }
 
     public function getDisplayValueAttribute() {
