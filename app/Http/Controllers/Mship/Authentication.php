@@ -13,7 +13,7 @@ use VatsimSSO;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
 
-class Authentication extends \Controllers\BaseController {
+class Authentication extends \App\Http\Controllers\BaseController {
 
     public function getRedirect() {
         // If there's NO basic auth, send to login.

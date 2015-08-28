@@ -11,7 +11,7 @@ use Redirect;
 use DB;
 use App\Models\Sys\Postmaster\Template as PostmasterTemplateData;
 
-class Template extends \Controllers\Adm\AdmController {
+class Template extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex() {
         // Get all emails in the queue!

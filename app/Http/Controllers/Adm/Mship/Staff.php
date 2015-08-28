@@ -2,7 +2,7 @@
 
 use App\Models\Staff\Position;
 
-class Staff extends \Controllers\Adm\AdmController
+class Staff extends \App\Http\Controllers\Adm\AdmController
 {
     protected $ordered_positions = array();
 

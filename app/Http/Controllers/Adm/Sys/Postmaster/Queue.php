@@ -12,7 +12,7 @@ use Redirect;
 use DB;
 use App\Models\Sys\Postmaster\Queue as PostmasterQueueData;
 
-class Queue extends \Controllers\Adm\AdmController {
+class Queue extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex() {
         // Get all emails in the queue!

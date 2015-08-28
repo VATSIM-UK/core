@@ -17,7 +17,7 @@ use DB;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Mship\Permission as PermissionData;
 
-class Permission extends \Controllers\Adm\AdmController {
+class Permission extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex() {
         // ORM it all!

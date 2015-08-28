@@ -12,7 +12,7 @@ use View;
 use Input;
 use Cache;
 
-class Dashboard extends \Controllers\Adm\AdmController {
+class Dashboard extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex() {
         $statistics = Cache::tags((new \App\Models\Mship\Account())->getTable())->remember("statistics.mship", 60, function() {

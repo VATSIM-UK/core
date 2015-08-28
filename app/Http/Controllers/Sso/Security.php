@@ -10,7 +10,7 @@ use App\Models\Sso\Token;
 use App\Models\Mship\Account as MemberAccount;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class Security extends \Controllers\BaseController {
+class Security extends \App\Http\Controllers\BaseController {
 
     private $_ssoAccount;
 

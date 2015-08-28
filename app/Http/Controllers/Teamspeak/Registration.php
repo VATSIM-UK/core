@@ -7,7 +7,7 @@ use App\Models\Teamspeak\Registration as RegistrationModel;
 use App\Models\Teamspeak\Confirmation as ConfirmationModel;
 use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 
-class Registration extends \Controllers\BaseController
+class Registration extends \App\Http\Controllers\BaseController
 {
 
     // create new registration process

@@ -10,7 +10,7 @@ use Redirect;
 use View;
 use Input;
 
-class Mailgun extends \Controllers\Webhook\Email\EmailWebhookController {
+class Mailgun extends \App\Http\Controllers\Webhook\Email\EmailWebhookController {
     public function anyRoute(){
         // Verify that this is a valid request!
         $timestamp = Input::get("timestamp");

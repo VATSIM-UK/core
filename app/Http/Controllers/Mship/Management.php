@@ -15,7 +15,7 @@ use App\Models\Sso\Account as SSOSystem;
 use App\Models\Sso\Email as SSOEmail;
 use App\Models\Sso\Token as SSOToken;
 
-class Management extends \Controllers\BaseController {
+class Management extends \App\Http\Controllers\BaseController {
     public function getLanding(){
         if(Auth::check()){
             return Redirect::route("mship.auth.redirect");

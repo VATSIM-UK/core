@@ -6,7 +6,7 @@ use Session;
 use Response;
 use View;
 
-class Error extends \Controllers\Adm\AdmController {
+class Error extends \App\Http\Controllers\Adm\AdmController {
 
     public function getDisplay($code){
         if(View::exists("adm.error.".$code)){

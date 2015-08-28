@@ -12,7 +12,7 @@ use App\Models\Mship\Account\Security as AccountSecurity;
 use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
 
-class Security extends \Controllers\BaseController {
+class Security extends \App\Http\Controllers\BaseController {
 
     public function getAuth() {
         if(Session::has("auth_override")){

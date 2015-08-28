@@ -22,7 +22,7 @@ use URL;
 use VatsimSSO;
 use View;
 
-class Account extends \Controllers\Adm\AdmController {
+class Account extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex($scope = "division") {
         $totalMembers = AccountData::count();

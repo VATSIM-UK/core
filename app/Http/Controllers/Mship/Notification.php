@@ -13,7 +13,7 @@ use VatsimSSO;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
 
-class Notification extends \Controllers\BaseController {
+class Notification extends \App\Http\Controllers\BaseController {
 
     public function postAcknowledge($notification){
         $this->_account->readNotifications()->attach($notification);

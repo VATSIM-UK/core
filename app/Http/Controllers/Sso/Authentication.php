@@ -10,7 +10,7 @@ use Response;
 use Input;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class Authentication extends \Controllers\BaseController {
+class Authentication extends \App\Http\Controllers\BaseController {
     public function getLogin(){
         // Did we receive a token?  If we didn't get rid of them!
         if(!Input::get("token", false)){

@@ -15,7 +15,7 @@ use Redirect;
 use App\Models\Mship\Account;
 use App\Models\Timeline\Entry;
 
-class Authentication extends \Controllers\Adm\AdmController {
+class Authentication extends \App\Http\Controllers\Adm\AdmController {
 
     public function getLogin(){
         return $this->viewMake("adm.authentication.login");

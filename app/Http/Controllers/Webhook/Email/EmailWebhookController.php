@@ -10,7 +10,7 @@ use Redirect;
 use View;
 use Input;
 
-class EmailWebhookController extends \Controllers\Webhook\WebhookController {
+class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookController {
     protected $messageId = null;
     protected $queueEntry = null;
 

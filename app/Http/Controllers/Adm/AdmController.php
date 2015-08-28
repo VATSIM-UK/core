@@ -8,7 +8,7 @@ use Route;
 use View;
 use App\Models\Mship\Account;
 use Request;
-class AdmController extends \Controllers\BaseController {
+class AdmController extends \App\Http\Controllers\BaseController {
 
     protected $_pageSubTitle = NULL;
 
