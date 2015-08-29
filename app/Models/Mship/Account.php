@@ -69,12 +69,12 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         return $this->hasMany("\App\Models\Mship\Account\Email", "account_id", "account_id");
     }
 
-    public function messagesReceived() {
-        return $this->hasMany("\App\Models\Sys\Postmaster\Queue", "recipient_id", "account_id")->orderBy("created_at", "DESC")->with("sender");
+    public function messageThreads(){
+        return $this->hasManyThrough(App\Models\Messages\Thread::class, App\Models\Messages\Thread\Participant::class, "account_id", "thread_id");
     }
 
-    public function messagesSent() {
-        return $this->hasMany("\App\Models\Sys\Postmaster\Queue", "sender_id", "account_id")->orderBy("created_at", "DESC")->with("recipient");
+    public function messagePosts(){
+        return $this->hasMany(App\Models\Messages\Thread\Post::class, "account_id", "account_id");
     }
 
     public function bans() {
@@ -124,6 +124,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     public function teamspeakAliases() {
         return $this->hasMany("\App\Models\Teamspeak\Alias", "account_id", "account_id");
     }
+
 
     public function teamspeakBans() {
         return $this->hasMany("\App\Models\Teamspeak\Ban", "account_id", "account_id");
