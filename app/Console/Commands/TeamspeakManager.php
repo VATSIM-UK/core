@@ -237,7 +237,7 @@ class TeamspeakManager extends aCommand {
                         }
 
                         // do they have their appropriate atc training ratings?
-                        if ($client_account->isState(Models\Mship\Account\State::STATE_DIVISION)) {
+                        if ($client_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
                             foreach ($atc_training as $rating) {
                                 if (($index = array_search($server_group_ids[$rating],
                                                                     $client_server_groups)) === FALSE)

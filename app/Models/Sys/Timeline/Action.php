@@ -12,7 +12,7 @@ class Action extends \App\Models\aModel {
         protected $dates = ['created_at', 'deleted_at'];
 
         public function entries(){
-            return $this->hasMany("Models\Sys\Timeline\Entry", "timeline_action_id", "timeline_action_id");
+            return $this->hasMany("App\Models\Sys\Timeline\Entry", "timeline_action_id", "timeline_action_id");
         }
 
         public function getTypeAttribute(){

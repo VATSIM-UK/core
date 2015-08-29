@@ -38,7 +38,7 @@ class AdmController extends \App\Http\Controllers\BaseController {
             // Let's also display the breadcrumb
             $breadcrumb = array();
             $uri = "/adm";
-            $bcBase = explode("\\", str_replace("Controllers\\Adm\\", "", get_called_class()));
+            $bcBase = explode("\\", str_replace("App\\Http\\Controllers\\Adm\\", "", get_called_class()));
             /*for($i=2; $i<=10; $i++){
                 if(Request::segment($i) != NULL){
                     $uri.= Request::segment($i);

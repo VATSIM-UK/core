@@ -16,7 +16,7 @@ class Reason extends Model {
 
     public function bans()
     {
-        return $this->hasMany('Models\Mship\Account\Ban', 'ban_reason_id', 'reason_id');
+        return $this->hasMany('\App\Models\Mship\Account\Ban', 'ban_reason_id', 'reason_id');
     }
 
 }

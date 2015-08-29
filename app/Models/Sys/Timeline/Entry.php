@@ -22,7 +22,7 @@ class Entry extends \App\Models\aModel {
         }
 
         public function action(){
-            return $this->belongsTo("Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
+            return $this->belongsTo("App\Models\Sys\Timeline\Action", "timeline_action_id", "timeline_action_id");
         }
 
         public function getOwnerDisplayAttribute(){

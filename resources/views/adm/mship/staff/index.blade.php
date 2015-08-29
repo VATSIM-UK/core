@@ -2,7 +2,7 @@
 
 function outputPosition($position, $all_positions)
 {
-    $indent = Models\Staff\Position::totalParents($position, $all_positions) * 50;
+    $indent = App\Models\Staff\Position::totalParents($position, $all_positions) * 50;
 
     $output_string = '';
     if ($position->type === 'D') {
