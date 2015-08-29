@@ -4,7 +4,7 @@ namespace App\Models\Messages;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Messages extends \App\Models\aModel
+class Thread extends \App\Models\aModel
 {
 
     protected $table      = 'messages_thread';
@@ -14,11 +14,11 @@ class Messages extends \App\Models\aModel
     public    $timestamps = true;
 
     public function participants(){
-        return $this->hasManyThrough(App\Models\Mship\Account::class, App\Models\Messages\Thread\Participant::class, "thread_id", "account_id");
+        return $this->belongsToMany(\App\Models\Mship\Account::class, "messages_thread_participant", "thread_id", "account_id")->withPivot("display_as", "read_at", "status")->withTimestamps();
     }
 
     public function posts(){
-        return $this->hasMany(App\Models\Messages\Thread\Post::class, "thread_id", "thread_id");
+        return $this->hasMany(\App\Models\Messages\Thread\Post::class, "thread_id", "thread_id");
     }
 
 }

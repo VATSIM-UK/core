@@ -70,11 +70,11 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     }
 
     public function messageThreads(){
-        return $this->hasManyThrough(App\Models\Messages\Thread::class, App\Models\Messages\Thread\Participant::class, "account_id", "thread_id");
+        return $this->belongsToMany(\App\Models\Messages\Thread::class, "messages_thread_participant", "account_id", "thread_id")->withPivot("display_as", "read_at", "status")->withTimestamps();
     }
 
     public function messagePosts(){
-        return $this->hasMany(App\Models\Messages\Thread\Post::class, "account_id", "account_id");
+        return $this->hasMany(\App\Models\Messages\Thread\Post::class, "account_id", "account_id");
     }
 
     public function bans() {

@@ -14,10 +14,10 @@ class Post extends \App\Models\aModel
     public    $timestamps = true;
 
     public function thread(){
-        return $this->belongsTo(App\Models\Messages\Thread::class, "thread_id", "thread_id");
+        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "thread_id");
     }
 
     public function author(){
-        return $this->belongsTo(App\Models\Mship\Accohnt::class, "account_id", "account_id");
+        return $this->belongsTo(\App\Models\Mship\Accohnt::class, "account_id", "account_id");
     }
 }

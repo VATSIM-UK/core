@@ -24,7 +24,6 @@ class PostmasterTemplatesRemoval extends Migration {
             $table->bigIncrements('thread_post_id');
             $table->bigInteger('thread_id')->unsigned();
             $table->integer('account_id')->unsigned();
-            $table->smallInteger("status");
             $table->text('content');
             $table->timestamps();
         });
@@ -34,6 +33,7 @@ class PostmasterTemplatesRemoval extends Migration {
             $table->bigInteger('thread_id')->unsigned();
             $table->integer('account_id')->unsigned();
             $table->string('display_as', 255);
+            $table->smallInteger("status");
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
@@ -42,12 +42,11 @@ class PostmasterTemplatesRemoval extends Migration {
         // We need to convert the entire queue into the new messages schema.
         $pmQueue = DB::table("sys_postmaster_queue")->get();
         foreach($pmQueue as $pmq){
-            try {
                 // Create empty models and load sender and recip for later use.
-                $thread = new App\Models\Messages\Thread();
-                $post = new App\Models\Messages\Thread\Post();
-                $sender = App\Models\Mship\Account::find(($pmq->sender_id > 0 ? $pmq->sender_id : 707070));
-                $recipient = App\Models\Mship\Account::find($pmq->recipient_id);
+                $thread = new \App\Models\Messages\Thread();
+                $post = new \App\Models\Messages\Thread\Post();
+                $sender = \App\Models\Mship\Account::find(($pmq->sender_id > 0 ? $pmq->sender_id : 707070));
+                $recipient = \App\Models\Mship\Account::find($pmq->recipient_id);
 
                 // Setup the thread.  Don't attach any relations yet.
                 $thread->subject = $pmq->subject;
@@ -55,21 +54,17 @@ class PostmasterTemplatesRemoval extends Migration {
                 $thread->save();
 
                 // Has the message been read?
-                $participantRead = ($pmq->status == App\Models\Sys\Postmaster\Queue::STATUS_OPENED ? $pmq->updated_at : null);
-                $participantRead = ($participantRead == null && $pmq->status == App\Models\Sys\Postmaster\Queue::STATUS_CLICKED ? $pmq->updated_at : null);
+                $participantRead = ($pmq->status == \App\Models\Sys\Postmaster\Queue::STATUS_OPENED ? $pmq->updated_at : null);
+                $participantRead = ($participantRead == null && $pmq->status == \App\Models\Sys\Postmaster\Queue::STATUS_CLICKED ? $pmq->updated_at : null);
 
                 // Add participants to the thread.
-                $thread->participants()->attach($sender, ["status" => App\Models\Messages\Thread\Participant::STATUS_OWNER]);
-                $thread->participants()->attach($recipient, ["status" => App\Models\Messages\Thread\Participant::STATUS_OWNER, "read_at" => $participantRead]);
+                $thread->participants()->save($sender, ["status" => \App\Models\Messages\Thread\Participant::STATUS_OWNER]);
+                $thread->participants()->save($recipient, ["status" => \App\Models\Messages\Thread\Participant::STATUS_VIEWER, "read_at" => $participantRead]);
 
                 // Build the post content.  Attach straight to the thread and the sender's account.
                 $post->content = $pmq->body;
                 $thread->posts()->save($post);
                 $sender->messagePosts()->save($post);
-            } catch(Exception $e){
-                print "Something went wrong somewhere: ".$e->getMessage();
-                return true;
-            }
         }
 
         // Remove the queue.  Goodbye data #goneForever
