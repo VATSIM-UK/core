@@ -9,7 +9,7 @@ class aCommand extends Command {
      * @return void
      */
     public function __construct() {
-        \Auth::loginUsingId(707070);
+        Session::set("auth_adm_account", 707070);
 
         parent::__construct();
     }
