@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
+use DB;
 use App\Models\Mship\Account;
 
 class SyncCommunity extends aCommand
@@ -171,7 +172,7 @@ class SyncCommunity extends aCommand
     protected function getOptions()
     {
         return array(
-            //array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
+            array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
         );
     }
 }

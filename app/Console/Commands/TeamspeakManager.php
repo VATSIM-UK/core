@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Carbon\Carbon;
+use Exception;
+use TeamSpeak3;
 
 use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 use App\Models\Mship\Account;
@@ -118,7 +120,7 @@ class TeamspeakManager extends aCommand {
                 // obtain the client's registration ID
                 try {
                     $client_custominfo = $client->customInfo();
-                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                } catch (\TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                     //echo "Caught (likely empty custominfo): " . $e->getMessage() . "\n";
                     $client_custominfo = array();
                 }

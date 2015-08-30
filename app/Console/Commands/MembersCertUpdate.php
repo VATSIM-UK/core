@@ -11,6 +11,9 @@ use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification as QualificationData;
 use App\Models\Mship\Account\Qualification;
 use Carbon\Carbon;
+use VatsimXML;
+use Exception;
+use DB;
 
 class MembersCertUpdate extends aCommand {
 
@@ -138,7 +141,7 @@ class MembersCertUpdate extends aCommand {
             return;
         }
 
-        if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
+        if ($_xmlData->name_first == new \stdClass() && $_xmlData->name_last == new \stdClass()
                 && $_xmlData->email == "[hidden]") {
             $_m->delete();
             print "\t" . $_m->account_id . " no longer exists in CERT - deleted.\n";
@@ -260,11 +263,6 @@ class MembersCertUpdate extends aCommand {
             }
 
             $_m->save();
-
-            if ($changed) {
-                $this->call('Sync:RTS', ['--force-update' => $_m->account_id]);
-                $this->call('Sync:Community', ['--force-update' => $_m->account_id]);
-            }
 
         } catch (Exception $e) {
             DB::rollback();

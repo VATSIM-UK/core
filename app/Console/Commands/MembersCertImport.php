@@ -10,6 +10,8 @@ use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification as QualificationData;
 use App\Models\Mship\Account\Qualification;
+use DB;
+use VatsimXML;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.

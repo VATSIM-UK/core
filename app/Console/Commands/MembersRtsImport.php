@@ -10,6 +10,8 @@ use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification as QualificationData;
 use App\Models\Mship\Account\Qualification;
+use DB;
+use VatsimXML;
 
 class MembersRtsImport extends aCommand {
 
