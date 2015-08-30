@@ -34,14 +34,6 @@ Route::model("mshipPermission", "\App\Models\Mship\Permission", function () {
     Redirect::route("adm.mship.permission.index")->withError("Permission doesn't exist.");
 });
 
-Route::model("postmasterQueue", "\App\Models\Sys\Postmaster\Queue", function () {
-    Redirect::route("adm.sys.postmaster.queue.index");
-});
-
-Route::model("postmasterTemplate", "\App\Models\Sys\Postmaster\Template", function () {
-    Redirect::route("adm.sys.postmaster.template.index");
-});
-
 /*** WEBHOOKS ***/
 Route::group(["prefix" => "webhook", "namespace" => "Webhook"], function () {
     Route::group(["prefix" => "email", "namespace" => "Email"], function () {
@@ -71,13 +63,6 @@ Route::group(array("namespace" => "Adm"), function () {
 
             Route::group(array("prefix" => "system", "namespace" => "Sys"), function () {
                 Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "Timeline@getIndex"));
-
-                Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function () {
-                    Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
-                    Route::get("/queue/{postmasterQueue}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
-                    Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
-                    Route::get("/template/{postmasterTemplate}", ["as" => "adm.sys.postmaster.template.view", "uses" => "Template@getView"]);
-                });
             });
 
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Jobs\Mship\Security\SendSecurityResetLinkEmail;
 use Redirect;
 use Auth;
 use Session;
@@ -215,7 +216,7 @@ class Security extends \App\Http\Controllers\BaseController {
         $token->related->setPassword($password, $passwordType, TRUE);
 
         // Now generate an email.
-        \App\Models\Sys\Postmaster\Queue::queue("MSHIP_SECURITY_RESET", $token->related, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "password" => $password]);
+        \Bus::dispatch(new SendSecurityResetLinkEmail($token->related, $password));
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated

@@ -16,12 +16,6 @@
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security"))
                         <li {{ $selectedTab == "security" ? "class='active'" : "" }}><a href="#security" role="tab" data-toggle="tab">Security Details</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/receivedEmails"))
-                        <li {{ $selectedTab == "receivedEmails" ? "class='active'" : "" }}><a href="#receivedEmails" role="tab" data-toggle="tab">Received Emails</a></li>
-                    @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/sentEmails"))
-                        <li {{ $selectedTab == "sentEmails" ? "class='active'" : "" }}><a href="#sentEmails" role="tab" data-toggle="tab">Sent Emails</a></li>
-                    @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/bans"))
                         <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
@@ -414,20 +408,6 @@
                                 </div>
                             </div>
                             {!! Form::close() !!}
-                        </div>
-                    @endif
-
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/receivedEmails"))
-                        <div class="tab-pane fade {{ $selectedTab == "receivedEmails" ? "in active" : "" }}" id="receivedEmails">
-                            <p>Only the last 25 emails this user has received have been displayed here.</p>
-                            @include('adm.sys.postmaster.queue.widget', array('queue' => $account->messagesReceived()->limit(25)->get()))
-                        </div>
-                    @endif
-
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/sentEmails"))
-                        <div class="tab-pane fade {{ $selectedTab == "sentEmails" ? "in active" : "" }}" id="sentEmails">
-                            <p>Only the last 25 emails this user has sent have been displayed here.</p>
-                            @include('adm.sys.postmaster.queue.widget', array('queue' => $account->messagesSent()->limit(25)->get()))
                         </div>
                     @endif
 

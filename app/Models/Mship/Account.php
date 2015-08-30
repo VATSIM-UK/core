@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship;
 
+use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
+use App\Jobs\Mship\Security\SendSecurityForgottenAdminConfirmationEmail;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
@@ -15,7 +17,6 @@ use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Teamspeak\Registration;
 use App\Models\Sys\Notification as SysNotification;
-use App\Models\Sys\Postmaster\Queue;
 
 class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
 
@@ -307,8 +308,11 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $token = SystemToken::generate("mship_account_security_reset", false, $this);
 
         // Let's send them an email with this information!
-        $email = $admin ? "MSHIP_SECURITY_FORGOTTEN_ADMIN" : "MSHIP_SECURITY_FORGOTTEN";
-        \App\Models\Sys\Postmaster\Queue::queue($email, $this, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+        if($admin){
+            \Bus::dispatch(new SendSecurityForgottenAdminConfirmationEmail($this, $token));
+        } else {
+            \Bus::dispatch(new SendSecurityForgottenConfirmationEmail($this, $token));
+        }
     }
 
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
@@ -333,7 +337,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
                 $token = SystemToken::generate("mship_account_email_verify", false, $email);
 
                 // Let's send them an email with this information!
-                \App\Models\Sys\Postmaster\Queue::queue("MSHIP_ACCOUNT_EMAIL_ADD", $email, VATUK_ACCOUNT_SYSTEM, ["ip" => array_get($_SERVER, "REMOTE_ADDR", "Unknown"), "token" => $token]);
+                \Bus::dispatch(new SendNewEmailVerificationEmail($this, $token));
             }
         } else {
             $email = $check;

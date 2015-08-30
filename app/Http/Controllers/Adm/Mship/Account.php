@@ -104,8 +104,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
         // Lazy eager loading
         $account->load(
             "notes", "notes.type", "notes.writer",
-            "messagesReceived", "messagesReceived.sender",
-            "messagesSent", "messagesSent.recipient",
             "dataChanges",
             "roles", "roles.permissions",
             "qualifications",

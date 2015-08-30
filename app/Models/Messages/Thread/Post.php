@@ -18,6 +18,6 @@ class Post extends \App\Models\aModel
     }
 
     public function author(){
-        return $this->belongsTo(\App\Models\Mship\Accohnt::class, "account_id", "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "account_id");
     }
 }

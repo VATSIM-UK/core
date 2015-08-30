@@ -149,7 +149,7 @@
                     </li>
                     <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">
                         <a href="#">
-                            <i class="ion ion-email"></i> <span>Postmaster</span>
+                            <i class="ion ion-email"></i> <span>Jobs</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
