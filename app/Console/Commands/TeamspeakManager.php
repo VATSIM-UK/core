@@ -9,7 +9,6 @@ use Controllers\Teamspeak\TeamspeakAdapter;
 use Models\Mship\Account;
 use Models\Mship\Qualification;
 use Models\Teamspeak\Registration;
-use Models\Teamspeak\Ban;
 use Models\Teamspeak\Log;
 
 class TeamspeakManager extends aCommand {
@@ -166,27 +165,18 @@ class TeamspeakManager extends aCommand {
                     $client_registration->save();
 
                     // check if the client is banned
-                    if ($client_account->is_banned || $client_account->is_inactive) {
+                    if ($client_account->is_banned OR $client_account->is_inactive) {
                         try {
-                            if ($client_account->is_banned)
+                            if ($client_account->is_network_banned)
                                 $message = "You are currently serving a VATSIM ban.";
-                            else $message = "Your VATSIM membership is inactive - visit "
+                            if ($client_account->is_system_banned)
+                                $message = "You are currently serving a VATSIM UK System Ban.";
+                            elseif($client_account->is_inactive)
+                                $message = "Your VATSIM membership is inactive - visit "
                                           . "https://cert.vatsim.net/vatsimnet/statcheck.html";
                             $client->kick(TeamSpeak3::KICK_SERVER, $message);
                             $client->deleteDb();
                             $client_registration->delete($tscon);
-                            continue;
-                        } catch (Exception $e) {
-                            if ($debug) echo "Error: " . $e->getMessage();
-                        }
-                    } elseif ($client_account->is_teamspeak_banned) {
-                        try {
-                            $client->ban($client_account->is_teamspeak_banned,
-                                "You are currently serving a TeamSpeak ban.");
-                            if ($client_account->is_teamspeak_banned > 60 * 60 * 24 * 2) {
-                                $client->deleteDb();
-                                $client_registration->delete($tscon);
-                            }
                             continue;
                         } catch (Exception $e) {
                             if ($debug) echo "Error: " . $e->getMessage();

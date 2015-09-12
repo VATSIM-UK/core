@@ -124,10 +124,6 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
         return $this->hasMany("\Models\Teamspeak\Alias", "account_id", "account_id");
     }
 
-    public function teamspeakBans() {
-        return $this->hasMany("\Models\Teamspeak\Ban", "account_id", "account_id");
-    }
-
     public function teamspeakRegistrations() {
         return $this->hasMany("\Models\Teamspeak\Registration", "account_id", "account_id");
     }
@@ -421,19 +417,6 @@ class Account extends \Models\aTimelineEntry implements AuthenticatableContract 
 
     public function getIsBannedAttribute() {
         return $this->is_system_banned OR $this->is_network_banned;
-    }
-
-    public function getIsTeamspeakBannedAttribute() {
-        //if ($this->teamspeak_bans->first()) {
-        $greatest = Carbon::createFromTimeStampUTC(0);
-            foreach ($this->teamspeak_bans as $ban) {
-                if ($greatest->lt($ban->expires_at)) {
-                    $greatest = $ban->expires_at;
-                }
-            }
-        if ($greatest->gt(Carbon::now())) return $greatest->diffInSeconds(Carbon::now());
-        else return FALSE;
-        //}
     }
 
     public function getIsInactiveAttribute() {
