@@ -133,7 +133,10 @@ class Security extends \App\Http\Controllers\BaseController {
         $return["account_state_current"] = $account->current_state->label;
         $return["account_status"] = $account->status;
         $return["is_invisible"] = boolval($account->is_invisible);
+
         $return["is_banned"] = boolval($account->is_banned);
+        $return["ban_info"] = ($account->is_banned ? $account->bans->first() : null);
+
         $return["is_inactive"] = boolval($account->is_inactive);
         $return["experience"] = $account->experience;
         $return["reg_date"] = $account->joined_at->toDateTimeString();
