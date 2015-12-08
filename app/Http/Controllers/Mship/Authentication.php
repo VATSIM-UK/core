@@ -204,11 +204,7 @@ class Authentication extends \App\Http\Controllers\BaseController {
                     } else {
                         $account->is_inactive = 0;
                     }
-                    if ($user->rating->id == -1) {
-                        $account->is_network_banned = 1;
-                    } else {
-                        $account->is_network_banned = 0;
-                    }
+
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
