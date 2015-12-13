@@ -27,7 +27,7 @@ class State extends \Eloquent
     const STATE_TRANSFER      = 60;
 
     public static function getStateKeyFromValue($value){
-        $reflector = new ReflectionClass(__CLASS__);
+        $reflector = new \ReflectionClass(__CLASS__);
         foreach($reflector->getConstants() as $k => $v){
             if($v == $value){
                 return str_replace("STATE_", "", $k);
@@ -43,8 +43,8 @@ class State extends \Eloquent
 
     public function getLabelAttribute()
     {
-        $lang_string = str_replace("state_", "state.", strtolower($this->state));
-        return trans("mship.account.".$lang_string);
+        $lang_string = str_replace("state_", "state.", strtolower(self::getStateKeyFromValue($this->state)));
+        return trans("mship.account.state.".$lang_string);
     }
 
     public function __toString()
