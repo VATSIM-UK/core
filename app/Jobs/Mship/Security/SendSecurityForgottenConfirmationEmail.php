@@ -26,9 +26,9 @@ class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements Se
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "SSO Security - Reset Confirmation";
         $body = \View::make("emails.mship.security.reset_confirmation")
-                     ->with("account", $this->account)
+                     ->with("account", $this->recipient)
                      ->with("token", $this->token)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->account, $subject, $body, $displayFrom, true, true));
+        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
     }
 }

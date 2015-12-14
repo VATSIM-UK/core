@@ -4,6 +4,7 @@ namespace App\Models\Mship;
 
 use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Security\SendSecurityForgottenAdminConfirmationEmail;
+use App\Jobs\Mship\Security\SendSecurityForgottenConfirmationEmail;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;

@@ -69,13 +69,13 @@
 
                 @if(Session::has('error') OR isset($error))
                     <div class="alert alert-danger" role="alert">
-                        <strong>Error!</strong> {{ Session::has('error') ? Session::pull("error") : $error }}
+                        <strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
                     </div>
                 @endif
 
                 @if(Session::has('success') OR isset($success))
                     <div class="alert alert-success" role="alert">
-                        <strong>Success!</strong> {{ Session::has('success') ? Session::pull("success") : $success }}
+                        <strong>Success!</strong> {!! Session::has('success') ? Session::pull("success") : $success !!}
                     </div>
                 @endif
 

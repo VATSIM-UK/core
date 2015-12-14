@@ -29,6 +29,6 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
                      ->with("account", $this->account)
                      ->with("token", $this->token)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->account, $subject, $body, $displayFrom, true, true));
+        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
     }
 }
