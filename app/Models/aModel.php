@@ -1,8 +1,8 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
-use \Models\Sys\Timeline\Entry;
+use App\Models\Sys\Timeline\Entry;
 
 abstract class aModel extends \Illuminate\Database\Eloquent\Model {
     protected $doNotTrack = [];
@@ -41,7 +41,7 @@ abstract class aModel extends \Illuminate\Database\Eloquent\Model {
     public function save(array $options = []) {
         // Let's check the old data vs new data, so we can store data changes!
         // We check for the presence of the dataChanges relationship, to warrent tracking changes.
-        if (get_called_class() != "Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
+        if (get_called_class() != "App\Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
             // Get the changed values!
             foreach ($this->getDirty() as $attribute => $value) {
                 // There are some values we might want to remove.  They may be stored in a variable
@@ -55,7 +55,7 @@ abstract class aModel extends \Illuminate\Database\Eloquent\Model {
 
                 $original = $this->getOriginal($attribute);
 
-                $dataChange = new \Models\Sys\Data\Change();
+                $dataChange = new \App\Models\Sys\Data\Change();
                 $dataChange->data_key = $attribute;
                 $dataChange->data_old = $original;
                 $dataChange->data_new = $value;

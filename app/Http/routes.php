@@ -7,7 +7,7 @@ Route::group(['domain' => 'vats.im'], function () {
 
     Route::any('{request_url}', function ($request_url) {
         // check 'Request::path();' against model 'Route'
-        $success = \Models\Short\ShortURL::where('url', '=', $request_url)->first();
+        $success = \App\Models\Short\ShortURL::where('url', '=', $request_url)->first();
         // if successful, redirect, else throw 404
         if ($success) {
             header("Location: {$success->forward_url}");
@@ -18,39 +18,31 @@ Route::group(['domain' => 'vats.im'], function () {
     });
 });
 
-Route::model("mshipAccount", "\Models\Mship\Account", function () {
+Route::model("mshipAccount", "\App\Models\Mship\Account", function () {
     Redirect::route("adm.mship.account.index");
 });
 
-Route::model("mshipAccountEmail", "\Models\Mship\Account\Email");
-Route::model("ssoEmail", "\Models\Sso\Email");
-Route::model("sysNotification", "\Models\Sys\Notification");
+Route::model("mshipAccountEmail", "\App\Models\Mship\Account\Email");
+Route::model("ssoEmail", "\App\Models\Sso\Email");
+Route::model("sysNotification", "\App\Models\Sys\Notification");
 
-Route::model("mshipRole", "\Models\Mship\Role", function () {
+Route::model("mshipRole", "\App\Models\Mship\Role", function () {
     Redirect::route("adm.mship.role.index")->withError("Role doesn't exist.");
 });
 
-Route::model("mshipPermission", "\Models\Mship\Permission", function () {
+Route::model("mshipPermission", "\App\Models\Mship\Permission", function () {
     Redirect::route("adm.mship.permission.index")->withError("Permission doesn't exist.");
 });
 
-Route::model("postmasterQueue", "\Models\Sys\Postmaster\Queue", function () {
-    Redirect::route("adm.sys.postmaster.queue.index");
-});
-
-Route::model("postmasterTemplate", "\Models\Sys\Postmaster\Template", function () {
-    Redirect::route("adm.sys.postmaster.template.index");
-});
-
 /*** WEBHOOKS ***/
-Route::group(["prefix" => "webhook", "namespace" => "Controllers\Webhook"], function () {
+Route::group(["prefix" => "webhook", "namespace" => "Webhook"], function () {
     Route::group(["prefix" => "email", "namespace" => "Email"], function () {
         Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
     });
 });
 
 /* * ** ADM *** */
-Route::group(array("namespace" => "Controllers\Adm"), function () {
+Route::group(array("namespace" => "Adm"), function () {
     Route::group(array("prefix" => "adm"), function () {
 
         // Login is the only unauthenticated page.
@@ -71,13 +63,6 @@ Route::group(array("namespace" => "Controllers\Adm"), function () {
 
             Route::group(array("prefix" => "system", "namespace" => "Sys"), function () {
                 Route::get("/timeline", array("as" => "adm.sys.timeline", "uses" => "Timeline@getIndex"));
-
-                Route::group(["prefix" => "postmaster", "namespace" => "Postmaster"], function () {
-                    Route::get("/queue", ["as" => "adm.sys.postmaster.queue.index", "uses" => "Queue@getIndex"]);
-                    Route::get("/queue/{postmasterQueue}", ["as" => "adm.sys.postmaster.queue.view", "uses" => "Queue@getView"]);
-                    Route::get("/template", ["as" => "adm.sys.postmaster.template.index", "uses" => "Template@getIndex"]);
-                    Route::get("/template/{postmasterTemplate}", ["as" => "adm.sys.postmaster.template.view", "uses" => "Template@getView"]);
-                });
             });
 
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
@@ -115,7 +100,7 @@ Route::group(array("namespace" => "Controllers\Adm"), function () {
     });
 });
 
-Route::group(array("namespace" => "Controllers"), function () {
+Route::group([], function () {
     Route::get("/error/{code?}", ["as" => "error", "uses" => "Error@getDisplay"]);
 
     Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
@@ -183,7 +168,7 @@ Route::group(array("namespace" => "Controllers"), function () {
     });
 
     Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => ["auth.user.full", "user.must.read.notifications"]], function () {
-        Route::model('tsreg', '\Models\Teamspeak\Registration');
+        Route::model('tsreg', '\App\Models\Teamspeak\Registration');
         Route::get("/new", ["as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/success", ["as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
         Route::get("/{tsreg}/delete", ["as" => "teamspeak.delete", "uses" => "Registration@getDelete"]);

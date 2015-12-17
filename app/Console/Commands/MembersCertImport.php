@@ -1,13 +1,17 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
+use App\Models\Mship\Account\State;
+use App\Models\Mship\Qualification as QualificationData;
+use App\Models\Mship\Account\Qualification;
+use DB;
+use VatsimXML;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -98,7 +102,7 @@ class MembersCertImport extends aCommand
         $member->determineState($member_data[12], $member_data[13]);
 
         // If they're NONE UK and an Instructor we need their old rating.
-        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \Models\Mship\Account\State::STATE_DIVISION) {
+        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION) {
             $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
         } else {
             // Since they're an instructor AND NONE-UK

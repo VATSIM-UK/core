@@ -1,14 +1,14 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Models\Sys\Timeline\Entry;
-use \Models\Mship\Account;
-use \Session;
-use \Input;
+use App\Models\Sys\Timeline\Entry;
+use App\Models\Mship\Account;
+use Session;
+use Input;
 
-abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry {
+abstract class aTimelineEntry extends \App\Models\aModel implements \App\Interfaces\iTimelineEntry {
 
     public static function eventLog($logKey, $model, $extra=null, $data=null){
         if($extra == null){
@@ -57,11 +57,11 @@ abstract class aTimelineEntry extends \Models\aModel implements \iTimelineEntry 
     }
 
     public function timelineEntriesOwner() {
-        return $this->morphMany("\Models\Sys\Timeline\Entry", "owner");
+        return $this->morphMany("\App\Models\Sys\Timeline\Entry", "owner");
     }
 
     public function timelineEntriesExtra() {
-        return $this->morphMany("\Models\Sys\Timeline\Entry", "extra");
+        return $this->morphMany("\App\Models\Sys\Timeline\Entry", "extra");
     }
 
     public function getTimelineEntriesRecentAttribute() {

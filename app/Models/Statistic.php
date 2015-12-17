@@ -1,11 +1,11 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
-use \Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use \Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Carbon\Carbon;
 
-class Statistic extends \Models\aModel {
+class Statistic extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

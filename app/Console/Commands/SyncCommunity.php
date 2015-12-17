@@ -1,10 +1,13 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-use Models\Mship\Account;
+use DB;
+use App\Models\Mship\Account;
 
 class SyncCommunity extends aCommand
 {
@@ -99,8 +102,8 @@ class SyncCommunity extends aCommand
                 $emailLocal = true;
             }
 
-            $state = $member_core->states()->where('state', '=', Models\Mship\Account\State::STATE_DIVISION)->first()->state ? 'Division Member' : 'International Member';
-            $state = $member_core->states()->where('state', '=', Models\Mship\Account\State::STATE_VISITOR)->first()->state ? 'Visiting Member' : $state;
+            $state = $member_core->states()->where('state', '=', \App\Models\Mship\Account\State::STATE_DIVISION)->first()->state ? 'Division Member' : 'International Member';
+            $state = $member_core->states()->where('state', '=', \App\Models\Mship\Account\State::STATE_VISITOR)->first()->state ? 'Visiting Member' : $state;
             $aRatingString = $member_core->qualification_atc->qualification->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
 
@@ -169,7 +172,7 @@ class SyncCommunity extends aCommand
     protected function getOptions()
     {
         return array(
-            //array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
+            array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
         );
     }
 }

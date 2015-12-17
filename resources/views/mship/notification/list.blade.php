@@ -27,15 +27,15 @@
 
                 @foreach($unreadNotifications as $notice)
 
-                    <div class="panel panel-{{ $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
+                    <div class="panel panel-{{ $notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
                         <div class="panel-heading" role="tab" id="heading<?=$notice->notification_id?>">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#unreadNotifications" href="#collapse<?=$notice->notification_id?>" aria-expanded="false" aria-controls="collapse<?=$notice->notification_id?>">
                                     [Effective: {{ $notice->effective_at }}] {{ $notice->title }}
 
-                                    @if($notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
+                                    @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
                                         <span class="label label-danger">Must Acknowledge before continuing</span>
-                                    @elseif($notice->status == \Models\Sys\Notification::STATUS_IMPORTANT)
+                                    @elseif($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT)
                                         <span class="label label-warning">Highly important</span>
                                     @endif
                                 </a>
@@ -46,13 +46,13 @@
                                 {{ nl2br($notice->content) }}
 
                                 {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->notification_id], "class" => "form-horizontal"]) !!}
-                                    @if($notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
+                                    @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
                                         <div class="form-group">
                                             <div class="col-sm-offset-5 col-sm-7">
                                                 <button type="submit" class="btn btn-danger">Confirm Read</button>
                                             </div>
                                         </div>
-                                    @elseif($notice->status == \Models\Sys\Notification::STATUS_IMPORTANT)
+                                    @elseif($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT)
                                         <div class="form-group">
                                             <div class="col-sm-offset-5 col-sm-7">
                                                 <button type="submit" class="btn btn-warning">Mark Read</button>
@@ -82,7 +82,7 @@
 
                 @foreach($readNotifications as $notice)
 
-                    <div class="panel panel-{{ $notice->status == \Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
+                    <div class="panel panel-{{ $notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
                         <div class="panel-heading" role="tab" id="heading<?=$notice->notification_id?>">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#readNotifications" href="#collapse<?=$notice->notification_id?>" aria-expanded="false" aria-controls="collapse<?=$notice->notification_id?>">

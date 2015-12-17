@@ -33,12 +33,7 @@
     },
     "autoload": {
         "classmap": [
-            "database",
-            "app/Console/Commands",
-            "app/Enums",
-            "app/Http/Controllers",
-            "app/Interfaces",
-            "app/Models"
+            "database"
         ],
         "psr-4": {
             "App\\": "app/"

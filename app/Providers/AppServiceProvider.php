@@ -19,9 +19,9 @@ class AppServiceProvider extends ServiceProvider
         // Ensure that the VATSIM UK System accounts are in existence.
         // If this is not protected, we cannot run any artisan commands if there's an issue with the database.
         if(!$this->app->runningInConsole()){
-            $check = \Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);
+            $check = \App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);
             if(!is_object($check) || !$check->exists){
-                $a = new \Models\Mship\Account();
+                $a = new \App\Models\Mship\Account();
                 $a->account_id = VATUK_ACCOUNT_SYSTEM;
                 $a->name_first = "VATSIM";
                 $a->name_last = "UK";
@@ -36,9 +36,9 @@ class AppServiceProvider extends ServiceProvider
         // Ensure that the VATSIM.NET System accounts are in existence.
         // If this is not protected, we cannot run any artisan commands if there's an issue with the database.
         if(!$this->app->runningInConsole()){
-            $check = \Models\Mship\Account::find(VATSIM_ACCOUNT_SYSTEM);
+            $check = \App\Models\Mship\Account::find(VATSIM_ACCOUNT_SYSTEM);
             if(!is_object($check) || !$check->exists){
-                $a = new \Models\Mship\Account();
+                $a = new \App\Models\Mship\Account();
                 $a->account_id = VATSIM_ACCOUNT_SYSTEM;
                 $a->name_first = "VATSIM";
                 $a->name_last = "NET";

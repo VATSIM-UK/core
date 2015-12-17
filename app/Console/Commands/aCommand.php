@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Console\Commands;
+
+use Session;
 use Illuminate\Console\Command;
 
 class aCommand extends Command {
@@ -9,7 +12,7 @@ class aCommand extends Command {
      * @return void
      */
     public function __construct() {
-        Session::set("auth_adm_account", 707070);
+        \Auth::loginUsingId(707070);
 
         parent::__construct();
     }

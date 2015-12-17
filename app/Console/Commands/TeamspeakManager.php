@@ -1,15 +1,20 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Carbon\Carbon;
+use Exception;
+use TeamSpeak3;
 
-use Controllers\Teamspeak\TeamspeakAdapter;
-use Models\Mship\Account;
-use Models\Mship\Qualification;
-use Models\Teamspeak\Registration;
-use Models\Teamspeak\Log;
+use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Teamspeak\Registration;
+use App\Models\Teamspeak\Ban;
+use App\Models\Teamspeak\Log;
 
 class TeamspeakManager extends aCommand {
 
@@ -115,7 +120,7 @@ class TeamspeakManager extends aCommand {
                 // obtain the client's registration ID
                 try {
                     $client_custominfo = $client->customInfo();
-                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                } catch (\TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                     //echo "Caught (likely empty custominfo): " . $e->getMessage() . "\n";
                     $client_custominfo = array();
                 }
@@ -129,7 +134,7 @@ class TeamspeakManager extends aCommand {
                     $new_client = Registration::
                         where('id', '=', $custominfo['value'])
                         ->where('status', '=', 'new')
-                        ->where('registration_ip', '=', ip2long($client['connection_client_ip']))
+                        //->where('registration_ip', '=', ip2long($client['connection_client_ip']))
                         ->first();
                     break;
                 }
@@ -225,7 +230,7 @@ class TeamspeakManager extends aCommand {
                         }
 
                         // do they have their appropriate atc training ratings?
-                        if ($client_account->isState(Models\Mship\Account\State::STATE_DIVISION)) {
+                        if ($client_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
                             foreach ($atc_training as $rating) {
                                 if (($index = array_search($server_group_ids[$rating],
                                                                     $client_server_groups)) === FALSE)
@@ -411,8 +416,8 @@ class TeamspeakManager extends aCommand {
                 if (!$new_client && !$client_registration) {
                     $client->poke("We cannot find your TeamSpeak registration. "
                         . "To register, please visit http://core.vatsim-uk.co.uk/");
-                    $client->poke("Please note, your current IP address must be the same as the IP "
-                        . "address you used to register.");
+                    //$client->poke("Please note, your current IP address must be the same as the IP "
+                    //    . "address you used to register.");
                     $client->poke("If the issue persists, please contact Web Services "
                         . "via http://helpdesk.vatsim-uk.co.uk/");
                     $client->kick(TeamSpeak3::KICK_SERVER, "No registration found.");

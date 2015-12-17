@@ -1,13 +1,17 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
+use App\Models\Mship\Account\State;
+use App\Models\Mship\Qualification as QualificationData;
+use App\Models\Mship\Account\Qualification;
+use DB;
+use VatsimXML;
 
 class MembersRtsImport extends aCommand {
 

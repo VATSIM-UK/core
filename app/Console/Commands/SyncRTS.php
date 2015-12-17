@@ -1,9 +1,12 @@
 <?php
 
+namespace App\Console\Commands;
+
+use DB;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
+use App\Models\Mship\Account;
 
 class SyncRTS extends aCommand
 {

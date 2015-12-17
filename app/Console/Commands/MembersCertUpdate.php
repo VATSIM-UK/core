@@ -1,14 +1,19 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
+use App\Models\Mship\Account\State;
+use App\Models\Mship\Qualification as QualificationData;
+use App\Models\Mship\Account\Qualification;
 use Carbon\Carbon;
+use VatsimXML;
+use Exception;
+use DB;
 
 class MembersCertUpdate extends aCommand {
 
@@ -136,7 +141,7 @@ class MembersCertUpdate extends aCommand {
             return;
         }
 
-        if ($_xmlData->name_first == new stdClass() && $_xmlData->name_last == new stdClass()
+        if ($_xmlData->name_first == new \stdClass() && $_xmlData->name_last == new \stdClass()
                 && $_xmlData->email == "[hidden]") {
             $_m->delete();
             print "\t" . $_m->account_id . " no longer exists in CERT - deleted.\n";
@@ -176,8 +181,8 @@ class MembersCertUpdate extends aCommand {
             // Add it!
             if($_xmlData->rating == 0 && $_m->is_network_banned === false){
                 // Add a ban.
-                $newBan = new \Models\Mship\Account\Ban();
-                $newBan->type = \Models\Mship\Account\Ban::TYPE_NETWORK;
+                $newBan = new \App\Models\Mship\Account\Ban();
+                $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
                 $newBan->reason_extra = "Network ban discovered via Cert update scripts.";
                 $newBan->period_start = \Carbon\Carbon::now();
                 $newBan->save();
@@ -214,7 +219,7 @@ class MembersCertUpdate extends aCommand {
             }
 
             // Sort their rating(s) out - we're not permitting instructor ratings if they're NONE UK members.
-            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \Models\Mship\Account\State::STATE_DIVISION){
+            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION){
                 $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
                 $oldAtcRating = $_m->qualifications()->atc()->orderBy("created_at", "DESC")->first();
                 if ($_m->addQualification($atcRating)) {
@@ -258,11 +263,6 @@ class MembersCertUpdate extends aCommand {
             }
 
             $_m->save();
-
-            if ($changed) {
-                $this->call('Sync:RTS', ['--force-update' => $_m->account_id]);
-                $this->call('Sync:Community', ['--force-update' => $_m->account_id]);
-            }
 
         } catch (Exception $e) {
             DB::rollback();

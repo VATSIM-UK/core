@@ -1,12 +1,12 @@
 <?php
 
-namespace Controllers;
+namespace App\Http\Controllers;
 
-use \Session;
-use \Response;
-use \View;
+use Session;
+use Response;
+use View;
 
-class Error extends \Controllers\BaseController {
+class Error extends \App\Http\Controllers\BaseController {
 
     public function getDisplay($code){
         if(View::exists("error.".$code)){

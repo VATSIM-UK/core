@@ -147,17 +147,17 @@
                             <i class="fa fa-list"></i> <span>Timeline</span>
                         </a>
                     </li>
-                    <li class="treeview {{ (\Request::is('adm/system/postmaster*') ? 'active' : '') }}">
+                    <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">
                         <a href="#">
-                            <i class="ion ion-email"></i> <span>Postmaster</span>
+                            <i class="ion ion-email"></i> <span>Jobs</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
                             <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
-                                <a href="{{ URL::route("adm.sys.postmaster.queue.index") }}"><i class="fa fa-bars"></i> Postmaster Queue</a>
+                                <a href="#"><i class="fa fa-bars"></i> Pending Jobs</a>
                             </li>
-                            <li {{ (\Request::is('adm/system/postmaster/template*') ? ' class="active"' : '') }}>
-                                <a href="{{ URL::route("adm.sys.postmaster.template.index") }}"><i class="ion ion-email"></i> Postmaster Templates</a>
+                            <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
+                                <a href="#"><i class="fa fa-bars"></i> Failed Jobs</a>
                             </li>
                         </ul>
                     </li>

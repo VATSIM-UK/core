@@ -1,14 +1,16 @@
 <?php
 
+namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Models\Mship\Account;
-use Models\Mship\Account\Email;
-use Models\Mship\Account\State;
-use Models\Mship\Qualification as QualificationData;
-use Models\Mship\Account\Qualification;
-use Models\Statistic;
+use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
+use App\Models\Mship\Account\State;
+use App\Models\Mship\Qualification as QualificationData;
+use App\Models\Mship\Account\Qualification;
+use App\Models\Statistic;
 
 class StatisticsDaily extends aCommand {
 
@@ -52,13 +54,13 @@ class StatisticsDaily extends aCommand {
             Statistic::setStatistic($period->toDateString(), "members.current", $membersCurrent);
 
             // Number of division members CREATED on a given day (i.e. number of members joining our division).
-            $divisionCreated = State::where("state", "=", Models\Mship\Account\State::STATE_DIVISION)
+            $divisionCreated = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
                                     ->where("created_at", "LIKE", $period->toDateString() . "%")
                                     ->count();
             Statistic::setStatistic($period->toDateString(), "members.division.new", $divisionCreated);
 
             // Number of division members on a given day (i.e. number of members currently within the division).
-            $divisionCurrent = State::where("state", "=", Models\Mship\Account\State::STATE_DIVISION)
+            $divisionCurrent = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
                                     ->where("created_at", "<=", $period->toDateString() . " 23:59:59")
                                     ->count();
             Statistic::setStatistic($period->toDateString(), "members.division.current", $divisionCurrent);

@@ -18,7 +18,7 @@ class SystemPostmasterInitial extends Migration {
             $table->string("action", 35);
             $table->string("subject", 200);
             $table->text("body");
-            $table->smallInteger("priority")->default(\Models\Sys\Postmaster\Template::PRIORITY_MED);
+            $table->smallInteger("priority")->default(\App\Models\Sys\Postmaster\Template::PRIORITY_MED);
             $table->boolean("secondary_emails")->default(0);
             $table->string("reply_to", 50);
             $table->boolean("enabled")->default(0);
@@ -40,7 +40,7 @@ class SystemPostmasterInitial extends Migration {
             $table->integer("sender_id")->unsigned();
             $table->bigInteger("sender_email_id")->unsigned();
             $table->bigInteger("postmaster_template_id")->unsigned();
-            $table->smallInteger("priority")->default(\Models\Sys\Postmaster\Template::PRIORITY_MED);
+            $table->smallInteger("priority")->default(\App\Models\Sys\Postmaster\Template::PRIORITY_MED);
             $table->string("subject");
             $table->text("body");
             $table->text("data");

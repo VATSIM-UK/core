@@ -13,17 +13,14 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \TestCommand::class,
-        \MembersCertImport::class,
-        \MembersCertUpdate::class,
-        \StatisticsDaily::class,
-        \RebuildModelDependencies::class,
-        \PostmasterParse::class,
-        \PostmasterDispatch::class,
-        \SyncRTS::class,
-        \SyncCommunity::class,
-        \TeamspeakManager::class,
-        \TeamspeakCleanup::class,
+        Commands\TestCommand::class,
+        Commands\MembersCertImport::class,
+        Commands\MembersCertUpdate::class,
+        Commands\StatisticsDaily::class,
+        Commands\SyncRTS::class,
+        Commands\SyncCommunity::class,
+        Commands\TeamspeakManager::class,
+        Commands\TeamspeakCleanup::class,
     ];
 
     /**
@@ -34,7 +31,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+
+
+        // Work the queue - the last thing that should be processed!
+        $schedule->command("queue:work")->everyMinute()->withoutOverlapping();
+        //-- end
     }
 }
