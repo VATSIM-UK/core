@@ -1,6 +1,7 @@
+/vendor
+/node_modules
+Homestead.yaml
 .env*
-!.env.sample.php
+!.env.example
 nbproject*
-vendor/*
 .idea*
-/bootstrap/compiled.php

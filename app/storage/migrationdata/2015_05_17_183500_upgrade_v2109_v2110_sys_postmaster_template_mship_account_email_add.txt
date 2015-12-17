@@ -1,9 +1,0 @@
-Dear {{{ $recipient->name }}},
-
-This email address has been added as a secondary email address for our web services.
-
-Before being able to use this address and receive notifications from our systems, you are required to verify it.
-
-To verify this account, please {{ link_to_route("mship.manage.email.verify", "click here", ["code" => $data->token->code]) }}.  Alternatively, copy the link below into your browser:
-
-{{{ route("mship.manage.email.verify", ["code" => $data->token->code]) }}}
