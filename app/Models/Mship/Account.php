@@ -572,7 +572,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         } elseif ($region == "EUR") {
             $state = \App\Models\Mship\Account\State::STATE_REGION;
         } else {
-            $state = \App\Models\Mship\Account\State::STATE_INTERNATIONALE;
+            $state = \App\Models\Mship\Account\State::STATE_INTERNATIONAL;
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
