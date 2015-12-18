@@ -134,7 +134,7 @@ class TeamspeakManager extends aCommand {
                     $new_client = Registration::
                         where('id', '=', $custominfo['value'])
                         ->where('status', '=', 'new')
-                        ->where('registration_ip', '=', ip2long($client['connection_client_ip']))
+                        //->where('registration_ip', '=', ip2long($client['connection_client_ip']))
                         ->first();
                     break;
                 }
@@ -425,8 +425,8 @@ class TeamspeakManager extends aCommand {
                 if (!$new_client && !$client_registration) {
                     $client->poke("We cannot find your TeamSpeak registration. "
                         . "To register, please visit http://core.vatsim-uk.co.uk/");
-                    $client->poke("Please note, your current IP address must be the same as the IP "
-                        . "address you used to register.");
+                    //$client->poke("Please note, your current IP address must be the same as the IP "
+                    //    . "address you used to register.");
                     $client->poke("If the issue persists, please contact Web Services "
                         . "via http://helpdesk.vatsim-uk.co.uk/");
                     $client->kick(TeamSpeak3::KICK_SERVER, "No registration found.");

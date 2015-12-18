@@ -205,30 +205,6 @@ class Authentication extends \App\Http\Controllers\BaseController {
                         $account->is_inactive = 0;
                     }
 
-                    // Are they network banned, but unbanned in our system?
-                    // Add it!
-                    if($user->rating->id == 0 && $account->is_network_banned === false){
-                        // Add a ban.
-                        $newBan = new \App\Models\Mship\Account\Ban();
-                        $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
-                        $newBan->reason_extra = "Network ban discovered via Cert login.";
-                        $newBan->period_start = \Carbon\Carbon::now();
-                        $newBan->save();
-
-                        $account->bans()->save($newBan);
-                        Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
-                    }
-
-                    // Are they banned in our system (for a network ban) but unbanned on the network?
-                    // Then expire the ban.
-                    if($account->is_network_banned === true && $user->rating->id > 0){
-                        $ban = $account->network_ban;
-                        $ban->period_finish = \Carbon\Carbon::now();
-                        $ban->setPeriodAmountFromTS();
-                        $ban->save();
-                    }
-
-                    // Session stuff.
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;

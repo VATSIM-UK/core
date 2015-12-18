@@ -35,9 +35,10 @@ class SendMessageEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueu
                 $m->to($participant->primary_email->email, $participant->name);
 
                 // Send this one to all the secondary emails.
-                foreach($participant->secondary_email_verified as $sev){
+                // @disabled 2.2.0 Awaiting improvement in 2.2.1
+                /*foreach($participant->secondary_email_verified as $sev){
                     $m->cc($sev->email, $participant->name. " (Secondary Email)");
-                }
+                }*/
             });
         }
 
