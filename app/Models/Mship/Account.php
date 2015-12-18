@@ -430,19 +430,6 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         return $this->is_system_banned OR $this->is_network_banned;
     }
 
-    public function getIsTeamspeakBannedAttribute() {
-        //if ($this->teamspeak_bans->first()) {
-        $greatest = Carbon::createFromTimeStampUTC(0);
-            foreach ($this->teamspeak_bans as $ban) {
-                if ($greatest->lt($ban->expires_at)) {
-                    $greatest = $ban->expires_at;
-                }
-            }
-        if ($greatest->gt(Carbon::now())) return $greatest->diffInSeconds(Carbon::now());
-        else return FALSE;
-        //}
-    }
-
     public function getIsInactiveAttribute() {
         $status = $this->attributes['status'];
         return (boolean) (self::STATUS_INACTIVE & $status);
@@ -590,7 +577,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         } elseif ($region == "EUR") {
             $state = \App\Models\Mship\Account\State::STATE_REGION;
         } else {
-            $state = \App\Models\Mship\Account\State::STATE_INTERNATIONALE;
+            $state = \App\Models\Mship\Account\State::STATE_INTERNATIONAL;
         }
         $this->states()->save(new Account\State(array("state" => $state)));
     }
