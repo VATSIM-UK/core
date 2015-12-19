@@ -14,7 +14,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as RouteService
 class ServiceProvider extends RouteServiceProvider
 {
     /**
-     * This namespace is applied to the controller routes in your routes file.
+     * This namespace is applied to the controller routes in the routes file.
      *
      * In addition, it is set as the URL generator's root namespace.
      *
