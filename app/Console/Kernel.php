@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\StatisticsDaily::class,
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
+        Commands\SyncMentors::class,
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
     ];
