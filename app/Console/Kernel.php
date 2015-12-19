@@ -21,6 +21,8 @@ class Kernel extends ConsoleKernel
         Commands\SyncCommunity::class,
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
+
+        \App\Modules\Statistics\Console\Commands\Run::class,
     ];
 
     /**
@@ -31,8 +33,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
-
         // Work the queue - the last thing that should be processed!
         $schedule->command("queue:work")->everyMinute()->withoutOverlapping();
         //-- end
