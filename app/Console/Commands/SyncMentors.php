@@ -12,6 +12,9 @@ use Illuminate\Console\Command;
  * This class is mostly a port from the old sync script, and
  * therefore requires further improvement.
  * Does not include the 'new pilots' RTS/positions.
+ *
+ * @todo Add more detailed logging
+ * @todo Remove groups from ineligible members
  */
 class SyncMentors extends Command
 {
@@ -116,18 +119,24 @@ class SyncMentors extends Command
             }
 
             // process the current row
-            $currentForumMember = $this->determineGroup($currentMentor, $positions[$i], $currentForumMember);
+            $currentForumMember = $this->determineGroup($positions[$i], $currentForumMember);
 
             // if this is the last row for the current mentor
             if (!array_key_exists($i+1, $positions) || $positions[$i]->id != $positions[$i+1]->id) {
-                //$currentForumMember->save();
+                $groups = explode(',', $currentForumMember->mgroup_others);
+                $groups = implode("\n", array_map(function ($s) {
+                    return $this->forumGroupIDs[$s];
+                }, $groups));
+                $this->log("Current groups:\n{$groups}\n");
                 $this->log("Finished processing {$currentMentor->id}\n");
                 $this->log("========================================\n");
+                $currentForumMember->save();
             }
         }
     }
 
-    protected function determineGroup($mentor, $position, $forumMember) {
+    protected function determineGroup($position, $forumMember) {
+        // don't process if the cutoff has been reached
         if (
             ($position->rts_id === $this->rtsIDs['pilots'] && $position->pilot_cutoff)
             || ($position->rts_id !== $this->rtsIDs['pilots'] && $position->atc_cutoff)
@@ -135,25 +144,27 @@ class SyncMentors extends Command
             $this->log("Cutoff reached - skipping position {$position->position}\n");
             return $forumMember;
         }
-        $addGroup = $this->calculateGroupID($position);
 
-        $groups = $forumMember->groups;
-        if ($addGroup && array_search($addGroup, $forumMember->groups) === false) {
+        // add the group
+        $addGroup = $this->calculateGroupID($position);
+        $groups = explode(',', $forumMember->mgroup_others);
+        if ($addGroup && array_search($addGroup, $groups) === false) {
             $this->log("Adding group: {$addGroup}\n");
             array_push($groups, $addGroup);
         }
 
-        if ($position->rts_id === $this->rtsIDs['pilots'] && array_search($this->pilotGroupID, $forumMember->groups) === false) {
+        // add them to the overall atc/pilot mentoring groups
+        if ($position->rts_id === $this->rtsIDs['pilots'] && array_search($this->pilotGroupID, $groups) === false) {
             array_push($groups, $this->pilotGroupID);
             $this->log("Adding to pilot mentors group.\n");
         }
 
-        if ($position->rts_id !== $this->rtsIDs['pilots'] && array_search($this->atcGroupID, $forumMember->groups) === false) {
+        if ($position->rts_id !== $this->rtsIDs['pilots'] && array_search($this->atcGroupID, $groups) === false) {
             array_push($groups, $this->atcGroupID);
             $this->log("Adding to ATC mentors group.\n");
         }
 
-        $forumMember->set_mgroup_others(implode(',', $groups));
+        $forumMember->mgroup_others = implode(',', $groups);
 
         return $forumMember;
     }
