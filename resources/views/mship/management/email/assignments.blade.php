@@ -3,7 +3,7 @@
 @section('content')
 
     <p>
-        When you are logged into systems within VATSIM-UK, as standard we use your <strong>primary</strong> email address
+        When you are logged into systems within VATSIM UK, as standard we use your <strong>primary</strong> email address
         when sending you important emails from that service.
     </p>
     <p>

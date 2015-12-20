@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>VATSIM-UK Core System</title>
+        <title>VATSIM UK Core System</title>
 
         <!-- CSS -->
         @section('styles')
@@ -153,7 +153,7 @@
             <div class="footer">
                 <div class="row">
                     <p>
-                        VATSIM-UK &copy; 2013 - 
+                        VATSIM UK &copy; 2013 - 
                         <a href="http://status.vatsim-uk.co.uk" target="_blank">
                             Version <?=__VERSION__?> (<?=__VERSION_DATE__?>)
                         </a>

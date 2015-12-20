@@ -2,7 +2,7 @@
 
 @section('content')
     <p>
-        Please enter your second, VATSIM-UK password below. You will be requested to enter this password in any of the following situations:
+        Please enter your second, VATSIM UK password below. You will be requested to enter this password in any of the following situations:
         <ol style="margin-left: 25px;">
             <li>On your initial login to our system (after previously signing out, or being away for a long period).</li>
             <li>If performing <em>destructive</em> actions on your account (i.e. for confirmation).</li>
