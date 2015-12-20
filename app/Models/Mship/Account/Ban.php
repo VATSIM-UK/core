@@ -18,6 +18,14 @@ class Ban extends \App\Models\aTimelineEntry
     const TYPE_LOCAL   = 80;
     const TYPE_NETWORK = 90;
 
+    public static function scopeIsNetwork($query){
+        return $query->where("type", "=", self::TYPE_NETWORK);
+    }
+
+    public static function scopeIsLocal($query){
+        return $query->where("type", "=", self::TYPE_LOCAL);
+    }
+
     public static function scopeIsActive($query){
         return $query->where("period_finish", ">=", \Carbon\Carbon::now());
     }
