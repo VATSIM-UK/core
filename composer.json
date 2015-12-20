@@ -16,11 +16,11 @@
         "vatsim/sso": "2.*",
         "laravel/framework": "5.1.*",
         "flynsarmy/db-blade-compiler": "1.*",
-        "wpb/string-blade-compiler": "2.*@dev",
+        "wpb/string-blade-compiler": "2.*",
         "guzzlehttp/guzzle": "~4.0",
         "doctrine/dbal": "~2.5",
         "barryvdh/laravel-debugbar" : "~2.0",
-        "watson/validating": "0.10.*",
+        "watson/validating": "~1.0",
         "planetteamspeak/ts3-php-framework": "dev-master",
         "laravelcollective/html": "~5.0",
         "sboo/multiauth" : "4.0.*"

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "54e9f68614d6cc0dfbced108892f3b19",
-    "content-hash": "44dccd2bdc4e7f37fba5031d72ef3045",
+    "hash": "f5bf6b64b1c623835234138752fa327d",
+    "content-hash": "49622af1eec6124848cbbf43fe044525",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -307,16 +307,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.5.2",
+            "version": "v1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "47c7128262da274f590ae6f86eb137a7a64e82af"
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/47c7128262da274f590ae6f86eb137a7a64e82af",
-                "reference": "47c7128262da274f590ae6f86eb137a7a64e82af",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/47cdc76ceb95cc591d9c79a36dc3794975b5d136",
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +373,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-12-03 10:50:37"
+            "time": "2015-12-19 05:03:47"
         },
         {
             "name": "doctrine/collections",
@@ -1193,16 +1193,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.15",
+            "version": "1.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "31525caf9e8772683672fefd8a1ca0c0736020f4"
+                "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/31525caf9e8772683672fefd8a1ca0c0736020f4",
-                "reference": "31525caf9e8772683672fefd8a1ca0c0736020f4",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/183e1a610664baf6dcd6fceda415baf43cbdc031",
+                "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031",
                 "shasum": ""
             },
             "require": {
@@ -1216,7 +1216,7 @@
                 "mockery/mockery": "~0.9",
                 "phpspec/phpspec": "^2.2",
                 "phpspec/prophecy-phpunit": "~1.0",
-                "phpunit/phpunit": "~4.1"
+                "phpunit/phpunit": "~4.8"
             },
             "suggest": {
                 "ext-fileinfo": "Required for MimeType",
@@ -1273,7 +1273,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2015-09-30 22:26:59"
+            "time": "2015-12-19 20:16:43"
         },
         {
             "name": "maximebf/debugbar",
@@ -2821,29 +2821,29 @@
         },
         {
             "name": "watson/validating",
-            "version": "0.10.10",
+            "version": "1.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dwightwatson/validating.git",
-                "reference": "be6430100a5612de33a9f4fe3acb483ddebfd459"
+                "reference": "0b225ddc3187745ff9efcbcd0d9b4b712df190ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/validating/zipball/be6430100a5612de33a9f4fe3acb483ddebfd459",
-                "reference": "be6430100a5612de33a9f4fe3acb483ddebfd459",
+                "url": "https://api.github.com/repos/dwightwatson/validating/zipball/0b225ddc3187745ff9efcbcd0d9b4b712df190ba",
+                "reference": "0b225ddc3187745ff9efcbcd0d9b4b712df190ba",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "~5.0",
-                "illuminate/database": "~5.0",
-                "illuminate/events": "~5.0",
-                "illuminate/support": "~5.0",
-                "illuminate/validation": "~5.0",
+                "illuminate/contracts": "5.0.*|5.1.*",
+                "illuminate/database": "5.0.*|5.1.*",
+                "illuminate/events": "5.0.*|5.1.*",
+                "illuminate/support": "5.0.*|5.1.*",
+                "illuminate/validation": "5.0.*|5.1.*",
                 "php": ">=5.4.0"
             },
             "require-dev": {
                 "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "4.2.*"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -2872,7 +2872,7 @@
                 "laravel",
                 "validation"
             ],
-            "time": "2015-03-13 05:15:17"
+            "time": "2015-12-16 23:15:51"
         },
         {
             "name": "wpb/string-blade-compiler",
@@ -4147,7 +4147,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "vatsim/xml": 20,
-        "wpb/string-blade-compiler": 20,
         "planetteamspeak/ts3-php-framework": 20
     },
     "prefer-stable": false,

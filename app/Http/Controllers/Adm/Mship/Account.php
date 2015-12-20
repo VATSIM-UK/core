@@ -326,7 +326,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
         TimelineEntryData::log("mship_account_impersonate", Auth::user(), $account, ["reason" => Input::get("reason")]);
 
         // Let's do the login!
-        Auth::impersonate("user", $account->account_id);
+        Auth::loginUsingId($account->account_id, false);
         Session::set("auth_override", true);
 
         return Redirect::to(URL::route("mship.manage.dashboard"))
