@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
 
-        \App\Modules\Statistics\Console\Commands\Run::class,
+        \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
     ];
 
     /**
