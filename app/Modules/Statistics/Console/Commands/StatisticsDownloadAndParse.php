@@ -26,7 +26,7 @@ class Run extends \App\Console\Commands\aCommand
      *
      * @var string
      */
-    protected $description = 'Download and parse the vatsim data feed file.';
+    protected $description = 'Download and parse the VATSIM data feed file.';
 
     /**
      * Create a new command instance.
