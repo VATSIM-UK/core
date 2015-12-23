@@ -6,6 +6,7 @@ use App\Models\Mship\Qualification;
 use App\Modules\Statistics\Events\StatisticsDownloaded;
 use App\Modules\Statistics\Events\StatisticsParsed;
 use App\Modules\Statistics\Models\Atc;
+use Carbon\Carbon;
 use Illuminate\Queue\SerializeModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -39,10 +40,9 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
         $this->vatsimPHP->loadData();
         event(new StatisticsDownloaded);
 
-        $feedLastUpdatedAt = \Carbon\Carbon::now();
+        $feedLastUpdatedAt = Carbon::now();
 
         $this->parseRecentDownload();
-        event(new StatisticsParsed());
 
         $this->endExpiredAtcSessions($feedLastUpdatedAt);
     }
@@ -69,6 +69,8 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
 
             $eloquentController->touch(); // Keeping them online in the database.
         }
+
+        event(new StatisticsParsed());
     }
 
     /**
@@ -83,7 +85,7 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
      */
     private function setControlledConnectedAt(Atc $eloquentController, Array $controllerData){
         if($eloquentController->connected_at == NULL){
-            $eloquentController->connected_at = \Carbon\Carbon::createFromFormat("YmdHis", $controllerData['time_logon']);
+            $eloquentController->connected_at = Carbon::createFromFormat("YmdHis", $controllerData['time_logon']);
             $eloquentController->save();
         }
 
@@ -92,10 +94,17 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
 
     /**
      * Update the disconnected_at flag for any controllers not in the latest data feed.
+     *
+     * @return void
      */
     private function endExpiredAtcSessions($feedLastUpdatedAt){
-        \DB::table((new Atc)->getTable())
-          ->where("updated_at", "<", $feedLastUpdatedAt)
-          ->update(["deleted_at" => \Carbon\Carbon::now()]);
+        $expiringAtc = Atc::where("updated_at", "<", $feedLastUpdatedAt)
+                          ->where("disconnected_at", "IS", NULL)
+                          ->get();
+
+        foreach($expiringAtc as $atc){
+            $atc->disconnected_at = $feedLastUpdatedAt;
+            $atc->save();
+        }
     }
 }

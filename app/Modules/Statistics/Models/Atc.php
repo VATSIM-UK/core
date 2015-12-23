@@ -4,6 +4,8 @@ namespace App\Modules\Statistics\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use \Event;
+use App\Modules\Statistics\Events\AtcSessionEnded;
 
 class Atc extends Model
 {
@@ -38,5 +40,16 @@ class Atc extends Model
     public static function scopeOffline($query)
     {
         return $query->where("disconnected_at", "IS NOT", null);
+    }
+
+    public static function firstOrCreate($id, $attributes = [])
+    {
+        parent::firstOrCreate($id, $attributes);
+    }
+
+    public function setDisconnectedAtAttribute($timestamp)
+    {
+        $this->attributes['disconnected_at'] = $timestamp;
+        Event::fire(new AtcSessionEnded($this));
     }
 }
