@@ -13,14 +13,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        define("VATUK_ACCOUNT_SYSTEM", "707070");
-        define("VATSIM_ACCOUNT_SYSTEM", "606060");
+        if (!defined("VATUK_ACCOUNT_SYSTEM")) {
+            define("VATUK_ACCOUNT_SYSTEM", "707070");
+        }
+
+        if (!defined("VATSIM_ACCOUNT_SYSTEM")) {
+            define("VATSIM_ACCOUNT_SYSTEM", "606060");
+        }
 
         // Ensure that the VATSIM UK System accounts are in existence.
         // If this is not protected, we cannot run any artisan commands if there's an issue with the database.
-        if(!$this->app->runningInConsole()){
+        if (!$this->app->runningInConsole()) {
             $check = \App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);
-            if(!is_object($check) || !$check->exists){
+            if (!is_object($check) || !$check->exists) {
                 $a = new \App\Models\Mship\Account();
                 $a->account_id = VATUK_ACCOUNT_SYSTEM;
                 $a->name_first = "VATSIM";
@@ -35,9 +40,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Ensure that the VATSIM.NET System accounts are in existence.
         // If this is not protected, we cannot run any artisan commands if there's an issue with the database.
-        if(!$this->app->runningInConsole()){
+        if (!$this->app->runningInConsole()) {
             $check = \App\Models\Mship\Account::find(VATSIM_ACCOUNT_SYSTEM);
-            if(!is_object($check) || !$check->exists){
+            if (!is_object($check) || !$check->exists) {
                 $a = new \App\Models\Mship\Account();
                 $a->account_id = VATSIM_ACCOUNT_SYSTEM;
                 $a->name_first = "VATSIM";
