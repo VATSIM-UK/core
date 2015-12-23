@@ -50,8 +50,8 @@ class SyncCommunity extends aCommand
         }
 
         require_once('/var/www/community/init.php');
-        require_once(IPS\ROOT_PATH . '/system/Member/Member.php');
-        require_once(IPS\ROOT_PATH . '/system/Db/Db.php');
+        require_once(\IPS\ROOT_PATH . '/system/Member/Member.php');
+        require_once(\IPS\ROOT_PATH . '/system/Db/Db.php');
 
         $members = \IPS\Db::i()->select('m.member_id, m.vatsim_cid, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14', ['core_members', 'm'])
                                ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');

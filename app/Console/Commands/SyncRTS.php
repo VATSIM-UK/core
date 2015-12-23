@@ -86,7 +86,7 @@ class SyncRTS extends aCommand
         // get account
         try {
             $member = Account::findOrFail($cid);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if ($debug) echo "\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage();
             return false;
         }

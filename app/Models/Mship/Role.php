@@ -8,7 +8,7 @@ use App\Models\Mship\Permission as PermissionData;
 
 class Role extends \App\Models\aModel {
 
-    use SoftDeletingTrait, ValidatingTrait;
+    use SoftDeletingTrait;
 
     protected $table = "mship_role";
     protected $primaryKey = "role_id";
