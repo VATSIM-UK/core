@@ -15,7 +15,7 @@ class Atc extends Model
 
     protected $table      = "statistic_atc";
     protected $primaryKey = "id";
-    protected $fillable   = ["account_id", "qualification_id", "callsign", "connected_at", "disconnected_at"];
+    protected $fillable   = ["account_id", "qualification_id", "facility_type", "callsign", "connected_at", "disconnected_at"];
     public    $dates      = ["connected_at", "disocnnected_at", "created_at", "updated_at", "deleted_at"];
     public    $timestamps = true;
 
@@ -57,11 +57,6 @@ class Atc extends Model
     {
         return $query->where("disconnected_at", "IS NOT", null);
     }
-//
-//    public static function firstOrCreate($attributes = [])
-//    {
-//        parent::firstOrCreate($attributes);
-//    }
 
     public function setDisconnectedAtAttribute($timestamp)
     {

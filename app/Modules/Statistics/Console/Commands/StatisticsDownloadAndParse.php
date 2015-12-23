@@ -2,7 +2,7 @@
 
 namespace App\Modules\Statistics\Console\Commands;
 
-use App\Modules\Statistics\Jobs\StatisticsDownloadAndParse;
+use App\Modules\Statistics\Jobs\StatisticsDownloadAndParse as StatisticsDownloadAndParseJob;
 use DB;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,7 +45,7 @@ class StatisticsDownloadAndParse extends \App\Console\Commands\aCommand
      */
     public function fire()
     {
-        $downloadJob = (new StatisticsDownloadAndParse())->onQueue("low");
+        $downloadJob = (new StatisticsDownloadAndParseJob())->onQueue("low");
         $this->dispatch($downloadJob);
     }
 }

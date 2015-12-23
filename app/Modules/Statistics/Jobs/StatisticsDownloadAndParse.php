@@ -62,10 +62,11 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
                 "account_id" => $controllerData['cid'],
                 "callsign" => $controllerData['callsign'],
                 "qualification_id" => $qualification->qualification_id,
+                "facility_type" => $controllerData['facilitytype'],
                 "deleted_at" => NULL, // Must be here as firstOrCreate doesn't honour softDeletes
             ]);
 
-            $eloquentController = $this->setControlledConnectedAt($eloquentController, $controllerData);
+            $eloquentController = $this->setControllerConnectedAt($eloquentController, $controllerData);
 
             $eloquentController->touch(); // Keeping them online in the database.
         }
@@ -83,7 +84,7 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, 
      *
      * @return mixed
      */
-    private function setControlledConnectedAt(Atc $eloquentController, Array $controllerData){
+    private function setControllerConnectedAt(Atc $eloquentController, Array $controllerData){
         if($eloquentController->connected_at == NULL){
             $eloquentController->connected_at = Carbon::createFromFormat("YmdHis", $controllerData['time_logon']);
             $eloquentController->save();

@@ -16,6 +16,7 @@ class CreateAtcStatisticsTables extends Migration {
             $table->integer("account_id")->unsigned();
             $table->string("callsign", 10);
             $table->smallInteger("qualification_id")->unsigned();
+            $table->tinyInteger("facility_type")->unsigned();
             $table->timestamp("connected_at")->nullable();
             $table->timestamp("disconnected_at")->nullable();
             $table->timestamps();
