@@ -20,6 +20,12 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Sync\PushToPts',
             'App\Listeners\Sync\PushToTeamspeak',
         ],
+        "App\Modules\Statistics\Events\AtcSessionStarted" => [
+
+        ],
+        "App\Modules\Statistics\Events\AtcSessionEnded" => [
+
+        ],
     ];
 
     /**

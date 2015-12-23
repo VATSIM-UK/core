@@ -19,7 +19,7 @@ class Run extends \App\Console\Commands\aCommand
      *
      * @var string
      */
-    protected $name = 'Statistics:run';
+    protected $name = 'statistics:download';
 
     /**
      * The console command description.
