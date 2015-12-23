@@ -150,7 +150,7 @@ return [
         Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        App\Modules\Statistics\ServiceProvider::class,
+        App\Modules\Statistics\StatisticsServiceProvider::class,
     ],
 
     /*
