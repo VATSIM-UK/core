@@ -151,6 +151,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
 
         App\Modules\Statistics\StatisticsServiceProvider::class,
+        App\Modules\Ais\AisServiceProvider::class,
     ],
 
     /*
