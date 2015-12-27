@@ -15,17 +15,14 @@ abstract class aModel extends \Illuminate\Database\Eloquent\Model {
     }
 
     public static function eventCreated($model) {
-        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 
     public static function eventUpdated($model) {
-        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 
     public static function eventDeleted($model) {
-        \Cache::tags(get_class($model), $model->getTable())->flush();
         return;
     }
 

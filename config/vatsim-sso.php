@@ -14,10 +14,6 @@
  * on the second line of the key/secret/cert elements
  */
 
-const SSO_KEY_KEY = 'SSO_KEY';
-const SSO_SECRET_KEY = 'SSO_SECRET';
-const SSO_CERT_KEY = 'SSO_CERT';
-
 return array(
 
 	/*
@@ -28,13 +24,13 @@ return array(
 	/*
 	 * The consumer key for your organisation (provided by VATSIM)
 	 */
-	'key' => env(SSO_KEY_KEY, ''),
+	'key' => env("SSO_KEY", ''),
 
 	/*
     * The secret key for your organisation (provided by VATSIM)
     * Do not give this to anyone else or display it to your users. It must be kept server-side
     */
-	'secret' => env(SSO_SECRET_KEY, ''),
+	'secret' => env("SSO_SECRET", ''),
 
 	/*
 	 * The URL users will be redirected to after they log in, this should
@@ -53,5 +49,5 @@ return array(
 	 * Your RSA **PRIVATE** key
 	 * If you are not using RSA, this value can be anything (or not set)
 	 */
-	'cert' => str_replace('\n', "\n", env(SSO_CERT_KEY, '')),
+	'cert' => str_replace('\n', "\n", env("SSO_CERT", '')),
 );

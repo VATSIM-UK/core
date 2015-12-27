@@ -18,6 +18,7 @@ use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Teamspeak\Registration;
 use App\Models\Sys\Notification as SysNotification;
+use Queue;
 
 class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
 
@@ -48,7 +49,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         }
 
         // Generate an email to the user to advise them of their new account at VATUK.
-        Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
+        //Queue::queue("MSHIP_ACCOUNT_CREATED", $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
     }
 
     public static function scopeIsSystem($query){

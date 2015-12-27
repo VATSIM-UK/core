@@ -15,7 +15,7 @@ use Cache;
 class Dashboard extends \App\Http\Controllers\Adm\AdmController {
 
     public function getIndex() {
-        $statistics = Cache::tags((new \App\Models\Mship\Account())->getTable())->remember("statistics.mship", 60, function() {
+        $statistics = Cache::put("statistics.mship", 60, function() {
             // All Stats
             $statistics = array();
             $statistics['members_total'] = (\App\Models\Mship\Account::count());
@@ -29,7 +29,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
             return $statistics;
         });
 
-        $membershipStats = Cache::tags((new Statistic())->getTable())->remember("statistics.membership.graph", 60 * 24, function() {
+        $membershipStats = Cache::put("statistics.membership.graph", 60 * 24, function() {
             $membershipStats = array();
             $membershipStatsKeys = ["members.division.current", "members.division.new", "members.new", "members.current"];
             $date = \Carbon\Carbon::parse("45 days ago");

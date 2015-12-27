@@ -149,6 +149,8 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+
+        App\Modules\Statistics\StatisticsServiceProvider::class,
     ],
 
     /*

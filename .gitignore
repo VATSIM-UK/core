@@ -5,3 +5,4 @@ Homestead.yaml
 !.env.example
 nbproject*
 .idea*
+_ide_helper.php

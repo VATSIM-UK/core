@@ -12,7 +12,7 @@ return array(
      |
      */
 
-    'enabled' => env('APP_DEBUGBAR', false),
+    'enabled' => null,
 
     /*
      |--------------------------------------------------------------------------
@@ -60,6 +60,17 @@ return array(
      */
 
     'capture_ajax' => true,
+
+    /*
+     |--------------------------------------------------------------------------
+     | Clockwork integration
+     |--------------------------------------------------------------------------
+     |
+     | The Debugbar can emulate the Clockwork headers, so you can use the Chrome
+     | Extension, without the server-side code. It uses Debugbar collectors instead.
+     |
+     */
+    'clockwork' => false,
 
     /*
      |--------------------------------------------------------------------------
