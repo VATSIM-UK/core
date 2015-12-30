@@ -103,6 +103,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
 
         // Lazy eager loading
         $account->load(
+            "bans",
             "notes", "notes.type", "notes.writer",
             "dataChanges",
             "roles", "roles.permissions",

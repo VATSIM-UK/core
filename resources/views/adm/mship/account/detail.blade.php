@@ -136,7 +136,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank")) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -222,7 +222,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.role.attach", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -315,7 +315,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/enable"))
                         <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.enable", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.enable", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -350,7 +350,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/reset"))
                         <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.reset", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.reset", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -375,7 +375,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/change"))
                         <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.change", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.change", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -440,7 +440,7 @@
                                                             <span class="time pull-right">
                                                             <small>
                                                                 <i class="fa fa-user"></i>
-                                                                {{ $ban->banner->name }} ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!})
+                                                                {{ $ban->banner->name }} ({!! URL::route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!})
 
                                                                 <i class="fa fa-clock-o"></i>
                                                                 {{ $ban->created_at->diffForHumans() }}, {{ $ban->created_at->toDateTimeString() }}
@@ -455,8 +455,47 @@
                                                         </p>
                                                         <p>
                                                             <strong>Reason</strong>
-                                                            <br />{{ $ban->reason_extra }}
+                                                            <br />
+                                                            <em>
+                                                                {{ $ban->reason}}
+                                                                @if($ban->reason_extra)
+                                                                    {{ $ban->reason_extra }}
+                                                                @endif
+                                                            </em>
                                                         </p>
+                                                        @if(count($ban->notes) > 0)
+
+                                                            <strong>
+                                                                Related Notes (Newest first) -
+                                                                <a data-toggle="collapse" href="#banNotes{{ $ban->account_ban_id }}" aria-expanded="false" aria-controls="#banNotes{{ $ban->account_ban_id }}">Toggle Display</a>
+                                                            </strong>
+
+                                                            <div class="collapse" id="banNotes{{ $ban->account_ban_id }}">
+                                                                @foreach($ban->notes->sortByDesc("created_at") as $note)
+                                                                    <div class="panel panel-info" id='ban-note-{{ $note->account_note_id }}'>
+                                                                        <div class="panel-heading">
+                                                                            <h3 class="panel-title">
+                                                                                {{ $note->type->name }}
+                                                                                <span class="time pull-right">
+                                                                                <small>
+                                                                                    <i class="fa fa-user"></i>
+                                                                                    {{ $note->writer->name }} ({!! URL::route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!})
+
+                                                                                    <i class="fa fa-clock-o"></i>
+                                                                                    {{ $note->created_at->diffForHumans() }}, {{ $note->created_at->toDateTimeString() }}
+                                                                                </small>
+                                                                            </span>
+                                                                            </h3>
+                                                                        </div>
+                                                                        <div class="panel-body">
+                                                                            <p>
+                                                                                {{ $note->content }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -523,7 +562,7 @@
                     @endif
 
                     <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
-                        {!! Form::open(array("url" => URL::route("adm.mship.account.note.filter", $account->account_id))) !!}
+                        {!! Form::open(["url" => URL::route("adm.mship.account.note.filter", $account->account_id)]) !!}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -642,7 +681,7 @@
                     <h3 class="box-title">Recent Timeline Events</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body table-responsive">
-                    @include('adm.sys.timeline.widget', array('entries' => $account->timeline_entries_recent))
+                    @include('adm.sys.timeline.widget', ['entries' => $account->timeline_entries_recent])
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

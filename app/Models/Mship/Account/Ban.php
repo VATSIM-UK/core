@@ -49,6 +49,10 @@ class Ban extends \App\Models\aTimelineEntry
         return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
     }
 
+    public function notes(){
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+    }
+
     public function setPeriodAmountFromTS(){
         $diff = $this->period_start->diff($this->period_finish);
 
