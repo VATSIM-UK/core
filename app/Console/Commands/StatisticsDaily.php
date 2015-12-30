@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Maknz\Slack\Facades\Slack;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
@@ -12,14 +13,28 @@ use App\Models\Mship\Qualification as QualificationData;
 use App\Models\Mship\Account\Qualification;
 use App\Models\Statistic;
 
-class StatisticsDaily extends aCommand {
+class StatisticsDaily extends aCommand
+{
+    /**
+     * Errors:
+     * 1 - Start period is invalid.
+     * 2 - End period is invalid.
+     * 3 - Unable to update NEW MEMBER STATISTICS
+     * 4 - Unable to update CURRENT MEMBER STATISTICS
+     * 5 - Unable to update NEW DIVISION MEMBER STATISTICS
+     * 6 - Unable to update CURRENT DIVISION MEMBER STATISTICS
+     */
 
     /**
-     * The console command name.
+     * The console command signature.
+     *
+     * The name of the command, along with any expected arguments.
      *
      * @var string
      */
-    protected $name = 'Statistics:Daily';
+    protected $signature = 'sys:statistics:daily
+                            {startPeriod=yesterday : The date from which to start calculating statistics}
+                            {endPeriod=yesterday : The date on which statistic calculation should terminate - inclusive}';
 
     /**
      * The console command description.
@@ -33,7 +48,8 @@ class StatisticsDaily extends aCommand {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -42,53 +58,135 @@ class StatisticsDaily extends aCommand {
      *
      * @return mixed
      */
-    public function fire() {
-        $period = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
-        while ($period->lte(\Carbon\Carbon::parse($this->argument("endPeriod"), "UTC"))) {
-            // Number of members created on a given date (CREATED within our database)
-            $membersNew = Account::where("created_at", "LIKE", $period->toDateString() . "%")->count();
-            Statistic::setStatistic($period->toDateString(), "members.new", $membersNew);
+    public function handle()
+    {
+        $currentPeriod = $this->getStartPeriod();
 
-            // Number of members created before a given date.
-            $membersCurrent = Account::where("created_at", "<=", $period->toDateString() . " 23:59:59")->count();
-            Statistic::setStatistic($period->toDateString(), "members.current", $membersCurrent);
+        while ($currentPeriod->lte($this->getEndPeriod())) {
+            $this->addNewMembersStatistic($currentPeriod);
+            $this->addCurrentMembersStatistic($currentPeriod);
 
-            // Number of division members CREATED on a given day (i.e. number of members joining our division).
-            $divisionCreated = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
-                                    ->where("created_at", "LIKE", $period->toDateString() . "%")
-                                    ->count();
-            Statistic::setStatistic($period->toDateString(), "members.division.new", $divisionCreated);
+            $this->addNewDivisionMembersStatistic($currentPeriod);
+            $this->addCurrentDivisionMembersStatistic($currentPeriod);
 
-            // Number of division members on a given day (i.e. number of members currently within the division).
-            $divisionCurrent = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
-                                    ->where("created_at", "<=", $period->toDateString() . " 23:59:59")
-                                    ->count();
-            Statistic::setStatistic($period->toDateString(), "members.division.current", $divisionCurrent);
+            $currentPeriod = $currentPeriod->addDay();
+        }
 
-            // Next day!
-            $period = $period->addDay();
+        $startTimestamp = $this->getStartPeriod()->toDateString();
+        $endTimestamp = $this->getEndPeriod()->toDateString();
+        $this->sendSlackSuccess("System Statistics for " . $startTimestamp . " to " . $endTimestamp . " have been updated.");
+    }
+
+    /**
+     * Get the start period from the arguments passed.
+     *
+     * This will also validate those arguments.
+     *
+     * @return Carbon
+     */
+    private function getStartPeriod()
+    {
+        try {
+            $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
+        } catch (\Exception $e) {
+            $this->sendSlackError(1,
+                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.");
+        }
+
+        if ($startPeriod->isFuture()) {
+            $startPeriod = \Carbon\Carbon::now();
+        }
+
+        return $startPeriod;
+    }
+
+    /**
+     * Get the end period from the arguments passed.
+     *
+     * This will also validate those arguments.
+     *
+     * @return Carbon
+     */
+    private function getEndPeriod()
+    {
+        try {
+            $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
+        } catch (\Exception $e) {
+            $this->sendSlackError(2, "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.");
+        }
+
+        if ($endPeriod->isFuture()) {
+            $endPeriod = \Carbon\Carbon::now();
+        }
+
+        if ($endPeriod->gt($this->getStartPeriod())) {
+            $endPeriod = $this->getStartPeriod();
+        }
+
+        return $endPeriod;
+    }
+
+    /**
+     * Add a statistic for the members that were created on a given date.
+     *
+     * @param $currentPeriod
+     */
+    private function addNewMembersStatistic($currentPeriod)
+    {
+        try {
+            $membersNew = Account::where("created_at", "LIKE", $currentPeriod->toDateString() . "%")->count();
+            Statistic::setStatistic($currentPeriod->toDateString(), "members.new", $membersNew);
+        } catch (\Exception $e) {
+            $this->sendSlackError(3, "Unable to update NEW MEMBER statistics.");
         }
     }
 
     /**
-     * Get the console command arguments.
+     * Add a statistic for the number of current members at the end of the current day.
      *
-     * @return array
+     * @param $currentPeriod
      */
-    protected function getArguments() {
-        return array(
-            array("startPeriod", InputArgument::OPTIONAL, "The date period to start processing statistics from. If not passed, yesterday will be used.", \Carbon\Carbon::parse("yesterday")->toDateString()),
-            array("endPeriod", InputArgument::OPTIONAL, "The date period to stop processing statistics from. If not passed, yesterday will be used.", \Carbon\Carbon::parse("yesterday")->toDateString()),
-        );
+    private function addCurrentMembersStatistic($currentPeriod)
+    {
+        try {
+            $membersCurrent = Account::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")->count();
+            Statistic::setStatistic($currentPeriod->toDateString(), "members.current", $membersCurrent);
+        } catch (\Exception $e) {
+            $this->sendSlackError(3, "Unable to update CURRENT MEMBER statistics.");
+        }
     }
 
     /**
-     * Get the console command options.
+     * Add a statistic for the number of new division members created on the current day.
      *
-     * @return array
+     * @param $currentPeriod
      */
-    protected function getOptions() {
-        return array(
-        );
+    private function addNewDivisionMembersStatistic($currentPeriod)
+    {
+        try {
+            $divisionCreated = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
+                                    ->where("created_at", "LIKE", $currentPeriod->toDateString() . "%")
+                                    ->count();
+            Statistic::setStatistic($currentPeriod->toDateString(), "members.division.new", $divisionCreated);
+        } catch (\Exception $e) {
+            $this->sendSlackError(3, "Unable to update NEW DIVISION MEMBER statistics.");
+        }
+    }
+
+    /**
+     * Add a statistic for the number of current division members created on the current day.
+     *
+     * @param $currentPeriod
+     */
+    private function addCurrentDivisionMembersStatistic($currentPeriod)
+    {
+        try {
+            $divisionCurrent = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
+                                    ->where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+                                    ->count();
+            Statistic::setStatistic($currentPeriod->toDateString(), "members.division.current", $divisionCurrent);
+        } catch (\Exception $e) {
+            $this->sendSlackError(3, "Unable to update CURRENT DIVISION MEMBER statistics.");
+        }
     }
 }
