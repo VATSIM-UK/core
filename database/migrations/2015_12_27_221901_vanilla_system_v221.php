@@ -116,6 +116,7 @@ class VanillaSystemV221 extends Migration
         Schema::dropIfExists('sys_timeline_entry');
         Schema::dropIfExists('sys_timeline_action');
         Schema::dropIfExists('sys_token');
+        Schema::dropIfExists('sys_data_change');
         Schema::dropIfExists('sys_notification');
         Schema::dropIfExists('sys_notification_read');
         Schema::dropIfExists('sys_sessions');
