@@ -35,6 +35,11 @@ class VanillaMshipV221 extends Migration
             $table->softDeletes();
         });
 
+        DB::table("mship_account")->insert(array(
+            ["account_id" => env("SYSTEM_ACCOUNT_VATUK", 707070), "name_first" => "VATSIM", "name_last" => "UK", "status" => App\Models\Mship\Account::STATUS_SYSTEM],
+            ["account_id" => env("SYSTEM_ACCOUNT_VATSIM", 606060), "name_first" => "VATSIM", "name_last" => "NET", "status" => App\Models\Mship\Account::STATUS_SYSTEM]
+        ));
+
         Schema::create("mship_account_email", function($table){
             $table->bigIncrements("account_email_id")->unsigned();
             $table->integer("account_id")->unsigned();
@@ -44,6 +49,11 @@ class VanillaMshipV221 extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::table("mship_account_email")->insert(array(
+            ["account_id" => env("SYSTEM_ACCOUNT_VATUK", 707070), "email" => "no-reply@vatsim-uk.co.uk", "is_primary" => true, "verified_at" => \Carbon\Carbon::now()->toDateTimeString()],
+            ["account_id" => env("SYSTEM_ACCOUNT_VATSIM", 606060), "email" => "no-reply@vatsim.net", "is_primary" => true, "verified_at" => \Carbon\Carbon::now()->toDateTimeString()]
+        ));
 
         Schema::create("mship_account_qualification", function($table){
             $table->bigIncrements("account_qualification_id")->unsigned();
