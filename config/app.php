@@ -149,6 +149,7 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Maknz\Slack\SlackServiceProvider::class,
 
         App\Modules\Statistics\StatisticsServiceProvider::class,
     ],
@@ -205,6 +206,7 @@ return [
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+        'Slack'     => Maknz\Slack\Facades\Slack::class,
 
     ],
 
