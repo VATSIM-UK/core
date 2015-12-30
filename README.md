@@ -2,10 +2,13 @@
 
 ### Future
 * Publish module files with:
-* * php artisan vendor:publish --force --provider="App\Modules\Statistics\StatisticsServiceProvider"
+** php artisan vendor:publish --force --provider="App\Modules\Statistics\StatisticsServiceProvider"
 
 * Enable the stats tracking cronjobs:
-* * statistics:download
+** statistics:download
+
+* Modify the cronjob from `Statistics:daily`
+** Set as `php artisan sys:statistics:daily`
 
 * [Depends on feature/refactor_all_migrations] Modify the migrations table *BEFORE DEPLOYMENT*
 ** [Update] 2014_09_12_200312_initial_membership => 2015_12_27_221900_vanilla_mship_v221
