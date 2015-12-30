@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\TestCommand::class,
         Commands\MembersCertImport::class,
         Commands\MembersCertUpdate::class,
-        Commands\StatisticsDaily::class,
+        Commands\SysStatisticsDaily::class,
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
         Commands\SyncMentors::class,

@@ -13,7 +13,7 @@ use App\Models\Mship\Qualification as QualificationData;
 use App\Models\Mship\Account\Qualification;
 use App\Models\Statistic;
 
-class StatisticsDaily extends aCommand
+class SysStatisticsDaily extends aCommand
 {
     /**
      * Errors:
