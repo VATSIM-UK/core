@@ -22,6 +22,8 @@ class Kernel extends ConsoleKernel
         Commands\SyncMentors::class,
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
+
+        \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
     ];
 
     /**
@@ -32,7 +34,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
+        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
 
         // Work the queue - the last thing that should be processed!
         $schedule->command("queue:work")->everyMinute()->withoutOverlapping();

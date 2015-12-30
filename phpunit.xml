@@ -13,6 +13,9 @@
         <testsuite name="Application Test Suite">
             <directory>./tests/</directory>
         </testsuite>
+        <testsuite name="Modules:Statistics Test Suite">
+            <directory>./app/Modules/Statistics/Tests/</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist>

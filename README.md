@@ -1,7 +1,12 @@
 ## Upgrade Notes
 
 ### Future
-* [Depends on feature/modules_test] Enable the stats tracking cronjob: Statistics:run
+* Publish module files with:
+* * php artisan vendor:publish --force --provider="App\Modules\Statistics\StatisticsServiceProvider"
+
+* Enable the stats tracking cronjobs:
+* * statistics:download
+
 * [Depends on feature/refactor_all_migrations] Modify the migrations table *BEFORE DEPLOYMENT*
 ** [Update] 2014_09_12_200312_initial_membership => 2015_12_27_221900_vanilla_mship_v221
 ** [Update] 2014_09_12_200319_initial_system => 2015_12_27_221901_vanilla_system_v221

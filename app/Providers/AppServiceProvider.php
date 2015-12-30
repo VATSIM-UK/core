@@ -13,8 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        define("VATUK_ACCOUNT_SYSTEM", "707070");
-        define("VATSIM_ACCOUNT_SYSTEM", "606060");
+        if (!defined("VATUK_ACCOUNT_SYSTEM")) {
+            define("VATUK_ACCOUNT_SYSTEM", "707070");
+        }
+
+        if (!defined("VATSIM_ACCOUNT_SYSTEM")) {
+            define("VATSIM_ACCOUNT_SYSTEM", "606060");
+        }
     }
 
     /**
