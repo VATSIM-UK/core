@@ -3,24 +3,15 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class TeamspeakDatabaseStructure extends Migration {
-
+class VanillaTeamspeakV221 extends Migration
+{
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up() {
-        // drop tables if they exist
-
-        Schema::dropIfExists('teamspeak_alias');
-        Schema::dropIfExists('teamspeak_ban');
-        Schema::dropIfExists('teamspeak_confirmation');
-        Schema::dropIfExists('teamspeak_log');
-        Schema::dropIfExists('teamspeak_registration');
-
-        // create table structures
-
+    public function up()
+    {
         Schema::create('teamspeak_alias', function($table) {
             $table->increments('id')->unsigned();
             $table->integer('account_id')->unique()->unsigned();
@@ -48,7 +39,7 @@ class TeamspeakDatabaseStructure extends Migration {
         Schema::create('teamspeak_log', function($table) {
             $table->increments('id')->unsigned();
             $table->integer('registration_id')->unsigned()->nullable();
-            $table->enum('type', ['idle_message', 'idle_poke', 'idle_kick', 'nick_warn', 'nick_kick']);
+            $table->string("type", 75);
             $table->timestamps();
         });
 
@@ -65,8 +56,6 @@ class TeamspeakDatabaseStructure extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
-        // define relationships (foreign keys)
 
         Schema::table('teamspeak_alias', function($table) {
             $table->foreign('account_id')->references('account_id')->on('mship_account');
@@ -95,13 +84,12 @@ class TeamspeakDatabaseStructure extends Migration {
      *
      * @return void
      */
-    public function down() {
-        // drop all created TeamSpeak tables
+    public function down()
+    {
         Schema::dropIfExists('teamspeak_alias');
         Schema::dropIfExists('teamspeak_ban');
         Schema::dropIfExists('teamspeak_confirmation');
         Schema::dropIfExists('teamspeak_log');
         Schema::dropIfExists('teamspeak_registration');
     }
-
 }

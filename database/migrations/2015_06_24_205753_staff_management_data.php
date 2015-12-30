@@ -131,7 +131,6 @@ class StaffManagementData extends Migration
             ['service_id' => $service_servers, 'name' => 'Elevated Access (SSH User Account)', 'created_at' => $date, 'updated_at' => $date],
             ['service_id' => $service_site, 'name' => 'ACP Access', 'created_at' => $date, 'updated_at' => $date],
         ));
-
     }
 
     /**

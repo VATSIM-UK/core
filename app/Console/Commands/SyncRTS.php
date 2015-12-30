@@ -34,7 +34,6 @@ class SyncRTS extends aCommand
      */
     public function __construct()
     {
-        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->sso_account_id;
         parent::__construct();
     }
 
@@ -45,7 +44,11 @@ class SyncRTS extends aCommand
      */
     public function fire()
     {
+        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->sso_account_id;
+
         global $debug;
+
+
         if ($this->option("debug")) $debug = TRUE;
         else $debug = FALSE;
 
