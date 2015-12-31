@@ -33,25 +33,11 @@ class TeamspeakManager extends aCommand {
     protected $description = 'TeamSpeak Management script.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
-
-        // if specified, turn debug mode on
-        if ($this->option("debug")) $debug = TRUE;
-        else $debug = FALSE;
-
+    public function handle() {
         define("TS_IDLE_MESSAGE", 1);
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);
@@ -184,7 +170,7 @@ class TeamspeakManager extends aCommand {
                             $client_registration->delete($tscon);
                             continue;
                         } catch (Exception $e) {
-                            if ($debug) echo "Error: " . $e->getMessage();
+                            $this->log("Error: " . $e->getMessage());
                         }
                     }
 
@@ -434,24 +420,13 @@ class TeamspeakManager extends aCommand {
                          . "Stack trace:\r\n\r\n"
                          . $e->getTraceAsString()
                          . "\r\nError message: " . $e->getMessage() . "\r\n";
-                echo $message;
+                $this->log($message);
                 mail("neil.farrington@vatsim-uk.co.uk", $subject, $message);
             }
         }
 
         $tscon = null;
 
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions() {
-        return array(
-            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
-        );
     }
 
     /**

@@ -2,14 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\State;
-use App\Models\Mship\Qualification as QualificationData;
-use App\Models\Mship\Account\Qualification;
 use App\Models\Statistic;
 
 class SysStatisticsDaily extends aCommand
@@ -41,16 +35,6 @@ class SysStatisticsDaily extends aCommand
      * @var string
      */
     protected $description = 'Create all statistics for a given day.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.

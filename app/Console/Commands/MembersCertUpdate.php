@@ -33,7 +33,7 @@ class MembersCertUpdate extends aCommand {
      *
      * @return mixed
      */
-    public function fire() {
+    public function handle() {
         // set the maximum number of members to load, with a hard limit of 10,000
         if ($this->argument('max_members') > 10000) $max_members = 10000;
         else $max_members = $this->argument('max_members');

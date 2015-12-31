@@ -31,23 +31,11 @@ class TeamspeakCleanup extends Command {
     protected $description = 'Clean up the Core and TS database.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
-        if ($this->option("debug")) $debug = TRUE;
-        else $debug = FALSE;
-
+    public function handle() {
         $tscon = TeamSpeakAdapter::run("VATSIM UK Cleanup Bot");
 
         // check TS database for clients without registrations
@@ -63,14 +51,14 @@ class TeamspeakCleanup extends Command {
                 if (!$registered) {
                     try {
                         $tscon->clientDeleteDb($client['cldbid']);
-                        if ($debug) echo "No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                        $this->log("No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
                         $offset--;
                     } catch (Exception $e) {
-                        if ($debug) echo $e->getMessage();
-                        if ($debug) echo "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                        $this->log($e->getMessage());
+                        $this->log("Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
                     }
-                } elseif ($debug) {
-                    echo "Registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
+                } else {
+                    $this->log("Registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
                 }
             }
             $offset += 25;
@@ -86,18 +74,7 @@ class TeamspeakCleanup extends Command {
                 })->get();
         foreach ($old_registrations as $registration) {
             $registration->delete($tscon);
-            if ($debug) echo "Old registration deleted: {$registration->id}\n";
+            $this->log("Old registration deleted: {$registration->id}");
         }
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions() {
-        return array(
-            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
-        );
     }
 }
