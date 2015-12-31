@@ -45,6 +45,6 @@ class SendSecurityTemporaryPasswordEmail extends Job implements SelfHandling, Sh
         $isHtml = true;
         $systemGenerated = true;
         Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom,
-            $isHtml, $systemGenerated))->onQueue("high");
+            $isHtml, $systemGenerated));
     }
 }

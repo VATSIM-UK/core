@@ -20,10 +20,10 @@ class SendNewEmailVerificationEmail extends Job implements SelfHandling, ShouldQ
     private $recipient = null;
     private $token = null;
 
-    public function __construct(Account\Email $email)
+    public function __construct(Account $recipient, Token $token)
     {
-        $this->email = $email;
-        $this->account = $email->account;
+        $this->recipient = $recipient;
+        $this->token = $token;
     }
 
     public function handle(Mailer $mailer)
@@ -38,6 +38,6 @@ class SendNewEmailVerificationEmail extends Job implements SelfHandling, ShouldQ
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated))->onQueue("med");
+        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
     }
 }

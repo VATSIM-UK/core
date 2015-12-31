@@ -35,9 +35,9 @@ class TriggerPasswordResetConfirmation extends Job implements SelfHandling, Shou
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->account);
 
         if($this->admin_reset){
-            Bus::dispatchNow(new SendSecurityForgottenAdminConfirmationEmail($this->account, $generatedToken))->onQueue("high");;
+            Bus::dispatchNow(new SendSecurityForgottenAdminConfirmationEmail($this->account, $generatedToken));
         } else {
-            Bus::dispatchNow(new SendSecurityForgottenConfirmationEmail($this->account, $generatedToken))->onQueue("high");;
+            Bus::dispatchNow(new SendSecurityForgottenConfirmationEmail($this->account, $generatedToken));
         }
     }
 }

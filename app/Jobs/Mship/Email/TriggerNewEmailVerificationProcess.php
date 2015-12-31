@@ -3,8 +3,9 @@
 namespace App\Jobs\Mship\Email;
 
 use App\Jobs\Job;
-use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
 use App\Models\Mship\Account;
+use App\Models\Sys\Token;
+use Bus;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,6 +36,6 @@ class TriggerNewEmailVerificationProcess extends Job implements SelfHandling, Sh
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
-        Bus::dispatchNow(new SendNewEmailVerificationEmail($this->account, $generatedToken))->onQueue("med");;
+        Bus::dispatchNow(new SendNewEmailVerificationEmail($this->account, $generatedToken));
     }
 }
