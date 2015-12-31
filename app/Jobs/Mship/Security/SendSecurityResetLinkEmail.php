@@ -2,6 +2,9 @@
 
 namespace App\Jobs\Mship\Security;
 
+use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Mship\Account;
+use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,7 +18,7 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements SelfHandling, 
     private $recipient = null;
     private $password = null;
 
-    public function __construct(\App\Models\Mship\Account $recipient, $password)
+    public function __construct(Account $recipient, $password)
     {
         $this->recipient = $recipient;
         $this->password = $password;
@@ -29,6 +32,11 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements SelfHandling, 
                      ->with("account", $this->recipient)
                      ->with("password", $this->password)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
+
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
+        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom,
+            $isHtml, $systemGenerated));
     }
 }

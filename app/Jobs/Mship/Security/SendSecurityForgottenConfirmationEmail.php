@@ -2,6 +2,9 @@
 
 namespace App\Jobs\Mship\Security;
 
+use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Mship\Account;
+use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,7 +18,7 @@ class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements Se
     private $recipient = null;
     private $token = null;
 
-    public function __construct(\App\Models\Mship\Account $recipient, \App\Models\Sys\Token $token)
+    public function __construct(Account $recipient, \App\Models\Sys\Token $token)
     {
         $this->recipient = $recipient;
         $this->token = $token;
@@ -29,6 +32,11 @@ class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements Se
                      ->with("account", $this->recipient)
                      ->with("token", $this->token)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
+
+
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
+        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
     }
 }
