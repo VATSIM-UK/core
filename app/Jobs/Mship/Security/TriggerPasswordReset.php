@@ -39,6 +39,7 @@ class TriggerPasswordReset extends Job implements SelfHandling, ShouldQueue {
         $isTemporary = true;
         $this->account->setPassword($temporaryPassword, $passwordType, $isTemporary);
 
-        Bus::dispatchNow(new SendSecurityTemporaryPasswordEmail($this->account, $temporaryPassword));
+        $sendSecurityTemporaryPasswordEmail = new SendSecurityTemporaryPasswordEmail($this->account, $temporaryPassword);
+        Bus::dispatchNow($sendSecurityTemporaryPasswordEmail->onQueue("med"));
     }
 }

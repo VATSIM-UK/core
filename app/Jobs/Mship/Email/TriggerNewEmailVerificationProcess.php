@@ -36,6 +36,7 @@ class TriggerNewEmailVerificationProcess extends Job implements SelfHandling, Sh
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
-        Bus::dispatchNow(new SendNewEmailVerificationEmail($this->account, $generatedToken));
+        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->account, $generatedToken);
+        Bus::dispatchNow($sendNewEmailVerificationEmail->onQueue("med"));
     }
 }

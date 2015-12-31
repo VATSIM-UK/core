@@ -45,6 +45,7 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
+        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+        Bus::dispatch($createNewMessage->onQueue("emails"));
     }
 }

@@ -50,6 +50,6 @@ class CreateNewMessage extends Job implements SelfHandling
         $thread->posts()->save($post);
         $this->sender->messagePosts()->save($post);
 
-        Bus::dispatch(new SendMessageEmail($post));
+        Bus::dispatch((new SendMessageEmail($post))->onQueue("emails"));
     }
 }
