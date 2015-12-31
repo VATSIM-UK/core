@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Jobs\Mship\Security\SendSecurityResetLinkEmail;
+use App\Jobs\Mship\Security\SendSecurityTemporaryPasswordEmail;
+use App\Jobs\Mship\Security\TriggerPasswordReset;
 use App\Models\Mship\Account;
 use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
@@ -207,13 +208,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // Let's now consume this token.
         $token->consume();
 
-        // Generate a new password for them and then email it across!
-        $password = \App\Models\Mship\Account\Security::generate(false);
-        $passwordType = $token->related->current_security ? $token->related->current_security : \App\Models\Mship\Security::getDefault();
-        $token->related->setPassword($password, $passwordType, TRUE);
-
-        // Now generate an email.
-        Bus::dispatch(new SendSecurityResetLinkEmail($token->related, $password));
+        Bus::dispatch(new TriggerPasswordReset($token));
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated

@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use View;
 
 class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
 {
@@ -25,11 +26,18 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
         $this->token = $token;
     }
 
+    /**
+     *
+     * Dispatch the security password reset CONFIRMATION email (for admin resets).
+     *
+     * @param \Illuminate\Contracts\Mail\Mailer $mailer
+     * @return void
+     */
     public function handle(Mailer $mailer)
     {
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "SSO Security - Administrative Reset Confirmation";
-        $body = \View::make("emails.mship.security.reset_confirmation_admin")
+        $body = View::make("emails.mship.security.reset_confirmation_admin")
                      ->with("account", $this->account)
                      ->with("token", $this->token)
                      ->render();
@@ -37,6 +45,6 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
+        Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated))->onQueue("high");
     }
 }

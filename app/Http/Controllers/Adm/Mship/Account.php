@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Jobs\Mship\Security\TriggerPasswordReset;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 use Auth;
 use Bus;
 use Config;
@@ -235,7 +235,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
                            ->withError("You cannot reset non-existant security.");
         }
 
-        Bus::dispatch(new TriggerPasswordReset($account, true));
+        Bus::dispatch(new TriggerPasswordResetConfirmation($account, true));
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "security"])
                        ->withSuccess("Security reset requested - user will receive an email.");

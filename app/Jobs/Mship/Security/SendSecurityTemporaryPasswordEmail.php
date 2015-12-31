@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Mship\Security;
 
+use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
 use Bus;
@@ -10,8 +11,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use View;
 
-class SendSecurityResetLinkEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
+class SendSecurityTemporaryPasswordEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -24,11 +26,17 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements SelfHandling, 
         $this->password = $password;
     }
 
+    /**
+     * Dispatch the newly generated password for a user.
+     *
+     * @param \Illuminate\Contracts\Mail\Mailer $mailer
+     * @return void
+     */
     public function handle(Mailer $mailer)
     {
         $displayFrom = "VATSIM UK - Community Department";
-        $subject = "New Email Added - Verification Required";
-        $body = \View::make("emails.mship.security.reset_password")
+        $subject = "SSO Security - New Password";
+        $body = View::make("emails.mship.security.reset_password")
                      ->with("account", $this->recipient)
                      ->with("password", $this->password)
                      ->render();
@@ -37,6 +45,6 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements SelfHandling, 
         $isHtml = true;
         $systemGenerated = true;
         Bus::dispatch(new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom,
-            $isHtml, $systemGenerated));
+            $isHtml, $systemGenerated))->onQueue("high");
     }
 }
