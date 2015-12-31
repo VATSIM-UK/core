@@ -31,6 +31,6 @@ class SendWelcomeEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueu
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        Bus::dispatch(new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
+        Bus::dispatch(new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated))->onQueue("low");
     }
 }
