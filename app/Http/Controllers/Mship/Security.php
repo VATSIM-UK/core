@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Mship;
 
 use App\Jobs\Mship\Security\SendSecurityResetLinkEmail;
-use Redirect;
-use Auth;
-use Session;
-use Input;
-use View;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Security as AccountSecurity;
 use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
+use Auth;
+use Bus;
+use Input;
+use Redirect;
+use Session;
+use View;
 
 class Security extends \App\Http\Controllers\BaseController {
 
@@ -174,13 +174,10 @@ class Security extends \App\Http\Controllers\BaseController {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        Auth::user()->resetPassword();
+        Bus::dispatch(new TriggerPasswordReset(Auth::user(), false));
         Auth::logout();
 
-        return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
-                an authorisation link has been emailed to you.  Once you click this link to confirm this request
-                a new password will be generated and emailed to you.<br />
-                You can now close this window.");
+        return $this->viewMake("mship.security.forgotten")->with("success", trans("mship.security.forgotten.success")."<br />".trans("general.dialog.youcanclose"));
     }
 
     public function getForgottenLink($code=null) {
@@ -216,7 +213,7 @@ class Security extends \App\Http\Controllers\BaseController {
         $token->related->setPassword($password, $passwordType, TRUE);
 
         // Now generate an email.
-        \Bus::dispatch(new SendSecurityResetLinkEmail($token->related, $password));
+        Bus::dispatch(new SendSecurityResetLinkEmail($token->related, $password));
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated
