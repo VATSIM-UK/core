@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Maknz\Slack\Client;
-use Session;
 use Illuminate\Console\Command;
 
 class aCommand extends Command {

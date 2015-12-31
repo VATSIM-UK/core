@@ -54,7 +54,7 @@ class SyncRTS extends aCommand
 
         if ($debug) print "RTS DIVISION DATABASE IMPORT STARTED\n\n";
 
-        $members = DB::connection('mysql.rts')->table('members');
+        $members = DB::table('prod_rts.members');
         if ($this->option("force-update")) {
             $members->where('cid', '=', $this->option('force-update'))
                     ->where('deleted', '=', '0');
@@ -129,8 +129,7 @@ class SyncRTS extends aCommand
         }
         if (empty($updateData['email'])) unset($updateData['email']);
 
-        $members = DB::connection('mysql.rts')
-                        ->table('members')
+        $members = DB::table('prod_rts.members')
                         ->where('cid', '=', $cid)
                         ->update($updateData);
 
