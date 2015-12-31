@@ -58,10 +58,10 @@ class SyncMentors extends Command
         foreach (DB::table('prod_rts.rts')->get(['id', 'name']) as $rts) {
             $this->rtsIDs[snake_case($rts->name)] = $rts->id;
         }
-        $this->memberForumIDs = DB::table('prod_community.ibf_core_members')->lists('member_id', 'vatsim_cid');
+        $this->memberForumIDs = DB::table('prod_community.ibf_core_members')->pluck('member_id', 'vatsim_cid');
         $this->forumGroupIDs = DB::table('prod_community.ibf_core_groups AS g')
             ->join('prod_community.ibf_core_sys_lang_words AS w', DB::raw('CONCAT("core_group_", g.g_id)'), '=', 'w.word_key')
-            ->lists('word_default', 'g_id');
+            ->pluck('word_default', 'g_id');
         $this->pilotGroupID = array_search('Pilot Mentors', $this->forumGroupIDs);
         $this->atcGroupID = array_search('ATC Mentors', $this->forumGroupIDs);
 

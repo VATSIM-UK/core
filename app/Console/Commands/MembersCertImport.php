@@ -53,10 +53,10 @@ class MembersCertImport extends aCommand
         // get a list of current members and their emails
         // Note: accounts for the possibility of a member not having a (primary) email in mship_account_email
         $member_list = DB::table('mship_account')
-                         ->lists('account_id', 'account_id');
+                         ->pluck('account_id', 'account_id');
         $member_email_list = DB::table('mship_account_email')
                                ->where('is_primary', 1)
-                               ->lists('email', 'account_id');
+                               ->pluck('email', 'account_id');
 
         $this->output('Member list and email list obtained successfully.');
 

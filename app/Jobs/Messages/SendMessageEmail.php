@@ -5,10 +5,9 @@ namespace App\Jobs\Messages;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendMessageEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
+class SendMessageEmail extends \App\Jobs\Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 

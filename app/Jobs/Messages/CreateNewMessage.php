@@ -3,10 +3,9 @@
 namespace App\Jobs\Messages;
 
 use Illuminate\Contracts\Mail\Mailer;
-use Illuminate\Contracts\Bus\SelfHandling;
 use \App\Models\Mship\Account as Account;
 
-class CreateNewMessage extends \App\Jobs\Job implements SelfHandling
+class CreateNewMessage extends \App\Jobs\Job
 {
     private $sender = null;
     private $displaySenderAs = null;
