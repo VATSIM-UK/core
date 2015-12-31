@@ -10,8 +10,6 @@ class aCommand extends Command {
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct() {
         parent::__construct();
@@ -22,6 +20,21 @@ class aCommand extends Command {
             "link_names" => true,
         ];
         $this->slack = new Client("https://hooks.slack.com/services/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", $settings);
+    }
+
+    /**
+     * Log a string to STDOUT.
+     *
+     * If STDOUT is piped/redirected, styling is removed.
+     *
+     * @param      $string The string to output.
+     * @param null $style The styling to output.
+     */
+    protected function log($string, $style = null)
+    {
+        $style = posix_isatty(STDOUT) ? $style : null;
+
+        $this->line($string, $style, OutputInterface::VERBOSITY_VERBOSE);
     }
 
     protected function sendSlackError($errorCode, $error){
@@ -35,7 +48,7 @@ class aCommand extends Command {
     protected function sendSlackSuccess($message="Has run successfully."){
         $slackMessage = "*".$this->getName(). "* -> ";
 
-        if($message){
+        if ($message) {
             $slackMessage.= "_".$message."_";
         }
 

@@ -2,14 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Email;
-use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification as QualificationData;
-use App\Models\Mship\Account\Qualification;
 use DB;
 use VatsimXML;
 
@@ -34,21 +28,11 @@ class MembersCertImport extends aCommand
     protected $description = 'Import/update member emails from CERT AutoTools';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire()
+    public function handle()
     {
         // get a list of current members and their emails
         // Note: accounts for the possibility of a member not having a (primary) email in mship_account_email
@@ -69,21 +53,21 @@ class MembersCertImport extends aCommand
 
         foreach ($members as $member) {
             $member = str_getcsv($member, ',', '');
-            $this->output("Processing {$member[0]} {$member[3]} {$member[4]}: ", false);
+            $output = "Processing {$member[0]} {$member[3]} {$member[4]}: ";
 
             // if member doesn't exist, create them, otherwise check/update their email
             if (!array_key_exists($member[0], $member_list)) {
                 $this->createNewMember($member);
-                $this->output('created new account');
+                $this->output($output . 'created new account');
             } else {
                 $current_email = array_key_exists($member[0], $member_email_list)
                                ? $member_email_list[$member[0]]
                                : false;
                 if ($current_email != $member[5]) {
                     $this->updateMemberEmail($member);
-                    $this->output('updated member email');
+                    $this->output($output . 'updated member email');
                 } else {
-                    $this->output('no changes needed');
+                    $this->output($output . 'no changes needed');
                 }
             }
         }
@@ -120,36 +104,5 @@ class MembersCertImport extends aCommand
     {
         $member = Account::find($member_data[0]);
         $member->addEmail($member_data[5], true, true);
-    }
-
-    protected function output($message, $eol = true)
-    {
-        if ($this->option('verbose')) {
-            if ($eol) {
-                $message .= PHP_EOL;
-            }
-
-            echo $message;
-        }
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return array();
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return array();
     }
 }
