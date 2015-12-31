@@ -300,18 +300,6 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $security->save();
     }
 
-    public function resetPassword($admin=false){
-        // Now generate a new token for the email.
-        $token = SystemToken::generate("mship_account_security_reset", false, $this);
-
-        // Let's send them an email with this information!
-        if($admin){
-            \Bus::dispatch(new SendSecurityForgottenAdminConfirmationEmail($this, $token));
-        } else {
-            \Bus::dispatch(new SendSecurityForgottenConfirmationEmail($this, $token));
-        }
-    }
-
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
         $check = $this->emails->filter(function($email) use($newEmail){
