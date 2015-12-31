@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Jobs\Mship\Account;
+namespace App\Jobs\Mship\Email;
 
+use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
 use App\Models\Sys\Token;
@@ -12,17 +13,17 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendNewEmailVerificationEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
+class SendNewEmailVerificationEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
     private $token = null;
 
-    public function __construct(Account $recipient, Token $token)
+    public function __construct(Account\Email $email)
     {
-        $this->recipient = $recipient;
-        $this->token = $token;
+        $this->email = $email;
+        $this->account = $email->account;
     }
 
     public function handle(Mailer $mailer)
