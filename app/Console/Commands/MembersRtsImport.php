@@ -2,14 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Email;
-use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification as QualificationData;
-use App\Models\Mship\Account\Qualification;
 use DB;
 use VatsimXML;
 
@@ -30,25 +24,16 @@ class MembersRtsImport extends aCommand {
     protected $description = 'Import old membership data from the RTS System.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
+    public function handle() {
         // Let's load the necessary members from the database.
         $members = Account::all();
 
         if (count($members) < 1) {
-            print "No members to process.\n\n";
+            $this->output("No members to process.\n");
             return;
         }
 
@@ -139,25 +124,4 @@ class MembersRtsImport extends aCommand {
 
         print "Processed " . ($pointerStart - $pointer) . " members.  Pointer from " . $pointerStart . " to " . $pointer . "\n\n";
     }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments() {
-        return array(
-        );
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions() {
-        return array(
-        );
-    }
-
 }

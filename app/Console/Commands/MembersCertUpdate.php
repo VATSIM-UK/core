@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
 use Carbon\Carbon;
