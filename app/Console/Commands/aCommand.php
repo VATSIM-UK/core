@@ -53,9 +53,9 @@ class aCommand extends Command {
      * Send an error message to Slack.
      *
      * @param string $message The message to send to Slack.
-     * @param null   $code    The error code, if necessary.
+     * @param array  $fields
      */
-    protected function sendSlackError($message, $code = null)
+    protected function sendSlackError($message, $fields = [])
     {
         // define the message/attachment to send
         $attachment = [
@@ -90,11 +90,10 @@ class aCommand extends Command {
             $attachment['author_link'] = 'https://gitlab.com/vatsim-uk/core/blob/development' . $directory;
         }
 
-        // if an error code has been provided, add it as a field
-        if ($code !== null) {
+        foreach ($fields as $index => $message) {
             $attachment['fields'][] = [
-                'title' => 'Error code:',
-                'value' => $code,
+                'title' => $index,
+                'value' => $message,
                 'short' => true,
             ];
         }
@@ -106,8 +105,9 @@ class aCommand extends Command {
      * Send a success message to Slack.
      *
      * @param string $message The message to send.
+     * @param array  $fields
      */
-    protected function sendSlackSuccess($message = 'Command has run successfully.')
+    protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
     {
         $attachment = [
             'fallback' => $message,
@@ -130,6 +130,14 @@ class aCommand extends Command {
                 ],
             ],
         ];
+
+        foreach ($fields as $index => $message) {
+            $attachment['fields'][] = [
+                'title' => $index,
+                'value' => $message,
+                'short' => true,
+            ];
+        }
 
         $this->slack()->attach($attachment)->send();
     }

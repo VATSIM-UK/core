@@ -28,6 +28,10 @@ class MembersCertImport extends aCommand
      */
     protected $description = 'Import/update member emails from CERT AutoTools';
 
+    protected $count_new = 0;
+    protected $count_email = 0;
+    protected $count_none = 0;
+
     /**
      * Execute the console command.
      *
