@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification as QualificationData;
+use App\Models\Mship\Account\State;
+use App\Models\Mship\Qualification;
 use DB;
 use VatsimXML;
 
@@ -12,7 +14,6 @@ use VatsimXML;
  */
 class MembersCertImport extends aCommand
 {
-
     /**
      * The console command name.
      *
@@ -36,41 +37,33 @@ class MembersCertImport extends aCommand
     {
         // get a list of current members and their emails
         // Note: accounts for the possibility of a member not having a (primary) email in mship_account_email
-        $member_list = DB::table('mship_account')
-                         ->pluck('account_id', 'account_id');
-        $member_email_list = DB::table('mship_account_email')
-                               ->where('is_primary', 1)
-                               ->pluck('email', 'account_id');
+        $member_list = $this->getMemberIds();
+        $member_email_list = $this->getMemberEmails();
 
-        $this->log('Member list and email list obtained successfully.');
+        $this->log('Member list and email list obtained.');
 
-        // get cert data file
-        $certURL = 'https://cert.vatsim.net/vatsimnet/admin/divdbfullwpilot.php?';
-        $certURL.= 'authid=' . env('VATSIM_CERT_AT_USER') .'&';
-        $certURL.= 'authpassword=' . urlencode(env('VATSIM_CERT_AT_PASS')).'&';
-        $certURL.= 'div='.env('VATSIM_CERT_AT_DIV').'&';
-        $members = file($certURL);
-
-        foreach ($members as $member) {
-            $member = str_getcsv($member, ',', '');
-            $output = "Processing {$member[0]} {$member[3]} {$member[4]}: ";
+        $members = AutoTools::getDivisionData();
+        foreach ($members as $index => $member) {
+            $this->log("Processing {$member[0]} {$member[3]} {$member[4]}: ", null, false);
 
             // if member doesn't exist, create them, otherwise check/update their email
             if (!array_key_exists($member[0], $member_list)) {
                 $this->createNewMember($member);
-                $this->output($output . 'created new account');
+                $this->log('created new account');
             } else {
                 $current_email = array_key_exists($member[0], $member_email_list)
                                ? $member_email_list[$member[0]]
                                : false;
                 if ($current_email != $member[5]) {
                     $this->updateMemberEmail($member);
-                    $this->output($output . 'updated member email');
+                    $this->log('updated member email');
                 } else {
-                    $this->output($output . 'no changes needed');
+                    $this->log('no changes needed');
                 }
             }
         }
+
+        $this->sendSlackSuccess();
     }
 
     protected function createNewMember($member_data)
@@ -85,24 +78,44 @@ class MembersCertImport extends aCommand
         $member->addEmail($member_data[5], true, true);
         $member->determineState($member_data[12], $member_data[13]);
 
-        // If they're NONE UK and an Instructor we need their old rating.
-        if(($member_data[1] != 8 AND $member_data[1] != 9) OR $member->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION) {
-            $member->addQualification(QualificationData::parseVatsimATCQualification($member_data[1]));
-        } else {
-            // Since they're an instructor AND NONE-UK
-            $_prevRat = VatsimXML::getData($member->account_id, "idstatusprat");
+        // if they're an instructor, log their previous rating first,
+        // regardless of whether it will be overwritten
+        if (($member_data[1] == 8 && $member_data[1] == 9)) {
+            $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
                 $member->addQualification($prevAtcRating);
+            } else {
+                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->account_id);
             }
         }
 
-        // anything else should be processed by the Members:CertUpdate script
+        // if they're a division member, or their current rating isn't instructor, log their 'main' rating
+        if (($member_data[1] != 8 && $member_data[1] != 9)
+            || $member->current_state->state === State::STATE_DIVISION
+        ) {
+            $member->addQualification(Qualification::parseVatsimATCQualification($member_data[1]));
+        }
+
+        // anything else is processed by the Members:CertUpdate script
     }
 
     protected function updateMemberEmail($member_data)
     {
         $member = Account::find($member_data[0]);
         $member->addEmail($member_data[5], true, true);
+    }
+
+    protected function getMemberIds()
+    {
+        return DB::table('mship_account')
+            ->pluck('account_id', 'account_id');
+    }
+
+    protected function getMemberEmails()
+    {
+        return DB::table('mship_account_email')
+            ->where('is_primary', 1)
+            ->pluck('email', 'account_id');
     }
 }

@@ -160,6 +160,7 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
 
         App\Modules\Statistics\StatisticsServiceProvider::class,

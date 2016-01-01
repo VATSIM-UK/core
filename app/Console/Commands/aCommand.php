@@ -5,21 +5,30 @@ namespace App\Console\Commands;
 use App;
 use Slack;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class aCommand extends Command {
     /**
      * Log a string to STDOUT.
-     *
      * If STDOUT is piped/redirected, styling is removed.
      *
-     * @param      $string The string to output.
-     * @param null $style The styling to output.
+     * @param string     $string  The string to output.
+     * @param null       $style   The styling to output.
+     * @param bool|false $newline If a new line should be returned at the end.
      */
-    protected function log($string, $style = null)
+    protected function log($string, $style = null, $newline = true)
     {
+        // remove styling if output is piped
         $style = posix_isatty(STDOUT) ? $style : null;
 
-        $this->line($string, $style, OutputInterface::VERBOSITY_VERBOSE);
+        // add style tags to the output string
+        $styled = $style ? "<$style>$string</$style>" : $string;
+
+        // add new line to the output string
+        $styled = $newline ? "$styled\n" : $styled;
+
+        // write the output
+        $this->output->write($styled, OutputInterface::VERBOSITY_VERBOSE);
     }
 
     /**
@@ -43,8 +52,8 @@ class aCommand extends Command {
     /**
      * Send an error message to Slack.
      *
-     * @param      $message The message to send to Slack.
-     * @param null $code The error code, if necessary.
+     * @param string $message The message to send to Slack.
+     * @param null   $code    The error code, if necessary.
      */
     protected function sendSlackError($message, $code = null)
     {

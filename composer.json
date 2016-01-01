@@ -25,7 +25,9 @@
         "planetteamspeak/ts3-php-framework": "dev-master",
         "laravelcollective/html": "~5.0",
         "skymeyer/vatsimphp" : "1.0.*",
-        "maknz/slack": "^1.7"
+        "maknz/slack": "^1.7",
+        "barryvdh/laravel-ide-helper": "^2.1",
+        "league/csv": "^8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
