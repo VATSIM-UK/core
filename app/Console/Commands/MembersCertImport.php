@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification;
 use DB;
+use Exception;
 use VatsimXML;
 
 /**
@@ -29,8 +30,10 @@ class MembersCertImport extends aCommand
     protected $description = 'Import/update member emails from CERT AutoTools';
 
     protected $count_new = 0;
-    protected $count_email = 0;
+    protected $count_emails = 0;
     protected $count_none = 0;
+    protected $member_list;
+    protected $member_email_list;
 
     /**
      * Execute the console command.
@@ -40,34 +43,47 @@ class MembersCertImport extends aCommand
     public function handle()
     {
         // get a list of current members and their emails
-        // Note: accounts for the possibility of a member not having a (primary) email in mship_account_email
-        $member_list = $this->getMemberIds();
-        $member_email_list = $this->getMemberEmails();
+        // accounts for the possibility of a member not having a (primary) email in mship_account_email
+        $this->member_list = $this->getMemberIds();
+        $this->member_email_list = $this->getMemberEmails();
 
         $this->log('Member list and email list obtained.');
 
         $members = AutoTools::getDivisionData();
         foreach ($members as $index => $member) {
             $this->log("Processing {$member[0]} {$member[3]} {$member[4]}: ", null, false);
-
-            // if member doesn't exist, create them, otherwise check/update their email
-            if (!array_key_exists($member[0], $member_list)) {
-                $this->createNewMember($member);
-                $this->log('created new account');
-            } else {
-                $current_email = array_key_exists($member[0], $member_email_list)
-                               ? $member_email_list[$member[0]]
-                               : false;
-                if ($current_email != $member[5]) {
-                    $this->updateMemberEmail($member);
-                    $this->log('updated member email');
-                } else {
-                    $this->log('no changes needed');
-                }
-            }
+            DB::transaction(function () {
+                $this->processMember($member);
+            });
         }
 
-        $this->sendSlackSuccess();
+        $this->sendSlackSuccess('Members imported.', [
+            'New Members:' => $this->count_new,
+            'Member Emails Updated:' => $this->count_emails,
+            'Unchanged Members:' => $this->count_none
+        ]);
+    }
+
+    protected function processMember($member)
+    {
+        // if member doesn't exist, create them, otherwise check/update their email
+        if (!array_key_exists($member[0], $this->member_list)) {
+            $this->createNewMember($member);
+            $this->log('created new account');
+            $this->count_new++;
+        } else {
+            $current_email = array_key_exists($member[0], $this->member_email_list)
+                ? $this->member_email_list[$member[0]]
+                : false;
+            if ($current_email != $member[5]) {
+                $this->updateMemberEmail($member);
+                $this->log('updated member email');
+                $this->count_emails++;
+            } else {
+                $this->log('no changes needed');
+                $this->count_none++;
+            }
+        }
     }
 
     protected function createNewMember($member_data)
