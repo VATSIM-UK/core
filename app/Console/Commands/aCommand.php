@@ -3,33 +3,10 @@
 namespace App\Console\Commands;
 
 use App;
-use Maknz\Slack\Client;
+use Slack;
 use Illuminate\Console\Command;
 
 class aCommand extends Command {
-    protected $slack = null;
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct() {
-        parent::__construct();
-
-        // configure slack
-        if (App::environment('production')) {
-            $channel = 'wscronjobs';
-        } else {
-            $channel = 'wscronjobs_dev';
-        }
-
-        $settings = [
-            'channel' => $channel,
-            'link_names' => true,
-            'markdown_in_attachments' => ['pretext', 'text', 'title', 'fields', 'fallback'],
-        ];
-        $this->slack = new Client('https://hooks.slack.com/services/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', $settings);
-    }
-
     /**
      * Log a string to STDOUT.
      *
@@ -43,6 +20,24 @@ class aCommand extends Command {
         $style = posix_isatty(STDOUT) ? $style : null;
 
         $this->line($string, $style, OutputInterface::VERBOSITY_VERBOSE);
+    }
+
+    /**
+     * Return a Slack configuration for message sending.
+     *
+     * Method must be called for each message sent, to avoid message stacking/overlap.
+     *
+     * @return mixed
+     */
+    protected function slack()
+    {
+        if (App::environment('production')) {
+            $channel = 'wslogging';
+        } else {
+            $channel = 'wslogging_dev';
+        }
+
+        return Slack::setUsername('Cron Notifications')->to($channel);
     }
 
     /**
@@ -95,7 +90,7 @@ class aCommand extends Command {
             ];
         }
 
-        $this->slack->attach($attachment)->send();
+        $this->slack()->attach($attachment)->send();
     }
 
     /**
@@ -127,6 +122,6 @@ class aCommand extends Command {
             ],
         ];
 
-        $this->slack->attach($attachment)->send();
+        $this->slack()->attach($attachment)->send();
     }
 }

@@ -42,7 +42,7 @@ class MembersCertImport extends aCommand
                                ->where('is_primary', 1)
                                ->pluck('email', 'account_id');
 
-        $this->output('Member list and email list obtained successfully.');
+        $this->log('Member list and email list obtained successfully.');
 
         // get cert data file
         $certURL = 'https://cert.vatsim.net/vatsimnet/admin/divdbfullwpilot.php?';

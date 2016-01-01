@@ -6,6 +6,7 @@ use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration;
 use Carbon\Carbon;
+use Exception;
 
 class TeamspeakCleanup extends aCommand {
 
@@ -47,22 +48,22 @@ class TeamspeakCleanup extends aCommand {
             foreach ($clients as $client) {
                 $offset -= $this->checkRegistration($client);
             }
-            
+
             $offset += 25;
         }
 
         // check Core database for incomplete registrations and registrations older than 6 months
         $old_registrations = Registration::where('last_login', '<', Carbon::now()->subMonths(6))
-            ->orWhere(function($query) {
+            ->orWhere(function ($query) {
                 $query->where('status', '=', 'new')
-                      ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
+                    ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
             })->get();
 
         foreach ($old_registrations as $registration) {
             $registration->delete($this->tscon);
             $this->log("Old registration deleted: {$registration->id}");
         }
-        
+
         $this->sendSlackSuccess();
     }
 
