@@ -16,8 +16,14 @@ class aCommand extends Command {
         parent::__construct();
 
         // configure slack
+        if (App::environment('production')) {
+            $channel = 'wscronjobs';
+        } else {
+            $channel = 'wscronjobs_dev';
+        }
+
         $settings = [
-            'channel' => 'wscronjobs',
+            'channel' => $channel,
             'link_names' => true,
             'markdown_in_attachments' => ['pretext', 'text', 'title', 'fields', 'fallback'],
         ];
