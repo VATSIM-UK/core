@@ -72,8 +72,10 @@ class SysStatisticsDaily extends aCommand
         try {
             $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
         } catch (\Exception $e) {
-            $this->sendSlackError(1,
-                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.");
+            $this->sendSlackError(
+                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.",
+                1
+            );
         }
 
         if ($startPeriod->isFuture()) {
@@ -95,7 +97,7 @@ class SysStatisticsDaily extends aCommand
         try {
             $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
         } catch (\Exception $e) {
-            $this->sendSlackError(2, "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.");
+            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.", 2);
         }
 
         if ($endPeriod->isFuture()) {
@@ -120,7 +122,7 @@ class SysStatisticsDaily extends aCommand
             $membersNew = Account::where("created_at", "LIKE", $currentPeriod->toDateString() . "%")->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.new", $membersNew);
         } catch (\Exception $e) {
-            $this->sendSlackError(3, "Unable to update NEW MEMBER statistics.");
+            $this->sendSlackError("Unable to update NEW MEMBER statistics.", 3);
         }
     }
 
@@ -135,7 +137,7 @@ class SysStatisticsDaily extends aCommand
             $membersCurrent = Account::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.current", $membersCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError(3, "Unable to update CURRENT MEMBER statistics.");
+            $this->sendSlackError("Unable to update CURRENT MEMBER statistics.", 3);
         }
     }
 
@@ -152,7 +154,7 @@ class SysStatisticsDaily extends aCommand
                                     ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.division.new", $divisionCreated);
         } catch (\Exception $e) {
-            $this->sendSlackError(3, "Unable to update NEW DIVISION MEMBER statistics.");
+            $this->sendSlackError("Unable to update NEW DIVISION MEMBER statistics.", 3);
         }
     }
 
@@ -169,7 +171,7 @@ class SysStatisticsDaily extends aCommand
                                     ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.division.current", $divisionCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError(3, "Unable to update CURRENT DIVISION MEMBER statistics.");
+            $this->sendSlackError("Unable to update CURRENT DIVISION MEMBER statistics.", 3);
         }
     }
 }

@@ -51,7 +51,7 @@ return [
   |
   */
 
-  'icon' => ":vuktrail",
+  'icon' => ":vuktrail:",
 
   /*
   |-------------------------------------------------------------
@@ -111,7 +111,7 @@ return [
   |
   */
 
-  'markdown_in_attachments' => [],
+  'markdown_in_attachments' => ['pretext', 'text', 'title', 'fields', 'fallback'],
 
   // Allow Markdown in just the text and title fields
   // 'markdown_in_attachments' => ['text', 'title']
