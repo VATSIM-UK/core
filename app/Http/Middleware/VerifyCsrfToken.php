@@ -13,6 +13,7 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         'sso/security/generate',
-        'sso/security/details'
+        'sso/security/details',
+        'webhook/email/mailgun',
     ];
 }
