@@ -37,7 +37,7 @@ Route::model("mshipPermission", "\App\Models\Mship\Permission", function () {
 /*** WEBHOOKS ***/
 Route::group(["prefix" => "webhook", "namespace" => "Webhook"], function () {
     Route::group(["prefix" => "email", "namespace" => "Email"], function () {
-        Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
+        //Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
     });
 });
 
