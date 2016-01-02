@@ -2,9 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Carbon\Carbon;
 use Exception;
 use TeamSpeak3;
@@ -23,7 +20,7 @@ class TeamspeakManager extends aCommand {
      *
      * @var string
      */
-    protected $name = 'TeaMan:WakeUp';
+    protected $signature = 'TeaMan:WakeUp';
 
     /**
      * The console command description.
@@ -37,7 +34,8 @@ class TeamspeakManager extends aCommand {
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         define("TS_IDLE_MESSAGE", 1);
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);

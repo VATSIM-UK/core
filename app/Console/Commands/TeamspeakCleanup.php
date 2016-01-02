@@ -15,7 +15,7 @@ class TeamspeakCleanup extends aCommand {
      *
      * @var string
      */
-    protected $name = 'TeaMan:CleanUp';
+    protected $signature = 'TeaMan:CleanUp';
 
     /**
      * The console command description.

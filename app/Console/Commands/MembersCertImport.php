@@ -19,7 +19,7 @@ class MembersCertImport extends aCommand
      *
      * @var string
      */
-    protected $name = 'Members:CertImport';
+    protected $signature = 'Members:CertImport';
 
     /**
      * The console command description.
@@ -97,9 +97,9 @@ class MembersCertImport extends aCommand
         $member->addEmail($member_data[5], true, true);
         $member->determineState($member_data[12], $member_data[13]);
 
-        // if they're an instructor, log their previous rating first,
+        // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
-        if (($member_data[1] == 8 && $member_data[1] == 9)) {
+        if ($member_data[1] >= 8) {
             $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);

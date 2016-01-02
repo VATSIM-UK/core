@@ -3,21 +3,22 @@
 namespace App\Jobs\Mship\Account;
 
 use App\Jobs\Job;
-use DB;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
 use Carbon\Carbon;
-use VatsimXML;
+use DB;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use VatsimXML;
 
 class MemberCertUpdate extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     protected $accountID;
+    protected $data;
 
     /**
      * Create a new job instance.
@@ -34,102 +35,98 @@ class MemberCertUpdate extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $_m = Account::where('account_id', $this->accountID)->firstOrFail();
-        
-        // Let's load the details from VatsimXML!
-        try {
-            $_xmlData = VatsimXML::getData($_m->account_id, "idstatusint");
-        } catch (Exception $e) {
-            return;
-        }
-
-        if ($_xmlData->name_first == new \stdClass() && $_xmlData->name_last == new \stdClass()
-            && $_xmlData->email == "[hidden]") {
-            $_m->delete();
-            return;
-        }
-
         DB::beginTransaction();
-        try {
-            if (!empty($_xmlData->name_first) && is_string($_xmlData->name_first)) $_m->name_first = $_xmlData->name_first;
-            if (!empty($_xmlData->name_last) && is_string($_xmlData->name_last)) $_m->name_last = $_xmlData->name_last;
 
-            $_m->cert_checked_at = Carbon::now()->toDateTimeString();
-            $_m->save();
-            $_m = $_m->find($_m->account_id);
+        $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
+        $member = Account::where('account_id', $this->accountID)->firstOrFail();
 
-            // Let's work out the user status.
-            $_m->is_inactive = (boolean) ($_xmlData->rating < 0);
-
-            // Are they network banned, but unbanned in our system?
-            // Add it!
-            if($_xmlData->rating == 0 && $_m->is_network_banned === false){
-                // Add a ban.
-                $newBan = new \App\Models\Mship\Account\Ban();
-                $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
-                $newBan->reason_extra = "Network ban discovered via Cert update scripts.";
-                $newBan->period_start = \Carbon\Carbon::now();
-                $newBan->save();
-
-                $_m->bans()->save($newBan);
-                Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
-            }
-
-            // Are they banned in our system (for a network ban) but unbanned on the network?
-            // Then expire the ban.
-            if($_m->is_network_banned === true && $_xmlData->rating > 0){
-                $ban = $_m->network_ban;
-                $ban->period_finish = \Carbon\Carbon::now();
-                $ban->setPeriodAmountFromTS();
-                $ban->save();
-            }
-
-            // Set their VATSIM registration date.
-            $_m->joined_at = $newDate;
-
-            // If they're in this feed, they're a division member.
-            $_m->determineState($_xmlData->region, $_xmlData->division);
-
-            // Sort their rating(s) out - we're not permitting instructor ratings if they're NONE UK members.
-            if(($_xmlData->rating != 8 AND $_xmlData->rating != 9) OR $_m->current_state->state == \App\Models\Mship\Account\State::STATE_DIVISION){
-                $atcRating = QualificationData::parseVatsimATCQualification($_xmlData->rating);
-                $_m->addQualification($atcRating);
-            }
-
-            // If their rating is ABOVE INS1 (8+) then let's get their last.
-            if ($_xmlData->rating >= 8) {
-                $_prevRat = VatsimXML::getData($_m->account_id, "idstatusprat");
-                if (isset($_prevRat->PreviousRatingInt)) {
-                    $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                    $_m->addQualification($prevAtcRating);
-                }
-            } else {
-                // remove any extra ratings
-                foreach (($q = $_m->qualifications_atc_training) as $qual) {
-                    $qual->delete();
-                }
-                foreach (($q = $_m->qualifications_pilot_training) as $qual) {
-                    $qual->delete();
-                }
-                foreach (($q = $_m->qualifications_admin) as $qual) {
-                    $qual->delete();
-                }
-            }
-
-            $pilotRatings = QualificationData::parseVatsimPilotQualifications($_xmlData->pilotrating);
-            foreach ($pilotRatings as $pr) {
-                $_m->addQualification($pr);
-            }
-
-            $_m->save();
-
-        } catch (Exception $e) {
-            DB::rollback();
-            print "\tDB::rollback\n";
-            print "\tError: " . $e->getMessage() . " on line " . $e->getLine() . " in " . $e->getFile() . "\n";
-            print "\tCID: " . $_m->account_id . "\n";
+        if ($this->data->name_first == new \stdClass()
+            && $this->data->name_last == new \stdClass()
+            && $this->data->email == '[hidden]'
+        ) {
+            $member->delete();
+            return;
         }
 
+        if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
+            $member->name_first = $this->data->name_first;
+        }
+
+        if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
+            $member->name_last = $this->data->name_last;
+        }
+
+        $member->cert_checked_at = Carbon::now();
+        $member->is_inactive = (boolean) ($this->data->rating < 0);
+        $member->joined_at = $this->data->regdate;
+        $member->determineState($this->data->region, $this->data->division);
+
+        $this->processBans($member);
+        $member = $this->processRating($member);
+
+        $member->save();
         DB::commit();
+    }
+
+    protected function processBans($member)
+    {
+        // if their network ban needs adding
+        if ($this->data->rating == 0 && $member->is_network_banned === false){
+            // Add a ban.
+            $newBan = new Account\Ban();
+            $newBan->type = Account\Ban::TYPE_NETWORK;
+            $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
+            $newBan->period_start = Carbon::now();
+            $newBan->save();
+
+            $member->bans()->save($newBan);
+            Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
+        }
+
+        // if their network ban has expired
+        if ($member->is_network_banned === true && $this->data->rating != 0) {
+            $ban = $member->network_ban;
+            $ban->period_finish = Carbon::now();
+            $ban->setPeriodAmountFromTS();
+            $ban->save();
+        }
+    }
+
+    protected function processRating($member)
+    {
+        // if they have an extra rating, log their previous rating
+        if ($this->data->rating >= 8) {
+            $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
+            if (isset($_prevRat->PreviousRatingInt)) {
+                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                $member->addQualification($prevAtcRating);
+            }
+        } else {
+            // remove any extra ratings
+            foreach ($member->qualifications_atc_training as $qual) {
+                $qual->delete();
+            }
+            foreach ($member->qualifications_pilot_training as $qual) {
+                $qual->delete();
+            }
+            foreach ($member->qualifications_admin as $qual) {
+                $qual->delete();
+            }
+        }
+
+        // log their current rating (unless they're a non-UK instructor)
+        if (($this->data->rating != 8 && $this->data->rating != 9)
+            || $member->current_state->state == Account\State::STATE_DIVISION
+        ) {
+            $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
+            $member->addQualification($atcRating);
+        }
+
+        $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
+        foreach ($pilotRatings as $pr) {
+            $member->addQualification($pr);
+        }
+
+        return $member;
     }
 }

@@ -16,7 +16,7 @@ class MembersCertUpdate extends aCommand
      *
      * @var string
      */
-    protected $name = 'Members:CertUpdate
+    protected $signature = 'Members:CertUpdate
                         {max_members=1000}
                         {--t|type=all : Which update are we running? Hourly, Daily, Weekly or Monthly?}
                         {--f|force= : If specified, only this CID will be checked.}';
@@ -33,7 +33,8 @@ class MembersCertUpdate extends aCommand
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $members = $this->getMembers();
 
         foreach ($members as $member) {

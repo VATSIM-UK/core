@@ -14,7 +14,7 @@ class MembersRtsImport extends aCommand {
      *
      * @var string
      */
-    protected $name = 'Members:RtsImport';
+    protected $signature = 'Members:RtsImport';
 
     /**
      * The console command description.

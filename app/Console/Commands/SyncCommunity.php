@@ -17,7 +17,7 @@ class SyncCommunity extends aCommand
      *
      * @var string
      */
-    protected $name = 'Sync:Community
+    protected $signature = 'Sync:Community
                         {--f|force=0 : If specified, only this CID will be checked.}';
 
     /**

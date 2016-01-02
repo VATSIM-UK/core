@@ -13,7 +13,7 @@ class SyncRTS extends aCommand
      *
      * @var string
      */
-    protected $name = 'Sync:RTS
+    protected $signature = 'Sync:RTS
                         {--f|force=0 : If specified, only this CID will be checked.}';
 
     /**
