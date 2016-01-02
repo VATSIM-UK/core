@@ -10,7 +10,7 @@
 * Modify the cronjob from `Statistics:daily`
 * * Set as `php artisan sys:statistics:daily`
 
-* [Depends on feature/refactor_all_migrations] Modify the migrations table *BEFORE DEPLOYMENT*
+* Modify the migrations table *BEFORE DEPLOYMENT*
 * * [Update] 2014_09_12_200312_initial_membership => 2015_12_27_221900_vanilla_mship_v221
 * * [Update] 2014_09_12_200319_initial_system => 2015_12_27_221901_vanilla_system_v221
 * * [Update] 2014_09_12_200323_initial_sso => 2015_12_27_221902_vanilla_sso_v221
