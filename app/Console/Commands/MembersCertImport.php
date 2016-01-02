@@ -7,7 +7,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification;
 use DB;
-use Exception;
 use VatsimXML;
 
 /**
