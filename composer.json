@@ -14,7 +14,7 @@
         "php": ">=5.5.9",
         "vatsim/xml": "dev-master",
         "vatsim/sso": "2.*",
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.2.*",
         "flynsarmy/db-blade-compiler": "1.*",
         "wpb/string-blade-compiler": "2.*",
         "guzzlehttp/guzzle": "~4.0",
@@ -23,7 +23,6 @@
         "watson/validating": "~1.0",
         "planetteamspeak/ts3-php-framework": "dev-master",
         "laravelcollective/html": "~5.0",
-        "sboo/multiauth" : "4.0.*",
         "skymeyer/vatsimphp" : "1.0.*",
         "maknz/slack": "^1.7"
     },
@@ -31,7 +30,9 @@
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "symfony/dom-crawler": "~3.0",
+        "symfony/css-selector": "~3.0"
     },
     "autoload": {
         "classmap": [
