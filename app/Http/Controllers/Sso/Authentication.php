@@ -19,7 +19,6 @@ class Authentication extends \App\Http\Controllers\BaseController {
 
         // Check expired/invalid
         $ssoToken = Input::get("token");
-        \Log::info('Token: ' . Input::get('token'));
         try {
             $ssoToken = Token::where("token", "=", $ssoToken)->firstOrFail();
         } catch (ModelNotFoundException $e) {
