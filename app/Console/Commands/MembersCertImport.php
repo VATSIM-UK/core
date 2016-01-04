@@ -51,7 +51,7 @@ class MembersCertImport extends aCommand
         $members = AutoTools::getDivisionData();
         foreach ($members as $index => $member) {
             $this->log("Processing {$member[0]} {$member[3]} {$member[4]}: ", null, false);
-            DB::transaction(function () {
+            DB::transaction(function () use ($member) {
                 $this->processMember($member);
             });
         }
@@ -74,7 +74,7 @@ class MembersCertImport extends aCommand
             $current_email = array_key_exists($member[0], $this->member_email_list)
                 ? $this->member_email_list[$member[0]]
                 : false;
-            if ($current_email != $member[5]) {
+            if (strcasecmp($current_email, $member[5]) !== 0) {
                 $this->updateMemberEmail($member);
                 $this->log('updated member email');
                 $this->count_emails++;
