@@ -40,6 +40,7 @@ class MembersCertUpdate extends aCommand
         foreach ($members as $member) {
             $job = new MemberCertUpdate($member);
             $this->dispatch($job);
+            $this->log("$member added to update queue");
         }
 
         $this->sendSlackSuccess(sprintf('%s members have been added to the update queue.', count($members)));

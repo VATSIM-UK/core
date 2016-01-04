@@ -24,11 +24,8 @@ class aCommand extends Command {
         // add style tags to the output string
         $styled = $style ? "<$style>$string</$style>" : $string;
 
-        // add new line to the output string
-        $styled = $newline ? "$styled\n" : $styled;
-
         // write the output
-        $this->output->write($styled, OutputInterface::VERBOSITY_VERBOSE);
+        $this->output->write($styled, $newline, OutputInterface::VERBOSITY_VERBOSE);
     }
 
     /**
