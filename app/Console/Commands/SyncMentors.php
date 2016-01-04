@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use DB;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 
 /**
  * Synchronises mentors in the RTS system to the forums.
@@ -16,7 +15,7 @@ use Illuminate\Console\Command;
  * @todo Add more detailed logging
  * @todo Remove groups from ineligible members
  */
-class SyncMentors extends Command
+class SyncMentors extends aCommand
 {
     /**
      * The name and signature of the console command.
@@ -65,7 +64,7 @@ class SyncMentors extends Command
         $this->pilotGroupID = array_search('Pilot Mentors', $this->forumGroupIDs);
         $this->atcGroupID = array_search('ATC Mentors', $this->forumGroupIDs);
 
-        $this->log("Command initialised.\n");
+        $this->log("Command initialised.");
     }
 
     /**
@@ -105,16 +104,16 @@ class SyncMentors extends Command
         for ($i = 0; $i < count($positions); $i++) {
             // if we've started processing a new mentor
             if (!array_key_exists($i-1, $positions) || $positions[$i]->id !== $positions[$i-1]->id) {
-                $this->log("Processing {$positions[$i]->id} - {$positions[$i]->name}\n");
+                $this->log("Processing {$positions[$i]->id} - {$positions[$i]->name}");
                 $currentMentor = $positions[$i];
                 $currentForumMember = \IPS\Member::load($this->memberForumIDs[$currentMentor->id]);
-                $this->log("ATC cutoff: {$currentMentor->atc_cutoff}\n");
-                $this->log("Pilot cutoff: {$currentMentor->pilot_cutoff}\n");
+                $this->log("ATC cutoff: {$currentMentor->atc_cutoff}");
+                $this->log("Pilot cutoff: {$currentMentor->pilot_cutoff}");
             }
 
             // the forum classes suck
             if (Carbon::parse($currentForumMember->joined)->gt(Carbon::now()->subDay())) {
-                $this->log("Forum member not found.\n");
+                $this->log("Forum member not found.");
                 continue;
             }
 
@@ -127,9 +126,9 @@ class SyncMentors extends Command
                 $groups = implode("\n", array_map(function ($s) {
                     return $this->forumGroupIDs[$s];
                 }, $groups));
-                $this->log("Current groups:\n{$groups}\n");
-                $this->log("Finished processing {$currentMentor->id}\n");
-                $this->log("========================================\n");
+                $this->log("Current groups:\n{$groups}");
+                $this->log("Finished processing {$currentMentor->id}");
+                $this->log("========================================");
                 $currentForumMember->save();
             }
         }
@@ -141,7 +140,7 @@ class SyncMentors extends Command
             ($position->rts_id === $this->rtsIDs['pilots'] && $position->pilot_cutoff)
             || ($position->rts_id !== $this->rtsIDs['pilots'] && $position->atc_cutoff)
         ) {
-            $this->log("Cutoff reached - skipping position {$position->position}\n");
+            $this->log("Cutoff reached - skipping position {$position->position}");
             return $forumMember;
         }
 
@@ -149,19 +148,19 @@ class SyncMentors extends Command
         $addGroup = $this->calculateGroupID($position);
         $groups = explode(',', $forumMember->mgroup_others);
         if ($addGroup && array_search($addGroup, $groups) === false) {
-            $this->log("Adding group: {$addGroup}\n");
+            $this->log("Adding group: {$addGroup}");
             array_push($groups, $addGroup);
         }
 
         // add them to the overall atc/pilot mentoring groups
         if ($position->rts_id === $this->rtsIDs['pilots'] && array_search($this->pilotGroupID, $groups) === false) {
             array_push($groups, $this->pilotGroupID);
-            $this->log("Adding to pilot mentors group.\n");
+            $this->log("Adding to pilot mentors group.");
         }
 
         if ($position->rts_id !== $this->rtsIDs['pilots'] && array_search($this->atcGroupID, $groups) === false) {
             array_push($groups, $this->atcGroupID);
-            $this->log("Adding to ATC mentors group.\n");
+            $this->log("Adding to ATC mentors group.");
         }
 
         $forumMember->mgroup_others = implode(',', $groups);
@@ -211,19 +210,12 @@ class SyncMentors extends Command
                     $addGroup = array_search('Secondary Only - Pilot Mentor P9', $this->forumGroupIDs);
                     break;
                 default:
-                    $this->log("Error determining pilot group - {$position->position}.\n");
+                    $this->log("Error determining pilot group - {$position->position}.");
             }
         } else {
-            $this->log("Error determining position group - {$position->position}.\n");
+            $this->log("Error determining position group - {$position->position}.");
         }
 
         return $addGroup;
-    }
-
-    protected function log($message)
-    {
-        if ($this->option('verbose')) {
-            $this->output->write($message);
-        }
     }
 }

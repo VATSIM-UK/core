@@ -2,44 +2,140 @@
 
 namespace App\Console\Commands;
 
-use Maknz\Slack\Client;
-use Session;
+use App;
+use Slack;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class aCommand extends Command {
-    protected $slack = null;
+    /**
+     * Log a string to STDOUT.
+     * If STDOUT is piped/redirected, styling is removed.
+     *
+     * @param string     $string  The string to output.
+     * @param null       $style   The styling to output.
+     * @param bool|false $newline If a new line should be returned at the end.
+     */
+    protected function log($string, $style = null, $newline = true)
+    {
+        // remove styling if output is piped
+        $style = posix_isatty(STDOUT) ? $style : null;
+
+        // add style tags to the output string
+        $styled = $style ? "<$style>$string</$style>" : $string;
+
+        // write the output
+        $this->output->write($styled, $newline, OutputInterface::VERBOSITY_VERBOSE);
+    }
 
     /**
-     * Create a new command instance.
+     * Return a Slack configuration for message sending.
      *
-     * @return void
+     * Method must be called for each message sent, to avoid message stacking/overlap.
+     *
+     * @return mixed
      */
-    public function __construct() {
-        parent::__construct();
-
-        // Configure slack for Cron!
-        $settings = [
-            "channel" => "wscronjobs",
-            "link_names" => true,
-        ];
-        $this->slack = new Client("https://hooks.slack.com/services/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", $settings);
-    }
-
-    protected function sendSlackError($errorCode, $error){
-        $slackMessage = "@here :exclamation: *This is important*.";
-        $slackMessage.= " ".$this->getName(). " (ERROR_".$errorCode.") -> ";
-        $slackMessage.= $error;
-
-        $this->slack->send($slackMessage);
-    }
-
-    protected function sendSlackSuccess($message="Has run successfully."){
-        $slackMessage = "*".$this->getName(). "* -> ";
-
-        if($message){
-            $slackMessage.= "_".$message."_";
+    protected function slack()
+    {
+        if (App::environment('production')) {
+            $channel = 'wslogging';
+        } else {
+            $channel = 'wslogging_dev';
         }
 
-        $this->slack->send($slackMessage);
+        return Slack::setUsername('Cron Notifications')->to($channel);
+    }
+
+    /**
+     * Send an error message to Slack.
+     *
+     * @param string $message The message to send to Slack.
+     * @param array  $fields
+     */
+    protected function sendSlackError($message, $fields = [])
+    {
+        // define the message/attachment to send
+        $attachment = [
+            'pretext' => '@here: An error has occurred:',
+            'fallback' => $message,
+            'author_name' => get_class($this),
+            'color' => 'danger',
+            'fields' => [
+                [
+                    'title' => 'Command name:',
+                    'value' => (new \ReflectionClass($this))->getShortName(),
+                    'short' => true,
+                ],
+                [
+                    'title' => 'Command description:',
+                    'value' => $this->getDescription(),
+                    'short' => true,
+                ], [
+                    'title' => 'Error:',
+                    'value' => $message,
+                    'short' => true,
+                ],
+            ],
+        ];
+
+        // get the current relative directory, and set the link to GitLab
+        preg_match('/\/app\/Console\/Commands\/.*$/', __FILE__, $directory);
+        $directory = $directory[0];
+        if (App::environment('production')) {
+            $attachment['author_link'] = 'https://gitlab.com/vatsim-uk/core/blob/production' . $directory;
+        } else {
+            $attachment['author_link'] = 'https://gitlab.com/vatsim-uk/core/blob/development' . $directory;
+        }
+
+        foreach ($fields as $index => $message) {
+            $attachment['fields'][] = [
+                'title' => $index,
+                'value' => $message,
+                'short' => true,
+            ];
+        }
+
+        $this->slack()->attach($attachment)->send();
+    }
+
+    /**
+     * Send a success message to Slack.
+     *
+     * @param string $message The message to send.
+     * @param array  $fields
+     */
+    protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
+    {
+        $attachment = [
+            'fallback' => $message,
+            'author_name' => get_class($this),
+            'color' => 'good',
+            'fields' => [
+                [
+                    'title' => 'Command name:',
+                    'value' => (new \ReflectionClass($this))->getShortName(),
+                    'short' => true,
+                ],
+                [
+                    'title' => 'Command description:',
+                    'value' => $this->getDescription(),
+                    'short' => true,
+                ], [
+                    'title' => 'Message:',
+                    'value' => $message,
+                    'short' => true,
+                ],
+            ],
+        ];
+
+        foreach ($fields as $index => $message) {
+            $attachment['fields'][] = [
+                'title' => $index,
+                'value' => $message,
+                'short' => true,
+            ];
+        }
+
+        $this->slack()->attach($attachment)->send();
     }
 }

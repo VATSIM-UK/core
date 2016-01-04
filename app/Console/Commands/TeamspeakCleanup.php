@@ -2,102 +2,101 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Carbon\Carbon;
-
 use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
 use App\Models\Teamspeak\Registration;
-use App\Models\Teamspeak\Ban;
-use App\Models\Teamspeak\Log;
+use Carbon\Carbon;
+use Exception;
 
-class TeamspeakCleanup extends Command {
+class TeamspeakCleanup extends aCommand {
 
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'TeaMan:CleanUp';
+    protected $signature = 'TeaMan:CleanUp';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Clean up the Core and TS database.';
+    protected $description = 'Clean up the Core and TeamSpeak database.';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
+    protected $tscon;
+    
+    protected function initialise()
+    {
+        $this->tscon = TeamSpeakAdapter::run('VATSIM UK Cleanup Bot');
     }
-
+    
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
-        if ($this->option("debug")) $debug = TRUE;
-        else $debug = FALSE;
-
-        $tscon = TeamSpeakAdapter::run("VATSIM UK Cleanup Bot");
+    public function handle()
+    {
+        $this->initialise();
 
         // check TS database for clients without registrations
-        $total_clients = $tscon->clientCountDb();
+        $total_clients = $this->tscon->clientCountDb();
         $offset = 0;
         while ($offset < $total_clients) {
-            $clients = $tscon->clientListDb($offset);
+            $clients = $this->tscon->clientListDb($offset);
             foreach ($clients as $client) {
-                $registered = Registration::
-                                  where('uid', '=', $client['client_unique_identifier'])
-                                ->where('dbid', '=', $client['cldbid'])
-                                ->exists();
-                if (!$registered) {
-                    try {
-                        $tscon->clientDeleteDb($client['cldbid']);
-                        if ($debug) echo "No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
-                        $offset--;
-                    } catch (Exception $e) {
-                        if ($debug) echo $e->getMessage();
-                        if ($debug) echo "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
-                    }
-                } elseif ($debug) {
-                    echo "Registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}\n";
-                }
+                $offset -= $this->checkRegistration($client);
             }
+
             $offset += 25;
         }
 
         // check Core database for incomplete registrations and registrations older than 6 months
+        $old_registrations = Registration::where('last_login', '<', Carbon::now()->subMonths(6))
+            ->orWhere(function ($query) {
+                $query->where('status', '=', 'new')
+                    ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
+            })->get();
 
-        $old_registrations =
-            Registration::where('last_login', '<', Carbon::now()->subMonths(6)->toDateTimeString())
-                ->orWhere(function($query) {
-                    $query->where('status', '=', 'new')
-                          ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
-                })->get();
         foreach ($old_registrations as $registration) {
-            $registration->delete($tscon);
-            if ($debug) echo "Old registration deleted: {$registration->id}\n";
+            $registration->delete($this->tscon);
+            $this->log("Old registration deleted: {$registration->id}");
         }
+
+        $this->sendSlackSuccess();
     }
 
     /**
-     * Get the console command options.
+     * Check the registration for a TeamSpeak client.
      *
-     * @return array
+     * @param $client The client being checked.
+     * @return int Returns 0 if no change has been made, or 1 if the client was deleted.
      */
-    protected function getOptions() {
-        return array(
-            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
-        );
+    protected function checkRegistration($client)
+    {
+        $isRegistered = Registration::where('uid', $client['client_unique_identifier'])
+            ->where('dbid', $client['cldbid'])
+            ->exists();
+        
+        if (!$isRegistered) {
+            try {
+                $this->tscon->clientDeleteDb($client['cldbid']);
+                $this->log("No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
+
+                return 1;
+            } catch (Exception $e) {
+                $this->log($e->getMessage());
+                $message = "Deletion failed: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}";
+                $this->log($message);
+                $this->sendSlackError($message);
+
+                return 0;
+            }
+        } else {
+            $this->log("Registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");
+
+            return 0;
+        }
     }
 }
