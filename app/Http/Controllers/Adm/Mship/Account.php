@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Models\Mship\Ban\Reason;
 use Auth;
 use Config;
 use DB;
@@ -89,7 +90,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
                     ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"));
     }
 
-    public function getDetail(AccountData $account, $tab = "basic") {
+    public function getDetail(AccountData $account, $tab = "basic", $tabId=0) {
         if(!$account OR $account->is_system) {
             return Redirect::route("adm.mship.account.index");
         }
@@ -121,6 +122,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
         // Get all possible security levels.
         $securityLevels = SecurityData::all();
 
+        // Get all ban reasons.
+        $banReasons = Reason::all();
+
         // Get all possible note types.
         $noteTypes = NoteTypeData::usable()
                                  ->orderBy("name", "ASC")
@@ -133,9 +137,11 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
 
         return $this->viewMake("adm.mship.account.detail")
                     ->with("selectedTab", $tab)
+                    ->with("selectedTabId", $tabId)
                     ->with("account", $account)
                     ->with("availableRoles", $availableRoles)
                     ->with("securityLevels", $securityLevels)
+                    ->with("banReasons", $banReasons)
                     ->with("noteTypes", $noteTypes)
                     ->with("noteTypesAll", $noteTypesAll);
     }
@@ -277,6 +283,36 @@ class Account extends \App\Http\Controllers\Adm\AdmController {
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "security"])
                        ->withSuccess("Security has been upgraded on this account.");
+    }
+
+    public function postBanAdd(AccountData $account){
+        if(!$account) {
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        if($account->is_banned){
+            return Redirect::route("adm.mship.account.details", [$account->account_id, "bans"])
+                           ->withError("You are not able to ban a member that is already banned.");
+        }
+
+        // Is there any content?
+        if(strlen(Input::get("ban_note_content")) < 10) {
+            return Redirect::route("adm.mship.account.details", [$account->account_id, "bans"])
+                           ->withError("You cannot add such a short note when banning somebody.");
+        }
+
+        // Check this type exists!
+        $banReason = Reason::find(Input::get("ban_reason_id"));
+        if(!$banReason OR !$banReason->exists) {
+            return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])
+                           ->withError("You selected an invalid ban reason.");
+        }
+
+        // Create the user's ban
+        $ban = $account->addBan($banReason, null, Input::get("ban_note_content"), $this->_account->account_id);
+
+        return Redirect::route("adm.mship.account.details", [$account->account_id, "bans", $ban->account_ban_id])
+                       ->withSuccess("You have successfully banned this member.");
     }
 
     public function postNoteCreate(AccountData $account) {

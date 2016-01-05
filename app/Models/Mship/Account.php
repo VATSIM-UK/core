@@ -5,6 +5,9 @@ namespace App\Models\Mship;
 use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Security\SendSecurityForgottenAdminConfirmationEmail;
 use App\Jobs\Mship\Security\SendSecurityForgottenConfirmationEmail;
+use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Note\Type;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
@@ -370,7 +373,34 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         return true;
     }
 
-    public function addNote($noteType, $noteContent, $writer=null){
+    public function addBan(Reason $banReason, $banExtraReason=null, $banNote=null, $writerId=null, $type=Ban::TYPE_LOCAL){
+        if($writerId == null){
+            $writerId = VATUK_ACCOUNT_SYSTEM;
+        } elseif(is_object($writerId)){
+            $writerId = $writerId->getKey();
+        }
+
+        // Attach the note.
+        $note = $this->addNote(Type::isShortCode("discipline")->first(), $banNote, $writerId);
+
+        // Make a ban.
+        $ban = new Ban();
+        $ban->account_id = $this->account_id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->ban_reason_id;
+        $ban->period_amount = $banReason->period_amount;
+        $ban->period_unit = $banReason->period_unit;
+        $ban->period_start = \Carbon\Carbon::now();
+        $ban->period_finish = \Carbon\Carbon::now()->addHours($banReason->period_hours);
+        $ban->save();
+
+        $ban->notes()->save($note);
+
+        return $ban;
+    }
+
+    public function addNote($noteType, $noteContent, $writer=null, $attachment=null){
         if(is_object($noteType)){
             $noteType = $noteType->getKey();
         }
@@ -386,8 +416,13 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $note->writer_id = $writer;
         $note->note_type_id = $noteType;
         $note->content = $noteContent;
+        $note->save();
 
-        return $note->save();
+        if(!is_null($attachment)){
+            $note->attachment()->save($attachment);
+        }
+
+        return $note;
     }
 
     public function setStatusFlag($flag) {

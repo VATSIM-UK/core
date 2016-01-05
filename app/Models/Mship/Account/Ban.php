@@ -53,6 +53,18 @@ class Ban extends \App\Models\aTimelineEntry
         return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
     }
 
+    public function getIsActiveAttribute(){
+        $period_start = $this->period_start;
+        $period_finish = $this->period_finish;
+        $now = \Carbon\Carbon::now();
+
+        return $now->between($period_start, $period_finish);
+    }
+
+    public function getIsExpiredAttribute(){
+        return !$this->is_active;
+    }
+
     public function setPeriodAmountFromTS(){
         $diff = $this->period_start->diff($this->period_finish);
 

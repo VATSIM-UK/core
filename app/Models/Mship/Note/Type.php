@@ -23,6 +23,10 @@ class Type extends \Eloquent {
             return $query->whereIsAvailable(1)->whereIsSystem(0);
         }
 
+        public static function scopeIsShortCode($query, $shortCode){
+            return $query->whereShortCode($shortCode);
+        }
+
         public function notes(){
             return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "note_type_id");
         }
