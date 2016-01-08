@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
 use Auth;
 use Carbon\Carbon;
 use Config;
+use Cookie;
 use Input;
 use Redirect;
 use Request;
@@ -15,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use URL;
 use VatsimSSO;
 
-class Authentication extends \App\Http\Controllers\BaseController {
+class Authentication extends BaseController {
 
     public function getRedirect() {
         // If there's NO basic auth, send to login.
@@ -103,13 +105,15 @@ class Authentication extends \App\Http\Controllers\BaseController {
         $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
         $account->auth_extra = 1;
         $account->auth_extra_at = Carbon::now();
-        $account->save();
 
         if ($account->hasPermission('session/persistent')) {
             Auth::login($account, true);
         } else {
             Auth::login($account, false);
+            $account->remember_token = null;
         }
+
+        $account->save();
 
         Session::forget('cert_offline');
 
