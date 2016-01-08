@@ -105,16 +105,9 @@ class Authentication extends BaseController {
         $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
         $account->auth_extra = 1;
         $account->auth_extra_at = Carbon::now();
-
-        if ($account->hasPermission('session/persistent')) {
-            Auth::login($account, true);
-        } else {
-            Auth::login($account, false);
-            $account->remember_token = null;
-        }
-
         $account->save();
 
+        Auth::login($account, true);
         Session::forget('cert_offline');
 
         // Let's send them over to the authentication redirect now.
