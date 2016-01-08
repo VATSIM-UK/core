@@ -55,6 +55,11 @@ class Security extends Model
         }
     }
 
+    /**
+     * @deprecated should only be used for checking old hashes
+     * @param $value
+     * @return string
+     */
     private static function hash($value)
     {
         return sha1(sha1($value));
@@ -65,7 +70,7 @@ class Security extends Model
         $pw = str_random(8) . '8!-';
         $pw = str_shuffle($pw);
 
-        return ($hashed ? self::hash($pw) : $pw);
+        return ($hashed ? Hash::make($pw) : $pw);
     }
 
     public function expire()
