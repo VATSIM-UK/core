@@ -60,7 +60,7 @@
 
             <div class="{{ ($selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? "" : "collapse" }}" id="banNotes{{ $ban->account_ban_id }}">
                 @foreach($ban->notes->sortByDesc("created_at") as $note)
-                    @include('adm.mship._note', ["note" => $note])
+                    @include('adm.mship.account._note', ["note" => $note])
                 @endforeach
             </div>
         @endif

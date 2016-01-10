@@ -433,7 +433,7 @@
 
                                         @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/view"))
                                             @foreach($account->bans as $ban)
-                                                @include("adm.mship._ban", ["ban" => $ban, "selectedTab" => $selectedTab, "selectedTabId" => $selectedTabId])
+                                                @include("adm.mship.account._ban", ["ban" => $ban, "selectedTab" => $selectedTab, "selectedTabId" => $selectedTabId])
                                             @endforeach
                                         @endif
                                     </div><!-- /.box-body -->
@@ -508,7 +508,7 @@
                                         @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/view"))
                                             @foreach($account->notes as $note)
                                                 @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
-                                                    @include('adm.mship._note', ["note" => $note])
+                                                    @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
                                         @endif
