@@ -27,7 +27,7 @@
                 @endif
 
                 @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/reverse"))
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalBanRepeal">Repeal Ban</button>
+                    {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
                 @endif
             </div>
         </div>
@@ -54,11 +54,11 @@
         @if(count($ban->notes) > 0)
             <strong>
                 Related Notes (Newest first) -
-                <a data-toggle="collapse" href="#banNotes{{ $ban->account_ban_id }}" aria-expanded="{{ ($selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? true : false }}"
+                <a data-toggle="collapse" href="#banNotes{{ $ban->account_ban_id }}" aria-expanded="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? true : false }}"
                    aria-controls="#banNotes{{ $ban->account_ban_id }}">Toggle Display</a>
             </strong>
 
-            <div class="{{ ($selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? "" : "collapse" }}" id="banNotes{{ $ban->account_ban_id }}">
+            <div class="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? "" : "collapse" }}" id="banNotes{{ $ban->account_ban_id }}">
                 @foreach($ban->notes->sortByDesc("created_at") as $note)
                     @include('adm.mship.account._note', ["note" => $note])
                 @endforeach

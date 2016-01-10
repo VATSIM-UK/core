@@ -19,7 +19,11 @@ Route::group(['domain' => 'vats.im'], function () {
 });
 
 Route::model("mshipAccount", "\App\Models\Mship\Account", function () {
-    Redirect::route("adm.mship.account.index");
+    return Redirect::route("adm.mship.account.index")->withError("The account ID you provided was not found.");
+});
+
+Route::model("ban", \App\Models\Mship\Account\Ban::class, function(){
+    return Redirect::route("adm.mship.account.index")->withError("The ban ID you provided was not found.");
 });
 
 Route::model("mshipAccountEmail", "\App\Models\Mship\Account\Email");
@@ -78,6 +82,10 @@ Route::group(array("namespace" => "Adm"), function () {
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/impersonate", ["as" => "adm.mship.account.impersonate", "uses" => "Account@postImpersonate"])->where(["mshipAccount" => "\d+"]);
+
+                Route::get("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@getBanRepeal"])->where(["ban" => "\d+"]);
+                Route::post("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@postBanRepeal"])->where(["ban" => "\d+"]);
+
                 Route::get("/account/{scope?}", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"])->where(["scope" => "\w+"]);
 
                 Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);
