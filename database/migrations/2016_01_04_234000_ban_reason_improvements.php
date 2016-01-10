@@ -18,12 +18,10 @@ class BanReasonImprovements extends Migration
         });
 
         DB::table("mship_note_type")->insert([
-            ["name" => "Discipline", "short_code" => "discipline", "is_available" => 1, "is_system" => 1, "colour_code" => "warning", "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
+            ["name" => "Discipline", "short_code" => "discipline", "is_available" => 1, "is_system" => 1, "colour_code" => "danger", "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
         ]);
 
         DB::table("mship_note_type")->where("name", "=", "System Generated")->update(["short_code" => "system", "is_default" => true]);
-
-        Schema::table("mship_account_ban");
     }
 
     /**

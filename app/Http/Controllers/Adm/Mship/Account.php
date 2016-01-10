@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Ban\Reason;
@@ -338,6 +339,8 @@ class Account extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route("adm.mship.account.index");
         }
 
+        $this->setTitle("Ban Repeal");
+
         return $this->viewMake("adm.mship.account.ban.repeal")
                     ->with("ban", $ban);
     }
@@ -355,6 +358,33 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $ban->delete();
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Ban has been repealed.");
+    }
+
+    public function getBanComment(AccountData\Ban $ban)
+    {
+        if (!$ban) {
+            // TODO: Could got to the master ban list?
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        $this->setTitle("Ban Comment");
+
+        return $this->viewMake("adm.mship.account.ban.comment")
+                    ->with("ban", $ban);
+    }
+
+    public function postBanComment(CommentRequest $request, AccountData\Ban $ban)
+    {
+        if (!$ban) {
+            // TODO: Could got to the master ban list?
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        // Attach the note.
+        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"), Auth::getUser());
+        $ban->notes()->save($note);
+
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function postNoteCreate(AccountData $account)

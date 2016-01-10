@@ -9,6 +9,9 @@
                     @if($note->attachment)
                         <i class="fa fa-link"></i>
                         @if($note->attachment instanceof \App\Models\Mship\Account\Ban)
+                            @if($note->attachment->is_repealed)
+                                *Repealed*
+                            @endif
                             Ban: {!! link_to_route("adm.mship.account.details", "#".str_pad($note->attachment->account_ban_id, 5, 0, STR_PAD_LEFT), [$account->account_id, "notes", $note->attachment->account_ban_id]) !!}
                         @endif
 

@@ -438,22 +438,22 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     }
 
     public function getIsSystemBannedAttribute() {
-        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_LOCAL);
+        $bans = $this->bans()->isActive()->isLocal();
         return (boolean) $bans->count() > 0;
     }
 
     public function getSystemBanAttribute(){
-        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_LOCAL);
+        $bans = $this->bans()->isActive()->isLocal();
         return $bans->first();
     }
 
     public function getIsNetworkBannedAttribute() {
-        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_NETWORK);
+        $bans = $this->bans()->isActive()->isNetwork();
         return (boolean) $bans->count() > 0;
     }
 
     public function getNetworkBanAttribute(){
-        $bans = $this->bans()->isActive()->where("type", "=", \App\Models\Mship\Account\Ban::TYPE_NETWORK);
+        $bans = $this->bans()->isActive()->isNetwork();
         return $bans->first();
     }
 

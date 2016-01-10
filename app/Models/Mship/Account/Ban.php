@@ -27,11 +27,19 @@ class Ban extends \App\Models\aTimelineEntry
     }
 
     public static function scopeIsActive($query){
-        return $query->where("period_finish", ">=", \Carbon\Carbon::now());
+        return $query->isNotRepealed()->where("period_finish", ">=", \Carbon\Carbon::now());
     }
 
     public static function scopeIsHistoric($query){
-        return $query->where("period_finish", "<", \Carbon\Carbon::now());
+        return $query->isNotRepealed()->where("period_finish", "<", \Carbon\Carbon::now());
+    }
+
+    public static function scopeIsRepealed($query){
+        return $query->where("repealed_at", "IS NOT", NULL);
+    }
+
+    public static function scopeIsNotRepealed($query){
+        return $query->where("repealed_at", "IS", NULL);
     }
 
     public function account()
@@ -53,12 +61,29 @@ class Ban extends \App\Models\aTimelineEntry
         return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
     }
 
+    public function repeal(){
+        $this->repealed_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    public function getIsLocalAttribute(){
+        return $this->type == self::TYPE_LOCAL;
+    }
+
+    public function getIsNetworkAttribute(){
+        return $this->type == self::TYPE_NETWORK;
+    }
+
+    public function getIsRepealedAttribute(){
+        return $this->repealed_at != null;
+    }
+
     public function getIsActiveAttribute(){
         $period_start = $this->period_start;
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
 
-        return $now->between($period_start, $period_finish);
+        return ($now->between($period_start, $period_finish) && $this->is_repealed);
     }
 
     public function getIsExpiredAttribute(){

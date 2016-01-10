@@ -86,6 +86,9 @@ Route::group(array("namespace" => "Adm"), function () {
                 Route::get("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@getBanRepeal"])->where(["ban" => "\d+"]);
                 Route::post("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@postBanRepeal"])->where(["ban" => "\d+"]);
 
+                Route::get("/ban/{ban}/comment", ["as" => "adm.mship.ban.comment", "uses" => "Account@getBanComment"])->where(["ban" => "\d+"]);
+                Route::post("/ban/{ban}/comment", ["as" => "adm.mship.ban.comment", "uses" => "Account@postBanComment"])->where(["ban" => "\d+"]);
+
                 Route::get("/account/{scope?}", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"])->where(["scope" => "\w+"]);
 
                 Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);

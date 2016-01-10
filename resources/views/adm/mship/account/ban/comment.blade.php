@@ -15,32 +15,22 @@
         <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title ">
-                    Repeal Details
+                    Make a comment
                 </h3>
             </div><!-- /.box-header -->
             <div class="box-body">
-                <p>
-                    Repealing this ban will remove it from the member's record.  It will still be visible, but will not count towards any statistics regarding their membership bans.
-                    This action is to be treated the same as deleting a ban.
-                </p>
-
-                <p>
-                    It is very important you complete this form properly, as the member <strong>will</strong> be notified instantly that their ban has been repealed and it will not be
-                    possible to amend your comments.
-                </p>
-
-                {!! Form::open(["route" => ["adm.mship.ban.repeal", $ban->account_ban_id]]) !!}
+                {!! Form::open(["route" => ["adm.mship.ban.comment", $ban->account_ban_id]]) !!}
                     <div class="form-group">
-                        <label for="reason">Reason for repeal</label>
-                        <textarea name="reason" class="form-control" rows="5">{{ old('reason') }}</textarea>
+                        <label for="comment">Comment:</label>
+                        <textarea name="comment" class="form-control" rows="5">{{ old('comment') }}</textarea>
                     </div>
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-left">
-                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
+                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->account_ban_id], ["class" => "btn btn-info"]) !!}
                         </div>
                         <div class="btn-group pull-right">
-                            {!! Form::submit("Repeal Ban (Cannot be undone)", ["class" => "btn btn-danger"]) !!}
+                            {!! Form::submit("Add Comment", ["class" => "btn btn-success"]) !!}
                         </div>
                     </div>
                 {!! Form::close() !!}
