@@ -1,0 +1,1 @@
+#Ignore the modules database migrations, which should get published on deployment (really).

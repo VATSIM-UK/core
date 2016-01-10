@@ -1,9 +1,6 @@
 ## Upgrade Notes
 
 ### Future
-* Publish module files with:
-** php artisan vendor:publish --force --provider="App\Modules\Statistics\StatisticsServiceProvider"
-
 * Enable the stats tracking cronjobs:
 ** statistics:download
 
