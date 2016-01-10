@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "ext-posix": "*",
         "vatsim/xml": "2.*",
         "vatsim/sso": "2.*",
         "laravel/framework": "5.2.*",

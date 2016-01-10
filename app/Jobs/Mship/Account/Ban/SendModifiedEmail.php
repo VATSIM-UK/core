@@ -3,6 +3,7 @@
 namespace App\Jobs\Mship\Account\Ban;
 
 use App\Jobs\Job;
+use App\Models\Mship\Account\Ban;
 use Illuminate\Contracts\Bus\SelfHandling;
 
 class SendModifiedEmail extends Job implements SelfHandling
