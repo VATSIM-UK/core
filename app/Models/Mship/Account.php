@@ -391,10 +391,8 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $ban->reason_id = $banReason->ban_reason_id;
         $ban->period_amount = $banReason->period_amount;
         $ban->period_unit = $banReason->period_unit;
-        $ban->period_start = \Carbon\Carbon::now();
-        $ban->period_start->second = 0;
-        $ban->period_finish = \Carbon\Carbon::now()->addHours($banReason->period_hours);
-        $ban->period_finish->second = 0;
+        $ban->period_start = \Carbon\Carbon::now()->second(0);
+        $ban->period_finish = \Carbon\Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
         $ban->notes()->save($note);
@@ -441,7 +439,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
     public function getIsSystemBannedAttribute() {
         $bans = $this->bans()->isActive()->isLocal();
-        return (boolean) $bans->count() > 0;
+        return ($bans->count() > 0);
     }
 
     public function getSystemBanAttribute(){
@@ -451,7 +449,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
     public function getIsNetworkBannedAttribute() {
         $bans = $this->bans()->isActive()->isNetwork();
-        return (boolean) $bans->count() > 0;
+        return ($bans->count() > 0);
     }
 
     public function getNetworkBanAttribute(){
@@ -460,7 +458,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     }
 
     public function getIsBannedAttribute() {
-        return $this->is_system_banned OR $this->is_network_banned;
+        return ($this->is_system_banned || $this->is_network_banned);
     }
 
     public function getIsInactiveAttribute() {

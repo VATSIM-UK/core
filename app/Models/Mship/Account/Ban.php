@@ -12,7 +12,7 @@ class Ban extends \App\Models\aTimelineEntry
 
     protected $table      = 'mship_account_ban';
     protected $primaryKey = "account_ban_id";
-    protected $dates      = ['period_start', 'period_finish', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at', 'deleted_at'];
     protected $touches    = ['account'];
 
     const TYPE_LOCAL   = 80;
@@ -35,11 +35,11 @@ class Ban extends \App\Models\aTimelineEntry
     }
 
     public static function scopeIsRepealed($query){
-        return $query->where("repealed_at", "IS NOT", NULL);
+        return $query->whereNull("repealed_at");
     }
 
     public static function scopeIsNotRepealed($query){
-        return $query->where("repealed_at", "IS", NULL);
+        return $query->whereNotNull("repealed_at");
     }
 
     public function account()

@@ -423,7 +423,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add") && !$account->is_banned)
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBanAdd">Add Ban</button>
                                                 @endif
                                             </div>
