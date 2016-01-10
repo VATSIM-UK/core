@@ -18,6 +18,11 @@ return [
     'account.state.transfer' => 'Trasnferring Member',
     'account.state.unknown' => 'Unknown',
 
+    // Security elements
+    "security.forgotten.success" => "As you have forgotten your password,
+                an authorisation link has been emailed to you.  Once you click this link to confirm this request
+                a new password will be generated and emailed to you.",
+
     // Ban Language
     'ban.type.local' => 'Local Ban',
     'ban.type.network' => 'Network Suspension',

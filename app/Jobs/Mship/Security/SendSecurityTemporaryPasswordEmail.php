@@ -2,32 +2,32 @@
 
 namespace App\Jobs\Mship\Security;
 
+use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
-use App\Models\Sys\Token;
 use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implements ShouldQueue
+class SendSecurityTemporaryPasswordEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
-    private $token = null;
+    private $password = null;
 
-    public function __construct(Account $recipient, Token $token)
+    public function __construct(Account $recipient, $password)
     {
         $this->recipient = $recipient;
-        $this->token = $token;
+        $this->password = $password;
     }
 
     /**
-     *
-     * Dispatch the security password reset CONFIRMATION email (for admin resets).
+     * Dispatch the newly generated password for a user.
      *
      * @param \Illuminate\Contracts\Mail\Mailer $mailer
      * @return void
@@ -35,10 +35,10 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
     public function handle(Mailer $mailer)
     {
         $displayFrom = "VATSIM UK - Community Department";
-        $subject = "SSO Security - Administrative Reset Confirmation";
-        $body = View::make("emails.mship.security.reset_confirmation_admin")
-                     ->with("account", $this->account)
-                     ->with("token", $this->token)
+        $subject = "SSO Security - New Password";
+        $body = View::make("emails.mship.security.reset_password")
+                     ->with("account", $this->recipient)
+                     ->with("password", $this->password)
                      ->render();
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);

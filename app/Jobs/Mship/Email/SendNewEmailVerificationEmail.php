@@ -1,20 +1,25 @@
 <?php
 
-namespace App\Jobs\Mship\Account;
+namespace App\Jobs\Mship\Email;
 
+use App\Jobs\Job;
+use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Mship\Account;
+use App\Models\Sys\Token;
+use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendNewEmailVerificationEmail extends \App\Jobs\Job implements ShouldQueue
+class SendNewEmailVerificationEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
     private $token = null;
 
-    public function __construct(\App\Models\Mship\Account $recipient, \App\Models\Sys\Token $token)
+    public function __construct(Account $recipient, Token $token)
     {
         $this->recipient = $recipient;
         $this->token = $token;
@@ -28,6 +33,11 @@ class SendNewEmailVerificationEmail extends \App\Jobs\Job implements ShouldQueue
                      ->with("account", $this->recipient)
                      ->with("token", $this->token)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
+
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
+        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+        Bus::dispatch($createNewMessage->onQueue("emails"));
     }
 }
