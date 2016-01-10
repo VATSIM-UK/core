@@ -18,8 +18,10 @@ class aCommand extends Command {
      */
     protected function log($string, $style = null, $newline = true)
     {
-        // remove styling if output is piped
-        $style = posix_isatty(STDOUT) ? $style : null;
+        // keep styling if output is not piped, or if we can't tell
+        if (function_exists('posix_isatty')) {
+            $style = posix_isatty(STDOUT) ? $style : null;
+        }
 
         // add style tags to the output string
         $styled = $style ? "<$style>$string</$style>" : $string;
