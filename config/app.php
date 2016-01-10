@@ -165,6 +165,7 @@ return [
         Alawrence\Ipboard\ServiceProvider::class,
 
         App\Modules\Statistics\StatisticsServiceProvider::class,
+        App\Modules\Ais\AisServiceProvider::class,
     ],
 
     /*
