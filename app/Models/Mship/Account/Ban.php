@@ -35,11 +35,11 @@ class Ban extends \App\Models\aTimelineEntry
     }
 
     public static function scopeIsRepealed($query){
-        return $query->whereNull("repealed_at");
+        return $query->whereNotNull("repealed_at");
     }
 
     public static function scopeIsNotRepealed($query){
-        return $query->whereNotNull("repealed_at");
+        return $query->whereNull("repealed_at");
     }
 
     public function account()
