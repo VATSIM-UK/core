@@ -3,18 +3,22 @@
 namespace App\Jobs\Mship\Account\Ban;
 
 use App\Jobs\Job;
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
-use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class SendCreationEmail extends Job implements SelfHandling
+class SendCreationEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
-    private $account;
+
+    private $recipient;
     private $ban;
 
     public function __construct(Ban $ban)
     {
-        $this->account = $ban->account;
+        $this->recipient = $ban->account;
         $this->ban = $ban;
     }
 
@@ -23,11 +27,11 @@ class SendCreationEmail extends Job implements SelfHandling
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "Account Ban";
         $body = \View::make("emails.mship.account.ban.created")
-                     ->with("account", $this->account)
+                     ->with("recipient", $this->recipient)
                      ->with("ban", $this->ban)
                      ->render();
 
-        $sender = \App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
 

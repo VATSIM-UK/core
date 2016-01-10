@@ -5,8 +5,10 @@ namespace App\Jobs\Mship\Account\Ban;
 use App\Jobs\Job;
 use App\Models\Mship\Account\Ban;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class SendModifiedEmail extends Job implements SelfHandling
+class SendModifiedEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
     private $account;
