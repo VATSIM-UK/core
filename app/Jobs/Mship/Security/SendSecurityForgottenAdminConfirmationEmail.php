@@ -37,7 +37,7 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "SSO Security - Administrative Reset Confirmation";
         $body = View::make("emails.mship.security.reset_confirmation_admin")
-                     ->with("account", $this->account)
+                     ->with("account", $this->recipient)
                      ->with("token", $this->token)
                      ->render();
 
