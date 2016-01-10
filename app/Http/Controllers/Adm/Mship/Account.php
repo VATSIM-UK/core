@@ -121,8 +121,8 @@ class Account extends \App\Http\Controllers\Adm\AdmController
 
         // Lazy eager loading
         $account->load(
-            "bans",
-            "notes", "notes.type", "notes.writer",
+            "bans", "bans.banner", "bans.reason", "bans.notes", "bans.notes.writer",
+            "notes", "notes.type", "notes.writer", "notes.attachment",
             "dataChanges",
             "roles", "roles.permissions",
             "qualifications",
