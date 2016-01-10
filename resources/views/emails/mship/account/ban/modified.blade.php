@@ -1,5 +1,5 @@
 <p>
-    Your account has been banned for {!! $ban->period_amount !!} {!! $ban->period_unit_string !!}.  The reason for the ban, along with details of when the ban will be lifted, are included below.
+    Your account ban has been modified.  Details of the ban and the timeframe are included below.
 </p>
 
 <h3>Details</h3>
@@ -28,5 +28,5 @@
 @endif
 
 <p>
-    If you believe this ban has been applied in error, please contact the community department {!! link_to("http://helpdesk.vatsim-uk.co.uk", "our helpdesk") !!}.
+    If you believe this change has been made in error, please contact the community department {!! link_to("http://helpdesk.vatsim-uk.co.uk", "our helpdesk") !!}.
 </p>
