@@ -5,10 +5,15 @@ namespace App\Http\Controllers\Adm\Mship;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Jobs\Mship\Account\Ban\SendCreationEmail;
+use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
+use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 use Auth;
+use Bus;
 use Config;
 use DB;
 use Illuminate\Support\Collection;
@@ -256,7 +261,8 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                            ->withError("You cannot reset non-existant security.");
         }
 
-        $account->resetPassword(true);
+        $job = (new TriggerPasswordResetConfirmation($account, true))->onQueue("high");
+        Bus::dispatch($job);
 
         return Redirect::route("adm.mship.account.details", [$account->account_id, "security"])
                        ->withSuccess("Security reset requested - user will receive an email.");
@@ -329,6 +335,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         // Create the user's ban
         $ban = $account->addBan($banReason, null, Input::get("ban_note_content"), $this->_account->account_id);
 
+        $job = (new SendCreationEmail($ban))->onQueue("high");
+        Bus::dispatch($job);
+
         return Redirect::route("adm.mship.account.details", [$account->account_id, "bans", $ban->account_ban_id])
                        ->withSuccess("You have successfully banned this member.");
     }
@@ -357,6 +366,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("reason"), Auth::getUser());
         $ban->notes()->save($note);
         $ban->repeal();
+
+        $job = (new SendRepealedEmail($ban))->onQueue("high");
+        Bus::dispatch($job);
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Ban has been repealed.");
     }
@@ -429,6 +441,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $ban->period_finish = $period_finish;
         $ban->setPeriodAmountFromTS();
         $ban->save();
+
+        $job = (new SendModifiedEmail($ban))->onQueue("high");
+        Bus::dispatch($job);
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
     }

@@ -4,12 +4,14 @@ namespace App\Exceptions;
 
 use App;
 use Redirect;
-use Request;
 use Route;
-use Session;
+use Slack;
 use Exception;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Foundation\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -19,7 +21,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
+        ModelNotFoundException::class,
+        ValidationException::class,
     ];
 
     /**
@@ -40,7 +45,48 @@ class Handler extends ExceptionHandler
             }
         }
 
-        return parent::report($e);
+        if (App::runningInConsole()) {
+            if (App::environment('production')) {
+                $channel = 'wslogging';
+            } else {
+                $channel = 'wslogging_dev';
+            }
+
+            $attachment = [
+                'fallback' => 'Exception thrown: ' . get_class($e),
+                'text' => $e->getTraceAsString(),
+                'author_name' => get_class($e),
+                'color' => 'danger',
+                'fields' => [
+                    [
+                        'title' => 'Exception:',
+                        'value' => (new \ReflectionClass($e))->getShortName(),
+                        'short' => true,
+                    ],
+                    [
+                        'title' => 'Message:',
+                        'value' => $e->getMessage(),
+                        'short' => true,
+                    ], [
+                        'title' => 'File:',
+                        'value' => $e->getFile(),
+                        'short' => true,
+                    ], [
+                        'title' => 'Line:',
+                        'value' => $e->getLine(),
+                        'short' => true,
+                    ], [
+                        'title' => 'Code:',
+                        'value' => $e->getCode(),
+                        'short' => true,
+                    ],
+                ],
+            ];
+
+            Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+        }
+
+        parent::report($e);
     }
 
     /**

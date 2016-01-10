@@ -9,12 +9,11 @@ use App\Modules\Statistics\Models\Atc;
 use Carbon\Carbon;
 use Illuminate\Queue\SerializeModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class StatisticsDownloadAndParse extends \App\Jobs\Job implements SelfHandling, ShouldQueue {
+class StatisticsDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
 
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 

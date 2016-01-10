@@ -13,7 +13,7 @@ return [
   |
   */
 
-  'endpoint' => '',
+  'endpoint' => 'https://hooks.slack.com/services/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',
 
   /*
   |-------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
   |
   */
 
-  'channel' => '#general',
+  'channel' => null,
 
   /*
   |-------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
   |
   */
 
-  'icon' => ":vuktrail",
+  'icon' => ":vuktrail:",
 
   /*
   |-------------------------------------------------------------
@@ -111,7 +111,7 @@ return [
   |
   */
 
-  'markdown_in_attachments' => [],
+  'markdown_in_attachments' => ['pretext', 'text', 'title', 'fields', 'fallback'],
 
   // Allow Markdown in just the text and title fields
   // 'markdown_in_attachments' => ['text', 'title']

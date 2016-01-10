@@ -3,11 +3,11 @@
 namespace App\Models\Mship;
 
 use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
-use App\Jobs\Mship\Security\SendSecurityForgottenAdminConfirmationEmail;
-use App\Jobs\Mship\Security\SendSecurityForgottenConfirmationEmail;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
+use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
+use Bus;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
@@ -15,11 +15,9 @@ use Carbon\Carbon;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Mship\Account\Qualification as AccountQualification;
 use App\Models\Mship\Account\State;
-use App\Models\Sys\Token as SystemToken;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Teamspeak\Registration;
 use App\Models\Sys\Notification as SysNotification;
 use Queue;
 
@@ -30,7 +28,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     protected $table = "mship_account";
     protected $primaryKey = "account_id";
     public $incrementing = false;
-    protected $dates = ['auth_extra_at', 'last_login', 'joined_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['auth_extra_at', 'last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE, 'last_login_ip' => '127.0.0.1'];
     protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
@@ -303,18 +301,6 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $security->save();
     }
 
-    public function resetPassword($admin=false){
-        // Now generate a new token for the email.
-        $token = SystemToken::generate("mship_account_security_reset", false, $this);
-
-        // Let's send them an email with this information!
-        if($admin){
-            \Bus::dispatch(new SendSecurityForgottenAdminConfirmationEmail($this, $token));
-        } else {
-            \Bus::dispatch(new SendSecurityForgottenConfirmationEmail($this, $token));
-        }
-    }
-
     public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
         // Check this email doesn't exist for this user already.
         $check = $this->emails->filter(function($email) use($newEmail){
@@ -333,11 +319,7 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
             // Verify if it's not primary.
             if(!$primary){
-                // Let's now send a verification link to this email!
-                $token = SystemToken::generate("mship_account_email_verify", false, $email);
-
-                // Let's send them an email with this information!
-                \Bus::dispatch(new SendNewEmailVerificationEmail($this, $token));
+                Bus::dispatch(new TriggerNewEmailVerificationProcess($email));
             }
         } else {
             $email = $check;

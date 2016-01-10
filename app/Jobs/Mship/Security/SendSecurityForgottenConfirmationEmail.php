@@ -2,33 +2,50 @@
 
 namespace App\Jobs\Mship\Security;
 
+use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Mship\Account;
+use App\Models\Sys\Token;
+use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use View;
 
-class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
+class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
     private $token = null;
 
-    public function __construct(\App\Models\Mship\Account $recipient, \App\Models\Sys\Token $token)
+    public function __construct(Account $recipient, Token $token)
     {
         $this->recipient = $recipient;
         $this->token = $token;
     }
 
+    /**
+     *
+     * Dispatch the security password reset CONFIRMATION email (for user resets).
+     *
+     * @param \Illuminate\Contracts\Mail\Mailer $mailer
+     * @return void
+     */
     public function handle(Mailer $mailer)
     {
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "SSO Security - Reset Confirmation";
-        $body = \View::make("emails.mship.security.reset_confirmation")
+        $body = View::make("emails.mship.security.reset_confirmation")
                      ->with("account", $this->recipient)
                      ->with("token", $this->token)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
+
+
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
+        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+        Bus::dispatch($createNewMessage->onQueue("emails"));
     }
 }

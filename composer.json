@@ -4,34 +4,33 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/NFarrington/VatsimXML.git"
-        }
-    ],
     "require": {
         "php": ">=5.5.9",
-        "vatsim/xml": "dev-master",
+        "ext-posix": "*",
+        "vatsim/xml": "2.*",
         "vatsim/sso": "2.*",
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.2.*",
         "flynsarmy/db-blade-compiler": "1.*",
         "wpb/string-blade-compiler": "2.*",
-        "guzzlehttp/guzzle": "~4.0",
+        "guzzlehttp/guzzle": "~6.0",
         "doctrine/dbal": "~2.5",
         "barryvdh/laravel-debugbar" : "~2.0",
         "watson/validating": "~1.0",
         "planetteamspeak/ts3-php-framework": "dev-master",
         "laravelcollective/html": "~5.0",
-        "sboo/multiauth" : "4.0.*",
         "skymeyer/vatsimphp" : "1.0.*",
-        "maknz/slack": "^1.7"
+        "maknz/slack": "^1.7",
+        "barryvdh/laravel-ide-helper": "^2.1",
+        "league/csv": "^8.0",
+        "alawrence/laravel-ipboard": "1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "symfony/dom-crawler": "~3.0",
+        "symfony/css-selector": "~3.0"
     },
     "autoload": {
         "classmap": [

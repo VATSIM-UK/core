@@ -61,7 +61,7 @@ Route::group(array("namespace" => "Adm"), function () {
         Route::get("/error/{code?}", ["as" => "adm.error", "uses" => "Error@getDisplay"]);
 
         // Auth required
-        Route::group(array("before" => "auth.admin"), function () {
+        Route::group(array("middleware" => "auth.admin"), function () {
             Route::get("/dashboard", array("as" => "adm.dashboard", "uses" => "Dashboard@getIndex"));
             Route::any("/search/{q?}", array("as" => "adm.search", "uses" => "Dashboard@anySearch"));
 
@@ -130,12 +130,12 @@ Route::group([], function () {
             Route::post("/logout/{force?}", ["as" => "mship.auth.logout", "uses" => "Authentication@postLogout"]);
 
             // /mship/auth - fully authenticated.
-            Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function () {
+            Route::group(["middleware" => ["auth.user.full", "user.must.read.notifications"]], function () {
                 Route::get("/invisibility", ["as" => "mship.auth.invisibility", "uses" => "Authentication@getInvisibility"]);
             });
         });
 
-        Route::group(["before" => "auth.user.full", "prefix" => "notification"], function(){
+        Route::group(["middleware" => "auth.user.full", "prefix" => "notification"], function(){
             Route::get("/list", ["as" => "mship.notification.list", "uses" => "Notification@getList"]);
             Route::post("/acknowledge/{sysNotification}", ["as" => "mship.notification.acknowledge", "uses" => "Notification@postAcknowledge"]);
         });
@@ -145,14 +145,14 @@ Route::group([], function () {
             Route::get("/dashboard", [
                 "as" => "mship.manage.dashboard",
                 "uses" => "Management@getDashboard",
-                "before" => ["auth.user.full", "user.must.read.notifications"],
+                "middleware" => ["auth.user.full", "user.must.read.notifications"],
             ]);
 
             Route::group(["prefix" => "email"], function(){
 
                 Route::get("/verify/{code}", ["as" => "mship.manage.email.verify", "uses" => "Management@getVerifyEmail"]);
 
-                Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function(){
+                Route::group(["middleware" => ["auth.user.full", "user.must.read.notifications"]], function(){
                     Route::get("/add", ["as" => "mship.manage.email.add", "uses" => "Management@getEmailAdd"]);
                     Route::post("/add", ["as" => "mship.manage.email.add", "uses" => "Management@postEmailAdd"]);
 
@@ -168,7 +168,7 @@ Route::group([], function () {
         Route::group(["prefix" => "security"], function () {
             Route::get("/forgotten-link/{code}", ["as" => "mship.security.forgotten.link", "uses" => "Security@getForgottenLink"])->where(array("code" => "\w+"));
 
-            Route::group(["before" => "auth.user"], function(){
+            Route::group(["middleware" => "auth.user"], function(){
                 Route::get("/forgotten", ["as" => "mship.security.forgotten", "uses" => "Security@getForgotten"]);
                 Route::get("/auth", ["as" => "mship.security.auth", "uses" => "Security@getAuth"]);
                 Route::post("/auth", ["as" => "mship.security.auth", "uses" => "Security@postAuth"]);
@@ -176,13 +176,13 @@ Route::group([], function () {
                 Route::post("/replace/{delete?}", ["as" => "mship.security.replace", "uses" => "Security@postReplace"])->where(array("delete" => "[1|0]"));
             });
 
-            Route::group(["before" => ["auth.user.full", "user.must.read.notifications"]], function(){
+            Route::group(["middleware" => ["auth.user.full", "user.must.read.notifications"]], function(){
                 Route::get("/enable", ["as" => "mship.security.enable", "uses" => "Security@getEnable"]);
             });
         });
     });
 
-    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "before" => ["auth.user.full", "user.must.read.notifications"]], function () {
+    Route::group(["prefix" => "mship/manage/teamspeak", "namespace" => "Teamspeak", "middleware" => ["auth.user.full", "user.must.read.notifications"]], function () {
         Route::model('tsreg', '\App\Models\Teamspeak\Registration');
         Route::get("/new", ["as" => "teamspeak.new", "uses" => "Registration@getNew"]);
         Route::get("/success", ["as" => "teamspeak.success", "uses" => "Registration@getConfirmed"]);
@@ -191,7 +191,7 @@ Route::group([], function () {
     });
 
     Route::group(array("prefix" => "sso", "namespace" => "Sso"), function () {
-        Route::get("auth/login", ["before" => "user.must.read.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
+        Route::get("auth/login", ["middleware" => "user.must.read.notifications", "as" => "sso.auth.login", "uses" => "Authentication@getLogin"]);
         Route::post("security/generate", ["as" => "sso.security.generate", "uses" => "Security@postGenerate"]);
         Route::post("security/details", ["as" => "sso.security.details", "uses" => "Security@postDetails"]);
     });
