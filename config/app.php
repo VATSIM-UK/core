@@ -162,6 +162,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
+        Alawrence\Ipboard\ServiceProvider::class,
 
         App\Modules\Statistics\StatisticsServiceProvider::class,
     ],
@@ -219,6 +220,7 @@ return [
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
         'Slack'     => Maknz\Slack\Facades\Slack::class,
+        'IPBoard'   => Alawrence\Ipboard\Facades\Ipboard::class,
 
     ],
 

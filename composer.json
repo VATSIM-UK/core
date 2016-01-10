@@ -18,7 +18,7 @@
         "laravel/framework": "5.2.*",
         "flynsarmy/db-blade-compiler": "1.*",
         "wpb/string-blade-compiler": "2.*",
-        "guzzlehttp/guzzle": "~4.0",
+        "guzzlehttp/guzzle": "~6.0",
         "doctrine/dbal": "~2.5",
         "barryvdh/laravel-debugbar" : "~2.0",
         "watson/validating": "~1.0",
@@ -27,7 +27,8 @@
         "skymeyer/vatsimphp" : "1.0.*",
         "maknz/slack": "^1.7",
         "barryvdh/laravel-ide-helper": "^2.1",
-        "league/csv": "^8.0"
+        "league/csv": "^8.0",
+        "alawrence/laravel-ipboard": "1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
