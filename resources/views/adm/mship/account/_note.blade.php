@@ -33,6 +33,6 @@
         </h3>
     </div>
     <div class="panel-body">
-        {{ $note->content }}
+        {!! nl2br($note->content) !!}
     </div>
 </div>

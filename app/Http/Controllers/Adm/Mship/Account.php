@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
+use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Ban\Reason;
@@ -355,7 +356,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         // Attach the note.
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("reason"), Auth::getUser());
         $ban->notes()->save($note);
-        $ban->delete();
+        $ban->repeal();
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Ban has been repealed.");
     }
@@ -383,6 +384,51 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         // Attach the note.
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"), Auth::getUser());
         $ban->notes()->save($note);
+
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
+    }
+
+    public function getBanModify(AccountData\Ban $ban)
+    {
+        if (!$ban) {
+            // TODO: Could got to the master ban list?
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        $this->setTitle("Ban Modification");
+
+        return $this->viewMake("adm.mship.account.ban.modify")
+                    ->with("ban", $ban);
+    }
+
+    public function postBanModify(ModifyRequest $request, AccountData\Ban $ban)
+    {
+        if (!$ban) {
+            // TODO: Could got to the master ban list?
+            return Redirect::route("adm.mship.account.index");
+        }
+
+        $period_finish = \Carbon\Carbon::parse(Input::get("finish_date")." ".Input::get("finish_time"), "UTC");
+        if($ban->period_finish->eq($period_finish)){
+            return Redirect::back()->withInput()->withError("You didn't change the ban period.");
+        }
+
+        if($ban->period_finish->gt($period_finish)){
+            $noteComment = "Ban has been reduced from ".$ban->period_finish->toDateTimeString().".\n";
+        } else {
+            $noteComment = "Ban has been extended from ".$ban->period_finish->toDateTimeString().".\n";
+        }
+        $noteComment.= "New finish: ".$period_finish->toDateTimeString()."\n";
+        $noteComment.= Input::get("reason");
+
+        // Attach the note.
+        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), $noteComment, Auth::getUser());
+        $ban->notes()->save($note);
+
+        // Modify the ban
+        $ban->period_finish = $period_finish;
+        $ban->setPeriodAmountFromTS();
+        $ban->save();
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
     }

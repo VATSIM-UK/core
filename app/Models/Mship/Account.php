@@ -392,7 +392,9 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         $ban->period_amount = $banReason->period_amount;
         $ban->period_unit = $banReason->period_unit;
         $ban->period_start = \Carbon\Carbon::now();
+        $ban->period_start->second = 0;
         $ban->period_finish = \Carbon\Carbon::now()->addHours($banReason->period_hours);
+        $ban->period_finish->second = 0;
         $ban->save();
 
         $ban->notes()->save($note);

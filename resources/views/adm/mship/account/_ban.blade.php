@@ -25,16 +25,20 @@
 
         <div class="btn-toolbar">
             <div class="btn-group pull-right">
-                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/edit") && $ban->is_active)
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalBanDurationEdit">Change Ban Duration</button>
-                @endif
-
-                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create") && !$ban->is_repealed)
-                    {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->account_ban_id], ["class" => "btn btn-info"]) !!}
-                @endif
-
                 @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/repeal") && !$ban->is_repealed)
                     {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
+                @endif
+            </div>
+
+            <div class="btn-group pull-right">
+                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/edit") && $ban->is_active)
+                    {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->account_ban_id], ["class" => "btn btn-warning"]) !!}
+                @endif
+            </div>
+
+            <div class="btn-group pull-right">
+                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create") && !$ban->is_repealed)
+                    {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->account_ban_id], ["class" => "btn btn-info"]) !!}
                 @endif
             </div>
         </div>
@@ -52,9 +56,9 @@
             <strong>Reason</strong>
             <br/>
             <em>
-                {{ $ban->reason}}
+                {{ $ban->reason}}<br />
                 @if($ban->reason_extra)
-                    {{ $ban->reason_extra }}
+                    {!! $ban->reason_extra !!}
                 @endif
             </em>
         </p>

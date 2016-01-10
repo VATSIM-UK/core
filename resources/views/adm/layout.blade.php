@@ -19,6 +19,8 @@
         {!! HTML::style('/assets/css/datetimepicker/bootstrap-datetimepicker.min.css') !!}
                 <!-- Date Picker -->
         {!! HTML::style('/assets/css/datepicker/datepicker3.css') !!}
+                <!-- Time Picker -->
+        {!! HTML::style('/assets/css/timepicker/bootstrap-timepicker.min.css') !!}
         <!-- Daterange picker -->
         {!! HTML::style('/assets/css/daterangepicker/daterangepicker-bs3.css') !!}
         <!-- bootstrap wysihtml5 - text editor -->
@@ -130,7 +132,9 @@
             <!-- datetimepicker -->
         {!! HTML::script('/assets/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') !!}
                 <!-- datepicker -->
-        {!! HTML::script('/assets/js/plugins/datepicker/bootstrap-datepicker.js') !!}
+            {!! HTML::script('/assets/js/plugins/datepicker/bootstrap-datepicker.js') !!}
+                    <!-- timepicker -->
+            {!! HTML::script('/assets/js/plugins/timepicker/bootstrap-timepicker.min.js') !!}
         <!-- Bootstrap WYSIHTML5 -->
         {!! HTML::script('/assets/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') !!}
         <!-- BootstrapSwitch -->
