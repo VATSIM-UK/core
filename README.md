@@ -39,7 +39,7 @@
 * * [Delete] `2015_08_29_174200_postmaster_templates_removal`
 * * [Update] `2015_08_29_203828_create_jobs_table, batch=10` => `2015_08_29_203828_create_jobs_table`, batch=6
 * * [Update] `2015_08_29_204330_create_failed_jobs_table, batch=10` => `2015_08_29_204330_create_failed_jobs_table`, batch=6
-* * ```mysql
+```mysql
 UPDATE migrations
 SET migration = '2015_12_27_221900_vanilla_mship_v221'
 WHERE migration = '2014_09_12_200312_initial_membership';
