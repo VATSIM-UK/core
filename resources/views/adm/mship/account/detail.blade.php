@@ -465,8 +465,13 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="ban_note_content">Note</label>
-                                            <textarea name="ban_note_content" class="form-control" rows="5"></textarea>
+                                            <label for="ban_reason_extra">Extra Info<br /><small>This will be sent to the member.</small></label>
+                                            <textarea name="ban_reason_extra" class="form-control" rows="5">{{ old("ban_reason_extra") }}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ban_note_content">Note<br /><small>This will *not* be sent to the member.</small></label>
+                                            <textarea name="ban_note_content" class="form-control" rows="5">{{ old("ban_note_content") }}</textarea>
                                         </div>
 
                                         </p>

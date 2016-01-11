@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
+use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Jobs\Mship\Account\Ban\SendCreationEmail;
@@ -308,7 +309,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                        ->withSuccess("Security has been upgraded on this account.");
     }
 
-    public function postBanAdd(AccountData $account)
+    public function postBanAdd(CreateRequest $request, AccountData $account)
     {
         if (!$account) {
             return Redirect::route("adm.mship.account.index");
@@ -319,21 +320,10 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                            ->withError("You are not able to ban a member that is already banned.");
         }
 
-        // Is there any content?
-        if (strlen(Input::get("ban_note_content")) < 10) {
-            return Redirect::route("adm.mship.account.details", [$account->account_id, "bans"])
-                           ->withError("You cannot add such a short note when banning somebody.");
-        }
-
-        // Check this type exists!
         $banReason = Reason::find(Input::get("ban_reason_id"));
-        if (!$banReason OR !$banReason->exists) {
-            return Redirect::route("adm.mship.account.details", [$account->account_id, "notes"])
-                           ->withError("You selected an invalid ban reason.");
-        }
 
         // Create the user's ban
-        $ban = $account->addBan($banReason, null, Input::get("ban_note_content"), $this->_account->account_id);
+        $ban = $account->addBan($banReason, Input::get("ban_reason_extra"), Input::get("ban_note_content"), $this->_account->account_id);
 
         $job = (new SendCreationEmail($ban))->onQueue("high");
         Bus::dispatch($job);

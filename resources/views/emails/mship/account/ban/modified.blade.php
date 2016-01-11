@@ -4,7 +4,8 @@
 
 <h3>Details</h3>
 <p>
-    {!! nl2br($ban->reason ) !!}
+    {!! $ban->reason  !!}<br />
+    {!! nl2br($ban->reason->reason_text) !!}
     @if($ban->reason_extra)
         <br />
         {!! nl2br($ban->reason_extra) !!}
