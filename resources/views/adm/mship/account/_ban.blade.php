@@ -1,4 +1,4 @@
-<div class="panel panel-danger" id='ban-{{ $ban->account_ban_id }}'>
+<div class="panel panel-{{ $ban->is_repealed ? "info" : "danger" }}" id='ban-{{ $ban->account_ban_id }}'>
     <div class="panel-heading">
         <h3 class="panel-title">
             {!! $ban->type_string !!} - {!! $ban->period_amount !!} {!! $ban->period_unit_string !!}
