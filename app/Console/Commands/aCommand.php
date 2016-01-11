@@ -21,6 +21,8 @@ class aCommand extends Command {
         // keep styling if output is not piped, or if we can't tell
         if (function_exists('posix_isatty')) {
             $style = posix_isatty(STDOUT) ? $style : null;
+        } else if (App::environment('production')) {
+            $this->sendSlackError('posix_isatty is not available in production - install POSIX extension (php-common)');
         }
 
         // add style tags to the output string
