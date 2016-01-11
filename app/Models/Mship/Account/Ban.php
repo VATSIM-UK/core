@@ -133,14 +133,14 @@ class Ban extends \App\Models\aTimelineEntry
     public function getPeriodUnitStringAttribute()
     {
         switch ($this->attributes['period_unit']) {
-            case "M":
-                return "Minutes";
-                break;
             case "H":
                 return "Hours";
                 break;
             case "D":
                 return "Days";
+                break;
+            case "M":
+                return "Months";
                 break;
             default:
                 return "Unknown length";

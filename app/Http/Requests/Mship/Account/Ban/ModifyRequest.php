@@ -28,6 +28,7 @@ class ModifyRequest extends Request
             "finish_time" => "required|date_format:H:i",
             "period_finish" => "required|date_format:Y-m-d H:i:s",
             "reason" => "required|min:25",
+            "note" => "required|min:25",
         ];
     }
 
