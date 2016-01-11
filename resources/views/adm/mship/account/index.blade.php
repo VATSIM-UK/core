@@ -80,10 +80,10 @@
                             <td>{{ $m->name }}</td>
                             <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
                             <td>{{ $m->qualification_atc }}</td>
-                            <td>{{ $m->qualifications_atc_training->first() }}</td>
+                            <td>{{ $m->qualifications_atc_training->count() > 0 ? $m->qualifications_atc_training->first() : null }}</td>
                             <td>{{ $m->qualifications_pilot_string }}</td>
-                            <td>{{ $m->qualifications_pilot_training->first() }}</td>
-                            <td>{{ $m->qualifications_admin->first() }}</td>
+                            <td>{{ $m->qualifications_pilot_training->count() > 0 ? $m->qualifications_pilot_training->first() : null }}</td>
+                            <td>{{ $m->qualifications_admin->count() > 0 ? $m->qualifications_admin->first() : null }}</td>
                             <td>{{ $m->current_state }}</td>
                             <td>{!! $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' !!}</td>
                         </tr>
