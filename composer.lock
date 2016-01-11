@@ -4,21 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "877f6e7aa2b190868260a19b03011869",
-    "content-hash": "ee39d7b0e2e6ed47485a24d9c51ff704",
+    "hash": "cfa5850104913f57cb3793aebd65e314",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
-            "version": "dev-develop",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/A-Lawrence/laravel-ipboard.git",
-                "reference": "38dff9e64d62b24a82d95f648ed6b4a6f6caeee6"
+                "reference": "0f3572e599f70e439d3fddbff85975d09d97beb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/A-Lawrence/laravel-ipboard/zipball/38dff9e64d62b24a82d95f648ed6b4a6f6caeee6",
-                "reference": "38dff9e64d62b24a82d95f648ed6b4a6f6caeee6",
+                "url": "https://api.github.com/repos/A-Lawrence/laravel-ipboard/zipball/0f3572e599f70e439d3fddbff85975d09d97beb4",
+                "reference": "0f3572e599f70e439d3fddbff85975d09d97beb4",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +55,7 @@
                 "rest",
                 "restful"
             ],
-            "time": "2016-01-05 21:48:07"
+            "time": "2016-01-05 23:42:42"
         },
         {
             "name": "barryvdh/laravel-debugbar",
@@ -574,16 +573,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "v2.5.3",
+            "version": "v2.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "2fbcea96eae34a53183377cdbb0b9bec33974648"
+                "reference": "abbdfd1cff43a7b99d027af3be709bc8fc7d4769"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/2fbcea96eae34a53183377cdbb0b9bec33974648",
-                "reference": "2fbcea96eae34a53183377cdbb0b9bec33974648",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/abbdfd1cff43a7b99d027af3be709bc8fc7d4769",
+                "reference": "abbdfd1cff43a7b99d027af3be709bc8fc7d4769",
                 "shasum": ""
             },
             "require": {
@@ -641,7 +640,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2015-12-25 16:28:24"
+            "time": "2016-01-05 22:11:12"
         },
         {
             "name": "doctrine/inflector",
@@ -1126,29 +1125,16 @@
         },
         {
             "name": "laravel/framework",
-<<<<<<< Updated upstream
-            "version": "v5.2.6",
+            "version": "v5.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b774c304ee81fcf5402fa06b261b364ba8f29cf0"
+                "reference": "26cd65eaa4bcc0fb0be381cfb7cfdcda06a3c2b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b774c304ee81fcf5402fa06b261b364ba8f29cf0",
-                "reference": "b774c304ee81fcf5402fa06b261b364ba8f29cf0",
-=======
-            "version": "v5.1.28",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/framework.git",
-                "reference": "3f0fd27939dfdafb1e50058423cd24e640894ba2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/3f0fd27939dfdafb1e50058423cd24e640894ba2",
-                "reference": "3f0fd27939dfdafb1e50058423cd24e640894ba2",
->>>>>>> Stashed changes
+                "url": "https://api.github.com/repos/laravel/framework/zipball/26cd65eaa4bcc0fb0be381cfb7cfdcda06a3c2b4",
+                "reference": "26cd65eaa4bcc0fb0be381cfb7cfdcda06a3c2b4",
                 "shasum": ""
             },
             "require": {
@@ -1263,11 +1249,7 @@
                 "framework",
                 "laravel"
             ],
-<<<<<<< Updated upstream
-            "time": "2015-12-31 17:41:58"
-=======
-            "time": "2015-12-31 17:41:30"
->>>>>>> Stashed changes
+            "time": "2016-01-07 13:54:34"
         },
         {
             "name": "laravelcollective/html",
@@ -1795,16 +1777,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "1.1.4",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "d762ee5b099a29044603cd4649851e81aa66cb47"
+                "reference": "dd8998b7c846f6909f4e7a5f67fabebfc412a4f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/d762ee5b099a29044603cd4649851e81aa66cb47",
-                "reference": "d762ee5b099a29044603cd4649851e81aa66cb47",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/dd8998b7c846f6909f4e7a5f67fabebfc412a4f7",
+                "reference": "dd8998b7c846f6909f4e7a5f67fabebfc412a4f7",
                 "shasum": ""
             },
             "require": {
@@ -1839,7 +1821,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2015-12-10 14:48:13"
+            "time": "2016-01-06 13:31:20"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -3075,16 +3057,16 @@
         },
         {
             "name": "vatsim/xml",
-            "version": "dev-master",
+            "version": "2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/NFarrington/VatsimXML.git",
-                "reference": "e6ba353b263442c6e18083cb789f6a25c5798bf2"
+                "url": "https://github.com/A-Lawrence/VatsimXML.git",
+                "reference": "4f5f62d50a2b68073e83f6e590fad9c5805ec043"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NFarrington/VatsimXML/zipball/e6ba353b263442c6e18083cb789f6a25c5798bf2",
-                "reference": "e6ba353b263442c6e18083cb789f6a25c5798bf2",
+                "url": "https://api.github.com/repos/A-Lawrence/VatsimXML/zipball/4f5f62d50a2b68073e83f6e590fad9c5805ec043",
+                "reference": "4f5f62d50a2b68073e83f6e590fad9c5805ec043",
                 "shasum": ""
             },
             "require": {
@@ -3100,6 +3082,7 @@
                     "Vatsim\\Xml\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3116,12 +3099,7 @@
                 "vatsim",
                 "xml"
             ],
-            "support": {
-                "issues": "https://github.com/A-Lawrence/VatsimXML/issues",
-                "wiki": "https://github.com/A-Lawrence/VatsimXML/wiki",
-                "source": "https://github.com/NFarrington/VatsimXML/tree/master"
-            },
-            "time": "2015-08-10 00:21:47"
+            "time": "2016-01-10 22:37:16"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -3367,7 +3345,7 @@
             ],
             "authors": [
                 {
-                    "name": "Francois Zaninotto"
+                    "name": "François Zaninotto"
                 }
             ],
             "description": "Faker is a PHP library that generates fake data for you.",
@@ -4561,15 +4539,12 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "vatsim/xml": 20,
-        "planetteamspeak/ts3-php-framework": 20,
-        "alawrence/laravel-ipboard": 20
+        "planetteamspeak/ts3-php-framework": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5.9",
-        "ext-posix": "*"
+        "php": ">=5.5.9"
     },
     "platform-dev": []
 }

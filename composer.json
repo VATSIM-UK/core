@@ -4,15 +4,9 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/NFarrington/VatsimXML.git"
-        }
-    ],
     "require": {
         "php": ">=5.5.9",
-        "vatsim/xml": "dev-master",
+        "vatsim/xml": "2.*",
         "vatsim/sso": "2.*",
         "laravel/framework": "5.2.*",
         "flynsarmy/db-blade-compiler": "1.*",

@@ -10,7 +10,7 @@ use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use \App\Models\Mship\Account as Account;
 
-class CreateNewMessage extends Job implements SelfHandling
+class CreateNewMessage extends Job
 {
     private $sender = null;
     private $displaySenderAs = null;

@@ -28,4 +28,8 @@ class Note extends \App\Models\aModel
     {
         return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "note_type_id");
     }
+
+    public function attachment(){
+        return $this->morphTo();
+    }
 }

@@ -3,9 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ShortUrl extends Migration
+class RepealBans extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,12 +12,8 @@ class ShortUrl extends Migration
      */
     public function up()
     {
-        Schema::create('short_url', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('url', 50);
-            $table->string('forward_url', 200);
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table("mship_account_ban", function(Blueprint $table){
+            $table->timestamp("repealed_at")->nullable()->after("updated_at");
         });
     }
 
@@ -29,6 +24,8 @@ class ShortUrl extends Migration
      */
     public function down()
     {
-        Schema::drop('short_url');
+        Schema::table('mship_account_ban', function(Blueprint $table) {
+            $table->dropColumn("repealed_at");
+        });
     }
 }

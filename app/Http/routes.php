@@ -19,7 +19,11 @@ Route::group(['domain' => 'vats.im'], function () {
 });
 
 Route::model("mshipAccount", "\App\Models\Mship\Account", function () {
-    Redirect::route("adm.mship.account.index");
+    return Redirect::route("adm.mship.account.index")->withError("The account ID you provided was not found.");
+});
+
+Route::model("ban", \App\Models\Mship\Account\Ban::class, function(){
+    return Redirect::route("adm.mship.account.index")->withError("The ban ID you provided was not found.");
 });
 
 Route::model("mshipAccountEmail", "\App\Models\Mship\Account\Email");
@@ -68,15 +72,26 @@ Route::group(array("namespace" => "Adm"), function () {
             Route::group(array("prefix" => "mship", "namespace" => "Mship"), function () {
                 /* Route::get("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d"));
                   Route::post("/airport/{navdataAirport}", "Airport@getDetail")->where(array("navdataAirport" => "\d")); */
-                Route::get("/account/{mshipAccount}/{tab?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"])->where(["mshipAccount" => "\d+"]);
+                Route::get("/account/{mshipAccount}/{tab?}/{tabid?}", ["as" => "adm.mship.account.details", "uses" => "Account@getDetail"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/role/attach", ["as" => "adm.mship.account.role.attach", "uses" => "Account@postRoleAttach"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/role/{mshipRole}/detach", ["as" => "adm.mship.account.role.detach", "uses" => "Account@postRoleDetach"])->where(["mshipAccount" => "\d+"]);
+                Route::post("/account/{mshipAccount}/ban/add", ["as" => "adm.mship.account.ban.add", "uses" => "Account@postBanAdd"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/note/create", ["as" => "adm.mship.account.note.create", "uses" => "Account@postNoteCreate"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/note/filter", ["as" => "adm.mship.account.note.filter", "uses" => "Account@postNoteFilter"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/security/enable", ["as" => "adm.mship.account.security.enable", "uses" => "Account@postSecurityEnable"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/security/reset", ["as" => "adm.mship.account.security.reset", "uses" => "Account@postSecurityReset"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/security/change", ["as" => "adm.mship.account.security.change", "uses" => "Account@postSecurityChange"])->where(["mshipAccount" => "\d+"]);
                 Route::post("/account/{mshipAccount}/impersonate", ["as" => "adm.mship.account.impersonate", "uses" => "Account@postImpersonate"])->where(["mshipAccount" => "\d+"]);
+
+                Route::get("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@getBanRepeal"])->where(["ban" => "\d+"]);
+                Route::post("/ban/{ban}/repeal", ["as" => "adm.mship.ban.repeal", "uses" => "Account@postBanRepeal"])->where(["ban" => "\d+"]);
+
+                Route::get("/ban/{ban}/comment", ["as" => "adm.mship.ban.comment", "uses" => "Account@getBanComment"])->where(["ban" => "\d+"]);
+                Route::post("/ban/{ban}/comment", ["as" => "adm.mship.ban.comment", "uses" => "Account@postBanComment"])->where(["ban" => "\d+"]);
+
+                Route::get("/ban/{ban}/modify", ["as" => "adm.mship.ban.modify", "uses" => "Account@getBanModify"])->where(["ban" => "\d+"]);
+                Route::post("/ban/{ban}/modify", ["as" => "adm.mship.ban.modify", "uses" => "Account@postBanModify"])->where(["ban" => "\d+"]);
+
                 Route::get("/account/{scope?}", ["as" => "adm.mship.account.index", "uses" => "Account@getIndex"])->where(["scope" => "\w+"]);
 
                 Route::get("/role/create", ["as" => "adm.mship.role.create", "uses" => "Role@getCreate"]);
