@@ -5,18 +5,19 @@ namespace App\Jobs\Mship\Account\Ban;
 use App\Jobs\Job;
 use App\Models\Mship\Account\Ban;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 class SendModifiedEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
-    private $account;
+    private $recipient;
     private $ban;
 
     public function __construct(Ban $ban)
     {
-        $this->account = $ban->account;
+        $this->recipient = $ban->account;
         $this->ban = $ban;
     }
 
@@ -25,7 +26,7 @@ class SendModifiedEmail extends Job implements ShouldQueue
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "Account Ban - Updated";
         $body = \View::make("emails.mship.account.ban.modified")
-                     ->with("account", $this->account)
+                     ->with("account", $this->recipient)
                      ->with("ban", $this->ban)
                      ->render();
 

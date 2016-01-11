@@ -12,7 +12,7 @@
 </p>
 
 <p>
-    Start: {{ $ban->period_start->format("l jS \\of F Y H:i:s\\z") }}
+    Start: {{ $ban->period_start->format("l jS \\of F Y H:i:s\\z") }}<br />
     Finish: {{ $ban->period_finish->format("l jS \\of F Y H:i:s\\z") }}
 </p>
 
