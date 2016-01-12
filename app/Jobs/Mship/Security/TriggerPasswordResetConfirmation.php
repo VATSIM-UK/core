@@ -9,9 +9,8 @@ use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 
-class TriggerPasswordResetConfirmation extends Job implements SelfHandling, ShouldQueue {
+class TriggerPasswordResetConfirmation extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     private $account = null;

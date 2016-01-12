@@ -4,7 +4,6 @@ namespace App\Jobs\Mship\Account\Ban;
 
 use App\Jobs\Job;
 use App\Models\Mship\Account\Ban;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
