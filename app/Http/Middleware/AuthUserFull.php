@@ -26,11 +26,6 @@ class AuthUserFull
                 return Redirect::to('/mship/auth/redirect');
             }
         }
-
-        // if they're logged in, and the session shouldn't be persistent, set the lifetime
-        if (Session::has('last_activity')) {
-            //
-        }
         
         return $next($request);
     }
