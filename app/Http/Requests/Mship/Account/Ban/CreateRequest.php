@@ -25,8 +25,8 @@ class CreateRequest extends Request
     {
         return [
             "ban_reason_id" => "exists:mship_ban_reason,ban_reason_id",
-            "ban_note_content" => "required|min:25",
-            "ban_reason_extra" => "min:25",
+            "ban_note_content" => "required|min:5",
+            "ban_reason_extra" => "min:5",
         ];
     }
 }
