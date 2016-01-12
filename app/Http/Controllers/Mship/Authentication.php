@@ -45,11 +45,16 @@ class Authentication extends BaseController {
         if (
             !Session::has('auth_override')
             && Session::has('auth_extra')
+            && Session::get('auth_extra') !== false
             && Session::get('auth_extra')->addHours(4)->isPast()
         ) {
             Session::forget('auth_extra');
 
             return Redirect::route('mship.auth.redirect');
+        }
+
+        if (!$this->_account->current_security) {
+            Session::set('auth_extra', false);
         }
 
         // Send them home!
