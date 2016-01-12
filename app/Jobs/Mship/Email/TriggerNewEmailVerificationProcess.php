@@ -6,12 +6,11 @@ use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Sys\Token;
 use Bus;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TriggerNewEmailVerificationProcess extends Job implements SelfHandling, ShouldQueue {
+class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     private $email = null;

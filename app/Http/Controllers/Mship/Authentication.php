@@ -32,29 +32,29 @@ class Authentication extends BaseController {
                         ->count();
 
         if($check > 0 && !Session::get('auth_duplicate_ip', false)){
-            $this->_account->auth_extra = 0;
-            $this->_account->auth_extra_at = null;
-            $this->_account->save();
+            Session::forget('auth_extra');
             Session::set('auth_duplicate_ip', true);
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!$this->_account->auth_extra && $this->_account->current_security && !Session::has('auth_override')) {
+        if (!Session::has('auth_extra') && $this->_account->current_security && !Session::has('auth_override')) {
             return Redirect::route('mship.security.auth');
         }
 
         // What about if there's secondary, but it's expired?
-        if (!Session::has('auth_override') && $this->_account->auth_extra && (!$this->_account->auth_extra_at OR $this->_account->auth_extra_at->addHours(4)->isPast())) {
-            $this->_account->auth_extra = 0;
-            $this->_account->auth_extra_at = null;
-            $this->_account->save();
+        if (
+            !Session::has('auth_override')
+            && Session::has('auth_extra')
+            && Session::get('auth_extra') !== false
+            && Session::get('auth_extra')->addHours(4)->isPast()
+        ) {
+            Session::forget('auth_extra');
+
             return Redirect::route('mship.auth.redirect');
         }
 
-        // What about if there's no secondary? We can set this to not required!
-        if(!$this->_account->current_security){
-            $this->_account->auth_extra = 2;
-            $this->_account->save();
+        if (!$this->_account->current_security) {
+            Session::set('auth_extra', false);
         }
 
         // Send them home!
@@ -103,8 +103,7 @@ class Authentication extends BaseController {
         // Let's do lots of logins....
         $account->last_login = Carbon::now();
         $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
-        $account->auth_extra = 1;
-        $account->auth_extra_at = Carbon::now();
+        Session::put('auth_extra', Carbon::now());
         $account->save();
 
         Auth::login($account, true);
@@ -121,11 +120,8 @@ class Authentication extends BaseController {
         if (Auth::check() || Auth::viaRemember()) {
 
             // Let's just check we're not demanding forceful re-authentication via secondary!
-            if(Request::query('force', false)){
-                $user = Auth::user();
-                $user->auth_extra = 0;
-                $user->auth_extra_at = null;
-                $user->save();
+            if (Request::query('force', false)) {
+                Session::forget('auth_extra');
             }
 
             return Redirect::route('mship.auth.redirect');
@@ -236,9 +232,10 @@ class Authentication extends BaseController {
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
-                    $account->auth_extra = 0;
                     $account->determineState($user->region->code, $user->division->code);
                     $account->save();
+
+                    Session::forget('auth_extra');
 
                     Auth::login($account, true);
 
@@ -261,10 +258,7 @@ class Authentication extends BaseController {
 
     public function postLogout($force = false) {
         if (Auth::check() && (Input::get('processlogout', 0) == 1 OR $force)) {
-            $user = Auth::user();
-            $user->auth_extra = 0;
-            $user->auth_extra_at = NULL;
-            $user->save();
+            Session::forget('auth_extra');
             Auth::logout();
         }
         return Redirect::to(Session::pull('logout_return', '/mship/manage/landing'));

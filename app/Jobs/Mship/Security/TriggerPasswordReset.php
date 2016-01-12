@@ -10,9 +10,8 @@ use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 
-class TriggerPasswordReset extends Job implements SelfHandling, ShouldQueue {
+class TriggerPasswordReset extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     private $token = null;

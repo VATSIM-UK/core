@@ -15,11 +15,11 @@ class Aerodrome extends aModel {
     ];
 
     public function sector(){
-        return $this->belongsTo(App\Modules\Ais\Models\Fir\Sector::class);
+        return $this->belongsTo(Fir\Sector::class);
     }
 
     public function facilities(){
-        return $this->hasMany(App\Modules\Ais\Models\Facility::class);
+        return $this->hasMany(Facility::class);
     }
 
 }

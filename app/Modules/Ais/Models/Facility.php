@@ -12,6 +12,6 @@ class Facility extends aModel {
     ];
 
     public function positions(){
-        return $this->hasMany(App\Modules\Ais\Models\Facility\Position::class);
+        return $this->hasMany(Facility\Position::class);
     }
 }

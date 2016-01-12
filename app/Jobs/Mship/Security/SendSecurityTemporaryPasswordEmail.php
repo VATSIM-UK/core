@@ -9,11 +9,10 @@ use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendSecurityTemporaryPasswordEmail extends Job implements SelfHandling, ShouldQueue
+class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
