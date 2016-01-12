@@ -35,6 +35,7 @@ class BanReasonImprovements extends Migration
 
         Schema::table('mship_note_type', function(Blueprint $table) {
             $table->dropColumn("short_code");
+            $table->dropColumn('is_default');
         });
     }
 }
