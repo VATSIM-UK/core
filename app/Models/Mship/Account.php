@@ -27,10 +27,10 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
     protected $table = 'mship_account';
     protected $primaryKey = 'account_id';
     public $incrementing = false;
-    protected $dates = ['auth_extra_at', 'last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['account_id', 'name_first', 'name_last'];
     protected $attributes = ['name_first' => '', 'name_last' => '', 'status' => self::STATUS_ACTIVE, 'last_login_ip' => '127.0.0.1'];
-    protected $doNotTrack = ['session_id', 'auth_extra', 'auth_extra_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     const STATUS_ACTIVE = 0; //b"00000';
     //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2

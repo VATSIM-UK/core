@@ -9,6 +9,7 @@ use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
 use Auth;
 use Bus;
+use Carbon\Carbon;
 use Input;
 use Redirect;
 use Session;
@@ -22,7 +23,7 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         // Let's check whether we even NEED this.
-        if (Auth::user()->auth_extra OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
+        if (Session::has('auth_extra') OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
             return Redirect::route("mship.auth.redirect");
         }
 
@@ -37,10 +38,7 @@ class Security extends \App\Http\Controllers\BaseController {
 
     public function postAuth() {
         if (Auth::user()->current_security->verifyPassword(Input::get("password"))) {
-            $user = Auth::user();
-            $user->auth_extra = 1;
-            $user->auth_extra_at = \Carbon\Carbon::now();
-            $user->save();
+            Session::put('auth_extra', Carbon::now());
             return Redirect::route("mship.auth.redirect");
         }
         return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
@@ -163,10 +161,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // All requirements met, set the password!
         Auth::user()->setPassword($newPassword, $securityType);
 
-        $user = Auth::user();
-        $user->auth_extra = 1;
-        $user->auth_extra_at = \Carbon\Carbon::now();
-        $user->save();
+        Session::put('auth_extra', Carbon::now());
         return Redirect::route("mship.security.auth");
     }
 
