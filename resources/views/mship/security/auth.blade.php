@@ -15,7 +15,7 @@
     </p>
     <div class="row">
         <div class="col-md-7 col-md-offset-2">
-            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.security.auth") }}">
+            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.security.auth.post") }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="password">Secondary Password</label>
