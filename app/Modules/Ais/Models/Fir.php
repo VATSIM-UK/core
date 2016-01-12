@@ -12,10 +12,10 @@ class Fir extends aModel {
     ];
 
     public function airfields(){
-        return $this->hasMany(App\Modules\Ais\Models\Aerodrome::class);
+        return $this->hasMany(Aerodrome::class);
     }
 
     public function sectors(){
-        return $this->hasMany(App\Modules\Ais\Models\Fir\Sector::class);
+        return $this->hasMany(Fir\Sector::class);
     }
 }
