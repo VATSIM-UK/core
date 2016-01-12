@@ -20,7 +20,7 @@ class UserMustReadNotifications
     public function handle($request, Closure $next)
     {
         if (Auth::check()
-            && Auth::user()->auth_extra
+            && Session::has('auth_extra')
             && (Auth::user()->has_unread_important_notifications
                 || Auth::user()->has_unread_must_acknowledge_notifications
             )

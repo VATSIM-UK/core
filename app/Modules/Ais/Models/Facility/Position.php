@@ -3,6 +3,7 @@
 namespace App\Modules\Ais\Models\Facility;
 
 use App\Models\aModel;
+use App\Modules\Ais\Models\Facility;
 
 class Position extends aModel {
 
@@ -14,6 +15,6 @@ class Position extends aModel {
     ];
 
     public function facility(){
-        return $this->belongsTo(App\Modules\Ais\Models\Facility::class);
+        return $this->belongsTo(Facility::class);
     }
 }

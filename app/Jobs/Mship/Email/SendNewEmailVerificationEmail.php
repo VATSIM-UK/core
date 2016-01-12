@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendNewEmailVerificationEmail extends Job implements SelfHandling, ShouldQueue
+class SendNewEmailVerificationEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
