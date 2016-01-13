@@ -120,38 +120,7 @@ class Ban extends \App\Models\aTimelineEntry
 
     public function getPeriodAmountStringAttribute()
     {
-        if ($this->period_finish == null) {
-            return "Unknown length";
-        }
-
-        $diff = $this->period_start->diff($this->period_finish);
-
-        $units = [];
-
-        if ($diff->y > 0) {
-            $units[] = $diff->y . " " . str_plural("hour", $diff->y);
-        }
-
-        if ($diff->m > 0) {
-            $units[] = $diff->m . " " . str_plural("month", $diff->m);
-        }
-
-        if ($diff->d > 0) {
-            $units[] = $diff->d . " " . str_plural("day", $diff->d);
-        }
-
-        if ($diff->h > 0) {
-            $units[] = $diff->h . " " . str_plural("hour", $diff->h);
-        }
-
-        if(count($units) == 1){
-            return $units[0];
-        }
-
-        $lastElement = array_pop($units);
-        $unitsString = implode(",", $units) . " and ".$lastElement;
-
-        return $unitsString;
+        return human_diff_string($this->period_start, $this->period_finish);
     }
 
     public function getDisplayValueAttribute()
