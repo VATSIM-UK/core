@@ -87,7 +87,6 @@ class MemberCertUpdate extends Job implements ShouldQueue
         if ($member->is_network_banned === true && $this->data->rating != 0) {
             $ban = $member->network_ban;
             $ban->period_finish = Carbon::now();
-            $ban->setPeriodAmountFromTS();
             $ban->save();
         }
     }

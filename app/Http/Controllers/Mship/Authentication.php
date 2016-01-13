@@ -224,7 +224,6 @@ class Authentication extends BaseController {
                     if($account->is_network_banned === true && $user->rating->id > 0){
                         $ban = $account->network_ban;
                         $ban->period_finish = Carbon::now();
-                        $ban->setPeriodAmountFromTS();
                         $ban->save();
                     }
 

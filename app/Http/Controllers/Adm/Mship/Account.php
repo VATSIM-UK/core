@@ -430,7 +430,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         // Modify the ban
         $ban->reason_extra = $ban->reason_extra."\n".Input::get("reason_extra");
         $ban->period_finish = $period_finish;
-        $ban->setPeriodAmountFromTS();
         $ban->save();
 
         $job = (new SendModifiedEmail($ban))->onQueue("high");

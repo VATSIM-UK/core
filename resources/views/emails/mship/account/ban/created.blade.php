@@ -1,5 +1,5 @@
 <p>
-    Your account has been banned for {!! $ban->period_amount !!} {!! $ban->period_unit_string !!}.  The reason for the ban, along with details of when the ban will be lifted, are included below.
+    Your account has been banned for {!! $ban->period_amount_string !!}.  The reason for the ban, along with details of when the ban will be lifted, are included below.
 </p>
 
 <h3>Details</h3>

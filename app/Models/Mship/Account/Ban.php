@@ -18,27 +18,33 @@ class Ban extends \App\Models\aTimelineEntry
     const TYPE_LOCAL   = 80;
     const TYPE_NETWORK = 90;
 
-    public static function scopeIsNetwork($query){
+    public static function scopeIsNetwork($query)
+    {
         return $query->where("type", "=", self::TYPE_NETWORK);
     }
 
-    public static function scopeIsLocal($query){
+    public static function scopeIsLocal($query)
+    {
         return $query->where("type", "=", self::TYPE_LOCAL);
     }
 
-    public static function scopeIsActive($query){
+    public static function scopeIsActive($query)
+    {
         return $query->isNotRepealed()->where("period_finish", ">=", \Carbon\Carbon::now());
     }
 
-    public static function scopeIsHistoric($query){
+    public static function scopeIsHistoric($query)
+    {
         return $query->isNotRepealed()->where("period_finish", "<", \Carbon\Carbon::now());
     }
 
-    public static function scopeIsRepealed($query){
+    public static function scopeIsRepealed($query)
+    {
         return $query->whereNotNull("repealed_at");
     }
 
-    public static function scopeIsNotRepealed($query){
+    public static function scopeIsNotRepealed($query)
+    {
         return $query->whereNull("repealed_at");
     }
 
@@ -57,28 +63,34 @@ class Ban extends \App\Models\aTimelineEntry
         return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
     }
 
-    public function notes(){
+    public function notes()
+    {
         return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
     }
 
-    public function repeal(){
+    public function repeal()
+    {
         $this->repealed_at = \Carbon\Carbon::now();
         $this->save();
     }
 
-    public function getIsLocalAttribute(){
+    public function getIsLocalAttribute()
+    {
         return $this->type == self::TYPE_LOCAL;
     }
 
-    public function getIsNetworkAttribute(){
+    public function getIsNetworkAttribute()
+    {
         return $this->type == self::TYPE_NETWORK;
     }
 
-    public function getIsRepealedAttribute(){
+    public function getIsRepealedAttribute()
+    {
         return $this->repealed_at != null;
     }
 
-    public function getIsActiveAttribute(){
+    public function getIsActiveAttribute()
+    {
         $period_start = $this->period_start;
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
@@ -86,33 +98,9 @@ class Ban extends \App\Models\aTimelineEntry
         return ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }
 
-    public function getIsExpiredAttribute(){
+    public function getIsExpiredAttribute()
+    {
         return !$this->is_active;
-    }
-
-    public function setPeriodAmountFromTS(){
-        $diff = $this->period_start->diff($this->period_finish);
-
-        /**
-         * IF:
-         * - We have hours AND minutes; OR
-         * - We have days AND (minutes OR hours).
-         * THEN:
-         * - Whole thing is minutes.
-         */
-        if(($diff->h > 0 AND $diff->i != 0) OR ($diff->d > 0 AND ($diff->i != 0 OR $diff->h != 0))){
-            $this->period_amount = $this->period_start->diffInMinutes($this->period_finish);
-            $this->period_unit = 'M';
-        } elseif($diff->d > 0){
-            $this->period_amount = $this->period_start->diffInDays($this->period_finish);
-            $this->period_unit = 'D';
-        } elseif($diff->h > 0) {
-            $this->period_amount = $this->period_start->diffInHours($this->period_finish);
-            $this->period_unit = 'H';
-        } else {
-            $this->period_amount = $this->period_start->diffInMinutes($this->period_finish);
-            $this->period_unit = 'M';
-        }
     }
 
     public function getTypeStringAttribute()
@@ -130,22 +118,40 @@ class Ban extends \App\Models\aTimelineEntry
         }
     }
 
-    public function getPeriodUnitStringAttribute()
+    public function getPeriodAmountStringAttribute()
     {
-        switch ($this->attributes['period_unit']) {
-            case "H":
-                return "Hours";
-                break;
-            case "D":
-                return "Days";
-                break;
-            case "M":
-                return "Months";
-                break;
-            default:
-                return "Unknown length";
-                break;
+        if ($this->period_finish == null) {
+            return "Unknown length";
         }
+
+        $diff = $this->period_start->diff($this->period_finish);
+
+        $units = [];
+
+        if ($diff->y > 0) {
+            $units[] = $diff->y . " " . str_plural("hour", $diff->y);
+        }
+
+        if ($diff->m > 0) {
+            $units[] = $diff->m . " " . str_plural("month", $diff->m);
+        }
+
+        if ($diff->d > 0) {
+            $units[] = $diff->d . " " . str_plural("day", $diff->d);
+        }
+
+        if ($diff->h > 0) {
+            $units[] = $diff->h . " " . str_plural("hour", $diff->h);
+        }
+
+        if(count($units) == 1){
+            return $units[0];
+        }
+
+        $lastElement = array_pop($units);
+        $unitsString = implode(",", $units) . " and ".$lastElement;
+
+        return $unitsString;
     }
 
     public function getDisplayValueAttribute()
