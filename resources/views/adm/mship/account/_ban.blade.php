@@ -26,13 +26,13 @@
         @if($ban->is_local)
             <div class="btn-toolbar">
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/account/ban/".$ban->account_ban_id."/repeal") && !$ban->is_repealed)
+                    @if($_account->hasPermission("adm/mship/ban/".$ban->account_ban_id."/repeal") && !$ban->is_repealed)
                         {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
                     @endif
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/account/ban/".$ban->account_ban_id."/modify") && $ban->is_active)
+                    @if($_account->hasPermission("adm/mship/ban/".$ban->account_ban_id."/modify") && $ban->is_active)
                         {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->account_ban_id], ["class" => "btn btn-warning"]) !!}
                     @endif
                 </div>
