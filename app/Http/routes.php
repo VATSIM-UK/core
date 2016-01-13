@@ -47,6 +47,9 @@ Route::model('mshipPermission', App\Models\Mship\Permission::class, function () 
 
 /*** WEBHOOKS ***/
 Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
+    Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
+    Route::post('dropbox', ['as' => 'webhook.dropbox.post', 'uses' => 'Dropbox@postDropbox']);
+
     Route::group(['prefix' => 'email', 'namespace' => 'Email'], function () {
         Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
     });
