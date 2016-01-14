@@ -65,19 +65,6 @@ return [
             'strict'    => false,
         ],
 
-        'mysql.rts' => [
-            'driver'    => 'mysql',
-            'host'	    => env('DB_MYSQL_HOST'),
-            'port'	    => env('DB_MYSQL_PORT'),
-            'database'  => env('DB_MYSQL_NAME_RTS'),
-            'username'  => env('DB_MYSQL_USER_RTS'),
-            'password'  => env('DB_MYSQL_PASS_RTS'),
-            'charset'   => env('DB_MYSQL_CHARSET', 'utf8'),
-            'collation' => env('DB_MYSQL_COLLATION', 'utf8_unicode_ci'),
-            'prefix'    => env('DB_MYSQL_PREFIX', ''),
-            'strict'    => false,
-        ],
-
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),

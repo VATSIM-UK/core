@@ -136,7 +136,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank")) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -222,7 +222,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.role.attach", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -315,7 +315,7 @@
                     <!-- Modals -->
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/enable"))
                         <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.enable", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.enable", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -350,7 +350,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/reset"))
                         <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.reset", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.reset", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -375,7 +375,7 @@
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/change"))
                         <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.security.change", $account->account_id))) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.change", $account->account_id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -423,7 +423,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add") && !$account->is_banned)
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBanAdd">Add Ban</button>
                                                 @endif
                                             </div>
@@ -433,37 +433,56 @@
 
                                         @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/view"))
                                             @foreach($account->bans as $ban)
-                                                <div class="panel panel-danger" id='ban-{{ $ban->account_ban_id }}'>
-                                                    <div class="panel-heading">
-                                                        <h3 class="panel-title">
-                                                            {!! $ban->type_string !!} - {!! $ban->period_amount !!} {!! $ban->period_unit_string !!}
-                                                            <span class="time pull-right">
-                                                            <small>
-                                                                <i class="fa fa-user"></i>
-                                                                {{ $ban->banner->name }} ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!})
-
-                                                                <i class="fa fa-clock-o"></i>
-                                                                {{ $ban->created_at->diffForHumans() }}, {{ $ban->created_at->toDateTimeString() }}
-                                                            </small>
-                                                        </span>
-                                                        </h3>
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <p>
-                                                            <strong>Ban Start:</strong> {{ $ban->period_start->diffForHumans() }}, {{ $ban->period_start->toDateTimeString() }}<br />
-                                                            <strong>Ban Finish:</strong> {{ $ban->period_finish->diffForHumans() }}, {{ $ban->period_finish->toDateTimeString() }}
-                                                        </p>
-                                                        <p>
-                                                            <strong>Reason</strong>
-                                                            <br />{{ $ban->reason_extra }}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                @include("adm.mship.account._ban", ["ban" => $ban, "selectedTab" => $selectedTab, "selectedTabId" => $selectedTabId])
                                             @endforeach
                                         @endif
                                     </div><!-- /.box-body -->
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="modal fade" id="modalBanAdd" tabindex="-1" role="dialog" aria-labelledby="Create Ban" aria-hidden="true">
+                            {!! Form::open(["url" => URL::route("adm.mship.account.ban.add", $account->account_id)]) !!}
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Create Ban</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            You can enter a new local ban into the system.  Doing so will cause the member to be banned across all UK services.
+                                            If the member is currently connected to TeamSpeak or active on the forum, their access will be rescinded immediately.
+                                        </p>
+                                        <p>
+                                        <div class="form-group">
+                                            <label for="ban_reason_id">Ban Reason</label>
+                                            <select name="ban_reason_id">
+                                                @foreach($banReasons as $br)
+                                                    <option value="{{ $br->ban_reason_id }}">{{ $br }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ban_reason_extra">Extra Info<br /><small>This will be sent to the member.</small></label>
+                                            <textarea name="ban_reason_extra" class="form-control" rows="5">{{ old("ban_reason_extra") }}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ban_note_content">Note<br /><small>This will *not* be sent to the member.</small></label>
+                                            <textarea name="ban_note_content" class="form-control" rows="5">{{ old("ban_note_content") }}</textarea>
+                                        </div>
+
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {!! Form::close() !!}
                         </div>
                     @endif
 
@@ -494,25 +513,7 @@
                                         @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/view"))
                                             @foreach($account->notes as $note)
                                                 @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
-                                                    <div class="panel panel-{{ $note->type->colour_code }} note-{{ $note->type->is_system ? "system" : "" }} note-type-{{ $note->note_type_id }}" id='note-{{ $note->account_note_id }}'>
-                                                        <div class="panel-heading">
-                                                            <h3 class="panel-title">
-                                                                {{ $note->type->name }}
-                                                                <span class="time pull-right">
-                                                                    <small>
-                                                                        <i class="fa fa-user"></i>
-                                                                        {{ $note->writer->name }} ({!! link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!})
-
-                                                                        <i class="fa fa-clock-o"></i>
-                                                                        {{ $note->created_at->diffForHumans() }}, {{ $note->created_at->toDateTimeString() }}
-                                                                    </small>
-                                                                </span>
-                                                            </h3>
-                                                        </div>
-                                                        <div class="panel-body">
-                                                            {{ $note->content }}
-                                                        </div>
-                                                    </div>
+                                                    @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
                                         @endif
@@ -520,37 +521,37 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
 
-                    <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
-                        {!! Form::open(array("url" => URL::route("adm.mship.account.note.filter", $account->account_id))) !!}
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">Note Filter</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        @foreach($noteTypesAll as $nt)
-                                        <div class="col-sm-4">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" name="filter[]" value="{{ $nt->note_type_id }}" {{ Input::get("filter.".$nt->note_type_id) ? "checked='checked'" : "" }} />
-                                                    {{ $nt->name }}
-                                                </label>
+                        <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
+                            {!! Form::open(["url" => URL::route("adm.mship.account.note.filter", $account->account_id)]) !!}
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Note Filter</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            @foreach($noteTypesAll as $nt)
+                                            <div class="col-sm-4">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="filter[]" value="{{ $nt->note_type_id }}" {{ Input::get("filter.".$nt->note_type_id) ? "checked='checked'" : "" }} />
+                                                        {{ $nt->name }}
+                                                    </label>
+                                                </div>
                                             </div>
+                                            @endforeach
                                         </div>
-                                        @endforeach
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Apply Filter</button>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-success">Apply Filter</button>
-                                </div>
                             </div>
+                            {!! Form::close() !!}
                         </div>
-                        {!! Form::close() !!}
-                    </div>
+                    @endif
 
                     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create"))
                         <div class="modal fade" id="modalNoteCreate" tabindex="-1" role="dialog" aria-labelledby="Create Note" aria-hidden="true">
@@ -642,7 +643,7 @@
                     <h3 class="box-title">Recent Timeline Events</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body table-responsive">
-                    @include('adm.sys.timeline.widget', array('entries' => $account->timeline_entries_recent))
+                    @include('adm.sys.timeline.widget', ['entries' => $account->timeline_entries_recent])
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

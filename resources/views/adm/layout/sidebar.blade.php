@@ -106,31 +106,6 @@
                             <a href="{{ URL::route("adm.mship.staff.index") }}"><i class="fa fa-angle-double-right"></i> Staff List / Layout</a>
                         </li>
                     @endif
-
-
-
-                    {{--
-                    @if($_account->hasChildPermission("adm/mshipx"))
-                        <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Qualifications List*</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mshipx"))
-                        <li {{ (\Request::is('adm/mship/qualification*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Qualification Settings</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mshipx"))
-                        <li {{ (\Request::is('adm/mship/note*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Note Settings</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mshipx"))
-                        <li {{ (\Request::is('adm/mship/security*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Security Settings</a>
-                        </li>
-                    @endif
-                    --}}
                 </ul>
             </li>
         @endif

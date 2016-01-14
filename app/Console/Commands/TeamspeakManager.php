@@ -2,9 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Carbon\Carbon;
 use Exception;
 use TeamSpeak3;
@@ -23,7 +20,7 @@ class TeamspeakManager extends aCommand {
      *
      * @var string
      */
-    protected $name = 'TeaMan:WakeUp';
+    protected $signature = 'TeaMan:WakeUp';
 
     /**
      * The console command description.
@@ -33,25 +30,12 @@ class TeamspeakManager extends aCommand {
     protected $description = 'TeamSpeak Management script.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
-
-        // if specified, turn debug mode on
-        if ($this->option("debug")) $debug = TRUE;
-        else $debug = FALSE;
-
+    public function handle()
+    {
         define("TS_IDLE_MESSAGE", 1);
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);
@@ -170,30 +154,21 @@ class TeamspeakManager extends aCommand {
                     $client_registration->save();
 
                     // check if the client is banned
-                    if ($client_account->is_banned || $client_account->is_inactive) {
+                    if ($client_account->is_banned OR $client_account->is_inactive) {
                         try {
-                            if ($client_account->is_banned)
+                            if ($client_account->is_network_banned)
                                 $message = "You are currently serving a VATSIM ban.";
-                            else $message = "Your VATSIM membership is inactive - visit "
+                            if ($client_account->is_system_banned)
+                                $message = "You are currently serving a VATSIM UK System Ban.";
+                            elseif($client_account->is_inactive)
+                                $message = "Your VATSIM membership is inactive - visit "
                                           . "https://cert.vatsim.net/vatsimnet/statcheck.html";
                             $client->kick(TeamSpeak3::KICK_SERVER, $message);
                             $client->deleteDb();
                             $client_registration->delete($tscon);
                             continue;
                         } catch (Exception $e) {
-                            if ($debug) echo "Error: " . $e->getMessage();
-                        }
-                    } elseif ($client_account->is_teamspeak_banned) {
-                        try {
-                            $client->ban($client_account->is_teamspeak_banned,
-                                "You are currently serving a TeamSpeak ban.");
-                            if ($client_account->is_teamspeak_banned > 60 * 60 * 24 * 2) {
-                                $client->deleteDb();
-                                $client_registration->delete($tscon);
-                            }
-                            continue;
-                        } catch (Exception $e) {
-                            if ($debug) echo "Error: " . $e->getMessage();
+                            $this->log("Error: " . $e->getMessage());
                         }
                     }
 
@@ -443,24 +418,13 @@ class TeamspeakManager extends aCommand {
                          . "Stack trace:\r\n\r\n"
                          . $e->getTraceAsString()
                          . "\r\nError message: " . $e->getMessage() . "\r\n";
-                echo $message;
+                $this->log($message);
                 mail("neil.farrington@vatsim-uk.co.uk", $subject, $message);
             }
         }
 
         $tscon = null;
 
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions() {
-        return array(
-            array("debug", "d", InputOption::VALUE_NONE, "Enable debug output."),
-        );
     }
 
     /**

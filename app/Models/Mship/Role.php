@@ -61,12 +61,24 @@ class Role extends \App\Models\aModel {
         return $query->whereDefault(1);
     }
 
-    public function accounts(){
-        return $this->belongsToMany("\App\Models\Mship\Account", "mship_account_role")->withTimestamps();
+    public static function scopeHasTimeout($query)
+    {
+        return $query->whereNotNull('session_timeout')->where('session_timeout', '!=', 0);
     }
 
-    public function permissions(){
-        return $this->belongsToMany("\App\Models\Mship\Permission", "mship_permission_role")->withTimestamps();
+    public static function hasTimeout($role)
+    {
+        return $role->session_timeout !== null && $role->session_timeout !== 0;
+    }
+
+    public function accounts()
+    {
+        return $this->belongsToMany(Account::class, "mship_account_role")->withTimestamps();
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, "mship_permission_role")->withTimestamps();
     }
 
     public function hasPermission($permission) {

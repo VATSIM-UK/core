@@ -2,20 +2,21 @@
 
 namespace App\Jobs\Messages;
 
+use App\Jobs\Job;
+use App\Models\Messages\Thread\Post;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendMessageEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueue
+class SendMessageEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     private $post;
     private $isNew = true;
 
-    public function __construct(\App\Models\Messages\Thread\Post $post, $isNew=true)
+    public function __construct(Post $post, $isNew=true)
     {
         $this->post = $post;
         $this->isNew = (boolean) $isNew;
@@ -35,7 +36,7 @@ class SendMessageEmail extends \App\Jobs\Job implements SelfHandling, ShouldQueu
                 $m->to($participant->primary_email->email, $participant->name);
 
                 // Send this one to all the secondary emails.
-                // @disabled 2.2.0 Awaiting improvement in 2.2.1
+                // @disabled 2.2.0 Awaiting improvement in 2.2.2
                 /*foreach($participant->secondary_email_verified as $sev){
                     $m->cc($sev->email, $participant->name. " (Secondary Email)");
                 }*/

@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Jobs\Mship\Security\SendSecurityResetLinkEmail;
-use Redirect;
-use Auth;
-use Session;
-use Input;
-use View;
+use App\Jobs\Mship\Security\SendSecurityTemporaryPasswordEmail;
+use App\Jobs\Mship\Security\TriggerPasswordReset;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Security as AccountSecurity;
 use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
+use Auth;
+use Bus;
+use Carbon\Carbon;
+use Input;
+use Redirect;
+use Session;
+use View;
 
 class Security extends \App\Http\Controllers\BaseController {
 
@@ -21,7 +24,7 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         // Let's check whether we even NEED this.
-        if (Auth::user()->auth_extra OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
+        if (Session::has('auth_extra') OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
             return Redirect::route("mship.auth.redirect");
         }
 
@@ -36,10 +39,7 @@ class Security extends \App\Http\Controllers\BaseController {
 
     public function postAuth() {
         if (Auth::user()->current_security->verifyPassword(Input::get("password"))) {
-            $user = Auth::user();
-            $user->auth_extra = 1;
-            $user->auth_extra_at = \Carbon\Carbon::now();
-            $user->save();
+            Session::put('auth_extra', Carbon::now());
             return Redirect::route("mship.auth.redirect");
         }
         return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
@@ -162,10 +162,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // All requirements met, set the password!
         Auth::user()->setPassword($newPassword, $securityType);
 
-        $user = Auth::user();
-        $user->auth_extra = 1;
-        $user->auth_extra_at = \Carbon\Carbon::now();
-        $user->save();
+        Session::put('auth_extra', Carbon::now());
         return Redirect::route("mship.security.auth");
     }
 
@@ -174,13 +171,10 @@ class Security extends \App\Http\Controllers\BaseController {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        Auth::user()->resetPassword();
+        Bus::dispatch(new TriggerPasswordResetConfirmation(Auth::user(), false));
         Auth::logout();
 
-        return $this->viewMake("mship.security.forgotten")->with("success", "As you have forgotten your password,
-                an authorisation link has been emailed to you.  Once you click this link to confirm this request
-                a new password will be generated and emailed to you.<br />
-                You can now close this window.");
+        return $this->viewMake("mship.security.forgotten")->with("success", trans("mship.security.forgotten.success")."<br />".trans("general.dialog.youcanclose"));
     }
 
     public function getForgottenLink($code=null) {
@@ -210,13 +204,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // Let's now consume this token.
         $token->consume();
 
-        // Generate a new password for them and then email it across!
-        $password = \App\Models\Mship\Account\Security::generate(false);
-        $passwordType = $token->related->current_security ? $token->related->current_security : \App\Models\Mship\Security::getDefault();
-        $token->related->setPassword($password, $passwordType, TRUE);
-
-        // Now generate an email.
-        \Bus::dispatch(new SendSecurityResetLinkEmail($token->related, $password));
+        Bus::dispatch(new TriggerPasswordReset($token));
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated

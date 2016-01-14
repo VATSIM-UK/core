@@ -2,40 +2,46 @@
 
 namespace App\Models\Mship\Account;
 
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Carbon\Carbon;
+use App\Models\Mship\Account;
 use App\Models\Mship\Security as SecurityType;
+use Carbon\Carbon;
+use Hash;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Security extends \Eloquent
+class Security extends Model
 {
-
     use SoftDeletingTrait;
 
-    protected $table      = "mship_account_security";
-    protected $primaryKey = "account_security_id";
-    protected $dates      = ['created_at', 'expires_at', 'deleted_at'];
+    protected $table      = 'mship_account_security';
+    protected $primaryKey = 'account_security_id';
+    protected $dates      = ['created_at', 'updated_at', 'expires_at', 'deleted_at'];
     protected $hidden     = ['account_security_id'];
-
-    protected $touches = ['account'];
+    protected $touches    = ['account'];
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo(Account::class, 'account_id', 'account_id');
     }
 
     public function security()
     {
-        return $this->belongsTo("\App\Models\Mship\Security", "security_id", "security_id");
+        return $this->belongsTo(SecurityType::class, 'security_id', 'security_id');
     }
 
     public function setValueAttribute($value)
     {
-        $this->attributes['value'] = self::hash($value);
+        $this->attributes['value'] = Hash::make($value);
     }
 
     public function verifyPassword($value)
     {
-        return $this->value == self::hash($value);
+        if ($this->value == self::hash($value)) {
+            $this->value = $value;
+            $this->save();
+        }
+
+        return Hash::check($value, $this->value);
     }
 
     public function getIsActiveAttribute()
@@ -49,6 +55,11 @@ class Security extends \Eloquent
         }
     }
 
+    /**
+     * @deprecated should only be used for checking old hashes
+     * @param $value
+     * @return string
+     */
     private static function hash($value)
     {
         return sha1(sha1($value));
@@ -56,25 +67,25 @@ class Security extends \Eloquent
 
     public static function generate($hashed = false)
     {
-        $pw = str_random(8) . "8!-";
+        $pw = str_random(8) . '8!-';
         $pw = str_shuffle($pw);
 
-        return ($hashed ? self::hash($pw) : $pw);
+        return ($hashed ? Hash::make($pw) : $pw);
     }
 
     public function expire()
     {
-        $this->expires_at = Carbon::now()->toDateTimeString();
+        $this->expires_at = Carbon::now();
         $this->save();
     }
 
     public function save(Array $options = [])
     {
         // Set the expiry date!
-        if ($this->expires_at == null OR $this->expires_at == '0000-00-00 00:00:00') {
+        if ($this->expires_at == null) {
             $securityType = SecurityType::find($this->type);
-            if ($securityType AND $securityType->expires > 0) {
-                $this->attributes['expires_at'] = Carbon::now()->addDays($securityType->expires)->toDateTimeString();
+            if ($securityType && $securityType->expiry > 0) {
+                $this->attributes['expires_at'] = Carbon::now()->addDays($securityType->expiry);
             }
         }
 

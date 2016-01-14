@@ -17,7 +17,8 @@ class SyncCommunity extends aCommand
      *
      * @var string
      */
-    protected $name = 'Sync:Community';
+    protected $signature = 'Sync:Community
+                        {--f|force=0 : If specified, only this CID will be checked.}';
 
     /**
      * The console command description.
@@ -27,21 +28,11 @@ class SyncCommunity extends aCommand
     protected $description = 'Sync membership data from Core to Community.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire()
+    public function handle()
     {
         if ($this->option('verbose')) {
             $verbose = true;
@@ -162,17 +153,5 @@ class SyncCommunity extends aCommand
             $this->output->writeln('Successful Updates: '.$countSuccess);
             $this->output->writeln('Failed Updates: '.$countFailure);
         }
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return array(
-            array('force-update', 'f', InputOption::VALUE_OPTIONAL, 'If specified, only this CID will be checked.', 0),
-        );
     }
 }

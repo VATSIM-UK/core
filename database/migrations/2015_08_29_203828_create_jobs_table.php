@@ -32,6 +32,6 @@ class CreateJobsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('jobs');
+        Schema::drop('jobs_pending');
     }
 }

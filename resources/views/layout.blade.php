@@ -79,7 +79,7 @@
                     </div>
                 @endif
 
-                @if(Auth::check() && $_account->auth_extra && !Request::is("mship/notification*") && $_account->has_unread_notifications)
+                @if(Auth::check() && Session::has('auth_extra') && !Request::is("mship/notification*") && $_account->has_unread_notifications)
                     <div class="alert alert-warning" role="alert">
                         You currently have unread notifications. You can view them on the "{!! HTML::link(route("mship.notification.list"), "notifications page") !!}".
                     </div>
