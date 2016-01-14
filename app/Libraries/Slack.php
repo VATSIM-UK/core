@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use App;
+use Slack as SlackInterface;
 
 class Slack
 {
@@ -21,7 +22,7 @@ class Slack
             $channel = 'wslogging_dev';
         }
 
-        return Slack::setUsername('Core Notifications')->to($channel);
+        return SlackInterface::setUsername('Core Notifications')->to($channel);
     }
 
     protected static function send($author, $message = '', $fields = [], $color)
