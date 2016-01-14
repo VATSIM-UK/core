@@ -1,8 +1,7 @@
 <p>
-    Your account ban has been modified.  Details of the ban and the timeframe are included below.
+    Your current suspension of access to all of the VATSIM United Kingdom services (Forum/Teamspeak/RTS system) has been changed to a total length of {{ $ban_total_length }} (including time served).
 </p>
 
-<h3>Details</h3>
 <p>
     {!! $ban->reason  !!}<br />
     {!! nl2br($ban->reason->reason_text) !!}
@@ -13,13 +12,8 @@
 </p>
 
 <p>
-    Start: {{ $ban->period_start->format("l jS \\of F Y H:i:s\\z") }}<br />
-    Finish: {{ $ban->period_finish->format("l jS \\of F Y H:i:s\\z") }}
-</p>
-
-<p>
-    Your account will be automatically unbanned at {{ $ban->period_finish->format("l jS \\of F Y H:i:s \\z") }}.  Please do not attempt to connect to any VATSIM UK service whilst your account
-    is banned.
+    Your account will autmatically regain access to all of the VATSIM United Kingdom services at {{ $ban->period_finish->format("l jS \\of F Y H:i:s \\z") }}.
+    Please do not attempt to access any services before this time.
 </p>
 
 @if($ban->is_local)
@@ -27,7 +21,3 @@
         <strong>This ban only applies to VATSIM UK services.  You will be notified separately if you are also banned from network services.</strong>
     </p>
 @endif
-
-<p>
-    If you believe this change has been made in error, please contact the community department {!! link_to("http://helpdesk.vatsim-uk.co.uk", "our helpdesk") !!}.
-</p>

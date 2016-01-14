@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mship;
 
 use App\Jobs\Mship\Security\SendSecurityTemporaryPasswordEmail;
 use App\Jobs\Mship\Security\TriggerPasswordReset;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 use App\Models\Mship\Account;
 use App\Models\Mship\Security as SecurityType;
 use App\Models\Sys\Token as SystemToken;
@@ -170,7 +171,7 @@ class Security extends \App\Http\Controllers\BaseController {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        Bus::dispatch(new TriggerPasswordReset(Auth::user(), false));
+        Bus::dispatch(new TriggerPasswordResetConfirmation(Auth::user(), false));
         Auth::logout();
 
         return $this->viewMake("mship.security.forgotten")->with("success", trans("mship.security.forgotten.success")."<br />".trans("general.dialog.youcanclose"));

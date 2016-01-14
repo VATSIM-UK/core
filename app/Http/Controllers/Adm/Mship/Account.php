@@ -421,15 +421,15 @@ class Account extends \App\Http\Controllers\Adm\AdmController
             $noteComment = "Ban has been extended from ".$ban->period_finish->toDateTimeString().".\n";
         }
         $noteComment.= "New finish: ".$period_finish->toDateTimeString()."\n";
-        $noteComment.= Input::get("reason");
+        $noteComment.= Input::get("note");
 
         // Attach the note.
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), $noteComment, Auth::getUser());
         $ban->notes()->save($note);
 
         // Modify the ban
+        $ban->reason_extra = $ban->reason_extra."\n".Input::get("reason_extra");
         $ban->period_finish = $period_finish;
-        $ban->setPeriodAmountFromTS();
         $ban->save();
 
         $job = (new SendModifiedEmail($ban))->onQueue("high");
