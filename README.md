@@ -1,5 +1,7 @@
 ## Upgrade Notes
 
+### [ Future Versions ] 2.2.2 >
+
 ### 2.2.1 > 2.2.2
 * Enable the stats tracking cronjobs:
 * * `statistics:download`
