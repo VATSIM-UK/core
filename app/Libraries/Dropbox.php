@@ -2,8 +2,8 @@
 
 namespace App\Libraries;
 
+use Cache;
 use stdClass;
-
 
 /**
  * Class Dropbox

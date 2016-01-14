@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use App;
+
 class Slack
 {
     /**

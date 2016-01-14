@@ -26,7 +26,7 @@ class Dropbox extends WebhookController
 
         // obtain our latest cursor, or obtain one if it doesn't exist
         $cursor = Cache::rememberForever(DropboxLibrary::KEY_LATEST_CURSOR, function () {
-            return $this->getCursor();
+            return DropboxLibrary::getLatestCursor();
         });
 
         // get the changed entries
@@ -42,7 +42,7 @@ class Dropbox extends WebhookController
             ];
         }
 
-        SlackLibrary::sendMessage(__FILE__, sprint_f('%s Dropbox files have been changed', count($entries), $fields));
+        SlackLibrary::sendMessage(__FILE__, sprintf('%s Dropbox files have been changed', count($entries), $fields));
 
         // return nothing
         return response('');
