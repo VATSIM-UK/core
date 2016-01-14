@@ -82,14 +82,7 @@ class aCommand extends Command {
             ],
         ];
 
-        // get the current relative directory, and set the link to GitLab
-        preg_match('/\/app\/Console\/Commands\/.*$/', __FILE__, $directory);
-        $directory = $directory[0];
-        if (App::environment('production')) {
-            $attachment['author_link'] = 'https://gitlab.com/vatsim-uk/core/blob/production' . $directory;
-        } else {
-            $attachment['author_link'] = 'https://gitlab.com/vatsim-uk/core/blob/development' . $directory;
-        }
+        $attachment['author_link'] = $this->getAuthorLink();
 
         foreach ($fields as $index => $message) {
             $attachment['fields'][] = [
@@ -132,6 +125,8 @@ class aCommand extends Command {
             ],
         ];
 
+        $attachment['author_link'] = $this->getAuthorLink();
+
         foreach ($fields as $index => $message) {
             $attachment['fields'][] = [
                 'title' => $index,
@@ -141,5 +136,17 @@ class aCommand extends Command {
         }
 
         $this->slack()->attach($attachment)->send();
+    }
+
+    protected function getAuthorLink()
+    {
+        // get the current relative directory, and set the link to GitLab
+        preg_match('/\/app\/Console\/Commands\/.*$/', __FILE__, $directory);
+        $directory = $directory[0];
+        if (App::environment('production')) {
+            return 'https://gitlab.com/vatsim-uk/core/blob/production' . $directory;
+        } else {
+            return 'https://gitlab.com/vatsim-uk/core/blob/development' . $directory;
+        }
     }
 }
