@@ -36,9 +36,9 @@ class Dropbox extends WebhookController
         // process them
         foreach ($entries as $entry) {
             $fields = [
-                ['Tag:' => $entry->{'.tag'}],
-                ['File name:' => $entry->name],
-                ['Path:' => $entry->path_lower],
+                'Tag:' => $entry->{'.tag'},
+                'File name:' => $entry->name,
+                'Path:' => $entry->path_lower,
             ];
         }
 
