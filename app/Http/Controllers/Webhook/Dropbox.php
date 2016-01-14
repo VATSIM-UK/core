@@ -42,7 +42,7 @@ class Dropbox extends WebhookController
             ];
         }
 
-        SlackLibrary::sendMessage(__FILE__, sprintf('%s Dropbox files have been changed', count($entries), $fields));
+        SlackLibrary::sendMessage(__FILE__, sprintf('%s Dropbox files have been changed', count($entries)), $fields);
 
         // return nothing
         return response('');
