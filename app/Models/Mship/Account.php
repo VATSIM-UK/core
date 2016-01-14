@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship;
 
-use App\Jobs\Mship\Account\SendNewEmailVerificationEmail;
+use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email as AccountEmail;
