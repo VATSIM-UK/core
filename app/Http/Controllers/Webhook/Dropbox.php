@@ -32,15 +32,22 @@ class Dropbox extends WebhookController
         // get the changed entries
         $entries = DropboxLibrary::getUpdates($cursor);
 
-        $fields = [];
+        $tags = '';
+        $names = '';
+        $paths = '';
+
         // process them
         foreach ($entries as $entry) {
-            $fields = [
-                'Tag:' => $entry->{'.tag'},
-                'File name:' => $entry->name,
-                'Path:' => $entry->path_lower,
-            ];
+            $tags .= $entry->{'.tag'} . "\n";
+            $names .= $entry->name . "\n";
+            $paths .= $entry->path_lower . "\n";
         }
+
+        $fields = [
+            'Path:' => trim($paths, "\n"),
+            'Tag:' => trim($tags, "\n"),
+            'File name:' => trim($names, "\n"),
+        ];
 
         SlackLibrary::sendMessage(__FILE__, sprintf('%s Dropbox files have been changed', count($entries)), $fields);
 
