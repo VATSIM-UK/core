@@ -1,5 +1,7 @@
 ## Upgrade Notes
 
+### [ Future Versions ] 2.2.2 >
+
 ### 2.2.1 > 2.2.2
 * Enable the stats tracking cronjobs:
 * * `statistics:download`
@@ -39,6 +41,7 @@
 * * [Delete] `2015_08_29_174200_postmaster_templates_removal`
 * * [Update] `2015_08_29_203828_create_jobs_table, batch=10` => `2015_08_29_203828_create_jobs_table`, batch=6
 * * [Update] `2015_08_29_204330_create_failed_jobs_table, batch=10` => `2015_08_29_204330_create_failed_jobs_table`, batch=6
+
 ```mysql
 UPDATE migrations
 SET migration = '2015_12_27_221900_vanilla_mship_v221'
@@ -82,6 +85,8 @@ UPDATE migrations
 SET migration = '2015_08_29_203828_create_jobs_table', batch = '6'
 WHERE migration = '2015_08_29_203828_create_jobs_table';
 ```
+
+* Set each role's session_timeout after migrating
 
 ### 2.2.0 > 2.2.1
 * Enable the SyncMentors cronjob: <NF has the name>

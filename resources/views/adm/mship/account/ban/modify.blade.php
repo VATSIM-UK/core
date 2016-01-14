@@ -46,8 +46,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="reason">Reason:</label>
+                        <label for="reason">Reason:<br /><small>The member will be sent this information.</small></label>
                         <textarea name="reason" class="form-control" rows="5">{{ old('reason') }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note">Note:<br /><small>The member will *not* be sent this information.</small></label>
+                        <textarea name="note" class="form-control" rows="5">{{ old('note') }}</textarea>
                     </div>
 
                     <div class="btn-toolbar">
