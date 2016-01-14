@@ -22,6 +22,10 @@ class SendRepealedEmail extends Job implements ShouldQueue
 
     public function handle()
     {
+        if(!$this->ban->is_local){
+            return true;
+        }
+
         $displayFrom = "VATSIM UK - Community Department";
         $subject = "Account Ban - Repealed";
         $body = \View::make("emails.mship.account.ban.repealed")
