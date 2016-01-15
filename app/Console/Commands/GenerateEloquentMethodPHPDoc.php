@@ -8,6 +8,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use stdClass;
 
 class GenerateEloquentMethodPHPDoc extends aCommand
@@ -61,6 +62,9 @@ class GenerateEloquentMethodPHPDoc extends aCommand
         }
     }
 
+    /**
+     * Get all methods from the main Eloquent model class.
+     */
     protected function getEloquentMethods()
     {
         $eloquentInfo = new ReflectionClass($this->eloquent_model);
@@ -70,16 +74,35 @@ class GenerateEloquentMethodPHPDoc extends aCommand
         }
     }
 
+    /**
+     * Naively check if a given method is a magic method.
+     *
+     * @param ReflectionMethod $method
+     * @return bool true if method name stars with __, else false
+     */
     protected function isMagicMethod($method)
     {
         return starts_with($method->getName(), '__');
     }
 
+    /**
+     * Check if a given method is a method in the main Eloquent model.
+     *
+     * @param ReflectionMethod $method
+     * @return bool
+     */
     protected function isModelMethod($method)
     {
         return array_search($method->getName(), $this->eloquent_methods) !== false;
     }
 
+    /**
+     * Retrieves the parameters and return type for a given method.
+     *
+     * @param ReflectionMethod $method
+     * @param Tag[]|Tag\ParamTag[]|Tag\ReturnTag[] $tags
+     * @return \stdClass
+     */
     protected function getMethodDefinition($method, $tags)
     {
         $definition = new stdClass();
@@ -97,13 +120,29 @@ class GenerateEloquentMethodPHPDoc extends aCommand
         return $definition;
     }
 
+    /**
+     * Get the parameter type, name, and default value.
+     *
+     * @param ReflectionMethod $method
+     * @param Tag\ParamTag $tag
+     * @return string
+     */
     protected function getParameterDefinition($method, $tag)
     {
         $defaultValue = $this->getParameterDefault($method, $tag);
+        $returnType = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
+        $parameterName = $tag->getVariableName();
 
-        return (str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType()) . ' ' . $tag->getVariableName() . $defaultValue;
+        return "$returnType $parameterName$defaultValue";
     }
 
+    /**
+     * Get the default value of a parameter;
+     *
+     * @param ReflectionMethod $method
+     * @param Tag\ParamTag $tag
+     * @return string
+     */
     protected function getParameterDefault($method, $tag)
     {
         $methodParameters = $method->getParameters();
@@ -113,7 +152,7 @@ class GenerateEloquentMethodPHPDoc extends aCommand
                     $rawValue = var_export($parameter->getDefaultValue(), true);
                     $value = preg_replace('/\n+|\s+/', '', $rawValue);
 
-                    return sprintf(" = $value");
+                    return " = $value";
                 } catch (ReflectionException $e) {}
             }
         }
@@ -121,6 +160,12 @@ class GenerateEloquentMethodPHPDoc extends aCommand
         return '';
     }
 
+    /**
+     * Get the return type from the given return tag.
+     *
+     * @param Tag\ReturnTag $tag
+     * @return string
+     */
     protected function getReturnDefinition($tag)
     {
         if ($tag->getType() === '$this' || $tag->getType() === 'self') {
