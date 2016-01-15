@@ -8,6 +8,32 @@ use App\Models\Teamspeak\Log;
 use TeamSpeak3;
 use Carbon\Carbon;
 
+/**
+ * App\Models\Teamspeak\Registration
+ *
+ * @property integer $id
+ * @property integer $account_id
+ * @property integer $registration_ip
+ * @property integer $last_ip
+ * @property string $last_login
+ * @property string $last_os
+ * @property string $uid
+ * @property integer $dbid
+ * @property string $status
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $deleted_at
+ * @property-read \App\Models\Teamspeak\Confirmation $confirmation
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Log[] $logs
+ * @property-read mixed $last_idle_message
+ * @property-read mixed $last_idle_poke
+ * @property-read mixed $last_nickname_warn
+ * @property-read mixed $last_nickname_kick
+ * @property-read mixed $last_notification_important_poke
+ * @property-read mixed $last_notification_must_acknowledge_poke
+ * @property-read mixed $last_notification_must_acknowledge_kick
+ */
 class Registration extends \App\Models\aModel {
 
     use SoftDeletingTrait;

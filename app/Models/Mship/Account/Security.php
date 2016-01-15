@@ -9,6 +9,21 @@ use Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account\Security
+ *
+ * @property integer $account_security_id
+ * @property integer $account_id
+ * @property integer $security_id
+ * @property string $value
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $expires_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Models\Mship\Security $security
+ * @property-read mixed $is_active
+ */
 class Security extends Model
 {
     use SoftDeletingTrait;

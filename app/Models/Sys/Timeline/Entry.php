@@ -4,6 +4,28 @@ namespace App\Models\Sys\Timeline;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Sys\Timeline\Entry
+ *
+ * @property integer $timeline_entry_id
+ * @property integer $timeline_action_id
+ * @property integer $owner_id
+ * @property string $owner_type
+ * @property integer $extra_id
+ * @property string $extra_type
+ * @property string $extra_data
+ * @property integer $ip
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Sys\Timeline\Entry $owner
+ * @property-read \App\Models\Sys\Timeline\Entry $extra
+ * @property-read \App\Models\Sys\Timeline\Action $action
+ * @property-read mixed $owner_display
+ * @property-read mixed $extra_display
+ * @property-read mixed $entry
+ * @property-read mixed $entry_replace
+ */
 class Entry extends \App\Models\aModel {
 
 	use SoftDeletingTrait;

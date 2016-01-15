@@ -6,6 +6,21 @@ use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Permission as PermissionData;
 
+/**
+ * App\Models\Mship\Role
+ *
+ * @property integer $role_id
+ * @property string $name
+ * @property boolean $default
+ * @property integer $session_timeout
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
+ */
 class Role extends \App\Models\aModel {
 
     use SoftDeletingTrait;

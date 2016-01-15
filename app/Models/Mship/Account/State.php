@@ -4,6 +4,18 @@ namespace App\Models\Mship\Account;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account\State
+ *
+ * @property integer $account_state_id
+ * @property integer $account_id
+ * @property boolean $state
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read mixed $label
+ */
 class State extends \Eloquent
 {
 
