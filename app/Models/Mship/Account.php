@@ -20,6 +20,86 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account
+ *
+ * @property integer $account_id
+ * @property string $name_first
+ * @property string $name_last
+ * @property string $session_id
+ * @property string $salt
+ * @property \Carbon\Carbon $last_login
+ * @property integer $last_login_ip
+ * @property string $remember_token
+ * @property string $gender
+ * @property string $experience
+ * @property integer $age
+ * @property integer $status
+ * @property boolean $is_invisible
+ * @property boolean $debug
+ * @property \Carbon\Carbon $joined_at
+ * @property string $template
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $cert_checked_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $emails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $messagePosts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Qualification[] $qualifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\State[] $states
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[] $ssoTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Security[] $security
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Alias[] $teamspeakAliases
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Registration[] $teamspeakRegistrations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readNotifications
+ * @property-read mixed $unread_notifications
+ * @property-read mixed $has_unread_notifications
+ * @property-read mixed $has_unread_important_notifications
+ * @property-read mixed $has_unread_must_acknowledge_notifications
+ * @property-read mixed $qualification_atc
+ * @property-read mixed $qualifications_atc
+ * @property-read mixed $qualifications_atc_training
+ * @property-read mixed $qualifications_pilot
+ * @property-read mixed $qualifications_pilot_string
+ * @property-read mixed $qualifications_pilot_training
+ * @property-read mixed $qualifications_admin
+ * @property-read mixed $current_state
+ * @property-read mixed $all_states
+ * @property-read mixed $primary_state
+ * @property-read mixed $current_security
+ * @property-read mixed $is_system_banned
+ * @property-read mixed $system_ban
+ * @property-read mixed $is_network_banned
+ * @property-read mixed $network_ban
+ * @property-read mixed $is_banned
+ * @property mixed $is_inactive
+ * @property mixed $is_system
+ * @property-read mixed $status_string
+ * @property-read mixed $status_array
+ * @property-read mixed $primary_email
+ * @property-read mixed $secondary_email
+ * @property-read mixed $secondary_email_verified
+ * @property-read mixed $name
+ * @property-read mixed $display_value
+ * @property-read mixed $new_registration
+ * @property-read mixed $confirmed_registrations
+ * @property-read mixed $session_timeout
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
+ * @property-read mixed $timeline_entries_recent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
+ */
 class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
 
     use SoftDeletingTrait, Authenticatable;

@@ -4,6 +4,23 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Sys\Read
+ *
+ * @property integer $notification_read_id
+ * @property integer $notification_id
+ * @property integer $account_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read active()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read mustAcknowledge()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read important()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read operational()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read general()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read user()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read since($sinceTimestamp)
+ */
 class Read extends \App\Models\aModel {
 
     use SoftDeletingTrait;

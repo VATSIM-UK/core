@@ -4,6 +4,15 @@ namespace App\Models\Teamspeak;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Teamspeak\Confirmation
+ *
+ * @property integer $registration_id
+ * @property string $privilege_key
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Teamspeak\Registration $registration
+ */
 class Confirmation extends \App\Models\aModel {
 
     protected $table = 'teamspeak_confirmation';

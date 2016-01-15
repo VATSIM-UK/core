@@ -4,6 +4,27 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Sys\Notification
+ *
+ * @property integer $notification_id
+ * @property string $title
+ * @property string $content
+ * @property integer $status
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $effective_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $readBy
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification published()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification withStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification mustAcknowledge()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification important()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification operational()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification general()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification user()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification since($sinceTimestamp)
+ */
 class Notification extends \App\Models\aModel {
 
     use SoftDeletingTrait;

@@ -9,6 +9,25 @@ use \Event;
 use App\Modules\Statistics\Events\AtcSessionEnded;
 use App\Modules\Statistics\Events\AtcSessionDeleted;
 
+/**
+ * App\Modules\Statistics\Models\Atc
+ *
+ * @property integer $id
+ * @property integer $account_id
+ * @property string $callsign
+ * @property integer $qualification_id
+ * @property boolean $facility_type
+ * @property \Carbon\Carbon $connected_at
+ * @property string $disconnected_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc forAccountId($id)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc forQualificationId($id)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc withCallsign($callsign)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc online()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc offline()
+ */
 class Atc extends Model
 {
     use SoftDeletes;

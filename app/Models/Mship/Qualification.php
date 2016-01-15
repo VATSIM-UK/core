@@ -5,6 +5,22 @@ namespace App\Models\Mship;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
 
+/**
+ * App\Models\Mship\Qualification
+ *
+ * @property integer $qualification_id
+ * @property string $code
+ * @property string $type
+ * @property string $name_small
+ * @property string $name_long
+ * @property string $name_grp
+ * @property integer $vatsim
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
+ */
 class Qualification extends \Eloquent {
 	use SoftDeletingTrait;
         protected $table = "mship_qualification";

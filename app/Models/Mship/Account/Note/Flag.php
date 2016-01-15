@@ -4,6 +4,13 @@ namespace App\Models\Mship\Account\Note;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account\Note\Flag
+ *
+ * @property-read \App\Models\Mship\Account $flagger
+ * @property-read \App\Models\Mship\Account $resolver
+ * @property-read \App\Models\Mship\Account\Note $note
+ */
 class Flag extends \Eloquent {
     use SoftDeletingTrait;
 

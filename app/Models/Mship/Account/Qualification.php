@@ -4,6 +4,23 @@ namespace App\Models\Mship\Account;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account\Qualification
+ *
+ * @property integer $account_qualification_id
+ * @property integer $account_id
+ * @property integer $qualification_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Models\Mship\Qualification $qualification
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification atc()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification atcTraining()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification pilot()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification pilotTraining()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification admin()
+ */
 class Qualification extends \Eloquent
 {
 
