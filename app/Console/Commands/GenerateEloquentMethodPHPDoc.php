@@ -2,28 +2,22 @@
 
 namespace App\Console\Commands;
 
-use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
-use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Str;
-use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\ClassLoader\ClassMapGenerator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
-use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use ReflectionClass;
+use ReflectionException;
+use stdClass;
 
 class GenerateEloquentMethodPHPDoc extends aCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'ide-helper:eloquent-methods';
+    protected $signature = 'ide-helper:eloquent-methods';
 
     /**
      * The console command description.
@@ -33,70 +27,106 @@ class GenerateEloquentMethodPHPDoc extends aCommand
     protected $description = 'Generate autocompletion for models extending an abstract model';
 
     protected $abstract_model = aCommand::class;
-    protected $eloquent_model = \Illuminate\Database\Eloquent\Model::class;
-    protected $scraped_class = \Illuminate\Database\Eloquent\Builder::class;
+    protected $eloquent_model = Model::class;
+    protected $eloquent_methods = [];
+    protected $scraped_class = Builder::class;
+    protected $scraped_methods = [];
 
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire()
+    public function handle()
     {
-        $_eloquentMethods = (new \ReflectionClass($this->eloquent_model))->getMethods();
-        $eloquentMethods = [];
-        foreach ($_eloquentMethods as $method) {
-            $eloquentMethods[] = $method->getName();
-        }
+        $this->getEloquentMethods();
 
-        $name = \Illuminate\Database\Eloquent\Builder::class;
-        $reflectionClass = new \ReflectionClass($name);
-
-        $output = '';
-        foreach ($reflectionClass->getMethods() as $method)
+        $scrapedInfo = new ReflectionClass($this->scraped_class);
+        foreach ($scrapedInfo->getMethods() as $method)
         {
-            if (!starts_with($method->getName(), '__') && array_search($method->getName(), $eloquentMethods) === false) {
-                $output .= '* @method ';
-                //if ($method->isStatic()) {
-                    $output .= 'static ';
-                //}
-                $tags = (new DocBlock($method))->getTags();
+            if (!$this->isMagicMethod($method) && !$this->isModelMethod($method)) {
+                $this->log('* @method static ', null, false);
+                $docBlockTags = (new DocBlock($method))->getTags();
 
-                $params = [];
-                $return = '';
-                foreach ($tags as $tag) {
-                    if ($tag->getName() === 'param') {
-                        $parameters = $method->getParameters();
-                        $defaultValue = '';
-                        foreach ($parameters as $parameter) {
-                            if ('$' . $parameter->getName() === $tag->getVariableName()) {
-                                try {
-                                    $defaultValue .= ' = ' . preg_replace('/\n+|\s+/', '', var_export($parameter->getDefaultValue(), true));
-                                } catch (\ReflectionException $e) {}
-                            }
-                        }
+                $definition = $this->getMethodDefinition($method, $docBlockTags);
 
-                        $params[$tag->getVariableName() . $defaultValue] = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
-                    } elseif ($tag->getName() === 'return' && $tag->getType() !== 'void') {
-                        if ($tag->getType() === '$this' || $tag->getType() === 'self') {
-                            $return = '\\' . $this->scraped_class;
-                        } else {
-                            $return = $tag->getType();
-                        }
-                    }
-                }
+                $this->log("$definition->return ", null, false);
 
-                if ($return) {
-                    $output .= $return . ' ';
-                }
-                $output .= $method->getName() . '(';
-                foreach ($params as $name => $type) {
-                    $output .= $type . ' ' . $name . ', ';
-                }
-                $output = trim($output, ', ') . ')' . PHP_EOL;
+                $this->log(sprintf(
+                    '%s(%s)',
+                    $method->getName(),
+                    implode($definition->params, ', ')
+                ));
+            }
+        }
+    }
+
+    protected function getEloquentMethods()
+    {
+        $eloquentInfo = new ReflectionClass($this->eloquent_model);
+        $eloquentMethods = $eloquentInfo->getMethods();
+        foreach ($eloquentMethods as $method) {
+            $this->eloquent_methods[] = $method->getName();
+        }
+    }
+
+    protected function isMagicMethod($method)
+    {
+        return starts_with($method->getName(), '__');
+    }
+
+    protected function isModelMethod($method)
+    {
+        return array_search($method->getName(), $this->eloquent_methods) !== false;
+    }
+
+    protected function getMethodDefinition($method, $tags)
+    {
+        $definition = new stdClass();
+        $definition->params = [];
+        $definition->return = '';
+
+        foreach ($tags as $tag) {
+            if ($tag->getName() === 'param') {
+                $definition->params[] = $this->getParameterDefinition($method, $tag);
+            } elseif ($tag->getName() === 'return' && $tag->getType() !== 'void') {
+                $definition->return = $this->getReturnDefinition($tag);
             }
         }
 
-        echo $output;
+        return $definition;
+    }
+
+    protected function getParameterDefinition($method, $tag)
+    {
+        $defaultValue = $this->getParameterDefault($method, $tag);
+
+        return (str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType()) . ' ' . $tag->getVariableName() . $defaultValue;
+    }
+
+    protected function getParameterDefault($method, $tag)
+    {
+        $methodParameters = $method->getParameters();
+        foreach ($methodParameters as $parameter) {
+            if (sprintf('$%s', $parameter->getName()) === $tag->getVariableName()) {
+                try {
+                    $rawValue = var_export($parameter->getDefaultValue(), true);
+                    $value = preg_replace('/\n+|\s+/', '', $rawValue);
+
+                    return sprintf(" = $value");
+                } catch (ReflectionException $e) {}
+            }
+        }
+
+        return '';
+    }
+
+    protected function getReturnDefinition($tag)
+    {
+        if ($tag->getType() === '$this' || $tag->getType() === 'self') {
+            return '\\' . $this->scraped_class;
+        } else {
+            return $tag->getType();
+        }
     }
 }
