@@ -34,6 +34,7 @@ class GenerateEloquentMethodPHPDoc extends aCommand
 
     protected $abstract_model = aCommand::class;
     protected $eloquent_model = \Illuminate\Database\Eloquent\Model::class;
+    protected $scraped_class = \Illuminate\Database\Eloquent\Builder::class;
 
     /**
      * Execute the console command.
@@ -65,21 +66,6 @@ class GenerateEloquentMethodPHPDoc extends aCommand
                 $return = '';
                 foreach ($tags as $tag) {
                     if ($tag->getName() === 'param') {
-                        // testing
-                        if ($tag->getVariableName() == '$columns' && $method->getName() == 'find') {
-                            dump ($tag);
-                            $parameters = $method->getParameters();
-                            foreach ($parameters as $p) {
-                                try {
-                                    dump('spesh' . $p->getName());
-                                    $defaultValue = var_export($p->getDefaultValue(), true);
-                                } catch (\ReflectionException $e) {
-
-                                }
-                            }
-                        }
-
-                        // real
                         $parameters = $method->getParameters();
                         $defaultValue = '';
                         foreach ($parameters as $parameter) {
@@ -93,7 +79,7 @@ class GenerateEloquentMethodPHPDoc extends aCommand
                         $params[$tag->getVariableName() . $defaultValue] = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
                     } elseif ($tag->getName() === 'return' && $tag->getType() !== 'void') {
                         if ($tag->getType() === '$this' || $tag->getType() === 'self') {
-                            $return = '\\' . $name;
+                            $return = '\\' . $this->scraped_class;
                         } else {
                             $return = $tag->getType();
                         }
