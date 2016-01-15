@@ -41,6 +41,7 @@ function requestData(url, callback) {
         }
     }
     xmlhttp.open("POST", url, true);
+    xmlhttp.setRequestHeader("X-CSRF-TOKEN", "{{csrf_token()}}");
     xmlhttp.send(null);
 }
 
