@@ -78,7 +78,7 @@
                                 <td>{!! $e->is_primary ? '<span class="label label-success">Primary</span>' : '<span class="label label-default">Secondary</span>' !!}</td>
                                 <td>{{ $e->created_at }}</td>
                                 <td>{{ $e->verified_at }}</td>
-                                <td>{{ $m->deleted_at ? $m->deleted_at : "Not Deleted" }}</td>
+                                <td>{{ $e->deleted_at ? $e->deleted_at : "Not Deleted" }}</td>
                             </tr>
                             @endforeach
                         </tbody>
