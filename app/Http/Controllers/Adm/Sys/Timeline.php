@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Sys;
 
-use AuthException;
 use Input;
 use Session;
 use Response;
