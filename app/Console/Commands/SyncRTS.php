@@ -37,8 +37,8 @@ class SyncRTS extends aCommand
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 
         $members = DB::table('prod_rts.members');
-        if ($this->option("force-update")) {
-            $members->where('cid', '=', $this->option('force-update'))
+        if ($this->option("force")) {
+            $members->where('cid', '=', $this->option('force'))
                     ->where('deleted', '=', '0');
         } else {
             $members->where('deleted', '=', '0')
