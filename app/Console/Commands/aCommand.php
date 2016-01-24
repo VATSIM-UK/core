@@ -12,9 +12,9 @@ class aCommand extends Command {
      * Log a string to STDOUT.
      * If STDOUT is piped/redirected, styling is removed.
      *
-     * @param string     $string  The string to output.
-     * @param null       $style   The styling to output.
-     * @param bool|false $newline If a new line should be returned at the end.
+     * @param string    $string  The string to output.
+     * @param null      $style   The styling to output.
+     * @param bool      $newline If a new line should be returned at the end.
      */
     protected function log($string, $style = null, $newline = true)
     {

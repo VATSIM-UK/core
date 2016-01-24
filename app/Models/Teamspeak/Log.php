@@ -2,6 +2,24 @@
 
 namespace App\Models\Teamspeak;
 
+/**
+ * App\Models\Teamspeak\Log
+ *
+ * @property integer $id
+ * @property integer $registration_id
+ * @property string $type
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Teamspeak\Registration $registration
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idleMessage()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idlePoke()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idleKick()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log nickWarn()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log nickKick()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationImportantPoke()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgePoke()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgeKick()
+ */
 class Log extends \App\Models\aModel {
 
     protected $table = 'teamspeak_log';

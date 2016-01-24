@@ -4,6 +4,18 @@ namespace App\Models\Messages\Thread;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Messages\Thread\Post
+ *
+ * @property integer $thread_post_id
+ * @property integer $thread_id
+ * @property integer $account_id
+ * @property string $content
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Messages\Thread $thread
+ * @property-read \App\Models\Mship\Account $author
+ */
 class Post extends \App\Models\aModel
 {
 

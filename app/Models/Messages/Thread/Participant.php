@@ -4,6 +4,23 @@ namespace App\Models\Messages\Thread;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Messages\Thread\Participant
+ *
+ * @property integer $thread_participant_id
+ * @property integer $thread_id
+ * @property integer $account_id
+ * @property string $display_as
+ * @property integer $status
+ * @property \Carbon\Carbon $read_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Messages\Thread $thread
+ * @property-read \App\Models\Mship\Account $account
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ */
 class Participant extends \App\Models\aModel
 {
 

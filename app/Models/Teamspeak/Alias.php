@@ -2,6 +2,17 @@
 
 namespace App\Models\Teamspeak;
 
+/**
+ * App\Models\Teamspeak\Alias
+ *
+ * @property integer $id
+ * @property integer $account_id
+ * @property string $display_name
+ * @property string $notes
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Teamspeak\Registration $account
+ */
 class Alias extends \App\Models\aModel {
 
     protected $table = 'teamspeak_alias';

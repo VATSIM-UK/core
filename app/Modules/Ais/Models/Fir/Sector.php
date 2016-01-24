@@ -5,6 +5,12 @@ namespace App\Modules\Ais\Models\Fir;
 use App\Models\aModel;
 use App\Modules\Ais\Models\Fir;
 
+/**
+ * App\Modules\Ais\Models\Fir\Sector
+ *
+ * @property-read \App\Modules\Ais\Models\Fir $fir
+ * @property-read \App\Modules\Ais\Models\Fir\Sector $coveredBy
+ */
 class Sector extends aModel
 {
     protected $table = "ais_fir_sector";
