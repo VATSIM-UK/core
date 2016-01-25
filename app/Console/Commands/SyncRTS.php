@@ -55,7 +55,7 @@ class SyncRTS extends aCommand
         foreach ($members as $mem) {
             $output = "Updating {$mem->cid} ";
             if ($this->pullCoreData($mem->cid, $mem->visiting)) {
-                $this->output($output . "...... Successful");
+                $this->log($output . "...... Successful");
             } else {
                 $this->log("...... FAILED");
             }
