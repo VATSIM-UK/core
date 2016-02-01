@@ -35,6 +35,8 @@ WHERE `migration` = '2015_12_27_221904_vanilla_messages_v221';
 * Active the slack:manager cronjob:
 * * `php artisan slack:manager` every 2 minutes should suffice for now.
 
+* Re-run all statistics: `php artisan sys:statistics:daily 2001-01-01`
+
 ### 2.2.1 > 2.2.2
 * Enable the stats tracking cronjobs:
 * * `statistics:download`
