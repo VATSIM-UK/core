@@ -134,7 +134,7 @@ class SysStatisticsDaily extends aCommand
     private function addCurrentMembersStatistic($currentPeriod)
     {
         try {
-            $membersCurrent = Account::orWhere("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $membersCurrent = Account::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
                                      ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.current", $membersCurrent);
         } catch (\Exception $e) {
