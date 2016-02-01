@@ -79,7 +79,7 @@ class SysStatisticsDaily extends aCommand
         }
 
         if ($startPeriod->isFuture()) {
-            $startPeriod = \Carbon\Carbon::now();
+            $startPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
         }
 
         return $startPeriod;
@@ -101,10 +101,10 @@ class SysStatisticsDaily extends aCommand
         }
 
         if ($endPeriod->isFuture()) {
-            $endPeriod = \Carbon\Carbon::now();
+            $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
         }
 
-        if ($endPeriod->gt($this->getStartPeriod())) {
+        if ($endPeriod->lt($this->getStartPeriod())) {
             $endPeriod = $this->getStartPeriod();
         }
 
@@ -134,7 +134,8 @@ class SysStatisticsDaily extends aCommand
     private function addCurrentMembersStatistic($currentPeriod)
     {
         try {
-            $membersCurrent = Account::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")->count();
+            $membersCurrent = Account::orWhere("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+                                     ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.current", $membersCurrent);
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update CURRENT MEMBER statistics.", ['Error Code' => 3]);
