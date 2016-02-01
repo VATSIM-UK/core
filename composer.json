@@ -4,6 +4,12 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories" : [
+        {
+            "type" : "vcs",
+            "url" : "https://github.com/A-Lawrence/laravel-slack-api"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "vatsim/xml": "2.*",
@@ -21,7 +27,8 @@
         "maknz/slack": "^1.7",
         "barryvdh/laravel-ide-helper": "^2.1",
         "league/csv": "^8.0",
-        "alawrence/laravel-ipboard": "1.0"
+        "alawrence/laravel-ipboard": "1.0",
+        "vluzrmos/slack-api": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

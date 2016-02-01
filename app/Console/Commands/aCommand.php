@@ -7,22 +7,25 @@ use Slack;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class aCommand extends Command {
+class aCommand extends Command
+{
     /**
      * Log a string to STDOUT.
      * If STDOUT is piped/redirected, styling is removed.
      *
-     * @param string    $string  The string to output.
-     * @param null      $style   The styling to output.
-     * @param bool      $newline If a new line should be returned at the end.
+     * @param string $string  The string to output.
+     * @param null   $style   The styling to output.
+     * @param bool   $newline If a new line should be returned at the end.
      */
     protected function log($string, $style = null, $newline = true)
     {
         // keep styling if output is not piped, or if we can't tell
         if (function_exists('posix_isatty')) {
             $style = posix_isatty(STDOUT) ? $style : null;
-        } else if (App::environment('production')) {
-            $this->sendSlackError('posix_isatty is not available in production - install POSIX extension (php-common)');
+        } else {
+            if (App::environment('production')) {
+                $this->sendSlackError('posix_isatty is not available in production - install POSIX extension (php-common)');
+            }
         }
 
         // add style tags to the output string
@@ -51,6 +54,53 @@ class aCommand extends Command {
     }
 
     /**
+     * Send a direct message to a Slack user.
+     *
+     * @param Account|string $to    Either the local Account or the SlackUserID to send a message to.
+     * @param string         $message The message to send to the user
+     */
+    protected function sendSlackMessagePlain($to, $message, $from=null){
+        if(is_object($to) && $to->exists){
+            $to = $to->slack_id;
+        }
+
+        $slack = $this->slack()->to($to);
+
+        if($from != null){
+            $slack = $slack->from($from);
+        }
+
+        $slack->send($message);
+    }
+
+    protected function sendSlackMessageFormatted($to, $pretext, $message, $colour="danger", $fields = [], $from=null){
+        $attachment = [
+            'pretext'     => '@here: '.$pretext,
+            'fallback'    => $message,
+            'author_name' => "VATSIM UK Slack Bot",
+            'color'       => $colour,
+        ];
+
+        $attachment['author_link'] = $this->getAuthorLink();
+
+        foreach ($fields as $index => $message) {
+            $attachment['fields'][] = [
+                'title' => $index,
+                'value' => $message,
+                'short' => true,
+            ];
+        }
+
+        $slack = $this->slack()->to($to);
+
+        if($from != null){
+            $slack = $slack->from($from);
+        }
+
+        $slack->attach($attachment)->send();
+    }
+
+    /**
      * Send an error message to Slack.
      *
      * @param string $message The message to send to Slack.
@@ -60,11 +110,11 @@ class aCommand extends Command {
     {
         // define the message/attachment to send
         $attachment = [
-            'pretext' => '@here: An error has occurred:',
-            'fallback' => $message,
+            'pretext'     => '@here: An error has occurred:',
+            'fallback'    => $message,
             'author_name' => get_class($this),
-            'color' => 'danger',
-            'fields' => [
+            'color'       => 'danger',
+            'fields'      => [
                 [
                     'title' => 'Command name:',
                     'value' => (new \ReflectionClass($this))->getShortName(),
@@ -74,7 +124,8 @@ class aCommand extends Command {
                     'title' => 'Command description:',
                     'value' => $this->getDescription(),
                     'short' => true,
-                ], [
+                ],
+                [
                     'title' => 'Error:',
                     'value' => $message,
                     'short' => true,
@@ -104,10 +155,10 @@ class aCommand extends Command {
     protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
     {
         $attachment = [
-            'fallback' => $message,
+            'fallback'    => $message,
             'author_name' => get_class($this),
-            'color' => 'good',
-            'fields' => [
+            'color'       => 'good',
+            'fields'      => [
                 [
                     'title' => 'Command name:',
                     'value' => (new \ReflectionClass($this))->getShortName(),
@@ -117,7 +168,8 @@ class aCommand extends Command {
                     'title' => 'Command description:',
                     'value' => $this->getDescription(),
                     'short' => true,
-                ], [
+                ],
+                [
                     'title' => 'Message:',
                     'value' => $message,
                     'short' => true,

@@ -132,6 +132,10 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
         //Queue::queue('MSHIP_ACCOUNT_CREATED', $model->account_id, VATUK_ACCOUNT_SYSTEM, $model->toArray());
     }
 
+    public static function findWithSlackId($slackId){
+        return Account::slackId($slackId)->first();
+    }
+
     public static function scopeIsSystem($query){
         return $query->where(\DB::raw(self::STATUS_SYSTEM."&`status`"), '=', self::STATUS_SYSTEM);
     }
@@ -142,6 +146,10 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
     public static function scopeWithIp($query, $ip){
         return $query->where('last_login_ip', '=', ip2long($ip));
+    }
+
+    public static function scopeSlackId($query, $slackId){
+        return $query->where("slack_id", "=", $slackId);
     }
 
     public function dataChanges(){

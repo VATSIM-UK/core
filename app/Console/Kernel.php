@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\SyncMentors::class,
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
+        Commands\SlackManager::class,
 
         \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
     ];
