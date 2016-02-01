@@ -10,6 +10,27 @@ renamed:    database/migrations/2015_12_27_221902_vanilla_sso_v221.php -> databa
 renamed:    database/migrations/2015_12_27_221903_vanilla_teamspeak_v221.php -> database/migrations/2015_01_01_000030_vanilla_teamspeak_v221.php
 renamed:    database/migrations/2015_12_27_221904_vanilla_messages_v221.php -> database/migrations/2015_01_01_000040_vanilla_messages_v221.php
 ```
+```mysql
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000000_vanilla_mship_v221'
+WHERE `migration` = '2015_12_27_221900_vanilla_mship_v221';
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000010_vanilla_system_v221'
+WHERE `migration` = '2015_12_27_221901_vanilla_system_v221';
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000020_vanilla_sso_v221'
+WHERE `migration` = '2015_12_27_221902_vanilla_sso_v221';
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000030_vanilla_teamspeak_v221'
+WHERE `migration` = '2015_12_27_221903_vanilla_teamspeak_v221';
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000040_vanilla_messages_v221'
+WHERE `migration` = '2015_12_27_221904_vanilla_messages_v221';
+```
 * Active the slack:manager cronjob:
 * * `php artisan slack:manager` every 2 minutes should suffice for now.
 
