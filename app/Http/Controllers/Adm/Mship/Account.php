@@ -188,7 +188,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                        ->withSuccess($role->name . " role attached successfully. This user inherited " . count($role->permissions) . " permissions.");
     }
 
-    public function postRoleDetach(AccountData $account, RoleData $role)
+    public function getRoleDetach(AccountData $account, RoleData $role)
     {
         if (!$account) {
             return Redirect::route("adm.mship.account.index");

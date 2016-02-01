@@ -84,7 +84,7 @@ Route::group(array('namespace' => 'Adm'), function () {
                   Route::post('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d')); */
                 Route::get('/account/{mshipAccount}/{tab?}/{tabid?}', ['as' => 'adm.mship.account.details', 'uses' => 'Account@getDetail'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/role/attach', ['as' => 'adm.mship.account.role.attach', 'uses' => 'Account@postRoleAttach'])->where(['mshipAccount' => '\d+']);
-                Route::post('/account/{mshipAccount}/role/{mshipRole}/detach', ['as' => 'adm.mship.account.role.detach', 'uses' => 'Account@postRoleDetach'])->where(['mshipAccount' => '\d+']);
+                Route::get('/account/{mshipAccount}/role/{mshipRole}/detach', ['as' => 'adm.mship.account.role.detach', 'uses' => 'Account@getRoleDetach'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/ban/add', ['as' => 'adm.mship.account.ban.add', 'uses' => 'Account@postBanAdd'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/note/create', ['as' => 'adm.mship.account.note.create', 'uses' => 'Account@postNoteCreate'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/note/filter', ['as' => 'adm.mship.account.note.filter', 'uses' => 'Account@postNoteFilter'])->where(['mshipAccount' => '\d+']);
