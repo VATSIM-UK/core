@@ -118,6 +118,13 @@ Route::group(array('namespace' => 'Adm'), function () {
                 Route::any('/permission/{mshipPermission}/delete', ['as' => 'adm.mship.permission.delete', 'uses' => 'Permission@anyDelete']);
                 Route::get('/permission/', ['as' => 'adm.mship.permission.index', 'uses' => 'Permission@getIndex']);
 
+                Route::get('/note/type/create', ['as' => 'adm.mship.note.type.create', 'uses' => 'Note@getTypeCreate']);
+                Route::post('/note/type/create', ['as' => 'adm.mship.note.type.create.post', 'uses' => 'Note@postTypeCreate']);
+                Route::get('/note/type/{mshipRole}/update', ['as' => 'adm.mship.note.type.update', 'uses' => 'Note@getTypeUpdate']);
+                Route::post('/note/type/{mshipRole}/update', ['as' => 'adm.mship.role.note.type.post', 'uses' => 'Note@postTypeUpdate']);
+                Route::any('/note/type/{mshipRole}/delete', ['as' => 'adm.mship.note.type.delete', 'uses' => 'Note@anyTypeDelete']);
+                Route::get('/note/type/', ['as' => 'adm.mship.note.type.index', 'uses' => 'Note@getTypeIndex']);
+
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
 
             });
