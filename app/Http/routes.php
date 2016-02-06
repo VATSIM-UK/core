@@ -52,7 +52,7 @@ Route::group(array('namespace' => 'Adm'), function () {
             Route::any('/search/{q?}', array('as' => 'adm.search', 'uses' => 'Dashboard@anySearch'));
 
             Route::group(array('prefix' => 'system', 'namespace' => 'Sys'), function () {
-                Route::get('/timeline', array('as' => 'adm.sys.timeline', 'uses' => 'Timeline@getIndex'));
+                Route::get('/activity', array('as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex'));
             });
 
             Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {

@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token tokenValue($tokenValue)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
  */
-class Token extends \App\Models\aTimelineEntry {
+class Token extends \App\Models\aModel {
 
 	use SoftDeletingTrait;
         protected $table = "sso_token";

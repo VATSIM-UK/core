@@ -100,7 +100,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  */
-class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
+class Account extends \App\Models\aModel implements AuthenticatableContract {
 
     use SoftDeletingTrait, Authenticatable;
 
@@ -186,6 +186,10 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
     public function tokens() {
         return $this->morphMany('\App\Models\Sys\Token', 'related');
+    }
+
+    public function activityRecent(){
+        return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id", "account_id");
     }
 
     public function qualifications() {

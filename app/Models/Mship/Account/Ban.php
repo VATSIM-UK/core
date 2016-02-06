@@ -42,7 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
  */
-class Ban extends \App\Models\aTimelineEntry
+class Ban extends \App\Models\aModel
 {
 
     use SoftDeletes;

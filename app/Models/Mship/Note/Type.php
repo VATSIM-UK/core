@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Note;
 
+use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
 
@@ -27,6 +28,8 @@ use Carbon\Carbon;
 class Type extends \Eloquent
 {
     use SoftDeletingTrait;
+    use RecordsActivityTrait;
+
     protected $table      = "mship_note_type";
     protected $primaryKey = "note_type_id";
     protected $dates      = ['created_at', 'deleted_at'];
