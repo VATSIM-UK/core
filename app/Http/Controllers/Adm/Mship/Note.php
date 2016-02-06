@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Note\Type;
+use App\Http\Requests\Mship\Note\Type\CreateEditNoteType;
+use App\Models\Mship\Note\Type as NoteType;
 use AuthException;
 use Auth;
 use Input;
@@ -22,102 +23,67 @@ use App\Models\Mship\Permission as PermissionData;
 class Note extends AdmController {
 
     public function getTypeIndex() {
-        $types = Type::orderBy("name", "ASC")->get();
+        $types = NoteType::orderBy("name", "ASC")->get();
 
         return $this->viewMake("adm.mship.note.type.index")
                     ->with("types", $types);
     }
 
     public function getTypeCreate() {
-        $colourCodes = [
-            'success' => "Success (Green)",
-            'danger' => "Danger (Red)",
-            'warning' => "Warning (Orange)",
-            'info' => "Grey",
-            'primary' => "Light Blue",
-        ];
+        return $this->viewMake("adm.mship.note.type.create_or_update")
+                    ->with("colourCodes", NoteType::getNoteColourCodes());
+    }
+
+    public function postTypeCreate(CreateEditNoteType $request){
+        $noteType = new NoteType($request->only(["name", "short_code", "colour_code", "is_available", "is_default"]));
+        if(!$noteType->save()){
+            return Redirect::route("adm.mship.note.type.create")->withErrors($noteType->errors());
+        }
+
+        return Redirect::route("adm.mship.note.type.index")->withSuccess("Type '".$noteType->name."' has been created!");
+    }
+
+    public function getTypeUpdate(NoteType $noteType) {
+        if(!$noteType OR !$noteType->exists){
+            return Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist!");
+        }
 
         return $this->viewMake("adm.mship.note.type.create_or_update")
-                    ->with("colourCodes", $colourCodes);
-    }
-/*HERE*/
-    public function postCreateType(){
-        // Let's create!
-        if(!$this->_account->hasPermission("adm/mship/role/default")){
-            $data = Input::except("default");
-        } else {
-            $data = Input::all();
-        }
-        $role = new RoleData($data);
-        if(!$role->save()){
-            return Redirect::route("adm.mship.role.create")->withErrors($role->errors());
-        }
-
-        if(count(Input::get("permissions")) > 0 && $this->_account->hasPermission("adm/mship/permission/attach")){
-            $role->attachPermissions(Input::get("permissions"));
-        }
-
-        return Redirect::route("adm.mship.role.index")->withSuccess("Role '".$role->name."' has been created - don't forget to set the permissions properly!");
+                    ->with("noteType", $noteType)
+                    ->with("colourCodes", NoteType::getNoteColourCodes());
     }
 
-    public function getUpdateType(RoleData $role) {
-        if(!$role OR !$role->exists){
-            return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
+    public function postTypeUpdate(CreateEditNoteType $request, NoteType $noteType){
+        if(!$noteType OR !$noteType->exists){
+            return Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist!");
         }
-
-        $permissions = PermissionData::orderBy("name", "ASC")
-                                     ->get();
-
-        return $this->viewMake("adm.mship.role.create_or_update")
-                    ->with("role", $role)
-                    ->with("permissions", $permissions);
-    }
-
-    public function postUpdateType(RoleData $role){
-        if(!$role OR !$role->exists){
-            return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
-        }
-
-        $role->load("permissions");
 
         // Let's create!
-        if(!$this->_account->hasPermission("adm/mship/role/default")){
-            $data = Input::except("default");
-        } else {
-            $data = Input::all();
-        }
-        $role = $role->fill($data);
-        if(!$role->save()){
-            return Redirect::route("adm.mship.role.update")->withErrors($role->errors());
+        $noteType->fill($request->only(["name", "short_code", "colour_code", "is_available", "is_default"]));
+        if(!$noteType->save()){
+            return Redirect::route("adm.mship.note.type.update")->withErrors($noteType->errors());
         }
 
-        if($this->_account->hasPermission("adm/mship/permission/attach")){
-            // Detatch permissions!
-            foreach($role->permissions as $p){
-                if(!in_array($p->permission_id, Input::get("permissions", []))){
-                    $role->detachPermission($p);
-                }
-            }
-
-            // Attach all permissions.
-            $role->attachPermissions(Input::get("permissions", []));
-        }
-
-        return Redirect::route("adm.mship.role.index")->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");
+        return Redirect::route("adm.mship.note.type.index")->withSuccess("Note type '".$noteType->name."' has been updated!");
     }
 
-    public function anyDeleteType(RoleData $role){
-        if(!$role OR !$role->exists){
-            return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
+    public function anyTypeDelete(NoteType $noteType){
+        if(!$noteType OR !$noteType->exists){
+            return Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist!");
         }
 
         // Is it the default role?
-        if($role->default){
-            return Redirect::route("adm.mship.role.index")->withError("You cannot delete the default role.");
+        if($noteType->is_default){
+            return Redirect::route("adm.mship.note.type.index")->withError("You cannot delete the default note type.");
+        }
+
+        // Is it a system role?
+        if($noteType->is_system){
+            return Redirect::route("adm.mship.note.type.index")->withError("You cannot delete a system note type.");
         }
 
         // Let's delete!
-        $role->delete();
-        return Redirect::route("adm.mship.role.index")->withSuccess("Role, associated permissions and membership entries were all deleted.");
+        $noteType->delete();
+        return Redirect::route("adm.mship.note.type.index")->withSuccess("Note Type '".$noteType->name."' has been deleted.  Any existing notes have not been impacted.");
     }
 }

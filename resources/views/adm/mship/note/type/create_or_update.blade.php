@@ -6,8 +6,8 @@
         <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title ">
-                    @if(isset($type))
-                        Update Note Type :: {{ $type->name }}
+                    @if(isset($noteType))
+                        Update Note Type :: {{ $noteType->name }}
                     @else
                         Create New Note Type
                     @endif
@@ -15,8 +15,8 @@
             </div><!-- /.box-header -->
             <div class="box-body">
 
-                @if(isset($type))
-                    {!! Form::model($role, ['route' => ['adm.mship.note.type.update.post', $type->note_type_id]]) !!}
+                @if(isset($noteType))
+                    {!! Form::model($noteType, ['route' => ['adm.mship.note.type.update.post', $noteType->note_type_id]]) !!}
                 @else
                     {!! Form::open(["route" => "adm.mship.note.type.create.post"]) !!}
                 @endif
@@ -43,14 +43,14 @@
 
                         <div class="radio">
                             <label>
-                                {!! Form::radio("is_available", 1, (isset($type) && $type->is_available)) !!}
+                                {!! Form::radio("is_available", 1, (isset($noteType) && $noteType->is_available)) !!}
                                 YES - <span class="help-inline warning">Choosing this will disable users from using it.</span>
                             </label>
                         </div>
 
                         <div class="radio">
                             <label>
-                                {!! Form::radio("is_available", 0, ((isset($type) && !$type->is_available)) OR !isset($type)) !!}
+                                {!! Form::radio("is_available", 0, ((isset($noteType) && !$noteType->is_available)) OR !isset($noteType)) !!}
                                 NO
                             </label>
                         </div>
@@ -62,14 +62,14 @@
 
                         <div class="radio">
                             <label>
-                                {!! Form::radio("is_default", 1, (isset($type) && $type->is_default)) !!}
+                                {!! Form::radio("is_default", 1, (isset($noteType) && $noteType->is_default)) !!}
                                 YES - <span class="help-inline warning">Choosing this will disable the current default note type.</span>
                             </label>
                         </div>
 
                         <div class="radio">
                             <label>
-                                {!! Form::radio("is_default", 0, ((isset($type) && !$type->is_default)) OR !isset($type)) !!}
+                                {!! Form::radio("is_default", 0, ((isset($noteType) && !$noteType->is_default)) OR !isset($noteType)) !!}
                                 NO
                             </label>
                         </div>
@@ -78,7 +78,7 @@
 
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {!! Form::submit((isset($type) ? "Update" : "Create")." Type", ["class" => "btn btn-primary"]) !!}
+                        {!! Form::submit((isset($noteType) ? "Update" : "Create")." Type", ["class" => "btn btn-primary"]) !!}
                     </div>
                 </div>
 

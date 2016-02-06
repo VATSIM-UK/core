@@ -56,8 +56,8 @@
                             </td>
                             <td>{{ $t->short_code }}</td>
                             <td>{{ $t->colour_code }}</td>
-                            <td>{{ ($t->is_available ? "Y" : "N") }}</td>
-                            <td>{{ ($t->is_system ? "Y" : "N") }}</td>
+                            <td>{!! ($t->is_available ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
+                            <td>{!! ($t->is_system ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/note/type/*/update"))
                                     {!! link_to_route("adm.mship.note.type.update", "Edit", [$t->note_type_id], ["class" => "btn btn-xs btn-primary"]) !!}
