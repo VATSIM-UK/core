@@ -10,7 +10,7 @@
             <div class="box-body">
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {!! link_to_route("adm.mship.role.create", "Create Role", [], ["class" => "btn btn-success"]) !!}
+                        {!! link_to_route("adm.mship.note.type.create", "Create Note Type", [], ["class" => "btn btn-success"]) !!}
                     </div>
                 </div>
             </div>
@@ -37,40 +37,40 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Default</th>
-                            <th># Members</th>
-                            <th># Permissions</th>
-                            <th>Last Updated</th>
+                            <th>Short Code</th>
+                            <th>Colour Code</th>
+                            <th>Is Available</th>
+                            <th>Is System</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($roles as $r)
+                        @foreach($types as $t)
                         <tr>
-                            <td>{!! link_to_route('adm.mship.role.update', $r->role_id, [$r->role_id]) !!}</td>
+                            <td>{!! link_to_route('adm.mship.note.type.update', $t->note_type_id, [$t->note_type_id]) !!}</td>
                             <td>
-                                {{ $r->name }}
-                                @if($r->default)
+                                {{ $t->name }}
+                                @if($t->is_default)
                                     <span class="label label-success">Default</span>
                                 @endif
                             </td>
-                            <td>{{ $r->default }}</td>
-                            <td>{{ $r->accounts->count() }}</td>
-                            <td>{{ $r->permissions->count() }}</td>
-                            <td>{{ $r->updated_at->toDateTimeString() }}</td>
+                            <td>{{ $t->short_code }}</td>
+                            <td>{{ $t->colour_code }}</td>
+                            <td>{!! ($t->is_available ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
+                            <td>{!! ($t->is_system ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
                             <td>
-                                @if($_account->hasPermission("adm/mship/role/*/update"))
-                                    {!! link_to_route("adm.mship.role.update", "Edit", [$r->role_id], ["class" => "btn btn-xs btn-primary"]) !!}
+                                @if($_account->hasPermission("adm/mship/note/type/*/update"))
+                                    {!! link_to_route("adm.mship.note.type.update", "Edit", [$t->note_type_id], ["class" => "btn btn-xs btn-primary"]) !!}
                                 @endif
-                                @if($_account->hasPermission("adm/mship/role/*/delete"))
-                                    {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.role.delete", [$r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
+                                @if($_account->hasPermission("adm/mship/note/type/*/delete"))
+                                    {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.note.type.delete", [$t->note_type_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                 @endif
                             </td>
                         </tr>
                         @endforeach
-                        @if(count($roles) < 1)
+                        @if(count($types) < 1)
                         <tr>
-                            <td colspan="6" align="center">No roles to display :(</td>
+                            <td colspan="6" align="center">No note types to display :(</td>
                         </tr>
                         @endif
                     </tbody>

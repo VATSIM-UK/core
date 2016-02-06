@@ -13,7 +13,7 @@
     </div>
 
     <!-- search form -->
-    {!! Form::open(array("url" => URL::route("adm.search"), "method" => "GET", "class" => "sidebar-form")) !!}
+    {!! Form::open(["url" => URL::route("adm.search"), "method" => "GET", "class" => "sidebar-form"]) !!}
     <div class="input-group">
         <input type="text" name="q" class="form-control" placeholder="Search..."/>
         <span class="input-group-btn">
@@ -21,7 +21,7 @@
         </span>
     </div>
     {!! Form::close() !!}
-    <!-- /.search form -->
+            <!-- /.search form -->
 
     <ul class="sidebar-menu">
         @if($_account->hasChildPermission("adm/dashboard"))
@@ -30,8 +30,8 @@
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
-        @endif
-        <!--</li>
+            @endif
+                    <!--</li>
         <li>
             <a href="pages/mailbox.html">
                 <i class="fa fa-envelope"></i> <span>Mailbox</span>
@@ -79,66 +79,93 @@
                 <li><a href="#"><i class="fa fa-angle-double-right"></i> ATC Bookings</a></li>
             </ul>
         </li>-->
-        @if($_account->hasChildPermission("adm/mship"))
-            <li class="treeview {{ (\Request::is('adm/mship*') ? 'active' : '') }}">
-                <a href="#">
-                    <i class="ion ion-person-stalker"></i> <span>Members</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    @if($_account->hasChildPermission("adm/mship/account"))
-                        <li {{ (\Request::is('adm/mship/account*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.account.index") }}"><i class="fa fa-angle-double-right"></i> Accounts List</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mship/role"))
-                        <li {{ (\Request::is('adm/mship/role*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.role.index") }}"><i class="fa fa-angle-double-right"></i> Roles List</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mship/permission"))
-                        <li {{ (\Request::is('adm/mship/permission*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.permission.index") }}"><i class="fa fa-angle-double-right"></i> Permissions List</a>
-                        </li>
-                    @endif
-                    @if($_account->hasChildPermission("adm/mship/staff"))
-                        <li {{ (\Request::is('adm/mship/staff*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::route("adm.mship.staff.index") }}"><i class="fa fa-angle-double-right"></i> Staff List / Layout</a>
-                        </li>
-                    @endif
-                </ul>
-            </li>
-        @endif
+            @if($_account->hasChildPermission("adm/mship"))
+                <li class="treeview {{ (\Request::is('adm/mship*') ? 'active' : '') }}">
+                    <a href="#">
+                        <i class="ion ion-person-stalker"></i> <span>Membership</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if($_account->hasChildPermission("adm/mship/account"))
+                            <li {{ (\Request::is('adm/mship/account*') ? ' class="active"' : '') }}>
+                                <a href="{{ URL::route("adm.mship.account.index") }}"><i
+                                            class="fa fa-angle-double-right"></i> Accounts List</a>
+                            </li>
+                        @endif
+                        @if($_account->hasChildPermission("adm/mship/staff"))
+                            <li {{ (\Request::is('adm/mship/staff*') ? ' class="active"' : '') }}>
+                                <a href="{{ URL::route("adm.mship.staff.index") }}"><i
+                                            class="fa fa-angle-double-right"></i> Staff List / Layout</a>
+                            </li>
+                        @endif
 
-        @if($_account->hasChildPermission("adm/system"))
-            <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
-                <a href="#">
-                    <i class="ion ion-gear-b"></i> <span>System</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="{{ URL::route("adm.sys.timeline") }}">
-                            <i class="fa fa-list"></i> <span>Timeline</span>
-                        </a>
-                    </li>
-                    <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">
-                        <a href="#">
-                            <i class="ion ion-email"></i> <span>Jobs</span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
-                                <a href="#"><i class="fa fa-bars"></i> Pending Jobs</a>
+                        @if($_account->hasChildPermission("adm/mship/permission") || $_account->hasChildPermission("adm/mship/role"))
+                            <li class="treeview {{ ((\Request::is('adm/mship/permission*') || \Request::is('adm/mship/role*')) ? 'active' : '') }}">
+                                <a href="#">
+                                    <i class="ion ion-email"></i> <span>Roles & Permissions</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li {{ (\Request::is('adm/mship/role*') ? ' class="active"' : '') }}>
+                                        <a href="{{ URL::route("adm.mship.role.index") }}"><i
+                                                    class="fa fa-angle-double-right"></i> Roles List</a>
+                                    </li>
+                                    <li {{ (\Request::is('adm/mship/permission*') ? ' class="active"' : '') }}>
+                                        <a href="{{ URL::route("adm.mship.permission.index") }}"><i
+                                                    class="fa fa-angle-double-right"></i> Permissions List</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
-                                <a href="#"><i class="fa fa-bars"></i> Failed Jobs</a>
+                        @endif
+
+                        @if($_account->hasChildPermission("adm/mship/note"))
+                                <li class="treeview {{ (\Request::is('adm/mship/note*') ? 'active' : '') }}">
+                                <a href="#">
+                                    <i class="ion ion-email"></i> <span>Note Config</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    </li>
+                                    <li {{ (\Request::is('adm/mship/note') ? ' class="active"' : '') }}>
+                                        <a href="{{ URL::route("adm.mship.note.type.index") }}"><i
+                                                    class="fa fa-angle-double-right"></i> Note Type</a>
+                                    </li>
+                                </ul>
                             </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        @endif
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if($_account->hasChildPermission("adm/system"))
+                <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
+                    <a href="#">
+                        <i class="ion ion-gear-b"></i> <span>System</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="{{ URL::route("adm.sys.timeline") }}">
+                                <i class="fa fa-list"></i> <span>Timeline</span>
+                            </a>
+                        </li>
+                        <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">
+                            <a href="#">
+                                <i class="ion ion-email"></i> <span>Jobs</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
+                                    <a href="#"><i class="fa fa-bars"></i> Pending Jobs</a>
+                                </li>
+                                <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
+                                    <a href="#"><i class="fa fa-bars"></i> Failed Jobs</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            @endif
     </ul>
 </section>
 <!-- /.sidebar -->

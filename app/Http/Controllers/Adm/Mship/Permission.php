@@ -22,6 +22,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
     public function getIndex() {
         // ORM it all!
         $permissions = PermissionData::orderBy("name", "ASC")
+                                     ->with("roles")
                                      ->paginate(20);
 
         return $this->viewMake("adm.mship.permission.index")

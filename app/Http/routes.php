@@ -21,30 +21,6 @@ Route::group(['domain' => 'vats.im'], function () {
     });
 });
 
-/*
- * CORE ROUTES
- */
-
-Route::model('mshipAccount', App\Models\Mship\Account::class, function () {
-    return Redirect::route('adm.mship.account.index')->withError('The account ID you provided was not found.');
-});
-
-Route::model('ban', App\Models\Mship\Account\Ban::class, function() {
-    return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');
-});
-
-Route::model('mshipAccountEmail', App\Models\Mship\Account\Email::class);
-Route::model('ssoEmail', App\Models\Sso\Email::class);
-Route::model('sysNotification', App\Models\Sys\Notification::class);
-
-Route::model('mshipRole', App\Models\Mship\Role::class, function () {
-    Redirect::route('adm.mship.role.index')->withError('Role doesn\'t exist.');
-});
-
-Route::model('mshipPermission', App\Models\Mship\Permission::class, function () {
-    Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
-});
-
 /*** WEBHOOKS ***/
 Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
     Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
@@ -117,6 +93,15 @@ Route::group(array('namespace' => 'Adm'), function () {
                 Route::post('/permission/{mshipPermission}/update', ['as' => 'adm.mship.permission.update.post', 'uses' => 'Permission@postUpdate']);
                 Route::any('/permission/{mshipPermission}/delete', ['as' => 'adm.mship.permission.delete', 'uses' => 'Permission@anyDelete']);
                 Route::get('/permission/', ['as' => 'adm.mship.permission.index', 'uses' => 'Permission@getIndex']);
+
+                Route::group(["as" => "adm.mship.note."], function(){
+                    Route::get('/note/type/create', ['as' => 'type.create', 'uses' => 'Note@getTypeCreate']);
+                    Route::post('/note/type/create', ['as' => 'type.create.post', 'uses' => 'Note@postTypeCreate']);
+                    Route::get('/note/type/{mshipNoteType}/update', ['as' => 'type.update', 'uses' => 'Note@getTypeUpdate']);
+                    Route::post('/note/type/{mshipNoteType}/update', ['as' => 'type.update.post', 'uses' => 'Note@postTypeUpdate']);
+                    Route::any('/note/type/{mshipNoteType}/delete', ['as' => 'type.delete', 'uses' => 'Note@anyTypeDelete']);
+                    Route::get('/note/type/', ['as' => 'type.index', 'uses' => 'Note@getTypeIndex']);
+                });
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
 
