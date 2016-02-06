@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Role as RoleData;
 
@@ -19,7 +20,7 @@ use App\Models\Mship\Role as RoleData;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
  */
 class Permission extends \App\Models\aModel {
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_permission";
     protected $primaryKey = "permission_id";

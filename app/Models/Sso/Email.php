@@ -2,6 +2,7 @@
 
 namespace App\Models\Sso;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Email extends \Eloquent {
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "sso_email";
     protected $primaryKey = "sso_email_id";

@@ -14,6 +14,7 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
+use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Bus;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
@@ -102,7 +103,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract {
 
-    use SoftDeletingTrait, Authenticatable;
+    use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
     protected $primaryKey = 'account_id';

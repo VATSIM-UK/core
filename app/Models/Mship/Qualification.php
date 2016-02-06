@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
 
@@ -22,7 +23,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  */
 class Qualification extends \Eloquent {
-	use SoftDeletingTrait;
+	use SoftDeletingTrait, RecordsActivity;
         protected $table = "mship_qualification";
         protected $primaryKey = "qualification_id";
         protected $dates = ['created_at', 'deleted_at'];

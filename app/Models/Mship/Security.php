@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
 
@@ -24,7 +25,7 @@ use Carbon\Carbon;
  */
 class Security extends \Eloquent {
 
-	use SoftDeletingTrait;
+	use SoftDeletingTrait, RecordsActivity;
         protected $table = "mship_security";
         protected $primaryKey = "security_id";
         protected $dates = ['created_at', 'deleted_at'];

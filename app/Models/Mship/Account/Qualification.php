@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class Qualification extends \Eloquent
 {
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_qualification";
     protected $primaryKey = "account_qualification_id";

@@ -2,6 +2,7 @@
 
 namespace App\Models\Sso;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -24,7 +25,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Account extends \App\Models\aModel {
 
-	use SoftDeletingTrait;
+	use SoftDeletingTrait, RecordsActivity;
+
         protected $table = "sso_account";
         protected $primaryKey = "sso_account_id";
         protected $dates = ['created_at', 'updated_at', 'deleted_at'];

@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -45,7 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ban extends \App\Models\aModel
 {
 
-    use SoftDeletes;
+    use SoftDeletes, RecordsActivity;
 
     protected $table      = 'mship_account_ban';
     protected $primaryKey = "account_ban_id";
