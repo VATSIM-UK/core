@@ -9,7 +9,7 @@ use \Auth;
 
 trait RecordsActivity
 {
-    protected static function boot()
+    public static function boot()
     {
         parent::boot();
 
@@ -36,7 +36,7 @@ trait RecordsActivity
     public function addActivity($event)
     {
         Activity::create([
-            'actor_id'     => Auth::id(),
+            'actor_id'     => (Auth::check() ? Auth::id() : VATUK_ACCOUNT_SYSTEM),
             'subject_id'   => $this->getKey(),
             'subject_type' => get_class($this),
             'action'       => $event,
