@@ -50,8 +50,13 @@
         <p>
             <strong>Ban Start:</strong> {{ $ban->period_start->diffForHumans() }}
             , {{ $ban->period_start->toDateTimeString() }}<br/>
-            <strong>Ban Finish:</strong> {{ $ban->period_finish->diffForHumans() }}
-            , {{ $ban->period_finish->toDateTimeString() }}
+            <strong>Ban Finish:</strong>
+            @if($ban->period_finish != NULL)
+                {{ $ban->period_finish->diffForHumans() }}
+                , {{ $ban->period_finish->toDateTimeString() }}
+            @else
+                Forever
+            @endif
         </p>
 
         <p>
