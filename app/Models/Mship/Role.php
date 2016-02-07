@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Traits\RecordsActivity;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Permission as PermissionData;
@@ -23,7 +24,7 @@ use App\Models\Mship\Permission as PermissionData;
  */
 class Role extends \App\Models\aModel {
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_role";
     protected $primaryKey = "role_id";

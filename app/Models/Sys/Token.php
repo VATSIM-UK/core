@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
  */
-class Token extends \App\Models\aTimelineEntry {
+class Token extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class State extends \Eloquent
 {
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_state";
     protected $primaryKey = "account_state_id";

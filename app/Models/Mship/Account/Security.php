@@ -4,6 +4,7 @@ namespace App\Models\Mship\Account;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Security as SecurityType;
+use App\Traits\RecordsActivity;
 use Carbon\Carbon;
 use Hash;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Security extends Model
 {
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = 'mship_account_security';
     protected $primaryKey = 'account_security_id';

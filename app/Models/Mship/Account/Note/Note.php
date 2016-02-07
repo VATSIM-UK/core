@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account\Note;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-write mixed $data
  */
 class Note extends \Eloquent {
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_account_note";
     protected $primaryKey = "account_note_id";

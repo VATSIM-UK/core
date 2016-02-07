@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Account;
 
 use App\Models\Sso\Email as SSOEmail;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Validator;
 
@@ -28,7 +29,7 @@ use Validator;
 class Email extends \Eloquent
 {
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_email";
     protected $primaryKey = "account_email_id";

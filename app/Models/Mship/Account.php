@@ -14,6 +14,7 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
+use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Bus;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
@@ -100,9 +101,9 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  */
-class Account extends \App\Models\aTimelineEntry implements AuthenticatableContract {
+class Account extends \App\Models\aModel implements AuthenticatableContract {
 
-    use SoftDeletingTrait, Authenticatable;
+    use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
     protected $primaryKey = 'account_id';
@@ -186,6 +187,10 @@ class Account extends \App\Models\aTimelineEntry implements AuthenticatableContr
 
     public function tokens() {
         return $this->morphMany('\App\Models\Sys\Token', 'related');
+    }
+
+    public function activityRecent(){
+        return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id", "account_id");
     }
 
     public function qualifications() {

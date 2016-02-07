@@ -2,6 +2,7 @@
 
 namespace App\Models\Sso;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -22,9 +23,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
  * @property-read mixed $timeline_entries_recent
  */
-class Account extends \App\Models\aTimelineEntry {
+class Account extends \App\Models\aModel {
 
-	use SoftDeletingTrait;
+	use SoftDeletingTrait, RecordsActivity;
+
         protected $table = "sso_account";
         protected $primaryKey = "sso_account_id";
         protected $dates = ['created_at', 'updated_at', 'deleted_at'];

@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -42,10 +43,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
  */
-class Ban extends \App\Models\aTimelineEntry
+class Ban extends \App\Models\aModel
 {
 
-    use SoftDeletes;
+    use SoftDeletes, RecordsActivity;
 
     protected $table      = 'mship_account_ban';
     protected $primaryKey = "account_ban_id";

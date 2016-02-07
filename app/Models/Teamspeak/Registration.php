@@ -2,6 +2,7 @@
 
 namespace App\Models\Teamspeak;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
 use App\Models\Teamspeak\Log;
@@ -11,41 +12,48 @@ use Carbon\Carbon;
 /**
  * App\Models\Teamspeak\Registration
  *
- * @property integer $id
- * @property integer $account_id
- * @property integer $registration_ip
- * @property integer $last_ip
- * @property string $last_login
- * @property string $last_os
- * @property string $uid
- * @property integer $dbid
- * @property string $status
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $deleted_at
- * @property-read \App\Models\Teamspeak\Confirmation $confirmation
- * @property-read \App\Models\Mship\Account $account
+ * @property integer                                                                   $id
+ * @property integer                                                                   $account_id
+ * @property integer                                                                   $registration_ip
+ * @property integer                                                                   $last_ip
+ * @property string                                                                    $last_login
+ * @property string                                                                    $last_os
+ * @property string                                                                    $uid
+ * @property integer                                                                   $dbid
+ * @property string                                                                    $status
+ * @property \Carbon\Carbon                                                            $created_at
+ * @property \Carbon\Carbon                                                            $updated_at
+ * @property string                                                                    $deleted_at
+ * @property-read \App\Models\Teamspeak\Confirmation                                   $confirmation
+ * @property-read \App\Models\Mship\Account                                            $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Log[] $logs
- * @property-read mixed $last_idle_message
- * @property-read mixed $last_idle_poke
- * @property-read mixed $last_nickname_warn
- * @property-read mixed $last_nickname_kick
- * @property-read mixed $last_notification_important_poke
- * @property-read mixed $last_notification_must_acknowledge_poke
- * @property-read mixed $last_notification_must_acknowledge_kick
+ * @property-read mixed                                                                $last_idle_message
+ * @property-read mixed                                                                $last_idle_poke
+ * @property-read mixed                                                                $last_nickname_warn
+ * @property-read mixed                                                                $last_nickname_kick
+ * @property-read mixed
+ *                $last_notification_important_poke
+ * @property-read mixed
+ *                $last_notification_must_acknowledge_poke
+ * @property-read mixed
+ *                $last_notification_must_acknowledge_kick
  */
-class Registration extends \App\Models\aModel {
+class Registration extends \App\Models\aModel
+{
 
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
-    protected $table = 'teamspeak_registration';
+    protected $table      = 'teamspeak_registration';
     protected $primaryKey = 'id';
-    protected $fillable = ['*'];
+    protected $fillable   = ['*'];
     protected $attributes = ['registration_ip' => '0', 'last_ip' => '0'];
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates      = ['created_at', 'updated_at'];
 
-    public function delete($tscon = NULL) {
-        if ($tscon == NULL) $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
+    public function delete($tscon = null)
+    {
+        if ($tscon == null) {
+            $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
+        }
         if ($this->confirmation) {
             $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
             $this->confirmation->delete();
@@ -71,74 +79,109 @@ class Registration extends \App\Models\aModel {
         parent::delete();
     }
 
-    public function confirmation() {
+    public function confirmation()
+    {
         return $this->hasOne("\App\Models\Teamspeak\Confirmation", "registration_id", "id");
     }
 
-    public function account() {
+    public function account()
+    {
         return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
     }
 
-    public function logs() {
+    public function logs()
+    {
         return $this->hasMany("\App\Models\Teamspeak\Log", "registration_id", "id");
     }
 
-    public function setRegistrationIpAttribute($value) {
+    public function setRegistrationIpAttribute($value)
+    {
         $this->attributes['registration_ip'] = ip2long($value);
     }
 
-    public function getRegistrationIpAttribute() {
+    public function getRegistrationIpAttribute()
+    {
         return long2ip($this->attributes['registration_ip']);
     }
 
-    public function setLastIpAttribute($value) {
+    public function setLastIpAttribute($value)
+    {
         $this->attributes['last_ip'] = ip2long($value);
     }
 
-    public function getLastIpAttribute() {
+    public function getLastIpAttribute()
+    {
         return long2ip($this->attributes['last_ip']);
     }
 
-    public function getLastIdleMessageAttribute() {
+    public function getLastIdleMessageAttribute()
+    {
         $m = $this->logs()->idleMessage()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastIdlePokeAttribute() {
+    public function getLastIdlePokeAttribute()
+    {
         $m = $this->logs()->idlePoke()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastNicknameWarnAttribute() {
+    public function getLastNicknameWarnAttribute()
+    {
         $m = $this->logs()->nickWarn()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastNicknameKickAttribute() {
+    public function getLastNicknameKickAttribute()
+    {
         $m = $this->logs()->nickKick()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastNotificationImportantPokeAttribute() {
+    public function getLastNotificationImportantPokeAttribute()
+    {
         $m = $this->logs()->notificationImportantPoke()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastNotificationMustAcknowledgePokeAttribute() {
+    public function getLastNotificationMustAcknowledgePokeAttribute()
+    {
         $m = $this->logs()->notificationMustAcknowledgePoke()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
-    public function getLastNotificationMustAcknowledgeKickAttribute() {
+    public function getLastNotificationMustAcknowledgeKickAttribute()
+    {
         $m = $this->logs()->notificationMustAcknowledgeKick()->orderBy('created_at', 'desc')->first();
-        if (!$m) return Carbon::createFromTimeStampUTC(0);
-        else return $m->created_at;
+        if (!$m) {
+            return Carbon::createFromTimeStampUTC(0);
+        } else {
+            return $m->created_at;
+        }
     }
 
 }

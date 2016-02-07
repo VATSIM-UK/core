@@ -2,6 +2,7 @@
 
 namespace App\Models\Sso;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -25,9 +26,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token tokenValue($tokenValue)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
  */
-class Token extends \App\Models\aTimelineEntry {
+class Token extends \App\Models\aModel {
 
-	use SoftDeletingTrait;
+	use SoftDeletingTrait, RecordsActivity;
+
         protected $table = "sso_token";
         protected $primaryKey = "sso_token_id";
         protected $dates = ['created_at', 'updated_at', 'deleted_at'];

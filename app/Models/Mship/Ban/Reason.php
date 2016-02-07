@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Ban;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,11 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Reason extends Model {
 
+    use SoftDeletes, RecordsActivity
+        ;
     protected $primaryKey = "ban_reason_id";
     protected $table = 'mship_ban_reason';
     public $timestamps = true;
-
-    use SoftDeletes;
 
     protected $dates = ['deleted_at'];
 
