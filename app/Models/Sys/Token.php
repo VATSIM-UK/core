@@ -44,6 +44,10 @@ class Token extends \App\Models\aModel {
         return $this->morphTo();
     }
 
+    public function scopeHasCode($query, $code){
+        return $query->where("code", "=", $code);
+    }
+
     public function scopeOfType($query, $type){
         return $query->where("type", "=", $type);
     }
