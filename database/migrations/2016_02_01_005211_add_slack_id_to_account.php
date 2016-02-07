@@ -13,7 +13,7 @@ class AddSlackIdToAccount extends Migration
     public function up()
     {
         Schema::table("mship_account", function($table){
-            $table->string("slack_id", 10)->after("account_id");
+            $table->string("slack_id", 10)->after("account_id")->unique()->nullable();
         });
     }
 

@@ -25,6 +25,7 @@ Route::group(['domain' => 'vats.im'], function () {
 Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
     Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
     Route::post('dropbox', ['as' => 'webhook.dropbox.post', 'uses' => 'Dropbox@postDropbox']);
+    Route::any('slack', ['as' => 'webhook.slack', 'uses' => 'Slack@anyRouter']);
 
     Route::group(['prefix' => 'email', 'namespace' => 'Email'], function () {
         //Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
@@ -183,6 +184,13 @@ Route::group([], function () {
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
         Route::get('/{tsreg}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
         Route::post('/{tsreg}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
+    });
+
+    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+        Route::model('slackToken', App\Models\Sys\Token::class);
+        Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
+        Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
+        Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
     });
 
     Route::group(array('prefix' => 'sso', 'namespace' => 'Sso'), function () {

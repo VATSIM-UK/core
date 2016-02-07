@@ -37,6 +37,6 @@ return [
 
     'slack' =>
         [
-            "token" => "xoxp-3150669632-3776102670-10673834960-4c82970b84",
+            "token" => env("SLACK_SECRET"),
         ],
 ];
