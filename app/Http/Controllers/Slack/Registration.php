@@ -34,10 +34,10 @@ class Registration extends \App\Http\Controllers\BaseController
                 "last_name"  => $this->_account->name_last
             ]);
 
-            if($slackUserAdmin->ok != "true"){
+            /*if($slackUserAdmin->ok != "true"){
                 return Redirect::route("mship.manage.dashboard")
                                ->withError("There was an error with your slack registration: ".$slackUserAdmin->error);
-            }
+            }*/
         }
 
         if ($_slackToken->expired) {
