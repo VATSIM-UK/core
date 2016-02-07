@@ -7,7 +7,7 @@ use App\Libraries\Dropbox as DropboxLibrary;
 use App\Libraries\Slack as SlackLibrary;
 use App\Models\Sys\Token;
 use Cache;
-use \Request;
+use Illuminate\Http\Request;
 use \Response;
 
 class Slack extends WebhookController
