@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration as RegistrationModel;
 use App\Models\Teamspeak\Confirmation as ConfirmationModel;
 use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -20,26 +21,39 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if($this->_account->slack_id != ""){
-            return Redirect::route("mship.manage.dashboard")->withError("Your slack account doesn't need registrating.");
+        if ($this->_account->slack_id != "") {
+            return Redirect::route("mship.manage.dashboard")
+                           ->withError("Your slack account doesn't need registrating.");
         }
 
-        if(!($_slackToken = $this->_account->tokens()->ofType("slack_registration")->first())){
+        if (!($_slackToken = $this->_account->tokens()->ofType("slack_registration")->first())) {
             $_slackToken = Token::generate("slack_registration", false, $this->_account);
+
+            $slackUserAdmin = SlackUserAdmin::invite($this->_account->primary_email->email, [
+                "first_name" => $this->_account->name_first,
+                "last_name"  => $this->_account->name_last
+            ]);
+
+            if($slackUserAdmin->ok != "true"){
+                return Redirect::route("mship.manage.dashboard")
+                               ->withError("There was an error with your slack registration: ".$slackUserAdmin->error);
+            }
         }
 
-        if($_slackToken->expired){
-            return Redirect::route("mship.manage.dashboard")->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact web services.");
+        if ($_slackToken->expired) {
+            return Redirect::route("mship.manage.dashboard")
+                           ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact web services.");
         }
 
         $this->_pageTitle = "New Slack Registration";
+
         return $this->viewMake("slack.new")
                     ->with("slackToken", $_slackToken);
     }
 
     public function getConfirmed()
     {
-        if(!$this->_account->slack_id){
+        if (!$this->_account->slack_id) {
             return Redirect::route("slack.new");
         }
 
@@ -49,19 +63,19 @@ class Registration extends \App\Http\Controllers\BaseController
     // get status of registration
     public function postStatus(Token $slackToken)
     {
-        if($slackToken->type != "slack_registration"){
+        if ($slackToken->type != "slack_registration") {
             return Response::make("invalid");
         }
 
-        if($slackToken->related_id != $this->_account->account_id){
+        if ($slackToken->related_id != $this->_account->account_id) {
             return Response::make("auth.error");
         }
 
-        if($slackToken->expired){
+        if ($slackToken->expired) {
             return Response::make("expired");
         }
 
-        if($this->_account->slack_id){
+        if ($this->_account->slack_id) {
             return Response::make("active");
         }
 

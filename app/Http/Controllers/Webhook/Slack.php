@@ -53,6 +53,10 @@ class Slack extends WebhookController
             return "Invalid user associated with token.";
         }
 
+        if($account->slack_id || $account->slack_id != ""){
+            return "You've already registered - not further registrations are permitted.";
+        }
+
         $account->slack_id = $this->payload("user_id");
         $account->save();
 
