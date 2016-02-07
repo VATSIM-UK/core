@@ -635,19 +635,6 @@
             </div>
         </div>
     </div>
-
-    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/timeline"))
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Recent Timeline Events</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body table-responsive">
-                    @include('adm.sys.timeline.widget', ['entries' => $account->timeline_entries_recent])
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div>
-    @endif
 </div>
 @stop
 
