@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\GenerateEloquentMethodPHPDoc::class,
         Commands\MembersCertImport::class,
         Commands\MembersCertUpdate::class,
         Commands\SysStatisticsDaily::class,
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\SyncMentors::class,
         Commands\TeamspeakManager::class,
         Commands\TeamspeakCleanup::class,
+        Commands\SlackManager::class,
 
         \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
     ];

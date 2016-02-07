@@ -22,7 +22,7 @@
 
         <div class="form-box" id="login-box">
             <div class="header">Sign In</div>
-            <form action="{{ URL::route("adm.authentication.login") }}" method="post">
+            <form action="{{ URL::route("adm.authentication.login.post") }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="body bg-gray">
                     <p>This website uses VATSIM's latest SSO system to authenticate you.</p>

@@ -2,16 +2,31 @@
 
 namespace App\Models\Mship\Ban;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * App\Models\Mship\Ban\Reason
+ *
+ * @property integer $ban_reason_id
+ * @property string $name
+ * @property string $reason_text
+ * @property integer $period_amount
+ * @property string $period_unit
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
+ * @property-read mixed $period_hours
+ */
 class Reason extends Model {
 
+    use SoftDeletes, RecordsActivity
+        ;
     protected $primaryKey = "ban_reason_id";
     protected $table = 'mship_ban_reason';
     public $timestamps = true;
-
-    use SoftDeletes;
 
     protected $dates = ['deleted_at'];
 

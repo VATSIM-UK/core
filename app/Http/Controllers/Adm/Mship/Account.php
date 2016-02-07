@@ -25,7 +25,6 @@ use App\Models\Mship\Account\Security as AccountSecurityData;
 use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Mship\Security as SecurityData;
-use App\Models\Sys\Timeline\Entry as TimelineEntryData;
 use Redirect;
 use Request;
 use Response;
@@ -188,7 +187,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                        ->withSuccess($role->name . " role attached successfully. This user inherited " . count($role->permissions) . " permissions.");
     }
 
-    public function postRoleDetach(AccountData $account, RoleData $role)
+    public function getRoleDetach(AccountData $account, RoleData $role)
     {
         if (!$account) {
             return Redirect::route("adm.mship.account.index");
@@ -486,7 +485,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route("adm.mship.account.index");
         }
 
-        TimelineEntryData::log("mship_account_impersonate", Auth::user(), $account, ["reason" => Input::get("reason")]);
+        // TODO: LOG.
 
         // Let's do the login!
         Auth::loginUsingId($account->account_id, false);

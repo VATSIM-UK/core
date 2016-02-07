@@ -2,13 +2,51 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Ban extends \App\Models\aTimelineEntry
+/**
+ * App\Models\Mship\Account\Ban
+ *
+ * @property integer $account_ban_id
+ * @property integer $account_id
+ * @property integer $banned_by
+ * @property integer $type
+ * @property integer $reason_id
+ * @property string $reason_extra
+ * @property \Carbon\Carbon $period_start
+ * @property \Carbon\Carbon $period_finish
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $repealed_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Models\Mship\Account $banner
+ * @property-read \App\Models\Mship\Ban\Reason $reason
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read mixed $is_local
+ * @property-read mixed $is_network
+ * @property-read mixed $is_repealed
+ * @property-read mixed $is_active
+ * @property-read mixed $is_expired
+ * @property-read mixed $type_string
+ * @property-read mixed $period_amount_string
+ * @property-read mixed $display_value
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
+ * @property-read mixed $timeline_entries_recent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNetwork()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isLocal()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isActive()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isHistoric()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
+ */
+class Ban extends \App\Models\aModel
 {
 
-    use SoftDeletes;
+    use SoftDeletes, RecordsActivity;
 
     protected $table      = 'mship_account_ban';
     protected $primaryKey = "account_ban_id";

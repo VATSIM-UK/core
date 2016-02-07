@@ -31,6 +31,31 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         parent::boot($router);
+
+        // Route Model Bindings
+        $router->model('mshipAccount', \App\Models\Mship\Account::class, function () {
+            return Redirect::route('adm.mship.account.index')->withError('The account ID you provided was not found.');
+        });
+
+        $router->model('ban', \App\Models\Mship\Account\Ban::class, function() {
+            return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');
+        });
+
+        $router->model('mshipAccountEmail', \App\Models\Mship\Account\Email::class);
+        $router->model('ssoEmail', \App\Models\Sso\Email::class);
+        $router->model('sysNotification', \App\Models\Sys\Notification::class);
+
+        $router->model('mshipRole', \App\Models\Mship\Role::class, function () {
+            Redirect::route('adm.mship.role.index')->withError('Role doesn\'t exist.');
+        });
+
+        $router->model('mshipPermission', \App\Models\Mship\Permission::class, function () {
+            Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
+        });
+
+        $router->model("mshipNoteType", \App\Models\Mship\Note\Type::class, function(){
+            Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist.");
+        });
     }
 
     /**

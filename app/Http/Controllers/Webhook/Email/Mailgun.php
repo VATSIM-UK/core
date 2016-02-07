@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Webhook\Email;
 
-use App\Models\Sys\Timeline\Entry;
-use App\Models\Sys\Postmaster\Queue;
 use Session;
 use Response;
 use Redirect;
 use View;
 use Input;
 
-class Mailgun extends \App\Http\Controllers\Webhook\Email\EmailWebhookController {
+class Mailgun extends EmailWebhookController
+{
     public function anyRoute(){
         // Verify that this is a valid request!
         $timestamp = Input::get("timestamp");

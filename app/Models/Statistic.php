@@ -5,6 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Carbon\Carbon;
 
+/**
+ * App\Models\Statistic
+ *
+ * @property integer $statistic_id
+ * @property string $period
+ * @property string $key
+ * @property string $value
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ */
 class Statistic extends \App\Models\aModel {
 
     use SoftDeletingTrait;

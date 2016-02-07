@@ -21,34 +21,14 @@ Route::group(['domain' => 'vats.im'], function () {
     });
 });
 
-/*
- * CORE ROUTES
- */
-
-Route::model('mshipAccount', App\Models\Mship\Account::class, function () {
-    return Redirect::route('adm.mship.account.index')->withError('The account ID you provided was not found.');
-});
-
-Route::model('ban', App\Models\Mship\Account\Ban::class, function() {
-    return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');
-});
-
-Route::model('mshipAccountEmail', App\Models\Mship\Account\Email::class);
-Route::model('ssoEmail', App\Models\Sso\Email::class);
-Route::model('sysNotification', App\Models\Sys\Notification::class);
-
-Route::model('mshipRole', App\Models\Mship\Role::class, function () {
-    Redirect::route('adm.mship.role.index')->withError('Role doesn\'t exist.');
-});
-
-Route::model('mshipPermission', App\Models\Mship\Permission::class, function () {
-    Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
-});
-
 /*** WEBHOOKS ***/
-Route::group(["prefix" => "webhook", "namespace" => "Webhook"], function () {
-    Route::group(["prefix" => "email", "namespace" => "Email"], function () {
-        //Route::any("mailgun", ["as" => "webhook.email.mailgun", "uses" => "Mailgun@anyRoute"]);
+Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
+    Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
+    Route::post('dropbox', ['as' => 'webhook.dropbox.post', 'uses' => 'Dropbox@postDropbox']);
+    Route::any('slack', ['as' => 'webhook.slack', 'uses' => 'Slack@anyRouter']);
+
+    Route::group(['prefix' => 'email', 'namespace' => 'Email'], function () {
+        //Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
     });
 });
 
@@ -73,7 +53,7 @@ Route::group(array('namespace' => 'Adm'), function () {
             Route::any('/search/{q?}', array('as' => 'adm.search', 'uses' => 'Dashboard@anySearch'));
 
             Route::group(array('prefix' => 'system', 'namespace' => 'Sys'), function () {
-                Route::get('/timeline', array('as' => 'adm.sys.timeline', 'uses' => 'Timeline@getIndex'));
+                Route::get('/activity', array('as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex'));
             });
 
             Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
@@ -81,7 +61,7 @@ Route::group(array('namespace' => 'Adm'), function () {
                   Route::post('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d')); */
                 Route::get('/account/{mshipAccount}/{tab?}/{tabid?}', ['as' => 'adm.mship.account.details', 'uses' => 'Account@getDetail'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/role/attach', ['as' => 'adm.mship.account.role.attach', 'uses' => 'Account@postRoleAttach'])->where(['mshipAccount' => '\d+']);
-                Route::post('/account/{mshipAccount}/role/{mshipRole}/detach', ['as' => 'adm.mship.account.role.detach', 'uses' => 'Account@postRoleDetach'])->where(['mshipAccount' => '\d+']);
+                Route::get('/account/{mshipAccount}/role/{mshipRole}/detach', ['as' => 'adm.mship.account.role.detach', 'uses' => 'Account@getRoleDetach'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/ban/add', ['as' => 'adm.mship.account.ban.add', 'uses' => 'Account@postBanAdd'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/note/create', ['as' => 'adm.mship.account.note.create', 'uses' => 'Account@postNoteCreate'])->where(['mshipAccount' => '\d+']);
                 Route::post('/account/{mshipAccount}/note/filter', ['as' => 'adm.mship.account.note.filter', 'uses' => 'Account@postNoteFilter'])->where(['mshipAccount' => '\d+']);
@@ -114,6 +94,15 @@ Route::group(array('namespace' => 'Adm'), function () {
                 Route::post('/permission/{mshipPermission}/update', ['as' => 'adm.mship.permission.update.post', 'uses' => 'Permission@postUpdate']);
                 Route::any('/permission/{mshipPermission}/delete', ['as' => 'adm.mship.permission.delete', 'uses' => 'Permission@anyDelete']);
                 Route::get('/permission/', ['as' => 'adm.mship.permission.index', 'uses' => 'Permission@getIndex']);
+
+                Route::group(["as" => "adm.mship.note."], function(){
+                    Route::get('/note/type/create', ['as' => 'type.create', 'uses' => 'Note@getTypeCreate']);
+                    Route::post('/note/type/create', ['as' => 'type.create.post', 'uses' => 'Note@postTypeCreate']);
+                    Route::get('/note/type/{mshipNoteType}/update', ['as' => 'type.update', 'uses' => 'Note@getTypeUpdate']);
+                    Route::post('/note/type/{mshipNoteType}/update', ['as' => 'type.update.post', 'uses' => 'Note@postTypeUpdate']);
+                    Route::any('/note/type/{mshipNoteType}/delete', ['as' => 'type.delete', 'uses' => 'Note@anyTypeDelete']);
+                    Route::get('/note/type/', ['as' => 'type.index', 'uses' => 'Note@getTypeIndex']);
+                });
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
 
@@ -195,6 +184,13 @@ Route::group([], function () {
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
         Route::get('/{tsreg}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
         Route::post('/{tsreg}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
+    });
+
+    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+        Route::model('slackToken', App\Models\Sys\Token::class);
+        Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
+        Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
+        Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
     });
 
     Route::group(array('prefix' => 'sso', 'namespace' => 'Sso'), function () {

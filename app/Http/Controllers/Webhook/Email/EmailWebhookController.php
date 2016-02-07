@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Webhook\Email;
 
-use App\Models\Sys\Timeline\Entry;
-use App\Models\Sys\Postmaster\Queue;
 use Session;
 use Response;
 use Redirect;
@@ -23,8 +21,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_DELIVERED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_DELIVERED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: LOG.
     }
 
     protected function runOpened($data=[]){
@@ -36,8 +33,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_OPENED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_OPENED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: Log
     }
 
     protected function runClicked($data=[]){
@@ -49,8 +45,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_CLICKED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_CLICKED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: Log
     }
 
     protected function runUnsubscribed($data=[]){
@@ -62,8 +57,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_UNSUBSCRIBED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_UNSUBSCRIBED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: LOG
     }
 
     protected function runSpam($data=[]){
@@ -75,8 +69,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_SPAM;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_SPAM", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: LOG
     }
 
     protected function runBounce($data=[]){
@@ -88,8 +81,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_BOUNCED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_BOUNCED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: LOG
     }
 
     protected function runDropped($data=[]){
@@ -101,8 +93,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         $this->queueEntry->status = Queue::STATUS_BOUNCED;
         $this->queueEntry->save();
 
-        // Timeline this bad boy!
-        Entry::log("SYS_POSTMASTER_QUEUE_BOUNCED", $this->queueEntry->recipient, $this->queueEntry, $data);
+        // TODO: LOG
     }
 
 }

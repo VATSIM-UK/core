@@ -35,4 +35,8 @@ return [
         'secret' => '',
     ],
 
+    'slack' =>
+        [
+            "token" => env("SLACK_SECRET"),
+        ],
 ];

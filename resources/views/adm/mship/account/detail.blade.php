@@ -635,6 +635,18 @@
             </div>
         </div>
     </div>
+    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/timeline"))
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Recent Activities</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body table-responsive">
+                    @include('adm.sys.activity.stream', ['activities' => $account->activity_recent])
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+    @endif
 </div>
 @stop
 

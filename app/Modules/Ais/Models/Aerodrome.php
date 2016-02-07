@@ -4,6 +4,12 @@ namespace App\Modules\Ais\Models;
 
 use App\Models\aModel;
 
+/**
+ * App\Modules\Ais\Models\Aerodrome
+ *
+ * @property-read \App\Modules\Ais\Models\Fir\Sector $sector
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Facility[] $facilities
+ */
 class Aerodrome extends aModel {
 
     protected $table = "ais_aerodrome";

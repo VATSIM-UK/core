@@ -1,5 +1,21 @@
 <?php namespace App\Models\Staff;
 
+/**
+ * App\Models\Staff\Position
+ *
+ * @property integer $id
+ * @property integer $parent_id
+ * @property string $type
+ * @property string $name
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Staff\Position $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Attribute[] $attributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position departments()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position positions()
+ */
 class Position extends \App\Models\aModel
 {
     protected $table = 'staff_positions';

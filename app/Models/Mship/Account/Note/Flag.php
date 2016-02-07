@@ -2,10 +2,18 @@
 
 namespace App\Models\Mship\Account\Note;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Mship\Account\Note\Flag
+ *
+ * @property-read \App\Models\Mship\Account $flagger
+ * @property-read \App\Models\Mship\Account $resolver
+ * @property-read \App\Models\Mship\Account\Note $note
+ */
 class Flag extends \Eloquent {
-    use SoftDeletingTrait;
+    use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_account_note_flag";
     protected $primaryKey = "account_note_flag_id";

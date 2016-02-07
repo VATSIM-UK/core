@@ -55,7 +55,7 @@
                                 @endif
                             </td>
                             <td>{{ $r->default }}</td>
-                            <td>{{ $r->accounts()->count() }}</td>
+                            <td>{{ $r->accounts->count() }}</td>
                             <td>{{ $r->permissions->count() }}</td>
                             <td>{{ $r->updated_at->toDateTimeString() }}</td>
                             <td>

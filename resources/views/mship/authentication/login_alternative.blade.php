@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-md-7 col-md-offset-2">
-            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.auth.loginAlternative") }}">
+            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.auth.loginAlternative.post") }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label class="col-sm-5 control-label" for="cid">Account CID</label>

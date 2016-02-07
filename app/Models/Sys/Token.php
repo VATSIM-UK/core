@@ -4,7 +4,34 @@ namespace App\Models\Sys;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
-class Token extends \App\Models\aTimelineEntry {
+/**
+ * App\Models\Sys\Token
+ *
+ * @property integer $token_id
+ * @property integer $related_id
+ * @property string $related_type
+ * @property string $type
+ * @property string $code
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $expires_at
+ * @property string $used_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\Models\Sys\Token $related
+ * @property-read mixed $is_used
+ * @property-read mixed $is_expired
+ * @property-read mixed $display_value
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
+ * @property-read mixed $timeline_entries_recent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
+ */
+class Token extends \App\Models\aModel {
 
     use SoftDeletingTrait;
 
@@ -15,6 +42,10 @@ class Token extends \App\Models\aTimelineEntry {
 
     public function related() {
         return $this->morphTo();
+    }
+
+    public function scopeHasCode($query, $code){
+        return $query->where("code", "=", $code);
     }
 
     public function scopeOfType($query, $type){
