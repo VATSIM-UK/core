@@ -7,7 +7,8 @@ use App\Libraries\Dropbox as DropboxLibrary;
 use App\Libraries\Slack as SlackLibrary;
 use App\Models\Sys\Token;
 use Cache;
-use Illuminate\Http\Request;
+use \Request;
+use \Response;
 
 class Slack extends WebhookController
 {
@@ -41,11 +42,11 @@ class Slack extends WebhookController
             return Response::make("Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).");
         }
 
-        return Response::make($this->{$route["method"]});
+        return Response::make(call_user_func( [ $this, $route['method']] ));
     }
 
     private function getRegister(){
-        $slackToken = Token::isType("slack_registration")->hasCode($this->payload("text"))->first();
+        $slackToken = Token::ofType("slack_registration")->hasCode($this->payload("text"))->first();
 
         if(!$slackToken || !$slackToken->exists){
             return "Invalid registration token provided.";
