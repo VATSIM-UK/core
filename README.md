@@ -1,6 +1,6 @@
 ## Upgrade Notes
 
-### [ Future Versions ] 2.2.2 >
+### 2.2.2 > 2.2.3
 
 * Modify the migrations table:
 
