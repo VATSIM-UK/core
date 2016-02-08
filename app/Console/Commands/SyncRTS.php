@@ -37,8 +37,8 @@ class SyncRTS extends aCommand
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 
         $members = DB::table('prod_rts.members');
-        if ($this->option("force-update")) {
-            $members->where('cid', '=', $this->option('force-update'))
+        if ($this->option("force")) {
+            $members->where('cid', '=', $this->option('force'))
                     ->where('deleted', '=', '0');
         } else {
             $members->where('deleted', '=', '0')
@@ -55,7 +55,7 @@ class SyncRTS extends aCommand
         foreach ($members as $mem) {
             $output = "Updating {$mem->cid} ";
             if ($this->pullCoreData($mem->cid, $mem->visiting)) {
-                $this->output($output . "...... Successful");
+                $this->log($output . "...... Successful");
             } else {
                 $this->log("...... FAILED");
             }

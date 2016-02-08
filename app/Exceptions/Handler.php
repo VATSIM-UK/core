@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use App;
+use Auth;
+use Log;
 use Redirect;
+use Request;
 use Route;
 use Slack;
 use Exception;
@@ -45,7 +48,7 @@ class Handler extends ExceptionHandler
             }
         }
 
-        if (App::runningInConsole()) {
+        if (!$this->shouldntReport($e)) {
             if (App::environment('production')) {
                 $channel = 'wslogging';
             } else {
@@ -83,7 +86,30 @@ class Handler extends ExceptionHandler
                 ],
             ];
 
+            if (!App::runningInConsole()) {
+                if (Auth::check()) {
+                    $attachment['fields'][] = [
+                        'title' => 'Member:',
+                        'value' => sprintf(
+                            '%d - %s %s',
+                            Auth::user()->account_id,
+                            Auth::user()->name_first,
+                            Auth::user()->name_last
+                        ),
+                        'short' => true,
+                    ];
+                }
+
+                $attachment['fields'][] = [
+                    'title' => 'Request path:',
+                    'value' => Request::url(),
+                    'short' => true,
+                ];
+            }
+
             Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+
+            Log::info(Request::fullUrl());
         }
 
         parent::report($e);

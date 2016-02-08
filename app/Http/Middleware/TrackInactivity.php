@@ -32,8 +32,8 @@ class TrackInactivity
             $timeout = Auth::user()->session_timeout;
             $inactive = Carbon::now()->diffInMinutes(Session::get('last_activity'));
             if ($timeout !== 0 && $inactive >= $timeout) {
-                // log them out
-                return redirect()->route('mship.auth.logout', ['force' => 1]);
+                // forget their secondary authentication
+                Session::forget('auth_extra');
             }
         }
 

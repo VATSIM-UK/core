@@ -54,7 +54,9 @@ class SlackManager extends aCommand
             $localUser = Account::findWithSlackId($slackUser->id);
             $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
-            if($slackUser->name != "anthony"){ continue; }
+            if($slackUser->presence != "active"){
+                continue;
+            }
 
             if(!$localUser || $localUser->exists == false){
                 $this->messageUserAdvisingOfRegistration($slackUser);

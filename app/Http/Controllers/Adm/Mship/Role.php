@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use AuthException;
 use Auth;
 use Input;
 use Session;

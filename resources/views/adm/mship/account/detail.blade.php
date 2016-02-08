@@ -635,7 +635,6 @@
             </div>
         </div>
     </div>
-
     @if($_account->hasPermission("adm/mship/account/".$account->account_id."/timeline"))
         <div class="col-xs-12">
             <div class="box">
