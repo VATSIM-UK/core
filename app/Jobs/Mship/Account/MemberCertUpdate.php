@@ -40,31 +40,33 @@ class MemberCertUpdate extends Job implements ShouldQueue
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         $member = Account::where('account_id', $this->accountID)->firstOrFail();
 
+        // if member no longer exists, delete
+        // else process update
         if ($this->data->name_first == new \stdClass()
             && $this->data->name_last == new \stdClass()
             && $this->data->email == '[hidden]'
         ) {
             $member->delete();
-            return;
+        } else {
+            if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
+                $member->name_first = $this->data->name_first;
+            }
+
+            if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
+                $member->name_last = $this->data->name_last;
+            }
+
+            $member->cert_checked_at = Carbon::now();
+            $member->is_inactive = (boolean) ($this->data->rating < 0);
+            $member->joined_at = $this->data->regdate;
+            $member->determineState($this->data->region, $this->data->division);
+
+            $this->processBans($member);
+            $member = $this->processRating($member);
+
+            $member->save();
         }
 
-        if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
-            $member->name_first = $this->data->name_first;
-        }
-
-        if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
-            $member->name_last = $this->data->name_last;
-        }
-
-        $member->cert_checked_at = Carbon::now();
-        $member->is_inactive = (boolean) ($this->data->rating < 0);
-        $member->joined_at = $this->data->regdate;
-        $member->determineState($this->data->region, $this->data->division);
-
-        $this->processBans($member);
-        $member = $this->processRating($member);
-
-        $member->save();
         DB::commit();
     }
 
