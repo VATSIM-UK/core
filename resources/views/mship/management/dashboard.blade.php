@@ -230,16 +230,18 @@
             @endforeach
         </td>
     </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Slack Registration<br /><small>{!! link_to("http://vatsim-uk.slack.com") !!}</small></th>
-        <td>
-            @if($_account->slack_id)
-                Account ID: {{ $_account->slack_id }} is registered with this account.
-            @else
-                Not yet registered! {!! link_to_route("slack.new", "Click here to register") !!}
-            @endif
-        </td>
-    </tr>
+    @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
+        <tr>
+            <th class='hidden-xs hidden-sm'>Slack Registration<br /><small>{!! link_to("http://vatsim-uk.slack.com") !!}</small></th>
+            <td>
+                @if($_account->slack_id)
+                    Account ID: {{ $_account->slack_id }} is registered with this account.
+                @else
+                    Not yet registered! {!! link_to_route("slack.new", "Click here to register") !!}
+                @endif
+            </td>
+        </tr>
+    @endif
     <tr>
         <th class='hidden-xs hidden-sm'>Actions</th>
         <td>
