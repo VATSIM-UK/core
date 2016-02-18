@@ -5,6 +5,22 @@ namespace App\Models\Sys;
 use App\Models\aModel;
 use \Request;
 
+/**
+ * App\Models\Sys\Activity
+ *
+ * @property integer $id
+ * @property integer $actor_id
+ * @property integer $subject_id
+ * @property string $subject_type
+ * @property string $action
+ * @property integer $ip
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Mship\Account $actor
+ * @property-read \App\Models\Sys\Activity $subject
+ * @property-read mixed $type
+ * @property-read mixed $extra_data
+ */
 class Activity extends aModel
 {
     protected $table      = "sys_activity";

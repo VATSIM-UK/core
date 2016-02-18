@@ -100,6 +100,9 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
+ * @property string $slack_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[] $activityRecent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account slackId($slackId)
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract {
 

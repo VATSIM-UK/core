@@ -24,6 +24,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
  */
 class Type extends \Eloquent
 {
