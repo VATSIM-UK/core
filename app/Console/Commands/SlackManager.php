@@ -54,7 +54,7 @@ class SlackManager extends aCommand
             $localUser = Account::findWithSlackId($slackUser->id);
             $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
-            if($slackUser->presence != "active" || $slackUser->name == "admin"){
+            if($slackUser->presence != "active" || $slackUser->name == "admin" || $slackUser->name == "slackbot"){
                 continue;
             }
 
