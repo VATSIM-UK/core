@@ -1,0 +1,1 @@
+<i class="{{ $type }} {{ $type."-".$key }}"></i>

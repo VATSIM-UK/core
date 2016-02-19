@@ -8,58 +8,52 @@
             To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{!! link_to_route('teamspeak.delete', 'Click here', [$registration->id], ['class' => 'alert-link']) !!}</strong> to start a new registration.</div>
     @endif
 
-    <div id="helpmessage" class="alert alert-danger" role="alert" style="display:none">
-        Having trouble with your registration? Please feel free to <a href="http://helpdesk.vatsim-uk.co.uk" class="alert-link">contact us</a> with any queries or issues.
-    </div>
+    {!! Alert::warning(
+            "Having trouble with your registration? Please feel free to <a href='http://helpdesk.vatsim-uk.co.uk' class='alert-link'>contact us</a> with any queries or issues."
+        )->withAttributes(["id" => "helpmessage", "style" => "display:none"]) !!}
 
 
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-phone"></i> &thinsp; Automatic Registration</div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p>
-                                Please click the button below to connect to TeamSpeak.
-                                If you have problems with this link, follow the 'Manual' instructions further down the page.
-                                Once connected, please wait for your registration to be automatically completed
-                            </p>
-                        </div>
-                        <div class="col-md-12 text-center">
-                            <a class="btn btn-primary" href="{{ $auto_url }}">Connect to TeamSpeak</a>
-                        </div>
+            {!! HTML::panelOpen("Automatic Registration", ["type" => "fa", "key" => "phone"]) !!}
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            Please click the button below to connect to TeamSpeak.
+                            If you have problems with this link, follow the 'Manual' instructions further down the page.
+                            Once connected, please wait for your registration to be automatically completed
+                        </p>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <a class="btn btn-primary" href="{{ $auto_url }}">Connect to TeamSpeak</a>
                     </div>
                 </div>
-            </div>
+            {!! HTML::panelClose() !!}
         </div>
 
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-phone"></i> &thinsp; Manual Registration</div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-6 col-xs-12 col-sm-12">
-                            <p>
-                            <li>Open Teamspeak 3</li>
-                            <li>Click "Connections" > "Connect"</li>
-                            <li>
-                                Click the "More" tab so that you are presented with a connection settings screen
-                                <blockquote style="font-size: 9pt;">
-                                    Server Address: {{ $_ENV['TS_HOST'] }}<br />
-                                    Nickname: {{ $_account->name_first . " " . $_account->name_last }}<br />
-                                    One-Time Privilege Key: {{ $confirmation->privilege_key }}
-                                </blockquote>
-                            </li>
-                            <li>Fill in the details as shown above, then click "Connect" and wait for your registration to be automatically completed.</li>
-                            </p>
-                        </div>
+            {!! HTML::panelOpen("Manual Registration", ["type" => "fa", "key" => "phone"]) !!}
+                <div class="row">
+                    <div class="col-md-6 col-xs-12 col-sm-12">
+                        <p>
+                        <li>Open Teamspeak 3</li>
+                        <li>Click "Connections" > "Connect"</li>
+                        <li>
+                            Click the "More" tab so that you are presented with a connection settings screen
+                            <blockquote style="font-size: 9pt;">
+                                Server Address: {{ $_ENV['TS_HOST'] }}<br />
+                                Nickname: {{ $_account->name_first . " " . $_account->name_last }}<br />
+                                One-Time Privilege Key: {{ $confirmation->privilege_key }}
+                            </blockquote>
+                        </li>
+                        <li>Fill in the details as shown above, then click "Connect" and wait for your registration to be automatically completed.</li>
+                        </p>
+                    </div>
 
-                        <div class="col-md-6 hidden-xs hidden-sm">
-                            {!! HTML::image('assets/images/ts_connect.png', 'Connection Screenshot') !!}
-                        </div>
+                    <div class="col-md-6 hidden-xs hidden-sm">
+                        {!! Image::rounded(asset('assets/images/ts_connect.png'), 'Connection Screenshot')->responsive() !!}
                     </div>
                 </div>
-            </div>
+            {!! HTML::panelClose() !!}
         </div>
 
 <script type="text/javascript">

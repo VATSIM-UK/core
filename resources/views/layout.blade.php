@@ -141,7 +141,9 @@
             @endif
         </div>
 
-        @yield('content', "No content to display")
+        <div class="row">
+            @yield('content', "No content to display")
+        </div>
 
     </div>
 

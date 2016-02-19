@@ -3,44 +3,40 @@
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-key"></i> &thinsp; Secondary Authentication</div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p>
-                                Please enter your second, VATSIM UK password below. You will be requested to enter this password in any of the following situations:
-                            <ol style="margin-left: 25px;">
-                                <li>On your initial login to our system (after previously signing out, or being away for a long period).</li>
-                                <li>If performing <em>destructive</em> actions on your account (i.e. for confirmation).</li>
-                                <li>If other people have also logged in from the same IP address.</li>
-                                <li>If you are a staff member.</li>
-                            </ol>
-                            </p>
-                            <p>
-                                If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
-                            </p>
-                        </div>
+            {!! HTML::panelOpen("Secondary Authentication", ["type" => "fa", "key" => "fa-key"]) !!}
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            Please enter your second, VATSIM UK password below. You will be requested to enter this password in any of the following situations:
+                        <ol style="margin-left: 25px;">
+                            <li>On your initial login to our system (after previously signing out, or being away for a long period).</li>
+                            <li>If performing <em>destructive</em> actions on your account (i.e. for confirmation).</li>
+                            <li>If other people have also logged in from the same IP address.</li>
+                            <li>If you are a staff member.</li>
+                        </ol>
+                        </p>
+                        <p>
+                            If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
+                        </p>
+                    </div>
 
-                        <div class="col-md-4 col-md-offset-4">
-                                {{ Form::open(['route' => 'mship.security.auth.post', 'method' => 'POST', 'class' => 'form-horizontal']) }}
-                                    {{ Form::bsPassword(
-                                        "password", ["placeholder" => "Secondary Password"], [
-                                            "text" => "Forgotten Password?",
-                                            "link" => [
-                                                "url" => "#",
-                                                "attributes" => ["onclick" => "javascript: checkResetPassword();"],
-                                            ]
-                                        ]
-                                    ) }}
+                    <div class="col-md-8 col-md-offset-2">
+                        {!! Form::horizontal(["route" => "mship.security.auth.post", "method" => "POST"]) !!}
 
+                            {!! ControlGroup::generate(
+                                Form::label("password", "Secondary Password"),
+                                Form::password("password"),
+                                Form::help("<a href='#' onclick='javascript: checkResetPassword();'>Forgotten Password?</a>")
+                            ) !!}
 
-                                    {{ Form::bsSubmit("Login") }}
-                                {{ Form::close() }}
-                        </div>
+                            {!! ControlGroup::withContents(
+                                Form::submit("Login")
+                            )->withAttributes(["class" => "text-center"]) !!}
+
+                        {!! Form::close() !!}
                     </div>
                 </div>
-            </div>
+            {!! HTML::panelClose() !!}
         </div>
     </div>
 

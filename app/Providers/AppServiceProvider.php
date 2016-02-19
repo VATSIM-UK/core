@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use \Form;
+use \HTML;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,12 +23,10 @@ class AppServiceProvider extends ServiceProvider
             define('VATSIM_ACCOUNT_SYSTEM', '606060');
         }
 
-        Form::component("bsButton", "components.form.button", ["value", "options" => []]);
-        Form::component("bsSubmit", "components.form.submit", ["value", "options" => []]);
-        Form::component("bsText", "components.form.text", ["name", "value" => null, "attributes" => [], "hint" => []]);
-        Form::component("bsPassword", "components.form.password", ["name", "attributes" => [], "hint" => []]);
-        Form::component("bsTextArea", "components.form.textarea", ["name", "value" => null, "attributes" => [], "hint" => []]);
-        Form::component("hint", "components.form.hint", ["text", "link" => null]);
+        HTML::component("icon", "components.html.icon", ["type", "key"]);
+        HTML::component("panelOpen", "components.html.panel_open", ["title", "icon" => []]);
+        HTML::component("panelClose", "components.html.panel_close", []);
+
     }
 
     /**
