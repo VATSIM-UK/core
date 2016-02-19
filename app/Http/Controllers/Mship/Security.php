@@ -19,7 +19,7 @@ use View;
 class Security extends \App\Http\Controllers\BaseController {
 
     public function getAuth() {
-        if(Session::has("auth_override")){
+        /*if(Session::has("auth_override")){
             return Redirect::route("mship.auth.redirect");
         }
 
@@ -31,7 +31,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // Next, do we need to replace/reset?
         if (!Auth::user()->current_security->is_active) {
             return Redirect::route("mship.security.replace");
-        }
+        }*/
 
         // So we need it.  Let's go!
         return $this->viewMake("mship.security.auth");

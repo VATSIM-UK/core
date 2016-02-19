@@ -1,279 +1,378 @@
 @extends('layout')
 
 @section('content')
-<p class='hidden-xs hidden-sm'>
-    Below are the current details stored by the Single Sign-On (SSO) system.
-    Please note that as not all data has been transitioned from other (older) systems,
-    some data might be recorded incorrectly.
-</p>
 
-<table class="table">
-    <tr>
-        <th class='hidden-xs hidden-sm'>CID</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>CID</strong></span>
-            {{ $_account->account_id }}
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>First Name</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>First Name</strong></span>
-            {{ $_account->name_first }}
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Last Name</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Last Name</strong></span>
-            {{ $_account->name_last }}
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Primary Email Address</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Primary Email Address</strong></span>
-            <strong>
-                {{ $_account->primary_email->email }}
-            </strong>
-            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $_account->primary_email->created_at }}">
-                <em>added {{ $_account->primary_email->created_at }}</em>
-            </a>
-            @if(count($_account->primary_email->sso_emails) > 0)
-                <br />
-                <em style="margin-left: 25px;">Assigned to:
-                    @foreach($_account->primary_email->sso_emails as $ssoE)
-                        {{ $ssoE->sso_account->name }},
-                    @endforeach
-                </em>
-            @endif
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Secondary Email Addresses</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Secondary Emails</strong></span>
-            @foreach($_account->emails as $email)
-                @if($email->account_email_id != $_account->primary_email->account_email_id)
-                    <strong>
-                        {{ $email->email }}
-                    </strong>
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
-                        <em>added {{ $email->created_at }}</em>
-                    </a>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Personal Details</div>
+                    <div class="panel-body">
+                        <!-- Content Of Panel [START] -->
+                        <!-- Top Row [START] -->
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <b>CID:</b>
+                                {{ $_account->account_id }}
+                            </div>
 
-                    @if($email->verified_at == null)
-                        <em><strong>Unverified</strong></em>
-                    @endif
+                            <div class="col-xs-4">
+                                <b>FULL NAME:</b>
+                                {{ $_account->name}}
+                            </div>
 
-                    @if(count($email->sso_emails) > 0)
-                        <br />
-                        <em style="margin-left: 25px;">Assigned to:
-                            @foreach($email->sso_emails as $count => $ssoE)
-                                {{ $ssoE->sso_account->name }}
-                                @if($count+1 < $email->sso_emails->count())
-                                    ,
+                            @if(false)
+                                <div class="col-xs-4">
+                                    <b>NICKNAME:</b>
+                                    {{ $_account->name }}
+                                </div>
+                            @endif
+
+                        </div>
+                        <!-- Top Row [END] -->
+
+                        <br/>
+
+                        <!-- Second Row [START] -->
+                        <div class="row">
+
+                            <div class="col-xs-4">
+                                <b>STATUS: </b>
+                                {{ $_account->status_string }} {{ $_account->current_state }}
+                            </div>
+
+                            <div class="col-xs-4">
+                                <b>LAST SSO LOGIN:</b>
+
+                                @if($_account->last_login_ip)
+                                    {{ $_account->last_login_ip }}
+                                @else
+                                    <em>No login history available.</em>
                                 @endif
-                            @endforeach
-                        </em>
-                    @endif
-                    <br />
-                @endif
-            @endforeach
-            @if(count($_account->emails) < 2)
-                You have no secondary email addresses.
-                <br />
-            @endif
-            <br />
-            [ {!! HTML::link(route("mship.manage.email.add"), "Add Secondary Email") !!} | {!! HTML::link(route("mship.manage.email.assignments"), "Manage SSO Assignments") !!}]
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Second Layer Security</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Second Layer Security</strong></span>
-            @if($_account->current_security)
-                You currently have second layer security enabled.
-                @if($_account->current_security->security->optional)
-                    <strong>You are allowed to disable this.</strong>
-                @else
-                    <strong>You are not allowed to disable this.</strong>
-                @endif
-            @else
-                Second layer security is disabled on your account.
-            @endif
-            <br />
-            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="
-               To protect your account further, you can add a secondary password to your account.  You will then be required to enter this password
-               after logging in, prior to being granted access to your account or our systems."><em>What is this?</em></a>
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>Last SSO Login</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Last SSO Login</strong></span>
-            @if($_account->last_login_ip)
-                <strong>{{ $_account->last_login_ip }}</strong>
-                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $_account->last_login }}">
-                    <em>{{ $_account->last_login }}</em>
-                </a>
-            @else
-                No login history available.
-            @endif
-        </td>
-    </tr>
-    @if(count($_account->qualification_admin) > 0)
-        <tr>
-            <th class='hidden-xs hidden-sm'>Administrative Ratings<br /><small>Past and Present</small></th>
-            <td>
-                <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Admin Ratings</strong></span>
-                @foreach($_account->qualification_admin as $qual)
-                    {{ $qual }}
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                        <em>granted {{ $qual->created_at }}</em>
-                    </a>
-                    <br />
-                @endforeach
-            </td>
-        </tr>
-    @endif
-    <tr>
-        <th class='hidden-xs hidden-sm'>ATC Qualifications<br /><small>Showing all achieved</small></th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>ATC Ratings</strong></span>
-            @foreach($_account->qualifications_atc as $qual)
-                    {{ $qual }}
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                        <em>granted {{ $qual->created_at }}</em>
-                    </a>
-                    <br />
-                @endforeach
-            @if(count($_account->qualifications_atc) < 1)
-                You have no ATC ratings.
-            @endif
-        </td>
-    </tr>
-    @if(count($_account->qualifications_atc_training) > 0)
-        <tr>
-            <th class='hidden-xs hidden-sm'>ATC Training Ratings<br /><small>Past and Present</small></th>
-            <td>
-                <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>ATC Training Ratings</strong></span>
-                @foreach($_account->qualifications_atc_training as $qual)
-                    {{ $qual }}
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                        <em>granted {{ $qual->created_at }}</em>
-                    </a>
-                    <br />
-                @endforeach
-            </td>
-        </tr>
-    @endif
-    <tr>
-        <th class='hidden-xs hidden-sm'>Pilot Qualifications<br /><small>Showing all achieved</small></th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Pilot Ratings</strong></span>
-            @foreach($_account->qualifications_pilot as $qual)
-                    {{ $qual }}
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                        <em>granted {{ $qual->created_at }}</em>
-                    </a>
-                    <br />
-                @endforeach
-            @if(count($_account->qualifications_pilot) < 1)
-                You have no Pilot ratings.
-            @endif
-        </td>
-    </tr>
-    @if(count($_account->qualifications_pilot_training) > 0)
-        <tr>
-            <th class='hidden-xs hidden-sm'>Pilot Training Ratings<br /><small>Past and Present</small></th>
-            <td>
-                <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Pilot Training Ratings</strong></span>
-                @foreach($_account->qualifications_pilot_training as $qual)
-                    {{ $qual }}
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                        <em>granted {{ $qual->created_at }}</em>
-                    </a>
-                    <br />
-                @endforeach
-            </td>
-        </tr>
-    @endif
-    <tr>
-        <th class='hidden-xs hidden-sm'>Account Status</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Account Status</strong></span>
-            {{ $_account->status_string }} {{ $_account->current_state }}
-        </td>
-    </tr>
-    <tr>
-        <th class='hidden-xs hidden-sm'>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {!! link_to_route('teamspeak.new', 'New Registration') !!} ]</small>@endif</th>
-        <td>
-            <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>TeamSpeak Registrations @if (count($_account->teamspeak_registrations) < 3)<br /><small>[ {!! link_to_route('teamspeak.new', 'New Registration') !!} ]</small>@endif</strong></span>
-            @if (count($_account->teamspeakRegistrations) == 0)
-                    No registrations found.
-            @endif
-            @foreach ($_account->teamspeakRegistrations as $tsreg)
-            <div style="float: left; padding-right: 15px;">
-                [ Registration #{{ $tsreg->id }} ]<br />
-                Created: {{ $tsreg->created_at }}<br />
-                @if ($tsreg->status == "new")
-                    Status: {!! link_to_route('teamspeak.new', 'New Registration') !!}<br />
-                @elseif ($tsreg->status == "active")
-                    Unique ID: {{ $tsreg->uid }}<br />
-                    Last IP: {{ $tsreg->last_ip }}<br />
-                    Last login: {{ $tsreg->last_login }}<br />
-                    Operating System: {{ $tsreg->last_os }}<br />
-                @endif
-                [ {!! link_to_route("teamspeak.delete", "Remove Registration", [$tsreg->id]) !!} ]<br />&nbsp;
+
+                            </div>
+
+                            <div class="col-xs-4">
+                                <strong>
+                                    INVISIBILITY:
+                                </strong>
+
+                                @if($_account->is_invisible)
+                                    {!! HTML::link("mship/auth/invisibility", "Disable") !!}
+                                @else
+                                    {!! HTML::link("mship/auth/invisibility", "Enable")  !!}
+                                @endif
+                            </div>
+                        </div>
+                        <!-- Second Row [END] -->
+                        <!-- Content Of Panel [END] -->
+
+                    </div>
+                </div>
             </div>
-            @endforeach
-        </td>
-    </tr>
-    @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
-        <tr>
-            <th class='hidden-xs hidden-sm'>Slack Registration<br /><small>{!! link_to("http://vatsim-uk.slack.com") !!}</small></th>
-            <td>
-                @if($_account->slack_id)
-                    Account ID: {{ $_account->slack_id }} is registered with this account.
-                @else
-                    Not yet registered! {!! link_to_route("slack.new", "Click here to register") !!}
-                @endif
-            </td>
-        </tr>
-    @endif
-    <tr>
-        <th class='hidden-xs hidden-sm'>Actions</th>
-        <td>
-            @if(1 == 2)
-                [ <?= HTML::link("mship/auth/logout?override=1", "Cancel Override") ?> ]
-            @else
-                [ <?= HTML::link("mship/auth/logout/1", "Logout") ?> ]
+
+            <div class="col-md-12">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="glyphicon glyphicon-lock"></i> &thinsp; Secondary Password</div>
+                    <div class="panel-body">
+                        <!-- Content Of Panel [START] -->
+                        <!-- Top Row [START] -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Your authentication for VATSIM UK is largely handled by VATSIM.net's certificate server.  From time to time this can go offline,
+                                which will prevent you from accessing any UK service.  In order to avoid being impacted by this, members are encouraged to set
+                                a secondary password.  In doing so, you will be asked for this password after every login and when the certificate server is offline.
+                            </div>
+                        </div>
+                        <!-- Top Row [END] -->
+
+                        <br/>
+
+                        <!-- Second Row [START] -->
+                        <div class="row">
+
+                            <div class="col-xs-4">
+                                <b>STATUS: </b>
+
+                                @if($_account->current_security)
+                                    ENABLED
+                                @else
+                                    DISABLED
+                                @endif
+
+                            </div>
+
+                            @if($_account->current_security)
+                                <div class="col-xs-4">
+                                    {!! HTML::link("mship/security/replace/0", "Click here to modify.") !!}
+                                </div>
+
+                                <div class="col-xs-4">
+                                        @if($_account->current_security->security->optional)
+                                            {!! HTML::link("mship/security/replace/1", "Click here to disable.") !!}
+                                        @else
+                                            You are not permitted to disable this.
+                                        @endif
+                                </div>
+                            @endif
+                        </div>
+                        <!-- Second Row [END] -->
+                        <!-- Content Of Panel [END] -->
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications</div>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <b>ATC QUALIFICATIONS</b>
+                                        <br />
+                                        <small>Showing all achieved</small>
+                                    </div>
+
+                                    <div class="col-xs-8">
+
+                                        @foreach($_account->qualifications_atc as $qual)
+                                            {{ $qual }}
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                                <em>granted {{ $qual->created_at->diffForHumans() }}</em>
+                                            </a>
+                                            <br />
+                                        @endforeach
+                                        @if(count($_account->qualifications_atc) < 1)
+                                            You have no ATC ratings.
+                                        @endif
+
+                                        @foreach($_account->qualifications_atc_training as $qual)
+                                            {{ $qual }}
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                                <em>granted {{ $qual->created_at }}</em>
+                                            </a>
+                                            <br />
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <b>PILOT QUALIFICATIONS</b>
+                                        <br />
+                                        <small>Showing all achieved</small>
+                                    </div>
+
+                                    <div class="col-xs-8">
+
+                                        @foreach($_account->qualifications_pilot as $qual)
+                                            {{ $qual }}
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                                <em>granted {{ $qual->created_at->diffForHumans() }}</em>
+                                            </a>
+                                            <br />
+                                        @endforeach
+                                        @if(count($_account->qualifications_pilot) < 1)
+                                            You have no ATC ratings.
+                                        @endif
+
+                                        @foreach($_account->qualifications_pilot_training as $qual)
+                                            {{ $qual }}
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                                <em>granted {{ $qual->created_at }}</em>
+                                            </a>
+                                            <br />
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="col-md-12">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading">
+                    <i class="fa fa-envelope"></i>&thinsp;
+                    Email Addresses
+                    <div class="pull-right">
+                        <a href="{{ route("mship.manage.email.add") }}">
+                            <i class="fa fa-plus-circle"></i>
+                        </a>
+                        &thinsp;
+                        <a href="{{ route("mship.manage.email.assignments") }}">
+                            <i class="fa fa-cogs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <!-- Content Of Panel [START] -->
+                    <!-- Top Row [START] -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <b>PRIMARY EMAIL:</b>
+                            <br />
+                            {{ $_account->primary_email->email }}
+                        </div>
+
+                        <div class="col-xs-4">
+                            <b>STATUS:</b>
+                            <br />
+                            @if($_account->primary_email->verified_at == null)
+                                Unverified
+                            @else
+                                Verified
+                            @endif
+                        </div>
+
+                        <div class="col-xs-4 ">
+                            <b>ADDED:</b>
+                            <br />
+                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $_account->primary_email->created_at }}">
+                                <em>{{ $_account->primary_email->created_at->diffForHumans() }}</em>
+                            </a>
+                        </div>
+
+                    </div>
+                    <!-- Top Row [END] -->
+
+                    <br/>
+
+                    @foreach($_account->emails as $email)
+                        @if($email->account_email_id != $_account->primary_email->account_email_id)
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <b>SECONDARY EMAIL:</b>
+                                    <br />
+                                    {{ $email->email }}
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <b>STATUS:</b>
+                                    <br />
+                                    @if($email->verified_at == null)
+                                        Unverified
+                                    @else
+                                        Verified
+                                    @endif
+                                </div>
+
+                                <div class="col-xs-4 hidden-xs hidden-sm">
+                                    <b>ADDED:</b>
+                                    <br />
+                                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
+                                        <em>added {{ $email->created_at }}</em>
+                                    </a>
+                                </div>
+
+                            </div>
+
+                            <br />
+                        @endif
+                    @endforeach
+                    @if(count($_account->emails) < 2)
+                        You have no secondary email addresses.
+                    @endif
+
+                </div>
+            </div>
+        </div>
+
+            @if(!$_account->is_banned)
+                <div class="col-md-12">
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
+                            &thinsp;
+                            Teamspeak Registrations
+                            <div class="pull-right">
+                                <a href="{{ route("teamspeak.new") }}">
+                                    <i class="fa fa-plus-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <b>TEAMSPEAK REGISTRATIONS</b>
+                                </div>
+
+                                <div class="col-xs-9">
+                                    <div class="row">
+                                        @if (count($_account->teamspeakRegistrations) == 0)
+                                            No registrations found.
+                                        @endif
+                                        @foreach ($_account->teamspeakRegistrations as $tsreg)
+                                            <div class="col-xs-6">
+                                                [ <strong>Registration #{{ $tsreg->id }}</strong> ]<br />
+                                                <strong>CREATED</strong>:
+
+                                                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $tsreg->created_at }}">
+                                                    <em>{{ $tsreg->created_at->diffForHumans() }}</em>
+                                                </a>
+
+                                                <br />
+                                                @if ($tsreg->status == "new")
+                                                    <strong>STATUS</strong>: {!! link_to_route('teamspeak.new', 'New Registration') !!}<br />
+                                                @elseif ($tsreg->status == "active")
+                                                    <strong>UNIQUE ID</strong>: {{ $tsreg->uid }}<br />
+                                                    <strong>LAST IP</strong>: {{ $tsreg->last_ip }}<br />
+                                                    <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br />
+                                                    <strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br />
+                                                @endif
+                                                [ {!! link_to_route("teamspeak.delete", "Remove Registration", [$tsreg->id]) !!} ]<br />&nbsp;
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endif
 
-            @if($_account->current_security)
-                &nbsp;&nbsp;
-                [
-                @if($_account->current_security->security->optional)
-                    <?= HTML::link("mship/security/replace/1", "Disable") ?> |
-                @endif
-                <?= HTML::link("mship/security/replace/0", "Modify") ?> Secondary Password
-                ]
-            @elseif(!$_account->current_security)
-                &nbsp;&nbsp;
-                [<?= HTML::link("mship/security/enable", "Enable Secondary Password") ?>]
-            @endif
+            @if(!$_account->is_banned)
+                <div class="col-md-12">
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="fa fa-slack"></i> &thinsp; Slack Registration</div>
+                        <div class="panel-body">
+                            <div class="row">
 
+                                @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
+                                    <div class="col-xs-12">
+                                        @if($_account->slack_id)
+                                            Currently registered with account ID {{ $_account->slack_id }}.
+                                        @else
+                                            You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="col-xs-12">
+                                        <p>
+                                            You are not elegible for Slack registration, as you are not a UK member.
+                                        </p>
+                                    </div>
+                                @endif
 
-            &nbsp;&nbsp;
-            [
-            @if($_account->is_invisible)
-                <?= HTML::link("mship/auth/invisibility", "Disable Invisibility") ?>
-            @else
-                <?= HTML::link("mship/auth/invisibility", "Enable Invisibility") ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endif
-            ]
-        </td>
-    </tr>
-</table>
+        </div>
+    </div>
 @stop

@@ -47,3 +47,19 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
 
     return $unitsString;
 }
+
+function array_merge_concat($a1, $a2, $sep=" "){
+    $final_array = $a1;
+
+    foreach($a2 as $key => $value){
+        if(is_numeric($key)){
+            $final_array[] = $value;
+        } elseif(array_key_exists($key, $a1)){
+            $final_array[$key] = $final_array[$key] . $sep . $value;
+        } else {
+            $final_array[$key] = $value;
+        }
+    }
+
+    return $final_array;
+}

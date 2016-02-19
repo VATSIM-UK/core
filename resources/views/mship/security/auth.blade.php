@@ -1,35 +1,46 @@
 @extends('layout')
 
 @section('content')
-    <p>
-        Please enter your second, VATSIM UK password below. You will be requested to enter this password in any of the following situations:
-        <ol style="margin-left: 25px;">
-            <li>On your initial login to our system (after previously signing out, or being away for a long period).</li>
-            <li>If performing <em>destructive</em> actions on your account (i.e. for confirmation).</li>
-            <li>If other people have also logged in from the same IP address.</li>
-            <li>If you are a staff member.</li>
-        </ol>
-    </p>
-    <p>
-        If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
-    </p>
     <div class="row">
-        <div class="col-md-7 col-md-offset-2">
-            <form class="form-horizontal" method="POST" action="{{ URL::route("mship.security.auth.post") }}">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    <label class="col-sm-5 control-label" for="password">Secondary Password</label>
-                    <div class="col-sm-7">
-                        <input class="form-control" type="password" id="password" name="password" placeholder="Secondary Password">
-                        <span class="help"><a href="#" onclick="javascript: checkResetPassword();">Forgotten Password?</a></span>
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-key"></i> &thinsp; Secondary Authentication</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                Please enter your second, VATSIM UK password below. You will be requested to enter this password in any of the following situations:
+                            <ol style="margin-left: 25px;">
+                                <li>On your initial login to our system (after previously signing out, or being away for a long period).</li>
+                                <li>If performing <em>destructive</em> actions on your account (i.e. for confirmation).</li>
+                                <li>If other people have also logged in from the same IP address.</li>
+                                <li>If you are a staff member.</li>
+                            </ol>
+                            </p>
+                            <p>
+                                If you believe you are seeing this page too often, or erroneously, please contact the Web Services Team.
+                            </p>
+                        </div>
+
+                        <div class="col-md-4 col-md-offset-4">
+                                {{ Form::open(['route' => 'mship.security.auth.post', 'method' => 'POST', 'class' => 'form-horizontal']) }}
+                                    {{ Form::bsPassword(
+                                        "password", ["placeholder" => "Secondary Password"], [
+                                            "text" => "Forgotten Password?",
+                                            "link" => [
+                                                "url" => "#",
+                                                "attributes" => ["onclick" => "javascript: checkResetPassword();"],
+                                            ]
+                                        ]
+                                    ) }}
+
+
+                                    {{ Form::bsSubmit("Login") }}
+                                {{ Form::close() }}
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-5 col-sm-7">
-                        <button type="submit" class="btn btn-default">Login</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 

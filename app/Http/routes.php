@@ -200,6 +200,6 @@ Route::group([], function () {
     });
 });
 
-Route::get('/', function () {
+Route::get('/', ['as' => 'default', function () {
     return Redirect::route('mship.manage.landing');
-});
+}]);
