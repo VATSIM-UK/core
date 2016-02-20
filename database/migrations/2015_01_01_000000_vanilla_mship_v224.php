@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class VanillaMshipV221 extends Migration
+class VanillaMshipV224 extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,13 @@ class VanillaMshipV221 extends Migration
     {
         Schema::create("mship_account", function($table){
             $table->integer("account_id")->unsigned()->primary();
+            $table->string("slack_id", 10)->unique();
             $table->string("name_first", 50);
             $table->string("name_last", 50);
             $table->string("session_id")->default("");
             $table->timestamp("last_login")->nullable();
             $table->bigInteger("last_login_ip")->unsigned()->default(0);
-            $table->string("remember_token", 100);
-            $table->boolean("auth_extra")->default(0);
-            $table->timestamp("auth_extra_at")->nullable();
+            $table->string("remember_token", 100)->nullable();
             $table->enum("gender", array("M", "F"))->nullable();
             $table->enum("experience", array("N", "A", "P", "B"))->default("N");
             $table->smallInteger("age")->unsigned()->default(0);
@@ -67,9 +66,9 @@ class VanillaMshipV221 extends Migration
             $table->bigIncrements("account_security_id")->unsigned();
             $table->integer("account_id")->unsigned();
             $table->integer("security_id");
-            $table->string("value", 40);
+            $table->string("value", 60);
             $table->timestamps();
-            $table->timestamp("expires_at");
+            $table->timestamp("expires_at")->nullable();
             $table->softDeletes();
         });
 
@@ -100,9 +99,11 @@ class VanillaMshipV221 extends Migration
             ["code" => "S2", "type" => "atc", "name_small" => "STU2", "name_long" => "Student 2", "name_grp" => "Tower Controller", "vatsim" => 3, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "S3", "type" => "atc", "name_small" => "STU+", "name_long" => "Student 3", "name_grp" => "Approach Controller", "vatsim" => 4, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "C1", "type" => "atc", "name_small" => "CTR", "name_long" => "Controller 1", "name_grp" => "Area Controller", "vatsim" => 5, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "C3", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 6, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "C3", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 7, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["code" => "I1", "type" => "training_atc", "name_small" => "INS", "name_long" => "Instructor", "name_grp" => "Instructor", "vatsim" => 8, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "I3", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 9, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["code" => "I3", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 10, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["code" => "SUP", "type" => "admin", "name_small" => "SUP", "name_long" => "Supervisor", "name_grp" => "Network Supervisor", "vatsim" => 11, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
@@ -144,16 +145,20 @@ class VanillaMshipV221 extends Migration
         Schema::create("mship_note_type", function($table){
             $table->increments("note_type_id")->unsigned();
             $table->string("name", 80);
+            $table->string("short_code", 20)->nullable();
             $table->boolean("is_available")->default(1);
             $table->boolean("is_system")->default(0);
+            $table->boolean("is_default")->default(0);
             $table->enum("colour_code", array("default", "info", "success", "danger", "warning"))->default("info");
             $table->timestamps();
             $table->softDeletes();
         });
 
         DB::table("mship_note_type")->insert(array(
-            ["name" => "System Generated", "is_available" => 0, "is_system" => 1, "colour_code" => "default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "System Generated", "short_code" => "default", "is_available" => 0, "is_system" => 1, "is_default" => 1, "colour_code" => "default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "General", "is_available" => 1, "is_system" => 0, "colour_code" => "info", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "Discipline", "short_code" => "discipline", "is_available" => 1, "is_system" => 1, "colour_code" => "danger", "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
+
         ));
 
         Schema::create("mship_account_note", function($table){
@@ -161,6 +166,8 @@ class VanillaMshipV221 extends Migration
             $table->integer("note_type_id")->unsigned();
             $table->integer("account_id")->unsigned();
             $table->integer("writer_id")->unsigned();
+            $table->integer("attachment_id")->unsigned();
+            $table->string("attachment_type", 255)->after("writer_id");
             $table->text("content");
             $table->timestamps();
             $table->softDeletes();
@@ -171,6 +178,7 @@ class VanillaMshipV221 extends Migration
             $table->increments('role_id')->unsigned();
             $table->string('name', 40);
             $table->boolean("default")->default(0);
+            $table->smallInteger("session_timeout")->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -233,9 +241,9 @@ class VanillaMshipV221 extends Migration
 
             ["name" => "adm/mship/account/*/bans", "display_name" => "Admin / Membership / Account / Bans", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/ban/add", "display_name" => "Admin / Membership / Account / Ban / Add", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/ban/edit", "display_name" => "Admin / Membership / Account / Ban / Edit", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/*/ban/modify", "display_name" => "Admin / Membership / Account / Ban / Modify", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/account/*/ban/view", "display_name" => "Admin / Membership / Account / Ban / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/ban/reverse", "display_name" => "Admin / Membership / Account / Ban / Reverse", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/ban/*/repeal", "display_name" => "Admin / Membership / Account / Ban / Repeal", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
 
             ["name" => "adm/mship/permission", "display_name" => "Admin / Membership / Permission", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
             ["name" => "adm/mship/permission/create", "display_name" => "Admin / Membership / Permission / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
@@ -278,11 +286,10 @@ class VanillaMshipV221 extends Migration
             $table->smallInteger('type')->unsigned();
             $table->integer('reason_id')->unsigned()->nullable();
             $table->text('reason_extra');
-            $table->smallInteger('period_amount')->unsigned();
-            $table->enum('period_unit', array('M', 'H', 'D'));
             $table->timestamp('period_start');
             $table->timestamp('period_finish')->nullable();
             $table->timestamps();
+            $table->timestamp("repealed_at")->nullable();
             $table->softDeletes();
         });
 
