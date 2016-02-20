@@ -78,7 +78,7 @@ class SyncCommunity extends aCommand
                 continue;
             }
 
-            $email = $member_core->primary_email;
+            $email = $member_core->email;
             $ssoEmailAssigned = $member_core->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
                 return $ssoemail->sso_account_id == $sso_account_id;
             })->values();

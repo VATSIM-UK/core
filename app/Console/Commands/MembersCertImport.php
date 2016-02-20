@@ -94,7 +94,7 @@ class MembersCertImport extends aCommand
         $member->joined_at = $member_data[11];
         $member->is_inactive = (boolean) ($member_data[1] < 0);
         $member->save();
-        $member->addEmail($member_data[5], true, true);
+        $member->addSecondaryEmail($member_data[5], true, true);
         $member->determineState($member_data[12], $member_data[13]);
 
         // if they have an extra rating, log their previous rating first,
@@ -122,7 +122,7 @@ class MembersCertImport extends aCommand
     protected function updateMemberEmail($member_data)
     {
         $member = Account::find($member_data[0]);
-        $member->addEmail($member_data[5], true, true);
+        $member->addSecondaryEmail($member_data[5], true);
     }
 
     protected function getMemberIds()

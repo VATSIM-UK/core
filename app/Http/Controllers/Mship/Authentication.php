@@ -170,7 +170,7 @@ class Authentication extends BaseController {
                     }
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
-                    $account->addEmail($user->email, true, true);
+                    $account->addSecondaryEmail($user->email, true, true);
 
                     // Sort the ATC Rating out.
                     $atcRating = $user->rating->id;

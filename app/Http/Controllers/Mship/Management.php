@@ -26,7 +26,7 @@ class Management extends \App\Http\Controllers\BaseController {
     public function getDashboard(){
         // Load necessary data, early!
         $this->_account->load(
-            "emails",
+            "secondaryEmails",
             "qualifications", "qualifications.qualification",
             "states", "teamspeakRegistrations"
         );
@@ -59,7 +59,7 @@ class Management extends \App\Http\Controllers\BaseController {
         }
 
         // Let's just try and make it, now!
-        $newEmail = $this->_account->addEmail($email);
+        $newEmail = $this->_account->addSecondaryEmail($email);
 
         if(!$newEmail){
             return Redirect::route("mship.manage.email.add")->withError("This email cannot be added, as it has already been used.");
@@ -73,8 +73,8 @@ class Management extends \App\Http\Controllers\BaseController {
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->_account->primary_email;
-        $userVerifiedEmails = $this->_account->secondary_email_verified;
+        $userPrimaryEmail = $this->_account->email;
+        $userVerifiedEmails = $this->_account->verified_secondary_emails;
 
         // Get user SSO email assignments!
         $userSsoEmails = $this->_account->ssoEmails;
@@ -92,9 +92,9 @@ class Management extends \App\Http\Controllers\BaseController {
             $hasEmails = $hasEmails->values();
 
             if($hasEmails && count($hasEmails) > 0){
-                $umEntry['assigned_email_id'] = $hasEmails[0]->account_email_id;
+                $umEntry['assigned_email_id'] = $hasEmails[0]->id;
             } else {
-                $umEntry['assigned_email_id'] = $userPrimaryEmail->account_email_id;
+                $umEntry['assigned_email_id'] = $userPrimaryEmail->id;
             }
 
             $userMatrix[] = $umEntry;
@@ -111,8 +111,8 @@ class Management extends \App\Http\Controllers\BaseController {
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->_account->primary_email;
-        $userVerifiedEmails = $this->_account->secondary_email_verified;
+        $userPrimaryEmail = $this->_account->email;
+        $userVerifiedEmails = $this->_account->verified_secondary_emails;
 
         // Get user SSO email assignments!
         $userSsoEmails = $this->_account->ssoEmails;
