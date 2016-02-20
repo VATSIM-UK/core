@@ -49,6 +49,6 @@ class CreateNewMessage extends Job
         $thread->posts()->save($post);
         $this->sender->messagePosts()->save($post);
 
-        Bus::dispatch((new SendMessageEmail($post))->onQueue("emails"));
+        dispatch((new SendMessageEmail($post))->onQueue("emails"));
     }
 }

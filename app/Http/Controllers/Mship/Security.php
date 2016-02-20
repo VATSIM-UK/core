@@ -171,7 +171,7 @@ class Security extends \App\Http\Controllers\BaseController {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        Bus::dispatch(new TriggerPasswordResetConfirmation(Auth::user(), false));
+        dispatch(new TriggerPasswordResetConfirmation(Auth::user(), false));
         Auth::logout();
 
         return $this->viewMake("mship.security.forgotten")->with("success", trans("mship.security.forgotten.success")."<br />".trans("general.dialog.youcanclose"));
@@ -204,7 +204,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // Let's now consume this token.
         $token->consume();
 
-        Bus::dispatch(new TriggerPasswordReset($token));
+        dispatch(new TriggerPasswordReset($token));
 
         Auth::logout();
         return $this->viewMake("mship.security.forgotten")->with("success", "A new password has been generated

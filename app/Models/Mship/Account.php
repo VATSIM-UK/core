@@ -414,7 +414,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
 
             // Verify if it's not primary.
             if(!$primary){
-                Bus::dispatch(new TriggerNewEmailVerificationProcess($email));
+                dispatch(new TriggerNewEmailVerificationProcess($email));
             }
         } else {
             $email = $check;

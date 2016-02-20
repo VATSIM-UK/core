@@ -39,6 +39,6 @@ class TriggerPasswordResetConfirmation extends Job implements ShouldQueue {
             $sendConfirmationEmailJob = new SendSecurityForgottenConfirmationEmail($this->account, $generatedToken);
         }
 
-        Bus::dispatchNow($sendConfirmationEmailJob);
+        dispatch($sendConfirmationEmailJob);
     }
 }

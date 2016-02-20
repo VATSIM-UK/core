@@ -32,6 +32,6 @@ class SendWelcomeEmail extends \App\Jobs\Job implements ShouldQueue
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessageJob = new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        Bus::dispatch( $createNewMessageJob->onQueue("med") );
+        dispatch( $createNewMessageJob->onQueue("med") );
     }
 }
