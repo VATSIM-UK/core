@@ -19,11 +19,10 @@ class MshipAccountTest extends TestCase
         $this->setExpectedException(App\Exceptions\Mship\DuplicateEmailException::class);
 
         $verified = true;
-        $requireEmailID = true;
-        $emailID = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified, $requireEmailID);
+        $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
-        $this->assertNotContains($emailID, $this->account->fresh()->secondaryEmails->pluck("id"));
+        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
     }
 
     /** @test */
@@ -40,11 +39,10 @@ class MshipAccountTest extends TestCase
         $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = false;
-        $requireEmailID = true;
-        $emailID = $this->account->addSecondaryEmail("i_also_sleep@hotmail.com", $verified, $requireEmailID);
+        $email = $this->account->addSecondaryEmail("i_also_sleep@hotmail.com", $verified);
 
         $this->assertCount(1, $this->account->fresh()->secondaryEmails);
-        $this->assertContains($emailID, $this->account->fresh()->secondaryEmails->pluck("id"));
+        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
     }
 
     /** @test */
@@ -52,11 +50,10 @@ class MshipAccountTest extends TestCase
         $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = false;
-        $requireEmailID = true;
-        $emailID = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified, $requireEmailID);
+        $email = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified);
 
         $this->assertCount(0, $this->account->verified_secondary_emails);
-        $this->assertNotContains($emailID, $this->account->verified_secondary_emails->pluck("id"));
+        $this->assertNotContains($email->id, $this->account->verified_secondary_emails->pluck("id"));
     }
 
     /** @test */
@@ -64,10 +61,9 @@ class MshipAccountTest extends TestCase
         $this->doesntExpectJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = true;
-        $requireEmailID = true;
-        $emailID = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified, $requireEmailID);
+        $emailID = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
 
-        $this->assertContains($emailID, $this->account->fresh()->verified_secondary_emails->pluck("id"));
+        $this->assertContains($email->id, $this->account->fresh()->verified_secondary_emails->pluck("id"));
     }
 
     /** @test */

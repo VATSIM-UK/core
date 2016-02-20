@@ -413,12 +413,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
      *
      * @param String     $newEmail The new email address to add to this account.
      * @param bool       $verified Set to TRUE if the email should be automatically verified.
-     * @param bool|false $returnID Where the ID of the email should be returned.
      *
      * @return \Illuminate\Database\Eloquent\Model|int
      * @throws \App\Exceptions\Mship\DuplicateEmailException
      */
-    public function addSecondaryEmail($newEmail, $verified=false, $returnID=false) {
+    public function addSecondaryEmail($newEmail, $verified=false) {
         if($this->doesUserHaveEmail($newEmail)){
             throw new DuplicateEmailException("Email address '".$newEmail."' has already been used on this account.");
         }
@@ -426,9 +425,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         $newSecondaryEmail = new AccountEmail;
         $newSecondaryEmail->email = $newEmail;
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
-        $saveResult = $this->secondaryEmails()->save($newSecondaryEmail);
-
-        return ($returnID ? $newSecondaryEmail->id : $saveResult);
+        return $this->secondaryEmails()->save($newSecondaryEmail);
     }
 
     public function addQualification($qualificationType) {
