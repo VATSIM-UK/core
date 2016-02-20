@@ -69,4 +69,27 @@ class MshipAccountTest extends TestCase
 
         $this->assertContains($emailID, $this->account->fresh()->verified_secondary_emails->pluck("id"));
     }
+
+    /** @test */
+    public function it_deletes_email_from_db(){
+        $verified = true;
+        $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
+
+        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+
+        $email->delete();
+
+        $this->assertEquals(false, $email->exists);
+        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+    }
+
+    /** @test */
+    public function it_touches_account_updated_at_when_adding_an_email(){
+        $originalUpdatedAt = $this->account->updated_at->toDateTimeString();
+
+        $verified = true;
+        $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
+
+        $this->assertNotEquals($originalUpdatedAt, $email->account->fresh()->updated_at->toDateTimeString());
+    }
 }
