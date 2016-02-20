@@ -31,7 +31,7 @@ elixir(function (mix) {
         "../vendor/ionicons/ionicons.2.0.1.min.css",
         "../vendor/font-awesome/font-awesome.4.5.0.min.css",
         "app.css",
-    ], './public/css/app-all.css');
+    ], './public/build/css/app-all.css');
 
     /* Concatenate all JS */
     mix.scripts([
@@ -44,13 +44,13 @@ elixir(function (mix) {
             "../vendor/bootstrap3/js/bootstrap.js",
             "cbpAnimatedHeader.js",
             "app.js",
-        ], "./public/js/app-all.js"
+        ], "./public/build/js/app-all.js"
     );
 
     /* Cache Busting */
     mix.version([
-        "public/css/app-all.css",
-        "public/js/app-all.js"
+        "public/build/css/app-all.css",
+        "public/build/js/app-all.js"
     ]);
 
     /* Move and shake our dependency files around too! */
