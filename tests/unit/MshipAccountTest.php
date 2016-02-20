@@ -1,9 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 class MshipAccountTest extends TestCase
 {
     private $account;
@@ -26,8 +22,17 @@ class MshipAccountTest extends TestCase
         $requireEmailID = true;
         $emailID = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified, $requireEmailID);
 
-        $this->assertCount(0, $this->account->secondaryEmails());
-        $this->assertNotContains($emailID, $this->account->secondary_emails);
+        $this->assertCount(0, $this->account->fresh()->secondaryEmails);
+        $this->assertNotContains($emailID, $this->account->fresh()->secondaryEmails->pluck("id"));
+    }
+
+    /** @test */
+    public function it_doesnt_permit_duplicate_secondary_emails_on_same_model(){
+        $this->setExpectedException(App\Exceptions\Mship\DuplicateEmailException::class);
+
+        $verified = true;
+        $this->account->addSecondaryEmail("test_email@gmail.com", $verified);
+        $this->account->fresh()->addSecondaryEmail("test_email@gmail.com", $verified);
     }
 
     /** @test */
@@ -51,18 +56,17 @@ class MshipAccountTest extends TestCase
         $emailID = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified, $requireEmailID);
 
         $this->assertCount(0, $this->account->verified_secondary_emails);
-        $this->assertNotContains($emailID, $this->account->verified_secondary_emails);
+        $this->assertNotContains($emailID, $this->account->verified_secondary_emails->pluck("id"));
     }
 
     /** @test */
     public function it_lists_secondary_emails_as_verified(){
-        $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
+        $this->doesntExpectJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = true;
         $requireEmailID = true;
         $emailID = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified, $requireEmailID);
 
-        $this->assertCount(1, $this->account->verified_secondary_emails);
-        $this->assertNotContains($emailID, $this->account->verified_secondary_emails);
+        $this->assertContains($emailID, $this->account->fresh()->verified_secondary_emails->pluck("id"));
     }
 }

@@ -427,7 +427,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
         $saveResult = $this->secondaryEmails()->save($newSecondaryEmail);
 
-        return ($returnID ? $newSecondaryEmail->account_email_id : $saveResult);
+        return ($returnID ? $newSecondaryEmail->id : $saveResult);
     }
 
     public function addQualification($qualificationType) {

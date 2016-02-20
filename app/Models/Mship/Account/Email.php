@@ -34,10 +34,8 @@ class Email extends \Eloquent
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_email";
-    protected $primaryKey = "account_email_id";
     protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
     protected $fillable   = ['email'];
-    protected $attributes = ['is_primary' => 0];
     protected $touches    = ['account'];
 
     public function account()
