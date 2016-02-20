@@ -106,6 +106,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account slackId($slackId)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $secondaryEmails
  * @property-read mixed $verified_secondary_emails
+ * @property string $email
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract {
 

@@ -25,6 +25,7 @@ use Validator;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email secondary()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
+ * @property integer $id
  */
 class Email extends \Eloquent
 {
