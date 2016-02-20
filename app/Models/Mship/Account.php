@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Exceptions\Mship\DuplicateEmailException;
 use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Mship\Account\Ban;
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $name_last
  * @property string $session_id
  * @property string $salt
- * @property \Carbon\Carbon $last_login
+ * @property Carbon                         $last_login
  * @property integer $last_login_ip
  * @property string $remember_token
  * @property string $gender
@@ -38,12 +39,12 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property integer $status
  * @property boolean $is_invisible
  * @property boolean $debug
- * @property \Carbon\Carbon $joined_at
+ * @property Carbon $joined_at
  * @property string $template
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $cert_checked_at
- * @property \Carbon\Carbon $deleted_at
+ * @property Carbon                      $created_at
+ * @property Carbon                         $updated_at
+ * @property Carbon                         $cert_checked_at
+ * @property Carbon                         $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $emails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
@@ -103,6 +104,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $slack_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[] $activityRecent
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account slackId($slackId)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $secondaryEmails
+ * @property-read mixed $verified_secondary_emails
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract {
 
@@ -160,8 +163,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         return $this->morphMany('\App\Models\Sys\Data\Change', 'model')->orderBy('created_at', 'DESC');
     }
 
-    public function emails() {
-        return $this->hasMany('\App\Models\Mship\Account\Email', 'account_id', 'account_id');
+    public function secondaryEmails() {
+        return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id', 'account_id');
     }
 
     public function messageThreads(){
@@ -396,37 +399,35 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         $security->save();
     }
 
-    public function addEmail($newEmail, $verified = false, $primary = false, $returnID=false) {
-        // Check this email doesn't exist for this user already.
-        $check = $this->emails->filter(function($email) use($newEmail){
-            return strcasecmp($email->email, $newEmail) == 0;
-        })->first();
+    public function doesUserHaveEmail($email){
+        $check = $this->secondaryEmails->filter(function($e) use($email){
+            return strcasecmp($e->email, $email) == 0;
+        })->count();
 
-        if (!$check OR !$check->exists) {
-            $email = new AccountEmail;
-            $email->email = $newEmail;
-            if ($verified) {
-                $email->verified_at = Carbon::now();
-            }
-            $this->emails()->save($email);
+        return ($check > 0 || strcasecmp($email, $this->email) == 0);
+    }
 
-            $isNewEmail = true;
-
-            // Verify if it's not primary.
-            if(!$primary){
-                Bus::dispatch(new TriggerNewEmailVerificationProcess($email));
-            }
-        } else {
-            $email = $check;
-            $isNewEmail = false;
+    /**
+     * Attach a new secondary email to this user account.
+     *
+     * @param String     $newEmail The new email address to add to this account.
+     * @param bool       $verified Set to TRUE if the email should be automatically verified.
+     * @param bool|false $returnID Where the ID of the email should be returned.
+     *
+     * @return \Illuminate\Database\Eloquent\Model|int
+     * @throws \App\Exceptions\Mship\DuplicateEmailException
+     */
+    public function addSecondaryEmail($newEmail, $verified=false, $returnID=false) {
+        if($this->doesUserHaveEmail($newEmail)){
+            throw new DuplicateEmailException("Email address '".$newEmail."' has already been used on this account.");
         }
 
-        if ($primary) {
-            $email->is_primary = 1;
-            $email->save();
-        }
+        $newSecondaryEmail = new AccountEmail;
+        $newSecondaryEmail->email = $newEmail;
+        $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
+        $saveResult = $this->secondaryEmails()->save($newSecondaryEmail);
 
-        return ($returnID ? $email->account_email_id : $isNewEmail);
+        return ($returnID ? $newSecondaryEmail->account_email_id : $saveResult);
     }
 
     public function addQualification($qualificationType) {
@@ -467,8 +468,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         $ban->type = $type;
         $ban->reason_id = $banReason->ban_reason_id;
         $ban->reason_extra = $banExtraReason;
-        $ban->period_start = \Carbon\Carbon::now()->second(0);
-        $ban->period_finish = \Carbon\Carbon::now()->addHours($banReason->period_hours)->second(0);
+        $ban->period_start = Carbon::now()->second(0);
+        $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
         $ban->notes()->save($note);
@@ -610,21 +611,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
         $this->attributes['last_login_ip'] = ip2long($value);
     }
 
-    public function getPrimaryEmailAttribute() {
-        return $this->emails->filter(function($email){
-            return $email->is_primary == 1;
-        })->first();
-    }
-
-    public function getSecondaryEmailAttribute() {
-        return $this->emails->filter(function($email){
-            return !$email->is_primary;
-        });
-    }
-
-    public function getSecondaryEmailVerifiedAttribute() {
-        return $this->emails->filter(function($email){
-            return !$email->is_primary && $email->verified_at != null;
+    public function getVerifiedSecondaryEmailsAttribute() {
+        return $this->secondaryEmails->filter(function($email){
+            return $email->is_verified;
         });
     }
 
@@ -667,7 +656,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
     public function toArray() {
         $array = parent::toArray();
         $array['name'] = $this->name;
-        $array['email'] = $this->primary_email ? $this->primary_email->email : new Account\Email();
+        $array['email'] = $this->email;
         $array['atc_rating'] = $this->qualification_atc;
         $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->qualification->name_long : '');
         $array['pilot_rating'] = array();

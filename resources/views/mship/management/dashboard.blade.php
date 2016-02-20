@@ -34,53 +34,40 @@
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Primary Email Address</strong></span>
             <strong>
-                {{ $_account->primary_email->email }}
+                {{ $_account->email }}
             </strong>
-            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $_account->primary_email->created_at }}">
-                <em>added {{ $_account->primary_email->created_at }}</em>
-            </a>
-            @if(count($_account->primary_email->sso_emails) > 0)
-                <br />
-                <em style="margin-left: 25px;">Assigned to:
-                    @foreach($_account->primary_email->sso_emails as $ssoE)
-                        {{ $ssoE->sso_account->name }},
-                    @endforeach
-                </em>
-            @endif
         </td>
     </tr>
     <tr>
         <th class='hidden-xs hidden-sm'>Secondary Email Addresses</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Secondary Emails</strong></span>
-            @foreach($_account->emails as $email)
-                @if($email->account_email_id != $_account->primary_email->account_email_id)
-                    <strong>
-                        {{ $email->email }}
-                    </strong>
-                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
-                        <em>added {{ $email->created_at }}</em>
-                    </a>
+            @foreach($_account->secondary_emails as $email)
+                <strong>
+                    {{ $email->email }}
+                </strong>
+                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
+                    <em>added {{ $email->created_at }}</em>
+                </a>
 
-                    @if($email->verified_at == null)
-                        <em><strong>Unverified</strong></em>
-                    @endif
-
-                    @if(count($email->sso_emails) > 0)
-                        <br />
-                        <em style="margin-left: 25px;">Assigned to:
-                            @foreach($email->sso_emails as $count => $ssoE)
-                                {{ $ssoE->sso_account->name }}
-                                @if($count+1 < $email->sso_emails->count())
-                                    ,
-                                @endif
-                            @endforeach
-                        </em>
-                    @endif
-                    <br />
+                @if(!$email->is_verified)
+                    <em><strong>Unverified</strong></em>
                 @endif
+
+                @if(count($email->sso_emails) > 0)
+                    <br />
+                    <em style="margin-left: 25px;">Assigned to:
+                        @foreach($email->sso_emails as $count => $ssoE)
+                            {{ $ssoE->sso_account->name }}
+                            @if($count+1 < $email->sso_emails->count())
+                                ,
+                            @endif
+                        @endforeach
+                    </em>
+                @endif
+                <br />
             @endforeach
-            @if(count($_account->emails) < 2)
+            @if(count($_account->secondary_emails) < 1)
                 You have no secondary email addresses.
                 <br />
             @endif

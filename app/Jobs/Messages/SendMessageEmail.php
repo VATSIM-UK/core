@@ -33,7 +33,7 @@ class SendMessageEmail extends Job implements ShouldQueue
 
             $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function($m) use($participant, $post, $isNew) {
                 $m->subject(($isNew ? $post->thread->subject : "RE: ".$post->thread->subject));
-                $m->to($participant->primary_email->email, $participant->name);
+                $m->to($participant->email, $participant->name);
 
                 // Send this one to all the secondary emails.
                 // @disabled 2.2.0 Awaiting improvement in 2.2.2

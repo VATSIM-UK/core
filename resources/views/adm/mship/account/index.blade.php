@@ -78,7 +78,7 @@
                         <tr>
                             <td>{!! link_to_route('adm.mship.account.details', $m->account_id, [$m->account_id]) !!}</td>
                             <td>{{ $m->name }}</td>
-                            <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
+                            <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->email : "[ No Permission ]" }}</td>
                             <td>{{ $m->qualification_atc }}</td>
                             <td>{{ $m->qualifications_atc_training->count() > 0 ? $m->qualifications_atc_training->first() : null }}</td>
                             <td>{{ $m->qualifications_pilot_string }}</td>

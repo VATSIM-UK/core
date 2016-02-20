@@ -64,15 +64,15 @@
                                     @if($_account->hasPermission("adm/mship/account/view/email"))
                                         <div class="form-group">
                                             <label for="primary_email">Primary Email:</label>
-                                            {{ $account->primary_email }}
+                                            {{ $account->email }}
                                         </div>
                                         <div class="form-group">
                                             <label for="secondary_email">Secondary Email(s):</label>
-                                            @if(count($account->secondary_email) < 1)
+                                            @if(count($account->secondary_emails) < 1)
                                             <em>There are no secondary emails.</em>
                                             @else
                                             <br />
-                                            @foreach($account->secondary_email as $se)
+                                            @foreach($account->secondary_emails as $se)
                                             <em>{{ $se->email }}</em><br />
                                             @endforeach
                                             @endif
