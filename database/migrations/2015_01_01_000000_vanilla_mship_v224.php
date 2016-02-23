@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -14,7 +15,7 @@ class VanillaMshipV224 extends Migration
     {
         Schema::create("mship_account", function($table){
             $table->integer("account_id")->unsigned()->primary();
-            $table->string("slack_id", 10)->unique();
+            $table->string("slack_id", 10)->unique()->nullable();
             $table->string("name_first", 50);
             $table->string("name_last", 50);
             $table->string("session_id")->default("");
@@ -24,10 +25,10 @@ class VanillaMshipV224 extends Migration
             $table->enum("gender", array("M", "F"))->nullable();
             $table->enum("experience", array("N", "A", "P", "B"))->default("N");
             $table->smallInteger("age")->unsigned()->default(0);
-            $table->string("template", 10);
             $table->smallInteger("status")->unsigned()->default(0);
             $table->boolean("is_invisible")->default(0);
             $table->boolean("debug")->default(false);
+            $table->string("template");
             $table->timestamp("joined_at")->nullable();
             $table->timestamps();
             $table->timestamp("cert_checked_at")->nullable();
@@ -41,8 +42,8 @@ class VanillaMshipV224 extends Migration
 
         Schema::create("mship_account_email", function($table){
             $table->bigIncrements("account_email_id")->unsigned();
+            $table->string("email");
             $table->integer("account_id")->unsigned();
-            $table->string("email", 80);
             $table->boolean("is_primary")->default(0);
             $table->timestamp("verified_at")->nullable();
             $table->timestamps();
@@ -50,8 +51,8 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_account_email")->insert(array(
-            ["account_id" => env("SYSTEM_ACCOUNT_VATUK", 707070), "email" => "no-reply@vatsim-uk.co.uk", "is_primary" => true, "verified_at" => \Carbon\Carbon::now()->toDateTimeString()],
-            ["account_id" => env("SYSTEM_ACCOUNT_VATSIM", 606060), "email" => "no-reply@vatsim.net", "is_primary" => true, "verified_at" => \Carbon\Carbon::now()->toDateTimeString()]
+            ["account_id" => env("SYSTEM_ACCOUNT_VATUK", 707070), "email" => "no-reply@vatsim-uk.co.uk", "is_primary" => true, "verified_at" => Carbon::now()->toDateTimeString()],
+            ["account_id" => env("SYSTEM_ACCOUNT_VATSIM", 606060), "email" => "no-reply@vatsim.net", "is_primary" => true, "verified_at" => Carbon::now()->toDateTimeString()]
         ));
 
         Schema::create("mship_account_qualification", function($table){
@@ -94,30 +95,25 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_qualification")->insert(array(
-            ["code" => "OBS", "type" => "atc", "name_small" => "OBS", "name_long" => "Observer", "name_grp" => "Observer", "vatsim" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "S1", "type" => "atc", "name_small" => "STU", "name_long" => "Student 1", "name_grp" => "Ground Controller", "vatsim" => 2, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "S2", "type" => "atc", "name_small" => "STU2", "name_long" => "Student 2", "name_grp" => "Tower Controller", "vatsim" => 3, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "S3", "type" => "atc", "name_small" => "STU+", "name_long" => "Student 3", "name_grp" => "Approach Controller", "vatsim" => 4, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "C1", "type" => "atc", "name_small" => "CTR", "name_long" => "Controller 1", "name_grp" => "Area Controller", "vatsim" => 5, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "C3", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 6, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "C3", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 7, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "OBS", "type" => "atc", "name_small" => "OBS", "name_long" => "Observer", "name_grp" => "Observer", "vatsim" => 1, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "S1", "type" => "atc", "name_small" => "STU", "name_long" => "Student 1", "name_grp" => "Ground Controller", "vatsim" => 2, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "S2", "type" => "atc", "name_small" => "STU2", "name_long" => "Student 2", "name_grp" => "Tower Controller", "vatsim" => 3, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "S3", "type" => "atc", "name_small" => "STU+", "name_long" => "Student 3", "name_grp" => "Approach Controller", "vatsim" => 4, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "C1", "type" => "atc", "name_small" => "CTR", "name_long" => "Controller 1", "name_grp" => "Area Controller", "vatsim" => 5, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "C2", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 6, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "C3", "type" => "atc", "name_small" => "CTR+", "name_long" => "Senior Controller", "name_grp" => "Senior Controller", "vatsim" => 7, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["code" => "I1", "type" => "training_atc", "name_small" => "INS", "name_long" => "Instructor", "name_grp" => "Instructor", "vatsim" => 8, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "I3", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 9, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "I3", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 10, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "I1", "type" => "training_atc", "name_small" => "INS", "name_long" => "Instructor", "name_grp" => "Instructor", "vatsim" => 8, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "I2", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 9, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "I3", "type" => "training_atc", "name_small" => "INS+", "name_long" => "Senior Instructor", "name_grp" => "Senior Instructor", "vatsim" => 10, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["code" => "SUP", "type" => "admin", "name_small" => "SUP", "name_long" => "Supervisor", "name_grp" => "Network Supervisor", "vatsim" => 11, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "ADM", "type" => "admin", "name_small" => "ADM", "name_long" => "Administrator", "name_grp" => "Network Administrator", "vatsim" => 12, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "SUP", "type" => "admin", "name_small" => "SUP", "name_long" => "Supervisor", "name_grp" => "Network Supervisor", "vatsim" => 11, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "ADM", "type" => "admin", "name_small" => "ADM", "name_long" => "Administrator", "name_grp" => "Network Administrator", "vatsim" => 12, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["code" => "P1", "type" => "pilot", "name_small" => "P1", "name_long" => "P1", "name_grp" => "Online Pilot", "vatsim" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P2", "type" => "pilot", "name_small" => "P2", "name_long" => "P2", "name_grp" => "Flight Fundamentals", "vatsim" => 2, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P3", "type" => "pilot", "name_small" => "P3", "name_long" => "P3", "name_grp" => "VFR Pilot", "vatsim" => 4, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P4", "type" => "pilot", "name_small" => "P4", "name_long" => "P4", "name_grp" => "IFR Pilot", "vatsim" => 8, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P5", "type" => "pilot", "name_small" => "P5", "name_long" => "P5", "name_grp" => "Advanced IFR Pilot", "vatsim" => 16, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P6", "type" => "pilot", "name_small" => "P6", "name_long" => "P6", "name_grp" => "P6", "vatsim" => 32, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P7", "type" => "pilot", "name_small" => "P7", "name_long" => "P7", "name_grp" => "P7", "vatsim" => 64, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P8", "type" => "pilot", "name_small" => "P8", "name_long" => "P8", "name_grp" => "P8", "vatsim" => 128, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["code" => "P9", "type" => "pilot", "name_small" => "P9", "name_long" => "P9", "name_grp" => "Pilot Flight Instructor", "vatsim" => 256, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["code" => "P1", "type" => "pilot", "name_small" => "P1", "name_long" => "P1", "name_grp" => "Online Pilot", "vatsim" => 1, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "P2", "type" => "pilot", "name_small" => "P2", "name_long" => "P2", "name_grp" => "Flight Fundamentals", "vatsim" => 2, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "P3", "type" => "pilot", "name_small" => "P3", "name_long" => "P3", "name_grp" => "VFR Pilot", "vatsim" => 4, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["code" => "P4", "type" => "pilot", "name_small" => "P4", "name_long" => "P4", "name_grp" => "IFR Pilot", "vatsim" => 8, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
         ));
 
         Schema::create("mship_security", function($table){
@@ -135,11 +131,11 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_security")->insert(array(
-            ["name" => "Standard Member Security", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 0, "optional" => 1, "default" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Fixed: Level 1", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 45, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Fixed: Level 2", "alpha" => 4, "numeric" => 2, "symbols" => 0, "length" => 6, "expiry" => 35, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Fixed: Level 3", "alpha" => 5, "numeric" => 2, "symbols" => 1, "length" => 8, "expiry" => 25, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Fixed: Level 4", "alpha" => 6, "numeric" => 2, "symbols" => 1, "length" => 10, "expiry" => 15, "optional" => 0, "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "Standard Member Security", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 0, "optional" => 1, "default" => 1, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Fixed: Level 1", "alpha" => 3, "numeric" => 1, "symbols" => 0, "length" => 4, "expiry" => 45, "optional" => 0, "default" => 0, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Fixed: Level 2", "alpha" => 4, "numeric" => 2, "symbols" => 0, "length" => 6, "expiry" => 35, "optional" => 0, "default" => 0, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Fixed: Level 3", "alpha" => 5, "numeric" => 2, "symbols" => 1, "length" => 8, "expiry" => 25, "optional" => 0, "default" => 0, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Fixed: Level 4", "alpha" => 6, "numeric" => 2, "symbols" => 1, "length" => 10, "expiry" => 15, "optional" => 0, "default" => 0, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
         ));
 
         Schema::create("mship_note_type", function($table){
@@ -155,9 +151,9 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_note_type")->insert(array(
-            ["name" => "System Generated", "short_code" => "default", "is_available" => 0, "is_system" => 1, "is_default" => 1, "colour_code" => "default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "General", "is_available" => 1, "is_system" => 0, "colour_code" => "info", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Discipline", "short_code" => "discipline", "is_available" => 1, "is_system" => 1, "colour_code" => "danger", "created_at" => \Carbon\Carbon::now(), "updated_at" => \Carbon\Carbon::now()],
+            ["name" => "System Generated", "short_code" => "default", "is_available" => 0, "is_system" => 1, "is_default" => 1, "colour_code" => "default", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "General", "short_code" => "", "is_available" => 1, "is_system" => 0, "is_default" => 0, "colour_code" => "info", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Discipline", "short_code" => "discipline", "is_available" => 1, "is_system" => 1, "is_default" => 0, "colour_code" => "danger", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
         ));
 
@@ -167,7 +163,7 @@ class VanillaMshipV224 extends Migration
             $table->integer("account_id")->unsigned();
             $table->integer("writer_id")->unsigned();
             $table->integer("attachment_id")->unsigned();
-            $table->string("attachment_type", 255)->after("writer_id");
+            $table->string("attachment_type", 255);
             $table->text("content");
             $table->timestamps();
             $table->softDeletes();
@@ -184,8 +180,8 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_role")->insert(array(
-            ["name" => "PrivAcc", "default" => 0, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "Members", "default" => "1", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "PrivAcc", "default" => 0, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "Members", "default" => "1", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
         ));
 
         // Creates the assigned_roles (Many-to-Many relation) table
@@ -206,65 +202,65 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_permission")->insert(array(
-            ["name" => "*", "display_name" => "SUPERMAN POWERS", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "*", "display_name" => "SUPERMAN POWERS", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/dashboard", "display_name" => "Admin / Dashboard ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/search", "display_name" => "Admin / Search ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/dashboard", "display_name" => "Admin / Dashboard ", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/search", "display_name" => "Admin / Search ", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/mship", "display_name" => "Admin / Membership ", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship", "display_name" => "Admin / Membership ", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/mship/account", "display_name" => "Admin / Membership / Account", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*", "display_name" => "Admin / Membership / Account / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/list", "display_name" => "Admin / Membership / Account / List", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/datachanges", "display_name" => "Admin / Membership / Account / Data Changes", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/datachanges/view", "display_name" => "Admin / Membership / Account / Data Changes / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/flag/view", "display_name" => "Admin / Membership / Account / Flag / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/flags", "display_name" => "Admin / Membership / Account / Flag", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/roles", "display_name" => "Admin / Membership / Account / Roles", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/roles/attach", "display_name" => "Admin / Membership / Account / Roles / Attach", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/roles/*/detach", "display_name" => "Admin / Membership / Account / Roles / Detach", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/note/create", "display_name" => "Admin / Membership / Account / Note / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/note/view", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/note/filter", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/notes", "display_name" => "Admin / Membership / Account / Note", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/receivedEmails", "display_name" => "Admin / Membership / Account / Received Emails", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/security", "display_name" => "Admin / Membership / Account / Security", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/security/change", "display_name" => "Admin / Membership / Account / Security / Change", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/security/enable", "display_name" => "Admin / Membership / Account / Security / Enable", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/security/reset", "display_name" => "Admin / Membership / Account / Security / Reset", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/security/view", "display_name" => "Admin / Membership / Account / Security / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/sentEmails", "display_name" => "Admin / Membership / Account / Sent Emails", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/timeline", "display_name" => "Admin / Membership / Account / Timeline", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/view/email", "display_name" => "Admin / Membership / Account / View / Email", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/impersonate", "display_name" => "Admin / Membership / Account / Impersonate", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/own", "display_name" => "Admin / Membership / Account / View & Manage Own", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account", "display_name" => "Admin / Membership / Account", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*", "display_name" => "Admin / Membership / Account / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/list", "display_name" => "Admin / Membership / Account / List", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/datachanges", "display_name" => "Admin / Membership / Account / Data Changes", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/datachanges/view", "display_name" => "Admin / Membership / Account / Data Changes / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/flag/view", "display_name" => "Admin / Membership / Account / Flag / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/flags", "display_name" => "Admin / Membership / Account / Flag", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/roles", "display_name" => "Admin / Membership / Account / Roles", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/roles/attach", "display_name" => "Admin / Membership / Account / Roles / Attach", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/roles/*/detach", "display_name" => "Admin / Membership / Account / Roles / Detach", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/note/create", "display_name" => "Admin / Membership / Account / Note / Create", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/note/view", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/note/filter", "display_name" => "Admin / Membership / Account / Note / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/notes", "display_name" => "Admin / Membership / Account / Note", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/receivedEmails", "display_name" => "Admin / Membership / Account / Received Emails", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/security", "display_name" => "Admin / Membership / Account / Security", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/security/change", "display_name" => "Admin / Membership / Account / Security / Change", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/security/enable", "display_name" => "Admin / Membership / Account / Security / Enable", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/security/reset", "display_name" => "Admin / Membership / Account / Security / Reset", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/security/view", "display_name" => "Admin / Membership / Account / Security / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/sentEmails", "display_name" => "Admin / Membership / Account / Sent Emails", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/timeline", "display_name" => "Admin / Membership / Account / Timeline", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/view/email", "display_name" => "Admin / Membership / Account / View / Email", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/impersonate", "display_name" => "Admin / Membership / Account / Impersonate", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/own", "display_name" => "Admin / Membership / Account / View & Manage Own", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/mship/account/*/bans", "display_name" => "Admin / Membership / Account / Bans", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/ban/add", "display_name" => "Admin / Membership / Account / Ban / Add", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/ban/modify", "display_name" => "Admin / Membership / Account / Ban / Modify", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/account/*/ban/view", "display_name" => "Admin / Membership / Account / Ban / View", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/ban/*/repeal", "display_name" => "Admin / Membership / Account / Ban / Repeal", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/account/*/bans", "display_name" => "Admin / Membership / Account / Bans", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/ban/add", "display_name" => "Admin / Membership / Account / Ban / Add", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/ban/modify", "display_name" => "Admin / Membership / Account / Ban / Modify", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/account/*/ban/view", "display_name" => "Admin / Membership / Account / Ban / View", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/ban/*/repeal", "display_name" => "Admin / Membership / Account / Ban / Repeal", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/mship/permission", "display_name" => "Admin / Membership / Permission", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/create", "display_name" => "Admin / Membership / Permission / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/list", "display_name" => "Admin / Membership / Permission / List", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/*/update", "display_name" => "Admin / Membership / Permission / Update", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/*/delete", "display_name" => "Admin / Membership / Permission / Delete", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/*/delete", "display_name" => "Admin / Membership / Permission / Delete", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/permission/attach", "display_name" => "Admin / Membership / Permission / Attach", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/permission", "display_name" => "Admin / Membership / Permission", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/create", "display_name" => "Admin / Membership / Permission / Create", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/list", "display_name" => "Admin / Membership / Permission / List", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/*/update", "display_name" => "Admin / Membership / Permission / Update", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/*/delete", "display_name" => "Admin / Membership / Permission / Delete", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/*/delete", "display_name" => "Admin / Membership / Permission / Delete", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/permission/attach", "display_name" => "Admin / Membership / Permission / Attach", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/mship/role", "display_name" => "Admin / Membership / Role", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/role/*/delete", "display_name" => "Admin / Membership / Role / Delete", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/role/*/update", "display_name" => "Admin / Membership / Role / Update", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/role/create", "display_name" => "Admin / Membership / Role / Create", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/role/list", "display_name" => "Admin / Membership / Role / List", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "adm/mship/role/default", "display_name" => "Admin / Membership / Roles / Set Default", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/mship/role", "display_name" => "Admin / Membership / Role", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/role/*/delete", "display_name" => "Admin / Membership / Role / Delete", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/role/*/update", "display_name" => "Admin / Membership / Role / Update", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/role/create", "display_name" => "Admin / Membership / Role / Create", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/role/list", "display_name" => "Admin / Membership / Role / List", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "adm/mship/role/default", "display_name" => "Admin / Membership / Roles / Set Default", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "adm/sys/timeline/mship", "display_name" => "Admin / System / Timeline / Membership", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "adm/sys/timeline/mship", "display_name" => "Admin / System / Timeline / Membership", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
-            ["name" => "teamspeak/serveradmin", "display_name" => "TeamSpeak / Server Admin", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "teamspeak/idle/extended", "display_name" => "TeamSpeak / Extended Idle", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
-            ["name" => "teamspeak/idle/permanent", "display_name" => "TeamSpeak / Permanent Idle", "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["name" => "teamspeak/serveradmin", "display_name" => "TeamSpeak / Server Admin", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "teamspeak/idle/extended", "display_name" => "TeamSpeak / Extended Idle", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+            ["name" => "teamspeak/idle/permanent", "display_name" => "TeamSpeak / Permanent Idle", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
         ));
 
         // Creates the permission_role (Many-to-Many relation) table
@@ -276,7 +272,7 @@ class VanillaMshipV224 extends Migration
         });
 
         DB::table("mship_permission_role")->insert(array(
-            ["role_id" => 1, "permission_id" => 1, "created_at" => DB::raw("NOW()"), "updated_at" => DB::raw("NOW()")],
+            ["role_id" => 1, "permission_id" => 1, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
         ));
 
         Schema::create('mship_account_ban', function(Blueprint $table) {
