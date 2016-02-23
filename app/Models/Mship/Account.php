@@ -225,8 +225,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id", "account_id");
     }
 
-    public function qualifications() {
-        return $this->hasMany('\App\Models\Mship\Account\Qualification', 'account_id', 'account_id')->orderBy('created_at', 'DESC')->with('qualification');
+    public function qualifications()
+    {
+        return $this->belongsToMany(\App\Models\Mship\Qualification::class, "mship_account_qualification", "account_id", "qualification_id")->withTimestamps();
     }
 
     public function roles()

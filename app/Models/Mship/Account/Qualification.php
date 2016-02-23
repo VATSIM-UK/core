@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 /**
  * App\Models\Mship\Account\Qualification
  *
- * @property integer $account_qualification_id
- * @property integer $account_id
- * @property integer $qualification_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
- * @property-read \App\Models\Mship\Account $account
+ * @property integer                              $account_qualification_id
+ * @property integer                              $account_id
+ * @property integer                              $qualification_id
+ * @property \Carbon\Carbon                       $created_at
+ * @property \Carbon\Carbon                       $updated_at
+ * @property \Carbon\Carbon                       $deleted_at
+ * @property-read \App\Models\Mship\Account       $account
  * @property-read \App\Models\Mship\Qualification $qualification
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification atc()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Qualification atcTraining()
@@ -27,11 +27,11 @@ class Qualification extends \Eloquent
 
     use SoftDeletingTrait, RecordsActivity;
 
-    protected $table      = "mship_account_qualification";
+    protected $table = "mship_account_qualification";
     protected $primaryKey = "account_qualification_id";
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden     = ['account_qualification_id'];
-    protected $touches    = ['account'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['account_qualification_id'];
+    protected $touches = ['account'];
 
     public function account()
     {
