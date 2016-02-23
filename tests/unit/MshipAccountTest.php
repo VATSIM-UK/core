@@ -127,5 +127,25 @@ class MshipAccountTest extends TestCase
         $qualification = \App\Models\Mship\Qualification::first();
 
         $this->account->addQualification($qualification);
+
+        $this->assertTrue($this->account->fresh()->hasQualification($qualification));
+
+        $this->seeInDatabase("mship_account_qualification", [
+            "account_id" => $this->account->account_id,
+            "qualification_id" => $qualification->qualification_id,
+            "deleted_at" => null,
+        ]);
+    }
+
+    /** @test **/
+    public function it_returns_duplicate_qualification_error_when_adding_qualification()
+    {
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateQualificationException::class);
+
+        $qualificationOne = \App\Models\Mship\Qualification::first();
+        $qualificationTwo = \App\Models\Mship\Qualification::first();
+
+        $this->account->addQualification($qualificationOne);
+        $this->account->fresh()->addQualification($qualificationTwo);
     }
 }
