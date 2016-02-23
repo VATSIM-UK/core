@@ -227,7 +227,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function qualifications()
     {
-        return $this->belongsToMany(\App\Models\Mship\Qualification::class, "mship_account_qualification", "account_id", "qualification_id")->withTimestamps();
+        return $this->belongsToMany(\App\Models\Mship\Qualification::class, "mship_account_qualification", "account_id",
+            "qualification_id")->withTimestamps();
     }
 
     public function roles()
@@ -439,9 +440,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
 
         // Let's check all roles for this permission!
-        $hasPermission = $this->roles->filter(function($role) use($parent){
-            return $role->hasPermission($parent);
-        })->count() > 0;
+        $hasPermission = $this->roles->filter(function ($role) use ($parent) {
+                return $role->hasPermission($parent);
+            })->count() > 0;
 
         return $hasPermission;
     }
@@ -516,7 +517,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function hasQualification(Qualification $qualification)
     {
-        return $this->qualifications->filter(function($q) use($qualification){
+        return $this->qualifications->filter(function ($q) use ($qualification) {
             return $q->qualification_id == $qualification->qualification_id;
         })->count() > 0;
     }
@@ -838,13 +839,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getSessionTimeoutAttribute()
     {
-        $timeout = 0;
-        foreach ($this->roles->filter([RoleData::class, 'hasTimeout']) as $role) {
-            if ($timeout == 0 || $role->session_timeout < $timeout) {
-                $timeout = $role->session_timeout;
-            }
-        }
-
-        return $timeout;
+        return $this->roles->filter([RoleData::class, "hasTimeout"])
+                           ->pluck("session_timeout")
+                           ->max();
     }
 }
