@@ -61,7 +61,7 @@ class MshipAccountTest extends TestCase
         $this->doesntExpectJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = true;
-        $emailID = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
 
         $this->assertContains($email->id, $this->account->fresh()->verified_secondary_emails->pluck("id"));
     }
@@ -81,11 +81,14 @@ class MshipAccountTest extends TestCase
 
     /** @test */
     public function it_touches_account_updated_at_when_adding_an_email(){
-        $originalUpdatedAt = $this->account->updated_at->toDateTimeString();
+        $originalUpdatedAt = $this->account->updated_at;
+
+        sleep(1);
 
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
+        $email->save();
 
-        $this->assertNotEquals($originalUpdatedAt, $email->account->fresh()->updated_at->toDateTimeString());
+        $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
     }
 }
