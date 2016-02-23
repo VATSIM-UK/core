@@ -177,9 +177,9 @@ class Authentication extends BaseController {
                     if ($atcRating > 7) {
                         // Store the admin/ins rating.
                         if ($atcRating >= 11) {
-                            $account->addQualification(QualificationType::ofType('admin')->networkValue($atcRating)->first());
+                            $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
                         } else {
-                            $account->addQualification(QualificationType::ofType('training_atc')->networkValue($atcRating)->first());
+                            $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
                         }
 
                         $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
@@ -187,7 +187,7 @@ class Authentication extends BaseController {
                             $atcRating = $atcRatingInfo->PreviousRatingInt;
                         }
                     }
-                    $account->addQualification(QualificationType::ofType('atc')->networkValue($atcRating)->first());
+                    $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
 
                     for ($i = 1; $i <= 256; $i*=2) {
                         if ($i & $user->pilot_rating->rating) {
