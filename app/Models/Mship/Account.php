@@ -419,12 +419,12 @@ class Account extends \App\Models\aModel implements AuthenticatableContract {
      */
     public function addSecondaryEmail($newEmail, $verified=false) {
         if($this->doesUserHaveEmail($newEmail)){
-            throw new DuplicateEmailException("Email address '".$newEmail."' has already been used on this account.");
+            throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail = new AccountEmail;
-        $newSecondaryEmail->email = $newEmail;
+        $newSecondaryEmail = new AccountEmail(["email" => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
+
         return $this->secondaryEmails()->save($newSecondaryEmail);
     }
 
