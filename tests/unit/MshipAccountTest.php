@@ -6,7 +6,36 @@ class MshipAccountTest extends TestCase
 
     public function setUp(){
         parent::setUp();
-        $this->account = factory(App\Models\Mship\Account::class)->create(["email" => "i_sleep@gmail.com"]);
+
+        $this->account = factory(App\Models\Mship\Account::class)->create([
+            "name_first" => "John",
+            "name_last" => "Doe",
+            "email" => "i_sleep@gmail.com"
+        ]);
+    }
+
+    /** @test **/
+    public function it_stores_basic_member_data()
+    {
+        $this->seeInDatabase("mship_account", [
+            "name_first" => "John",
+            "name_last" => "Doe",
+            "email" => "i_sleep@gmail.com",
+        ]);
+
+        $this->assertTrue($this->account->exists);
+    }
+
+    /** @test **/
+    public function it_correctly_formats_names()
+    {
+        $member = factory(\App\Models\Mship\Account::class)->create([
+            "name_first" => "mary",
+            "name_last" => "JANE",
+        ]);
+
+        $this->assertEquals("Mary", $member->name_first);
+        $this->assertEquals("Jane", $member->name_last);
     }
 
     /** @test */
@@ -90,5 +119,13 @@ class MshipAccountTest extends TestCase
         $email->save();
 
         $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
+    }
+
+    /** @test **/
+    public function it_correctly_stores_qualifications()
+    {
+        $qualification = \App\Models\Mship\Qualification::first();
+
+        $this->account->addQualification($qualification);
     }
 }
