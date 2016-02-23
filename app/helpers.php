@@ -1,5 +1,15 @@
 <?php
 
+function format_name($name){
+    $name = trim($name);
+
+    if ($name == strtoupper($name) || $name == strtolower($name)) {
+        $name = ucwords(strtolower($name));
+    }
+
+    return $name;
+}
+
 function sanitize_email($email){
     return strtolower(trim($email));
 }

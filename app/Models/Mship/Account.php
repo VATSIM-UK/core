@@ -9,6 +9,7 @@ use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Account\Qualification as AccountQualification;
 use App\Models\Mship\Account\State;
@@ -730,48 +731,35 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->attributes[ 'last_login_ip' ] = ip2long($value);
     }
 
+    /**
+     * Filter the attached secondary emails for those that are verified.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getVerifiedSecondaryEmailsAttribute()
     {
-        return $this->secondaryEmails->filter(function ($email) {
-            return $email->is_verified;
-        });
+        if($this->secondaryEmail->isEmpty()){
+            return collect();
+        }
+
+        return $this->secondaryEmails->filter(function($email){
+                return $email->is_verified;
+            });
     }
 
     public function setNameFirstAttribute($value)
     {
-        $value = trim($value);
-
-        if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords(strtolower($value));
-        }
-
-        $this->attributes[ 'name_first' ] = $value;
+        $this->attributes[ 'name_first' ] = format_name($value);
     }
 
     public function setNameLastAttribute($value)
     {
-        $value = trim($value);
-
-        if ($value == strtoupper($value) || $value == strtolower($value)) {
-            $value = ucwords(strtolower($value));
-        }
-
-        $this->attributes[ 'name_last' ] = $value;
+        $this->attributes[ 'name_last' ] = format_name($value);
     }
 
     public function getNameAttribute()
     {
-        return $this->attributes[ 'name_first' ] . ' ' . $this->attributes[ 'name_last' ];
-    }
-
-    public function renewSalt()
-    {
-        $salt       = md5(uniqid() . md5(time()));
-        $salt       = substr($salt, 0, 20);
-        $this->salt = $salt;
-        $this->save();
-
-        return $salt;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     public function getDisplayValueAttribute()
@@ -821,15 +809,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         });
     }
 
-    public function isValidTeamspeakAlias($tAlias)
+    public function isValidDisplayName($displayName)
     {
-        foreach ($this->teamspeakAliases as $rAlias) {
-            if (strcasecmp($rAlias->display_name, $tAlias) == 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return (strcasecmp($this->nickname, $displayName) || strcasecmp($displayName, $this->name));
     }
 
     /**
