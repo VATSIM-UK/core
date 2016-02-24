@@ -43,7 +43,7 @@ class Qualification extends \Eloquent
 
     public function account()
     {
-        return $this->belongsToMany(Account::class, "mship_account_qualification", "qualification_id")->withTimestamps();
+        return $this->belongsToMany(Account::class, "mship_account_qualification", "qualification_id", "account_id")->withTimestamps();
     }
 
     public static function parseVatsimATCQualification($network)
