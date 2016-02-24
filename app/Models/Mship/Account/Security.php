@@ -37,7 +37,7 @@ class Security extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'account_id', 'account_id');
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     public function security()

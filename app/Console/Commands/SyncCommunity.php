@@ -69,7 +69,7 @@ class SyncCommunity extends aCommand
                 $this->output->write($member['member_id'] . ' // ' . $member['vatsim_cid']);
             }
 
-            $member_core = Account::where('account_id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
+            $member_core = Account::where('id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
             if ($member_core === NULL) {
                 if ($verbose) {
                     $this->output->writeln(' // <error>FAILURE: cannot retrieve member ' . $member['member_id'] . ' from Core.</error>');
@@ -102,14 +102,14 @@ class SyncCommunity extends aCommand
             $changeEmail = strcasecmp($member['email'], $email);
             $changeName = strcmp($member['name'], $member_core->name_first . ' ' . $member_core->name_last);
             $changeState = strcasecmp($member['member_title'], $state);
-            $changeCID = strcmp($member['field_12'], $member_core->account_id);
+            $changeCID = strcmp($member['field_12'], $member_core->id);
             $changeARating = strcmp($member['field_13'], $aRatingString);
             $changePRating = strcmp($member['field_14'], $pRatingString);
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
                               || $changeARating || $changePRating;
 
             if ($verbose) {
-                $this->output->write(' // ID: ' . $member_core->account_id);
+                $this->output->write(' // ID: ' . $member_core->id);
                 $this->output->write(' // Email (' . ($emailLocal ? 'local' : "latest") . "):" . $email . ($changeEmail ? "(changed)" : ""));
                 $this->output->write(' // Display: ' . $member_core->name_first . " " . $member_core->name_last . ($changeName ? "(changed)" : ""));
                 $this->output->write(' // State: ' . $state . ($changeState ? "(changed)" : ""));
@@ -128,7 +128,7 @@ class SyncCommunity extends aCommand
 
                     // Profile fields (raw update)
                     $update = [
-                        'field_12' => $member_core->account_id, // VATSIM CID
+                        'field_12' => $member_core->id, // VATSIM CID
                         'field_13' => $aRatingString, // Controller Rating
                         'field_14' => $pRatingString, // Pilot Ratings
                     ];
@@ -140,7 +140,7 @@ class SyncCommunity extends aCommand
                     $countSuccess++;
                 } catch (Exception $e) {
                     $countFailure++;
-                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->account_id . ' details to forum.</error>' . $e->getMessage());
+                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->id . ' details to forum.</error>' . $e->getMessage());
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');

@@ -12,7 +12,7 @@
         <th class='hidden-xs hidden-sm'>CID</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>CID</strong></span>
-            {{ $_account->account_id }}
+            {{ $_account->id }}
         </td>
     </tr>
     <tr>

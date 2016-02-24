@@ -75,7 +75,6 @@ class Security extends \App\Http\Controllers\BaseController {
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        \Log::info($account->account_id);
         $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
         $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
         $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;

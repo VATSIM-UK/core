@@ -67,7 +67,7 @@ class Registration extends \App\Http\Controllers\BaseController
             return Response::make("invalid");
         }
 
-        if ($slackToken->related_id != $this->_account->account_id) {
+        if ($slackToken->related_id != $this->_account->id) {
             return Response::make("auth.error");
         }
 

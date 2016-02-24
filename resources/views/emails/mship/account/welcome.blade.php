@@ -8,7 +8,7 @@
 </p>
 
 <p>
-    CID: {!! $account->account_id !!}<br/>
+    CID: {!! $account->id !!}<br/>
     Full Name: {!! $account->name !!}<br/>
     Primary Email: {!! $account->email !!}<br/>
     Secondary Emails:<br/>

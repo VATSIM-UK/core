@@ -46,7 +46,7 @@ class Email extends \Eloquent
 
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
     }
 
     public function tokens()

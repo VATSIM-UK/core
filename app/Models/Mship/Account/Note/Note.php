@@ -33,11 +33,11 @@ class Note extends \Eloquent {
     protected $hidden = ['account_note_id'];
 
     public function user(){
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
     public function actioner(){
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "actioner_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "actioner_id");
     }
 
     public function flag(){

@@ -19,7 +19,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (!$this->_account->new_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
-            $_registration = $this->createRegistration($this->_account->account_id, $registration_ip);
+            $_registration = $this->createRegistration($this->_account->id, $registration_ip);
         } else {
             $_registration = $this->_account->new_registration->load('confirmation');
         }
@@ -28,7 +28,7 @@ class Registration extends \App\Http\Controllers\BaseController
             $_confirmation = $this->createConfirmation(
                 $_registration->id,
                 md5($_registration->created_at->timestamp),
-                $this->_account->account_id
+                $this->_account->id
             );
         } else {
             $_confirmation = $_registration->confirmation;
@@ -49,7 +49,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // delete registration (if owned)
     public function getDelete($registration)
     {
-        if ($this->_account->account_id == $registration->account_id) {
+        if ($this->_account->id == $registration->account_id) {
             $registration->delete();
         }
         return Redirect::back();
@@ -58,7 +58,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // get status of registration
     public function postStatus($registration)
     {
-        if ($this->_account->account_id == $registration->account_id) {
+        if ($this->_account->id == $registration->account_id) {
             return Response::make($registration->status);
         } else {
             return Response::make("Cannot retrieve registration status.");

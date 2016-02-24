@@ -88,7 +88,7 @@ class MembersCertImport extends aCommand
     protected function createNewMember($member_data)
     {
         $member = new Account();
-        $member->account_id = $member_data[0];
+        $member->id = $member_data[0];
         $member->name_first = $member_data[3];
         $member->name_last = $member_data[4];
         $member->joined_at = $member_data[11];
@@ -100,12 +100,12 @@ class MembersCertImport extends aCommand
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data[1] >= 8) {
-            $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
+            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
                 $member->addQualification($prevAtcRating);
             } else {
-                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->account_id);
+                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
             }
         }
 
@@ -128,7 +128,7 @@ class MembersCertImport extends aCommand
     protected function getMemberIds()
     {
         return DB::table('mship_account')
-            ->pluck('account_id', 'account_id');
+            ->pluck('id', 'id');
     }
 
     protected function getMemberEmails()

@@ -65,7 +65,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
 
         // Global searches!
         $members = Cache::remember("adm_dashboard_membersearch_{$searchQuery}", 60, function () use ($searchQuery) {
-            return Account::where("account_id", "LIKE", "%" . $searchQuery . "%")
+            return Account::where("id", "LIKE", "%" . $searchQuery . "%")
                 ->orWhere(\DB::raw("CONCAT(`name_first`, ' ', `name_last`)"), "LIKE", "%" . $searchQuery . "%")
                 ->limit(25)
                 ->get();

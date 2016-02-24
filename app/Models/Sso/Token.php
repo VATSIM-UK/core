@@ -36,7 +36,7 @@ class Token extends \App\Models\aModel {
         protected $hidden = ['token_id'];
 
         public function account(){
-            return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+            return $this->belongsTo("\App\Models\Mship\Account", "account_id");
         }
 
         public function getIsExpiredAttribute(){

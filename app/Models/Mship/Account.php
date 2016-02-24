@@ -16,6 +16,7 @@ use App\Models\Mship\Account\State;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Qualification;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
@@ -117,10 +118,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
-    protected $primaryKey = 'account_id';
     public $incrementing = false;
     protected $dates = ['last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['account_id', 'name_first', 'name_last'];
+    protected $fillable = ['id', 'name_first', 'name_last'];
     protected $attributes = [
         'name_first'    => '',
         'name_last'     => '',
@@ -174,46 +174,47 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function secondaryEmails()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id');
     }
 
     public function dataChanges()
     {
-        return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')->orderBy('created_at', 'DESC');
+        return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')
+                    ->orderBy('created_at', 'DESC');
     }
 
     public function messageThreads()
     {
-        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'account_id',
-            'thread_id')->withPivot('display_as', 'read_at', 'status')->withTimestamps();
+        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
+                    ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
     }
 
     public function messagePosts()
     {
-        return $this->hasMany(\App\Models\Messages\Thread\Post::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Messages\Thread\Post::class, 'account_id');
     }
 
     public function bans()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id', 'account_id')->orderBy('created_at',
+        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy('created_at',
             'DESC');
     }
 
     public function bansAsInstigator()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'banned_by', 'account_id')->orderBy('created_at',
-            'DESC');
+        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'banned_by')
+                    ->orderBy('created_at', 'DESC');
     }
 
     public function notes()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'account_id', 'account_id')->orderBy('created_at',
-            'DESC');
+        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'account_id')
+                    ->orderBy('created_at', 'DESC');
     }
 
     public function noteWriter()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'writer_id', 'account_id');
+        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'writer_id');
     }
 
     public function tokens()
@@ -223,13 +224,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function activityRecent()
     {
-        return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id", "account_id");
+        return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id");
     }
 
     public function qualifications()
     {
-        return $this->belongsToMany(\App\Models\Mship\Qualification::class, "mship_account_qualification", "account_id",
-            "qualification_id")->withTimestamps();
+        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "qualification_id")
+                    ->withTimestamps();
     }
 
     public function roles()
@@ -241,40 +242,39 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function states()
     {
-        return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id', 'account_id')
+        return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id')
                     ->orderBy('created_at', 'DESC');
     }
 
     public function ssoEmails()
     {
-        return $this->hasMany(\App\Models\Sso\Email::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Sso\Email::class, 'account_id');
     }
 
     public function ssoTokens()
     {
-        return $this->hasMany(\App\Models\Sso\Token::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Sso\Token::class, 'account_id');
     }
 
     public function security()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Security::class, 'account_id', 'account_id')
+        return $this->hasMany(\App\Models\Mship\Account\Security::class, 'account_id')
                     ->orderBy('created_at', 'DESC');
     }
 
     public function teamspeakAliases()
     {
-        return $this->hasMany(\App\Models\Teamspeak\Alias::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Teamspeak\Alias::class, 'account_id');
     }
 
     public function teamspeakRegistrations()
     {
-        return $this->hasMany(\App\Models\Teamspeak\Registration::class, 'account_id', 'account_id');
+        return $this->hasMany(\App\Models\Teamspeak\Registration::class, 'account_id');
     }
 
     public function readNotifications()
     {
-        return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
-            'notification_id')
+        return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'notification_id')
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();
@@ -463,7 +463,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
         // Set a new one!
         $security              = new Account\Security();
-        $security->account_id  = $this->account_id;
+        $security->account_id  = $this->id;
         $security->security_id = $type->security_id;
         $security->value       = $password;
         if ($temporary) {
@@ -560,7 +560,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
         // Make a ban.
         $ban                = new Ban();
-        $ban->account_id    = $this->account_id;
+        $ban->account_id    = $this->id;
         $ban->banned_by     = $writerId;
         $ban->type          = $type;
         $ban->reason_id     = $banReason->ban_reason_id;
@@ -587,7 +587,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
 
         $note               = new AccountNoteData();
-        $note->account_id   = $this->account_id;
+        $note->account_id   = $this->id;
         $note->writer_id    = $writer;
         $note->note_type_id = $noteType;
         $note->content      = $noteContent;
@@ -738,13 +738,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getVerifiedSecondaryEmailsAttribute()
     {
-        if($this->secondaryEmail->isEmpty()){
+        if ($this->secondaryEmail->isEmpty()) {
             return collect();
         }
 
-        return $this->secondaryEmails->filter(function($email){
-                return $email->is_verified;
-            });
+        return $this->secondaryEmails->filter(function ($email) {
+            return $email->is_verified;
+        });
     }
 
     public function setNameFirstAttribute($value)

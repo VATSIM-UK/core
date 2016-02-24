@@ -25,7 +25,7 @@ class Alias extends \App\Models\aModel
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Teamspeak\Registration", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Teamspeak\Registration", "account_id");
     }
 
 }

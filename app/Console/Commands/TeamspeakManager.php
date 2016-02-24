@@ -328,7 +328,7 @@ class TeamspeakManager extends aCommand {
                         // check client description
                         $description = $client_account->name_first ." "
                                      . $client_account->name_last ." ("
-                                     . $client_account->account_id .")";
+                                     . $client_account->id .")";
                         $client_info = $client->infoDb();
                         if ($client_info['client_description'] != $description)
                             $client->modify(['client_description' => $description]);
@@ -411,7 +411,7 @@ class TeamspeakManager extends aCommand {
             } catch (Exception $e) {
                 $description = $client_account->name_first ." "
                                      . $client_account->name_last ." ("
-                                     . $client_account->account_id .")";
+                                     . $client_account->id .")";
                 $subject = "TeaMan has failed you. Hire a new butler.";
                 $message = "TeaMan has encountered a previously unhandled error:\r\n\r\n"
                          . "Client: " . $description . "\r\n\r\n"

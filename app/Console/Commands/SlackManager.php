@@ -95,7 +95,7 @@ class SlackManager extends aCommand
 
     private function messageDsgAdvisitingOfBannedUser($localUser, $slackUser){
         $this->sendSlackError("A user who is banned, is using Slack.", [
-            "User CID" => $localUser->account_id, "Slack User" => $slackUser->id." - ".$slackUser->name
+            "User CID" => $localUser->id, "Slack User" => $slackUser->id." - ".$slackUser->name
         ]);
     }
 

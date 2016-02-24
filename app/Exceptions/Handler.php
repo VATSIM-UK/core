@@ -92,7 +92,7 @@ class Handler extends ExceptionHandler
                         'title' => 'Member:',
                         'value' => sprintf(
                             '%d - %s %s',
-                            Auth::user()->account_id,
+                            Auth::user()->id,
                             Auth::user()->name_first,
                             Auth::user()->name_last
                         ),

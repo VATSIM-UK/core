@@ -28,7 +28,7 @@ class Authentication extends BaseController {
         // Has this user logged in from a similar IP as somebody else?
         $check = Account::withIp($this->_account->last_login_ip)
                         ->where('last_login', '>=', Carbon::now()->subHours(4))
-                        ->where('account_id', '!=', $this->_account->account_id)
+                        ->where('id', '!=', $this->_account->id)
                         ->count();
 
         if($check > 0 && !Session::get('auth_duplicate_ip', false)){
@@ -166,7 +166,7 @@ class Authentication extends BaseController {
                     $account = Account::find($user->id);
                     if (is_null($account)) {
                         $account = new Account();
-                        $account->account_id = $user->id;
+                        $account->id = $user->id;
                     }
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
