@@ -131,7 +131,7 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->fresh()->hasQualification($qualification));
 
         $this->seeInDatabase("mship_account_qualification", [
-            "id" => $this->account->id,
+            "account_id" => $this->account->id,
             "qualification_id" => $qualification->qualification_id,
             "deleted_at" => null,
         ]);
