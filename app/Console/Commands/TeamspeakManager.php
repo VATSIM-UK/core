@@ -232,7 +232,7 @@ class TeamspeakManager extends aCommand {
                         // check registered name and ensure it's being used
                         $nickname = $client_account->name_first . " " . $client_account->name_last;
                         if (strcasecmp($client['client_nickname'], $nickname) !== 0
-                            && !$client_account->isValidTeamspeakAlias($client['client_nickname'])) {
+                            && !$client_account->isValidDisplayName($client['client_nickname'])) {
 
                             if (Carbon::now()->subMinutes(5)->
                                 gt($client_registration->last_nickname_warn)
