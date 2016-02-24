@@ -229,7 +229,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function qualifications()
     {
-        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "qualification_id")
+        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "account_id", "qualification_id")
                     ->withTimestamps();
     }
 
@@ -738,7 +738,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getVerifiedSecondaryEmailsAttribute()
     {
-        if ($this->secondaryEmail->isEmpty()) {
+        if ($this->secondaryEmails->isEmpty()) {
             return collect();
         }
 
