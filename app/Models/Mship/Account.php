@@ -618,6 +618,10 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->attributes[ 'status' ] = $status;
     }
 
+    public function hasStatusFlag($flag){
+        return ($flag & $this->attributes["status"]) == $flag;
+    }
+
     public function getIsSystemBannedAttribute()
     {
         $bans = $this->bans()->isActive()->isLocal();
@@ -653,13 +657,12 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function getIsInactiveAttribute()
     {
-        $status = $this->attributes[ 'status' ];
-
-        return (boolean) (self::STATUS_INACTIVE & $status);
+        return $this->hasStatusFlag(self::STATUS_INACTIVE);
     }
 
     public function setIsInactiveAttribute($value)
     {
+
         if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
         } elseif (!$value && $this->is_inactive) {
@@ -669,9 +672,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function getIsSystemAttribute()
     {
-        $status = $this->attributes[ 'status' ];
-
-        return (boolean) (self::STATUS_SYSTEM & $status);
+        return $this->hasStatusFlag(self::STATUS_FLAG);
     }
 
     public function setIsSystemAttribute($value)
