@@ -603,14 +603,18 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function setStatusFlag($flag)
     {
         $status = $this->attributes[ 'status' ];
-        $status |= $flag;
+
+        $status = $status | $flag;
+
         $this->attributes[ 'status' ] = $status;
     }
 
     public function unSetStatusFlag($flag)
     {
-        $status                       = $this->attributes[ 'status' ];
-        $status                       = $status ^ $flag;
+        $status = $this->attributes[ 'status' ];
+
+        $status = $status ^ $flag;
+
         $this->attributes[ 'status' ] = $status;
     }
 
@@ -757,9 +761,17 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->attributes[ 'name_last' ] = format_name($value);
     }
 
+    public function getRealNameAttribute(){
+        return $this->name_first . ' ' . $this->name_last;
+    }
+
     public function getNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        if ($this->nickname != null) {
+            return $this->nickname . ' ' . $this->name_last;
+        }
+
+        return $this->real_name;
     }
 
     public function getDisplayValueAttribute()
@@ -811,7 +823,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function isValidDisplayName($displayName)
     {
-        return (strcasecmp($this->nickname, $displayName) || strcasecmp($displayName, $this->name));
+        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     /**
