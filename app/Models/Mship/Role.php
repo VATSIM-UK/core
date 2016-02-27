@@ -82,9 +82,16 @@ class Role extends \App\Models\aModel {
         return $query->whereNotNull('session_timeout')->where('session_timeout', '!=', 0);
     }
 
-    public static function hasTimeout($role)
+    /**
+     * Query scope to add a where clause for any role with a password lifetime.
+     *
+     * @param $query The existing query builder object
+     *
+     * @return mixed
+     */
+    public static function scopeHasPasswordLifetime($query)
     {
-        return $role->session_timeout !== null && $role->session_timeout !== 0;
+        return $query->whereNotNull("password_lifetime")->where("session_timeout", "!=", 0);
     }
 
     public function accounts()
@@ -144,4 +151,22 @@ class Role extends \App\Models\aModel {
         }
     }
 
+    /**
+     * Determine if this role has a password lifetime set.
+     *
+     * @return bool
+     */
+    public function hasPasswordLifetime()
+    {
+        return $this->password_lifetime !== null && $this->password_lifetime !== 0;
+    }
+
+    /**
+     * Is the password mandatory on this account?
+     *
+     * @return bool
+     */
+    public function hasMandatoryPassword(){
+        return $this->password_mandatory === true || $this->password_mandatory == 1;
+    }
 }

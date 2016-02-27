@@ -119,8 +119,25 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     protected $table = 'mship_account';
     public $incrementing = false;
-    protected $dates = ['last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['id', 'name_first', 'name_last', 'email'];
+    protected $dates = [
+        'last_login',
+        'joined_at',
+        'cert_checked_at',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        "password_set_at",
+        "password_expires_at",
+    ];
+    protected $fillable = [
+        'id',
+        'name_first',
+        'name_last',
+        'email',
+        "password",
+        "password_set_at",
+        "password_expires_at",
+    ];
     protected $attributes = [
         'name_first'    => '',
         'name_last'     => '',
@@ -255,12 +272,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function ssoTokens()
     {
         return $this->hasMany(\App\Models\Sso\Token::class, 'account_id');
-    }
-
-    public function security()
-    {
-        return $this->hasMany(\App\Models\Mship\Account\Security::class, 'account_id')
-                    ->orderBy('created_at', 'DESC');
     }
 
     public function teamspeakRegistrations()
@@ -414,11 +425,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->current_state;
     }
 
-    public function getCurrentSecurityAttribute()
-    {
-        return $this->security->first();
-    }
-
     public function hasPermission($permission)
     {
         if (is_numeric($permission)) {
@@ -460,27 +466,122 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     /**
-     * Set the user's password, to the given security level.
+     * Set the password attribute correctly.
      *
-     * @param            $password The password string.
-     * @param Security   $type The security level of the password.
-     * @param bool|false $temporary Will only be a temporary password
+     * Will hash the password, or set it as null if required.
+     *
+     * @param null|string $password The password value to set.
      */
-    public function setPassword($password, Security $type, $temporary = false)
+    public function setPasswordAttribute($password)
     {
-        if ($this->current_security) {
-            $this->current_security->delete();
+        if ($password == null) {
+            $this->attributes[ 'password' ] = null;
+
+            return;
         }
 
-        // Set a new one!
-        $security              = new Account\Security();
-        $security->account_id  = $this->id;
-        $security->security_id = $type->security_id;
-        $security->value       = $password;
-        if ($temporary) {
-            $security->expires_at = Carbon::now();
+        $this->attributes[ 'password' ] = \Hash::make($password);
+    }
+
+    /**
+     * Determine whether the current account has a password set.
+     *
+     * @return boolean
+     */
+    public function hasPassword()
+    {
+        return $this->password !== null;
+    }
+
+    /**
+     * Determine whether the current password has expired.
+     *
+     * @return boolean
+     */
+    public function hasPasswordExpired()
+    {
+        if (!$this->hasPassword()) {
+            return false;
         }
-        $security->save();
+
+        if ($this->password_expires_at === null) {
+            return false;
+        }
+
+        return $this->password_expires_at->isPast();
+    }
+
+    /**
+     * Get password lifetime attribute from the member's roles.
+     *
+     * @return integer
+     */
+    public function getPasswordLifetimeAttribute()
+    {
+        return $this->roles->filter(function ($role) {
+            return $role->hasPasswordLifetime();
+        })->pluck("password_lifetime")
+                           ->min();
+    }
+
+    public function getMandatoryPasswordAttribute()
+    {
+        return $this->roles->filter(function ($role) {
+            return $role->hasMandatoryPassword();
+        })->count() > 0;
+    }
+
+    /**
+     * Calculate the password expiry for this account.
+     *
+     * @param bool|false $temporary Should we treat the password as temporary?
+     *
+     * @return null|\Carbon\Carbon
+     */
+    public function calculatePasswordExpiry($temporary = false)
+    {
+        if ($temporary) {
+            return Carbon::now();
+        }
+
+        if ($this->password_lifetime > 0) {
+            return Carbon::now()->addDays($this->password_lifetime);
+        }
+
+        return null;
+    }
+
+    /**
+     * Set the user's password.
+     *
+     * @param            $password The password string.
+     * @param bool|false $temporary Will only be a temporary password
+     */
+    public function setPassword($password, $temporary = false)
+    {
+        if (\Hash::check($password, $this->password)) {
+            throw new \App\Exceptions\Mship\DuplicatePasswordException;
+        }
+
+        return $this->fill([
+            "password"            => $password,
+            "password_set_at"     => Carbon::now(),
+            "password_expires_at" => $this->calculatePasswordExpiry($temporary),
+        ])->save();
+    }
+
+    /**
+     * Remove a member's current password.
+     *
+     * @return bool
+     */
+    public function removePassword()
+    {
+        $this->fill([
+            "password"            => null,
+            "password_set_at"     => null,
+            "password_expires_at" => null,
+        ])->save();
     }
 
     /**
