@@ -258,6 +258,47 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
                     ->withTimestamps();
     }
 
+    /**
+     * Determine if the given role is attached to this account.
+     *
+     * @param Role $role The role to check.
+     *
+     * @return bool
+     */
+    public function hasRole(Role $role){
+        return $this->roles->contains($role->rold_id);
+    }
+
+    /**
+     * Attach a role to this account.
+     *
+     * @param Role $role The role to attach to the account.
+     *
+     * @return mixed
+     */
+    public function addRole(Role $role){
+        if($this->hasRole($role)){
+            throw new \App\Exceptions\Mship\DuplicateRoleException($role);
+        }
+
+        return $this->roles()->attach($role->role_id);
+    }
+
+    /**
+     * Detach a role from this account.
+     *
+     * @param Role $role The role to remove from the account.
+     *
+     * @return bool
+     */
+    public function removeRole(Role $role){
+        if(!$this->hasRole($role)){
+            return true;
+        }
+
+        return $this->roles()->detach($role->role_id);
+    }
+
     public function states()
     {
         return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id')
