@@ -229,7 +229,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function qualifications()
     {
-        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "account_id", "qualification_id")
+        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "account_id",
+            "qualification_id")
                     ->withTimestamps();
     }
 
@@ -370,17 +371,18 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function hasState($search)
     {
-        return ! $this->states->filter(function ($state) use ($search) {
+        return !$this->states->filter(function ($state) use ($search) {
             return $state->state == $search;
         })->isEmpty();
     }
 
-    public function setState($state){
-        if($this->hasState($state)){
+    public function setState($state)
+    {
+        if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
 
-        if($this->current_state){
+        if ($this->current_state) {
             $this->current_state->delete();
         }
 
@@ -399,7 +401,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $return = collect();
 
         foreach ($this->states as $state) {
-            $key                      = strtolower(State::getStateKeyFromValue($state->state));
+            $key = strtolower(State::getStateKeyFromValue($state->state));
             $return->put($key, 1);
             $return->put($key . '_date', $state->created_at->toDateTimeString());
         }
@@ -484,7 +486,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     /**
      * Determine if the current account has the given email attached to it.
      *
-     * @param $email
+     * @param string $email The email to check is attached to this account.
      *
      * @return bool
      */
@@ -627,8 +629,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->attributes[ 'status' ] = $status;
     }
 
-    public function hasStatusFlag($flag){
-        return ($flag & $this->attributes["status"]) == $flag; // AND
+    public function hasStatusFlag($flag)
+    {
+        return ($flag & $this->attributes[ "status" ]) == $flag; // AND
     }
 
     public function getIsSystemBannedAttribute()
@@ -760,20 +763,43 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         });
     }
 
+    /**
+     * Set the name_first attribute with correct formatting.
+     *
+     * @param string $value The first name to format and store.
+     */
     public function setNameFirstAttribute($value)
     {
         $this->attributes[ 'name_first' ] = format_name($value);
     }
 
+    /**
+     * Set the name_last attribute with correct formatting.
+     *
+     * @param string $value The last name to format and store.
+     */
     public function setNameLastAttribute($value)
     {
         $this->attributes[ 'name_last' ] = format_name($value);
     }
 
-    public function getRealNameAttribute(){
+    /**
+     * Get the user's real full name.
+     *
+     * @return string
+     */
+    public function getRealNameAttribute()
+    {
         return $this->name_first . ' ' . $this->name_last;
     }
 
+    /**
+     * Get the user's full name.
+     *
+     * If a nickname is set, that will be used in place of name_first.
+     *
+     * @return mixed|string
+     */
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
@@ -783,18 +809,31 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->real_name;
     }
 
-    public function getFullNameAttribute(){
+    /**
+     * Alias of the getNameAttribute() method.
+     *
+     * @return mixed
+     */
+    public function getFullNameAttribute()
+    {
         return $this->name;
+    }
+
+    /**
+     * Determine if the given name, matches either the user's nickname or real name.
+     *
+     * @param string $displayName The display name to verify.
+     *
+     * @return bool
+     */
+    public function isValidDisplayName($displayName)
+    {
+        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     public function getDisplayValueAttribute()
     {
         return $this->name . ' (' . $this->getKey() . ')';
-    }
-
-    public function isValidDisplayName($displayName)
-    {
-        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     public function toArray()
@@ -815,6 +854,10 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function determineState($region, $division)
     {
+        // region=eur / division=gbr == division
+        // region=eur / division!=gbr == region
+        // region!=eur == international
+
         if ($region == 'EUR' AND $division == 'GBR') {
             $state = \App\Models\Mship\Account\State::STATE_DIVISION;
         } elseif ($region == 'EUR') {
@@ -842,7 +885,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     /**
      * Returns what the session timeout for this user should be, in minutes.
      *
-     * @return int returns 0 if there is no timeout, else returns the timeout in minutes
+     * @return int The timeout in minutes
      */
     public function getSessionTimeoutAttribute()
     {
