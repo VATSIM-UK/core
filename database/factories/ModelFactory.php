@@ -9,6 +9,35 @@ $factory->define(App\Models\Mship\Account::class, function ($faker) {
         'is_invisible' => 0,
     ];
 });
+
+$factory->define(App\Models\Mship\Qualification::class, function ($faker) {
+    return [
+        "code" => $faker->bothify("?##"),
+        "name_small" => $faker->word,
+        "name_long"  => $faker->word,
+        "name_grp"   => $faker->word,
+        "vatsim"     => $faker->randomDigit,
+    ];
+});
+
+$factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function ($faker) use ($factory) {
+    $atc = $factory->raw(App\Models\Mship\Qualification::class);
+
+    return array_merge($atc, [
+        'code' => $faker->numerify("C##"),
+        "type" => "atc",
+    ]);
+});
+
+$factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function ($faker) use ($factory) {
+    $atc = $factory->raw(App\Models\Mship\Qualification::class);
+
+    return array_merge($atc, [
+        'code' => $faker->numerify("P##"),
+        "type" => "pilot",
+    ]);
+});
+
 $factory->define(App\Models\Mship\Role::class, function ($faker) {
     return [
         "name"               => $faker->word,
