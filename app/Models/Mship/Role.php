@@ -208,8 +208,14 @@ class Role extends \App\Models\aModel
         return $this->default === 1;
     }
 
-    public static function hasTimeout($role)
+
+    /**
+     * Determine if the current role has a timeout.
+     *
+     * @return bool
+     */
+    public function hasTimeout()
     {
-        return $role->session_timeout !== null && $role->session_timeout !== 0;
+        return $this->session_timeout !== null && $this->session_timeout !== 0;
     }
 }

@@ -265,7 +265,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      *
      * @return bool
      */
-    public function hasRole(Role $role){
+    public function hasRole(Role $role)
+    {
         return $this->roles->contains($role->rold_id);
     }
 
@@ -276,8 +277,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      *
      * @return mixed
      */
-    public function addRole(Role $role){
-        if($this->hasRole($role)){
+    public function addRole(Role $role)
+    {
+        if ($this->hasRole($role)) {
             throw new \App\Exceptions\Mship\DuplicateRoleException($role);
         }
 
@@ -291,8 +293,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      *
      * @return bool
      */
-    public function removeRole(Role $role){
-        if(!$this->hasRole($role)){
+    public function removeRole(Role $role)
+    {
+        if (!$this->hasRole($role)) {
             return true;
         }
 
@@ -1031,8 +1034,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getSessionTimeoutAttribute()
     {
-        return $this->roles->filter([RoleData::class, "hasTimeout"])
-                           ->pluck("session_timeout")
-                           ->max();
+        return $this->roles->filter(function ($role) {
+            return $role->hasTimeout();
+        })->pluck("session_timeout")->max();
     }
 }
