@@ -214,7 +214,7 @@ class Role extends \App\Models\aModel
      *
      * @return bool
      */
-    public function hasTimeout()
+    public function hasSessionTimeout()
     {
         return $this->session_timeout !== null && $this->session_timeout !== 0;
     }
