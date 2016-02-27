@@ -120,7 +120,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     protected $table = 'mship_account';
     public $incrementing = false;
     protected $dates = ['last_login', 'joined_at', 'cert_checked_at', 'created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['id', 'name_first', 'name_last'];
+    protected $fillable = ['id', 'name_first', 'name_last', 'email'];
     protected $attributes = [
         'name_first'    => '',
         'name_last'     => '',
@@ -613,7 +613,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $status = $this->attributes[ 'status' ];
 
-        $status = $status | $flag;
+        $status = $status | $flag; // OR
 
         $this->attributes[ 'status' ] = $status;
     }
@@ -622,13 +622,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $status = $this->attributes[ 'status' ];
 
-        $status = $status ^ $flag;
+        $status = $status ^ $flag; // XOR
 
         $this->attributes[ 'status' ] = $status;
     }
 
     public function hasStatusFlag($flag){
-        return ($flag & $this->attributes["status"]) == $flag;
+        return ($flag & $this->attributes["status"]) == $flag; // AND
     }
 
     public function getIsSystemBannedAttribute()
@@ -671,7 +671,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function setIsInactiveAttribute($value)
     {
-
         if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
         } elseif (!$value && $this->is_inactive) {
@@ -784,9 +783,18 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->real_name;
     }
 
+    public function getFullNameAttribute(){
+        return $this->name;
+    }
+
     public function getDisplayValueAttribute()
     {
         return $this->name . ' (' . $this->getKey() . ')';
+    }
+
+    public function isValidDisplayName($displayName)
+    {
+        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     public function toArray()
@@ -829,11 +837,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->teamspeakRegistrations->filter(function ($reg) {
             return $reg->status != 'new';
         });
-    }
-
-    public function isValidDisplayName($displayName)
-    {
-        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     /**
