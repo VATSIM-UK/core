@@ -262,11 +262,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
                     ->orderBy('created_at', 'DESC');
     }
 
-    public function teamspeakAliases()
-    {
-        return $this->hasMany(\App\Models\Teamspeak\Alias::class, 'account_id');
-    }
-
     public function teamspeakRegistrations()
     {
         return $this->hasMany(\App\Models\Teamspeak\Registration::class, 'account_id');
@@ -373,11 +368,25 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         });
     }
 
-    public function isState($search)
+    public function hasState($search)
     {
-        return !$this->states->filter(function ($state) use ($search) {
+        return ! $this->states->filter(function ($state) use ($search) {
             return $state->state == $search;
         })->isEmpty();
+    }
+
+    public function setState($state){
+        if($this->hasState($state)){
+            throw new \App\Exceptions\Mship\DuplicateStateException($state);
+        }
+
+        if($this->current_state){
+            $this->current_state->delete();
+        }
+
+        return $this->states()->create([
+            "state" => $state,
+        ]);
     }
 
     public function getCurrentStateAttribute()
@@ -387,15 +396,15 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function getAllStatesAttribute()
     {
-        $return = [];
+        $return = collect();
 
         foreach ($this->states as $state) {
             $key                      = strtolower(State::getStateKeyFromValue($state->state));
-            $return[ $key ]           = 1;
-            $return[ $key . '_date' ] = $state->created_at->toDateTimeString();
+            $return->put($key, 1);
+            $return->put($key . '_date', $state->created_at->toDateTimeString());
         }
 
-        return $return;
+        return collect($return);
     }
 
     public function getPrimaryStateAttribute()

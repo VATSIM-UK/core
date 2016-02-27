@@ -1,7 +1,11 @@
 <?php
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
 class MshipAccountTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private $account;
 
     public function setUp()
@@ -37,6 +41,12 @@ class MshipAccountTest extends TestCase
 
         $this->assertEquals("Mary", $member->name_first);
         $this->assertEquals("Jane", $member->name_last);
+
+        $this->seeInDatabase("mship_account", [
+            "id" => $member->id,
+            "name_first" => "Mary",
+            "name_last" => "Jane",
+        ]);
     }
 
     /** @test */
@@ -51,6 +61,11 @@ class MshipAccountTest extends TestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
+        $this->seeInDatabase("mship_account", [
+            "id" => $this->account->id,
+            "nickname" => "Delboy",
+        ]);
+
         $fullNickname = "Delboy " . $this->account->name_last;
         $this->assertTrue($this->account->isValidDisplayName($fullNickname));
     }
@@ -61,6 +76,11 @@ class MshipAccountTest extends TestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
+        $this->seeInDatabase("mship_account", [
+            "id" => $this->account->id,
+            "nickname" => "Delboy",
+        ]);
+
         $this->assertTrue($this->account->isValidDisplayName($this->account->real_name));
     }
 
@@ -70,6 +90,11 @@ class MshipAccountTest extends TestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
+        $this->seeInDatabase("mship_account", [
+            "id" => $this->account->id,
+            "nickname" => "Delboy",
+        ]);
+
         $fullNickname = "Rodney " . $this->account->name_last;
         $this->assertFalse($this->account->isValidDisplayName($fullNickname));
     }
@@ -78,6 +103,11 @@ class MshipAccountTest extends TestCase
     public function it_stores_primary_emails_within_the_account_model()
     {
         $this->assertEquals("i_sleep@gmail.com", $this->account->email);
+
+        $this->seeInDatabase("mship_account", [
+            "id" => $this->account->id,
+            "email" => "i_sleep@gmail.com",
+        ]);
     }
 
     /** @test */
@@ -90,6 +120,10 @@ class MshipAccountTest extends TestCase
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+        $this->notSeeInDatabase("mship_account_email", [
+            "account_id" => $this->account->id,
+            "email" => "i_sleep@gmail.com",
+        ]);
     }
 
     /** @test */
@@ -112,6 +146,11 @@ class MshipAccountTest extends TestCase
 
         $this->assertCount(1, $this->account->fresh()->secondaryEmails);
         $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+
+        $this->seeInDatabase("mship_account_email", [
+            "account_id" => $this->account->id,
+            "email" => "i_also_sleep@hotmail.com",
+        ]);
     }
 
     /** @test */
@@ -205,5 +244,59 @@ class MshipAccountTest extends TestCase
         $slackAccount = \App\Models\Mship\Account::findWithSlackId($slackID);
 
         $this->assertEquals($slackAccount->id, $this->account->fresh()->id);
+    }
+
+    /** @test **/
+    public function it_correctly_stores_state()
+    {
+        $this->account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
+        $this->account = $this->account->fresh();
+
+        $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
+        $this->seeInDatabase("mship_account_state", [
+            "account_id" => $this->account->id,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "deleted_at" => null,
+        ]);
+    }
+
+    /** @test **/
+    public function it_correctly_throws_duplicate_error_when_trying_to_set_the_same_state()
+    {
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateStateException::class);
+
+        $this->account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
+        $this->account->fresh()->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
+    }
+
+    /** @test **/
+    public function it_correctly_deletes_old_states_when_adding_a_new_state()
+    {
+        $this->account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
+        $this->account = $this->account->fresh();
+
+        $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
+        $this->seeInDatabase("mship_account_state", [
+            "account_id" => $this->account->id,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "deleted_at" => null,
+        ]);
+
+        $this->account->setState(\App\Models\Mship\Account\State::STATE_REGION);
+        $this->account = $this->account->fresh();
+
+        $this->assertFalse($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
+        $this->notSeeInDatabase("mship_account_state", [
+            "account_id" => $this->account->id,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "deleted_at" => null,
+        ]);
+
+        $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_REGION));
+        $this->seeInDatabase("mship_account_state", [
+            "account_id" => $this->account->id,
+            "state" => \App\Models\Mship\Account\State::STATE_REGION,
+            "deleted_at" => null,
+        ]);
     }
 }

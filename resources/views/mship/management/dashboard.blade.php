@@ -217,7 +217,7 @@
             @endforeach
         </td>
     </tr>
-    @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
+    @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
         <tr>
             <th class='hidden-xs hidden-sm'>Slack Registration<br /><small>{!! link_to("http://vatsim-uk.slack.com") !!}</small></th>
             <td>
