@@ -109,7 +109,7 @@ return [
     |
     */
 
-    'cookie' => 'vatsimuk_core_session',
+    'cookie' => env("SESSION_COOKIE", "laravel_session"),
 
     /*
     |--------------------------------------------------------------------------
