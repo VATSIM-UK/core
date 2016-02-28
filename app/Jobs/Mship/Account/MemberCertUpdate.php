@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Mship\Account;
 
+use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
@@ -62,7 +63,11 @@ class MemberCertUpdate extends Job implements ShouldQueue
         $member->determineState($this->data->region, $this->data->division);
 
         $this->processBans($member);
-        $member = $this->processRating($member);
+        try {
+            $member = $this->processRating($member);
+        } catch(DuplicateQualificationException $e){
+            // TODO: Something.
+        }
 
         $member->save();
         DB::commit();
