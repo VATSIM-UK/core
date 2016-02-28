@@ -38,7 +38,7 @@ class Authentication extends BaseController {
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Session::has('auth_extra') && $this->_account->current_security && !Session::has('auth_override')) {
+        if (!Session::has('auth_extra') && $this->_account->hasPassword() && !Session::has('auth_override')) {
             return Redirect::route('mship.security.auth');
         }
 
@@ -54,7 +54,7 @@ class Authentication extends BaseController {
             return Redirect::route('mship.auth.redirect');
         }
 
-        if (!$this->_account->current_security) {
+        if (!$this->_account->hasPassword()) {
             Session::set('auth_extra', false);
         }
 
@@ -84,7 +84,7 @@ class Authentication extends BaseController {
             return Redirect::route('mship.auth.login');
         }
 
-        if (!Input::get('cid', false) OR ! Input::get('password', false)) {
+        if (!Input::get('cid', false) || ! Input::get('password', false)) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a cid and password.');
         }
 
@@ -96,7 +96,7 @@ class Authentication extends BaseController {
         }
 
         // Let's get their current security and verify...
-        if (!$account->current_security OR !$account->verifyPassword(Input::get('password'))) {
+        if (!$account->hasPassword() || !$account->verifyPassword(Input::get('password'))) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a valid cid and password combination.');
         }
 
@@ -108,6 +108,7 @@ class Authentication extends BaseController {
         $account->save();
 
         Auth::login($account, true);
+
         Session::forget('cert_offline');
 
         // Let's send them over to the authentication redirect now.

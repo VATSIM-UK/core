@@ -25,7 +25,7 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         // Let's check whether we even NEED this.
-        if (Session::has('auth_extra') OR !Auth::user()->hasPassword()) {
+        if (Session::has('auth_extra') || !Auth::user()->hasPassword()) {
             return Redirect::route("mship.auth.redirect");
         }
 
@@ -43,6 +43,7 @@ class Security extends \App\Http\Controllers\BaseController {
             Session::put('auth_extra', Carbon::now());
             return Redirect::route("mship.auth.redirect");
         }
+
         return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
     }
 
@@ -129,7 +130,7 @@ class Security extends \App\Http\Controllers\BaseController {
     }
 
     public function getForgotten() {
-        if (!Auth::user()->current_security) {
+        if (!Auth::user()->hasPassword()) {
             return Redirect::route("mship.manage.dashboard");
         }
 
