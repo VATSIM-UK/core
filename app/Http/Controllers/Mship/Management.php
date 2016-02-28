@@ -32,7 +32,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Load necessary data, early!
         $this->_account->load(
             "secondaryEmails",
-            "qualifications", "qualifications.qualification",
+            "qualifications",
             "states", "teamspeakRegistrations"
         );
 
