@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Exceptions\Mship\DuplicatePasswordException;
 use App\Jobs\Mship\Security\SendSecurityTemporaryPasswordEmail;
 use App\Jobs\Mship\Security\TriggerPasswordReset;
 use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
@@ -24,12 +25,12 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         // Let's check whether we even NEED this.
-        if (Session::has('auth_extra') OR !Auth::user()->current_security OR Auth::user()->current_security == NULL) {
+        if (Session::has('auth_extra') OR !Auth::user()->hasPassword()) {
             return Redirect::route("mship.auth.redirect");
         }
 
         // Next, do we need to replace/reset?
-        if (!Auth::user()->current_security->is_active) {
+        if (Auth::user()->hasPasswordExpired()) {
             return Redirect::route("mship.security.replace");
         }
 
@@ -38,7 +39,7 @@ class Security extends \App\Http\Controllers\BaseController {
     }
 
     public function postAuth() {
-        if (Auth::user()->current_security->verifyPassword(Input::get("password"))) {
+        if (Auth::user()->verifyPassword(Input::get("password"))) {
             Session::put('auth_extra', Carbon::now());
             return Redirect::route("mship.auth.redirect");
         }
@@ -50,24 +51,22 @@ class Security extends \App\Http\Controllers\BaseController {
     }
 
     public function getReplace($disable = false) {
-        $currentSecurity = Auth::user()->current_security;
-
-        if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
+        if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
-        } elseif ($disable && !$currentSecurity) {
+        } elseif ($disable && !Auth::user()->hasPassword()) {
             $disable = false;
         } elseif($disable) {
             $this->setTitle("Disable");
         }
 
-        if (!$currentSecurity OR $currentSecurity == NULL) {
+        if (!Auth::user()->hasPassword()) {
             $this->setTitle("Create");
             $slsType = 'requested';
         } else {
-            if (strlen($currentSecurity->value) < 1) {
+            if (Auth::user()->mandatory_password) {
                 $this->setTitle("Create");
                 $slsType = "forced";
-            } elseif (!$currentSecurity->is_active) {
+            } elseif (Auth::user()->hasPasswordExpired()) {
                 $slsType = "expired";
             } elseif(!$disable) {
                 $slsType = 'replace';
@@ -78,50 +77,22 @@ class Security extends \App\Http\Controllers\BaseController {
             }
         }
 
-        // Now let's get the requirements
-        if ($currentSecurity OR $currentSecurity != NULL) {
-            $securityType = $currentSecurity->security;
-        }
-        if (!$currentSecurity OR $currentSecurity == NULL OR ! $securityType) {
-            $securityType = SecurityType::getDefault();
-        }
-
-        $requirements = array();
-        if ($securityType->length > 0) {
-            $requirements[] = "A minimum of " . $securityType->length . " characters.";
-        }
-        if ($securityType->alpha > 0) {
-            $requirements[] = $securityType->alpha . " alphabetical characters.";
-        }
-        if ($securityType->numeric > 0) {
-            $requirements[] = $securityType->numeric . " numeric characters.";
-        }
-        if ($securityType->symbols > 0) {
-            $requirements[] = $securityType->symbols . " symbolic characters.";
-        }
-
-        return $this->viewMake("mship.security.replace")->with("sls_type", $slsType)->with("requirements", $requirements)->with("disable", $disable);
+        return $this->viewMake("mship.security.replace")->with("sls_type", $slsType)->with("disable", $disable);
     }
 
     public function postReplace($disable = false) {
-        $currentSecurity = Auth::user()->current_security;
-
-        if ($disable && $currentSecurity && !$currentSecurity->security->optional) {
+        if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         }
 
-        if ($currentSecurity && strlen($currentSecurity->value) > 1) {
-            if (!Auth::user()->current_security->verifyPassword(Input::get("old_password"))) {
+        if (Auth::user()->hasPassword()) {
+            if (!Auth::user()->verifyPassword(Input::get("old_password"))) {
                 return Redirect::route("mship.security.replace", [(int)$disable])->with("error", "Your old password is incorrect.  Please try again.");
             }
 
             if ($disable) {
-                $currentSecurity->delete();
+                Auth::user()->removePassword();
                 return Redirect::route("mship.manage.dashboard")->with("success", "Your secondary password has been deleted successfully.");
-            }
-
-            if (Input::get("old_password") == Input::get("new_password")) {
-                return Redirect::route("mship.security.replace")->with("error", "Your new password cannot be the same as your old password.");
             }
         }
 
@@ -131,36 +102,27 @@ class Security extends \App\Http\Controllers\BaseController {
         }
         $newPassword = Input::get("new_password");
 
-        // Does the password meet the requirements?
-        if ($currentSecurity OR $currentSecurity != NULL) {
-            $securityType = SecurityType::find($currentSecurity->security_id);
-        }
-        if (!$currentSecurity OR $currentSecurity == NULL OR !$securityType) {
-            $securityType = SecurityType::getDefault();
-        }
-
         // Check the minimum length first.
-        if (strlen($newPassword) < $securityType->length) {
+        if (strlen($newPassword) < 5) {
             return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Length > " . $securityType->length . "]");
         }
 
         // Check the number of alphabetical characters.
-        if (preg_match_all("/[a-zA-Z]/", $newPassword) < $securityType->alpha) {
+        if (preg_match_all("/[a-zA-Z]/", $newPassword) < 3) {
             return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Alpha > " . $securityType->alpha . "]");
         }
 
         // Check the number of numeric characters.
-        if (preg_match_all("/[0-9]/", $newPassword) < $securityType->numeric) {
+        if (preg_match_all("/[0-9]/", $newPassword) < 1) {
             return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Numeric > " . $securityType->numeric . "]");
         }
 
-        // Check the number of symbols characters.
-        if (preg_match_all("/[^a-zA-Z0-9]/", $newPassword) < $securityType->symbols) {
-            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Symbols > " . $securityType->symbols . "]");
-        }
-
         // All requirements met, set the password!
-        Auth::user()->setPassword($newPassword, $securityType);
+        try {
+            Auth::user()->setPassword($newPassword);
+        } catch(DuplicatePasswordException $e){
+            return Redirect::route("mship.security.replace")->with("error", "Your new password cannot be the same as your old password.");
+        }
 
         Session::put('auth_extra', Carbon::now());
         return Redirect::route("mship.security.auth");

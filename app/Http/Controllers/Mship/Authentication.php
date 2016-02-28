@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
@@ -95,7 +96,7 @@ class Authentication extends BaseController {
         }
 
         // Let's get their current security and verify...
-        if (!$account->current_security OR !$account->current_security->verifyPassword(Input::get('password'))) {
+        if (!$account->current_security OR !$account->verifyPassword(Input::get('password'))) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a valid cid and password combination.');
         }
 
@@ -172,27 +173,31 @@ class Authentication extends BaseController {
                     $account->name_last = $user->name_last;
                     $account->email = $user->email;
 
-                    // Sort the ATC Rating out.
-                    $atcRating = $user->rating->id;
-                    if ($atcRating > 7) {
-                        // Store the admin/ins rating.
-                        if ($atcRating >= 11) {
-                            $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
-                        } else {
-                            $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
-                        }
+                    try {
+                        // Sort the ATC Rating out.
+                        $atcRating = $user->rating->id;
+                        if ($atcRating > 7) {
+                            // Store the admin/ins rating.
+                            if ($atcRating >= 11) {
+                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                            } else {
+                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                            }
 
-                        $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
-                        if (isset($atcRatingInfo->PreviousRatingInt)) {
-                            $atcRating = $atcRatingInfo->PreviousRatingInt;
+                            $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
+                            if (isset($atcRatingInfo->PreviousRatingInt)) {
+                                $atcRating = $atcRatingInfo->PreviousRatingInt;
+                            }
                         }
-                    }
-                    $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                        $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
 
-                    for ($i = 1; $i <= 256; $i*=2) {
-                        if ($i & $user->pilot_rating->rating) {
-                            $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
+                        for ($i = 1; $i <= 256; $i*=2) {
+                            if ($i & $user->pilot_rating->rating) {
+                                $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
+                            }
                         }
+                    } catch(DuplicateQualificationException $e){
+                        // TODO: Something.
                     }
 
                     $account->determineState($user->region->code, $user->division->code);

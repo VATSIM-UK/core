@@ -67,6 +67,7 @@ class Security extends \App\Http\Controllers\BaseController {
 
         // Let's get their email for this system (if they've got one set).
         $return["email"] = $account->email;
+
         $ssoEmailAssigned = $account->ssoEmails->filter(function($ssoemail) use ($accessToken) {
             return $ssoemail->sso_account_id == $accessToken->sso_account_id;
         })->values();

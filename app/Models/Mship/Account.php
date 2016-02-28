@@ -509,6 +509,10 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $hasPermission;
     }
 
+    public function verifyPassword($password){
+        return \Hash::check($password, $this->password);
+    }
+
     /**
      * Set the password attribute correctly.
      *
@@ -568,6 +572,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
                            ->min();
     }
 
+    /**
+     * Determine whether this account's password is mandatory.
+     *
+     * @return bool
+     */
     public function getMandatoryPasswordAttribute()
     {
         return $this->roles->filter(function ($role) {
