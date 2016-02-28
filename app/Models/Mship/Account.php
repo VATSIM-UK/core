@@ -1043,8 +1043,10 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getSessionTimeoutAttribute()
     {
-        return $this->roles->filter(function ($role) {
+        $timeout = $this->roles->filter(function ($role) {
             return $role->hasSessionTimeout();
-        })->pluck("session_timeout")->max();
+        })->pluck("session_timeout")->min();
+
+        return ($timeout === null ? 0 : $timeout);
     }
 }
