@@ -33,11 +33,11 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test **/
-    public function it_correctly_determines_that_the_role_has_a_session_expiry()
+    public function it_correctly_determines_that_the_role_has_a_session_timeout()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 60]);
 
-        $this->assertTrue($role->hasTimeout($role));
+        $this->assertTrue($role->hasSessionTimeout());
 
         $this->seeInDatabase("mship_role", [
             "role_id" => $role->role_id,

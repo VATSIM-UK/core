@@ -190,6 +190,21 @@ class MshipAccountTest extends TestCase
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
     }
 
+    /** @test **/
+    public function it_upgrades_email_from_secondary_to_primary()
+    {
+        $verified = true;
+        $email = $this->account->addSecondaryEmail("sauron@gmail.com", $verified);
+
+        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+        $this->assertNotEquals("sauron@gmail.com", $this->account->fresh()->email);
+
+        $this->account->fresh()->setEmail("sauron@gmail.com");
+
+        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
+        $this->assertEquals("sauron@gmail.com", $this->account->fresh()->email);
+    }
+
     /** @test */
     public function it_touches_account_updated_at_when_adding_an_email()
     {
@@ -205,7 +220,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_stores_qualifications()
+    public function it_stores_qualifications()
     {
         $qualification = factory(\App\Models\Mship\Qualification::class)->create();
 
@@ -246,7 +261,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_stores_state()
+    public function it_stores_state()
     {
         $this->account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
         $this->account = $this->account->fresh();
@@ -260,7 +275,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_throws_duplicate_error_when_trying_to_set_the_same_state()
+    public function it_throws_duplicate_error_when_trying_to_set_the_same_state()
     {
         $this->setExpectedException(\App\Exceptions\Mship\DuplicateStateException::class);
 
@@ -269,7 +284,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_deletes_old_states_when_adding_a_new_state()
+    public function it_deletes_old_states_when_adding_a_new_state()
     {
         $this->account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
         $this->account = $this->account->fresh();
@@ -300,7 +315,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_password_is_not_set()
+    public function it_determines_that_password_is_not_set()
     {
         $this->assertFalse($this->account->hasPassword());
 
@@ -313,7 +328,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_stores_a_hashed_password()
+    public function it_stores_a_hashed_password()
     {
         $this->account->setPassword("testing123");
 
@@ -334,7 +349,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_password_is_set()
+    public function it_determines_that_password_is_set()
     {
         $this->account->setPassword("testing456");
 
@@ -355,7 +370,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_password_has_expired()
+    public function it_determines_that_password_has_expired()
     {
         $temporary = true;
         $this->account->setPassword("testing911", $temporary);
@@ -377,7 +392,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_overwrites_old_password_and_modifies_the_timestamps()
+    public function it_overwrites_old_password_and_modifies_the_timestamps()
     {
         $this->account->setPassword("testing123");
 
@@ -405,13 +420,13 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_password_is_not_mandatory()
+    public function it_determines_that_password_is_not_mandatory()
     {
         $this->assertFalse($this->account->mandatory_password);
     }
 
     /** @test * */
-    public function it_correctly_determines_that_password_is_mandatory()
+    public function it_determines_that_password_is_mandatory()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
 
@@ -420,5 +435,112 @@ class MshipAccountTest extends TestCase
         $this->account = $this->account->fresh();
 
         $this->assertTrue($this->account->mandatory_password);
+    }
+
+    /** @test **/
+    public function it_adds_role_to_account()
+    {
+        $role = factory(\App\Models\Mship\Role::class)->create();
+
+        $this->account->fresh()->addRole($role);
+
+        $this->assertTrue($this->account->fresh()->roles->contains($role->role_id));
+
+        $this->seeInDatabase("mship_account_role", [
+            "account_id" => $this->account->id,
+            "role_id" => $role->role_id,
+        ]);
+    }
+
+    /** @test **/
+    public function it_determines_if_the_account_has_a_given_role()
+    {
+        $role = factory(\App\Models\Mship\Role::class)->create();
+
+        $this->account->fresh()->addRole($role);
+
+        $this->assertTrue($this->account->fresh()->hasRole($role));
+    }
+
+    /** @test **/
+    public function it_throws_duplicate_role_exception_when_adding_duplicate_role()
+    {
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateRoleException::class);
+
+        $role = factory(\App\Models\Mship\Role::class)->create();
+
+        $this->account->fresh()->addRole($role);
+        $this->account->fresh()->addRole($role);
+    }
+
+    /** @test **/
+    public function it_removes_role_from_account()
+    {
+        $role = factory(\App\Models\Mship\Role::class)->create();
+
+        $this->account->fresh()->addRole($role);
+
+        $this->assertTrue($this->account->fresh()->roles->contains($role->role_id));
+        $this->seeInDatabase("mship_account_role", [
+            "account_id" => $this->account->id,
+            "role_id" => $role->role_id,
+        ]);
+
+        $this->account->fresh()->removeRole($role);
+
+        $this->assertFalse($this->account->fresh()->roles->contains($role->role_id));
+        $this->notSeeInDatabase("mship_account_role", [
+            "account_id" => $this->account->id,
+            "role_id" => $role->role_id,
+        ]);
+    }
+
+    /** @test **/
+    public function it_returns_an_infinite_session_timeout()
+    {
+        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 0]);
+        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 10]);
+    }
+
+    /** @test **/
+    public function it_returns_a_non_infinite_session_timeout()
+    {
+
+    }
+
+    /** @test **/
+    public function it_sets_a_users_active_status()
+    {
+
+    }
+
+    /** @test **/
+    public function it_returns_a_users_active_status()
+    {
+
+    }
+
+    /** @test **/
+    public function it_sets_a_users_inactive_status()
+    {
+
+    }
+
+    /** @test **/
+    public function it_returns_a_users_inactive_status()
+    {
+
+    }
+
+    /** @test **/
+    public function it_sets_a_users_locked_status()
+    {
+
+    }
+
+    /** @test **/
+    public function it_returns_a_users_locked_status()
+    {
+
     }
 }
