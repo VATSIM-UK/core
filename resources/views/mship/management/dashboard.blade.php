@@ -42,7 +42,7 @@
         <th class='hidden-xs hidden-sm'>Secondary Email Addresses</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Secondary Emails</strong></span>
-            @foreach($_account->secondary_emails as $email)
+            @foreach($_account->secondaryEmails as $email)
                 <strong>
                     {{ $email->email }}
                 </strong>
