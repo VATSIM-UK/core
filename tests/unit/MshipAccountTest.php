@@ -581,7 +581,7 @@ class MshipAccountTest extends TestCase
     /** @test **/
     public function it_sets_a_users_active_status()
     {
-        
+
     }
 
     /** @test **/
