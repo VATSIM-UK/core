@@ -114,7 +114,6 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract
 {
-
     use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
@@ -146,6 +145,12 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     ];
     protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
+    // Suggested values in version 2.2.4
+//    const STATUS_ACTIVE = 1; // b"000001"
+//    const STATUS_LOCKED = 2; // b"000100"
+//    const STATUS_SYSTEM = 4; // b"001000";
+//    const STATUS_PASSWORD_EXPIRED = 8; // b"000010"
+
     const STATUS_ACTIVE = 0; //b"00000';
     //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2
     //const STATUS_NETWORK_SUSPENDED = 2; //b"0010"; @deprecated in version 2.2
@@ -164,9 +169,16 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
     }
 
+    /**
+     * Find and fetch the user with the given slack ID.
+     *
+     * @param string $slackId Slack ID to locate user by.
+     *
+     * @return \Illuminate\Database\Eloquent\Model|mixed|null|static
+     */
     public static function findWithSlackId($slackId)
     {
-        return Account::slackId($slackId)->first();
+        return Account::where("slack_id", "=", $slackId)->first();
     }
 
     public static function scopeIsSystem($query)
@@ -184,11 +196,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $query->where('last_login_ip', '=', ip2long($ip));
     }
 
-    public static function scopeSlackId($query, $slackId)
-    {
-        return $query->where("slack_id", "=", $slackId);
-    }
-
+    /**
+     * Fetch all related secondary emails.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function secondaryEmails()
     {
         return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id');
@@ -267,7 +279,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function hasRole(Role $role)
     {
-        return $this->roles->contains($role->rold_id);
+        return $this->roles->contains($role->role_id);
     }
 
     /**
@@ -302,6 +314,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->roles()->detach($role->role_id);
     }
 
+    /**
+     * Return all related states for this account.
+     *
+     * @return mixed
+     */
     public function states()
     {
         return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id')
@@ -325,7 +342,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function readNotifications()
     {
-        return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id', 'notification_id')
+        return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
+            'notification_id')
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();
@@ -424,6 +442,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         });
     }
 
+    /**
+     * Check whether the user has the given state presently.
+     *
+     * @param int $search The given state to check if the account has.
+     *
+     * @return bool
+     */
     public function hasState($search)
     {
         return !$this->states->filter(function ($state) use ($search) {
@@ -431,14 +456,22 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         })->isEmpty();
     }
 
+    /**
+     * Set the account's current state to the given value.
+     *
+     * @param int $state The state to set.
+     *
+     * @return mixed
+     * @throws \App\Exceptions\Mship\DuplicateStateException
+     */
     public function setState($state)
     {
         if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
 
-        if ($this->current_state) {
-            $this->current_state->delete();
+        if ($this->currentState) {
+            $this->currentState->delete();
         }
 
         return $this->states()->create([
@@ -446,6 +479,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         ]);
     }
 
+    /**
+     * Laravel magic-getter - return the current state.
+     *
+     * @return mixed
+     */
     public function getCurrentStateAttribute()
     {
         return $this->states->first();
@@ -462,11 +500,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
 
         return collect($return);
-    }
-
-    public function getPrimaryStateAttribute()
-    {
-        return $this->current_state;
     }
 
     public function hasPermission($permission)
@@ -509,7 +542,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $hasPermission;
     }
 
-    public function verifyPassword($password){
+    public function verifyPassword($password)
+    {
         return \Hash::check($password, $this->password);
     }
 
@@ -641,16 +675,57 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      * Determine if the current account has the given email attached to it.
      *
      * @param string $email The email to check is attached to this account.
+     * @param bool   $checkPrimary Whether to also check the primary email address.
      *
      * @return bool
      */
-    public function hasEmail($email)
+    public function hasEmail($email, $checkPrimary = true)
     {
+        if ($checkPrimary && strcasecmp($email, $this->email) == 0) {
+            return true;
+        }
+
         $check = $this->secondaryEmails->filter(function ($e) use ($email) {
             return strcasecmp($e->email, $email) == 0;
         })->count();
 
-        return ($check > 0 || strcasecmp($email, $this->email) == 0);
+        return $check > 0;
+    }
+
+    /**
+     * Set an account's primary email to the one given.
+     *
+     * If the primary email exists as a secondary, it'll be deleted.
+     *
+     * @param string $primaryEmail The new primary email for the account.
+     * @return boolean
+     */
+    public function setEmail($primaryEmail)
+    {
+        $checkPrimaryEmail = false;
+        if ($this->hasEmail($primaryEmail, $checkPrimaryEmail)) {
+
+            $secondaryEmail = $this->secondaryEmails->filter(function ($secondaryEmail) use ($primaryEmail) {
+                return strcasecmp($secondaryEmail->email, $primaryEmail) == 0;
+            })->first();
+
+            $secondaryEmail->delete();
+        }
+
+        $this->attributes[ 'email' ] = strtolower($primaryEmail);
+
+        return $this->save();
+    }
+
+    /**
+     * Laravel magic setter - calls the setEmail method and instantly saves.
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function setEmailAttribute($email)
+    {
+        return $this->setEmail($email);
     }
 
     /**
@@ -788,6 +863,34 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return ($flag & $this->attributes[ "status" ]) == $flag; // AND
     }
 
+    public function getIsInactiveAttribute()
+    {
+        return $this->hasStatusFlag(self::STATUS_INACTIVE);
+    }
+
+    public function setIsInactiveAttribute($value)
+    {
+        if ($value && !$this->is_inactive) {
+            $this->setStatusFlag(self::STATUS_INACTIVE);
+        } elseif (!$value && $this->is_inactive) {
+            $this->unSetStatusFlag(self::STATUS_INACTIVE);
+        }
+    }
+
+    public function getIsSystemAttribute()
+    {
+        return $this->hasStatusFlag(self::STATUS_SYSTEM);
+    }
+
+    public function setIsSystemAttribute($value)
+    {
+        if ($value && !$this->is_system) {
+            $this->setStatusFlag(self::STATUS_SYSTEM);
+        } elseif (!$value && $this->is_system) {
+            $this->unSetStatusFlag(self::STATUS_SYSTEM);
+        }
+    }
+
     public function getIsSystemBannedAttribute()
     {
         $bans = $this->bans()->isActive()->isLocal();
@@ -819,34 +922,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getIsBannedAttribute()
     {
         return ($this->is_system_banned || $this->is_network_banned);
-    }
-
-    public function getIsInactiveAttribute()
-    {
-        return $this->hasStatusFlag(self::STATUS_INACTIVE);
-    }
-
-    public function setIsInactiveAttribute($value)
-    {
-        if ($value && !$this->is_inactive) {
-            $this->setStatusFlag(self::STATUS_INACTIVE);
-        } elseif (!$value && $this->is_inactive) {
-            $this->unSetStatusFlag(self::STATUS_INACTIVE);
-        }
-    }
-
-    public function getIsSystemAttribute()
-    {
-        return $this->hasStatusFlag(self::STATUS_FLAG);
-    }
-
-    public function setIsSystemAttribute($value)
-    {
-        if ($value && !$this->is_system) {
-            $this->setStatusFlag(self::STATUS_SYSTEM);
-        } elseif (!$value && $this->is_system) {
-            $this->unSetStatusFlag(self::STATUS_SYSTEM);
-        }
     }
 
     public function getStatusStringAttribute()
