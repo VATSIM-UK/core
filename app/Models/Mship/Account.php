@@ -779,6 +779,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
         $this->qualifications()->attach($qualification);
 
+        $this->touch();
+
         return true;
     }
 
@@ -1069,6 +1071,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $array                   = parent::toArray();
         $array[ 'name' ]         = $this->name;
+        $array[ 'name_real' ]    = $this->real_name;
         $array[ 'email' ]        = $this->email;
         $array[ 'atc_rating' ]   = $this->qualification_atc;
         $array[ 'atc_rating' ]   = ($array[ 'atc_rating' ] ? $array[ 'atc_rating' ]->qualification->name_long : '');

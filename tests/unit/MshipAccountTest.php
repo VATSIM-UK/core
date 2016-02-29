@@ -71,7 +71,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_a_name_is_still_valid_even_with_a_nickanem_set()
+    public function it_determines_that_a_name_is_still_valid_even_with_a_nickanem_set()
     {
         $this->account->nickname = "Delboy";
         $this->account->save();
@@ -85,7 +85,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_when_there_is_an_invalid_display_name()
+    public function it_determines_when_there_is_an_invalid_display_name()
     {
         $this->account->nickname = "Delboy";
         $this->account->save();
@@ -108,6 +108,31 @@ class MshipAccountTest extends TestCase
             "id"    => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
+    }
+
+    /** @test **/
+    public function it_determines_if_the_given_email_exists_on_the_account()
+    {
+        $verified = true;
+        $email    = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
+
+        $this->assertTrue($this->account->fresh()->hasEmail($email->email));
+    }
+
+    /** @test **/
+    public function it_determines_if_the_given_email_exists_on_the_account_as_a_secondary_email()
+    {
+        $verified = true;
+        $email    = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
+
+        $checkPrimaryEmail = false;
+        $this->assertTrue($this->account->fresh()->hasEmail($email->email, $checkPrimaryEmail));
+    }
+
+    /** @test **/
+    public function it_determines_if_the_given_email_already_exists_on_the_account_as_a_primary_email()
+    {
+        $this->assertTrue($this->account->fresh()->hasEmail("i_sleep@gmail.com"));
     }
 
     /** @test */
@@ -247,6 +272,19 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
+    public function it_touches_account_updated_at_when_adding_a_qualification()
+    {
+        $originalUpdatedAt = $this->account->updated_at;
+
+        sleep(1);
+
+        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
+        $this->account->fresh()->addQualification($qualification);
+
+        $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
+    }
+
+    /** @test */
     public function it_returns_the_correct_account_based_on_slack_id()
     {
         $slackID = substr(strrev(uniqid()), 0, 10);
@@ -272,6 +310,16 @@ class MshipAccountTest extends TestCase
             "state"      => \App\Models\Mship\Account\State::STATE_DIVISION,
             "deleted_at" => null,
         ]);
+    }
+
+    /** @test **/
+    public function it_verifies_if_the_given_state_is_present_on_the_account()
+    {
+        $STATE_DIVISION = \App\Models\Mship\Account\State::STATE_DIVISION;
+
+        $this->account->setState($STATE_DIVISION);
+
+        $this->assertTrue($this->account->fresh()->hasState($STATE_DIVISION));
     }
 
     /** @test * */
@@ -312,6 +360,18 @@ class MshipAccountTest extends TestCase
             "state"      => \App\Models\Mship\Account\State::STATE_REGION,
             "deleted_at" => null,
         ]);
+    }
+
+    /** @test */
+    public function it_touches_account_updated_at_when_adding_a_state()
+    {
+        $originalUpdatedAt = $this->account->updated_at;
+
+        sleep(1);
+
+        $this->account->setState(\App\Models\Mship\Account\State::STATE_REGION);
+
+        $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
     }
 
     /** @test * */
@@ -419,24 +479,6 @@ class MshipAccountTest extends TestCase
         ]);
     }
 
-    /** @test * */
-    public function it_determines_that_password_is_not_mandatory()
-    {
-        $this->assertFalse($this->account->mandatory_password);
-    }
-
-    /** @test * */
-    public function it_determines_that_password_is_mandatory()
-    {
-        $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
-
-        $this->account->addRole($role);
-
-        $this->account = $this->account->fresh();
-
-        $this->assertTrue($this->account->mandatory_password);
-    }
-
     /** @test **/
     public function it_adds_role_to_account()
     {
@@ -495,23 +537,51 @@ class MshipAccountTest extends TestCase
         ]);
     }
 
+    /** @test * */
+    public function it_determines_that_password_is_not_mandatory()
+    {
+        $this->assertFalse($this->account->mandatory_password);
+    }
+
+    /** @test * */
+    public function it_determines_that_password_is_mandatory()
+    {
+        $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
+
+        $this->account->addRole($role);
+
+        $this->account = $this->account->fresh();
+
+        $this->assertTrue($this->account->mandatory_password);
+    }
+
     /** @test **/
     public function it_returns_an_infinite_session_timeout()
     {
         $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 0]);
         $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 10]);
+
+        $this->account->addRole($roleWithInfiniteTimeout);
+
+        $this->assertEquals(0, $this->account->fresh()->session_timeout);
     }
 
     /** @test **/
     public function it_returns_a_non_infinite_session_timeout()
     {
+        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 0]);
+        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 10]);
 
+        $this->account->addRole($roleWithInfiniteTimeout);
+        $this->account->addRole($roleWithNonInfiniteTimeout);
+
+        $this->assertEquals(10, $this->account->fresh()->session_timeout);
     }
 
     /** @test **/
     public function it_sets_a_users_active_status()
     {
-
+        
     }
 
     /** @test **/
