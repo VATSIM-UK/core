@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create") && !$ban->is_repealed)
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create") && !$ban->is_repealed)
                         {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->account_ban_id], ["class" => "btn btn-info"]) !!}
                     @endif
                 </div>

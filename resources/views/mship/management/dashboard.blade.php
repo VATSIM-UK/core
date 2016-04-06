@@ -12,7 +12,7 @@
         <th class='hidden-xs hidden-sm'>CID</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>CID</strong></span>
-            {{ $_account->account_id }}
+            {{ $_account->id }}
         </td>
     </tr>
     <tr>
@@ -42,7 +42,7 @@
         <th class='hidden-xs hidden-sm'>Secondary Email Addresses</th>
         <td>
             <span class="hidden-md hidden-lg" style="border-bottom: dashed black 1px; padding-bottom: 2px; margin-bottom: 2px;"><strong>Secondary Emails</strong></span>
-            @foreach($_account->secondary_emails as $email)
+            @foreach($_account->secondaryEmails as $email)
                 <strong>
                     {{ $email->email }}
                 </strong>
@@ -217,7 +217,7 @@
             @endforeach
         </td>
     </tr>
-    @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
+    @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
         <tr>
             <th class='hidden-xs hidden-sm'>Slack Registration<br /><small>{!! link_to("http://vatsim-uk.slack.com") !!}</small></th>
             <td>
@@ -238,15 +238,15 @@
                 [ <?= HTML::link("mship/auth/logout/1", "Logout") ?> ]
             @endif
 
-            @if($_account->current_security)
+            @if($_account->hasPassword())
                 &nbsp;&nbsp;
                 [
-                @if($_account->current_security->security->optional)
+                @if(!$_account->mandatory_password)
                     <?= HTML::link("mship/security/replace/1", "Disable") ?> |
                 @endif
                 <?= HTML::link("mship/security/replace/0", "Modify") ?> Secondary Password
                 ]
-            @elseif(!$_account->current_security)
+            @elseif(!$_account->hasPassword())
                 &nbsp;&nbsp;
                 [<?= HTML::link("mship/security/enable", "Enable Secondary Password") ?>]
             @endif

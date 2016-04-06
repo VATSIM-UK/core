@@ -35,12 +35,12 @@ class Note extends \App\Models\aModel
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
     public function writer()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "writer_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "writer_id");
     }
 
     public function type()

@@ -67,13 +67,13 @@ class SlackManager extends aCommand
                 $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
             }
 
-            if(strcasecmp($localUser->name, $slackUser->real_name) != 0){
+            if($localUser->isValidDisplayName($slackUser->real_name)){
                 $this->messageAskingForRealName($localUser, $slackUser);
             }
 
-            if(strcasecmp($localUser->email, $slackUser->profile->email) != 0){
-                $this->messageAskingForRealEmail($localUser, $slackUser);
-            }
+//            if(strcasecmp($localUser->email, $slackUser->profile->email) != 0){
+//                $this->messageAskingForRealEmail($localUser, $slackUser);
+//            }
         }
     }
 
@@ -95,7 +95,7 @@ class SlackManager extends aCommand
 
     private function messageDsgAdvisitingOfBannedUser($localUser, $slackUser){
         $this->sendSlackError("A user who is banned, is using Slack.", [
-            "User CID" => $localUser->account_id, "Slack User" => $slackUser->id." - ".$slackUser->name
+            "User CID" => $localUser->id, "Slack User" => $slackUser->id." - ".$slackUser->name
         ]);
     }
 

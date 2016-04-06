@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
@@ -41,100 +42,117 @@ class MembersCertImport extends aCommand
      */
     public function handle()
     {
-        // get a list of current members and their emails
-        // accounts for the possibility of a member not having a (primary) email in mship_account_email
-        $this->member_list = $this->getMemberIds();
-        $this->member_email_list = $this->getMemberEmails();
+        $this->member_list = $this->getMemberIdAndEmail();
 
         $this->log('Member list and email list obtained.');
 
         $members = AutoTools::getDivisionData();
-        foreach ($members as $index => $member) {
-            $this->log("Processing {$member[0]} {$member[3]} {$member[4]}: ", null, false);
+
+        foreach ($members as $member) {
+            $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
+
             DB::transaction(function () use ($member) {
                 $this->processMember($member);
             });
         }
 
         $this->sendSlackSuccess('Members imported.', [
-            'New Members:' => $this->count_new,
+            'New Members:'           => $this->count_new,
             'Member Emails Updated:' => $this->count_emails,
-            'Unchanged Members:' => $this->count_none
+            'Unchanged Members:'     => $this->count_none,
         ]);
     }
 
     protected function processMember($member)
     {
-        // if member doesn't exist, create them, otherwise check/update their email
-        if (!array_key_exists($member[0], $this->member_list)) {
-            $this->createNewMember($member);
-            $this->log('created new account');
-            $this->count_new++;
-        } else {
-            $current_email = array_key_exists($member[0], $this->member_email_list)
-                ? $this->member_email_list[$member[0]]
-                : false;
-            if (strcasecmp($current_email, $member[5]) !== 0) {
-                $this->updateMemberEmail($member);
-                $this->log('updated member email');
+        if (array_get($this->member_list, $member["cid"], null) !== null) {
+
+            if (strcasecmp($this->member_list[$member["cid"]], $member["email"]) == 0) {
+                $this->updateMember($member);
+                $this->log("updated member");
                 $this->count_emails++;
-            } else {
-                $this->log('no changes needed');
-                $this->count_none++;
+
+                return;
             }
+
+            $this->log("no important changes required.");
+            $this->count_none++;
+
+            return;
         }
+
+        $this->createNewMember($member);
+        $this->log("created new account");
+        $this->count_new++;
     }
 
     protected function createNewMember($member_data)
     {
-        $member = new Account();
-        $member->account_id = $member_data[0];
-        $member->name_first = $member_data[3];
-        $member->name_last = $member_data[4];
-        $member->joined_at = $member_data[11];
-        $member->is_inactive = (boolean) ($member_data[1] < 0);
+        $member = new Account([
+            "id"         => $member_data["cid"],
+            "name_first" => $member_data["name_first"],
+            "name_last"  => $member_data["name_last"],
+            "email"      => $member_data["email"],
+            "joined_at"  => $member_data["reg_date"],
+        ]);
+        $member->is_inactive = (boolean) ($member_data["rating_atc"] < 0);
         $member->save();
-        $member->addSecondaryEmail($member_data[5], true, true);
-        $member->determineState($member_data[12], $member_data[13]);
+
+        $member->determineState($member_data["region"], $member_data["division"]);
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
-        if ($member_data[1] >= 8) {
-            $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
+        if ($member_data["rating_atc"] >= 8) {
+
+            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                $member->addQualification($prevAtcRating);
+
+                try {
+                    if($prevAtcRating){
+                        $member->addQualification($prevAtcRating);
+                    }
+                } catch (DuplicateQualificationException $e) {
+                    // TODO: Something.
+                } catch(Exception $e){
+                    // TODO: Something.
+                }
             } else {
-                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->account_id);
+                $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
             }
         }
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating
-        if (($member_data[1] != 8 && $member_data[1] != 9)
-            || $member->current_state->state === State::STATE_DIVISION
-        ) {
-            $member->addQualification(Qualification::parseVatsimATCQualification($member_data[1]));
+        if (($member_data["rating_atc"] < 8) || $member->current_state->state === State::STATE_DIVISION) {
+            try {
+                $atcRating = Qualification::parseVatsimATCQualification($member_data["rating_atc"]);
+
+                if($atcRating){
+                    $member->addQualification($atcRating);
+                }
+            } catch(DuplicateQualificationException $e){
+                // TODO: Something.
+            } catch(ErrorException $e){
+                // TODO: Something.
+            }
         }
 
         // anything else is processed by the Members:CertUpdate script
     }
 
-    protected function updateMemberEmail($member_data)
+    protected function updateMember($member_data)
     {
-        $member = Account::find($member_data[0]);
-        $member->addSecondaryEmail($member_data[5], true);
+        $member = Account::find($member_data["cid"]);
+        $member->name_first = $member_data["name_first"];
+        $member->name_last = $member_data["name_last"];
+        $member->email = $member_data["email"];
+        $member->save();
     }
 
-    protected function getMemberIds()
+    protected function getMemberIdAndEmail()
     {
         return DB::table('mship_account')
-            ->pluck('account_id', 'account_id');
-    }
-
-    protected function getMemberEmails()
-    {
-        return DB::table('mship_account_email')
-            ->where('is_primary', 1)
-            ->pluck('email', 'account_id');
+                 ->pluck('email', "id");
     }
 }

@@ -48,11 +48,11 @@ class MembersCertUpdate extends aCommand
 
     protected function getMembers()
     {
-        $members = Account::where('account_id', '>=', 800000);
+        $members = Account::where('id', '>=', 800000);
 
         // add parameters based on the cron type
         if ($this->option('force')) {
-            $members->where('account_id', $this->option('force'));
+            $members->where('id', $this->option('force'));
         } elseif (starts_with($this->option('type'), 'h')) {
             // members who have logged in in the last 30 days or who have never been checked
             $members->where(function ($query) {
@@ -82,6 +82,6 @@ class MembersCertUpdate extends aCommand
 
         return $members->orderBy('cert_checked_at', 'ASC')
             ->limit($this->argument('max_members'))
-            ->pluck('account_id');
+            ->pluck('id');
     }
 }

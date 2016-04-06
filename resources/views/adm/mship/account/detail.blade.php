@@ -10,22 +10,22 @@
             <div class="box-body">
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role"))
                         <li {{ $selectedTab == "role" ? "class='active'" : "" }}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security"))
                         <li {{ $selectedTab == "security" ? "class='active'" : "" }}><a href="#security" role="tab" data-toggle="tab">Security Details</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/bans"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
                         <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/notes"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/notes"))
                         <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/flags"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/flags"))
                         <li {{ $selectedTab == "flags" ? "class='active'" : "" }}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/datachanges"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/datachanges"))
                         <li {{ $selectedTab == "datachanges" ? "class='active'" : "" }}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
                     @endif
                 </ul>
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="btn-toolbar">
                                 <div class="btn-group pull-right">
-                                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
+                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/impersonate"))
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
                                     @endif
                                 </div>
@@ -54,8 +54,8 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="account_id">CID:</label>
-                                        {{ $account->account_id }}
+                                        <label for="id">CID:</label>
+                                        {{ $account->id }}
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Name:</label>
@@ -134,9 +134,9 @@
                         </div>
                     </div>
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/impersonate"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/impersonate"))
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->account_id), "target" => "_blank"]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -168,7 +168,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role"))
                         <div class="tab-pane fade {{ $selectedTab == "role" ? "in active" : "" }}" id="role">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -180,7 +180,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/attach"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/role/attach"))
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRoleAttach">Add / Attach</button>
                                                 @endif
                                             </div>
@@ -195,7 +195,7 @@
                                                     <th>Name</th>
                                                     <th># Permissions</th>
                                                     <th>Added</th>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/".$account->account_id."/detach"))
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$account->id."/detach"))
                                                         <th>Delete</th>
                                                     @endif
                                                 </tr>
@@ -207,8 +207,8 @@
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/".$r->role_id."/detach"))
-                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->account_id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->role_id."/detach"))
+                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
                                                 @endforeach
@@ -220,9 +220,9 @@
                     @endif
 
                     <!-- Modals -->
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/role/attach"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -255,7 +255,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security"))
                         <div class="tab-pane fade {{ $selectedTab == "security" ? "in active" : "" }}" id="security">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -268,15 +268,15 @@
                                     <div class="btn-toolbar">
                                         <div class="btn-group pull-right">
                                             @if($account->current_security)
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/reset"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/reset"))
                                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
                                                 @endif
 
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/change"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/change"))
                                                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
                                                 @endif
                                             @else
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/enable"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/enable"))
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enable / Force</button>
                                                 @endif
                                             @endif
@@ -285,7 +285,7 @@
 
                                     <div class="clearfix">&nbsp;</div>
 
-                                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/view"))
+                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/view"))
                                         <table class="table table-striped table-bordered table-condensed">
                                             <thead>
                                                 <tr>
@@ -313,9 +313,9 @@
                     @endif
 
                     <!-- Modals -->
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/enable"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/enable"))
                         <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.enable", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.enable", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -348,9 +348,9 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/reset"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/reset"))
                         <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.reset", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.reset", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -373,9 +373,9 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/security/change"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/change"))
                         <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.change", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.security.change", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -411,7 +411,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/bans"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
                         <div class="tab-pane fade {{ $selectedTab == "bans" ? "in active" : "" }}" id="bans">
                             <div class="col-md-12">
                                 <!-- general form elements -->
@@ -423,7 +423,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/add") && !$account->is_banned)
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/ban/add") && !$account->is_banned)
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBanAdd">Add Ban</button>
                                                 @endif
                                             </div>
@@ -431,7 +431,7 @@
 
                                         <div class="clearfix">&nbsp;</div>
 
-                                        @if($_account->hasPermission("adm/mship/account/".$account->account_id."/ban/view"))
+                                        @if($_account->hasPermission("adm/mship/account/".$account->id."/ban/view"))
                                             @foreach($account->bans as $ban)
                                                 @include("adm.mship.account._ban", ["ban" => $ban, "selectedTab" => $selectedTab, "selectedTabId" => $selectedTabId])
                                             @endforeach
@@ -442,7 +442,7 @@
                         </div>
 
                         <div class="modal fade" id="modalBanAdd" tabindex="-1" role="dialog" aria-labelledby="Create Ban" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.ban.add", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.ban.add", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -486,7 +486,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/notes"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/notes"))
                         <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">
                             <div class="col-md-12">
                                 <!-- general form elements -->
@@ -498,11 +498,11 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/filter"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/note/filter"))
                                                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
                                                 @endif
 
-                                                @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create"))
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>
                                                 @endif
                                             </div>
@@ -510,7 +510,7 @@
 
                                         <div class="clearfix">&nbsp;</div>
 
-                                        @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/view"))
+                                        @if($_account->hasPermission("adm/mship/account/".$account->id."/note/view"))
                                             @foreach($account->notes as $note)
                                                 @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
                                                     @include('adm.mship.account._note', ["note" => $note])
@@ -523,7 +523,7 @@
                         </div>
 
                         <div class="modal fade" id="modalNoteFilter" tabindex="-1" role="dialog" aria-labelledby="Filter Notes" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.note.filter", $account->account_id)]) !!}
+                            {!! Form::open(["url" => URL::route("adm.mship.account.note.filter", $account->id)]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -553,9 +553,9 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create"))
                         <div class="modal fade" id="modalNoteCreate" tabindex="-1" role="dialog" aria-labelledby="Create Note" aria-hidden="true">
-                            {!! Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->account_id))) !!}
+                            {!! Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->id))) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -592,11 +592,11 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/flags"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/flags"))
                         <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/datachanges"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/datachanges"))
                         <div class="tab-pane fade {{ $selectedTab == "datachanges" ? "in active" : "" }}" id="datachanges">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -617,8 +617,8 @@
                                             @foreach($account->dataChanges as $dc)
                                             <tr>
                                                 <td>{{ $dc->data_key }}</td>
-                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->account_id."/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
-                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->account_id."/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
+                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
+                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
                                                 <td>{{ $dc->created_at }}</td>
                                             </tr>
                                             @endforeach
@@ -635,7 +635,7 @@
             </div>
         </div>
     </div>
-    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/timeline"))
+    @if($_account->hasPermission("adm/mship/account/".$account->id."/timeline"))
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">

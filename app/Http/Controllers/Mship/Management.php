@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Exceptions\Mship\DuplicateEmailException;
 use Redirect;
 use Validator;
 use Input;
@@ -15,86 +16,94 @@ use App\Models\Sso\Account as SSOSystem;
 use App\Models\Sso\Email as SSOEmail;
 use App\Models\Sso\Token as SSOToken;
 
-class Management extends \App\Http\Controllers\BaseController {
-    public function getLanding(){
-        if(Auth::check()){
+class Management extends \App\Http\Controllers\BaseController
+{
+    public function getLanding()
+    {
+        if (Auth::check()) {
             return Redirect::route("mship.auth.redirect");
         }
 
         return $this->viewMake("mship.management.landing");
     }
-    public function getDashboard(){
+
+    public function getDashboard()
+    {
         // Load necessary data, early!
         $this->_account->load(
             "secondaryEmails",
-            "qualifications", "qualifications.qualification",
+            "qualifications",
             "states", "teamspeakRegistrations"
         );
 
         return $this->viewMake("mship.management.dashboard");
     }
 
-    public function getEmailAdd(){
+    public function getEmailAdd()
+    {
         return $this->viewMake("mship.management.email.add");
     }
 
-    public function postEmailAdd(){
-        $email = strtolower(Input::get("new_email"));
+    public function postEmailAdd()
+    {
+        $email  = strtolower(Input::get("new_email"));
         $email2 = strtolower(Input::get("new_email2"));
 
-        // Make our validator
-        // TODO look at putting this into models in some way.
         $validator = Validator::make(
-            array("email" => $email),
-            array("email" => ["required", "email"])
+            ["email" => $email],
+            ["email" => ["required", "email"]]
         );
 
-        if($validator->fails()){
-            return Redirect::route("mship.manage.email.add")->withError("You have entered an invalid email address.");
+        if ($validator->fails()) {
+            return Redirect::route("mship.manage.email.add")
+                           ->withError("You have entered an invalid email address.");
         }
 
         // Check they match!
-        if(strcasecmp($email, $email2) != 0){
-            return Redirect::route("mship.manage.email.add")->withError("Emails entered are different.  You need to enter the same email, twice.");
+        if (strcasecmp($email, $email2) != 0) {
+            return Redirect::route("mship.manage.email.add")
+                           ->withError("Emails entered are different.  You need to enter the same email, twice.");
         }
 
-        // Let's just try and make it, now!
-        $newEmail = $this->_account->addSecondaryEmail($email);
-
-        if(!$newEmail){
-            return Redirect::route("mship.manage.email.add")->withError("This email cannot be added, as it has already been used.");
+        try {
+            $this->_account->addSecondaryEmail($email);
+        } catch (DuplicateEmailException $e) {
+            return Redirect::route("mship.manage.email.add")
+                           ->withError($e);
         }
 
-        return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email (".$email." has been added successfully! You will be sent a verification link to activate this email address.");
+        return Redirect::route("mship.manage.dashboard")
+                       ->withSuccess("Your new email (" . $email . " has been added successfully! You will be sent a verification link to activate this email address.");
     }
 
-    public function getEmailAssignments(){
+    public function getEmailAssignments()
+    {
         // Get all SSO systems
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->_account->email;
+        $userPrimaryEmail   = $this->_account->email;
         $userVerifiedEmails = $this->_account->verified_secondary_emails;
 
         // Get user SSO email assignments!
         $userSsoEmails = $this->_account->ssoEmails;
 
         // Now build the user's matrix!
-        $userMatrix = array();
-        foreach($ssoSystems as $sys){
-            $umEntry = [];
-            $umEntry["sso_system"] = $sys;
+        $userMatrix = [];
+        foreach ($ssoSystems as $sys) {
+            $umEntry                 = [];
+            $umEntry[ "sso_system" ] = $sys;
 
             // Let's see if the user has this system!
-            $hasEmails = $userSsoEmails->filter(function($ssoemail) use($sys){
+            $hasEmails = $userSsoEmails->filter(function ($ssoemail) use ($sys) {
                 return $ssoemail->sso_account_id == $sys->sso_account_id;
             });
             $hasEmails = $hasEmails->values();
 
-            if($hasEmails && count($hasEmails) > 0){
-                $umEntry['assigned_email_id'] = $hasEmails[0]->id;
+            if ($hasEmails && count($hasEmails) > 0) {
+                $umEntry[ 'assigned_email_id' ] = $hasEmails[ 0 ]->id;
             } else {
-                $umEntry['assigned_email_id'] = $userPrimaryEmail->id;
+                $umEntry[ 'assigned_email_id' ] = $userPrimaryEmail->id;
             }
 
             $userMatrix[] = $umEntry;
@@ -106,12 +115,13 @@ class Management extends \App\Http\Controllers\BaseController {
                     ->with("userMatrix", $userMatrix);
     }
 
-    public function postEmailAssignments(){
+    public function postEmailAssignments()
+    {
         // Get all SSO systems
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->_account->email;
+        $userPrimaryEmail   = $this->_account->email;
         $userVerifiedEmails = $this->_account->verified_secondary_emails;
 
         // Get user SSO email assignments!
@@ -119,25 +129,25 @@ class Management extends \App\Http\Controllers\BaseController {
 
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!
-        foreach($userSsoEmails as $ssoEmail){
-            if(Input::get("assign_".$ssoEmail->sso_account_id, "pri") == "pri"){
+        foreach ($userSsoEmails as $ssoEmail) {
+            if (Input::get("assign_" . $ssoEmail->sso_account_id, "pri") == "pri") {
                 $ssoEmail->delete();
             }
         }
 
         // NOW, let's go through all the other systems and check if we have NONE primary assignments
-        foreach($ssoSystems as $ssosys){
+        foreach ($ssoSystems as $ssosys) {
             // SKIP PRIMARY ASSIGNMENTS!
-            if(Input::get("assign_".$ssosys->sso_account_id, "pri") == "pri"){
+            if (Input::get("assign_" . $ssosys->sso_account_id, "pri") == "pri") {
                 continue;
             }
 
             // We have an assignment - woohoo!
-            $assignedEmailID = Input::get("assign_".$ssosys->sso_account_id);
+            $assignedEmailID = Input::get("assign_" . $ssosys->sso_account_id);
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!
-            if(!$userVerifiedEmails->contains($assignedEmailID)){
+            if (!$userVerifiedEmails->contains($assignedEmailID)) {
                 continue; // This isn't a valid EMAIL ID for this user.
             }
 
@@ -149,28 +159,33 @@ class Management extends \App\Http\Controllers\BaseController {
         return Redirect::route("mship.manage.dashboard")->withSuccess("Email assignments updated successfully! These will take effect the next time you login to the system.");
     }
 
-    public function getVerifyEmail($code){
+    public function getVerifyEmail($code)
+    {
         // Search tokens for this code!
         $token = SystemToken::where("code", "=", $code)->valid()->first();
 
         // Is it valid? Has it expired? Etc?
-        if(!$token){
-            return $this->viewMake("mship.management.email.verify")->with("error", "You have provided an invalid email verification token. (ERR1)");
+        if (!$token) {
+            return $this->viewMake("mship.management.email.verify")->with("error",
+                "You have provided an invalid email verification token. (ERR1)");
         }
 
         // Is it valid? Has it expired? Etc?
-        if($token->is_used){
-            return $this->viewMake("mship.management.email.verify")->with("error", "You have provided an invalid email verification token. (ERR2)");
+        if ($token->is_used) {
+            return $this->viewMake("mship.management.email.verify")->with("error",
+                "You have provided an invalid email verification token. (ERR2)");
         }
 
         // Is it valid? Has it expired? Etc?
-        if($token->is_expired){
-            return $this->viewMake("mship.management.email.verify")->with("error", "You have provided an invalid email verification token. (ERR3)");
+        if ($token->is_expired) {
+            return $this->viewMake("mship.management.email.verify")->with("error",
+                "You have provided an invalid email verification token. (ERR3)");
         }
 
         // Is it valid and linked to something?!?!
-        if(!$token->related OR $token->type != "mship_account_email_verify"){
-            return $this->viewMake("mship.management.email.verify")->with("error", "You have provided an invalid email verification token. (ERR4)");
+        if (!$token->related OR $token->type != "mship_account_email_verify") {
+            return $this->viewMake("mship.management.email.verify")->with("error",
+                "You have provided an invalid email verification token. (ERR4)");
         }
 
         // Let's now consume this token.
@@ -181,10 +196,11 @@ class Management extends \App\Http\Controllers\BaseController {
         $token->related->save();
 
         // Consumed, let's send away!
-        if($this->_account){
-            return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (".$token->related->email.") has been verified!");
+        if ($this->_account) {
+            return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (" . $token->related->email . ") has been verified!");
         } else {
-            return $this->viewMake("mship.management.email.verify")->with("success", "Your new email address (".$token->related->email.") has been verified!");
+            return $this->viewMake("mship.management.email.verify")->with("success",
+                "Your new email address (" . $token->related->email . ") has been verified!");
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
@@ -28,7 +29,7 @@ class Authentication extends BaseController {
         // Has this user logged in from a similar IP as somebody else?
         $check = Account::withIp($this->_account->last_login_ip)
                         ->where('last_login', '>=', Carbon::now()->subHours(4))
-                        ->where('account_id', '!=', $this->_account->account_id)
+                        ->where('id', '!=', $this->_account->id)
                         ->count();
 
         if($check > 0 && !Session::get('auth_duplicate_ip', false)){
@@ -37,7 +38,7 @@ class Authentication extends BaseController {
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Session::has('auth_extra') && $this->_account->current_security && !Session::has('auth_override')) {
+        if (!Session::has('auth_extra') && $this->_account->hasPassword() && !Session::has('auth_override')) {
             return Redirect::route('mship.security.auth');
         }
 
@@ -53,7 +54,7 @@ class Authentication extends BaseController {
             return Redirect::route('mship.auth.redirect');
         }
 
-        if (!$this->_account->current_security) {
+        if (!$this->_account->hasPassword()) {
             Session::set('auth_extra', false);
         }
 
@@ -61,7 +62,7 @@ class Authentication extends BaseController {
         Session::forget('auth_duplicate_ip');
 
         $returnURL = Session::pull('auth_return', URL::route('mship.manage.dashboard'));
-        if($returnURL == URL::route('mship.manage.dashboard') && $this->_account->has_unread_notifications){
+        if($returnURL == URL::route('mship.manage.dashboard') && ($this->_account->has_unread_important_notifications || $this->_account->has_unread_must_acknowledge_notifications)){
             Session::put('force_notification_read_return_url', $returnURL);
             $returnURL = URL::route('mship.notification.list');
         }
@@ -83,7 +84,7 @@ class Authentication extends BaseController {
             return Redirect::route('mship.auth.login');
         }
 
-        if (!Input::get('cid', false) OR ! Input::get('password', false)) {
+        if (!Input::get('cid', false) || ! Input::get('password', false)) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a cid and password.');
         }
 
@@ -95,7 +96,7 @@ class Authentication extends BaseController {
         }
 
         // Let's get their current security and verify...
-        if (!$account->current_security OR !$account->current_security->verifyPassword(Input::get('password'))) {
+        if (!$account->hasPassword() || !$account->verifyPassword(Input::get('password'))) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a valid cid and password combination.');
         }
 
@@ -107,6 +108,7 @@ class Authentication extends BaseController {
         $account->save();
 
         Auth::login($account, true);
+
         Session::forget('cert_offline');
 
         // Let's send them over to the authentication redirect now.
@@ -166,33 +168,37 @@ class Authentication extends BaseController {
                     $account = Account::find($user->id);
                     if (is_null($account)) {
                         $account = new Account();
-                        $account->account_id = $user->id;
+                        $account->id = $user->id;
                     }
                     $account->name_first = $user->name_first;
                     $account->name_last = $user->name_last;
                     $account->email = $user->email;
 
-                    // Sort the ATC Rating out.
-                    $atcRating = $user->rating->id;
-                    if ($atcRating > 7) {
-                        // Store the admin/ins rating.
-                        if ($atcRating >= 11) {
-                            $account->addQualification(QualificationType::ofType('admin')->networkValue($atcRating)->first());
-                        } else {
-                            $account->addQualification(QualificationType::ofType('training_atc')->networkValue($atcRating)->first());
-                        }
+                    try {
+                        // Sort the ATC Rating out.
+                        $atcRating = $user->rating->id;
+                        if ($atcRating > 7) {
+                            // Store the admin/ins rating.
+                            if ($atcRating >= 11) {
+                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                            } else {
+                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                            }
 
-                        $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
-                        if (isset($atcRatingInfo->PreviousRatingInt)) {
-                            $atcRating = $atcRatingInfo->PreviousRatingInt;
+                            $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
+                            if (isset($atcRatingInfo->PreviousRatingInt)) {
+                                $atcRating = $atcRatingInfo->PreviousRatingInt;
+                            }
                         }
-                    }
-                    $account->addQualification(QualificationType::ofType('atc')->networkValue($atcRating)->first());
+                        $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
 
-                    for ($i = 1; $i <= 256; $i*=2) {
-                        if ($i & $user->pilot_rating->rating) {
-                            $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
+                        for ($i = 1; $i <= 256; $i*=2) {
+                            if ($i & $user->pilot_rating->rating) {
+                                $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
+                            }
                         }
+                    } catch(DuplicateQualificationException $e){
+                        // TODO: Something.
                     }
 
                     $account->determineState($user->region->code, $user->division->code);

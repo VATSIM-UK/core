@@ -10,10 +10,10 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./tests/</directory>
+        <testsuite name="Application Test">
+            <directory>./tests/integration/</directory>
         </testsuite>
-        <testsuite name="Application Unit Tests">
+        <testsuite name="Unit Tests">
             <directory>./tests/unit/</directory>
         </testsuite>
         <!--<testsuite name="Modules:Statistics Test Suite">-->

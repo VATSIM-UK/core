@@ -29,7 +29,7 @@ class Activity extends aModel
     protected $fillable = ["actor_id", "subject_id", "subject_type", "action"];
 
     public function actor(){
-        return $this->belongsTo(\App\Models\Mship\Account::class, "actor_id", "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, "actor_id");
     }
 
     public function subject(){
