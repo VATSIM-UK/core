@@ -6,6 +6,7 @@ class MshipTest extends TestCase
 {
     use DatabaseTransactions;
 
+
     /** @test */
     public function it_loads_ok(){
         $this->visit("/");
@@ -19,6 +20,18 @@ class MshipTest extends TestCase
         $this->visit("/");
 
         $this->seePageIs(route("mship.manage.landing"));
+    }
+    
+    /** @test **/
+    public function it_authenticates_a_user_post_vatsim_cert_return()
+    {
+        
+    }
+    
+    /** @test **/
+    public function it_determines_that_cert_is_offline_and_offers_alternative_login()
+    {
+        
     }
 
     /** @test */
