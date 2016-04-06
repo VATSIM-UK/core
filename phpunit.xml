@@ -10,15 +10,18 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./tests/</directory>
+        <testsuite name="Application Test">
+            <directory>./tests/integration/</directory>
         </testsuite>
-        <testsuite name="Modules:Statistics Test Suite">
-            <directory>./app/Modules/Statistics/Tests/</directory>
+        <testsuite name="Unit Tests">
+            <directory>./tests/unit/</directory>
         </testsuite>
-        <testsuite name="Modules:Ais Test Suite">
-            <directory>./app/Modules/Ais/Tests/</directory>
-        </testsuite>
+        <!--<testsuite name="Modules:Statistics Test Suite">-->
+            <!--<directory>./app/Modules/Statistics/Tests/</directory>-->
+        <!--</testsuite>-->
+        <!--<testsuite name="Modules:Ais Test Suite">-->
+            <!--<directory>./app/Modules/Ais/Tests/</directory>-->
+        <!--</testsuite>-->
     </testsuites>
     <filter>
         <whitelist>

@@ -44,6 +44,6 @@ class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        Bus::dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue("emails"));
     }
 }

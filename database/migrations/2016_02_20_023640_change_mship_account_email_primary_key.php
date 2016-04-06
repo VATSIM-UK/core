@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSlackIdToAccount extends Migration
+class ChangeMshipAccountEmailPrimaryKey extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddSlackIdToAccount extends Migration
      */
     public function up()
     {
-        Schema::table("mship_account", function($table){
-            $table->string("slack_id", 10)->after("account_id")->unique()->nullable();
+        Schema::table("mship_account_email", function(Blueprint $table){
+            $table->renameColumn("account_email_id", "id");
         });
     }
 
@@ -24,8 +24,8 @@ class AddSlackIdToAccount extends Migration
      */
     public function down()
     {
-        Schema::table("mship_account", function($table){
-            $table->dropColumn("slack_id");
+        Schema::table("mship_account_email", function(Blueprint $table){
+            $table->renameColumn("id", "account_email_id");
         });
     }
 }

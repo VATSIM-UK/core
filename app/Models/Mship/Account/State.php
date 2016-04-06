@@ -51,7 +51,7 @@ class State extends \Eloquent
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
     public function getLabelAttribute()
@@ -68,14 +68,14 @@ class State extends \Eloquent
     public function save(array $options = [])
     {
         // Check it doesn't exist, first!
-        $check = State::where("account_id", "=", $this->account_id)->where("state", "=", $this->state);
+        $check = State::where("account_id", "=", $this->id)->where("state", "=", $this->state);
         if ($check->count() > 0) {
             return $check->get();
         }
 
         parent::save($options);
 
-        $deleteOld = State::where("account_id", "=", $this->account_id)->where("state", "!=", $this->state)->get();
+        $deleteOld = State::where("account_id", "=", $this->id)->where("state", "!=", $this->state)->get();
         foreach ($deleteOld as $do) {
             $do->delete();
         }

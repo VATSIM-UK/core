@@ -88,12 +88,12 @@ class Ban extends \App\Models\aModel
 
     public function account()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'account_id', 'account_id');
+        return $this->belongsTo('\App\Models\Mship\Account', 'account_id');
     }
 
     public function banner()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'banned_by', 'account_id');
+        return $this->belongsTo('\App\Models\Mship\Account', 'banned_by');
     }
 
     public function reason()

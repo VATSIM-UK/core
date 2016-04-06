@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('content')
-
     <div class="row">
         <div class="col-md-6">
             <div class="col-md-12">
@@ -224,64 +223,47 @@
                         <div class="col-xs-4">
                             <b>PRIMARY EMAIL:</b>
                             <br />
-                            {{ $_account->primary_email->email }}
+                            {{ $_account->email }}
                         </div>
 
                         <div class="col-xs-4">
                             <b>STATUS:</b>
-                            <br />
-                            @if($_account->primary_email->verified_at == null)
-                                Unverified
-                            @else
                                 Verified
-                            @endif
                         </div>
-
-                        <div class="col-xs-4 ">
-                            <b>ADDED:</b>
-                            <br />
-                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $_account->primary_email->created_at }}">
-                                <em>{{ $_account->primary_email->created_at->diffForHumans() }}</em>
-                            </a>
-                        </div>
-
                     </div>
                     <!-- Top Row [END] -->
 
                     <br/>
 
-                    @foreach($_account->emails as $email)
-                        @if($email->account_email_id != $_account->primary_email->account_email_id)
-
-                            <div class="row">
-                                <div class="col-xs-4">
-                                    <b>SECONDARY EMAIL:</b>
-                                    <br />
-                                    {{ $email->email }}
-                                </div>
-
-                                <div class="col-xs-4">
-                                    <b>STATUS:</b>
-                                    <br />
-                                    @if($email->verified_at == null)
-                                        Unverified
-                                    @else
-                                        Verified
-                                    @endif
-                                </div>
-
-                                <div class="col-xs-4 hidden-xs hidden-sm">
-                                    <b>ADDED:</b>
-                                    <br />
-                                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
-                                        <em>added {{ $email->created_at }}</em>
-                                    </a>
-                                </div>
-
+                    @foreach($_account->secondaryEmails as $email)
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <b>SECONDARY EMAIL:</b>
+                                <br />
+                                {{ $email->email }}
                             </div>
 
-                            <br />
-                        @endif
+                            <div class="col-xs-4">
+                                <b>STATUS:</b>
+                                <br />
+                                @if($email->verified_at == null)
+                                    Unverified
+                                @else
+                                    Verified
+                                @endif
+                            </div>
+
+                            <div class="col-xs-4 hidden-xs hidden-sm">
+                                <b>ADDED:</b>
+                                <br />
+                                <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
+                                    <em>added {{ $email->created_at }}</em>
+                                </a>
+                            </div>
+
+                        </div>
+
+                        <br />
                     @endforeach
                     @if(count($_account->emails) < 2)
                         You have no secondary email addresses.
@@ -343,31 +325,33 @@
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if(!$_account->is_banned)
                 <div class="col-md-12">
                     <div class="panel panel-ukblue">
-                        <div class="panel-heading"><i class="fa fa-slack"></i> &thinsp; Slack Registration</div>
+                        <div class="panel-heading"><i class="fa fa-slack"></i>
+                            &thinsp;
+                            Slack Registration
+                            <div class="pull-right">
+                                @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
+                                    <a href="{{ route("slack.new") }}">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
                         <div class="panel-body">
                             <div class="row">
-
-                                @if($_account->isState(\App\Models\Mship\Account\State::STATE_DIVISION))
-                                    <div class="col-xs-12">
+                                <div class="col-xs-12">
+                                    @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
                                         @if($_account->slack_id)
-                                            Currently registered with account ID {{ $_account->slack_id }}.
+                                            Current registered with Slack ID {{ $_account->slack_id }}.
                                         @else
                                             You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
                                         @endif
-                                    </div>
-                                @else
-                                    <div class="col-xs-12">
-                                        <p>
-                                            You are not elegible for Slack registration, as you are not a UK member.
-                                        </p>
-                                    </div>
-                                @endif
-
+                                    @else
+                                        You are not elegible for Slack registration as you are not a UK member.
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

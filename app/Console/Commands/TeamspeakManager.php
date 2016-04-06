@@ -232,7 +232,7 @@ class TeamspeakManager extends aCommand {
                         // check registered name and ensure it's being used
                         $nickname = $client_account->name_first . " " . $client_account->name_last;
                         if (strcasecmp($client['client_nickname'], $nickname) !== 0
-                            && !$client_account->isValidTeamspeakAlias($client['client_nickname'])) {
+                            && !$client_account->isValidDisplayName($client['client_nickname'])) {
 
                             if (Carbon::now()->subMinutes(5)->
                                 gt($client_registration->last_nickname_warn)
@@ -328,7 +328,7 @@ class TeamspeakManager extends aCommand {
                         // check client description
                         $description = $client_account->name_first ." "
                                      . $client_account->name_last ." ("
-                                     . $client_account->account_id .")";
+                                     . $client_account->id .")";
                         $client_info = $client->infoDb();
                         if ($client_info['client_description'] != $description)
                             $client->modify(['client_description' => $description]);
@@ -411,7 +411,7 @@ class TeamspeakManager extends aCommand {
             } catch (Exception $e) {
                 $description = $client_account->name_first ." "
                                      . $client_account->name_last ." ("
-                                     . $client_account->account_id .")";
+                                     . $client_account->id .")";
                 $subject = "TeaMan has failed you. Hire a new butler.";
                 $message = "TeaMan has encountered a previously unhandled error:\r\n\r\n"
                          . "Client: " . $description . "\r\n\r\n"

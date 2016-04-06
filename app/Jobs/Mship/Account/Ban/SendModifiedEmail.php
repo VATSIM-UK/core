@@ -42,6 +42,6 @@ class SendModifiedEmail extends Job implements ShouldQueue
         $isHtml = true;
         $systemGenerated = true;
 
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
+        dispatch(new \App\Jobs\Messages\CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));
     }
 }

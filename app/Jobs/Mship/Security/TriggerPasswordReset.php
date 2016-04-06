@@ -39,6 +39,6 @@ class TriggerPasswordReset extends Job implements ShouldQueue {
         $this->account->setPassword($temporaryPassword, $passwordType, $isTemporary);
 
         $sendSecurityTemporaryPasswordEmail = new SendSecurityTemporaryPasswordEmail($this->account, $temporaryPassword);
-        Bus::dispatchNow($sendSecurityTemporaryPasswordEmail->onQueue("med"));
+        dispatch($sendSecurityTemporaryPasswordEmail->onQueue("med"));
     }
 }

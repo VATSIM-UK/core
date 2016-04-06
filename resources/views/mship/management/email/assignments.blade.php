@@ -34,7 +34,7 @@
                 <tr>
                     <th>{{ $um['sso_system']->name }}</th>
                     <td>
-                        @if($um['assigned_email_id'] == $userPrimaryEmail->account_email_id)
+                        @if($um['assigned_email_id'] == $userPrimaryEmail->id)
                             <em>Default</em>
                         @else
                             <div class="radio">

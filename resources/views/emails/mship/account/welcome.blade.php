@@ -8,14 +8,14 @@
 </p>
 
 <p>
-    CID: {!! $account->account_id !!}<br/>
+    CID: {!! $account->id !!}<br/>
     Full Name: {!! $account->name !!}<br/>
-    Primary Email: {!! $account->primary_email->email !!}<br/>
+    Primary Email: {!! $account->email !!}<br/>
     Secondary Emails:<br/>
-    @foreach($account->secondary_email as $e)
+    @foreach($account->secondary_emails as $e)
         -- {!! $e->email !!}<br/>
     @endforeach
-    @if(count($account->secondary_email) < 1)
+    @if(count($account->secondary_emails) < 1)
         No secondary emails registered.<br/>
     @endif
 </p>

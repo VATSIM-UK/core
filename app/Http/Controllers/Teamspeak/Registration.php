@@ -53,7 +53,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // delete registration (if owned)
     public function getDelete($registration)
     {
-        if ($this->_account->account_id == $registration->account_id) {
+        if ($this->_account->id == $registration->account_id) {
             $registration->delete();
         }
         return Redirect::back();
@@ -62,7 +62,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // get status of registration
     public function postStatus($registration)
     {
-        if ($this->_account->account_id == $registration->account_id) {
+        if ($this->_account->id == $registration->account_id) {
             return Response::make($registration->status);
         } else {
             return Response::make("Cannot retrieve registration status.");

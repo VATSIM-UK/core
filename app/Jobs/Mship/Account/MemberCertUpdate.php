@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Mship\Account;
 
+use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
@@ -38,7 +39,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
         DB::beginTransaction();
 
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
-        $member = Account::where('account_id', $this->accountID)->firstOrFail();
+        $member = Account::find($this->accountID);
 
         if ($this->data->name_first == new \stdClass()
             && $this->data->name_last == new \stdClass()
@@ -62,7 +63,11 @@ class MemberCertUpdate extends Job implements ShouldQueue
         $member->determineState($this->data->region, $this->data->division);
 
         $this->processBans($member);
-        $member = $this->processRating($member);
+        try {
+            $member = $this->processRating($member);
+        } catch(DuplicateQualificationException $e){
+            // TODO: Something.
+        }
 
         $member->save();
         DB::commit();
@@ -95,7 +100,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
     {
         // if they have an extra rating, log their previous rating
         if ($this->data->rating >= 8) {
-            $_prevRat = VatsimXML::getData($member->account_id, 'idstatusprat');
+            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
                 $member->addQualification($prevAtcRating);

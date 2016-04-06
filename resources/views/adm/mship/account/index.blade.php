@@ -26,16 +26,16 @@
                     <thead>
                         <tr>
                             <th class="col-md-1">
-                                @if($sortBy == "account_id")
+                                @if($sortBy == "id")
                                     @if($sortDir == "ASC")
-                                        {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "DESC"]) !!}
+                                        {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "id", "sort_dir" => "DESC"]) !!}
                                         <small><i class="ion ion-arrow-up-b"></i></small>
                                     @else
-                                        {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) !!}
+                                        {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "id", "sort_dir" => "ASC"]) !!}
                                         <small><i class="ion ion-arrow-down-b"></i></small>
                                     @endif
                                 @else
-                                    {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "account_id", "sort_dir" => "ASC"]) !!}
+                                    {!! link_to_route("adm.mship.account.index", "ID", ["sort_by" => "id", "sort_dir" => "ASC"]) !!}
                                 @endif
                             </th>
                             <th class="col-md-3">
@@ -76,9 +76,9 @@
                     <tbody>
                         @foreach($members as $m)
                         <tr>
-                            <td>{!! link_to_route('adm.mship.account.details', $m->account_id, [$m->account_id]) !!}</td>
+                            <td>{!! link_to_route('adm.mship.account.details', $m->id, [$m->id]) !!}</td>
                             <td>{{ $m->name }}</td>
-                            <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
+                            <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->email : "[ No Permission ]" }}</td>
                             <td>{{ $m->qualification_atc }}</td>
                             <td>{{ $m->qualifications_atc_training->count() > 0 ? $m->qualifications_atc_training->first() : null }}</td>
                             <td>{{ $m->qualifications_pilot_string }}</td>

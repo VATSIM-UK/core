@@ -45,6 +45,6 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        Bus::dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue("emails"));
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FixRememberToken extends Migration
+class RemoveMshipAccountTemplateField extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,9 @@ class FixRememberToken extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE mship_account MODIFY remember_token VARCHAR(100) NULL DEFAULT NULL;');
-        DB::update('UPDATE mship_account SET remember_token = NULL WHERE remember_token = ""');
+        Schema::table("mship_account", function(Blueprint $table){
+            $table->dropColumn("template");
+        });
     }
 
     /**
@@ -23,7 +24,8 @@ class FixRememberToken extends Migration
      */
     public function down()
     {
-        // remember_token stays nullable
-        // do nothing
+        Schema::table("mship_account", function(Blueprint $table){
+            $table->string("template")->before("created_at");
+        });
     }
 }
