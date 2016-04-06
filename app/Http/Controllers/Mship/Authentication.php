@@ -62,7 +62,7 @@ class Authentication extends BaseController {
         Session::forget('auth_duplicate_ip');
 
         $returnURL = Session::pull('auth_return', URL::route('mship.manage.dashboard'));
-        if($returnURL == URL::route('mship.manage.dashboard') && $this->_account->has_unread_notifications){
+        if($returnURL == URL::route('mship.manage.dashboard') && ($this->_account->has_unread_important_notifications || $this->_account->has_unread_must_acknowledge_notifications)){
             Session::put('force_notification_read_return_url', $returnURL);
             $returnURL = URL::route('mship.notification.list');
         }
