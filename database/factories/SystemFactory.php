@@ -1,18 +1,28 @@
 <?php
 
-$factory->defineAs(App\Modules\Statistics\Models\Atc::class, "online", function($faker){
+$factory->define(App\Models\Sys\Notification::class, function($faker){
     return [
-        "id" => factory(App\Models\Mship\Account::class)->create()->account_id,
-        "callsign" => $faker->randomElement(["EGLL", "EGKK", "EGCC", "EGBB"])."_".$faker->randomElement(["N", "S", "F", ""])."_".$faker->randomElement(["TWR", "GND", "DEL", "APP"]),
-        "connected_at" => $faker->dateTime("6 hours ago"),
+        "title" => $faker->sentence,
+        "content" => $faker->paragraph,
+        "status" => \App\Models\Sys\Notification::STATUS_GENERAL,
+        "effective_at" => \Carbon\Carbon::now(),
     ];
 });
 
-$factory->defineAs(App\Modules\Statistics\Models\Atc::class, "offline", function($faker){
-    return array_merge(
-        factory(App\Models\Statistics\Models\Atc::class, "online")->raw(),
-        [
-            "disconnected_at" => $faker->dateTimeBetween("-6 hours"),
-        ]
-    );
+$factory->defineAs(App\Models\Sys\Notification::class, "must_read", function($faker) use ($factory){
+    $raw = $factory->raw(App\Models\Sys\Notification::class);
+
+    return array_merge($raw, [
+        "status" => \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE,
+        "effective_at" => \Carbon\Carbon::now(),
+    ]);
+});
+
+$factory->defineAs(App\Models\Sys\Notification::class, "important", function($faker) use ($factory){
+    $raw = $factory->raw(App\Models\Sys\Notification::class);
+
+    return array_merge($raw, [
+        "status" => \App\Models\Sys\Notification::STATUS_IMPORTANT,
+        "effective_at" => \Carbon\Carbon::now(),
+    ]);
 });
