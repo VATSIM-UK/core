@@ -19,25 +19,29 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (!$this->_account->new_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
-            $_registration = $this->createRegistration($this->_account->id, $registration_ip);
+            $registration = $this->createRegistration($this->_account->account_id, $registration_ip);
         } else {
-            $_registration = $this->_account->new_registration->load('confirmation');
+            $registration = $this->_account->new_registration->load('confirmation');
         }
 
-        if (!$_registration->confirmation) {
-            $_confirmation = $this->createConfirmation(
-                $_registration->id,
-                md5($_registration->created_at->timestamp),
-                $this->_account->id
+        if (!$registration->confirmation) {
+            $confirmation = $this->createConfirmation(
+                $registration->id,
+                md5($registration->created_at->timestamp),
+                $this->_account->account_id
             );
         } else {
-            $_confirmation = $_registration->confirmation;
+            $confirmation = $registration->confirmation;
         }
 
+        $autoURL = "ts3server://" . $_ENV['TS_HOST'] . "?nickname=" . $this->_account->name_first . "%20";
+        $autoURL.= $this->_account->name_last ." &amp;token=" . $confirmation->privilege_key;
+
         $this->_pageTitle = "New Registration";
-        $view = $this->viewMake("teamspeak.new");
-        $view->_registration = $_registration;
-        $view->_confirmation = $_confirmation;
+        $view = $this->viewMake("teamspeak.new")
+                     ->withRegistration($registration)
+                     ->withConfirmation($confirmation)
+                     ->withAutoUrl($autoURL);
         return $view;
     }
 

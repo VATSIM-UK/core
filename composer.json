@@ -28,7 +28,8 @@
         "barryvdh/laravel-ide-helper": "^2.1",
         "league/csv": "^8.0",
         "alawrence/laravel-ipboard": "1.0",
-        "vluzrmos/slack-api": "dev-master"
+        "vluzrmos/slack-api": "dev-master",
+        "patricktalmadge/bootstrapper" : "~5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

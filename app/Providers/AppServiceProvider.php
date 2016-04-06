@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use \Form;
+use \HTML;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
         if (!defined('VATSIM_ACCOUNT_SYSTEM')) {
             define('VATSIM_ACCOUNT_SYSTEM', '606060');
         }
+
+        HTML::component("icon", "components.html.icon", ["type", "key"]);
+        HTML::component("panelOpen", "components.html.panel_open", ["title", "icon" => []]);
+        HTML::component("panelClose", "components.html.panel_close", []);
+
     }
 
     /**

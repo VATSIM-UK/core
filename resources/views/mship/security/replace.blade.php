@@ -1,6 +1,7 @@
 @extends('layout')
 
 @section('content')
+
 <?php if($disable): ?>
     <p>To disable your secondary password, please enter your current password below.</p>
 <?php else: ?>
