@@ -238,15 +238,15 @@
                 [ <?= HTML::link("mship/auth/logout/1", "Logout") ?> ]
             @endif
 
-            @if($_account->current_security)
+            @if($_account->hasPassword())
                 &nbsp;&nbsp;
                 [
-                @if($_account->current_security->security->optional)
+                @if(!$_account->mandatory_password)
                     <?= HTML::link("mship/security/replace/1", "Disable") ?> |
                 @endif
                 <?= HTML::link("mship/security/replace/0", "Modify") ?> Secondary Password
                 ]
-            @elseif(!$_account->current_security)
+            @elseif(!$_account->hasPassword())
                 &nbsp;&nbsp;
                 [<?= HTML::link("mship/security/enable", "Enable Secondary Password") ?>]
             @endif
