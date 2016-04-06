@@ -152,7 +152,7 @@ class ConsolidationV224 extends Migration
          * - empty string, to null
          */
         DB::update('UPDATE mship_account SET remember_token = NULL WHERE remember_token = ""');
-        DB::update('UPDATE mship_account_security SET expires_at = NULL WHERE expires_at = \'0000-00-00 00:00:00\'');
+        DB::update('UPDATE mship_account_security SET expires_at = NULL WHERE expires_at = \'0000-00-00 00:00:00\''); // Future migration will remove this table.
     }
 
     /**
