@@ -57,26 +57,26 @@ class VanillaTeamspeakV221 extends Migration
             $table->softDeletes();
         });
 
-        Schema::table('teamspeak_alias', function($table) {
-            $table->foreign('account_id')->references('account_id')->on('mship_account');
-        });
-
-        Schema::table('teamspeak_ban', function($table) {
-            $table->foreign('account_id')->references('account_id')->on('mship_account');
-            $table->foreign('authorised_by')->references('account_id')->on('mship_account');
-        });
-
-        Schema::table('teamspeak_confirmation', function($table) {
-            $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
-        });
-
-        Schema::table('teamspeak_log', function($table) {
-            $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
-        });
-
-        Schema::table('teamspeak_registration', function($table) {
-            $table->foreign('account_id')->references('account_id')->on('mship_account');
-        });
+//        Schema::table('teamspeak_alias', function($table) {
+//            $table->foreign('account_id')->references('account_id')->on('mship_account');
+//        });
+//
+//        Schema::table('teamspeak_ban', function($table) {
+//            $table->foreign('account_id')->references('account_id')->on('mship_account');
+//            $table->foreign('authorised_by')->references('account_id')->on('mship_account');
+//        });
+//
+//        Schema::table('teamspeak_confirmation', function($table) {
+//            $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
+//        });
+//
+//        Schema::table('teamspeak_log', function($table) {
+//            $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
+//        });
+//
+//        Schema::table('teamspeak_registration', function($table) {
+//            $table->foreign('account_id')->references('account_id')->on('mship_account');
+//        });
     }
 
     /**
