@@ -146,6 +146,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Modules\Statistics\StatisticsServiceProvider::class,
         App\Modules\Ais\AisServiceProvider::class,
+        App\Modules\Vt\VtServiceProvider::class,
         /*
          * Third party
          */
