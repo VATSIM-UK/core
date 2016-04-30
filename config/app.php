@@ -232,7 +232,7 @@ return [
         'Debugbar'             => Barryvdh\Debugbar\Facade::class,
         'Slack'                => Maknz\Slack\Facades\Slack::class,
         'IPBoard'              => Alawrence\Ipboard\Facades\Ipboard::class,
-        'Module'               => Caffeinated\Modules\Facades\Module::class,
+        'Module' => Caffeinated\Modules\Facades\Module::class,
 
         // Bootstrapper
         'Accordion'            => Bootstrapper\Facades\Accordion::class,
@@ -259,7 +259,6 @@ return [
         'Tabbable'             => Bootstrapper\Facades\Tabbable::class,
         'Table'                => Bootstrapper\Facades\Table::class,
         'Thumbnail'            => Bootstrapper\Facades\Thumbnail::class,
-
     ],
 
 ];
