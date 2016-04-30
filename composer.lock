@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4edadbedc0f3ed9473729efd9bd0f255",
-    "content-hash": "a392a5ee0499815471076af570daeadf",
+    "hash": "622fb3497fbe6dd90c35e3e4e63530d3",
+    "content-hash": "e5b95c98f8ae5f692d1b49f6fc367e57",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -207,6 +207,60 @@
             ],
             "description": "OAuth 1 PHP Library",
             "time": "2014-06-25 21:04:29"
+        },
+        {
+            "name": "caffeinated/modules",
+            "version": "v3.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caffeinated/modules.git",
+                "reference": "69c7a70845093b33bfa736f3677c5ab5fe41a82a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caffeinated/modules/zipball/69c7a70845093b33bfa736f3677c5ab5fe41a82a",
+                "reference": "69c7a70845093b33bfa736f3677c5ab5fe41a82a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "5.1.*|5.2.*",
+                "illuminate/database": "5.1.*|5.2.*",
+                "illuminate/filesystem": "5.1.*|5.2.*",
+                "illuminate/routing": "5.1.*|5.2.*",
+                "illuminate/support": "5.1.*|5.2.*",
+                "php": ">=5.5.9"
+            },
+            "suggest": {
+                "wikimedia/composer-merge-plugin": "Allows the ability to create and merge composer.json files for your individual modules for module-specific dependency management."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Caffeinated\\Modules\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shea Lewis",
+                    "email": "shea.lewis89@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 Modules",
+            "keywords": [
+                "caffeinated",
+                "laravel",
+                "modules"
+            ],
+            "time": "2016-03-18 21:21:53"
         },
         {
             "name": "classpreloader/classpreloader",
