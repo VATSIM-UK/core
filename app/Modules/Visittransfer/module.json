@@ -1,0 +1,9 @@
+{
+	"name": "Visiting & Transferring System",
+	"slug": "visittransfer",
+	"namespace": "Visittransfer",
+	"version": "1.0",
+	"author": "VATSIM United Kingdom - Web Services Team",
+	"license": "MIT",
+	"description": "Visiting & Transfer membership system."
+}
