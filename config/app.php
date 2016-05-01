@@ -144,8 +144,8 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Modules\Statistics\StatisticsServiceProvider::class,
-        App\Modules\Ais\AisServiceProvider::class,
+//        App\Modules\Statistics\StatisticsServiceProvider::class,
+//        App\Modules\Ais\AisServiceProvider::class,
 //        App\Modules\Vt\VtServiceProvider::class,
         /*
          * Third party
@@ -226,6 +226,7 @@ return [
         'SlackUserAdmin'       => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
         'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
         'SlackTeam'            => Vluzrmos\SlackApi\Facades\SlackTeam::class,
+        
 //        'Form'                 => Collective\Html\FormFacade::class,
         'HTML'                 => Collective\Html\HtmlFacade::class,
         'VatsimSSO'            => Vatsim\OAuth\Facades\SSO::class,

@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
         HTML::component("icon", "components.html.icon", ["type", "key"]);
         HTML::component("panelOpen", "components.html.panel_open", ["title", "icon" => []]);
         HTML::component("panelClose", "components.html.panel_close", []);
-
     }
 
     /**
