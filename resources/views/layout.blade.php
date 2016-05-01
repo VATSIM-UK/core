@@ -28,6 +28,35 @@
                         {!! link_to_route("default", "Home") !!}
                     </li>
                 </ul>
+
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-6">
+                                <ul>
+                                    <li class="dropdown-header">Division Membership</li>
+                                    <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Disputes</li>
+                                    <li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>
+                                    <li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>
+                                </ul>
+                            </li>
+                            <li class="col-sm-6">
+                                <ul>
+                                    <li class="dropdown-header">Third-Party</li>
+                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
+                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ul>
+
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>

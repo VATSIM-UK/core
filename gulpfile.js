@@ -15,7 +15,7 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function (mix) {
-    //mix.sass('app.scss', './public/css/app.css');
+    mix.sass('app.scss', "./resources/assets/css/app.css");
     //mix.sass('app.scss', './public/css/adm.css');
 
     /* Concatenate all CSS */
@@ -30,8 +30,9 @@ elixir(function (mix) {
         "../vendor/bootstrap3/css/bootstrap-theme.css",
         "../vendor/ionicons/ionicons.2.0.1.min.css",
         "../vendor/font-awesome/font-awesome.4.5.0.min.css",
-        "app.css",
-    ], './public/build/css/app-all.css');
+        "app.css"
+    ], './public/css/app-all.css');
+
 
     /* Concatenate all JS */
     mix.scripts([
@@ -44,13 +45,13 @@ elixir(function (mix) {
             "../vendor/bootstrap3/js/bootstrap.js",
             "cbpAnimatedHeader.js",
             "app.js",
-        ], "./public/build/js/app-all.js"
+        ], "./public/js/app-all.js"
     );
 
     /* Cache Busting */
     mix.version([
-        "public/build/css/app-all.css",
-        "public/build/js/app-all.js"
+        "css/app-all.css",
+        "js/app-all.js"
     ]);
 
     /* Move and shake our dependency files around too! */
