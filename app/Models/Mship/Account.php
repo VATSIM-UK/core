@@ -19,6 +19,7 @@ use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
+use App\Modules\Visittransfer\Models\Application;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Bus;
 use Carbon\Carbon;
@@ -194,6 +195,23 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public static function scopeWithIp($query, $ip)
     {
         return $query->where('last_login_ip', '=', ip2long($ip));
+    }
+
+    /**
+     * Fetch all related visiting/transfer applications
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function visitTransferApplications(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class, "account_id")->orderBy("submitted_at", "DESC");
+    }
+
+    public function visitingApplications(){
+        return $this->visitingApplications()->where("type", "=", Application::$TYPE_VISIT);
+    }
+
+    public function transferApplications(){
+        return $this->visitingApplications()->where("type", "=", Application::$TYPE_TRANSFER);
     }
 
     /**
