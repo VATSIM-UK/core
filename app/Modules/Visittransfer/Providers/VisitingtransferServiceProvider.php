@@ -5,10 +5,18 @@ use App;
 use Config;
 use Lang;
 use View;
-use Illuminate\Support\ServiceProvider;
+use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Policies\ApplicationPolicy;
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use App\Modules\Visittransfer\Observers\ApplicationObserver;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class VisittransferServiceProvider extends ServiceProvider
 {
+	protected $policies = [
+		Application::class => ApplicationPolicy::class,
+	];
+
 	/**
 	 * Register the Visittransfer module service provider.
 	 *
@@ -22,6 +30,12 @@ class VisittransferServiceProvider extends ServiceProvider
 		App::register('App\Modules\Visittransfer\Providers\RouteServiceProvider');
 
 		$this->registerNamespaces();
+	}
+
+	public function boot(GateContract $gate){
+		parent::registerPolicies($gate);
+
+		Application::observe(new ApplicationObserver());
 	}
 
 	/**
