@@ -99,6 +99,10 @@ class Application extends Model
         return $this->belongsTo(\App\Modules\Visittransfer\Models\Facility::class);
     }
 
+    public function referees(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Referee::class);
+    }
+
     public function skippedStages()
     {
         return $this->hasMany(StageSkip::class, 'application_id', 'id');
@@ -215,6 +219,14 @@ class Application extends Model
     public function outcomeStatus()
     {
         //
+    }
+
+    public function getTypeStringAttribute(){
+        if($this->is_visit){
+            return "Visit";
+        }
+
+        return "Transfer";
     }
 
     public function getIsVisitAttribute(){

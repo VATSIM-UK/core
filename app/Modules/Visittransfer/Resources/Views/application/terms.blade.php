@@ -1,6 +1,6 @@
-@extends('layout')
+@extends('visittransfer::application._layout')
 
-@section('content')
+@section('vt-content')
     <div class="row">
         <div class="col-md-12">
             {!! HTML::panelOpen("Terms &amp; Conditions", ["type" => "fa", "key" => "list"]) !!}
@@ -16,7 +16,7 @@
                 </div>
 
                 {!! Form::horizontal(["route" => ["visiting.application.start.post", $applicationType], "method" => "POST"]) !!}
-                    <div class="col-md-6 col-md-offset-4">
+                    <div class="col-md-8 col-md-offset-2">
                         {!! ControlGroup::generate(
                             Form::label("terms_read", "I confirm that I have read the Visiting &amp; Transferring Controller Policy&nbsp;&nbsp;"),
                             Form::checkbox("terms_read", true, false),
@@ -36,12 +36,6 @@
                         ) !!}
 
                         {!! ControlGroup::generate(
-                            Form::label("terms_not_staff", "I confirm that I am not presently staff in my home division OR that if I am staff, I will relinquish my role if successful&nbsp;&nbsp;"),
-                            Form::checkbox("terms_not_staff", true, false),
-                            Form::help("You may only hold a staff position in your home division.")
-                        ) !!}
-
-                        {!! ControlGroup::generate(
                             Form::label("terms_recent_transfer", "I confirm that I last transferred region, division or VACC in excess of 90 days prior to the start of my application&nbsp;&nbsp;"),
                             Form::checkbox("terms_recent_transfer", true, false),
                             Form::help("Applicants may only transfer regions, divisions or VACCs once every 90 days.")
@@ -52,6 +46,14 @@
                             Form::checkbox("terms_90_day", true, false),
                             Form::help("Any application not completing this induction will be transferred back to their previous region/division.")
                         ) !!}
+
+                        @if($applicationType == \App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER)
+                            {!! ControlGroup::generate(
+                                Form::label("terms_not_staff", "I confirm that I am not presently staff in my home division OR that if I am staff, I will relinquish my role if successful&nbsp;&nbsp;"),
+                                Form::checkbox("terms_not_staff", true, false),
+                                Form::help("You may only hold a staff position in your home division.")
+                            ) !!}
+                        @endif
                     </div>
 
                     <div class="col-md-6 col-md-offset-3 text-center">

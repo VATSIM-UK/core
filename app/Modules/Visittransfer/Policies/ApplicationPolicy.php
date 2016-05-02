@@ -39,18 +39,34 @@ class ApplicationPolicy {
     }
 
     public function selectFacility(Account $user, Application $application){
-        if(Gate::denies("update", $application)){
-            return false;
-        }
-
         return $application->facility_id == null;
     }
 
     public function addStatement(Account $user, Application $application){
-        if(Gate::allows("select-facility", $application)){
+        if(!$application->facility){
             return false;
         }
 
         return $application->statement == null;
+    }
+
+    public function addReferee(Account $user, Application $application){
+        if($application->statement == null){
+            return false;
+        }
+
+        return true;
+    }
+
+    public function submitApplication(Account $user, Application $application){
+        if(!$application->facility){
+            return false;
+        }
+
+        if($application->referees()->count() < $application->facility->stage_reference_quantity){
+            return false;
+        }
+
+        return true;
     }
 }

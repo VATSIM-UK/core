@@ -20,9 +20,9 @@ class StartApplicationRequest extends FormRequest
 			"terms_read" => "required",
 			"terms_hours_minimum" => "required",
 			"terms_hours_minimum_relevant" => "required",
-			"terms_not_staff" => "required",
 			"terms_recent_transfer" => "required",
 			"terms_90_day" => "required",
+			"terms_not_staff" => "required_if:application_type,".\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER,
 			"application_type" => "in:".\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER.",".\App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
 		];
 	}
@@ -37,9 +37,9 @@ class StartApplicationRequest extends FormRequest
 			"terms_read.required" => "You are required to read the VTCP.",
 			"terms_hours_minimum.required" => "You must confirm that you have the minimum number of hours at your present rating.",
 			"terms_hours_minimum_relevant.required" => "The hours you have achieved, must be at a relevant rating.",
-			"terms_not_staff.required" => "You cannot be staff in another region or division.",
 			"terms_recent_transfer.required" => "You are only permitted to visit/transfer once every 90 days.",
 			"terms_90_day.required" => "You must agree that you will be returned to your former region/division if you do not complete your induction training.",
+			"terms_not_staff.required_if" => "You cannot be staff in another region or division if your transfer is successful.",
 			"application_type.in" => "You have requested an invalid application type.",
 		];
 	}

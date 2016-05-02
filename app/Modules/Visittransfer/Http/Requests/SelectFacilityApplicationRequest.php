@@ -51,7 +51,12 @@ class SelectFacilityApplicationRequest extends FormRequest
 
 
 		$facility = Facility::find(array_get($data, "facility_id", null));
-		if(!$facility->requires_training && Auth::user()->visitTransferCurrent()->is_transfer){
+
+		if(!$facility->training_required && Auth::user()->visitTransferCurrent()->is_transfer){
+			$data['permitted'] = false;
+		}
+
+		if($facility->training_spaces < 1){
 			$data['permitted'] = false;
 		}
 

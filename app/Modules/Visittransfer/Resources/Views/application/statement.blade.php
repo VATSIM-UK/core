@@ -1,6 +1,6 @@
-@extends('layout')
+@extends('visittransfer::application._layout')
 
-@section('content')
+@section('vt-content')
     <div class="row">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
@@ -9,8 +9,8 @@
                 <div class="col-md-6 col-md-offset-3">
 
                     <p>
-                        Please justify your application to the facility ({{ $application->facility->name }}) in the space provided below.
-                        Remember to explain what your motivation is for applying to {{ $application->is_visit ? "visit" : "transfer to" }} {{ $application->facility->name }}.
+                        Please justify your application to the facility (<strong>{{ $application->facility->name }}</strong>) in the space provided below.
+                        Remember to explain what your motivation is for applying to {{ $application->is_visit ? "visit" : "transfer to" }} <strong>{{ $application->facility->name }}</strong>.
                     </p>
                 </div>
 

@@ -3,9 +3,11 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class VisitingTransferInitialSetup extends Migration {
+class VisitingTransferInitialSetup extends Migration
+{
 
-    public function up(){
+    public function up()
+    {
         //
         Schema::create('vt_application', function (Blueprint $table) {
             $table->increments('id');
@@ -26,6 +28,8 @@ class VisitingTransferInitialSetup extends Migration {
             $table->increments('id');
             $table->integer('application_id')->unsigned();
             $table->integer('account_id')->unsigned();
+            $table->string("email", 85)->nullable();
+            $table->string("relationship", 85)->nullable();
             $table->text('reference')->nullable();
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Referee::STATUS_DRAFT);
             $table->timestamp("submitted_at")->nullable();
@@ -36,8 +40,14 @@ class VisitingTransferInitialSetup extends Migration {
             $table->string('name', 30);
             $table->string("description", 500);
             $table->boolean("training_required")->default(0);
-            $table->mediumInteger('spaces')->unsigned()->default(0);
+            $table->mediumInteger('training_spaces')->unsigned()->default(0);
+            $table->boolean("stage_statement_enabled")->default(1);
+            $table->boolean("stage_reference_enabled")->default(1);
+            $table->smallInteger("stage_reference_quantity")->default(1);
+            $table->boolean("stage_checks")->default(1);
+            $table->boolean("auto_acceptance")->default(0);
         });
+        
         //--POSSIBLY NOT NEEDED BELOW HERE //
 //
 //        Schema::create('vt_stage', function (Blueprint $table) {
@@ -76,7 +86,8 @@ class VisitingTransferInitialSetup extends Migration {
 //        });
     }
 
-    public function down(){
+    public function down()
+    {
         //
         DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
 

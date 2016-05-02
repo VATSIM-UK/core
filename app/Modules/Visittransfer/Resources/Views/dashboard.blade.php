@@ -125,17 +125,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if(count($allApplications) > 0)
+                        @if(count($allApplications) < 1)
                             <tr><td colspan="6" class="text-center">You have no applications to display.</td></tr>
                         @else
                             @foreach($allApplications as $application)
                                 <tr>
                                     <td>{{ $application->id }}</td>
-                                    <td>{{ $application->type }}</td>
-                                    <td>{{ $application->facility_id }}</td>
-                                    <td class="hidden-xs hidden-sm">{{ $application->submitted_at }}</td>
+                                    <td>{{ $application->type_string }}</td>
+                                    <td>{{ $application->facility->name }}</td>
+                                    <td class="hidden-xs hidden-sm">
+                                        @if($application->submitted_at == null)
+                                            Not yet submitted
+                                        @else
+                                            {{ $application->submitted_at }}
+                                        @endif
+                                    </td>
                                     <td>
-                                        <span class="btn btn-danger btn-xs text-center">REJECTED</span>
+                                        <span class="btn btn-danger btn-xs text-center">REJECTED - HARDCODED/FILLER</span>
                                         <span class="hidden-xs hidden-sm">
                                             Your application did not meet the requirements of the VT Policy.
                                         </span>

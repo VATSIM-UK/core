@@ -1,6 +1,6 @@
-@extends('layout')
+@extends('visittransfer::application._layout')
 
-@section('content')
+@section('vt-content')
     <div class="row">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
@@ -43,14 +43,14 @@
                 <div class="row">
                     <div class="col-md-12">
 
-                        <p class="text-center">
+                        <p class="text-center" style="text-align: justify; text-justify: inter-word;">
                             {{ $facility->description }}
                         </p>
                         <p class="text-center">
                             @if($facility->training_required)
                                 <span class="label label-danger">TRAINING IS REQUIRED</span>
                                 <br/>
-                                PLACES AVAILABLE: {{ $facility->spaces }}
+                                PLACES AVAILABLE: {{ $facility->training_spaces }}
                             @else
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
@@ -58,7 +58,11 @@
                         {!! Form::open(["route" => ["visiting.application.facility.post"], "method" => "POST"]) !!}
 
                         <p class="text-center">
-                            {!! Button::primary("APPLY TO THIS FACILITY")->submit() !!}
+                            @if($facility->training_spaces > 0)
+                                {!! Button::primary("APPLY TO THIS FACILITY")->submit() !!}
+                            @else
+                                {!! Button::danger("NO PLACES AVAILABLE")->disable() !!}
+                            @endif
                         </p>
 
                         {!! Form::hidden("facility_id", $facility->id) !!}

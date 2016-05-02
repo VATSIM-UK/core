@@ -15,6 +15,7 @@ class Referee extends Model {
     protected $table = "vt_referee";
     protected $fillable = [
         "application_id", "account_id",
+        "email", "relationship",
     ];
     protected $touches = ["application"];
     public $timestamps = false;
@@ -28,7 +29,7 @@ class Referee extends Model {
 
     public function account()
     {
-        return $this->hasOne(\App\Models\Mship\Account::class);
+        return $this->belongsTo(\App\Models\Mship\Account::class);
     }
 
     public function application()

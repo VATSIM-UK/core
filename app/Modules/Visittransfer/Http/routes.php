@@ -20,9 +20,7 @@ Route::group(["as" => "visiting.", "prefix" => "visiting-transferring"], functio
 
         Route::get("/continue", [
             "as" => "continue",
-            function () {
-                return "You are at: " . route("visiting.application.continue");
-            }
+            "uses" => "Application@getContinue",
         ]);
 
         Route::get("/facility", [
@@ -47,13 +45,16 @@ Route::group(["as" => "visiting.", "prefix" => "visiting-transferring"], functio
 
         Route::get("/referees", [
             "as" => "referees",
-            function () {
-                return "You are at: " . route("visiting.application.referees");
-            }
+            "uses" => "Application@getReferees",
+        ]);
+
+        Route::post("/referees", [
+            "as" => "referees.post",
+            "uses" => "Application@postReferees",
         ]);
 
         Route::get("/submit", [
-            "as" => "referees",
+            "as" => "submit",
             function () {
                 return "You are at: " . route("visiting.application.referees");
             }
@@ -66,7 +67,7 @@ Route::group(["as" => "visiting.", "prefix" => "visiting-transferring"], functio
             }
         ]);
 
-        Route::get("/view", [
+        Route::get("/view/{application}", [
             "as" => "view",
             function () {
                 return "You are at: " . route("visiting.application.view");
