@@ -2,45 +2,101 @@
 
 namespace App\Modules\Visittransfer\Models;
 
+use App\Modules\Vt\Events\ApplicationCreated;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Modules\Ais\Models\Fir
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Aerodrome[] $airfields
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Aerodrome[]  $airfields
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Fir\Sector[] $sectors
  */
-class Application extends Model {
+class Application extends Model
+{
 
-    protected $table = "vt_application";
+    protected $table    = "vt_application";
     protected $fillable = [
-        "icao", "name",
+        "type",
+        "account_id",
+        "facility_id",
+        "statement",
+        "status",
     ];
 
-    public static $TYPE_VISIT = 10;
-    public static $TYPE_TRANSFER = 40;
+    const TYPE_VISIT    = 10;
+    const TYPE_TRANSFER = 40;
 
-    public static $STATUS_IN_PROGRESS = 10;
-    public static $STATUS_ACCEPTED = 90;
-    public static $STATUS_COMPLETE = 95;
-    public static $STATUS_LAPSED = 97;
-    public static $STATUS_CANCELLED = 99;
+    const STATUS_IN_PROGRESS  = 10; // Member hasn't yet submitted application formally.
+    const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
+    const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
+    const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
+    const STATUS_COMPLETED    = 90; // Application has been formally completed, visit/transfer complete.
+    const STATUS_LAPSED       = 97; // Application has lapsed.
+    const STATUS_CANCELLED    = 98; // Application has been cancelled
+    const STATUS_REJECTED     = 99; // Application has been rejected by staff
 
-    public static function scopeOfType($query, $type){
+    public static function scopeOfType($query, $type)
+    {
         return $query->where("type", "=", $type);
     }
 
-    public static function scopeVisit($query){
-        return $query->ofType(self::$TYPE_VISIT);
+    public static function scopeVisit($query)
+    {
+        return $query->ofType(self::TYPE_VISIT);
     }
 
-    public static function scopeTransfer($query){
-        return $query->ofType(self::$TYPE_TRANSFER);
+    public static function scopeTransfer($query)
+    {
+        return $query->ofType(self::TYPE_TRANSFER);
+    }
+
+    public static function scopeStatus($query, $status)
+    {
+        return $query->whereStatus($status);
+    }
+
+    public static function scopeNotStatus($query, $status)
+    {
+        return $query->whereNotStatus($status);
+    }
+
+    public static function scopeStatusIn($query, Array $stati)
+    {
+        return $query->whereIn("status", $stati);
+    }
+
+    public static function scopeStatusNotIn($query, Array $stati)
+    {
+        return $query->whereNotIn("status", $stati);
+    }
+
+    public static function scopeOpen($query)
+    {
+        return $query->statusIn([
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_SUBMITTED,
+            self::STATUS_UNDER_REVIEW,
+            self::STATUS_ACCEPTED
+        ]);
+    }
+
+    public static function scopeClosed($query)
+    {
+        return $query->status([
+            self::STATUS_CANCELLED,
+            self::STATUS_REJECTED,
+            self::STATUS_LAPSED,
+            self::STATUS_COMPLETED
+        ]);
     }
 
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class);
+    }
+
+    public function facility(){
+        return $this->belongsTo(\App\Modules\Visittransfer\Models\Facility::class);
     }
 
     public function skippedStages()
@@ -159,5 +215,13 @@ class Application extends Model {
     public function outcomeStatus()
     {
         //
+    }
+
+    public function getIsVisitAttribute(){
+        return $this->type == self::TYPE_VISIT;
+    }
+
+    public function getIsTransferAttribute(){
+        return $this->type == self::TYPE_TRANSFER;
     }
 }
