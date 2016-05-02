@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Vt\Models;
+namespace App\Modules\Visittransfer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,4 +14,9 @@ class Facility extends Model {
 
     protected $table = "vt_facility";
     public $timestamps = false;
+
+    public static function scopeTrainingRequired($query){
+        return $query->where("training_required", "=", 1);
+    }
+
 }

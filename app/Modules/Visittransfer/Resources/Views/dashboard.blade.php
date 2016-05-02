@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 hidden-xs">
             {!! HTML::panelOpen("Visiting", ["type" => "vuk", "key" => "letter-v"]) !!}
                     <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
@@ -24,20 +24,22 @@
 
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    @if($currentVisitApplication)
+                    @can("create", new \App\Modules\Visittransfer\Models\Application)
+                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT])) !!}
+                    @elseif($currentVisitApplication)
                         {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
                     @elseif($currentTransferApplication)
                         {!! Button::danger("You currently have a transfer application open.")->disable() !!}
                     @else
-                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", ["visit"])) !!}
-                    @endif
+                        {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                    @endcan
                 </div>
             </div>
 
             {!! HTML::panelClose() !!}
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 hidden-xs">
             {!! HTML::panelOpen("Transferring", ["type" => "vuk", "key" => "letter-t"]) !!}
                     <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
@@ -59,20 +61,22 @@
 
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    @if($currentTransferApplication)
+                    @can("create", new \App\Modules\Visittransfer\Models\Application)
+                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER])) !!}
+                    @elseif($currentTransferApplication)
                         {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
                     @elseif($currentVisitApplication)
                         {!! Button::danger("You currently have a visit application open.")->disable() !!}
                     @else
-                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", ["transfer"])) !!}
-                    @endif
+                        {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
+                        @endcan
                 </div>
             </div>
 
             {!! HTML::panelClose() !!}
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 hidden-xs">
             {!! HTML::panelOpen("References", ["type" => "vuk", "key" => "letter-r"]) !!}
 
             <div class="row">
@@ -95,8 +99,13 @@
 
             {!! HTML::panelClose() !!}
         </div>
-    </div>
 
+        <div class="col-xs-12 visible-xs">
+            {!! HTML::panelOpen("Start a new Application", ["type" => "fa", "key" => "exclamation"]) !!}
+                <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
+            {!! HTML::panelClose() !!}
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">

@@ -19,12 +19,12 @@ class Referee extends Model {
     protected $touches = ["application"];
     public $timestamps = false;
 
-    public static $STATUS_DRAFT = 10;
-    public static $STATUS_REQUESTED = 30;
-    public static $STATUS_COMPLETED = 35;
-    public static $STATUS_UNDER_REVIEW = 50;
-    public static $STATUS_ACCEPTED = 90;
-    public static $STATUS_REJECTED = 95;
+    const STATUS_DRAFT = 10;
+    const STATUS_REQUESTED = 30;
+    const STATUS_COMPLETED = 35;
+    const STATUS_UNDER_REVIEW = 50;
+    const STATUS_ACCEPTED = 90;
+    const STATUS_REJECTED = 95;
 
     public function account()
     {

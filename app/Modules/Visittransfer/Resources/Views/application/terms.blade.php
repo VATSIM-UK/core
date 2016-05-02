@@ -9,14 +9,14 @@
 
                     <p>
                         Before you can start your application, you must first read and agree to the terms and conditions of the
-                        Visiting &amp; Transferring Controller Policy (STCP).
-                        {!! link_to("https://www.vatsim.net/documents/transfer-and-visiting-controller-policy", "The STCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
+                        Visiting &amp; Transferring Controller Policy (VTCP).
+                        {!! link_to("https://www.vatsim.net/documents/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
                     </p>
 
                 </div>
 
                 {!! Form::horizontal(["route" => ["visiting.application.start.post", $applicationType], "method" => "POST"]) !!}
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-md-6 col-md-offset-4">
                         {!! ControlGroup::generate(
                             Form::label("terms_read", "I confirm that I have read the Visiting &amp; Transferring Controller Policy&nbsp;&nbsp;"),
                             Form::checkbox("terms_read", true, false),
@@ -43,22 +43,22 @@
 
                         {!! ControlGroup::generate(
                             Form::label("terms_recent_transfer", "I confirm that I last transferred region, division or VACC in excess of 90 days prior to the start of my application&nbsp;&nbsp;"),
-                            Form::checkbox("terms_not_staff", true, false),
+                            Form::checkbox("terms_recent_transfer", true, false),
                             Form::help("Applicants may only transfer regions, divisions or VACCs once every 90 days.")
                         ) !!}
 
-                        @if($applicationType == \App\Modules\Visittransfer\Models\Application::$TYPE_TRANSFER)
-                            {!! ControlGroup::generate(
-                                Form::label("terms_90_day", "I understand that I must complete my local induction plan, or attain full competency within 90 days&nbsp;&nbsp;"),
-                                Form::checkbox("terms_90_day", true, false),
-                                Form::help("Any application not completing this induction will be transferred back to their previous region/division.")
-                            ) !!}
-                        @endif
+                        {!! ControlGroup::generate(
+                            Form::label("terms_90_day", "I understand that I must complete my local induction plan (if required), or attain full competency within 90 days&nbsp;&nbsp;"),
+                            Form::checkbox("terms_90_day", true, false),
+                            Form::help("Any application not completing this induction will be transferred back to their previous region/division.")
+                        ) !!}
                     </div>
 
                     <div class="col-md-6 col-md-offset-3 text-center">
                         {!! Button::success("START APPLICATION")->submit() !!}
                     </div>
+
+                {!! Form::hidden("application_type", $applicationType) !!}
 
                 {!! Form::close() !!}
 

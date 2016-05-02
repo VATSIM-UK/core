@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Models\Mship\Account;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Request;
 use Session;
 use View;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class BaseController extends \Illuminate\Routing\Controller {
 
-    use DispatchesJobs, ValidatesRequests;
+    use DispatchesJobs, ValidatesRequests, AuthorizesRequests;
 
     protected $_account;
     protected $_pageTitle;

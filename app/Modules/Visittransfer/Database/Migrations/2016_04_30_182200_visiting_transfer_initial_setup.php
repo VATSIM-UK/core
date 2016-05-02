@@ -9,7 +9,7 @@ class VisitingTransferInitialSetup extends Migration {
         //
         Schema::create('vt_application', function (Blueprint $table) {
             $table->increments('id');
-            $table->smallInteger("type")->default(\App\Modules\Visittransfer\Models\Application::$TYPE_VISIT);
+            $table->smallInteger("type")->default(\App\Modules\Visittransfer\Models\Application::TYPE_VISIT);
             $table->integer('account_id')->unsigned();
             $table->integer('facility_id')->unsigned()->nullable();
             $table->text('statement')->nullable();
@@ -17,6 +17,7 @@ class VisitingTransferInitialSetup extends Migration {
 //            $table->integer('reason_id')->unsigned()->nullable();
 //            $table->integer('reviewed_by')->unsigned()->nullable();
 //            $table->timestamp('reapplication_date')->nullable();
+            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Application::STATUS_IN_PROGRESS);
             $table->timestamp("submitted_at")->nullable();
             $table->timestamps();
         });
@@ -26,18 +27,16 @@ class VisitingTransferInitialSetup extends Migration {
             $table->integer('application_id')->unsigned();
             $table->integer('account_id')->unsigned();
             $table->text('reference')->nullable();
-            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Referee::$STATUS_DRAFT);
+            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Referee::STATUS_DRAFT);
             $table->timestamp("submitted_at")->nullable();
         });
 
         Schema::create('vt_facility', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 15);
-            $table->boolean("is_training")->default(0);
-            $table->mediumInteger('gnd_spaces')->unsigned()->default(0);
-            $table->mediumInteger('twr_spaces')->unsigned()->default(0);
-            $table->mediumInteger('app_spaces')->unsigned()->default(0);
-            $table->mediumInteger('ctr_spaces')->unsigned()->default(0);
+            $table->string('name', 30);
+            $table->string("description", 500);
+            $table->boolean("training_required")->default(0);
+            $table->mediumInteger('spaces')->unsigned()->default(0);
         });
         //--POSSIBLY NOT NEEDED BELOW HERE //
 //

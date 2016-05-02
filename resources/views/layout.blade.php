@@ -157,6 +157,17 @@
                 </div>
             @endif
 
+            @if($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>Error!</strong> There is something wrong with your request:
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @if(Session::has('success') OR isset($success))
                 <div class="alert alert-success" role="alert">
                     <strong>Success!</strong> {!! Session::has('success') ? Session::pull("success") : $success !!}

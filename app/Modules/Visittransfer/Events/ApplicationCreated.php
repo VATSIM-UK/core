@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Vt\Events;
+namespace App\Modules\Visittransfer\Events;
 
 use App\Events\Event;
 

@@ -1,53 +1,92 @@
 <?php
 
 Route::group(["as" => "visiting.", "prefix" => "visiting-transferring"], function () {
-	Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
+    Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 
-	Route::group(["as" => "application.", "prefix" => "application"], function(){
-		Route::get("", function(){
-			return Redirect::route("visiting.landing");
-		});
+    Route::group(["as" => "application.", "prefix" => "application"], function () {
+        Route::get("", function () {
+            return Redirect::route("visiting.landing");
+        });
 
-		Route::get("/start/{type}", ["as" => "start", "uses" => "Application@getStart"]);
-		Route::post("/start/{type}", ["as" => "start.post", "uses" => "Application@postStart"]);
+        Route::get("/start/{type}", [
+            "as"   => "start",
+            "uses" => "Application@getStart"
+        ])->where("type", "\d+");
 
-		Route::get("/continue", ["as" => "continue", function(){
-			return "You are at: " . route("visiting.application.continue");
-		}]);
+        Route::post("/start/{type}", [
+            "as"   => "start.post",
+            "uses" => "Application@postStart"
+        ])->where("type", "\d+");
 
-		Route::get("/facility", ["as" => "facility", function(){
-			return "You are at: " . route("visiting.application.facility");
-		}]);
+        Route::get("/continue", [
+            "as" => "continue",
+            function () {
+                return "You are at: " . route("visiting.application.continue");
+            }
+        ]);
 
+        Route::get("/facility", [
+            "as" => "facility",
+            "uses" => "Application@getFacility",
+        ]);
 
-		Route::get("/statement", ["as" => "statement", function(){
-			return "You are at: " . route("visiting.application.statement");
-		}]);
+        Route::post("/facility", [
+            "as" => "facility.post",
+            "uses" => "Application@postFacility",
+        ]);
 
-		Route::get("/referees", ["as" => "referees", function(){
-			return "You are at: " . route("visiting.application.referees");
-		}]);
+        Route::get("/statement", [
+            "as" => "statement",
+            "uses" => "Application@getStatement",
+        ]);
 
-		Route::get("/submit", ["as" => "referees", function(){
-			return "You are at: " . route("visiting.application.referees");
-		}]);
+        Route::post("/statement", [
+            "as" => "statement.post",
+            "uses" => "Application@postStatement",
+        ]);
 
-		Route::get("/history", ["as" => "history", function(){
-			return "You are at: " . route("visiting.application.history");
-		}]);
+        Route::get("/referees", [
+            "as" => "referees",
+            function () {
+                return "You are at: " . route("visiting.application.referees");
+            }
+        ]);
 
-		Route::get("/view", ["as" => "view", function(){
-			return "You are at: " . route("visiting.application.view");
-		}]);
-	});
+        Route::get("/submit", [
+            "as" => "referees",
+            function () {
+                return "You are at: " . route("visiting.application.referees");
+            }
+        ]);
 
-	Route::group(["as" => "reference.", "prefix" => "reference"], function(){
-		Route::get("/", ["as" => "landing", function(){
-			return "You are at: " . route("visiting.reference.landing");
-		}]);
+        Route::get("/history", [
+            "as" => "history",
+            function () {
+                return "You are at: " . route("visiting.application.history");
+            }
+        ]);
 
-		Route::get("/complete", ["as" => "complete", function(){
-			return "You are at: " . route("visiting.reference.complete");
-		}]);
-	});
+        Route::get("/view", [
+            "as" => "view",
+            function () {
+                return "You are at: " . route("visiting.application.view");
+            }
+        ]);
+    });
+
+    Route::group(["as" => "reference.", "prefix" => "reference"], function () {
+        Route::get("/", [
+            "as" => "landing",
+            function () {
+                return "You are at: " . route("visiting.reference.landing");
+            }
+        ]);
+
+        Route::get("/complete", [
+            "as" => "complete",
+            function () {
+                return "You are at: " . route("visiting.reference.complete");
+            }
+        ]);
+    });
 });
