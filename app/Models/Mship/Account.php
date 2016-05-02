@@ -206,12 +206,16 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class, "account_id")->orderBy("submitted_at", "DESC");
     }
 
-    public function visitingApplications(){
-        return $this->visitingApplications()->where("type", "=", Application::$TYPE_VISIT);
+    public function visitApplications(){
+        return $this->visitTransferApplications()->where("type", "=", Application::$TYPE_VISIT);
     }
 
     public function transferApplications(){
-        return $this->visitingApplications()->where("type", "=", Application::$TYPE_TRANSFER);
+        return $this->visitTransferApplications()->where("type", "=", Application::$TYPE_TRANSFER);
+    }
+
+    public function visitTransferCurrent(){
+        return $this->visitTransferApplications()->latest()->first();
     }
 
     /**
