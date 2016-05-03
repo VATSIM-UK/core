@@ -1,6 +1,10 @@
 <?php
 
-Route::group(["as" => "visiting.", "prefix" => "visiting-transferring"], function () {
+Route::get("/visiting-transferring", function(){
+    return Redirect::route("visiting.landing");
+});
+
+Route::group(["as" => "visiting.", "domain" => "vt.".config("app.url"), 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
     Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 
     Route::group(["as" => "application.", "prefix" => "application"], function () {
