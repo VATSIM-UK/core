@@ -423,21 +423,21 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getQualificationsAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'atc';
+            return $qual->type == 'atc';
         });
     }
 
     public function getQualificationsAtcTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'training_atc';
+            return $qual->type == 'training_atc';
         });
     }
 
     public function getQualificationsPilotAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'pilot';
+            return $qual->type == 'pilot';
         });
     }
 
@@ -445,7 +445,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->qualification->code . ', ';
+            $output .= $p->code . ', ';
         }
         if ($output == '') {
             $output = 'None';
@@ -457,14 +457,14 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getQualificationsPilotTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'training_pilot';
+            return $qual->type == 'training_pilot';
         });
     }
 
     public function getQualificationsAdminAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'admin';
+            return $qual->type == 'admin';
         });
     }
 
