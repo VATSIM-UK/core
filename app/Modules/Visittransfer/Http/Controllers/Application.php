@@ -44,6 +44,10 @@ class Application extends BaseController
         if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent())){
             return Redirect::route("visiting.application.statement");
         }
+
+        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent())){
+            return Redirect::route("visiting.application.referees");
+        }
     }
 
     public function getFacility()
