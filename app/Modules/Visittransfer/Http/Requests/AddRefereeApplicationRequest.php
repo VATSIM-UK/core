@@ -18,10 +18,9 @@ class AddRefereeApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            "referee_cid"      => "required|numeric|min:800000|max:2000000|unique:vt_referee,account_id,NULL,id,application_id," . Auth::user()
-                                                                                                                                       ->visitTransferCurrent()->id,
+            "referee_cid"      => "required|numeric|min:800000|max:2000000",
             "referee_email"    => "required|email",
-            "referee_position" => "required|string",
+            "referee_relationship" => "required|string",
         ];
     }
 
@@ -39,8 +38,8 @@ class AddRefereeApplicationRequest extends FormRequest
             "referee_cid.unique"        => "You have already added this referee.",
             "referee_email.required"    => "You must provide your referee's staff email address.",
             "referee_email.email"       => "This is not a valid email address.",
-            "referee_position.required" => "You must provide your referee's staff position.",
-            "referee_position.string"   => "You have provided an invalid staff title.",
+            "referee_relationship.required" => "You must provide your referee's staff position.",
+            "referee_relationship.string"   => "You have provided an invalid staff title.",
         ];
     }
 

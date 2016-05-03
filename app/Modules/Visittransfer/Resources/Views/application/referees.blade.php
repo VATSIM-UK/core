@@ -10,47 +10,58 @@
 
                     <p>
                         Your application <strong>must be supported</strong> by a <strong>minimum</strong> of
-                        {{ $application->stage_references_quantity }} referees.
+                        {{ $application->number_references_required }} referee(s).
+
+                        @if($application->number_references_required_relative)
+                            You still need to add <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).
+                        @else
+                            You cannot add any more referees.
+                        @endif
                     </p>
                     <p>
                         Your referees <strong>must</strong> be staff members in your home division, and <strong>one
-                            must</strong>
-                        be your Training Manager/Director.
+                            must</strong> be your Training Manager/Director.
                     </p>
                     <p><br /></p>
                 </div>
 
                 <div class="col-md-6">
                     <div class="row">
-                        {!! Form::open(["route" => ["visiting.application.referees.post"], "method" => "POST"]) !!}
+                        @if($application->number_references_required_relative > 0)
+                            {!! Form::open(["route" => ["visiting.application.referees.post"], "method" => "POST"]) !!}
 
-                        <div class="col-md-6">
-                            {!! ControlGroup::generate(
-                                Form::label("referee_cid","Referee CID"),
-                                Form::text("referee_cid"),
-                                Form::help("Please ensure this is correct.")
-                            ) !!}
+                            <div class="col-md-6">
+                                {!! ControlGroup::generate(
+                                    Form::label("referee_cid","Referee CID"),
+                                    Form::text("referee_cid"),
+                                    Form::help("Please ensure this is correct.")
+                                ) !!}
 
-                            {!! ControlGroup::generate(
-                                Form::label("referee_position","Staff Position"),
-                                Form::text("referee_position")
-                            ) !!}
+                                {!! ControlGroup::generate(
+                                    Form::label("referee_relationship","Staff Position"),
+                                    Form::text("referee_relationship")
+                                ) !!}
 
-                        </div>
-
-                        <div class="col-md-6">
-                            {!! ControlGroup::generate(
-                                Form::label("referee_email", "Email Address"),
-                                Form::text("referee_email"),
-                                Form::help("Thiss hould be the member's staff email address.")
-                            ) !!}
-
-                            <div class="text-center" style="padding-top: 27px;">
-                                {!! Button::primary("ADD REFEREE")->submit() !!}
                             </div>
-                        </div>
 
-                        {!! Form::close() !!}
+                            <div class="col-md-6">
+                                {!! ControlGroup::generate(
+                                    Form::label("referee_email", "Email Address"),
+                                    Form::text("referee_email"),
+                                    Form::help("This should be the member's staff email address.")
+                                ) !!}
+
+                                <div class="text-center" style="padding-top: 27px;">
+                                    {!! Button::primary("ADD REFEREE")->submit() !!}
+                                </div>
+                            </div>
+
+                            {!! Form::close() !!}
+                        @else
+                            <div class="col-md-12 text-center">
+                                <p>You cannot add any additional referees at this time.</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

@@ -59,22 +59,23 @@ Route::group(["as" => "visiting.", "domain" => "vt.".config("app.url"), 'middlew
 
         Route::get("/submit", [
             "as" => "submit",
-            function () {
-                return "You are at: " . route("visiting.application.referees");
-            }
+            "uses" => "Application@getSubmit",
+        ]);
+
+        Route::post("/submit", [
+            "as" => "submit.post",
+            "uses" => "Application@postSubmit",
+        ]);
+
+        Route::get("/view/{application}", [
+            "as" => "view",
+            "uses" => "Application@getView"
         ]);
 
         Route::get("/history", [
             "as" => "history",
             function () {
                 return "You are at: " . route("visiting.application.history");
-            }
-        ]);
-
-        Route::get("/view/{application}", [
-            "as" => "view",
-            function () {
-                return "You are at: " . route("visiting.application.view");
             }
         ]);
     });

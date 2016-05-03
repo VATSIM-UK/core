@@ -19,4 +19,20 @@ class Facility extends Model {
         return $query->where("training_required", "=", 1);
     }
 
+    public function applications(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class);
+    }
+
+    public function removeTrainingSpace(){
+        $this->guardAgainstRemovingSpacesFromNonTrainingFacility();
+
+        $this->decrement("training_spaces");
+    }
+
+    private function guardAgainstRemovingSpacesFromNonTrainingFacility(){
+        if($this->training_required == 0){
+            // NO IDEA WHAT WE'RE DOING HERE YET.
+        }
+    }
+
 }

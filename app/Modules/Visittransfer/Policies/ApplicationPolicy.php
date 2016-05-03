@@ -55,6 +55,10 @@ class ApplicationPolicy {
             return false;
         }
 
+        if($application->number_references_required_relative == 0){
+            return false;
+        }
+
         return true;
     }
 
@@ -63,7 +67,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if($application->referees()->count() < $application->facility->stage_reference_quantity){
+        if($application->number_references_required_relative > 0){
             return false;
         }
 

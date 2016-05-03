@@ -27,7 +27,11 @@
                     @can("create", new \App\Modules\Visittransfer\Models\Application)
                         {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT])) !!}
                     @elseif($currentVisitApplication)
-                        {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                        @if($currentVisitApplication->is_in_progress)
+                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                        @else
+                            {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                        @endif
                     @elseif($currentTransferApplication)
                         {!! Button::danger("You currently have a transfer application open.")->disable() !!}
                     @else
@@ -121,7 +125,7 @@
                             <th width="25%">Facility</th>
                             <th width="10%" class="hidden-xs hidden-sm">Submitted</th>
                             <th>Outcome</th>
-                            <th class="text-center">View</th>
+                            <th class="text-center">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -141,12 +145,31 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="btn btn-danger btn-xs text-center">REJECTED - HARDCODED/FILLER</span>
-                                        <span class="hidden-xs hidden-sm">
-                                            Your application did not meet the requirements of the VT Policy.
-                                        </span>
+                                        @if($application->is_open)
+                                            <span class="btn btn-success btn-xs text-center">{{ $application->status_string }}</span>
+                                            <span class="hidden-xs hidden-sm">
+                                                Some text.
+                                            </span>
+                                        @elseif($application->requires_action)
+                                            <span class="btn btn-warning btn-xs text-center">{{ $application->status_string }}</span>
+                                            <span class="hidden-xs hidden-sm">
+                                                Some text.
+                                            </span>
+                                        @else
+                                            <span class="btn btn-danger btn-xs text-center">{{ $application->status_string }}</span>
+                                            <span class="hidden-xs hidden-sm">
+                                                Some text.
+                                            </span>
+                                        @endif
+
                                     </td>
-                                    <td class="text-center">{!! link_to_route("visiting.application.view", "View", [$application->id]) !!}</td>
+                                    <td class="text-center">
+                                        @if($application->is_in_progress)
+                                            {!! link_to_route("visiting.application.continue", "Continue") !!}
+                                        @else
+                                            {!! link_to_route("visiting.application.view", "View", [$application->id]) !!}
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
