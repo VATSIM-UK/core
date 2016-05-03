@@ -135,7 +135,7 @@ return [
     |
     */
 
-    'domain' => null,
+    'domain' => ".".config("app.url"), // Must include the dot to allow multi-tenancy across subdomains.
 
     /*
     |--------------------------------------------------------------------------

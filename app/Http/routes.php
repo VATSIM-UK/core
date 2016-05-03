@@ -22,7 +22,7 @@ Route::group(['domain' => 'vats.im'], function () {
 });
 
 /*** WEBHOOKS ***/
-Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
+Route::group(['domain' => config("app.url"), 'prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
     Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
     Route::post('dropbox', ['as' => 'webhook.dropbox.post', 'uses' => 'Dropbox@postDropbox']);
     Route::any('slack', ['as' => 'webhook.slack', 'uses' => 'Slack@anyRouter']);
@@ -33,7 +33,7 @@ Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
 });
 
 /* * ** ADM *** */
-Route::group(array('namespace' => 'Adm'), function () {
+Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), function () {
     Route::group(array('prefix' => 'adm'), function () {
 
         // Login is the only unauthenticated page.
@@ -111,7 +111,7 @@ Route::group(array('namespace' => 'Adm'), function () {
     });
 });
 
-Route::group([], function () {
+Route::group(["domain" => config("app.url")], function () {
     Route::get('/error/{code?}', ['as' => 'error', 'uses' => 'Error@getDisplay']);
 
     Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
@@ -200,6 +200,6 @@ Route::group([], function () {
     });
 });
 
-Route::get('/', ['as' => 'default', function () {
+Route::get('/', ["domain" => config("app.url"), 'as' => 'default', function () {
     return Redirect::route('mship.manage.landing');
 }]);
