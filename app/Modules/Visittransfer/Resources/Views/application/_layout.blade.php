@@ -70,7 +70,7 @@
                         @endif
 
                         <li role="presentation" {!! (Route::is("visiting.application.view") ? "class='active'" : "") !!}>
-                            {{ link_to_route("visiting.application.view", "View Full Application", [], ["class" => (Route::is("visiting.application.referees") ? "active" : "")]) }}
+                            {{ link_to_route("visiting.application.view", "View Full Application", [$application->id], ["class" => (Route::is("visiting.application.referees") ? "active" : "")]) }}
                         </li>
                     </ul>
                     {!! HTML::panelClose() !!}
