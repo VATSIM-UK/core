@@ -4,7 +4,19 @@ Route::get("/visiting-transferring", function(){
     return Redirect::route("visiting.landing");
 });
 
-Route::group(["as" => "visiting.", "domain" => "vt.".config("app.url"), 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "namespace" => "Admin", "domain" => config("app.url"), "middleware" => ["auth.admin"]], function(){
+    Route::get("/", [
+        "as" => "dashboard",
+        "uses" => "Dashboard@getDashboard",
+    ]);
+
+    Route::get("/application", [
+        "as" => "application.list",
+        "uses" => "Application@getList",
+    ]);
+});
+
+Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".config("app.url"), 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
     Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 
     Route::group(["as" => "application.", "prefix" => "application"], function () {
