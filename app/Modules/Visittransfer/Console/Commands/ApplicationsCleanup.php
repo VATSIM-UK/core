@@ -2,12 +2,13 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
+use App\Console\Commands\aCommand;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
 
-class CleanupApplications extends aCommand
+class ApplicationsCleanup extends aCommand
 {
     /**
      * The console command signature.

@@ -30,6 +30,8 @@ class VisittransferServiceProvider extends ServiceProvider
 		App::register('App\Modules\Visittransfer\Providers\RouteServiceProvider');
 
 		$this->registerNamespaces();
+		$this->registerComposers();
+		$this->registerCommands();
 	}
 
 	public function boot(GateContract $gate){
@@ -49,5 +51,29 @@ class VisittransferServiceProvider extends ServiceProvider
 
 		View::addNamespace('visittransfer', base_path('resources/views/vendor/visittransfer'));
 		View::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Views'));
+	}
+
+	/**
+	 * Register the Visittransfer module composers.
+	 *
+	 * @return void
+	 */
+	protected function registerComposers(){
+		//View::composer("visittransfer::admin.partials");
+	}
+
+	protected function registerCommands(){
+		// Commands.statistics.daily
+		$this->app->singleton("visittransfer::commands.statistics.daily", function($app){
+			return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
+		});
+		$this->commands("visittransfer::commands.statistics.daily");
+
+
+		// commands.applications.cleanup
+		$this->app->singleton("visittransfer::commands.applications.cleanup", function($app){
+			return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
+		});
+		$this->commands("visittransfer::commands.applications.cleanup");
 	}
 }
