@@ -21,6 +21,20 @@ use App\Models\Mship\Permission as PermissionData;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
+ * @property boolean $password_mandatory
+ * @property integer $password_lifetime
+ * @property-read mixed $is_default
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereRoleId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasPasswordLifetime()
+ * @mixin \Eloquent
  */
 class Role extends \App\Models\aModel
 {

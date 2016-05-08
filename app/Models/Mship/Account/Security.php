@@ -24,6 +24,15 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Security $security
  * @property-read mixed $is_active
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereAccountSecurityId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereSecurityId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereValue($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Security whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Security extends Model
 {

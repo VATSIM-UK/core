@@ -31,6 +31,17 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereTokenId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUsedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Token extends \App\Models\aModel {
 

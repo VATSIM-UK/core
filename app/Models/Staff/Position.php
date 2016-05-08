@@ -15,6 +15,13 @@
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position departments()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position positions()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Position extends \App\Models\aModel
 {

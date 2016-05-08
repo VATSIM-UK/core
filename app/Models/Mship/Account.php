@@ -112,6 +112,42 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[]         $secondaryEmails
  * @property-read mixed                                                                              $verified_secondary_emails
  * @property string                                                                                  $email
+ * @property integer $id
+ * @property string $nickname
+ * @property string $password
+ * @property \Carbon\Carbon $password_set_at
+ * @property \Carbon\Carbon $password_expires_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Referee[] $visitTransferReferee
+ * @property-read mixed $password_lifetime
+ * @property-read mixed $mandatory_password
+ * @property-read mixed $real_name
+ * @property-read mixed $full_name
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNameFirst($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNameLast($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNickname($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePassword($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSessionId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLogin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLoginIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereGender($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereExperience($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereAge($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereIsInvisible($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDebug($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereJoinedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCertCheckedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract
 {

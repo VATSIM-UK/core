@@ -20,6 +20,12 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read general()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read user()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read since($sinceTimestamp)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationReadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Read extends \App\Models\aModel {
 

@@ -24,6 +24,15 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification general()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification user()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification since($sinceTimestamp)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereNotificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereEffectiveAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Notification extends \App\Models\aModel {
 

@@ -42,6 +42,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isHistoric()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountBanId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Ban extends \App\Models\aModel
 {

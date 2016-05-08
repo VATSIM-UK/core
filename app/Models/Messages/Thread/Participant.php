@@ -20,6 +20,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadParticipantId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Participant extends \App\Models\aModel
 {

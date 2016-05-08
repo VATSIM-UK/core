@@ -22,6 +22,16 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
  * @property-read mixed $timeline_entries_recent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUsername($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereApiKeyPublic($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereApiKeyPrivate($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereSalt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Account extends \App\Models\aModel {
 

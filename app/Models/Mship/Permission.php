@@ -18,6 +18,13 @@ use App\Models\Mship\Role as RoleData;
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission wherePermissionId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereDisplayName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Permission extends \App\Models\aModel {
     use SoftDeletingTrait, RecordsActivity;

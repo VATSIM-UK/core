@@ -19,6 +19,12 @@ namespace App\Models\Teamspeak;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationImportantPoke()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgePoke()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgeKick()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereRegistrationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Log extends \App\Models\aModel {
 

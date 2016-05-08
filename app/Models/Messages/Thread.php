@@ -15,6 +15,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon                                                                   $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|Account[]                          $participants
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $posts
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereSubject($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereReadOnly($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Thread extends \App\Models\aModel
 {

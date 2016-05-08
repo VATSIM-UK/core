@@ -22,6 +22,18 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $deleted_at
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereQualificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameSmall($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameLong($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameGrp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereVatsim($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Qualification extends \Eloquent
 {

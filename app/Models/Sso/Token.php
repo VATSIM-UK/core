@@ -25,6 +25,16 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read mixed $timeline_entries_recent
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token tokenValue($tokenValue)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereSsoTokenId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereReturnUrl($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Token extends \App\Models\aModel {
 

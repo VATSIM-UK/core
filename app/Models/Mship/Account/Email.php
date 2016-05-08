@@ -26,6 +26,13 @@ use Validator;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
  * @property integer $id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Email extends \Eloquent
 {

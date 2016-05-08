@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon                          $created_at
  * @property \Carbon\Carbon                          $updated_at
  * @property-read \App\Models\Teamspeak\Registration $registration
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Confirmation whereRegistrationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Confirmation wherePrivilegeKey($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Confirmation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Confirmation whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Confirmation extends \App\Models\aModel
 {

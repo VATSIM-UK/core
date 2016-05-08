@@ -37,6 +37,19 @@ use Carbon\Carbon;
  *                $last_notification_must_acknowledge_poke
  * @property-read mixed
  *                $last_notification_must_acknowledge_kick
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereRegistrationIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastLogin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastOs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereUid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereDbid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Registration extends \App\Models\aModel
 {

@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $author
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadPostId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Post extends \App\Models\aModel
 {

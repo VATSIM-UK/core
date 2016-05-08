@@ -25,6 +25,17 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereNoteTypeId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereColourCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Type extends \Eloquent
 {

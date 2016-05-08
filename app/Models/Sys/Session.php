@@ -9,6 +9,10 @@ namespace App\Models\Sys;
  * @property string $payload
  * @property integer $last_activity
  * @property-read \App\Models\Mship\Account $account
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session wherePayload($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereLastActivity($value)
+ * @mixin \Eloquent
  */
 class Session extends \App\Models\aModel {
         protected $table = "sys_sessions";

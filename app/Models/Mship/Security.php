@@ -22,6 +22,19 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Security[] $accountSecurity
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereSecurityId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereAlpha($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereNumeric($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereSymbols($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereLength($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereExpiry($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereOptional($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Security extends \Eloquent {
 

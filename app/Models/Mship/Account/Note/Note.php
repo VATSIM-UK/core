@@ -23,6 +23,17 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Mship\Account\Note\Flag $flag
  * @property-read \App\Models\Mship\Account\Note\Format $format
  * @property-write mixed $data
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAccountNoteId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereNoteTypeId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereWriterId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Note extends \Eloquent {
     use SoftDeletingTrait, RecordsActivity;

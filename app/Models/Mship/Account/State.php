@@ -16,6 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read mixed $label
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereAccountStateId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereState($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class State extends \Eloquent
 {
