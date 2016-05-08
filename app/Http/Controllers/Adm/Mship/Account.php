@@ -52,6 +52,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                                    ->with("qualifications")
                                    ->with("qualifications.qualification")
                                    ->with("states")
+                                   ->with("bans")
                                    ->with("secondaryEmails");
 
         switch ($scope) {
@@ -71,10 +72,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     \App\Models\Mship\Account\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
-                                                               ->with("account.qualifications.qualification")
                                                                ->with("account.states")
-                                                               ->with("account.secondaryEmails")
-                                                               ->orderBy("id", "ASC");
+                                                               ->with("account.bans")
+                                                               ->with("account.secondaryEmails");
                 break;
             case "division":
             default:
@@ -82,10 +82,9 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     \App\Models\Mship\Account\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
-                                                               ->with("account.qualifications.qualification")
                                                                ->with("account.states")
-                                                               ->with("account.secondaryEmails")
-                                                               ->orderBy("id", "ASC");
+                                                               ->with("account.bans")
+                                                               ->with("account.secondaryEmails");
                 break;
         }
 

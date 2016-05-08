@@ -347,7 +347,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function states()
     {
-        return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id')
+        return $this->hasMany(\App\Models\Mship\Account\State::class)
                     ->orderBy('created_at', 'DESC');
     }
 
@@ -416,7 +416,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getQualificationAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'atc';
+            return $qual->type == 'atc';
         })->first();
     }
 
@@ -921,28 +921,36 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function getIsSystemBannedAttribute()
     {
-        $bans = $this->bans()->isActive()->isLocal();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_local;
+        });
 
         return ($bans->count() > 0);
     }
 
     public function getSystemBanAttribute()
     {
-        $bans = $this->bans()->isActive()->isLocal();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_local;
+        });
 
         return $bans->first();
     }
 
     public function getIsNetworkBannedAttribute()
     {
-        $bans = $this->bans()->isActive()->isNetwork();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_network;
+        });
 
         return ($bans->count() > 0);
     }
 
     public function getNetworkBanAttribute()
     {
-        $bans = $this->bans()->isActive()->isNetwork();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_network;
+        });
 
         return $bans->first();
     }

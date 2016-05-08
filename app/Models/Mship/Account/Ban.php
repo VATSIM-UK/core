@@ -130,7 +130,7 @@ class Ban extends \App\Models\aModel
     public function getIsActiveAttribute()
     {
         $period_start = $this->period_start;
-        $period_finish = $this->period_finish;
+        $period_finish = ($this->period_finish == null) ? \Carbon\Carbon::now()->addMinute() : $this->period_finish;
         $now = \Carbon\Carbon::now();
 
         return ($now->between($period_start, $period_finish) && !$this->is_repealed);
