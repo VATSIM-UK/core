@@ -10,10 +10,15 @@ Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "name
         "uses" => "Dashboard@getDashboard",
     ]);
 
-    Route::get("/application", [
+    Route::get("/application/{scope?}", [
         "as" => "application.list",
         "uses" => "Application@getList",
-    ]);
+    ])->where("scope", "\w+");
+
+    Route::get("/application/{application}", [
+        "as" => "application.view",
+        "uses" => "Application@getView",
+    ])->where("application", "\d+");
 });
 
 Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".config("app.url"), 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {

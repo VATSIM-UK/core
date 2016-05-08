@@ -28,15 +28,15 @@
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> All Applications</a>
+                    <a href="{{ URL::route("visiting.admin.application.list") }}"><i class="fa fa-bars"></i> All Applications</a>
                 </li>
 
-                <li {{ (\Request::is('adm/visit-transfer/application/lists?state=open') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> Open Applications</a>
+                <li {{ (\Request::is('adm/visit-transfer/application/lists/open') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}"><i class="fa fa-bars"></i> Open Applications</a>
                 </li>
 
-                <li {{ (\Request::is('adm/visit-transfer/application/lists?state=closed') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> Closed Applications</a>
+                <li {{ (\Request::is('adm/visit-transfer/application/lists/closed') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}"><i class="fa fa-bars"></i> Closed Applications</a>
                 </li>
 
             </ul>
@@ -50,7 +50,7 @@
             </a>
 
             <ul class="treeview-menu">
-                
+
                 <li {{ (\Request::is('adm/visit-transfer/reference/all') ? ' class="active"' : '') }}>
                     <a href="#"><i class="fa fa-bars"></i> All References</a>
                 </li>
