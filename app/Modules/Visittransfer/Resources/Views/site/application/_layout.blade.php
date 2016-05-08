@@ -16,7 +16,6 @@
                             {{ link_to_route("visiting.landing", "Dashboard") }}
                         </li>
 
-
                         @if($application)
                             <li role="presentation" class="disabled">
                                 {{ link_to("#", "Stage 1 - T&amp;C Acceptance", [(isset($applicationType) ? $applicationType : $application->type)]) }}
