@@ -60,6 +60,10 @@ class Application extends BaseController
             return Redirect::route("visiting.application.submit");
         }
 
+        if(Auth::user()->visitTransferCurrent() != null){
+            return Redirect::route("visiting.application.view", [Auth::user()->visitTransferCurrent()->id]);
+        }
+
         return Redirect::route("visiting.dashboard");
     }
 
@@ -104,7 +108,7 @@ class Application extends BaseController
     }
 
     public function getReferees(){
-        $this->authorize("add-referees", $this->application);
+        $this->authorize("add-referee", $this->application);
 
         $this->application->load("referees.account");
 
@@ -125,11 +129,11 @@ class Application extends BaseController
 
         $redirectRoute = "visiting.application.referees";
 
-        if($this->application->number_references_required_relative == 0){
+        if($this->application->fresh()->number_references_required_relative == 0){
             $redirectRoute = "visiting.application.submit";
         }
 
-        return Redirect::route($redirectRoute)->withSuccess("Referee added successfully! They will not be contacted until you submit your application.");
+        return Redirect::route($redirectRoute)->withSuccess("Referee ". Input::get("referee_cid") . " added successfully! They will not be contacted until you submit your application.");
     }
 
     public function getSubmit(){

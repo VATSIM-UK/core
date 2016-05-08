@@ -81,24 +81,21 @@
         </div>
 
         <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("References", ["type" => "vuk", "key" => "letter-r"]) !!}
+            {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
 
             <div class="row">
-                {!! Form::horizontal(["route" => "visiting.reference.complete", "method" => "POST"]) !!}
                 <div class="col-md-10 col-md-offset-1">
-                    {!! ControlGroup::generate(
-                        Form::label("reference_token", "Reference Token"),
-                        Form::text("reference_token", Input::old("reference_token"), ["placeholder" => "VTREF-T4R7YN-H4GG15"]),
-                        Form::help("You will find the token in the email you were sent.")
-                    ) !!}
-
-                    {!! ControlGroup::withContents(
-                        Form::submit("COMPLETE REFERENCE", ["class" => "btn-info"])
-                    )->withAttributes(["class" => "text-center"]) !!}
-
+                    <p>
+                        In order to start training towards your pilot ratings in VATSIM UK you <strong>must</strong>
+                        be a visiting member.  You must submit a <strong>visiting application</strong> using this system.
+                    </p>
+                    <br />
+                    <p>
+                        If you are also planning on applying to control within the United Kingdom it is
+                        <strong>highly recommended</strong> that you complete your visiting
+                        application as a pilot first.
+                    </p>
                 </div>
-                {!! Form::close() !!}
-
             </div>
 
             {!! HTML::panelClose() !!}
@@ -113,7 +110,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Previous Applications", ["type" => "fa", "key" => "list-alt"]) !!}
+            {!! HTML::panelOpen("Application History", ["type" => "fa", "key" => "list-alt"]) !!}
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
@@ -141,7 +138,8 @@
                                         @if($application->submitted_at == null)
                                             Not yet submitted
                                         @else
-                                            {{ $application->submitted_at }}
+                                            <span class="hidden-xs">{{ $application->submitted_at }}</span>
+                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}</span>
                                         @endif
                                     </td>
                                     <td>

@@ -71,6 +71,10 @@ class ApplicationPolicy {
             return false;
         }
 
+        if(!$application->is_in_progress){
+            return false;
+        }
+
         return true;
     }
 }

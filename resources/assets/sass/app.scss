@@ -8,6 +8,13 @@ root {
   padding: 0px;
 }
 
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}
+
 body, html {
   margin: 0 auto;
   font-size: 14px;

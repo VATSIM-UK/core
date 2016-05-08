@@ -5,7 +5,7 @@
         <div class="col-md-12">
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 hidden-xs">
                     @if(isset($application))
                         {!! HTML::panelOpen($application->type_string. " Application #".$application->id.($application->facility ? " - ".$application->facility->name : ""), ["type" => "fa", "key" => "list"]) !!}
                     @else
@@ -75,8 +75,13 @@
                     </ul>
                     {!! HTML::panelClose() !!}
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-9 hidden-xs">
                     @yield("vt-content")
+                </div>
+                <div class="col-cs-12 visible-xs">
+                    <p>
+                        You are unable to complete your visiting or transferring applications on a mobile device.
+                    </p>
                 </div>
             </div>
         </div>

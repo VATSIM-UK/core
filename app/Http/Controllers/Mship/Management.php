@@ -33,7 +33,8 @@ class Management extends \App\Http\Controllers\BaseController
         $this->_account->load(
             "secondaryEmails",
             "qualifications",
-            "states", "teamspeakRegistrations"
+            "states",
+            "teamspeakRegistrations"
         );
 
         return $this->viewMake("mship.management.dashboard");
