@@ -23,7 +23,7 @@
                     Email &#8594;<br />
                     System &#8595;
                 </th>
-                <th>PRIMARY<br />{{ $userPrimaryEmail->email }}</th>
+                <th>PRIMARY<br />{{ $userPrimaryEmail }}</th>
                 @foreach($userSecondaryVerified as $email)
                     <th>SECONDARY<br />{{ $email->email }}</th>
                 @endforeach
@@ -34,7 +34,7 @@
                 <tr>
                     <th>{{ $um['sso_system']->name }}</th>
                     <td>
-                        @if($um['assigned_email_id'] == $userPrimaryEmail->id)
+                        @if($um['assigned_email_id'] == $userPrimaryEmail)
                             <em>Default</em>
                         @else
                             <div class="radio">
@@ -49,7 +49,7 @@
                         <td>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="assign_{{ $um['sso_system']->sso_account_id }}" value="{{ $email->account_email_id }}" {{ $email->account_email_id == $um['assigned_email_id'] ? "checked='checked'" : "" }}>
+                                    <input type="radio" name="assign_{{ $um['sso_system']->sso_account_id }}" value="{{ $email->id }}" {{ $email->id == $um['assigned_email_id'] ? "checked='checked'" : "" }}>
                                     Assign
                                 </label>
                             </div>
@@ -71,3 +71,4 @@
     {!! Form::close() !!}
 
 @stop
+--}}

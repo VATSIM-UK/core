@@ -101,9 +101,11 @@ class Management extends \App\Http\Controllers\BaseController
             $hasEmails = $hasEmails->values();
 
             if ($hasEmails && count($hasEmails) > 0) {
-                $umEntry[ 'assigned_email_id' ] = $hasEmails[ 0 ]->id;
+                \Log::info("There is one");
+                \Log::info($hasEmails);
+                $umEntry[ 'assigned_email_id' ] = $hasEmails[0]->account_email_id;
             } else {
-                $umEntry[ 'assigned_email_id' ] = $userPrimaryEmail->id;
+                $umEntry[ 'assigned_email_id' ] = $userPrimaryEmail;
             }
 
             $userMatrix[] = $umEntry;
