@@ -16,17 +16,17 @@ elixir(function (mix) {
 
     /* Concatenate all JS */
     mix.scripts([
-            /*"jquery-1.11.3.js",
-            "../vendor/js-cookie/src/js.cookie.js",
-            "../vendor/jquery-ui/jquery-ui.js",
-            "../vendor/bootstrap-summernote/summernote.js",
-            "../vendor/bootstrap-switch/bootstrap-switch.min.js",*/
-            "jquery-2.1.4.js",
-            "../vendor/bootstrap3/js/bootstrap.js",
-            "cbpAnimatedHeader.js",
-            "app.js",
-        ], "public/js/app-all.js"
-    );
+        /*"jquery-1.11.3.js",
+        "../vendor/js-cookie/src/js.cookie.js",
+        "../vendor/jquery-ui/jquery-ui.js",
+        "../vendor/bootstrap-summernote/summernote.js",
+        "../vendor/bootstrap-switch/bootstrap-switch.min.js",*/
+        "jquery-2.1.4.js",
+        "../vendor/bootstrap3/js/bootstrap.js",
+        "classie.js",
+        "cbpAnimatedHeader.js",
+        "app.js",
+    ], "public/js/app-all.js");
 
     /* Cache Busting */
     mix.version([
