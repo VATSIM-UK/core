@@ -38,7 +38,7 @@ class Email extends \Eloquent
 {
 
     protected $table      = "mship_account_email";
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['verified_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable   = ['email'];
     protected $touches    = ['account'];
 
