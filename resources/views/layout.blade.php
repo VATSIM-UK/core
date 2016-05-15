@@ -9,7 +9,7 @@
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
-    {!! HTML::style(elixir("build/css/app-all.css")) !!}
+    {!! HTML::style(elixir("css/app-all.css")) !!}
 </head>
 <body>
 <div class="container-fluid">
@@ -149,7 +149,7 @@
 
 </div>
 
-    {!! HTML::script(elixir("build/js/app-all.js")) !!}
+    {!! HTML::script(elixir("js/app-all.js")) !!}
 
     @yield('scripts')
 
