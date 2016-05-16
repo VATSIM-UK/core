@@ -27,9 +27,9 @@ class Qualification extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
     protected $table = "mship_qualification";
-    protected $primaryKey = "qualification_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['qualification_id'];
+    protected $hidden = ['id'];
 
     public function scopeOfType($query, $type)
     {

@@ -255,7 +255,7 @@ class MshipAccountTest extends TestCase
 
         $this->seeInDatabase("mship_account_qualification", [
             "account_id"       => $this->account->id,
-            "qualification_id" => $qualification->qualification_id,
+            "qualification_id" => $qualification->id,
             "deleted_at"       => null,
         ]);
     }

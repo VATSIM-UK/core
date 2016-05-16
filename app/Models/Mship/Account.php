@@ -759,7 +759,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function hasQualification(Qualification $qualification)
     {
         return $this->qualifications->filter(function ($q) use ($qualification) {
-            return $q->qualification_id == $qualification->qualification_id;
+            return $q->id == $qualification->id;
         })->count() > 0;
     }
 
