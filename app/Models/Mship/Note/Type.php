@@ -32,7 +32,7 @@ class Type extends \Eloquent
     use RecordsActivityTrait;
 
     protected $table      = "mship_note_type";
-    protected $primaryKey = "note_type_id";
+    protected $primaryKey = "id";
     protected $dates      = ['created_at', 'deleted_at'];
     protected $fillable   = ['name', 'short_code', 'is_available', 'is_default'];
 
@@ -79,13 +79,13 @@ class Type extends \Eloquent
 
     public function notes()
     {
-        return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "note_type_id");
+        return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "id");
     }
 
     public function save(array $options = [])
     {
         $oldDefault = Type::findDefault();
-        if ($oldDefault && $oldDefault->exists && $this->is_default && $oldDefault->note_type_id != $this->note_type_id) {
+        if ($oldDefault && $oldDefault->exists && $this->is_default && $oldDefault->id != $this->id) {
             $oldDefault->is_default = 0;
             $oldDefault->save();
         }

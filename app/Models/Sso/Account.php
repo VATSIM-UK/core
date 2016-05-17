@@ -28,12 +28,12 @@ class Account extends \App\Models\aModel {
 	use SoftDeletingTrait, RecordsActivity;
 
         protected $table = "sso_account";
-        protected $primaryKey = "sso_account_id";
+        protected $primaryKey = "id";
         protected $dates = ['created_at', 'updated_at', 'deleted_at'];
         protected $hidden = ['account_id'];
 
         public function tokens(){
-            return $this->hasMany("\App\Models\Sso\Token", "sso_account_id", "sso_account_id");
+            return $this->hasMany(\App\Models\Sso\Token::class, "sso_account_id", "id");
         }
 
     public function getDisplayValueAttribute() {

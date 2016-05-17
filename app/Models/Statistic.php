@@ -21,7 +21,7 @@ class Statistic extends \App\Models\aModel {
     use SoftDeletingTrait;
 
     protected $table = "statistic";
-    protected $primaryKey = "statistic_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['period', 'key'];
 

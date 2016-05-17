@@ -88,7 +88,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController {
         if($this->_account->hasPermission("adm/mship/permission/attach")){
             // Detatch permissions!
             foreach($role->permissions as $p){
-                if(!in_array($p->permission_id, Input::get("permissions", []))){
+                if(!in_array($p->id, Input::get("permissions", []))){
                     $role->detachPermission($p);
                 }
             }

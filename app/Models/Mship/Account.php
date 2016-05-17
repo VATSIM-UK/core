@@ -212,12 +212,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
                     ->orderBy('created_at', 'DESC');
     }
 
-    public function messageThreads()
-    {
-        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
-                    ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
-    }
-
     public function messagePosts()
     {
         return $this->hasMany(\App\Models\Messages\Thread\Post::class, 'account_id');
@@ -279,7 +273,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function hasRole(Role $role)
     {
-        return $this->roles->contains($role->role_id);
+        return $this->roles->contains($role->id);
     }
 
     /**
@@ -295,7 +289,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
             throw new \App\Exceptions\Mship\DuplicateRoleException($role);
         }
 
-        return $this->roles()->attach($role->role_id);
+        return $this->roles()->attach($role->id);
     }
 
     /**
@@ -311,7 +305,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
             return true;
         }
 
-        return $this->roles()->detach($role->role_id);
+        return $this->roles()->detach($role->id);
     }
 
     /**
@@ -343,7 +337,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function readNotifications()
     {
         return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
-            'notification_id')
+            'id')
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();
@@ -805,7 +799,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $ban->account_id    = $this->id;
         $ban->banned_by     = $writerId;
         $ban->type          = $type;
-        $ban->reason_id     = $banReason->ban_reason_id;
+        $ban->reason_id     = $banReason->id;
         $ban->reason_extra  = $banExtraReason;
         $ban->period_start  = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
@@ -831,7 +825,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $note               = new AccountNoteData();
         $note->account_id   = $this->id;
         $note->writer_id    = $writer;
-        $note->note_type_id = $noteType;
+        $note->id           = $noteType;
         $note->content      = $noteContent;
         $note->save();
 

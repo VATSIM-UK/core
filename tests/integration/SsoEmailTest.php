@@ -35,7 +35,7 @@ class SsoEmailTest extends TestCase
         $this->assertEquals(0, count($this->account->ssoEmails));
         $this->actingAs($this->account)
             ->visit('/mship/manage/email/assignments')
-            ->select($this->email->id, 'assign_' . SsoAccount::orderBy('sso_account_id')->first()->sso_account_id)
+            ->select($this->email->id, 'assign_' . SsoAccount::orderBy('id')->first()->id)
             ->press('Save Assignments')
             ->see('Success!');
 
@@ -46,7 +46,7 @@ class SsoEmailTest extends TestCase
 
         $this->actingAs($this->account)
             ->visit('/mship/manage/email/assignments')
-            ->select('pri', 'assign_' . SsoAccount::orderBy('sso_account_id')->first()->sso_account_id)
+            ->select('pri', 'assign_' . SsoAccount::orderBy('id')->first()->id)
             ->press('Save Assignments')
             ->see('Success!');
 

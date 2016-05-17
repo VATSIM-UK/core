@@ -20,13 +20,13 @@ class Post extends \App\Models\aModel
 {
 
     protected $table      = 'messages_thread_post';
-    protected $primaryKey = "thread_post_id";
+    protected $primaryKey = "id";
     protected $fillable   = ["content"];
     public    $dates      = ['created_at', 'updated_at'];
     public    $timestamps = true;
 
     public function thread(){
-        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "thread_id");
+        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
     }
 
     public function author(){

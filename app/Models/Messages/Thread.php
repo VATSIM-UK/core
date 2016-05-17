@@ -20,20 +20,20 @@ class Thread extends \App\Models\aModel
 {
 
     protected $table = 'messages_thread';
-    protected $primaryKey = "thread_id";
+    protected $primaryKey = "id";
     protected $fillable = ["subject", "read_only"];
     public $dates = ['created_at', 'updated_at'];
     public $timestamps = true;
 
     public function participants()
     {
-        return $this->belongsToMany(Account::class, "messages_thread_participant", "thread_id")
+        return $this->belongsToMany(Account::class, "messages_thread_participant", "id")
                     ->withPivot("display_as", "read_at", "status")->withTimestamps();
     }
 
     public function posts()
     {
-        return $this->hasMany(\App\Models\Messages\Thread\Post::class, "thread_id", "thread_id");
+        return $this->hasMany(\App\Models\Messages\Thread\Post::class, "thread_id", "id");
     }
 
 }

@@ -28,9 +28,9 @@ class Note extends \Eloquent {
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_account_note";
-    protected $primaryKey = "account_note_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['account_note_id'];
+    protected $hidden = ['id'];
 
     public function user(){
         return $this->belongsTo("\App\Models\Mship\Account", "account_id");
@@ -41,11 +41,11 @@ class Note extends \Eloquent {
     }
 
     public function flag(){
-        return $this->hasOne("\App\Models\Mship\Account\Note\Flag", "account_note_id", "account_note_id");
+        return $this->hasOne("\App\Models\Mship\Account\Note\Flag", "account_note_id", "id");
     }
 
     public function format(){
-        return $this->hasOne("\App\Models\Mship\Account\Note\Format", "account_note_id", "account_note_id");
+        return $this->hasOne("\App\Models\Mship\Account\Note\Format", "account_note_id", "id");
     }
 
     public function setDataAttribute($value){

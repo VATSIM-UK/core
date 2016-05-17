@@ -16,7 +16,7 @@
             <div class="box-body">
 
                 @if(isset($noteType))
-                    {!! Form::model($noteType, ['route' => ['adm.mship.note.type.update.post', $noteType->note_type_id]]) !!}
+                    {!! Form::model($noteType, ['route' => ['adm.mship.note.type.update.post', $noteType->id]]) !!}
                 @else
                     {!! Form::open(["route" => "adm.mship.note.type.create.post"]) !!}
                 @endif

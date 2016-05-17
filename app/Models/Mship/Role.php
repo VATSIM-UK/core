@@ -28,7 +28,7 @@ class Role extends \App\Models\aModel
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_role";
-    protected $primaryKey = "role_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
@@ -55,7 +55,7 @@ class Role extends \App\Models\aModel
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->first();
+            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();
@@ -69,7 +69,7 @@ class Role extends \App\Models\aModel
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->first();
+            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();

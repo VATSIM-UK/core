@@ -49,7 +49,7 @@ class Ban extends \App\Models\aModel
     use SoftDeletes, RecordsActivity;
 
     protected $table      = 'mship_account_ban';
-    protected $primaryKey = "account_ban_id";
+    protected $primaryKey = "id";
     protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at', 'deleted_at'];
     protected $touches    = ['account'];
 
@@ -98,7 +98,7 @@ class Ban extends \App\Models\aModel
 
     public function reason()
     {
-        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
+        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'id');
     }
 
     public function notes()

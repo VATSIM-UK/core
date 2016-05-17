@@ -31,7 +31,7 @@ class Token extends \App\Models\aModel {
 	use SoftDeletingTrait, RecordsActivity;
 
         protected $table = "sso_token";
-        protected $primaryKey = "sso_token_id";
+        protected $primaryKey = "id";
         protected $dates = ['created_at', 'updated_at', 'deleted_at'];
         protected $hidden = ['token_id'];
 

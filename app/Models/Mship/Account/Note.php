@@ -29,7 +29,7 @@ class Note extends \App\Models\aModel
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_note";
-    protected $primaryKey = "account_note_id";
+    protected $primaryKey = "id";
     protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
     protected $touches    = ['account'];
 
@@ -45,7 +45,7 @@ class Note extends \App\Models\aModel
 
     public function type()
     {
-        return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "note_type_id");
+        return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "id");
     }
 
     public function attachment(){

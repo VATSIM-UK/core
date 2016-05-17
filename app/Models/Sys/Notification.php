@@ -30,9 +30,9 @@ class Notification extends \App\Models\aModel {
     use SoftDeletingTrait;
 
     protected $table = "sys_notification";
-    protected $primaryKey = "notification_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden = ['notification_id'];
+    protected $hidden = ['id'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
     const STATUS_IMPORTANT = 70; // Will interrupt login process.
@@ -79,6 +79,6 @@ class Notification extends \App\Models\aModel {
     }
 
     public function readBy(){
-        return $this->belongsToMany("\App\Models\Mship\Account", "sys_notification_read", "notification_id")->with("created_at", "updated_at");
+        return $this->belongsToMany("\App\Models\Mship\Account", "sys_notification_read", "id")->with("created_at", "updated_at");
     }
 }

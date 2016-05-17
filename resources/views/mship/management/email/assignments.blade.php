@@ -39,7 +39,7 @@
                         @else
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="assign_{{ $um['sso_system']->sso_account_id }}" value="pri">
+                                    <input type="radio" name="assign_{{ $um['sso_system']->id }}" value="pri">
                                     Return to default
                                 </label>
                             </div>
@@ -49,7 +49,7 @@
                         <td>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="assign_{{ $um['sso_system']->sso_account_id }}" value="{{ $email->id }}" {{ $email->id == $um['assigned_email_id'] ? "checked='checked'" : "" }}>
+                                    <input type="radio" name="assign_{{ $um['sso_system']->id }}" value="{{ $email->id }}" {{ $email->id == $um['assigned_email_id'] ? "checked='checked'" : "" }}>
                                     Assign
                                 </label>
                             </div>

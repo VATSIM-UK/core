@@ -23,10 +23,10 @@ class State extends \Eloquent
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_state";
-    protected $primaryKey = "account_state_id";
+    protected $primaryKey = "id";
     protected $dates      = ['created_at', 'deleted_at'];
     protected $fillable   = ['state'];
-    protected $hidden     = ['account_state_id'];
+    protected $hidden     = ['id'];
     protected $touches    = ['account'];
 
     const STATE_NOT_REGISTERED = 0;

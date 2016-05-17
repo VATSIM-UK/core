@@ -23,7 +23,7 @@ class Permission extends \App\Models\aModel {
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_permission";
-    protected $primaryKey = "permission_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $fillable = ['name', 'display_name'];
     protected $rules = [

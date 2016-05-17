@@ -25,7 +25,7 @@ class Participant extends \App\Models\aModel
 {
 
     protected $table      = 'messages_thread_participant';
-    protected $primaryKey = "thread_participant_id";
+    protected $primaryKey = "id";
     protected $fillable   = ["display_as"];
     public    $dates      = ["read_at", 'created_at', 'updated_at'];
     public    $timestamps = true;
@@ -46,7 +46,7 @@ class Participant extends \App\Models\aModel
     }
 
     public function thread(){
-        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "thread_id");
+        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
     }
 
     public function account(){

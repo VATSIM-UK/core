@@ -178,7 +178,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         }
 
         // Let's add!
-        if (!$account->roles->contains($role->role_id)) {
+        if (!$account->roles->contains($role->id)) {
             $account->roles()
                     ->attach($role);
         }
@@ -198,7 +198,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                            ->withError("The selected role does not exist.");
         }
 
-        if (!$account->roles->contains($role->role_id)) {
+        if (!$account->roles->contains($role->id)) {
             return Redirect::route("adm.mship.account.details", [$account->id], "role")
                            ->withError("This role is not attached to this user.");
         }
@@ -327,7 +327,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendCreationEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$account->id, "bans", $ban->account_ban_id])
+        return Redirect::route("adm.mship.account.details", [$account->id, "bans", $ban->id])
                        ->withSuccess("You have successfully banned this member.");
     }
 
@@ -359,7 +359,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendRepealedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Ban has been repealed.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Ban has been repealed.");
     }
 
     public function getBanComment(AccountData\Ban $ban)
@@ -386,7 +386,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"), Auth::getUser());
         $ban->notes()->save($note);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function getBanModify(AccountData\Ban $ban)
@@ -434,7 +434,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendModifiedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function postNoteCreate(AccountData $account)
@@ -457,7 +457,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType->note_type_id, Input::get("content"), Auth::user());
+        $account->addNote($noteType->id, Input::get("content"), Auth::user());
 
         return Redirect::route("adm.mship.account.details", [$account->id, "notes"])
                        ->withSuccess("The note has been saved successfully!");
