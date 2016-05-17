@@ -538,6 +538,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function verifyPassword($password)
     {
+        if ($this->password == sha1(sha1($password))) {
+            $this->password = $password;
+            $this->save();
+        }
+
         return \Hash::check($password, $this->password);
     }
 
