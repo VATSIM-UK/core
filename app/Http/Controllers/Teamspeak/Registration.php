@@ -5,7 +5,7 @@ use Response;
 use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration as RegistrationModel;
 use App\Models\Teamspeak\Confirmation as ConfirmationModel;
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -89,7 +89,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $key_custominfo = "ident=registration_id value=" . $registrationID;
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = TeamspeakAdapter::run()
+        $_confirmation->privilege_key = \App\Libraries\Teamspeak::run()
                                       ->serverGroupGetByName('New')
                                       ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();

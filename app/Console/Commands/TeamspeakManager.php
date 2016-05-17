@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use TeamSpeak3;
 
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Teamspeak\Registration;
@@ -40,7 +40,7 @@ class TeamspeakManager extends aCommand {
         define("TS_IDLE_POKE", 2);
         define("TS_IDLE_KICK", 3);
 
-        $tscon = TeamSpeakAdapter::run("VATSIM UK Management Bot");
+        $tscon = Teamspeak::run("VATSIM UK Management Bot");
 
         // define protected channels (listed channels and their subchannels)
         $protected_clients = array();

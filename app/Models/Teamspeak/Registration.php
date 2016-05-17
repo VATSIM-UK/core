@@ -4,7 +4,7 @@ namespace App\Models\Teamspeak;
 
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 use App\Models\Teamspeak\Log;
 use TeamSpeak3;
 use Carbon\Carbon;
@@ -62,7 +62,7 @@ class Registration extends \App\Models\aModel
     public function delete($tscon = null)
     {
         if ($tscon == null) {
-            $tscon = TeamspeakAdapter::run("VATSIM UK Registrations");
+            $tscon = Teamspeak::run("VATSIM UK Registrations");
         }
         if ($this->confirmation) {
             $tscon->privilegeKeyDelete($this->confirmation->privilege_key);

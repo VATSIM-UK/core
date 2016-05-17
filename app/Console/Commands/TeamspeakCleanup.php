@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration;
 use Carbon\Carbon;
@@ -28,7 +28,7 @@ class TeamspeakCleanup extends aCommand {
     
     protected function initialise()
     {
-        $this->tscon = TeamSpeakAdapter::run('VATSIM UK Cleanup Bot');
+        $this->tscon = Teamspeak::run('VATSIM UK Cleanup Bot');
     }
     
     /**
