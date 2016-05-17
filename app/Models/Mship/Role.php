@@ -31,7 +31,6 @@ use App\Models\Mship\Permission as PermissionData;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasPasswordLifetime()
  * @mixin \Eloquent
  */
 class Role extends \App\Models\aModel
@@ -116,18 +115,6 @@ class Role extends \App\Models\aModel
     public static function scopeHasTimeout($query)
     {
         return $query->whereNotNull('session_timeout')->where('session_timeout', '!=', 0);
-    }
-
-    /**
-     * Query scope to add a where clause for any role with a password lifetime.
-     *
-     * @param $query The existing query builder object
-     *
-     * @return mixed
-     */
-    public static function scopeHasPasswordLifetime($query)
-    {
-        return $query->whereNotNull("password_lifetime")->where("session_timeout", "!=", 0);
     }
 
     public function accounts()
