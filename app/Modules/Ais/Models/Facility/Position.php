@@ -9,6 +9,7 @@ use App\Modules\Ais\Models\Facility;
  * App\Modules\Ais\Models\Facility\Position
  *
  * @property-read \App\Modules\Ais\Models\Facility $facility
+ * @mixin \Eloquent
  */
 class Position extends aModel {
 

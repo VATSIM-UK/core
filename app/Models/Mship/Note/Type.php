@@ -9,22 +9,33 @@ use Carbon\Carbon;
 /**
  * App\Models\Mship\Note\Type
  *
- * @property integer                                                                        $note_type_id
- * @property string                                                                         $name
- * @property string                                                                         $short_code
- * @property boolean                                                                        $is_available
- * @property boolean                                                                        $is_system
- * @property boolean                                                                        $is_default
- * @property string                                                                         $colour_code
- * @property \Carbon\Carbon                                                                 $created_at
- * @property \Carbon\Carbon                                                                 $updated_at
- * @property \Carbon\Carbon                                                                 $deleted_at
+ * @property integer $id
+ * @property string $name
+ * @property string $short_code
+ * @property boolean $is_available
+ * @property boolean $is_system
+ * @property boolean $is_default
+ * @property string $colour_code
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereColourCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
+ * @mixin \Eloquent
  */
 class Type extends \Eloquent
 {

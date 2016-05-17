@@ -8,15 +8,21 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 /**
  * App\Models\Sso\Email
  *
- * @property integer $sso_email_id
+ * @property integer $id
  * @property integer $account_id
  * @property integer $account_email_id
  * @property integer $sso_account_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account\Email $email
  * @property-read \App\Models\Sso\Account $ssoAccount
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Email extends \Eloquent {
 

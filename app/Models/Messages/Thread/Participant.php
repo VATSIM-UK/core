@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Messages\Thread\Participant
  *
- * @property integer $thread_participant_id
+ * @property integer $id
  * @property integer $thread_id
  * @property integer $account_id
  * @property string $display_as
@@ -17,9 +17,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $account
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ * @mixin \Eloquent
  */
 class Participant extends \App\Models\aModel
 {

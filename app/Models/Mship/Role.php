@@ -10,17 +10,29 @@ use App\Models\Mship\Permission as PermissionData;
 /**
  * App\Models\Mship\Role
  *
- * @property integer                                                                      $role_id
- * @property string                                                                       $name
- * @property boolean                                                                      $default
- * @property integer                                                                      $session_timeout
- * @property \Carbon\Carbon                                                               $created_at
- * @property \Carbon\Carbon                                                               $updated_at
- * @property \Carbon\Carbon                                                               $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[]    $accounts
+ * @property integer $id
+ * @property string $name
+ * @property boolean $default
+ * @property integer $session_timeout
+ * @property boolean $password_mandatory
+ * @property integer $password_lifetime
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
+ * @property-read mixed $is_default
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasPasswordLifetime()
+ * @mixin \Eloquent
  */
 class Role extends \App\Models\aModel
 {

@@ -8,13 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Messages\Thread
  *
- * @property integer                                                                          $thread_id
- * @property string                                                                           $subject
- * @property boolean                                                                          $read_only
- * @property \Carbon\Carbon                                                                   $created_at
- * @property \Carbon\Carbon                                                                   $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Account[]                          $participants
+ * @property integer $id
+ * @property string $subject
+ * @property boolean $read_only
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $participants
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $posts
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereSubject($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereReadOnly($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Thread extends \App\Models\aModel
 {

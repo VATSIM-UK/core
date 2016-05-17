@@ -12,31 +12,41 @@ use Carbon\Carbon;
 /**
  * App\Models\Teamspeak\Registration
  *
- * @property integer                                                                   $id
- * @property integer                                                                   $account_id
- * @property integer                                                                   $registration_ip
- * @property integer                                                                   $last_ip
- * @property string                                                                    $last_login
- * @property string                                                                    $last_os
- * @property string                                                                    $uid
- * @property integer                                                                   $dbid
- * @property string                                                                    $status
- * @property \Carbon\Carbon                                                            $created_at
- * @property \Carbon\Carbon                                                            $updated_at
- * @property string                                                                    $deleted_at
- * @property-read \App\Models\Teamspeak\Confirmation                                   $confirmation
- * @property-read \App\Models\Mship\Account                                            $account
+ * @property integer $id
+ * @property integer $account_id
+ * @property integer $registration_ip
+ * @property integer $last_ip
+ * @property string $last_login
+ * @property string $last_os
+ * @property string $uid
+ * @property integer $dbid
+ * @property string $status
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $deleted_at
+ * @property-read \App\Models\Teamspeak\Confirmation $confirmation
+ * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Log[] $logs
- * @property-read mixed                                                                $last_idle_message
- * @property-read mixed                                                                $last_idle_poke
- * @property-read mixed                                                                $last_nickname_warn
- * @property-read mixed                                                                $last_nickname_kick
- * @property-read mixed
- *                $last_notification_important_poke
- * @property-read mixed
- *                $last_notification_must_acknowledge_poke
- * @property-read mixed
- *                $last_notification_must_acknowledge_kick
+ * @property-read mixed $last_idle_message
+ * @property-read mixed $last_idle_poke
+ * @property-read mixed $last_nickname_warn
+ * @property-read mixed $last_nickname_kick
+ * @property-read mixed $last_notification_important_poke
+ * @property-read mixed $last_notification_must_acknowledge_poke
+ * @property-read mixed $last_notification_must_acknowledge_kick
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereRegistrationIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastLogin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereLastOs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereUid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereDbid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Registration whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Registration extends \App\Models\aModel
 {

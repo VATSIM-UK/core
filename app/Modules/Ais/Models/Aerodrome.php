@@ -9,6 +9,7 @@ use App\Models\aModel;
  *
  * @property-read \App\Modules\Ais\Models\Fir\Sector $sector
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Facility[] $facilities
+ * @mixin \Eloquent
  */
 class Aerodrome extends aModel {
 

@@ -13,8 +13,15 @@
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Attribute[] $attributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position departments()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position positions()
+ * @mixin \Eloquent
  */
 class Position extends \App\Models\aModel
 {

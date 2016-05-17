@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Messages\Thread\Post
  *
- * @property integer $thread_post_id
+ * @property integer $id
  * @property integer $thread_id
  * @property integer $account_id
  * @property string $content
@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $author
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Post extends \App\Models\aModel
 {

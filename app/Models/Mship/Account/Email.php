@@ -9,29 +9,25 @@ use Validator;
 /**
  * App\Models\Mship\Account\Email
  *
- * @property integer $account_email_id
- * @property integer $account_id
+ * @property integer $id
  * @property string $email
- * @property boolean $is_primary
- * @property string $verified_at
+ * @property integer $account_id
+ * @property \Carbon\Carbon $verified_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read mixed $is_verified
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email primary()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email secondary()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
- * @property integer $id
+ * @property-read mixed $is_primary
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
  * @mixin \Eloquent
  */
 class Email extends \Eloquent
