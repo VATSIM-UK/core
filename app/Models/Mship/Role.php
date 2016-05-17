@@ -25,11 +25,11 @@ use App\Models\Mship\Permission as PermissionData;
 class Role extends \App\Models\aModel
 {
 
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table = "mship_role";
     protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
     protected $rules = [

@@ -18,11 +18,9 @@ use Carbon\Carbon;
  */
 class Statistic extends \App\Models\aModel {
 
-    use SoftDeletingTrait;
-
     protected $table = "statistic";
     protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['period', 'key'];
 
     public static function setStatistic($period, $key, $value) {

@@ -20,11 +20,11 @@ use App\Models\Mship\Role as RoleData;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
  */
 class Permission extends \App\Models\aModel {
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table = "mship_permission";
     protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['name', 'display_name'];
     protected $rules = [
         'name' => 'required',

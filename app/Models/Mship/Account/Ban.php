@@ -46,11 +46,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ban extends \App\Models\aModel
 {
 
-    use SoftDeletes, RecordsActivity;
+    use RecordsActivity;
 
     protected $table      = 'mship_account_ban';
     protected $primaryKey = "id";
-    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
     protected $touches    = ['account'];
 
     const TYPE_LOCAL   = 80;

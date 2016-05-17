@@ -26,11 +26,11 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class Note extends \App\Models\aModel
 {
 
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table      = "mship_account_note";
     protected $primaryKey = "id";
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['created_at', 'updated_at'];
     protected $touches    = ['account'];
 
     public function account()
