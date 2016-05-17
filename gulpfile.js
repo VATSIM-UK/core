@@ -36,7 +36,8 @@ elixir(function (mix) {
 
     /* Move and shake our dependency files around too! */
     mix.copy("resources/assets/css/images/**", "public/build/css/images")
-        .copy("resources/assets/vendor/bootstrap3/fonts/**", "public/build/css/fonts")
+        .copy("resources/assets/css/AdminLTE/**", "public/assets/css")
+        .copy("resources/assets/js/AdminLTE/**", "public/assets/js")
         .copy("resources/assets/vendor/font-awesome/fonts/**", "public/build/css/fonts")
         .copy("resources/assets/vendor/ionicons/fonts", "public/build/css/fonts")
         .copy("resources/assets/images/**", "public/assets/images");
