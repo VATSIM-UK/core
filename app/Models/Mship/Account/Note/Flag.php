@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Mship\Account $flagger
  * @property-read \App\Models\Mship\Account $resolver
  * @property-read \App\Models\Mship\Account\Note $note
+ * @mixin \Eloquent
  */
 class Flag extends \Eloquent {
     use SoftDeletingTrait, RecordsActivity;

@@ -12,7 +12,7 @@
             <div class="box-body">
 
                 @if(isset($role))
-                    {!! Form::model($role, ['route' => ['adm.mship.role.update', $role->role_id]]) !!}
+                    {!! Form::model($role, ['route' => ['adm.mship.role.update', $role->id]]) !!}
                 @else
                     {!! Form::open(["route" => "adm.mship.role.create"]) !!}
                 @endif
@@ -52,9 +52,9 @@
                                 <div class="col-sm-4">
                                     <div class='checkbox'>
                                         @if(isset($role))
-                                            {!! Form::checkbox("permissions[".$p->permission_id."]", $p->permission_id, ($role->hasPermission($p) OR Input::old("permissions.".$p->permission_id) ? "checked='checked'" : "")) !!}
+                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, ($role->hasPermission($p) OR Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @else
-                                            {!! Form::checkbox("permissions[".$p->permission_id."]", $p->permission_id, (Input::old("permissions.".$p->permission_id) ? "checked='checked'" : "")) !!}
+                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, (Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @endif
                                         {{ $p->display_name }}
                                     </div>

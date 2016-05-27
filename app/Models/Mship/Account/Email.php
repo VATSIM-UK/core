@@ -9,29 +9,32 @@ use Validator;
 /**
  * App\Models\Mship\Account\Email
  *
- * @property integer $account_email_id
- * @property integer $account_id
+ * @property integer $id
  * @property string $email
- * @property boolean $is_primary
- * @property string $verified_at
+ * @property integer $account_id
+ * @property \Carbon\Carbon $verified_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read mixed $is_verified
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email primary()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email secondary()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
+ * @property-read mixed $is_primary
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
- * @property integer $id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
+ * @mixin \Eloquent
  */
 class Email extends \Eloquent
 {
 
     protected $table      = "mship_account_email";
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['verified_at', 'created_at', 'updated_at', 'deleted_at'];
     protected $fillable   = ['email'];
     protected $touches    = ['account'];
 
@@ -63,7 +66,7 @@ class Email extends \Eloquent
     {
         // Let's just check it's not already assigned.
         $alreadyAssigned = $this->ssoEmails->filter(function ($email) use ($ssoAccount) {
-            return $email->sso_account_id == $ssoAccount->sso_account_id;
+            return $email->sso_account_id == $ssoAccount->id;
         }
         );
 
@@ -72,7 +75,7 @@ class Email extends \Eloquent
         }
 
         $ssoEmail = new SSOEmail;
-        $ssoEmail->account_id = $this->account->account_id;
+        $ssoEmail->account_id = $this->account->id;
         $ssoEmail->account_email_id = $this->getKey();
         $ssoEmail->sso_account_id = $ssoAccount->getKey();
         $ssoEmail->save();

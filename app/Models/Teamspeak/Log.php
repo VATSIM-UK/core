@@ -11,6 +11,11 @@ namespace App\Models\Teamspeak;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Teamspeak\Registration $registration
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereRegistrationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idleMessage()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idlePoke()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log idleKick()
@@ -19,6 +24,7 @@ namespace App\Models\Teamspeak;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationImportantPoke()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgePoke()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Teamspeak\Log notificationMustAcknowledgeKick()
+ * @mixin \Eloquent
  */
 class Log extends \App\Models\aModel {
 

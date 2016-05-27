@@ -6,7 +6,7 @@ use Response;
 use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration as RegistrationModel;
 use App\Models\Teamspeak\Confirmation as ConfirmationModel;
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController

@@ -9,19 +9,8 @@ use Carbon\Carbon;
 /**
  * App\Models\Mship\Security
  *
- * @property integer $security_id
- * @property string $name
- * @property integer $alpha
- * @property integer $numeric
- * @property integer $symbols
- * @property integer $length
- * @property integer $expiry
- * @property boolean $optional
- * @property boolean $default
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Security[] $accountSecurity
+ * @mixin \Eloquent
  */
 class Security extends \Eloquent {
 

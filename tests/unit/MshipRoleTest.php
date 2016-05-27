@@ -12,7 +12,7 @@ class MshipRoleTest extends TestCase
         $role = factory(\App\Models\Mship\Role::class)->create();
 
         $this->seeInDatabase("mship_role", [
-            "role_id" => $role->role_id,
+            "id" => $role->id,
         ]);
     }
 
@@ -40,7 +40,7 @@ class MshipRoleTest extends TestCase
         $this->assertTrue($role->hasSessionTimeout());
 
         $this->seeInDatabase("mship_role", [
-            "role_id" => $role->role_id,
+            "id" => $role->id,
             "session_timeout" => 60,
         ]);
     }
@@ -52,7 +52,7 @@ class MshipRoleTest extends TestCase
 
         $defaultRole = \App\Models\Mship\Role::findDefault();
 
-        $this->assertEquals($role->role_id, $defaultRole->role_id);
+        $this->assertEquals($role->id, $defaultRole->id);
     }
 
     /** @test **/

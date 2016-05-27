@@ -47,7 +47,7 @@
                     <tbody>
                         @foreach($types as $t)
                         <tr>
-                            <td>{!! link_to_route('adm.mship.note.type.update', $t->note_type_id, [$t->note_type_id]) !!}</td>
+                            <td>{!! link_to_route('adm.mship.note.type.update', $t->id, [$t->id]) !!}</td>
                             <td>
                                 {{ $t->name }}
                                 @if($t->is_default)
@@ -60,10 +60,10 @@
                             <td>{!! ($t->is_system ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/note/type/*/update"))
-                                    {!! link_to_route("adm.mship.note.type.update", "Edit", [$t->note_type_id], ["class" => "btn btn-xs btn-primary"]) !!}
+                                    {!! link_to_route("adm.mship.note.type.update", "Edit", [$t->id], ["class" => "btn btn-xs btn-primary"]) !!}
                                 @endif
                                 @if($_account->hasPermission("adm/mship/note/type/*/delete"))
-                                    {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.note.type.delete", [$t->note_type_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
+                                    {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.note.type.delete", [$t->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                 @endif
                             </td>
                         </tr>

@@ -255,7 +255,7 @@ class MshipAccountTest extends TestCase
 
         $this->seeInDatabase("mship_account_qualification", [
             "account_id"       => $this->account->id,
-            "qualification_id" => $qualification->qualification_id,
+            "qualification_id" => $qualification->id,
             "deleted_at"       => null,
         ]);
     }
@@ -486,11 +486,11 @@ class MshipAccountTest extends TestCase
 
         $this->account->fresh()->addRole($role);
 
-        $this->assertTrue($this->account->fresh()->roles->contains($role->role_id));
+        $this->assertTrue($this->account->fresh()->roles->contains($role->id));
 
         $this->seeInDatabase("mship_account_role", [
             "account_id" => $this->account->id,
-            "role_id" => $role->role_id,
+            "role_id" => $role->id,
         ]);
     }
 
@@ -522,18 +522,18 @@ class MshipAccountTest extends TestCase
 
         $this->account->fresh()->addRole($role);
 
-        $this->assertTrue($this->account->fresh()->roles->contains($role->role_id));
+        $this->assertTrue($this->account->fresh()->roles->contains($role->id));
         $this->seeInDatabase("mship_account_role", [
             "account_id" => $this->account->id,
-            "role_id" => $role->role_id,
+            "role_id" => $role->id,
         ]);
 
         $this->account->fresh()->removeRole($role);
 
-        $this->assertFalse($this->account->fresh()->roles->contains($role->role_id));
+        $this->assertFalse($this->account->fresh()->roles->contains($role->id));
         $this->notSeeInDatabase("mship_account_role", [
             "account_id" => $this->account->id,
-            "role_id" => $role->role_id,
+            "role_id" => $role->id,
         ]);
     }
 

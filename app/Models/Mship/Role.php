@@ -10,26 +10,37 @@ use App\Models\Mship\Permission as PermissionData;
 /**
  * App\Models\Mship\Role
  *
- * @property integer                                                                      $role_id
- * @property string                                                                       $name
- * @property boolean                                                                      $default
- * @property integer                                                                      $session_timeout
- * @property \Carbon\Carbon                                                               $created_at
- * @property \Carbon\Carbon                                                               $updated_at
- * @property \Carbon\Carbon                                                               $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[]    $accounts
+ * @property integer $id
+ * @property string $name
+ * @property boolean $default
+ * @property integer $session_timeout
+ * @property boolean $password_mandatory
+ * @property integer $password_lifetime
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
+ * @property-read mixed $is_default
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
+ * @mixin \Eloquent
  */
 class Role extends \App\Models\aModel
 {
 
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table = "mship_role";
-    protected $primaryKey = "role_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
     protected $rules = [
@@ -55,7 +66,7 @@ class Role extends \App\Models\aModel
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->first();
+            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();
@@ -69,7 +80,7 @@ class Role extends \App\Models\aModel
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("role_id", "!=", $model->getKey())->first();
+            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();
@@ -104,18 +115,6 @@ class Role extends \App\Models\aModel
     public static function scopeHasTimeout($query)
     {
         return $query->whereNotNull('session_timeout')->where('session_timeout', '!=', 0);
-    }
-
-    /**
-     * Query scope to add a where clause for any role with a password lifetime.
-     *
-     * @param $query The existing query builder object
-     *
-     * @return mixed
-     */
-    public static function scopeHasPasswordLifetime($query)
-    {
-        return $query->whereNotNull("password_lifetime")->where("session_timeout", "!=", 0);
     }
 
     public function accounts()

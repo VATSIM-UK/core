@@ -203,12 +203,12 @@
                                             <tbody>
                                                 @foreach($account->roles as $r)
                                                 <tr>
-                                                    <td>{{ $r->role_id }}</td>
+                                                    <td>{{ $r->id }}</td>
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->role_id."/detach"))
-                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->id."/detach"))
+                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
                                                 @endforeach
@@ -239,7 +239,7 @@
                                             <label for="role">Role</label>
                                             <select name="role">
                                                 @foreach($availableRoles as $ar)
-                                                <option value="{{ $ar->role_id }}">{{ $ar->name }}</option>
+                                                <option value="{{ $ar->id }}">{{ $ar->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -459,7 +459,7 @@
                                             <label for="ban_reason_id">Ban Reason</label>
                                             <select name="ban_reason_id">
                                                 @foreach($banReasons as $br)
-                                                    <option value="{{ $br->ban_reason_id }}">{{ $br }}</option>
+                                                    <option value="{{ $br->id }}">{{ $br }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -512,7 +512,7 @@
 
                                         @if($_account->hasPermission("adm/mship/account/".$account->id."/note/view"))
                                             @foreach($account->notes as $note)
-                                                @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
+                                                @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
                                                     @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
@@ -536,7 +536,7 @@
                                             <div class="col-sm-4">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" name="filter[]" value="{{ $nt->note_type_id }}" {{ Input::get("filter.".$nt->note_type_id) ? "checked='checked'" : "" }} />
+                                                        <input type="checkbox" name="filter[]" value="{{ $nt->id }}" {{ Input::get("filter.".$nt->id) ? "checked='checked'" : "" }} />
                                                         {{ $nt->name }}
                                                     </label>
                                                 </div>
@@ -570,7 +570,7 @@
                                             <label for="note_type_id">Note Type</label>
                                             <select name="note_type_id" class="form-control selectpicker">
                                                 @foreach($noteTypes as $nt)
-                                                <option value="{{ $nt->note_type_id }}">
+                                                <option value="{{ $nt->id }}">
                                                     {{ $nt->name }}
                                                 </option>
                                                 @endforeach

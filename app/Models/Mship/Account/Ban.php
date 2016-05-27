@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * App\Models\Mship\Account\Ban
  *
- * @property integer $account_ban_id
+ * @property integer $id
  * @property integer $account_id
  * @property integer $banned_by
  * @property integer $type
@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $repealed_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $banner
  * @property-read \App\Models\Mship\Ban\Reason $reason
@@ -33,24 +32,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $type_string
  * @property-read mixed $period_amount_string
  * @property-read mixed $display_value
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
- * @property-read mixed $timeline_entries_recent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNetwork()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isLocal()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isActive()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isHistoric()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
+ * @mixin \Eloquent
  */
 class Ban extends \App\Models\aModel
 {
 
-    use SoftDeletes, RecordsActivity;
+    use RecordsActivity;
 
     protected $table      = 'mship_account_ban';
-    protected $primaryKey = "account_ban_id";
-    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at', 'deleted_at'];
+    protected $primaryKey = "id";
+    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
     protected $touches    = ['account'];
 
     const TYPE_LOCAL   = 80;
@@ -98,7 +106,7 @@ class Ban extends \App\Models\aModel
 
     public function reason()
     {
-        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'ban_reason_id');
+        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'id');
     }
 
     public function notes()

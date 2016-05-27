@@ -17,9 +17,18 @@ use \Request;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $actor
- * @property-read \App\Models\Sys\Activity $subject
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
  * @property-read mixed $type
  * @property-read mixed $extra_data
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereActorId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereAction($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Activity extends aModel
 {

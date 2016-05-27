@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
-    <title>VATSIM-UK | United Kingdom Division of VATSIM.net</title>
+    <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
 
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
@@ -149,8 +149,10 @@
 
 </div>
 
-</body>
+    {!! HTML::script(elixir("js/app-all.js")) !!}
 
-{!! HTML::script(elixir("js/app-all.js")) !!}
+    @yield('scripts')
+
+</body>
 
 </html>

@@ -10,21 +10,26 @@ use App\Models\Mship\Role as RoleData;
 /**
  * App\Models\Mship\Permission
  *
- * @property integer $permission_id
+ * @property integer $id
  * @property string $name
  * @property string $display_name
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereDisplayName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
+ * @mixin \Eloquent
  */
 class Permission extends \App\Models\aModel {
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table = "mship_permission";
-    protected $primaryKey = "permission_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['name', 'display_name'];
     protected $rules = [
         'name' => 'required',

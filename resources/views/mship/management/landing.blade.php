@@ -17,8 +17,10 @@
 
         {!! HTML::panelClose() !!}
     </div>
+@stop
 
-    <script type='text/javascript' language='javascript'>
+@section('scripts')
+    <script type="text/javascript">
         $( document ).ready(function() {
             // Let's start the timer to check the redirect!
             var timeLeft = 10;

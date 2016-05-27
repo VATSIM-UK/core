@@ -101,5 +101,6 @@
 
 @section('scripts')
 @parent
+{!! HTML::script('/assets/js/plugins/datatables/jquery.dataTables.js') !!}
 {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
 @stop

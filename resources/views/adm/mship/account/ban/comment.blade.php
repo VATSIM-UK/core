@@ -19,7 +19,7 @@
                 </h3>
             </div><!-- /.box-header -->
             <div class="box-body">
-                {!! Form::open(["route" => ["adm.mship.ban.comment", $ban->account_ban_id]]) !!}
+                {!! Form::open(["route" => ["adm.mship.ban.comment", $ban->id]]) !!}
                     <div class="form-group">
                         <label for="comment">Comment:</label>
                         <textarea name="comment" class="form-control" rows="5">{{ old('comment') }}</textarea>
@@ -27,7 +27,7 @@
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-left">
-                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->account_ban_id], ["class" => "btn btn-info"]) !!}
+                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->id], ["class" => "btn btn-info"]) !!}
                         </div>
                         <div class="btn-group pull-right">
                             {!! Form::submit("Add Comment", ["class" => "btn btn-success"]) !!}

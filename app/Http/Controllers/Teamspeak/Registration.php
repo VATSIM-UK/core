@@ -5,7 +5,7 @@ use Response;
 use App\Models\Mship\Account;
 use App\Models\Teamspeak\Registration as RegistrationModel;
 use App\Models\Teamspeak\Confirmation as ConfirmationModel;
-use App\Http\Controllers\Teamspeak\TeamspeakAdapter;
+use App\Libraries\Teamspeak;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -19,7 +19,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (!$this->_account->new_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
-            $registration = $this->createRegistration($this->_account->account_id, $registration_ip);
+            $registration = $this->createRegistration($this->_account->id, $registration_ip);
         } else {
             $registration = $this->_account->new_registration->load('confirmation');
         }
@@ -28,7 +28,7 @@ class Registration extends \App\Http\Controllers\BaseController
             $confirmation = $this->createConfirmation(
                 $registration->id,
                 md5($registration->created_at->timestamp),
-                $this->_account->account_id
+                $this->_account->id
             );
         } else {
             $confirmation = $registration->confirmation;
@@ -72,6 +72,8 @@ class Registration extends \App\Http\Controllers\BaseController
     // create a new registration model
     protected function createRegistration($accountID, $registrationIP)
     {
+        \Log::info($accountID);
+        \Log::info(\Auth::user());
         $_registration = new RegistrationModel();
         $_registration->account_id = $accountID;
         $_registration->registration_ip = $registrationIP;
@@ -87,7 +89,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $key_custominfo = "ident=registration_id value=" . $registrationID;
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = TeamspeakAdapter::run()
+        $_confirmation->privilege_key = \App\Libraries\Teamspeak::run()
                                       ->serverGroupGetByName('New')
                                       ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();
