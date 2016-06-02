@@ -40,12 +40,12 @@ class IdRefactoring extends Migration
             $table->renameColumn('permission_id', 'id');
         });
 
-        DB::statement('ALTER TABLE mship_note_type CHANGE note_type_id id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_note_type CHANGE note_type_id id INTEGER UNSIGNED AUTO_INCREMENT');
 
         Schema::table('mship_account_ban', function(Blueprint $table) {
             $table->dropForeign('mship_account_ban_reason_id_foreign');
         });
-        DB::statement('ALTER TABLE mship_ban_reason CHANGE ban_reason_id id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_ban_reason CHANGE ban_reason_id id INTEGER UNSIGNED AUTO_INCREMENT');
         Schema::table('mship_account_ban', function(Blueprint $table) {
             $table->foreign('reason_id')->references('id')->on('mship_ban_reason')
                 ->onDelete('restrict')
@@ -128,12 +128,12 @@ class IdRefactoring extends Migration
             $table->renameColumn('id', 'permission_id');
         });
 
-        DB::statement('ALTER TABLE mship_note_type CHANGE id note_type_id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_note_type CHANGE id note_type_id INTEGER UNSIGNED AUTO_INCREMENT');
 
         Schema::table('mship_account_ban', function(Blueprint $table) {
             $table->dropForeign('mship_account_ban_reason_id_foreign');
         });
-        DB::statement('ALTER TABLE mship_ban_reason CHANGE id ban_reason_id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_ban_reason CHANGE id ban_reason_id INTEGER UNSIGNED AUTO_INCREMENT');
         Schema::table('mship_account_ban', function(Blueprint $table) {
             $table->foreign('reason_id')->references('ban_reason_id')->on('mship_ban_reason')
                 ->onDelete('restrict')

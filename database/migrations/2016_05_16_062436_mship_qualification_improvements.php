@@ -20,7 +20,7 @@ class MshipQualificationImprovements extends Migration
         }
 
         // migrate qualification_id to id
-        DB::statement('ALTER TABLE mship_qualification CHANGE qualification_id id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_qualification CHANGE qualification_id id INTEGER UNSIGNED AUTO_INCREMENT');
     }
 
     /**
@@ -33,6 +33,6 @@ class MshipQualificationImprovements extends Migration
         // do not add 'unique' constraint back
 
         // rollback id to qualification_id
-        DB::statement('ALTER TABLE mship_qualification CHANGE id qualification_id INTEGER UNSIGNED');
+        DB::statement('ALTER TABLE mship_qualification CHANGE id qualification_id INTEGER UNSIGNED AUTO_INCREMENT');
     }
 }
