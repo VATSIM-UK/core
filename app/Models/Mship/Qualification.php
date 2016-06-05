@@ -96,6 +96,6 @@ class Qualification extends \Eloquent
 
     public function __toString()
     {
-        // TODO: Implement __toString() method.
+        return $this->code;
     }
 }

@@ -4,23 +4,16 @@ namespace App\Models\Mship;
 
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Http\Controllers\Mship\Security;
-use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
-use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Account\Qualification as AccountQualification;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Qualification;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
-use Bus;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -402,28 +395,28 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getQualificationAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'atc';
+            return $qual->type == 'atc';
         })->first();
     }
 
     public function getQualificationsAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'atc';
+            return $qual->type == 'atc';
         });
     }
 
     public function getQualificationsAtcTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'training_atc';
+            return $qual->type == 'training_atc';
         });
     }
 
     public function getQualificationsPilotAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'pilot';
+            return $qual->type == 'pilot';
         });
     }
 
@@ -431,7 +424,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->qualification->code . ', ';
+            $output .= $p->code . ', ';
         }
         if ($output == '') {
             $output = 'None';
@@ -443,14 +436,14 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getQualificationsPilotTrainingAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'training_pilot';
+            return $qual->type == 'training_pilot';
         });
     }
 
     public function getQualificationsAdminAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
-            return $qual->qualification->type == 'admin';
+            return $qual->type == 'admin';
         });
     }
 
@@ -1091,10 +1084,10 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $array[ 'name_real' ]    = $this->real_name;
         $array[ 'email' ]        = $this->email;
         $array[ 'atc_rating' ]   = $this->qualification_atc;
-        $array[ 'atc_rating' ]   = ($array[ 'atc_rating' ] ? $array[ 'atc_rating' ]->qualification->name_long : '');
+        $array[ 'atc_rating' ]   = ($array[ 'atc_rating' ] ? $array[ 'atc_rating' ]->name_long : '');
         $array[ 'pilot_rating' ] = [];
         foreach ($this->qualifications_pilot as $rp) {
-            $array[ 'pilot_rating' ][] = $rp->qualification->code;
+            $array[ 'pilot_rating' ][] = $rp->code;
         }
         $array[ 'pilot_rating' ] = implode(', ', $array[ 'pilot_rating' ]);
 
