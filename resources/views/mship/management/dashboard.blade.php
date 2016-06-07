@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 <b>CID:</b>
-                                {{ $_account->account_id }}
+                                {{ $_account->id }}
                             </div>
 
                             <div class="col-xs-4">
