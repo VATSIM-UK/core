@@ -140,8 +140,8 @@
 
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at->diffForHumans() }}</em>
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
+                                                <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -151,8 +151,8 @@
 
                                         @foreach($_account->qualifications_atc_training as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at }}</em>
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
+                                                <em>granted {{ $qual->pivot->created_at }}</em>
                                             </a>
                                             <br />
                                         @endforeach
