@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\Sys\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class MshipTest extends TestCase
 {
     use DatabaseTransactions;
-
-
+    
     /** @test */
     public function it_loads_ok(){
         $this->visit("/");
@@ -36,6 +36,7 @@ class MshipTest extends TestCase
 
     /** @test */
     public function it_redirects_to_the_dashboard_when_viewing_the_root_url_when_logged_in_without_notifications_to_read(){
+        Notification::getQuery()->delete();
         $account = factory(\App\Models\Mship\Account::class)->create();
 
         $this->actingAs($account);
@@ -74,6 +75,7 @@ class MshipTest extends TestCase
 
     /** @test */
     public function it_redirects_to_the_dashboard_even_though_a_general_notification_is_unread(){
+        Notification::getQuery()->delete();
         $account = factory(\App\Models\Mship\Account::class)->create();
         $mustReadNotification = factory(\App\Models\Sys\Notification::class)->create();
 
