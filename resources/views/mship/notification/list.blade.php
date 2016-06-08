@@ -43,7 +43,7 @@
                         </div>
                         <div id="collapse<?=$notice->id?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<?=$notice->id?>">
                             <div class="panel-body">
-                                {{ nl2br($notice->content) }}
+                                {!! nl2br($notice->content) !!}
 
                                 {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->id], "class" => "form-horizontal"]) !!}
                                     @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)

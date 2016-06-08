@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
@@ -9,38 +10,27 @@ use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Jobs\Mship\Account\Ban\SendCreationEmail;
 use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
 use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
+use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Note;
+use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
+use App\Models\Mship\Note\Type as NoteTypeData;
+use App\Models\Mship\Role as RoleData;
 use Auth;
-use Bus;
-use Config;
 use DB;
 use Illuminate\Support\Collection;
 use Input;
-use App\Models\Mship\Account as AccountData;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Account\Security as AccountSecurityData;
-use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Mship\Security as SecurityData;
 use Redirect;
-use Request;
-use Response;
 use Session;
 use URL;
-use VatsimSSO;
-use View;
 
-class Account extends \App\Http\Controllers\Adm\AdmController
+class Account extends AdmController
 {
 
     public function getIndex($scope = "division")
     {
-        $totalMembers = AccountData::count();
-        $memberSearch = new AccountData;
-
         // Sorting and searching!
         $sortBy = in_array(Input::get("sort_by"),
             ["id", "name_first", "name_last"]) ? Input::get("sort_by") : "id";
@@ -50,7 +40,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $memberSearch = AccountData::isNotSystem()
                                    ->orderBy($sortBy, $sortDir)
                                    ->with("qualifications")
-                                   ->with("qualifications.qualification")
                                    ->with("states")
                                    ->with("secondaryEmails");
 
@@ -67,22 +56,20 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     AccountData::STATUS_NETWORK_SUSPENDED);
                 break;
             case "nondivision":
-                $memberSearch = \App\Models\Mship\Account\State::where("state", "!=",
-                    \App\Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = AccountData\State::where("state", "!=",
+                    AccountData\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
-                                                               ->with("account.qualifications.qualification")
                                                                ->with("account.states")
                                                                ->with("account.secondaryEmails")
                                                                ->orderBy("id", "ASC");
                 break;
             case "division":
             default:
-                $memberSearch = \App\Models\Mship\Account\State::where("state", "=",
-                    \App\Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = AccountData\State::where("state", "=",
+                    AccountData\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
-                                                               ->with("account.qualifications.qualification")
                                                                ->with("account.states")
                                                                ->with("account.secondaryEmails")
                                                                ->orderBy("id", "ASC");
@@ -127,17 +114,12 @@ class Account extends \App\Http\Controllers\Adm\AdmController
             "roles", "roles.permissions",
             "qualifications",
             "states",
-            "secondaryEmails",
-            "security",
-            "security.security"
+            "secondaryEmails"
         );
 
         // Get all possible roles!
         $availableRoles = RoleData::all()
                                   ->diff($account->roles);
-
-        // Get all possible security levels.
-        $securityLevels = SecurityData::all();
 
         // Get all ban reasons.
         $banReasons = Reason::all();
@@ -157,7 +139,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     ->with("selectedTabId", $tabId)
                     ->with("account", $account)
                     ->with("availableRoles", $availableRoles)
-                    ->with("securityLevels", $securityLevels)
                     ->with("banReasons", $banReasons)
                     ->with("noteTypes", $noteTypes)
                     ->with("noteTypesAll", $noteTypesAll);

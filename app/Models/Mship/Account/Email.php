@@ -19,7 +19,6 @@ use Validator;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read mixed $is_verified
- * @property-read mixed $is_primary
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
@@ -32,9 +31,8 @@ use Validator;
  */
 class Email extends \Eloquent
 {
-
     protected $table      = "mship_account_email";
-    protected $dates      = ['verified_at', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['verified_at', 'created_at', 'updated_at'];
     protected $fillable   = ['email'];
     protected $touches    = ['account'];
 
@@ -91,11 +89,6 @@ class Email extends \Eloquent
     public function getIsVerifiedAttribute()
     {
         return ($this->attributes['verified_at'] != null);
-    }
-
-    public function getIsPrimaryAttribute()
-    {
-        return ($this->attributes['is_primary'] == 1);
     }
 
     public function __toString()

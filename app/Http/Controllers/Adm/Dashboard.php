@@ -73,8 +73,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
         });
 
         $emails = Cache::remember("adm_dashboard_emailssearch_{$searchQuery}", 60, function () use ($searchQuery) {
-            return AccountEmail::withTrashed()
-                ->where("email", "LIKE", "%" . $searchQuery . "%")
+            return AccountEmail::where("email", "LIKE", "%" . $searchQuery . "%")
                 ->limit(25)
                 ->get();
         });
