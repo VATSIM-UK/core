@@ -76,7 +76,7 @@ class Ban extends \App\Models\aModel
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->where("period_finish", ">=", \Carbon\Carbon::now());
+        return $query->isNotRepealed()->whereNull("period_finish")->orWhere("period_finish", ">=", \Carbon\Carbon::now());
     }
 
     public static function scopeIsHistoric($query)
