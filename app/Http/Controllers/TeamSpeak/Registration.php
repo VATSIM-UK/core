@@ -1,11 +1,11 @@
-<?php namespace App\Http\Controllers\Teamspeak;
+<?php namespace App\Http\Controllers\TeamSpeak;
 
 use Redirect;
 use Response;
 use App\Models\Mship\Account;
-use App\Models\Teamspeak\Registration as RegistrationModel;
-use App\Models\Teamspeak\Confirmation as ConfirmationModel;
-use App\Libraries\Teamspeak;
+use App\Models\TeamSpeak\Registration as RegistrationModel;
+use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
+use App\Libraries\TeamSpeak;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -35,7 +35,7 @@ class Registration extends \App\Http\Controllers\BaseController
         }
 
         $autoURL = "ts3server://" . $_ENV['TS_HOST'] . "?nickname=" . $this->_account->name_first . "%20";
-        $autoURL.= $this->_account->name_last ." &amp;token=" . $confirmation->privilege_key;
+        $autoURL.= $this->_account->name_last . "&amp;token=" . $confirmation->privilege_key;
 
         $this->_pageTitle = "New Registration";
         $view = $this->viewMake("teamspeak.new")
@@ -63,7 +63,7 @@ class Registration extends \App\Http\Controllers\BaseController
     public function postStatus($registration)
     {
         if ($this->_account->id == $registration->account_id) {
-            return Response::make($registration->status);
+            return ($registration->dbid === NULL) ? Response::make('new') : Response::make('active');
         } else {
             return Response::make("Cannot retrieve registration status.");
         }
@@ -77,7 +77,6 @@ class Registration extends \App\Http\Controllers\BaseController
         $_registration = new RegistrationModel();
         $_registration->account_id = $accountID;
         $_registration->registration_ip = $registrationIP;
-        $_registration->status = "new";
         $_registration->save();
         return $_registration;
     }
@@ -89,7 +88,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $key_custominfo = "ident=registration_id value=" . $registrationID;
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = \App\Libraries\Teamspeak::run()
+        $_confirmation->privilege_key = \App\Libraries\TeamSpeak::run()
                                       ->serverGroupGetByName('New')
                                       ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();

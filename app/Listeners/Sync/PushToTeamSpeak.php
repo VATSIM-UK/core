@@ -6,7 +6,7 @@ use App\Events\Mship\AccountBanTouch;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PushToTeamspeak
+class PushToTeamSpeak
 {
     public function __construct()
     {

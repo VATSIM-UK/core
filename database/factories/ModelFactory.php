@@ -56,3 +56,33 @@ $factory->define(App\Models\Mship\Role::class, function ($faker) {
         "password_lifetime"  => 0,
     ];
 });
+
+$factory->define(App\Models\Teamspeak\Channel::class, function(Faker\Generator $faker) {
+    return [
+        'id' => $faker->numberBetween(1, 65535),
+        'name' => $faker->text($maxNbChars = 30),
+    ];
+});
+
+$factory->define(\App\Models\Teamspeak\ServerGroup::class, function(Faker\Generator $faker) {
+    return [
+        'dbid' => $faker->numberBetween(1, 65535),
+        'name' => $faker->text($maxNbChars = 30),
+        'type' => 's'
+    ];
+});
+
+$factory->define(\App\Models\Teamspeak\ChannelGroup::class, function(Faker\Generator $faker) {
+    return [
+        'dbid' => $faker->numberBetween(1, 65535),
+        'name' => $faker->text($maxNbChars = 30),
+        'type' => 'c'
+    ];
+});
+
+$factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->regexify('([A-Z0-9._ ]{1,10}\/){2}testpermission'),
+        'display_name' => $faker->text($maxNbChars = 30),
+    ];
+});

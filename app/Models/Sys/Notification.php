@@ -36,7 +36,7 @@ class Notification extends \App\Models\aModel {
 
     protected $table = "sys_notification";
     protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'effective_at'];
     protected $hidden = ['id'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.

@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="col-md-6 col-xs-12 col-sm-12">
                         <p>
-                        <li>Open Teamspeak 3</li>
+                        <li>Open TeamSpeak 3</li>
                         <li>Click "Connections" > "Connect"</li>
                         <li>
                             Click the "More" tab so that you are presented with a connection settings screen

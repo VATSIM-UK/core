@@ -21,7 +21,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController {
     public function getIndex() {
         // ORM it all!
         $roles = RoleData::orderBy("name", "ASC")
-                         ->with("accounts")->with("permissions")
+                         ->with("permissions")
                          ->get();
 
         return $this->viewMake("adm.mship.role.index")

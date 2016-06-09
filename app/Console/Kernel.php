@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\TestCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -20,8 +21,10 @@ class Kernel extends ConsoleKernel
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
         Commands\SyncMentors::class,
-        Commands\TeamspeakManager::class,
-        Commands\TeamspeakCleanup::class,
+        Commands\TeamSpeakManager::class,
+        Commands\TeamSpeakCleanup::class,
+        Commands\TeamSpeakDaemon::class,
+        Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
 
         \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,

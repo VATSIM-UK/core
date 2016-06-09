@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Libraries\Teamspeak;
+use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
-use App\Models\Teamspeak\Registration;
+use App\Models\TeamSpeak\Registration;
 use Carbon\Carbon;
 use Exception;
 
-class TeamspeakCleanup extends aCommand {
+class TeamSpeakCleanup extends aCommand {
 
     /**
      * The console command name.
@@ -28,7 +28,7 @@ class TeamspeakCleanup extends aCommand {
     
     protected function initialise()
     {
-        $this->tscon = Teamspeak::run('VATSIM UK Cleanup Bot');
+        $this->tscon = TeamSpeak::run('VATSIM UK Cleanup Bot');
     }
     
     /**
@@ -55,7 +55,7 @@ class TeamspeakCleanup extends aCommand {
         // check Core database for incomplete registrations and registrations older than 6 months
         $old_registrations = Registration::where('last_login', '<', Carbon::now()->subMonths(6))
             ->orWhere(function ($query) {
-                $query->where('status', '=', 'new')
+                $query->whereNull('dbid')
                     ->where('created_at', '<', Carbon::now()->subWeek()->toDateTimeString());
             })->get();
 

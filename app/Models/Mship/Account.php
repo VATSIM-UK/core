@@ -60,12 +60,14 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\State[] $states
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[] $ssoTokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Teamspeak\Registration[] $teamspeakRegistrations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readNotifications
  * @property-read mixed $unread_notifications
+ * @property-read mixed $unread_must_acknowledge_notifications
  * @property-read mixed $has_unread_notifications
  * @property-read mixed $has_unread_important_notifications
  * @property-read mixed $has_unread_must_acknowledge_notifications
+ * @property-read mixed $unread_must_acknowledge_time_elapsed
  * @property-read mixed $qualification_atc
  * @property-read mixed $qualifications_atc
  * @property-read mixed $qualifications_atc_training
@@ -342,7 +344,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function teamspeakRegistrations()
     {
-        return $this->hasMany(\App\Models\Teamspeak\Registration::class, 'account_id');
+        return $this->hasMany(\App\Models\TeamSpeak\Registration::class, 'account_id');
     }
 
     public function readNotifications()
@@ -368,6 +370,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         // The difference between the two MUST be the ones that are unread, right?
         return $allNotifications->diff($readNotifications);
     }
+    
+    public function getUnreadMustAcknowledgeNotificationsAttribute()
+    {
+        return $this->unread_notifications->filter(function ($notification) {
+            return $notification->status === SysNotification::STATUS_MUST_ACKNOWLEDGE;
+        });
+    }
 
     public function getHasUnreadNotificationsAttribute()
     {
@@ -392,10 +401,41 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $unreadNotifications->count() > 0;
     }
 
+    /**
+     * Calculates the amount of time that has lapsed since the notification became effective.
+     * 
+     * @return int Period the notification has been effective for, in hours.
+     */
+    public function getUnreadMustAcknowledgeTimeElapsedAttribute()
+    {
+        if ($this->has_unread_must_acknowledge_notifications) {
+            return $this->unread_must_acknowledge_notifications
+                ->sortBy('effective_at')
+                ->first()
+                ->effective_at
+                ->diffInHours(Carbon::now(), true);
+        } else {
+            return 0;
+        }
+    }
+    
+    public function getActiveQualificationsAttribute()
+    {
+        $this->load('qualifications');
+        
+        return $this->qualifications_pilot
+            ->merge($this->qualifications_atc_training)
+            ->merge($this->qualifications_pilot_training)
+            ->merge($this->qualifications_admin)
+            ->push($this->qualification_atc);
+    }
+    
     public function getQualificationAtcAttribute()
     {
         return $this->qualifications->filter(function ($qual) {
             return $qual->type == 'atc';
+        })->sortByDesc(function ($qualification, $key) {
+            return $qualification->pivot->created_at;
         })->first();
     }
 
@@ -1113,14 +1153,14 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function getNewRegistrationAttribute()
     {
         return $this->teamspeakRegistrations->filter(function ($reg) {
-            return $reg->status == 'new';
+            return is_null($reg->dbid);
         })->first();
     }
 
     public function getConfirmedRegistrationsAttribute()
     {
         return $this->teamspeakRegistrations->filter(function ($reg) {
-            return $reg->status != 'new';
+            return !is_null($reg->dbid);
         });
     }
 

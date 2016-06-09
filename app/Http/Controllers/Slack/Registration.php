@@ -4,9 +4,9 @@ use App\Models\Sys\Token;
 use Redirect;
 use Response;
 use App\Models\Mship\Account;
-use App\Models\Teamspeak\Registration as RegistrationModel;
-use App\Models\Teamspeak\Confirmation as ConfirmationModel;
-use App\Libraries\Teamspeak;
+use App\Models\TeamSpeak\Registration as RegistrationModel;
+use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
+use App\Libraries\TeamSpeak;
 use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController

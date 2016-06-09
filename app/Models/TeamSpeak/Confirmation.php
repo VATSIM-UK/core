@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Models\TeamSpeak;
+
+use App\Models\TeamSpeak\Registration;
+use App\Traits\RecordsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+
+/**
+ * App\Models\TeamSpeak\Confirmation
+ *
+ * @property integer $registration_id
+ * @property string $privilege_key
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read Registration $registration
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereRegistrationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+class Confirmation extends \App\Models\aModel
+{
+    use RecordsActivity;
+
+    public $incrementing = false;
+    protected $table      = 'teamspeak_confirmation';
+    protected $primaryKey = 'registration_id';
+
+    public function registration()
+    {
+        return $this->belongsTo(Registration::class, 'registration_id', 'id');
+    }
+}

@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Account;
 
 use App\Traits\RecordsActivity;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $is_expired
  * @property-read mixed $type_string
  * @property-read mixed $period_amount_string
+ * @property-read mixed $period_left
  * @property-read mixed $display_value
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
@@ -76,7 +78,7 @@ class Ban extends \App\Models\aModel
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->whereNull("period_finish")->orWhere("period_finish", ">=", \Carbon\Carbon::now());
+        return $query->isNotRepealed()->where("period_finish", ">=", \Carbon\Carbon::now())->orWhereNull("period_finish");
     }
 
     public static function scopeIsHistoric($query)
@@ -167,6 +169,11 @@ class Ban extends \App\Models\aModel
     public function getPeriodAmountStringAttribute()
     {
         return human_diff_string($this->period_start, $this->period_finish);
+    }
+    
+    public function getPeriodLeftAttribute()
+    {
+        return Carbon::now()->diffInSeconds($this->period_finish, true);
     }
 
     public function getDisplayValueAttribute()
