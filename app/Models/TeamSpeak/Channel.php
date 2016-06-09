@@ -7,16 +7,9 @@ use App\Models\aModel as Model;
 /**
  * App\Models\TeamSpeak\Channel
  *
- * @property integer $id
- * @property integer $parent_id
- * @property string $name
- * @property boolean $protected
  * @property-read \App\Models\TeamSpeak\Channel $parent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereProtected($value)
+ * @property-read mixed $protected
  * @mixin \Eloquent
  */
 class Channel extends Model

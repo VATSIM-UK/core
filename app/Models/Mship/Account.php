@@ -68,6 +68,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read mixed $has_unread_important_notifications
  * @property-read mixed $has_unread_must_acknowledge_notifications
  * @property-read mixed $unread_must_acknowledge_time_elapsed
+ * @property-read mixed $active_qualifications
  * @property-read mixed $qualification_atc
  * @property-read mixed $qualifications_atc
  * @property-read mixed $qualifications_atc_training
@@ -93,8 +94,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read mixed $name
  * @property-read mixed $full_name
  * @property-read mixed $display_value
- * @property-read mixed $new_registration
- * @property-read mixed $confirmed_registrations
+ * @property-read mixed $new_ts_registration
  * @property-read mixed $session_timeout
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
@@ -1150,18 +1150,11 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->states()->save(new Account\State(['state' => $state]));
     }
 
-    public function getNewRegistrationAttribute()
+    public function getNewTsRegistrationAttribute()
     {
         return $this->teamspeakRegistrations->filter(function ($reg) {
             return is_null($reg->dbid);
         })->first();
-    }
-
-    public function getConfirmedRegistrationsAttribute()
-    {
-        return $this->teamspeakRegistrations->filter(function ($reg) {
-            return !is_null($reg->dbid);
-        });
     }
 
     /**

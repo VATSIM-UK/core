@@ -11,29 +11,21 @@ use TeamSpeak3;
 
 /**
  * App\Models\TeamSpeak\Registration
-  
-*
-*@property integer                                                         $id
- * @property integer                                                       $account_id
- * @property integer                                                       $registration_ip
- * @property integer                                                       $last_ip
- * @property string                                                        $last_login
- * @property string                                                        $last_os
- * @property string                                                        $uid
- * @property integer                                                       $dbid
- * @property \Carbon\Carbon                                                $created_at
- * @property \Carbon\Carbon                                                $updated_at
- * @property string                                                        $deleted_at
- * @property-read Confirmation                                             $confirmation
- * @property-read Account                                                  $account
- * @property-read \Illuminate\Database\Eloquent\Collection|TeamsSpeakLog[] $logs
- * @property-read mixed                                                    $last_idle_message
- * @property-read mixed                                                    $last_idle_poke
- * @property-read mixed                                                    $last_nickname_warn
- * @property-read mixed                                                    $last_nickname_kick
- * @property-read mixed                                                    $last_notification_important_poke
- * @property-read mixed                                                    $last_notification_must_acknowledge_poke
- * @property-read mixed                                                    $last_notification_must_acknowledge_kick
+ *
+ * @property integer $id
+ * @property integer $account_id
+ * @property integer $registration_ip
+ * @property integer $last_ip
+ * @property string $last_login
+ * @property string $last_os
+ * @property string $uid
+ * @property integer $dbid
+ * @property string $status
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $deleted_at
+ * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
+ * @property-read \App\Models\Mship\Account $account
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereRegistrationIp($value)
@@ -42,6 +34,7 @@ use TeamSpeak3;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereLastOs($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereUid($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDbid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDeletedAt($value)

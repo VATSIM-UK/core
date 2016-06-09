@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property integer $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property string $effective_at
+ * @property \Carbon\Carbon $effective_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $readBy
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)

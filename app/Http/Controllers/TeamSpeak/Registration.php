@@ -17,11 +17,11 @@ class Registration extends \App\Http\Controllers\BaseController
             return Redirect::route("mship.manage.dashboard");
         }
 
-        if (!$this->_account->new_registration) {
+        if (!$this->_account->new_ts_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
             $registration = $this->createRegistration($this->_account->id, $registration_ip);
         } else {
-            $registration = $this->_account->new_registration->load('confirmation');
+            $registration = $this->_account->new_ts_registration->load('confirmation');
         }
 
         if (!$registration->confirmation) {
