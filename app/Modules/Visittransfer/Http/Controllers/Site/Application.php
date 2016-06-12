@@ -154,7 +154,7 @@ class Application extends BaseController
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
         $application->load("facility")->load("referees.account");
 
-        return $this->viewMake("visttransfer::site.application.view")
+        return $this->viewMake("visittransfer::site.application.view")
                     ->with("application", $application);
     }
 
