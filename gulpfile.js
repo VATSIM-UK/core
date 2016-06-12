@@ -1,9 +1,6 @@
 var elixir = require('laravel-elixir');
 
 elixir(function (mix) {
-    mix.sass('app.scss', "./resources/assets/css/app.css");
-    //mix.sass('app.scss', './public/css/adm.css');
-
     /* Concatenate all CSS */
     mix.sass([
         /*"jquery-ui.cupertino.1.11.4.css",
