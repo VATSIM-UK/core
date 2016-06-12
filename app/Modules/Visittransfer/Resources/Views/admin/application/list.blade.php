@@ -92,14 +92,10 @@
                                 <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $a->applicant->email : "[ No Permission ]" }}</td>
                                 <td>{{ $a->type_string }} - {{ $a->facility->name }}</td>
                                 <td class="text-center">
-                                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $a->created_at }}">
-                                        {{ $a->created_at->diffForHumans() }}
-                                    </a>
+                                    {!! HTML::fuzzyDate($a->created_at) !!}
                                 </td>
                                 <td class="text-center">
-                                    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $a->updated_at }}">
-                                        {{ $a->updated_at->diffForHumans() }}
-                                    </a>
+                                    {!! HTML::fuzzyDate($a->updated_at) !!}
                                 </td>
                                 <td class="text-center">{!! $a->is_open ? '<span class="label label-success">'.$a->status_string.'</span>' : '<span class="label label-danger">'.$a->status_string.'</span>' !!}</td>
                             </tr>
