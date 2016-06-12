@@ -127,7 +127,7 @@
         <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-right">
-                <li class="pull-left header"><i class="fa fa-inbox"></i> Visiting &amp: Transferring Statistics (Last 180 days)</li>
+                <li class="pull-left header"><i class="fa fa-inbox"></i>Visiting &amp; Transferring Statistics (Last 180 days)</li>
             </ul>
             <div id="visit-transfer-statistics-chart" style="position: relative; height: 300px;"></div>
         </div><!-- /.nav-tabs-custom -->
