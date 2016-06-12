@@ -1,24 +1,20 @@
-$font-family: Calibri, Tahoma, Geneva, sans-serif;
+@import "../vendor/bootstrap3/css/bootstrap";
+@import "../vendor/bootstrap3/css/bootstrap-theme";
+@import "../vendor/ionicons/ionicons.2.0.1.min";
+@import "../vendor/font-awesome/font-awesome.4.5.0.min";
 
 root {
   display: block;
 }
 
-.container-fluid {
+.container-fluid{
   padding: 0px;
-}
-
-.row-eq-height {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;
 }
 
 body, html {
   margin: 0 auto;
   font-size: 14px;
-  font-family: $font-family;
+  font-family: Calibri, Tahoma, Geneva, sans-serif;
   background: #e3e3e3;
 }
 
@@ -26,7 +22,7 @@ body, html {
   width: 100%;
 }
 
-.nav_upper_container {
+.nav_upper_container{
   width: 100%;
   height: 90px;
   background: #17375e;
@@ -62,6 +58,7 @@ body, html {
 
 .navbar-brand {
   padding-top: 25px;
+  width: 80%;
   height: 100%
 }
 
@@ -75,10 +72,10 @@ body, html {
   background: #0850a0;
 }
 
-.banner {
+.banner{
   width: 100%;
   height: 350px;
-  background: url("../../../assets/images/banner_slide_generic_1.jpg");
+  background: url("../../assets/images/banner_slide_generic_1.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -90,13 +87,13 @@ body, html {
   height: 260px;
 }
 
-.breadcrumb_container {
+.breadcrumb_container{
   width: 100%;
   height: 35px;
   background: #F5F5F5;
 }
 
-.breadcrumb_content {
+.breadcrumb_content{
   margin: 0 auto;
   padding-top: 10px;
   width: 80%;
@@ -110,19 +107,19 @@ body, html {
   height: 90px;
 }
 
-.notification_container {
-  width: 100%;
+.notification_container{
+  width:100%;
   padding: 15px;
   padding-bottom: 15px;
   background: #17375e;
   color: white;
 }
 
-.event_thumbs_container {
+.event_thumbs_container{
   padding: 15px;
 }
 
-.page_content {
+.page_content{
   margin: 0 auto;
   padding-top: 40px;
   width: 90%;
@@ -132,27 +129,27 @@ body, html {
   text-align: center;
 }
 
-.align_left {
-  text-align: left;
+.align_left{
+  text-align:left;
 }
 
-.align_center {
-  text-align: center;
+.align_center{
+  text-align:center;
 }
 
-.align_right {
-  text-align: right;
+.align_right{
+  text-align:right;
 }
 
 /* Bootstrap Overwrite */
 
-.panel-ukblue {
+.panel-ukblue{
   border: 0px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 }
 
-.panel-ukblue > .panel-heading {
+.panel-ukblue > .panel-heading{
   background-color: #17375e;
   border-color: #17375E;
   color: white;
@@ -162,7 +159,7 @@ body, html {
 
 /* Airfield Data CSS */
 
-.runway_container {
+.runway_container{
   margin: 0 auto;
   width: 98%;
   min-height: 75px;
@@ -170,22 +167,22 @@ body, html {
   border: 2px solid #e3e3e3;
 }
 
-.runay_active {
+.runay_active{
   border: 2px solid #5CB85C;
 }
 
-.runway_name {
+.runway_name{
   margin-top: -20px;
 }
 
-.runway_bg_fill {
+.runway_bg_fill{
   padding: 5px;
   padding-left: 9px;
   padding-right: 9px;
   background: white;
 }
 
-.runway_info {
+.runway_info{
   padding-top: 13px;
 }
 

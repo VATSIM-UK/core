@@ -28,9 +28,9 @@
                 @foreach($unreadNotifications as $notice)
 
                     <div class="panel panel-{{ $notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
-                        <div class="panel-heading" role="tab" id="heading<?=$notice->notification_id?>">
+                        <div class="panel-heading" role="tab" id="heading<?=$notice->id?>">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#unreadNotifications" href="#collapse<?=$notice->notification_id?>" aria-expanded="false" aria-controls="collapse<?=$notice->notification_id?>">
+                                <a data-toggle="collapse" data-parent="#unreadNotifications" href="#collapse<?=$notice->id?>" aria-expanded="false" aria-controls="collapse<?=$notice->id?>">
                                     [Effective: {{ $notice->effective_at }}] {{ $notice->title }}
 
                                     @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
@@ -41,11 +41,11 @@
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapse<?=$notice->notification_id?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<?=$notice->notification_id?>">
+                        <div id="collapse<?=$notice->id?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<?=$notice->id?>">
                             <div class="panel-body">
-                                {{ nl2br($notice->content) }}
+                                {!! nl2br($notice->content) !!}
 
-                                {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->notification_id], "class" => "form-horizontal"]) !!}
+                                {!! Form::open(["route" => ["mship.notification.acknowledge", $notice->id], "class" => "form-horizontal"]) !!}
                                     @if($notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE)
                                         <div class="form-group">
                                             <div class="col-sm-offset-5 col-sm-7">
@@ -83,14 +83,14 @@
                 @foreach($readNotifications as $notice)
 
                     <div class="panel panel-{{ $notice->status == \App\Models\Sys\Notification::STATUS_MUST_ACKNOWLEDGE ? "danger" : ($notice->status == \App\Models\Sys\Notification::STATUS_IMPORTANT ? "warning" : "default") }}">
-                        <div class="panel-heading" role="tab" id="heading<?=$notice->notification_id?>">
+                        <div class="panel-heading" role="tab" id="heading<?=$notice->id?>">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#readNotifications" href="#collapse<?=$notice->notification_id?>" aria-expanded="false" aria-controls="collapse<?=$notice->notification_id?>">
+                                <a data-toggle="collapse" data-parent="#readNotifications" href="#collapse<?=$notice->id?>" aria-expanded="false" aria-controls="collapse<?=$notice->id?>">
                                     [Effective: {{ $notice->effective_at }}] {{ $notice->title }}
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapse<?=$notice->notification_id?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<?=$notice->notification_id?>">
+                        <div id="collapse<?=$notice->id?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<?=$notice->id?>">
                             <div class="panel-body">
                                 <div class="text-right"><em>You first read this notification on {{ $notice->pivot->created_at }}</em></div>
                                 {{ nl2br($notice->content) }}

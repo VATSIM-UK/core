@@ -10,20 +10,18 @@ use Carbon\Carbon;
 /**
  * App\Models\Mship\Qualification
  *
- * @property integer        $qualification_id
- * @property string         $code
- * @property string         $type
- * @property string         $name_small
- * @property string         $name_long
- * @property string         $name_grp
- * @property integer        $vatsim
+ * @property integer $id
+ * @property string $code
+ * @property string $type
+ * @property string $name_small
+ * @property string $name_long
+ * @property string $name_grp
+ * @property integer $vatsim
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereQualificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCode($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameSmall($value)
@@ -33,15 +31,17 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  * @mixin \Eloquent
  */
 class Qualification extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
     protected $table = "mship_qualification";
-    protected $primaryKey = "qualification_id";
+    protected $primaryKey = "id";
     protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['qualification_id'];
+    protected $hidden = ['id'];
 
     public function scopeOfType($query, $type)
     {
@@ -96,6 +96,6 @@ class Qualification extends \Eloquent
 
     public function __toString()
     {
-        return $this->attributes['name_long'];
+        return $this->code;
     }
 }

@@ -9,23 +9,18 @@ use Carbon\Carbon;
 /**
  * App\Models\Mship\Note\Type
  *
- * @property integer                                                                        $note_type_id
- * @property string                                                                         $name
- * @property string                                                                         $short_code
- * @property boolean                                                                        $is_available
- * @property boolean                                                                        $is_system
- * @property boolean                                                                        $is_default
- * @property string                                                                         $colour_code
- * @property \Carbon\Carbon                                                                 $created_at
- * @property \Carbon\Carbon                                                                 $updated_at
- * @property \Carbon\Carbon                                                                 $deleted_at
+ * @property integer $id
+ * @property string $name
+ * @property string $short_code
+ * @property boolean $is_available
+ * @property boolean $is_system
+ * @property boolean $is_default
+ * @property string $colour_code
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereNoteTypeId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
@@ -35,6 +30,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
  * @mixin \Eloquent
  */
 class Type extends \Eloquent
@@ -43,7 +43,7 @@ class Type extends \Eloquent
     use RecordsActivityTrait;
 
     protected $table      = "mship_note_type";
-    protected $primaryKey = "note_type_id";
+    protected $primaryKey = "id";
     protected $dates      = ['created_at', 'deleted_at'];
     protected $fillable   = ['name', 'short_code', 'is_available', 'is_default'];
 
@@ -90,13 +90,13 @@ class Type extends \Eloquent
 
     public function notes()
     {
-        return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "note_type_id");
+        return $this->hasMany("\App\Models\Mship\Account\Note", "note_type_id", "id");
     }
 
     public function save(array $options = [])
     {
         $oldDefault = Type::findDefault();
-        if ($oldDefault && $oldDefault->exists && $this->is_default && $oldDefault->note_type_id != $this->note_type_id) {
+        if ($oldDefault && $oldDefault->exists && $this->is_default && $oldDefault->id != $this->id) {
             $oldDefault->is_default = 0;
             $oldDefault->save();
         }

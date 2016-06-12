@@ -60,7 +60,7 @@ class StatisticsDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
             $eloquentController = Atc::firstOrCreate([
                 "account_id" => $controllerData['cid'],
                 "callsign" => $controllerData['callsign'],
-                "qualification_id" => $qualification->qualification_id,
+                "qualification_id" => $qualification->id,
                 "facility_type" => $controllerData['facilitytype'],
                 "deleted_at" => NULL, // Must be here as firstOrCreate doesn't honour softDeletes
             ]);

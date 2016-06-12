@@ -14,7 +14,7 @@ namespace App\Models\Sys\Data;
  * @property boolean $automatic
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Sys\Data\Change $model
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataChangeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelType($value)

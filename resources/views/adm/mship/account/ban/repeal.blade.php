@@ -29,7 +29,7 @@
                     possible to amend your comments.
                 </p>
 
-                {!! Form::open(["route" => ["adm.mship.ban.repeal", $ban->account_ban_id]]) !!}
+                {!! Form::open(["route" => ["adm.mship.ban.repeal", $ban->id]]) !!}
                     <div class="form-group">
                         <label for="reason">Reason for repeal</label>
                         <textarea name="reason" class="form-control" rows="5">{{ old('reason') }}</textarea>
@@ -37,7 +37,7 @@
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-left">
-                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
+                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->id], ["class" => "btn btn-danger"]) !!}
                         </div>
                         <div class="btn-group pull-right">
                             {!! Form::submit("Repeal Ban (Cannot be undone)", ["class" => "btn btn-danger"]) !!}

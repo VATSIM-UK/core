@@ -13,9 +13,6 @@
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/role"))
                         <li {{ $selectedTab == "role" ? "class='active'" : "" }}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security"))
-                        <li {{ $selectedTab == "security" ? "class='active'" : "" }}><a href="#security" role="tab" data-toggle="tab">Security Details</a></li>
-                    @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
                         <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
@@ -61,7 +58,7 @@
                                         <label for="name">Name:</label>
                                         {{ $account->name }}
                                     </div>
-                                    @if($_account->hasPermission("adm/mship/account/view/email"))
+                                    @if($_account->hasPermission("adm/mship/account/email/view"))
                                         <div class="form-group">
                                             <label for="primary_email">Primary Email:</label>
                                             {{ $account->email }}
@@ -122,9 +119,9 @@
                                         <tbody>
                                             @foreach($account->qualifications as $q)
                                             <tr>
-                                                <td>{{ $q->qualification->type }}</td>
-                                                <td>{{ $q->qualification->code }}</td>
-                                                <td>{{ $q->created_at->diffForHumans() }}, {{ $q->created_at }}</td>
+                                                <td>{{ $q->type }}</td>
+                                                <td>{{ $q->code }}</td>
+                                                <td>{{ $q->pivot->created_at->diffForHumans() }}, {{ $q->pivot->created_at }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -203,12 +200,12 @@
                                             <tbody>
                                                 @foreach($account->roles as $r)
                                                 <tr>
-                                                    <td>{{ $r->role_id }}</td>
+                                                    <td>{{ $r->id }}</td>
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->role_id."/detach"))
-                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->role_id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->id."/detach"))
+                                                        <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
                                                 @endforeach
@@ -239,7 +236,7 @@
                                             <label for="role">Role</label>
                                             <select name="role">
                                                 @foreach($availableRoles as $ar)
-                                                <option value="{{ $ar->role_id }}">{{ $ar->name }}</option>
+                                                <option value="{{ $ar->id }}">{{ $ar->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -248,162 +245,6 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-success">Confirm</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                        </div>
-                    @endif
-
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security"))
-                        <div class="tab-pane fade {{ $selectedTab == "security" ? "in active" : "" }}" id="security">
-                            <!-- general form elements -->
-                            <div class="box box-primary">
-
-                                <div class="box-header">
-                                    <h3 class="box-title">Security</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-
-                                    <div class="btn-toolbar">
-                                        <div class="btn-group pull-right">
-                                            @if($account->current_security)
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/reset"))
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSecurityReset">Reset Password</button>
-                                                @endif
-
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/change"))
-                                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSecurityChange">Change Level</button>
-                                                @endif
-                                            @else
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/security/enable"))
-                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalSecurityEnable">Enable / Force</button>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="clearfix">&nbsp;</div>
-
-                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/view"))
-                                        <table class="table table-striped table-bordered table-condensed">
-                                            <thead>
-                                                <tr>
-                                                    <th>Security Level</th>
-                                                    <th>Created</th>
-                                                    <th>Expires</th>
-                                                    <th>Deleted?</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($account->security()->withTrashed()->get() as $s)
-                                                <tr>
-                                                    <td>{{ $s->security->name }}</td>
-                                                    <td>{{ $s->created_at->diffForHumans() }}, {{ $s->created_at }}</td>
-                                                    <td>{{ $s->expires_at == "0000-00-00 00:00:00" ? $s->expires_at->diffForHumans().", ".$s->expires_at : "Never"  }}</td>
-                                                    <td>{{ $s->deleted_at ? $s->deleted_at->diffForHumans().", ".$s->deleted_at : "Not Deleted" }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    @endif
-                                </div><!-- /.box-body -->
-                            </div><!-- /.box -->
-                        </div>
-                    @endif
-
-                    <!-- Modals -->
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/enable"))
-                        <div class="modal fade" id="modalSecurityEnable" tabindex="-1" role="dialog" aria-labelledby="Security Enable" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.enable", $account->id)]) !!}
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Enable Security Security</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            You can enable the secondary security for a user by choosing the security level and clicking "Confirm".  Once you do this,
-                                            the user will be requested to choose a secondary password on their next login to any of our Web Services.
-                                        </p>
-                                        <p>
-                                        <div class="form-group">
-                                            <label for="securityLevel">Security Level</label>
-                                            <select name="securityLevel">
-                                                @foreach($securityLevels as $sl)
-                                                <option value="{{ $sl->security_id }}">{{ $sl->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success">Confirm</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                        </div>
-                    @endif
-
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/reset"))
-                        <div class="modal fade" id="modalSecurityReset" tabindex="-1" role="dialog" aria-labelledby="Security Reset" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.reset", $account->id)]) !!}
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Reset Security Password</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            You can reset {{ $account->name }}'s security password by clicking confirm. This will despatch an email to the user
-                                            detailing how they can continue with the reset process.
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success">Confirm Reset</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                        </div>
-                    @endif
-
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/security/change"))
-                        <div class="modal fade" id="modalSecurityChange" tabindex="-1" role="dialog" aria-labelledby="Security Level Change" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.security.change", $account->id)]) !!}
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Change Security Level</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            You can change a user's current security level by selecting the new level below and confirming this action.
-                                            It's important to note that when you do this, it will force their current security to expire and a new one to be
-                                            created for them.
-                                        </p>
-                                        <p>
-                                        <div class="form-group">
-                                            <label for="securityLevel">Security Level</label>
-                                            <select name="securityLevel">
-                                                @foreach($securityLevels as $sl)
-                                                <option value="{{ $sl->security_id }}" {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "selected='selected'" : "" }}>
-                                                    {{ $sl->name }}  {{ $account->current_security && $sl->security_id == $account->current_security->security_id ? "(current)" : "" }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success">Confirm Reset</button>
                                     </div>
                                 </div>
                             </div>
@@ -459,7 +300,7 @@
                                             <label for="ban_reason_id">Ban Reason</label>
                                             <select name="ban_reason_id">
                                                 @foreach($banReasons as $br)
-                                                    <option value="{{ $br->ban_reason_id }}">{{ $br }}</option>
+                                                    <option value="{{ $br->id }}">{{ $br }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -512,7 +353,7 @@
 
                                         @if($_account->hasPermission("adm/mship/account/".$account->id."/note/view"))
                                             @foreach($account->notes as $note)
-                                                @if((array_key_exists($note->note_type_id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
+                                                @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
                                                     @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
@@ -536,7 +377,7 @@
                                             <div class="col-sm-4">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" name="filter[]" value="{{ $nt->note_type_id }}" {{ Input::get("filter.".$nt->note_type_id) ? "checked='checked'" : "" }} />
+                                                        <input type="checkbox" name="filter[]" value="{{ $nt->id }}" {{ Input::get("filter.".$nt->id) ? "checked='checked'" : "" }} />
                                                         {{ $nt->name }}
                                                     </label>
                                                 </div>
@@ -570,7 +411,7 @@
                                             <label for="note_type_id">Note Type</label>
                                             <select name="note_type_id" class="form-control selectpicker">
                                                 @foreach($noteTypes as $nt)
-                                                <option value="{{ $nt->note_type_id }}">
+                                                <option value="{{ $nt->id }}">
                                                     {{ $nt->name }}
                                                 </option>
                                                 @endforeach
@@ -642,7 +483,8 @@
                     <h3 class="box-title">Recent Activities</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body table-responsive">
-                    @include('adm.sys.activity.stream', ['activities' => $account->activity_recent])
+                    {{--@include('adm.sys.activity.stream', ['activities' => $account->activity_recent])--}}
+                    [Not implemented]
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

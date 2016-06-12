@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 <b>CID:</b>
-                                {{ $_account->account_id }}
+                                {{ $_account->id }}
                             </div>
 
                             <div class="col-xs-4">
@@ -140,8 +140,8 @@
 
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at->diffForHumans() }}</em>
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
+                                                <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -151,8 +151,8 @@
 
                                         @foreach($_account->qualifications_atc_training as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at }}</em>
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
+                                                <em>granted {{ $qual->pivot->created_at }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -278,7 +278,7 @@
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
                             &thinsp;
-                            Teamspeak Registrations
+                            TeamSpeak Registrations
                             <div class="pull-right">
                                 <a href="{{ route("teamspeak.new") }}">
                                     <i class="fa fa-plus-circle"></i>
@@ -306,9 +306,9 @@
                                                 </a>
 
                                                 <br />
-                                                @if ($tsreg->status == "new")
+                                                @if (is_null($tsreg->dbid))
                                                     <strong>STATUS</strong>: {!! link_to_route('teamspeak.new', 'New Registration') !!}<br />
-                                                @elseif ($tsreg->status == "active")
+                                                @elseif (!is_null($tsreg->dbid))
                                                     <strong>UNIQUE ID</strong>: {{ $tsreg->uid }}<br />
                                                     <strong>LAST IP</strong>: {{ $tsreg->last_ip }}<br />
                                                     <strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br />

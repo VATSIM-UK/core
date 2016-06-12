@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Adm;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Models\Mship\Account\Email as AccountEmail;
+use DB;
 use Session;
 use Response;
 use Redirect;
@@ -25,8 +26,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
             $statistics['members_pending_update'] = (\App\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
                 ->subDay()->toDateTimeString())->where('last_login', '>=', \Carbon\Carbon::now()
                 ->subMonths(3)->toDateTimeString())->count());
-            $statistics['members_qualifications'] = 0;
-//            $statistics['members_qualifications'] = (\App\Models\Mship\Account\Qualification::count());
+            $statistics['members_qualifications'] = (DB::table('mship_account_qualification')->count());
             return $statistics;
         });
 
@@ -73,8 +73,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
         });
 
         $emails = Cache::remember("adm_dashboard_emailssearch_{$searchQuery}", 60, function () use ($searchQuery) {
-            return AccountEmail::withTrashed()
-                ->where("email", "LIKE", "%" . $searchQuery . "%")
+            return AccountEmail::where("email", "LIKE", "%" . $searchQuery . "%")
                 ->limit(25)
                 ->get();
         });

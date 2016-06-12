@@ -97,14 +97,14 @@ class Management extends \App\Http\Controllers\BaseController
 
             // Let's see if the user has this system!
             $hasEmails = $userSsoEmails->filter(function ($ssoemail) use ($sys) {
-                return $ssoemail->sso_account_id == $sys->sso_account_id;
+                return $ssoemail->sso_account_id == $sys->id;
             });
             $hasEmails = $hasEmails->values();
 
             if ($hasEmails && count($hasEmails) > 0) {
-                $umEntry[ 'assigned_email_id' ] = $hasEmails[ 0 ]->id;
+                $umEntry[ 'assigned_email_id' ] = $hasEmails[0]->account_email_id;
             } else {
-                $umEntry[ 'assigned_email_id' ] = $userPrimaryEmail->id;
+                $umEntry[ 'assigned_email_id' ] = $userPrimaryEmail;
             }
 
             $userMatrix[] = $umEntry;
@@ -139,12 +139,12 @@ class Management extends \App\Http\Controllers\BaseController
         // NOW, let's go through all the other systems and check if we have NONE primary assignments
         foreach ($ssoSystems as $ssosys) {
             // SKIP PRIMARY ASSIGNMENTS!
-            if (Input::get("assign_" . $ssosys->sso_account_id, "pri") == "pri") {
+            if (Input::get("assign_" . $ssosys->id, "pri") == "pri") {
                 continue;
             }
 
             // We have an assignment - woohoo!
-            $assignedEmailID = Input::get("assign_" . $ssosys->sso_account_id);
+            $assignedEmailID = Input::get("assign_" . $ssosys->id);
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!

@@ -1,5 +1,5 @@
 <p>
-    Your access to all of the VATSIM United Kingdom services (Forum/Teamspeak/RTS System) has been revoked for {{ $ban->period_amount_string }}.  This is due to the following reason:
+    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS System) has been revoked for {{ $ban->period_amount_string }}.  This is due to the following reason:
 </p>
 
 <p>

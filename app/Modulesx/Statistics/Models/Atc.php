@@ -22,11 +22,22 @@ use App\Modules\Statistics\Events\AtcSessionDeleted;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereCallsign($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereQualificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereFacilityType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereConnectedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereDisconnectedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc forAccountId($id)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc forQualificationId($id)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc withCallsign($callsign)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc online()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Statistics\Models\Atc offline()
+ * @mixin \Eloquent
  */
 class Atc extends Model
 {

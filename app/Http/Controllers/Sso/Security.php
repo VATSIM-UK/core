@@ -60,7 +60,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // Create the response...
         $account = MemberAccount::find($accessToken->account_id);
         $return = array();
-        $return["cid"] = $account->account_id;
+        $return["cid"] = $account->id;
         $return["name_first"] = $account->name_first;
         $return["name_last"] = $account->name_last;
         $return["name_full"] = $account->name;

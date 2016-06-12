@@ -1,5 +1,5 @@
 <p>
-    Your current suspension of access to all of the VATSIM United Kingdom services (Forum/Teamspeak/RTS system) has been changed to a total length of {{ $ban_total_length }} (including time served).
+    Your current suspension of access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS system) has been changed to a total length of {{ $ban_total_length }} (including time served).
 </p>
 
 <p>

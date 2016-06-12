@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
@@ -9,38 +10,27 @@ use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Jobs\Mship\Account\Ban\SendCreationEmail;
 use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
 use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
+use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Note;
+use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
+use App\Models\Mship\Note\Type as NoteTypeData;
+use App\Models\Mship\Role as RoleData;
 use Auth;
-use Bus;
-use Config;
 use DB;
 use Illuminate\Support\Collection;
 use Input;
-use App\Models\Mship\Account as AccountData;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Account\Security as AccountSecurityData;
-use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Mship\Security as SecurityData;
 use Redirect;
-use Request;
-use Response;
 use Session;
 use URL;
-use VatsimSSO;
-use View;
 
-class Account extends \App\Http\Controllers\Adm\AdmController
+class Account extends AdmController
 {
 
     public function getIndex($scope = "division")
     {
-        $totalMembers = AccountData::count();
-        $memberSearch = new AccountData;
-
         // Sorting and searching!
         $sortBy = in_array(Input::get("sort_by"),
             ["id", "name_first", "name_last"]) ? Input::get("sort_by") : "id";
@@ -50,7 +40,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $memberSearch = AccountData::isNotSystem()
                                    ->orderBy($sortBy, $sortDir)
                                    ->with("qualifications")
-                                   ->with("qualifications.qualification")
                                    ->with("states")
                                    ->with("bans")
                                    ->with("secondaryEmails");
@@ -68,8 +57,8 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     AccountData::STATUS_NETWORK_SUSPENDED);
                 break;
             case "nondivision":
-                $memberSearch = \App\Models\Mship\Account\State::where("state", "!=",
-                    \App\Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = AccountData\State::where("state", "!=",
+                    AccountData\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
                                                                ->with("account.states")
@@ -78,8 +67,8 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                 break;
             case "division":
             default:
-                $memberSearch = \App\Models\Mship\Account\State::where("state", "=",
-                    \App\Models\Mship\Account\State::STATE_DIVISION)
+                $memberSearch = AccountData\State::where("state", "=",
+                    AccountData\State::STATE_DIVISION)
                                                                ->with("account")
                                                                ->with("account.qualifications")
                                                                ->with("account.states")
@@ -126,17 +115,12 @@ class Account extends \App\Http\Controllers\Adm\AdmController
             "roles", "roles.permissions",
             "qualifications",
             "states",
-            "secondaryEmails",
-            "security",
-            "security.security"
+            "secondaryEmails"
         );
 
         // Get all possible roles!
         $availableRoles = RoleData::all()
                                   ->diff($account->roles);
-
-        // Get all possible security levels.
-        $securityLevels = SecurityData::all();
 
         // Get all ban reasons.
         $banReasons = Reason::all();
@@ -156,7 +140,6 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                     ->with("selectedTabId", $tabId)
                     ->with("account", $account)
                     ->with("availableRoles", $availableRoles)
-                    ->with("securityLevels", $securityLevels)
                     ->with("banReasons", $banReasons)
                     ->with("noteTypes", $noteTypes)
                     ->with("noteTypesAll", $noteTypesAll);
@@ -177,7 +160,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         }
 
         // Let's add!
-        if (!$account->roles->contains($role->role_id)) {
+        if (!$account->roles->contains($role->id)) {
             $account->roles()
                     ->attach($role);
         }
@@ -197,7 +180,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
                            ->withError("The selected role does not exist.");
         }
 
-        if (!$account->roles->contains($role->role_id)) {
+        if (!$account->roles->contains($role->id)) {
             return Redirect::route("adm.mship.account.details", [$account->id], "role")
                            ->withError("This role is not attached to this user.");
         }
@@ -326,7 +309,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendCreationEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$account->id, "bans", $ban->account_ban_id])
+        return Redirect::route("adm.mship.account.details", [$account->id, "bans", $ban->id])
                        ->withSuccess("You have successfully banned this member.");
     }
 
@@ -358,7 +341,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendRepealedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Ban has been repealed.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Ban has been repealed.");
     }
 
     public function getBanComment(AccountData\Ban $ban)
@@ -385,7 +368,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"), Auth::getUser());
         $ban->notes()->save($note);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function getBanModify(AccountData\Ban $ban)
@@ -433,7 +416,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         $job = (new SendModifiedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->account_ban_id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function postNoteCreate(AccountData $account)
@@ -456,7 +439,7 @@ class Account extends \App\Http\Controllers\Adm\AdmController
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType->note_type_id, Input::get("content"), Auth::user());
+        $account->addNote($noteType->id, Input::get("content"), Auth::user());
 
         return Redirect::route("adm.mship.account.details", [$account->id, "notes"])
                        ->withSuccess("The note has been saved successfully!");

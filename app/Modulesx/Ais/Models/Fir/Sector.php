@@ -10,6 +10,7 @@ use App\Modules\Ais\Models\Fir;
  *
  * @property-read \App\Modules\Ais\Models\Fir $fir
  * @property-read \App\Modules\Ais\Models\Fir\Sector $coveredBy
+ * @mixin \Eloquent
  */
 class Sector extends aModel
 {

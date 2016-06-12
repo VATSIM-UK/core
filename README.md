@@ -1,7 +1,8 @@
 ## Upgrade Notes
 
 ### 2.2.3 > Future
--none yet-
+* Run `php artisan teaman:map -v` to map TeamSpeak groups/channels to the database.
+* Check the results of the above, and correct/add any further changes to database tables.
 
 ### 2.2.2 > 2.2.3
 

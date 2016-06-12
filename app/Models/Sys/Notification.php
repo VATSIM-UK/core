@@ -7,15 +7,21 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 /**
  * App\Models\Sys\Notification
  *
- * @property integer $notification_id
+ * @property integer $id
  * @property string $title
  * @property string $content
  * @property integer $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property string $effective_at
- * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon $effective_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $readBy
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereEffectiveAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification published()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification withStatus($status)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification mustAcknowledge()
@@ -24,24 +30,14 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification general()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification user()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification since($sinceTimestamp)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereNotificationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereContent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereEffectiveAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereDeletedAt($value)
  * @mixin \Eloquent
  */
 class Notification extends \App\Models\aModel {
 
-    use SoftDeletingTrait;
-
     protected $table = "sys_notification";
-    protected $primaryKey = "notification_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden = ['notification_id'];
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at', 'effective_at'];
+    protected $hidden = ['id'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
     const STATUS_IMPORTANT = 70; // Will interrupt login process.
@@ -88,6 +84,6 @@ class Notification extends \App\Models\aModel {
     }
 
     public function readBy(){
-        return $this->belongsToMany("\App\Models\Mship\Account", "sys_notification_read", "notification_id")->with("created_at", "updated_at");
+        return $this->belongsToMany("\App\Models\Mship\Account", "sys_notification_read", "id")->with("created_at", "updated_at");
     }
 }

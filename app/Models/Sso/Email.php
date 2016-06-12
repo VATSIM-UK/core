@@ -8,38 +8,36 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 /**
  * App\Models\Sso\Email
  *
- * @property integer $sso_email_id
+ * @property integer $id
  * @property integer $account_id
  * @property integer $account_email_id
  * @property integer $sso_account_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account\Email $email
  * @property-read \App\Models\Sso\Account $ssoAccount
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoEmailId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereDeletedAt($value)
  * @mixin \Eloquent
  */
 class Email extends \Eloquent {
 
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
 
     protected $table = "sso_email";
-    protected $primaryKey = "sso_email_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden = ['sso_email_id'];
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
+    protected $hidden = ['id'];
 
     public function email(){
-        return $this->belongsTo("\App\Models\Mship\Account\Email", "account_email_id", "account_email_id");
+        return $this->belongsTo(\App\Models\Mship\Account\Email::class, "account_email_id", "account_email_id");
     }
 
     public function ssoAccount(){
-        return $this->belongsTo("\App\Models\Sso\Account", "sso_account_id", "sso_account_id");
+        return $this->belongsTo(\App\Models\Sso\Account::class, "sso_account_id", "id");
     }
 }

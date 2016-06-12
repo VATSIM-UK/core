@@ -17,20 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $expires_at
  * @property string $used_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \App\Models\Sys\Token $related
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
  * @property-read mixed $is_used
  * @property-read mixed $is_expired
  * @property-read mixed $display_value
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesOwner
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Timeline\Entry[] $timelineEntriesExtra
- * @property-read mixed $timeline_entries_recent
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereTokenId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedType($value)
@@ -41,6 +31,13 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereExpiresAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUsedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
  * @mixin \Eloquent
  */
 class Token extends \App\Models\aModel {

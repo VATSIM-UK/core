@@ -178,8 +178,8 @@ Route::group(["domain" => config("app.url")], function () {
         });
     });
 
-    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'Teamspeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
-        Route::model('tsreg', App\Models\Teamspeak\Registration::class);
+    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+        Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
         Route::get('/new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
         Route::get('/{tsreg}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);

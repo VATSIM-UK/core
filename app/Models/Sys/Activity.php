@@ -17,7 +17,7 @@ use \Request;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $actor
- * @property-read \App\Models\Sys\Activity $subject
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
  * @property-read mixed $type
  * @property-read mixed $extra_data
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)

@@ -41,35 +41,33 @@ class MemberCertUpdate extends Job implements ShouldQueue
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         $member = Account::find($this->accountID);
 
+        // if member no longer exists, delete
+        // else process update
         if ($this->data->name_first == new \stdClass()
             && $this->data->name_last == new \stdClass()
             && $this->data->email == '[hidden]'
         ) {
             $member->delete();
-            return;
-        }
+        } else {
+            if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
+                $member->name_first = $this->data->name_first;
+            }
 
-        if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
-            $member->name_first = $this->data->name_first;
-        }
+            if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
+                $member->name_last = $this->data->name_last;
+            }
 
-        if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
-            $member->name_last = $this->data->name_last;
-        }
+            $member->cert_checked_at = Carbon::now();
+            $member->is_inactive = (boolean) ($this->data->rating < 0);
+            $member->joined_at = $this->data->regdate;
+            $member->determineState($this->data->region, $this->data->division);
 
-        $member->cert_checked_at = Carbon::now();
-        $member->is_inactive = (boolean) ($this->data->rating < 0);
-        $member->joined_at = $this->data->regdate;
-        $member->determineState($this->data->region, $this->data->division);
-
-        $this->processBans($member);
-        try {
+            $this->processBans($member);
             $member = $this->processRating($member);
-        } catch(DuplicateQualificationException $e){
-            // TODO: Something.
+
+            $member->save();
         }
 
-        $member->save();
         DB::commit();
     }
 
@@ -103,7 +101,9 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                $member->addQualification($prevAtcRating);
+                if (!$member->hasQualification($prevAtcRating)) {
+                    $member->addQualification($prevAtcRating);
+                }
             }
         } else {
             // remove any extra ratings
@@ -123,12 +123,16 @@ class MemberCertUpdate extends Job implements ShouldQueue
             || $member->current_state->state == Account\State::STATE_DIVISION
         ) {
             $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-            $member->addQualification($atcRating);
+            if (!$member->hasQualification($atcRating)) {
+                $member->addQualification($atcRating);
+            }
         }
 
         $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
         foreach ($pilotRatings as $pr) {
-            $member->addQualification($pr);
+            if (!$member->hasQualification($pr)) {
+                $member->addQualification($pr);
+            }
         }
 
         return $member;

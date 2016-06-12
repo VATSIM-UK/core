@@ -8,29 +8,25 @@ use Carbon\Carbon;
 /**
  * App\Models\Statistic
  *
- * @property integer $statistic_id
+ * @property integer $id
  * @property string $period
  * @property string $key
  * @property string $value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereStatisticId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic wherePeriod($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereKey($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereValue($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereDeletedAt($value)
  * @mixin \Eloquent
  */
 class Statistic extends \App\Models\aModel {
 
-    use SoftDeletingTrait;
-
     protected $table = "statistic";
-    protected $primaryKey = "statistic_id";
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['period', 'key'];
 
     public static function setStatistic($period, $key, $value) {
