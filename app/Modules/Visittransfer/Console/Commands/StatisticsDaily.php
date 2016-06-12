@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
+use Cache;
 
 class StatisticsDaily extends aCommand
 {
@@ -52,6 +53,9 @@ class StatisticsDaily extends aCommand
 
             $currentPeriod = $currentPeriod->addDay();
         }
+
+        Cache::forget("visittransfer::statistics");
+        Cache::forget("visittransfer::statistics.graph");
     }
 
     /**
@@ -93,7 +97,7 @@ class StatisticsDaily extends aCommand
 
             Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.accepted", $count);
 
-            $this->acceptedApplications += rand(1, ceil($this->totalApplications*0.2));
+            $this->acceptedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
@@ -117,7 +121,7 @@ class StatisticsDaily extends aCommand
 
             Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.rejected", $count);
 
-            $this->rejectedApplications += rand(1, ceil($this->totalApplications*0.2));
+            $this->rejectedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
