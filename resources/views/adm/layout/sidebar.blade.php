@@ -25,7 +25,7 @@
 
     <ul class="sidebar-menu">
         @if($_account->hasChildPermission("adm/dashboard"))
-            <li {{ (\Request::is('adm/dashboard*') ? ' class="active"' : '') }}>
+            <li {!! (\Request::is('adm/dashboard*') ? ' class="active"' : '') !!}>
                 <a href="{{ URL::route("adm.dashboard") }}">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
@@ -87,13 +87,13 @@
                     </a>
                     <ul class="treeview-menu">
                         @if($_account->hasChildPermission("adm/mship/account"))
-                            <li {{ (\Request::is('adm/mship/account*') ? ' class="active"' : '') }}>
+                            <li {!! (\Request::is('adm/mship/account*') ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.account.index") }}"><i
                                             class="fa fa-angle-double-right"></i> Accounts List</a>
                             </li>
                         @endif
                         @if($_account->hasChildPermission("adm/mship/staff"))
-                            <li {{ (\Request::is('adm/mship/staff*') ? ' class="active"' : '') }}>
+                            <li {!! (\Request::is('adm/mship/staff*') ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.staff.index") }}"><i
                                             class="fa fa-angle-double-right"></i> Staff List / Layout</a>
                             </li>
@@ -106,11 +106,11 @@
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li {{ (\Request::is('adm/mship/role*') ? ' class="active"' : '') }}>
+                                    <li {!! (\Request::is('adm/mship/role*') ? ' class="active"' : '') !!}>
                                         <a href="{{ URL::route("adm.mship.role.index") }}"><i
                                                     class="fa fa-angle-double-right"></i> Roles List</a>
                                     </li>
-                                    <li {{ (\Request::is('adm/mship/permission*') ? ' class="active"' : '') }}>
+                                    <li {!! (\Request::is('adm/mship/permission*') ? ' class="active"' : '') !!}>
                                         <a href="{{ URL::route("adm.mship.permission.index") }}"><i
                                                     class="fa fa-angle-double-right"></i> Permissions List</a>
                                     </li>
@@ -126,7 +126,7 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     </li>
-                                    <li {{ (\Request::is('adm/mship/note') ? ' class="active"' : '') }}>
+                                    <li {!! (\Request::is('adm/mship/note') ? ' class="active"' : '') !!}>
                                         <a href="{{ URL::route("adm.mship.note.type.index") }}"><i
                                                     class="fa fa-angle-double-right"></i> Note Type</a>
                                     </li>
@@ -151,7 +151,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="{{ URL::route("adm.sys.activity.list") }}" {{ (\Request::is('adm/system/activity*') ? 'active' : '') }}>
+                            <a href="{{ URL::route("adm.sys.activity.list") }}" {{ ( Request::is('adm/system/activity*') ? 'active' : '') }}>
                                 <i class="fa fa-list"></i> <span>Activity Stream</span>
                             </a>
                         </li>
@@ -161,11 +161,8 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
-                                    <a href="#"><i class="fa fa-bars"></i> Pending Jobs</a>
-                                </li>
-                                <li {{ (\Request::is('adm/system/postmaster/queue*') ? ' class="active"' : '') }}>
-                                    <a href="#"><i class="fa fa-bars"></i> Failed Jobs</a>
+                                <li {!! (Request::is('adm/system/jobs/failed*') ? ' class="active"' : '') !!}>
+                                    <a href="{{ URL::route('adm.sys.jobs.failed') }}"><i class="fa fa-bars"></i> Failed Jobs</a>
                                 </li>
                             </ul>
                         </li>

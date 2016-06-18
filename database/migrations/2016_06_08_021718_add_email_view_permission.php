@@ -29,7 +29,7 @@ class AddEmailViewPermission extends Migration
      */
     public function down()
     {
-        DB::table('mship_permission')->where('name', 'adm/mship/account/view/email')->delete();
+        DB::table('mship_permission')->where('name', 'adm/mship/account/email/view')->delete();
 
         Schema::table('sys_notification_read', function($table){
             $table->unique(['notification_id', 'account_id']);

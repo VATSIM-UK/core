@@ -54,6 +54,9 @@ Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), functio
 
             Route::group(array('prefix' => 'system', 'namespace' => 'Sys'), function () {
                 Route::get('/activity', array('as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex'));
+                Route::get('/jobs/failed', ['as' => 'adm.sys.jobs.failed', 'uses' => 'Jobs@getFailed']);
+                Route::post('/jobs/failed/{id}/retry', ['as' => 'adm.sys.jobs.failed.retry', 'uses' => 'Jobs@postFailed']);
+                Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
             });
 
             Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
