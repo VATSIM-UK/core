@@ -2,9 +2,9 @@ variables:
   MYSQL_DATABASE: project_name
   MYSQL_ROOT_PASSWORD: secret
 
-phpunit:php5.5:mysql5.6:
+phpunit:php5.5:mysql5.5:
   image: php:5.5
   services:
-    - mysql:5.6
+    - mysql:5.5
   script:
     - php vendor/bin/phpunit --colors
