@@ -93,7 +93,7 @@
                             <div class="col-xs-4">
                                 <b>STATUS: </b>
 
-                                @if($_account->current_security)
+                                @if($_account->password)
                                     ENABLED
                                 @else
                                     DISABLED
@@ -101,17 +101,21 @@
 
                             </div>
 
-                            @if($_account->current_security)
+                            @if($_account->password)
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/replace/0", "Click here to modify.") !!}
+                                    {!! HTML::link("mship/security/replace/0", "Click to Modify") !!}
                                 </div>
 
                                 <div class="col-xs-4">
-                                        @if($_account->current_security->security->optional)
-                                            {!! HTML::link("mship/security/replace/1", "Click here to disable.") !!}
+                                        @if(!$_account->mandatory_password)
+                                            {!! HTML::link("mship/security/replace/1", "Click to Disable") !!}
                                         @else
-                                            You are not permitted to disable this.
+                                            Cannot be disabled.
                                         @endif
+                                </div>
+                            @else
+                                <div class="col-xs-4">
+                                    {!! HTML::link("mship/security/enable", "Click to Enable") !!}
                                 </div>
                             @endif
                         </div>
