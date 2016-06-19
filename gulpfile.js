@@ -27,8 +27,8 @@ elixir(function (mix) {
 
     /* Cache Busting */
     mix.version([
-        "css/app-all.css",
-        "js/app-all.js"
+        "public/css/app-all.css",
+        "public/js/app-all.js"
     ]);
 
     /* Move and shake our dependency files around too! */

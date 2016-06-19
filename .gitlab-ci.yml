@@ -21,7 +21,6 @@ phpunit:php5.5:mysql5.5:
   only:
     - development
     - production
-    - feature/visiting_transfer
   script:
     - php vendor/bin/phpunit --colors
     - vendor/bin/phpmd app/ text phpmd.xml
