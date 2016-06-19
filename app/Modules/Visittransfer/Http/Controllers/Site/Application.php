@@ -34,11 +34,15 @@ class Application extends BaseController
 
     public function postStart(StartApplicationRequest $request)
     {
-        $application = Auth::user()->visitTransferApplications()->create([
-            "type" => Input::get("application_type"),
-        ]);
+        try {
+            $application = Auth::user()->createVisitingTransferApplication([
+                "type" => Input::get("application_type"),
+            ]);
+        } catch(Exception $e){
+            return Redirect::route("visiting.application.terms")->withError($e->getMessage());
+        }
 
-        return Redirect::route("visiting.application.facility");
+        return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
     }
     
     public function getContinue(){
@@ -82,7 +86,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.facility")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.statement");
+        return Redirect::route("visiting.application.statement")->withSuccess("Facility selection saved!");
     }
 
     public function getStatement()
@@ -102,7 +106,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.statement")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.referees");
+        return Redirect::route("visiting.application.referees")->withSuccess("Statement completed");
     }
 
     public function getReferees(){
@@ -152,6 +156,8 @@ class Application extends BaseController
     }
 
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
+        $this->authorize("view-application", $this->application);
+
         $application->load("facility")->load("referees.account");
 
         return $this->viewMake("visittransfer::site.application.view")

@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Application extends Model
 {
-
     protected $table    = "vt_application";
     protected $fillable = [
         "type",
@@ -253,6 +252,10 @@ class Application extends Model
         }
 
         return $this->facility->auto_acceptance == 1;
+    }
+
+    public function getFacilityNameAttribute(){
+        return $this->facility ? $this->facility->name : "Not selected";
     }
 
     /** Business logic. */

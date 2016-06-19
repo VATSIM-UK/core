@@ -5,24 +5,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ApplicationTest extends TestCase {
     use DatabaseTransactions;
-
-    /** Unit Testing */
-    
-    /** @test */
-    public function it_can_create_a_new_application_for_a_user(){
-        $application = null;
-    }
-
-    /** @test */
-    public function it_throws_an_exception_when_attempting_to_create_a_duplicate_application(){
-        $application = null;
-    }
-
-    /** @test */
-    public function it_throws_an_exception_when_attempting_to_create_an_application_for_a_division_member(){
-
-    }
-
     /** Application Testing */
     
     /** @test */

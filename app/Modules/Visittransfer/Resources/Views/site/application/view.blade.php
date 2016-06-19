@@ -3,13 +3,13 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Application #".$application->id." - ".$application->type_string." ".$application->facility->name, ["type" => "fa", "key" => "question"]) !!}
+            {!! HTML::panelOpen("Application #".$application->id." - ".$application->type_string." ".$application->facility_name, ["type" => "fa", "key" => "question"]) !!}
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
                     <p>
                         Thank you for your application.  The details of application #{{ $application->id }}
-                        to {{strtolower($application->type_string) }} {{ $application->facility->name }}
+                        to {{strtolower($application->type_string) }} {{ $application->facility_name }}
                         submitted {{ $application->submitted_at->diffForHumans() }} are included below for your reference.
                     </p>
 

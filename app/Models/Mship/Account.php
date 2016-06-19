@@ -19,6 +19,7 @@ use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
+use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Bus;
@@ -227,15 +228,41 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     public function visitApplications(){
-        return $this->visitTransferApplications()->where("type", "=", Application::$TYPE_VISIT);
+        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_VISIT);
     }
 
     public function transferApplications(){
-        return $this->visitTransferApplications()->where("type", "=", Application::$TYPE_TRANSFER);
+        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_TRANSFER);
     }
 
     public function visitTransferCurrent(){
         return $this->visitTransferApplications()->latest()->first();
+    }
+
+    public function createVisitingTransferApplication(array $attributes){
+        $this->guardAgainstDivisionMemberVisitingTransferApplication();
+        $this->guardAgainstDuplicateVisitingTransferApplications();
+
+        return $this->visitTransferApplications()->create($attributes);
+    }
+
+    private function guardAgainstDivisionMemberVisitingTransferApplication()
+    {
+        if($this->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)){
+            throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
+        }
+    }
+
+    private function guardAgainstDuplicateVisitingTransferApplications(){
+        if($this->hasOpenVisitingTransferApplication()){
+            throw new DuplicateApplicationException($this);
+        }
+    }
+
+    public function hasOpenVisitingTransferApplication(){
+        return $this->visitTransferApplications->contains(function($key, $application){
+            return in_array($application->status, \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN);
+        });
     }
 
     public function visitTransferReferee(){

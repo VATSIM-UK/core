@@ -133,7 +133,7 @@
                                 <tr>
                                     <td>{{ $application->id }}</td>
                                     <td>{{ $application->type_string }}</td>
-                                    <td>{{ $application->facility->name }}</td>
+                                    <td>{{ $application->facility ? $application->facility->name : "None Selected" }}</td>
                                     <td class="hidden-xs hidden-sm">
                                         @if($application->submitted_at == null)
                                             Not yet submitted

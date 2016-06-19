@@ -77,4 +77,8 @@ class ApplicationPolicy {
 
         return true;
     }
+
+    public function viewApplication(Account $user, Application $application){
+        return $user->id == $application->account_id;
+    }
 }

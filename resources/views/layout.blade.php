@@ -35,11 +35,17 @@
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-6">
                                 <ul>
-                                    <li class="dropdown-header">Division Membership</li>
-                                    <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
-                                    <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
-                                    <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
-                                    <li class="divider"></li>
+                                    @if(Module::isEnabled("visittransfer"))
+                                        <li class="dropdown-header">Division Membership</li>
+                                        <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
+                                        <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
+                                        <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
+                                    @endif
+
+                                    @if(Module::isEnabled("visittransfer") && true)
+                                        <li class="divider"></li>
+                                    @endif
+
                                     <li class="dropdown-header">Disputes</li>
                                     <li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>
                                     <li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>
