@@ -7,7 +7,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @var string
      */
-    protected $baseUrl = 'http://vukcore:8080/';
+    protected $baseUrl = 'http://vukcore.localhost:8080/';
 
     /**
      * Creates the application.
