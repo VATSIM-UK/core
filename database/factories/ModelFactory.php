@@ -1,6 +1,10 @@
 <?php
 
-$factory->define(App\Models\Mship\Account::class, function ($faker) {
+/**
+ * @var Illuminate\Database\Eloquent\Factory $factory
+ */
+
+$factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
     return [
         'id'           => rand(900000, 1300000),
         'name_first'   => $faker->name,
@@ -10,7 +14,7 @@ $factory->define(App\Models\Mship\Account::class, function ($faker) {
     ];
 });
 
-$factory->define(App\Models\Mship\Account\Email::class, function ($faker) {
+$factory->define(App\Models\Mship\Account\Email::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->numberBetween(1, 100000),
         'email' => $faker->email,
@@ -20,7 +24,7 @@ $factory->define(App\Models\Mship\Account\Email::class, function ($faker) {
     ];
 });
 
-$factory->define(App\Models\Mship\Qualification::class, function ($faker) {
+$factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
         "code" => $faker->bothify("?##"),
         "name_small" => $faker->word,
@@ -30,7 +34,7 @@ $factory->define(App\Models\Mship\Qualification::class, function ($faker) {
     ];
 });
 
-$factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function ($faker) use ($factory) {
+$factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
@@ -39,7 +43,7 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function ($fake
     ]);
 });
 
-$factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function ($faker) use ($factory) {
+$factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
@@ -48,7 +52,7 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function ($fa
     ]);
 });
 
-$factory->define(App\Models\Mship\Role::class, function ($faker) {
+$factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker) {
     return [
         "name"               => $faker->word,
         "session_timeout"    => $faker->numberBetween(100, 1000),
@@ -84,5 +88,18 @@ $factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator 
     return [
         'name' => $faker->regexify('([A-Z0-9._ ]{1,10}\/){2}testpermission'),
         'display_name' => $faker->text($maxNbChars = 30),
+    ];
+});
+
+$factory->define(App\Models\Messages\Thread::class, function (Faker\Generator $faker) {
+    return [
+        'subject' => $faker->text($maxNbChars = 255),
+    ];
+});
+
+$factory->define(App\Models\Messages\Thread\Post::class, function (Faker\Generator $faker) {
+    return [
+        'account_id' => factory(App\Models\Mship\Account::class)->create()->id,
+        'content' => $faker->text($maxNbChars = 255),
     ];
 });

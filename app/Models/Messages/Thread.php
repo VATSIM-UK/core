@@ -33,7 +33,7 @@ class Thread extends \App\Models\aModel
 
     public function participants()
     {
-        return $this->belongsToMany(Account::class, "messages_thread_participant", "id")
+        return $this->belongsToMany(Account::class, "messages_thread_participant")
                     ->withPivot("display_as", "read_at", "status")->withTimestamps();
     }
 
