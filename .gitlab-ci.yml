@@ -17,6 +17,3 @@ phpunit:php5.5:mysql5.5:
     - php vendor/bin/phpunit --colors
     - vendor/bin/phpmd app/ text phpmd.xml
     - vendor/bin/phpcs --standard=psr2 app
-  tags:
-    - production
-    - development
