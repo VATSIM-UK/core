@@ -61,14 +61,14 @@ $factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker)
     ];
 });
 
-$factory->define(App\Models\Teamspeak\Channel::class, function(Faker\Generator $faker) {
+$factory->define(App\Models\TeamSpeak\Channel::class, function(Faker\Generator $faker) {
     return [
         'id' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
     ];
 });
 
-$factory->define(\App\Models\Teamspeak\ServerGroup::class, function(Faker\Generator $faker) {
+$factory->define(\App\Models\TeamSpeak\ServerGroup::class, function(Faker\Generator $faker) {
     return [
         'dbid' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
@@ -76,7 +76,7 @@ $factory->define(\App\Models\Teamspeak\ServerGroup::class, function(Faker\Genera
     ];
 });
 
-$factory->define(\App\Models\Teamspeak\ChannelGroup::class, function(Faker\Generator $faker) {
+$factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function(Faker\Generator $faker) {
     return [
         'dbid' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
