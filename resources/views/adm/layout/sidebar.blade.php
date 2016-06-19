@@ -149,6 +149,11 @@
                                 <i class="fa fa-list"></i> <span>Activity Stream</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::route("adm.sys.module.list") }}" {{ ( Request::is('adm/system/module*') ? 'active' : '') }}>
+                                <i class="fa fa-list"></i> <span>System Modules</span>
+                            </a>
+                        </li>
                         <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">
                             <a href="#">
                                 <i class="ion ion-email"></i> <span>Jobs</span>
