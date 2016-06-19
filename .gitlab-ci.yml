@@ -7,6 +7,7 @@ before_script:
   - php artisan key:generate
   - /home/gitlabci/gitlabci_vukcore.sh
   - php artisan migrate
+  - composer dump-autoload
   
 variables:
   MYSQL_DATABASE: vuk_core
