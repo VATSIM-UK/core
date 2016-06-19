@@ -1,6 +1,7 @@
 before_script:
   - composer install --prefer-dist --no-interaction > /dev/null
   - npm install gulp > /dev/null
+  - npm install > /dev/null
   - gulp --production
   - cp .example.env .env
   - php artisan key:generate
