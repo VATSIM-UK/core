@@ -46,21 +46,21 @@ class Application extends Model
     const STATUS_CANCELLED    = 98; // Application has been cancelled
     const STATUS_REJECTED     = 99; // Application has been rejected by staff
 
-    const APPLICATION_IS_CONSIDERED_OPEN = [
+    static $APPLICATION_IS_CONSIDERED_OPEN = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
     ];
 
-    const APPLICATION_IS_CONSIDERED_CLOSED = [
+    static $APPLICATION_IS_CONSIDERED_CLOSED = [
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
         self::STATUS_CANCELLED,
         self::STATUS_REJECTED,
     ];
 
-    const APPLICATION_REQUIRES_ACTION = [
+    static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
     ];
 
@@ -143,15 +143,15 @@ class Application extends Model
     }
 
     public function getIsOpenAttribute(){
-        return $this->isStatusIn(self::APPLICATION_IS_CONSIDERED_OPEN);
+        return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_OPEN);
     }
 
     public function getRequiresActionAttribute(){
-        return $this->isStatusIn(self::APPLICATION_REQUIRES_ACTION);
+        return $this->isStatusIn(self::$APPLICATION_REQUIRES_ACTION);
     }
 
     public function getIsClosedAttribute(){
-        return $this->isStatusIn(self::APPLICATION_IS_CONSIDERED_CLOSED);
+        return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
     public function getIsInProgressAttribute(){
