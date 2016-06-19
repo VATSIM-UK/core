@@ -22,4 +22,4 @@ phpunit:php5.5:mysql5.5:
     - vendor/bin/phpmd app/ text phpmd.xml
     - vendor/bin/phpcs --standard=psr2 app
     - php artisan migrate:reset
-    - kill $(pidof php artisan serve)
+    - kill -9 $(pidof php artisan serve)
