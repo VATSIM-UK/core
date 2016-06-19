@@ -3,7 +3,7 @@ before_script:
   - npm install gulp > /dev/null
   - npm install > /dev/null
   - gulp --production
-  - cp .example.env .env
+  - cp .env.example .env
   - php artisan key:generate
   - /home/gitlabci/gitlabci_vukcore.sh
   - php artisan migrate
