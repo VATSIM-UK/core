@@ -6,7 +6,7 @@ before_script:
   - cp .env.example .env
   - php artisan key:generate
   - /home/gitlabci/gitlabci_vukcore.sh
-  - php artisan migrate
+  - php artisan migrate -vvv
   - php artisan serve -q &
   
 phpunit:php5.5:mysql5.5:
