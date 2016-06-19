@@ -7,7 +7,6 @@ before_script:
   - php artisan migrate
 
 phpunit:php5.5:mysql5.5:
-  stage: development
   image: php:5.5
   services:
     - mysql:5.5
