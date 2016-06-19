@@ -153,12 +153,6 @@ class ConsolidationV224 extends Migration
          */
         DB::update('UPDATE mship_account SET remember_token = NULL WHERE remember_token = ""');
         DB::update('UPDATE mship_account_security SET expires_at = NULL WHERE expires_at = \'0000-00-00 00:00:00\''); // Future migration will remove this table.
-
-        if (DB::table('mship_qualification')->where('code', 'P5')->count() == 0) {
-            DB::table('mship_qualification')->insert([
-                ['code' => 'P5', 'type' => 'pilot', 'name_small' => 'P5', 'name_long' => 'P5', 'name_grp' => 'P5', 'vatsim' => 16, 'created_at' => DB::raw('NOW()'), 'updated_at' => DB::raw('NOW()')],
-            ]);
-        }
     }
 
     /**
