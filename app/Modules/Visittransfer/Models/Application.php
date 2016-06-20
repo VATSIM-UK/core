@@ -101,12 +101,12 @@ class Application extends Model
 
     public static function scopeOpen($query)
     {
-        return $query->statusIn(self::APPLICATION_IS_CONSIDERED_OPEN);
+        return $query->statusIn(self::$APPLICATION_IS_CONSIDERED_OPEN);
     }
 
     public static function scopeClosed($query)
     {
-        return $query->status(self::APPLICATION_IS_CONSIDERED_CLOSED);
+        return $query->status(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
     /** All Laravel relationships */

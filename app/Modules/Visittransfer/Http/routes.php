@@ -10,6 +10,31 @@ Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "name
         "uses" => "Dashboard@getDashboard",
     ]);
 
+    Route::get("/facility", [
+        "as" => "facility",
+        "uses" => "Facility@getList",
+    ]);
+
+    Route::get("/facility/create", [
+        "as" => "facility.create",
+        "uses" => "Facility@getCreate",
+    ]);
+
+    Route::post("/facility/create", [
+        "as" => "facility.create.post",
+        "uses" => "Facility@postCreate",
+    ]);
+
+    Route::get("/facility/{facility}/update", [
+        "as" => "facility.update",
+        "uses" => "Facility@getUpdate",
+    ])->where("facility", "\d+");
+
+    Route::post("/facility/{facility}/update", [
+        "as" => "facility.update.post",
+        "uses" => "Facility@postUpdate",
+    ])->where("facility", "\d+");
+
     Route::get("/application/{application}", [
         "as" => "application.view",
         "uses" => "Application@getView",

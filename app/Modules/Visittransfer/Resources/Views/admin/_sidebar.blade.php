@@ -13,9 +13,9 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ URL::route("adm.sys.activity.list") }}" {{ (\Request::is('adm/visit-transfer/facility*') ? 'active' : '') }}>
-                <i class="ion ion-ios-gear-outline"></i> <span>Facility Settings</span>
+        <li {!! (\Request::is('adm/visit-transfer/facility') ? 'class="active"' : '') !!}>
+            <a href="{{ URL::route("visiting.admin.facility") }}">
+                <i class="ion ion-ios-gear-outline"></i> <span> Facility Settings</span>
             </a>
         </li>
 
