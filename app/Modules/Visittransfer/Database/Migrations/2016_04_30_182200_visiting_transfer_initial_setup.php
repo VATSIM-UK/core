@@ -22,6 +22,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Application::STATUS_IN_PROGRESS);
             $table->timestamp("submitted_at")->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('vt_referee', function (Blueprint $table) {
@@ -33,6 +34,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->text('reference')->nullable();
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Referee::STATUS_DRAFT);
             $table->timestamp("submitted_at")->nullable();
+            $table->softDeletes();
         });
 
         Schema::create('vt_facility', function (Blueprint $table) {
@@ -46,6 +48,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->smallInteger("stage_reference_quantity")->default(1);
             $table->boolean("stage_checks")->default(1);
             $table->boolean("auto_acceptance")->default(0);
+            $table->softDeletes();
         });
         
         //--POSSIBLY NOT NEEDED BELOW HERE //
