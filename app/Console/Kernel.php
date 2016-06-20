@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
 
-        \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
+        \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
     ];
 
     /**
