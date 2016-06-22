@@ -84,13 +84,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($applications as $a)
+                        @forelse($applications as $a)
                             <tr>
                                 <td>{!! link_to_route('visiting.admin.application.view', $a->id, [$a->id]) !!}</td>
                                 <td>{!! link_to_route('adm.mship.account.details', $a->account_id, [$a->account_id]) !!}</td>
                                 <td>{{ $a->applicant->name  }}</td>
                                 <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $a->applicant->email : "[ No Permission ]" }}</td>
-                                <td>{{ $a->type_string }} - {{ $a->facility->name }}</td>
+                                <td>{{ $a->type_string }} - {{ $a->facility_name }}</td>
                                 <td class="text-center">
                                     {!! HTML::fuzzyDate($a->created_at) !!}
                                 </td>
@@ -99,7 +99,11 @@
                                 </td>
                                 <td class="text-center">{!! $a->is_open ? '<span class="label label-success">'.$a->status_string.'</span>' : '<span class="label label-danger">'.$a->status_string.'</span>' !!}</td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td align="center" colspan="8">There are no applications that match your criteria.</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                     <div align="center">

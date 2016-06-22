@@ -35,6 +35,16 @@ Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "name
         "uses" => "Facility@postUpdate",
     ])->where("facility", "\d+");
 
+    Route::get("/reference", [
+        "as" => "reference",
+        "uses" => "Reference@getList",
+    ]);
+
+    Route::get("/reference/{reference}", [
+        "as" => "reference.view",
+        "uses" => "Reference@getView",
+    ])->where("reference", "\d+");
+
     Route::get("/application/{application}", [
         "as" => "application.view",
         "uses" => "Application@getView",

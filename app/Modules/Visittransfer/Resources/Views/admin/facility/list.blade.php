@@ -26,6 +26,7 @@
                             <th class="col-md-1" style="text-align: center;">Reference</th>
                             <th class="col-md-1" style="text-align: center;">Checks</th>
                             <th class="col-md-1" style="text-align: center;">Auto</th>
+                            <th class="col-md-1" style="text-align: center;">Open</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -65,6 +66,13 @@
                                 </td>
                                 <td align="center">
                                     @if($f->auto_acceptance)
+                                        {!! Label::success("YES") !!}
+                                    @else
+                                        {!! Label::danger("NO") !!}
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if($f->open)
                                         {!! Label::success("YES") !!}
                                     @else
                                         {!! Label::danger("NO") !!}

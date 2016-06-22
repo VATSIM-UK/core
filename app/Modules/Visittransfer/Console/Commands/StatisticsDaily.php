@@ -45,7 +45,7 @@ class StatisticsDaily extends aCommand
         while ($currentPeriod->lte($this->getEndPeriod())) {
             $this->addTotalApplicationCount($currentPeriod);
 
-            $this->addAcceptedApplicationCount($currentPeriod);
+            $this->addOpenApplicationsCount($currentPeriod);
 
             $this->addRejectedApplicationCount($currentPeriod);
 
@@ -85,21 +85,18 @@ class StatisticsDaily extends aCommand
      *
      * @param $currentPeriod
      */
-    private function addAcceptedApplicationCount($currentPeriod)
+    private function addOpenApplicationsCount($currentPeriod)
     {
         try {
             $count = Application::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
-                                ->statusIn([
-                                    Application::STATUS_ACCEPTED,
-                                    Application::STATUS_COMPLETED,
-                                ])->count();
+                                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
             $count = $this->acceptedApplications;
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.accepted", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.open", $count);
 
             $this->acceptedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
+            $this->sendSlackError("Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
         }
     }
@@ -113,17 +110,14 @@ class StatisticsDaily extends aCommand
     {
         try {
             $count = Application::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
-                                ->statusIn([
-                                    Application::STATUS_REJECTED,
-                                    Application::STATUS_LAPSED,
-                                ])->count();
+                                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
             $count = $this->rejectedApplications;
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.rejected", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.closed", $count);
 
             $this->rejectedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
+            $this->sendSlackError("Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
         }
     }

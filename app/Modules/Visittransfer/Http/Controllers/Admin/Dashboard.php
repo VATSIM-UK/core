@@ -4,7 +4,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Referee;
+use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Cache;
 
@@ -18,28 +18,22 @@ class Dashboard extends AdmController
 
             $statistics['applications_total'] = Application::all()->count();
 
-            $statistics['applications_accepted'] = Application::statusIn([
-                Application::STATUS_ACCEPTED,
-                Application::STATUS_COMPLETED,
+            $statistics['applications_open'] = Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
+
+            $statistics['applications_closed'] = Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
+
+            $statistics['references_pending'] = Reference::statusIn([
+                Reference::STATUS_DRAFT,
+                Reference::STATUS_REQUESTED,
             ])->count();
 
-            $statistics['applications_rejected'] = Application::statusIn([
-                Application::STATUS_REJECTED,
-                Application::STATUS_LAPSED,
+            $statistics['references_approval'] = Reference::statusIn([
+                Reference::STATUS_COMPLETED,
+                Reference::STATUS_UNDER_REVIEW,
             ])->count();
 
-            $statistics['references_pending'] = Referee::statusIn([
-                Referee::STATUS_DRAFT,
-                Referee::STATUS_REQUESTED,
-            ])->count();
-
-            $statistics['references_approval'] = Referee::statusIn([
-                Referee::STATUS_COMPLETED,
-                Referee::STATUS_UNDER_REVIEW,
-            ])->count();
-
-            $statistics['references_accepted'] = Referee::statusIn([
-                Referee::STATUS_ACCEPTED,
+            $statistics['references_accepted'] = Reference::statusIn([
+                Reference::STATUS_ACCEPTED,
             ])->count();
 
             return $statistics;
@@ -47,7 +41,7 @@ class Dashboard extends AdmController
 
         $statisticsGraph = Cache::remember("visittransfer::statistics.graph", 60 * 24, function () {
             $statistics = [];
-            $statisticKeys = ["applications.total", "applications.accepted", "applications.rejected", "applications.new" ];
+            $statisticKeys = ["applications.total", "applications.open", "applications.closed", "applications.new" ];
 
             $date = \Carbon\Carbon::parse("180 days ago");
             while ($date->lt(\Carbon\Carbon::parse("today midnight"))) {

@@ -7,7 +7,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class SubmitApplicationRequest extends FormRequest
+class ApplicationStatementSubmitRequest extends FormRequest
 {
 	/**
 	 * Get the validation rules that apply to the request.
@@ -17,7 +17,7 @@ class SubmitApplicationRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			"submission_terms" => "required",
+			"statement" => "required|string|min:50|max:1000",
 		];
 	}
 
@@ -28,7 +28,10 @@ class SubmitApplicationRequest extends FormRequest
 	 */
 	public function messages(){
 		return [
-			"submission_terms.required" => "You must agree to the terms of submission.",
+			"statement.required" => "You must write a supporting statement.",
+			"statement.string" => "You must only provide text in your supporting statement.",
+			"statement.min" => "The minimum length statement is 50 characters.",
+			"statement.max" => "The maximum length statement is 1000 characters.",
 		];
 	}
 
@@ -39,6 +42,6 @@ class SubmitApplicationRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("submit-application", Auth::user()->visitTransferCurrent());
+		return Gate::allows("add-statement", Auth::user()->visitTransferCurrent());
 	}
 }

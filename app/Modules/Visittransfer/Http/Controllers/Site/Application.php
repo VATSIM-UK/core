@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Http\Requests\AddRefereeApplicationRequest;
-use App\Modules\Visittransfer\Http\Requests\SelectFacilityApplicationRequest;
-use App\Modules\Visittransfer\Http\Requests\StartApplicationRequest;
-use App\Modules\Visittransfer\Http\Requests\SubmitApplicationRequest;
-use App\Modules\Visittransfer\Http\Requests\SubmitStatementApplicationRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeAddRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationFacilitySelectedRequested;
+use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
 use App\Modules\Visittransfer\Models\Facility;
-use App\Modules\Visittransfer\Models\Referee;
+use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Exception;
 use Illuminate\Support\Facades\Gate;
@@ -27,12 +27,12 @@ class Application extends BaseController
     {
         $this->authorize("create", new \App\Modules\Visittransfer\Models\Application());
 
-        return $this->viewMake("visttransfer::site.application.terms")
+        return $this->viewMake("visittransfer::site.application.terms")
                     ->with("applicationType", $applicationType)
                     ->with("application", new \App\Modules\Visittransfer\Models\Application);
     }
 
-    public function postStart(StartApplicationRequest $request)
+    public function postStart(ApplicationStartRequest $request)
     {
         try {
             $application = Auth::user()->createVisitingTransferApplication([
@@ -73,12 +73,12 @@ class Application extends BaseController
     {
         $this->authorize("select-facility", $this->getCurrentOpenApplicationForUser());
 
-        return $this->viewMake("visttransfer::site.application.facility")
+        return $this->viewMake("visittransfer::site.application.facility")
                     ->with("application", $this->getCurrentOpenApplicationForUser())
                     ->with("facilities", $this->getCurrentOpenApplicationForUser()->potential_facilities);
     }
 
-    public function postFacility(SelectFacilityApplicationRequest $request)
+    public function postFacility(ApplicationFacilitySelectedRequested $request)
     {
         try {
             $this->application->setFacility(Facility::find(Input::get("facility_id")));
@@ -95,11 +95,11 @@ class Application extends BaseController
 
         $this->application->load("facility");
 
-        return $this->viewMake("visttransfer::site.application.statement")
+        return $this->viewMake("visittransfer::site.application.statement")
                     ->with("application", $this->application);
     }
 
-    public function postStatement(SubmitStatementApplicationRequest $request){
+    public function postStatement(ApplicationStatementSubmitRequest $request){
         try {
             $this->application->setStatement(Input::get("statement"));
         } catch(Exception $e){
@@ -114,11 +114,11 @@ class Application extends BaseController
 
         $this->application->load("referees.account");
 
-        return $this->viewMake("visttransfer::site.application.referees")
+        return $this->viewMake("visittransfer::site.application.referees")
                     ->with("application", $this->application);
     }
 
-    public function postReferees(AddRefereeApplicationRequest $request){
+    public function postReferees(ApplicationRefereeAddRequest $request){
         try {
             $this->application->addReferee(
                 Account::find(Input::get("referee_cid")),
@@ -141,11 +141,11 @@ class Application extends BaseController
     public function getSubmit(){
         $this->authorize("submit-application", $this->application);
 
-        return $this->viewMake("visttransfer::site.application.submission")
+        return $this->viewMake("visittransfer::site.application.submission")
                     ->with("application", $this->application);
     }
 
-    public function postSubmit(SubmitApplicationRequest $request){
+    public function postSubmit(ApplicationSubmitRequest $request){
         try {
             $this->application->submit();
         } catch(Exception $e){

@@ -28,16 +28,16 @@
         <div class="small-box bg-green">
             <div class="inner">
                 <h3>
-                    {{ array_get($statisticsRaw, "applications_accepted", 0) }}
+                    {{ array_get($statisticsRaw, "applications_open", 0) }}
                 </h3>
                 <p>
-                    <small>Accepted Applications</small>
+                    <small>Open Applications</small>
                 </p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -47,16 +47,16 @@
         <div class="small-box bg-red">
             <div class="inner">
                 <h3>
-                    {{ array_get($statisticsRaw, "applications_rejected", 0) }}
+                    {{ array_get($statisticsRaw, "applications_closed", 0) }}
                 </h3>
                 <p>
-                    <small>Rejected Applications</small>
+                    <small>Closed Applications</small>
                 </p>
             </div>
             <div class="icon">
                 <i class="fa fa-times"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>

@@ -8,7 +8,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class AddRefereeApplicationRequest extends FormRequest
+class ApplicationRefereeAddRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

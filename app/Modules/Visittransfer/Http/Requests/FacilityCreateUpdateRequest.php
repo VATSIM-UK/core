@@ -8,7 +8,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class CreateFacilityRequest extends FormRequest
+class FacilityCreateUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -19,7 +19,7 @@ class CreateFacilityRequest extends FormRequest
     {
         return [
             "name"                     => "required|min:5",
-            "description"              => "optional|min:25",
+            "description"              => "min:25",
             "training_required"        => "required|boolean",
             "training_spaces"          => "required_if:training_required,1|numeric|min:0",
             "stage_statement_enabled"  => "required|boolean",

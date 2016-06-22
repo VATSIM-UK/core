@@ -52,7 +52,7 @@
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/all') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> All References</a>
+                    <a href="{{ URL::route("visiting.admin.reference") }}"><i class="fa fa-bars"></i> All References</a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>

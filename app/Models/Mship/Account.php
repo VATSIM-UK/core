@@ -266,7 +266,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     public function visitTransferReferee(){
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Referee::class);
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
     }
 
     /**

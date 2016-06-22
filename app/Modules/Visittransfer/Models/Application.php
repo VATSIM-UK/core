@@ -121,7 +121,7 @@ class Application extends Model
     }
 
     public function referees(){
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Referee::class);
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
     }
 
     /** All Laravel magic attributes **/
@@ -280,7 +280,7 @@ class Application extends Model
         
         $this->guardAgainstTooManyReferees();
 
-        $referee = new Referee([
+        $referee = new Reference([
             "email" => $email,
             "relationship" => $relationship,
         ]);

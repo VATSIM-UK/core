@@ -7,7 +7,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StartApplicationRequest extends FormRequest
+class ApplicationStartRequest extends FormRequest
 {
 	/**
 	 * Get the validation rules that apply to the request.

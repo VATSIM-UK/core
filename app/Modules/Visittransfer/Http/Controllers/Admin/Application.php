@@ -4,7 +4,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
-use App\Modules\Visittransfer\Models\Referee;
+use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Cache;
 use Illuminate\Support\Collection;

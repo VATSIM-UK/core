@@ -25,14 +25,14 @@ class VisitingTransferInitialSetup extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('vt_referee', function (Blueprint $table) {
+        Schema::create('vt_reference', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('application_id')->unsigned();
             $table->integer('account_id')->unsigned();
             $table->string("email", 85)->nullable();
             $table->string("relationship", 85)->nullable();
             $table->text('reference')->nullable();
-            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Referee::STATUS_DRAFT);
+            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Reference::STATUS_DRAFT);
             $table->timestamp("submitted_at")->nullable();
             $table->softDeletes();
         });
@@ -48,6 +48,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->smallInteger("stage_reference_quantity")->default(1);
             $table->boolean("stage_checks")->default(1);
             $table->boolean("auto_acceptance")->default(0);
+            $table->boolean("open")->default(0);
             $table->softDeletes();
         });
         

@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Aerodrome[]  $airfields
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Fir\Sector[] $sectors
  */
-class Referee extends Model
+class Reference extends Model
 {
 
-    protected $table      = "vt_referee";
+    protected $table      = "vt_reference";
     protected $fillable   = [
         "application_id",
         "account_id",
@@ -43,7 +43,7 @@ class Referee extends Model
         return $query->whereIn("status", $stati);
     }
 
-    public function account()
+    public function referee()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class);
     }
