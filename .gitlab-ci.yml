@@ -1,0 +1,20 @@
+before_script:
+  - composer install --prefer-dist --no-interaction > /dev/null
+  - npm install gulp > /dev/null
+  - npm install > /dev/null
+  - gulp --production
+  - cp .env.example .env
+  - php artisan key:generate
+  - /home/gitlabci/gitlabci_vukcore.sh
+  - php artisan migrate -vvv
+  - php artisan serve -q &
+  
+phpunit:php5.5:mysql5.5:
+  image: php:5.5
+  services:
+    - mysql:5.5
+  only:
+    - development
+    - production
+  script:
+    - php vendor/bin/phpunit --colors

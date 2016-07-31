@@ -28,6 +28,6 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements ShouldQueue
                      ->with("account", $this->recipient)
                      ->with("password", $this->password)
                      ->render();
-        \Bus::dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
+        dispatch(new \App\Jobs\Messages\CreateNewMessage(\App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM), $this->recipient, $subject, $body, $displayFrom, true, true));
     }
 }

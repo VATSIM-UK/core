@@ -13,8 +13,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
-
+    'env'             => env('APP_ENV', 'production'),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -26,8 +25,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
-
+    'debug'           => env('APP_DEBUG', false),
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -39,8 +37,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://undefined'),
-
+    'url'             => env('APP_URL', 'http://undefined'),
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -52,8 +49,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
-
+    'timezone'        => 'UTC',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -65,8 +61,7 @@ return [
     |
     */
 
-    'locale' => 'en',
-
+    'locale'          => 'en',
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -79,7 +74,6 @@ return [
     */
 
     'fallback_locale' => 'en',
-
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
@@ -91,10 +85,8 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
-
-    'cipher' => 'AES-256-CBC',
-
+    'key'             => env('APP_KEY'),
+    'cipher'          => 'AES-256-CBC',
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -108,8 +100,7 @@ return [
     |
     */
 
-    'log' => 'single',
-
+    'log'             => 'single',
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -121,7 +112,7 @@ return [
     |
     */
 
-    'providers' => [
+    'providers'       => [
 
         /*
          * Laravel Framework Service Providers...
@@ -154,8 +145,8 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Modules\Statistics\StatisticsServiceProvider::class,
-        App\Modules\Ais\AisServiceProvider::class,
+        App\Modules\NetworkData\Providers\NetworkDataServiceProvider::class,
+        App\Modules\Ais\Providers\AisServiceProvider::class,
 
         /*
          * Third party
@@ -169,8 +160,9 @@ return [
         Maknz\Slack\SlackServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
+        Bootstrapper\BootstrapperL5ServiceProvider::class,
+        Caffeinated\Modules\ModulesServiceProvider::class,
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Class Aliases
@@ -182,41 +174,40 @@ return [
     |
     */
 
-    'aliases' => [
+    'aliases'         => [
 
-        'App'       => Illuminate\Support\Facades\App::class,
-        'Artisan'   => Illuminate\Support\Facades\Artisan::class,
-        'Auth'      => Illuminate\Support\Facades\Auth::class,
-        'Blade'     => Illuminate\Support\Facades\Blade::class,
-        'Bus'       => Illuminate\Support\Facades\Bus::class,
-        'Cache'     => Illuminate\Support\Facades\Cache::class,
-        'Config'    => Illuminate\Support\Facades\Config::class,
-        'Cookie'    => Illuminate\Support\Facades\Cookie::class,
-        'Crypt'     => Illuminate\Support\Facades\Crypt::class,
-        'DB'        => Illuminate\Support\Facades\DB::class,
-        'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
-        'Event'     => Illuminate\Support\Facades\Event::class,
-        'File'      => Illuminate\Support\Facades\File::class,
-        'Hash'      => Illuminate\Support\Facades\Hash::class,
-        'Input'     => Illuminate\Support\Facades\Input::class,
-        'Inspiring' => Illuminate\Foundation\Inspiring::class,
-        'Lang'      => Illuminate\Support\Facades\Lang::class,
-        'Log'       => Illuminate\Support\Facades\Log::class,
-        'Mail'      => Illuminate\Support\Facades\Mail::class,
-        'Password'  => Illuminate\Support\Facades\Password::class,
-        'Queue'     => Illuminate\Support\Facades\Queue::class,
-        'Redirect'  => Illuminate\Support\Facades\Redirect::class,
-        'Redis'     => Illuminate\Support\Facades\Redis::class,
-        'Request'   => Illuminate\Support\Facades\Request::class,
-        'Response'  => Illuminate\Support\Facades\Response::class,
-        'Route'     => Illuminate\Support\Facades\Route::class,
-        'Schema'    => Illuminate\Support\Facades\Schema::class,
-        'Session'   => Illuminate\Support\Facades\Session::class,
-        'Storage'   => Illuminate\Support\Facades\Storage::class,
-        'URL'       => Illuminate\Support\Facades\URL::class,
-        'Validator' => Illuminate\Support\Facades\Validator::class,
-        'View'      => Illuminate\Support\Facades\View::class,
-
+        'App'                  => Illuminate\Support\Facades\App::class,
+        'Artisan'              => Illuminate\Support\Facades\Artisan::class,
+        'Auth'                 => Illuminate\Support\Facades\Auth::class,
+        'Blade'                => Illuminate\Support\Facades\Blade::class,
+        'Bus'                  => Illuminate\Support\Facades\Bus::class,
+        'Cache'                => Illuminate\Support\Facades\Cache::class,
+        'Config'               => Illuminate\Support\Facades\Config::class,
+        'Cookie'               => Illuminate\Support\Facades\Cookie::class,
+        'Crypt'                => Illuminate\Support\Facades\Crypt::class,
+        'DB'                   => Illuminate\Support\Facades\DB::class,
+        'Eloquent'             => Illuminate\Database\Eloquent\Model::class,
+        'Event'                => Illuminate\Support\Facades\Event::class,
+        'File'                 => Illuminate\Support\Facades\File::class,
+        'Hash'                 => Illuminate\Support\Facades\Hash::class,
+        'Input'                => Illuminate\Support\Facades\Input::class,
+        'Inspiring'            => Illuminate\Foundation\Inspiring::class,
+        'Lang'                 => Illuminate\Support\Facades\Lang::class,
+        'Log'                  => Illuminate\Support\Facades\Log::class,
+        'Mail'                 => Illuminate\Support\Facades\Mail::class,
+        'Password'             => Illuminate\Support\Facades\Password::class,
+        'Queue'                => Illuminate\Support\Facades\Queue::class,
+        'Redirect'             => Illuminate\Support\Facades\Redirect::class,
+        'Redis'                => Illuminate\Support\Facades\Redis::class,
+        'Request'              => Illuminate\Support\Facades\Request::class,
+        'Response'             => Illuminate\Support\Facades\Response::class,
+        'Route'                => Illuminate\Support\Facades\Route::class,
+        'Schema'               => Illuminate\Support\Facades\Schema::class,
+        'Session'              => Illuminate\Support\Facades\Session::class,
+        'Storage'              => Illuminate\Support\Facades\Storage::class,
+        'URL'                  => Illuminate\Support\Facades\URL::class,
+        'Validator'            => Illuminate\Support\Facades\Validator::class,
+        'View'                 => Illuminate\Support\Facades\View::class,
         /*
          * App
          */
@@ -224,27 +215,52 @@ return [
         /*
          * Third Party
          */
-        'SlackApi'              => Vluzrmos\SlackApi\Facades\SlackApi::class,
-        'SlackChannel'          => Vluzrmos\SlackApi\Facades\SlackChannel::class,
-        'SlackChat'             => Vluzrmos\SlackApi\Facades\SlackChat::class,
-        'SlackGroup'            => Vluzrmos\SlackApi\Facades\SlackGroup::class,
-        'SlackFile'             => Vluzrmos\SlackApi\Facades\SlackFile::class,
-        'SlackSearch'           => Vluzrmos\SlackApi\Facades\SlackSearch::class,
-        'SlackInstantMessage'   => Vluzrmos\SlackApi\Facades\SlackInstantMessage::class,
-        'SlackUser'             => Vluzrmos\SlackApi\Facades\SlackUser::class,
-        'SlackStar'             => Vluzrmos\SlackApi\Facades\SlackStar::class,
-        'SlackUserAdmin'        => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
-        'SlackRealTimeMessage'  => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
-        'SlackTeam'             => Vluzrmos\SlackApi\Facades\SlackTeam::class,
+        'SlackApi'             => Vluzrmos\SlackApi\Facades\SlackApi::class,
+        'SlackChannel'         => Vluzrmos\SlackApi\Facades\SlackChannel::class,
+        'SlackChat'            => Vluzrmos\SlackApi\Facades\SlackChat::class,
+        'SlackGroup'           => Vluzrmos\SlackApi\Facades\SlackGroup::class,
+        'SlackFile'            => Vluzrmos\SlackApi\Facades\SlackFile::class,
+        'SlackSearch'          => Vluzrmos\SlackApi\Facades\SlackSearch::class,
+        'SlackInstantMessage'  => Vluzrmos\SlackApi\Facades\SlackInstantMessage::class,
+        'SlackUser'            => Vluzrmos\SlackApi\Facades\SlackUser::class,
+        'SlackStar'            => Vluzrmos\SlackApi\Facades\SlackStar::class,
+        'SlackUserAdmin'       => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
+        'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
+        'SlackTeam'            => Vluzrmos\SlackApi\Facades\SlackTeam::class,
+//        'Form'                 => Collective\Html\FormFacade::class,
+        'HTML'                 => Collective\Html\HtmlFacade::class,
+        'VatsimSSO'            => Vatsim\OAuth\Facades\SSO::class,
+        'VatsimXML'            => Vatsim\Xml\Facades\XML::class,
+        'Debugbar'             => Barryvdh\Debugbar\Facade::class,
+        'Slack'                => Maknz\Slack\Facades\Slack::class,
+        'IPBoard'              => Alawrence\Ipboard\Facades\Ipboard::class,
+        'Module' => Caffeinated\Modules\Facades\Module::class,
 
-        'Form'      => Collective\Html\FormFacade::class,
-        'HTML'      => Collective\Html\HtmlFacade::class,
-        'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
-        'VatsimXML' => Vatsim\Xml\Facades\XML::class,
-        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'Slack'     => Maknz\Slack\Facades\Slack::class,
-        'IPBoard'   => Alawrence\Ipboard\Facades\Ipboard::class,
-
+        // Bootstrapper
+        'Accordion'            => Bootstrapper\Facades\Accordion::class,
+        'Alert'                => Bootstrapper\Facades\Alert::class,
+        'Badge'                => Bootstrapper\Facades\Badge::class,
+        'Breadcrumb'           => Bootstrapper\Facades\Breadcrumb::class,
+        'Button'               => Bootstrapper\Facades\Button::class,
+        'ButtonGroup'          => Bootstrapper\Facades\ButtonGroup::class,
+        'Carousel'             => Bootstrapper\Facades\Carousel::class,
+        'ControlGroup'         => Bootstrapper\Facades\ControlGroup::class,
+        'DropdownButton'       => Bootstrapper\Facades\DropdownButton::class,
+        'Form'                 => Bootstrapper\Facades\Form::class,
+        'Helpers'              => Bootstrapper\Facades\Helpers::class,
+        'Icon'                 => Bootstrapper\Facades\Icon::class,
+        'InputGroup'           => Bootstrapper\Facades\InputGroup::class,
+        'Image'                => Bootstrapper\Facades\Image::class,
+        'Label'                => Bootstrapper\Facades\Label::class,
+        'MediaObject'          => Bootstrapper\Facades\MediaObject::class,
+        'Modal'                => Bootstrapper\Facades\Modal::class,
+        'Navbar'               => Bootstrapper\Facades\Navbar::class,
+        'Navigation'           => Bootstrapper\Facades\Navigation::class,
+        'Panel'                => Bootstrapper\Facades\Panel::class,
+        'ProgressBar'          => Bootstrapper\Facades\ProgressBar::class,
+        'Tabbable'             => Bootstrapper\Facades\Tabbable::class,
+        'Table'                => Bootstrapper\Facades\Table::class,
+        'Thumbnail'            => Bootstrapper\Facades\Thumbnail::class,
     ],
 
 ];

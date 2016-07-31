@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Mship\Account $flagger
  * @property-read \App\Models\Mship\Account $resolver
  * @property-read \App\Models\Mship\Account\Note $note
+ * @mixin \Eloquent
  */
 class Flag extends \Eloquent {
     use SoftDeletingTrait, RecordsActivity;
@@ -21,11 +22,11 @@ class Flag extends \Eloquent {
     protected $hidden = ['account_note_flag_id'];
 
     public function flagger(){
-        return $this->belongsTo("App\Models\Mship\Account", "account_id", "flag_by");
+        return $this->belongsTo("App\Models\Mship\Account", "flag_by");
     }
 
     public function resolver(){
-        return $this->belongsTo("App\Models\Mship\Account", "account_id", "resolve_by");
+        return $this->belongsTo("App\Models\Mship\Account", "resolve_by");
     }
 
     public function note(){

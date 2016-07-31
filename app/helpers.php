@@ -1,5 +1,19 @@
 <?php
 
+function format_name($name){
+    $name = trim($name);
+
+    if ($name == strtoupper($name) || $name == strtolower($name)) {
+        $name = ucwords(strtolower($name));
+    }
+
+    return $name;
+}
+
+function sanitize_email($email){
+    return strtolower(trim($email));
+}
+
 function is_date_string($suspectedDateString){
     return preg_match("/^(\d{4})\-(\d{2})\-(\d{2})$/i", $suspectedDateString);
 }
@@ -46,4 +60,20 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
     $unitsString = implode(",", $units) . " and ".$lastElement;
 
     return $unitsString;
+}
+
+function array_merge_concat($a1, $a2, $sep=" "){
+    $final_array = $a1;
+
+    foreach($a2 as $key => $value){
+        if(is_numeric($key)){
+            $final_array[] = $value;
+        } elseif(array_key_exists($key, $a1)){
+            $final_array[$key] = $final_array[$key] . $sep . $value;
+        } else {
+            $final_array[$key] = $value;
+        }
+    }
+
+    return $final_array;
 }

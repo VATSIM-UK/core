@@ -18,7 +18,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Sync\PushToMoodle',
             'App\Listeners\Sync\PushToRts',
             'App\Listeners\Sync\PushToPts',
-            'App\Listeners\Sync\PushToTeamspeak',
+            'App\Listeners\Sync\PushToTeamSpeak',
         ],
     ];
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 /**
  * App\Models\Mship\Account\State
  *
- * @property integer $account_state_id
+ * @property integer $id
  * @property integer $account_id
  * @property boolean $state
  * @property \Carbon\Carbon $created_at
@@ -16,6 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read mixed $label
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereState($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\State whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class State extends \Eloquent
 {
@@ -23,10 +30,10 @@ class State extends \Eloquent
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table      = "mship_account_state";
-    protected $primaryKey = "account_state_id";
+    protected $primaryKey = "id";
     protected $dates      = ['created_at', 'deleted_at'];
     protected $fillable   = ['state'];
-    protected $hidden     = ['account_state_id'];
+    protected $hidden     = ['id'];
     protected $touches    = ['account'];
 
     const STATE_NOT_REGISTERED = 0;
@@ -51,7 +58,7 @@ class State extends \Eloquent
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
     public function getLabelAttribute()
@@ -68,14 +75,14 @@ class State extends \Eloquent
     public function save(array $options = [])
     {
         // Check it doesn't exist, first!
-        $check = State::where("account_id", "=", $this->account_id)->where("state", "=", $this->state);
+        $check = State::where("account_id", "=", $this->id)->where("state", "=", $this->state);
         if ($check->count() > 0) {
             return $check->get();
         }
 
         parent::save($options);
 
-        $deleteOld = State::where("account_id", "=", $this->account_id)->where("state", "!=", $this->state)->get();
+        $deleteOld = State::where("account_id", "=", $this->id)->where("state", "!=", $this->state)->get();
         foreach ($deleteOld as $do) {
             $do->delete();
         }

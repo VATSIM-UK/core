@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * App\Models\Mship\Ban\Reason
  *
- * @property integer $ban_reason_id
+ * @property integer $id
  * @property string $name
  * @property string $reason_text
  * @property integer $period_amount
@@ -19,12 +19,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
  * @property-read mixed $period_hours
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereReasonText($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason wherePeriodAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason wherePeriodUnit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Ban\Reason whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 class Reason extends Model {
 
     use SoftDeletes, RecordsActivity
         ;
-    protected $primaryKey = "ban_reason_id";
+    protected $primaryKey = "id";
     protected $table = 'mship_ban_reason';
     public $timestamps = true;
 
@@ -32,7 +41,7 @@ class Reason extends Model {
 
     public function bans()
     {
-        return $this->hasMany('\App\Models\Mship\Account\Ban', 'ban_reason_id', 'reason_id');
+        return $this->hasMany('\App\Models\Mship\Account\Ban', 'reason_id', 'id');
     }
 
     public function getPeriodHoursAttribute(){

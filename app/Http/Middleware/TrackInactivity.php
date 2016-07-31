@@ -26,11 +26,11 @@ class TrackInactivity
             return $next($request);
         }
 
-        // if they're logged in
         if (Auth::check() && Session::has('last_activity')) {
-            // if their session timeout has been exceeded
             $timeout = Auth::user()->session_timeout;
+
             $inactive = Carbon::now()->diffInMinutes(Session::get('last_activity'));
+
             if ($timeout !== 0 && $inactive >= $timeout) {
                 // forget their secondary authentication
                 Session::forget('auth_extra');

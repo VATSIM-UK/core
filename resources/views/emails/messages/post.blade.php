@@ -2,7 +2,7 @@
 
 @section('content')
     <p>
-        Dear {!! $recipient->name_first !!},
+        Dear {!! $recipient->name !!},
     </p>
 
     {!! $body !!}

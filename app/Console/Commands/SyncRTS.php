@@ -32,7 +32,7 @@ class SyncRTS extends aCommand
      */
     public function handle()
     {
-        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->sso_account_id;
+        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->id;
 
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 
@@ -84,7 +84,7 @@ class SyncRTS extends aCommand
         }
 
         // set and process data
-        $email = $member->primary_email;
+        $email = $member->email;
         $sso_account_id = $this->sso_account_id;
         $ssoEmailAssigned = $member->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
             return $ssoemail->sso_account_id == $sso_account_id;

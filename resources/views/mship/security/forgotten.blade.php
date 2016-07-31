@@ -5,5 +5,7 @@
 @stop
 
 @section('content')
-<a href='{{ URL::route("mship.manage.landing") }}'>Click here to return to the login page.</a>
+    <div class="col-md-8 col-md-2 text-center">
+        <a href='{{ URL::route("mship.manage.landing") }}'>Click here to return to the login page.</a>
+    </div>
 @stop

@@ -1,5 +1,5 @@
 <p>
-    Your access to all of the VATSIM United Kingdom services (Forum/Teamspeak/RTS system) has been reinstated with immediate effect.
+    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS system) has been reinstated with immediate effect.
 </p>
 
 <p>

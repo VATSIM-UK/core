@@ -8,13 +8,17 @@
         {
             "type" : "vcs",
             "url" : "https://github.com/A-Lawrence/laravel-slack-api"
+        },
+        {
+            "type" : "vcs",
+            "url" : "https://github.com/A-Lawrence/modules"
         }
     ],
     "require": {
         "php": ">=5.5.9",
+        "laravel/framework": "5.2.*",
         "vatsim/xml": "2.*",
         "vatsim/sso": "2.*",
-        "laravel/framework": "5.2.*",
         "flynsarmy/db-blade-compiler": "1.*",
         "wpb/string-blade-compiler": "2.*",
         "guzzlehttp/guzzle": "~6.0",
@@ -28,7 +32,9 @@
         "barryvdh/laravel-ide-helper": "^2.1",
         "league/csv": "^8.0",
         "alawrence/laravel-ipboard": "1.0",
-        "vluzrmos/slack-api": "dev-master"
+        "vluzrmos/slack-api": "dev-master",
+        "patricktalmadge/bootstrapper" : "~5",
+        "caffeinated/modules": "dev-extra-directories"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -36,7 +42,8 @@
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1",
         "symfony/dom-crawler": "~3.0",
-        "symfony/css-selector": "~3.0"
+        "symfony/css-selector": "~3.0",
+        "laravel/homestead": "^3.0"
     },
     "autoload": {
         "classmap": [

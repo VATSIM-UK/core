@@ -1,4 +1,4 @@
-<div class="panel panel-{{ $ban->is_repealed ? "info" : "danger" }}" id='ban-{{ $ban->account_ban_id }}'>
+<div class="panel panel-{{ $ban->is_repealed ? "info" : "danger" }}" id='ban-{{ $ban->id }}'>
     <div class="panel-heading">
         <h3 class="panel-title">
             {!! $ban->type_string !!} - {!! $ban->period_amount_string !!}
@@ -26,20 +26,20 @@
         @if($ban->is_local)
             <div class="btn-toolbar">
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/ban/".$ban->account_ban_id."/repeal") && !$ban->is_repealed)
-                        {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->account_ban_id], ["class" => "btn btn-danger"]) !!}
+                    @if($_account->hasPermission("adm/mship/ban/".$ban->id."/repeal") && !$ban->is_repealed)
+                        {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->id], ["class" => "btn btn-danger"]) !!}
                     @endif
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/ban/".$ban->account_ban_id."/modify") && $ban->is_active)
-                        {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->account_ban_id], ["class" => "btn btn-warning"]) !!}
+                    @if($_account->hasPermission("adm/mship/ban/".$ban->id."/modify") && $ban->is_active)
+                        {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->id], ["class" => "btn btn-warning"]) !!}
                     @endif
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/account/".$account->account_id."/note/create") && !$ban->is_repealed)
-                        {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->account_ban_id], ["class" => "btn btn-info"]) !!}
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create") && !$ban->is_repealed)
+                        {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->id], ["class" => "btn btn-info"]) !!}
                     @endif
                 </div>
             </div>
@@ -72,11 +72,11 @@
         @if(count($ban->notes) > 0)
             <strong>
                 Related Notes (Newest first) -
-                <a data-toggle="collapse" href="#banNotes{{ $ban->account_ban_id }}" aria-expanded="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? true : false }}"
-                   aria-controls="#banNotes{{ $ban->account_ban_id }}">Toggle Display</a>
+                <a data-toggle="collapse" href="#banNotes{{ $ban->id }}" aria-expanded="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? true : false }}"
+                   aria-controls="#banNotes{{ $ban->id }}">Toggle Display</a>
             </strong>
 
-            <div class="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->account_ban_id) ? "" : "collapse" }}" id="banNotes{{ $ban->account_ban_id }}">
+            <div class="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? "" : "collapse" }}" id="banNotes{{ $ban->id }}">
                 @foreach($ban->notes->sortByDesc("created_at") as $note)
                     @include('adm.mship.account._note', ["note" => $note])
                 @endforeach

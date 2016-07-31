@@ -54,6 +54,14 @@ Route::group(array('namespace' => 'Adm'), function () {
 
             Route::group(array('prefix' => 'system', 'namespace' => 'Sys'), function () {
                 Route::get('/activity', array('as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex'));
+
+                Route::get('/module', array('as' => 'adm.sys.module.list', 'uses' => 'Module@getIndex'));
+                Route::get('/module/{slug}/enable', array('as' => 'adm.sys.module.enable', 'uses' => 'Module@getEnable'));
+                Route::get('/module/{slug}/disable', array('as' => 'adm.sys.module.disable', 'uses' => 'Module@getDisable'));
+
+                Route::get('/jobs/failed', ['as' => 'adm.sys.jobs.failed', 'uses' => 'Jobs@getFailed']);
+                Route::post('/jobs/failed/{id}/retry', ['as' => 'adm.sys.jobs.failed.retry', 'uses' => 'Jobs@postFailed']);
+                Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
             });
 
             Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
@@ -178,8 +186,8 @@ Route::group([], function () {
         });
     });
 
-    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'Teamspeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
-        Route::model('tsreg', App\Models\Teamspeak\Registration::class);
+    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+        Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
         Route::get('/new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
         Route::get('/{tsreg}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
@@ -200,6 +208,6 @@ Route::group([], function () {
     });
 });
 
-Route::get('/', function () {
+Route::get('/', ['as' => 'default', function () {
     return Redirect::route('mship.manage.landing');
-});
+}]);

@@ -66,7 +66,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class aModel extends Model {
     protected $doNotTrack = [];
 
-    public static function boot() {
+    protected static function boot() {
         parent::boot();
         self::created(array(get_called_class(), "eventCreated"));
         self::updated(array(get_called_class(), "eventUpdated"));

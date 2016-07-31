@@ -8,6 +8,7 @@ use App\Models\aModel;
  * App\Modules\Ais\Models\Facility
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Facility\Position[] $positions
+ * @mixin \Eloquent
  */
 class Facility extends aModel {
 

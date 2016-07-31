@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * App\Models\Mship\Account\Note\Format
  *
  * @property-read \App\Models\Mship\Account\Note $note
+ * @mixin \Eloquent
  */
 class Format extends \Eloquent {
         use SoftDeletingTrait, RecordsActivity;

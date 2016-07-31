@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Messages\Thread\Participant
  *
- * @property integer $thread_participant_id
+ * @property integer $id
  * @property integer $thread_id
  * @property integer $account_id
  * @property string $display_as
@@ -17,15 +17,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $account
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ * @mixin \Eloquent
  */
 class Participant extends \App\Models\aModel
 {
 
     protected $table      = 'messages_thread_participant';
-    protected $primaryKey = "thread_participant_id";
+    protected $primaryKey = "id";
     protected $fillable   = ["display_as"];
     public    $dates      = ["read_at", 'created_at', 'updated_at'];
     public    $timestamps = true;
@@ -46,10 +55,10 @@ class Participant extends \App\Models\aModel
     }
 
     public function thread(){
-        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "thread_id");
+        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
     }
 
     public function account(){
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
     }
 }

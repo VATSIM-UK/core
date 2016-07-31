@@ -23,7 +23,7 @@
                     Please ensure that this page is completed correctly as it <strong>will</strong> notify the member automatically.  The reason you provide on this page will
                     <strong>not</strong> be sent in the email.
                 </p>
-                {!! Form::open(["route" => ["adm.mship.ban.modify", $ban->account_ban_id]]) !!}
+                {!! Form::open(["route" => ["adm.mship.ban.modify", $ban->id]]) !!}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -57,7 +57,7 @@
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-left">
-                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->account_ban_id], ["class" => "btn btn-info"]) !!}
+                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->id], ["class" => "btn btn-info"]) !!}
                         </div>
                         <div class="btn-group pull-right">
                             {!! Form::submit("Modify Ban", ["class" => "btn btn-danger"]) !!}

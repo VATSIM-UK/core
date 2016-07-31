@@ -46,6 +46,6 @@ class SendSecurityForgottenConfirmationEmail extends \App\Jobs\Job implements Sh
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        Bus::dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue("emails"));
     }
 }

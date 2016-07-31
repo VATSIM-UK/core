@@ -30,9 +30,9 @@
                         <tbody>
                             @foreach($members as $m)
                             <tr>
-                                <td>{!! link_to_route("adm.mship.account.details", $m->account_id, [$m->account_id]) !!}</td>
+                                <td>{!! link_to_route("adm.mship.account.details", $m->id, [$m->id]) !!}</td>
                                 <td>{{ $m->name }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $m->primary_email : "[ No Permission ]" }}</td>
+                                <td>{{ $_account->hasPermission("adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
                                 <td>{{ $m->qualification_pilot }}</td>
                                 <td>{{ $m->current_state }}</td>
@@ -63,7 +63,6 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>E-Mail</th>
-                                <th>Status</th>
                                 <th>Created</th>
                                 <th>Verified</th>
                                 <th>Deleted</th>
@@ -72,10 +71,9 @@
                         <tbody>
                             @foreach($emails as $e)
                             <tr>
-                                <td>{!! link_to_route('adm.mship.account.details', $e->account_id, [$e->account_id]) !!}</td>
+                                <td>{!! link_to_route('adm.mship.account.details', $e->id, [$e->id]) !!}</td>
                                 <td>{{ $e->account->name }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $e->email : "[ No Permission ]" }}</td>
-                                <td>{!! $e->is_primary ? '<span class="label label-success">Primary</span>' : '<span class="label label-default">Secondary</span>' !!}</td>
+                                <td>{{ $_account->hasPermission("adm/mship/account/email/view") ? $e->email : "[ No Permission ]" }}</td>
                                 <td>{{ $e->created_at }}</td>
                                 <td>{{ $e->verified_at }}</td>
                                 <td>{{ $e->deleted_at ? $e->deleted_at : "Not Deleted" }}</td>

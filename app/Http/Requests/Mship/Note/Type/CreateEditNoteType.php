@@ -29,7 +29,7 @@ class CreateEditNoteType extends Request
 
         $currentNoteTypeId = null;
         if($currentNoteType){
-            $currentNoteTypeId = $currentNoteType->note_type_id;
+            $currentNoteTypeId = $currentNoteType->id;
         }
 
         return [

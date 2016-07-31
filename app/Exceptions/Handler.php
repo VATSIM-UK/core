@@ -40,15 +40,13 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        if (extension_loaded('newrelic')) {
-            try {
-                newrelic_notice_error(null, $e);
-            } catch (Exception $e) {
-                //
-            }
-        }
-
         if (!$this->shouldntReport($e)) {
+            if (extension_loaded('newrelic')) {
+                try {
+                    newrelic_notice_error(null, $e);
+                } catch (Exception $e) {}
+            }
+
             if (App::environment('production')) {
                 $channel = 'wslogging';
             } else {
@@ -92,7 +90,7 @@ class Handler extends ExceptionHandler
                         'title' => 'Member:',
                         'value' => sprintf(
                             '%d - %s %s',
-                            Auth::user()->account_id,
+                            Auth::user()->id,
                             Auth::user()->name_first,
                             Auth::user()->name_last
                         ),
@@ -107,7 +105,9 @@ class Handler extends ExceptionHandler
                 ];
             }
 
-            Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+            try {
+                Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+            } catch (Exception $e) {}
 
             Log::info(Request::fullUrl());
         }

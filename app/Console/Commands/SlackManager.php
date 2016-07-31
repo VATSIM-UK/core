@@ -54,7 +54,7 @@ class SlackManager extends aCommand
             $localUser = Account::findWithSlackId($slackUser->id);
             $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
-            if($slackUser->presence != "active"){
+            if($slackUser->presence != "active" || $slackUser->name == "admin" || $slackUser->name == "slackbot"){
                 continue;
             }
 
@@ -67,13 +67,13 @@ class SlackManager extends aCommand
                 $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
             }
 
-            if(strcasecmp($localUser->name, $slackUser->real_name) != 0){
+            if($localUser->isValidDisplayName($slackUser->real_name)){
                 $this->messageAskingForRealName($localUser, $slackUser);
             }
 
-            if(strcasecmp($localUser->primary_email->email, $slackUser->profile->email) != 0){
-                $this->messageAskingForRealEmail($localUser, $slackUser);
-            }
+//            if(strcasecmp($localUser->email, $slackUser->profile->email) != 0){
+//                $this->messageAskingForRealEmail($localUser, $slackUser);
+//            }
         }
     }
 
@@ -89,13 +89,13 @@ class SlackManager extends aCommand
         $this->sendSlackMessagePlain($slackUser->id, "****************************************************", "VATSIM UK Slack Bot");
         $this->sendSlackMessagePlain($slackUser->id, "The email address '".$slackUser->profile->email."' is not your current VATSIM one.", "VATSIM UK Slack Bot");
         $this->sendSlackMessagePlain($slackUser->id, "If your VATSIM one needs to change, please visit the membership services at https://vatsim.net", "VATSIM UK Slack Bot");
-        $this->sendSlackMessagePlain($slackUser->id, "Alternatively, please set your Slack email to your current VATSIM one ('".$localUser->primary_email->email."').", "VATSIM UK Slack Bot");
+        $this->sendSlackMessagePlain($slackUser->id, "Alternatively, please set your Slack email to your current VATSIM one ('".$localUser->email."').", "VATSIM UK Slack Bot");
         $this->sendSlackMessagePlain($slackUser->id, "****************************************************", "VATSIM UK Slack Bot");
     }
 
     private function messageDsgAdvisitingOfBannedUser($localUser, $slackUser){
         $this->sendSlackError("A user who is banned, is using Slack.", [
-            "User CID" => $localUser->account_id, "Slack User" => $slackUser->id." - ".$slackUser->name
+            "User CID" => $localUser->id, "Slack User" => $slackUser->id." - ".$slackUser->name
         ]);
     }
 
