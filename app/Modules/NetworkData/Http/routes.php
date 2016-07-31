@@ -11,8 +11,8 @@
 |
 */
 
-Route::group(['prefix' => 'ais'], function() {
+Route::group(['prefix' => 'networkdata'], function() {
 	Route::get('/', function() {
-		dd('This is the Airfield Information Services module index page.');
+		dd('This is the VATSIM Network Data module index page.');
 	});
 });

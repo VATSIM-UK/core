@@ -18,6 +18,3 @@ phpunit:php5.5:mysql5.5:
     - production
   script:
     - php vendor/bin/phpunit --colors
-    - vendor/bin/phpmd app/ text phpmd.xml
-    - vendor/bin/phpcs --standard=psr2 app
-    - php artisan migrate:reset
