@@ -16,10 +16,6 @@ class AddEmailViewPermission extends Migration
         DB::table('mship_permission')->insert([
             ['name' => 'adm/mship/account/email/view', 'display_name' => 'Admin / Mship / Account / Email / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
-
-        Schema::table('sys_notification_read', function($table){
-            $table->dropUnique('sys_notification_read_notification_id_account_id_unique');
-        });
     }
 
     /**
@@ -30,9 +26,5 @@ class AddEmailViewPermission extends Migration
     public function down()
     {
         DB::table('mship_permission')->where('name', 'adm/mship/account/email/view')->delete();
-
-        Schema::table('sys_notification_read', function($table){
-            $table->unique(['notification_id', 'account_id']);
-        });
     }
 }
