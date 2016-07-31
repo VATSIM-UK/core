@@ -350,7 +350,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function readNotifications()
     {
         return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
-            'id')
+            'notification_id')
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();
