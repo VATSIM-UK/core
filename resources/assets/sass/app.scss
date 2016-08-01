@@ -67,6 +67,10 @@ body, html {
   background: #0850a0;
 }
 
+.navbar-right {
+  margin-right: 5.8%;
+}
+
 .banner {
   width: 100%;
   height: 350px;
@@ -182,13 +186,14 @@ body, html {
 }
 
 /** NAV **/
+.dropdown-menu {
+  left: inherit;
+}
 
 .dropdown-large {
   position: static !important;
 }
 .dropdown-menu-large {
-  margin-left: 16px;
-  margin-right: 16px;
   padding: 20px 0px;
 }
 .dropdown-menu-large > li > ul {
