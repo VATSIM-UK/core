@@ -1109,7 +1109,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function isValidDisplayName($displayName)
     {
-        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
+        return (strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     public function getDisplayValueAttribute()

@@ -5,6 +5,7 @@ namespace App\Modules\NetworkData\Jobs;
 use App\Models\Mship\Qualification;
 use App\Modules\NetworkData\Events\StatisticsDownloaded;
 use App\Modules\NetworkData\Events\NetworkDataParsed;
+use App\Modules\NetworkData\Events\NetworkDataDownloaded;
 use App\Modules\NetworkData\Models\Atc;
 use Carbon\Carbon;
 use Illuminate\Queue\SerializeModels;
