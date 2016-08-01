@@ -73,6 +73,7 @@ class Security extends \App\Http\Controllers\BaseController {
         })->values();
 
         if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
+            \Log::info($ssoEmailAssigned);
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
