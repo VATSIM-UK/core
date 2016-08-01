@@ -239,7 +239,7 @@
 
                     <br/>
 
-                    @foreach($_account->secondaryEmails as $email)
+                    @forelse($_account->secondaryEmails as $email)
                         <div class="row">
                             <div class="col-xs-4">
                                 <b>SECONDARY EMAIL:</b>
@@ -268,10 +268,9 @@
                         </div>
 
                         <br />
-                    @endforeach
-                    @if(count($_account->emails) < 2)
+                    @empty
                         You have no secondary email addresses.
-                    @endif
+                    @endforelse
 
                 </div>
             </div>
