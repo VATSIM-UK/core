@@ -123,7 +123,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             || $member->current_state->state == Account\State::STATE_DIVISION
         ) {
             $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-            if (!$member->hasQualification($atcRating)) {
+            if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
                 $member->addQualification($atcRating);
             }
         }
