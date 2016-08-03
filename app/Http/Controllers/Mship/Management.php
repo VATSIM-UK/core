@@ -73,7 +73,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return Redirect::route("mship.manage.dashboard")
-                       ->withSuccess("Your new email (" . $email . " has been added successfully! You will be sent a verification link to activate this email address.");
+                       ->withSuccess("Your new email (" . $email . ") has been added successfully! You will be sent a verification link to activate this email address.");
     }
 
     public function getEmailAssignments()
