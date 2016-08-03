@@ -60,6 +60,7 @@ class Qualification extends \Eloquent
 
     public static function parseVatsimATCQualification($network)
     {
+        $network = intval($network);
         if ($network < 1) {
             return null;
         } elseif ($network >= 8 AND $network <= 10) {
