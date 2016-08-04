@@ -15,12 +15,16 @@
                     </p>
                 </div>
 
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    {!! ButtonGroup::withContents([
-                        Button::success("YES, please!")->large()->submit(),
-                        Button::danger("NO, thanks.")->large()->submit()
-                    ]) !!}
-                </div>
+                <form class="form-horizontal" method="POST" action="{{ URL::route("mship.auth.logout.post") }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <div class="col-md-8 col-md-offset-2 text-center">
+                        {!! ButtonGroup::links([
+                                Button::success("YES, please!")->addAttributes(['name' => 'processlogout', 'value' => '1'])->large()->submit(),
+                                Button::danger("NO, thanks.")->addAttributes(['name' => 'processlogout', 'value' => '0'])->large()->submit()
+                            ])
+                        !!}
+                    </div>
+                </form>
             </div>
 
         {!! HTML::panelClose() !!}
