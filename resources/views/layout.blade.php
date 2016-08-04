@@ -37,7 +37,9 @@
                                     <ul>
                                         <li class="dropdown-header">Password</li>
                                         <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
-                                        <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                        @if(!$_account->mandatory_password)
+                                            <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                        @endif
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Email Address</li>
                                         <li>{!! link_to_route("mship.manage.email.add", "Add Email") !!}</li>
