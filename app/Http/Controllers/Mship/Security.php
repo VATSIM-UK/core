@@ -104,18 +104,18 @@ class Security extends \App\Http\Controllers\BaseController {
         $newPassword = Input::get("new_password");
 
         // Check the minimum length first.
-        if (strlen($newPassword) < 5) {
-            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Length >= 5]");
+        if (strlen($newPassword) < 6) {
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements (password length must be at least 6 characters)");
         }
 
         // Check the number of alphabetical characters.
         if (preg_match_all("/[a-zA-Z]/", $newPassword) < 3) {
-            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Alpha >= 3]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements (password must have at least 3 alphabetical characters)");
         }
 
         // Check the number of numeric characters.
         if (preg_match_all("/[0-9]/", $newPassword) < 1) {
-            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements [Numeric >= 1]");
+            return Redirect::route("mship.security.replace")->with("error", "Your password does not meet the requirements (password must have at least one number)");
         }
 
         // All requirements met, set the password!
