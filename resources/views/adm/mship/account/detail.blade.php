@@ -10,7 +10,7 @@
             <div class="box-body">
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
                         <li {{ $selectedTab == "role" ? "class='active'" : "" }}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
@@ -165,7 +165,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
                         <div class="tab-pane fade {{ $selectedTab == "role" ? "in active" : "" }}" id="role">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -177,7 +177,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/role/attach"))
+                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/attach"))
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRoleAttach">Add / Attach</button>
                                                 @endif
                                             </div>
@@ -192,7 +192,7 @@
                                                     <th>Name</th>
                                                     <th># Permissions</th>
                                                     <th>Added</th>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$account->id."/detach"))
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/".$account->id."/detach"))
                                                         <th>Delete</th>
                                                     @endif
                                                 </tr>
@@ -204,7 +204,7 @@
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/".$r->id."/detach"))
+                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/".$r->id."/detach"))
                                                         <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
@@ -217,7 +217,7 @@
                     @endif
 
                     <!-- Modals -->
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/role/attach"))
+                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
                             {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->id)]) !!}
                             <div class="modal-dialog">
