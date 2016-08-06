@@ -156,7 +156,7 @@
                                         @foreach($_account->qualifications_atc_training as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
-                                                <em>granted {{ $qual->pivot->created_at }}</em>
+                                                <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
