@@ -8,7 +8,7 @@
             <span class="time pull-right">
                 <small>
                     <i class="fa fa-user"></i>
-                    {{ $ban->banner->name }}
+                    {{ !is_null($ban->banner) ? $ban->banner->name : 'Unknown' }}
                     ({!! link_to_route("adm.mship.account.details", $ban->banned_by, [$ban->banned_by]) !!}
                     )
 
