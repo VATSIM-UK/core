@@ -108,13 +108,13 @@ class MemberCertUpdate extends Job implements ShouldQueue
         } else {
             // remove any extra ratings
             foreach ($member->qualifications_atc_training as $qual) {
-                $qual->delete();
+                $qual->pivot->delete();
             }
             foreach ($member->qualifications_pilot_training as $qual) {
-                $qual->delete();
+                $qual->pivot->delete();
             }
             foreach ($member->qualifications_admin as $qual) {
-                $qual->delete();
+                $qual->pivot->delete();
             }
         }
 
