@@ -101,7 +101,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                if (!$member->hasQualification($prevAtcRating)) {
+                if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
                     $member->addQualification($prevAtcRating);
                 }
             }
@@ -123,7 +123,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             || $member->current_state->state == Account\State::STATE_DIVISION
         ) {
             $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-            if (!$member->hasQualification($atcRating)) {
+            if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
                 $member->addQualification($atcRating);
             }
         }

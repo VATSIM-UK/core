@@ -33,8 +33,8 @@ class SendModifiedEmail extends Job implements ShouldQueue
         $body = \View::make("emails.mship.account.ban.modified")
                      ->with("account", $this->recipient)
                      ->with("ban", $this->ban)
-                     ->with("ban_difference_type", $ban_difference_type)
-                     ->with("ban_difference_amount", $ban_difference_amount)
+                     //->with("ban_difference_type", $ban_difference_type)
+                     //->with("ban_difference_amount", $ban_difference_amount)
                      ->with("ban_total_length", $ban_total_length)
                      ->render();
 

@@ -95,7 +95,7 @@ class SyncCommunity extends aCommand
 
             $state = $member_core->states()->where('state', '=', \App\Models\Mship\Account\State::STATE_DIVISION)->first()->state ? 'Division Member' : 'International Member';
             $state = $member_core->states()->where('state', '=', \App\Models\Mship\Account\State::STATE_VISITOR)->first()->state ? 'Visiting Member' : $state;
-            $aRatingString = $member_core->qualification_atc->qualification->name_long;
+            $aRatingString = $member_core->qualification_atc->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
 
             // Check for changes

@@ -232,6 +232,7 @@
 
                         <div class="col-xs-4">
                             <b>STATUS:</b>
+                            <br />
                                 Verified
                         </div>
                     </div>
@@ -261,7 +262,7 @@
                                 <b>ADDED:</b>
                                 <br />
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
-                                    <em>added {{ $email->created_at }}</em>
+                                    <em>on {{ $email->created_at }}</em>
                                 </a>
                             </div>
 
