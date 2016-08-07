@@ -279,6 +279,8 @@ class TeamSpeak
                 $client->addServerGroup($group->dbid);
             } else if (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
                 $client->addServerGroup($group->dbid);
+            } else if (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && !$member->qualifications_pilot->isEmpty()) {
+                $client->remServerGroup($group->dbid);
             } else if (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
                 $client->remServerGroup($group->dbid);
             }
