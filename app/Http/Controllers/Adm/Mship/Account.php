@@ -154,7 +154,7 @@ class Account extends AdmController
         $role = RoleData::find(Input::get("role"));
 
         if (!$role) {
-            return Redirect::route("adm.mship.account.details", [$account->id], "role")
+            return Redirect::route("adm.mship.account.details", [$account->id, "roles"])
                            ->withError("The selected role does not exist.");
         }
 
@@ -164,7 +164,7 @@ class Account extends AdmController
                     ->attach($role);
         }
 
-        return Redirect::route("adm.mship.account.details", [$account->id, "role"])
+        return Redirect::route("adm.mship.account.details", [$account->id, "roles"])
                        ->withSuccess($role->name . " role attached successfully. This user inherited " . count($role->permissions) . " permissions.");
     }
 
@@ -175,12 +175,12 @@ class Account extends AdmController
         }
 
         if (!$role) {
-            return Redirect::route("adm.mship.account.details", [$account->id], "role")
+            return Redirect::route("adm.mship.account.details", [$account->id, "roles"])
                            ->withError("The selected role does not exist.");
         }
 
         if (!$account->roles->contains($role->id)) {
-            return Redirect::route("adm.mship.account.details", [$account->id], "role")
+            return Redirect::route("adm.mship.account.details", [$account->id, "roles"])
                            ->withError("This role is not attached to this user.");
         }
 
@@ -188,7 +188,7 @@ class Account extends AdmController
         $account->roles()
                 ->detach($role);
 
-        return Redirect::route("adm.mship.account.details", [$account->id, "role"])
+        return Redirect::route("adm.mship.account.details", [$account->id, "roles"])
                        ->withSuccess($role->name . " role detached successfully. This user lost " . count($role->permissions) . " permissions.");
     }
 

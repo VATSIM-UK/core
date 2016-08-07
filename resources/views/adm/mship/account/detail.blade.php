@@ -11,19 +11,19 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
-                        <li {{ $selectedTab == "role" ? "class='active'" : "" }}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
+                        <li {!! $selectedTab == "roles" ? "class='active'" : "" !!}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
-                        <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
+                        <li {!! $selectedTab == "bans" ? "class='active'" : "" !!}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/notes"))
-                        <li {{ $selectedTab == "notes" ? "class='active'" : "" }}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
+                        <li {!! $selectedTab == "notes" ? "class='active'" : "" !!}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/flags"))
-                        <li {{ $selectedTab == "flags" ? "class='active'" : "" }}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
+                        <li {!! $selectedTab == "flags" ? "class='active'" : "" !!}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
                     @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/datachanges"))
-                        <li {{ $selectedTab == "datachanges" ? "class='active'" : "" }}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
+                        <li {!! $selectedTab == "datachanges" ? "class='active'" : "" !!}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
                     @endif
                 </ul>
                 <br />
@@ -166,7 +166,7 @@
                     @endif
 
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
-                        <div class="tab-pane fade {{ $selectedTab == "role" ? "in active" : "" }}" id="role">
+                        <div class="tab-pane fade {{ $selectedTab == "roles" ? "in active" : "" }}" id="role">
                             <!-- general form elements -->
                             <div class="box box-primary">
 
