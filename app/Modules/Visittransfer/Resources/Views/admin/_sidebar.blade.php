@@ -21,22 +21,45 @@
 
         <li class="treeview {{ (\Request::is('adm/visit-transfer/application*') ? 'active' : '') }}">
             <a href="#">
-                <i class="ion ion-briefcase"></i> <span>Applications</span>
+                <i class="ion ion-briefcase"></i>
+                <span>Applications</span>
+
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
 
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list") }}"><i class="fa fa-bars"></i> All Applications</a>
+                    <a href="{{ URL::route("visiting.admin.application.list") }}">
+                        <i class="fa fa-bars"></i>
+                        <span>All Applications</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-blue">{!! $visittransfer_statistics_applications_total !!}</small>
+                        </span>
+                    </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/open') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}"><i class="fa fa-bars"></i> Open Applications</a>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Open Applications</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_applications_open !!}</small>
+                        </span>
+                    </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/closed') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}"><i class="fa fa-bars"></i> Closed Applications</a>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Closed Applications</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red">{!! $visittransfer_statistics_applications_closed !!}</small>
+                        </span>
+                    </a>
                 </li>
 
             </ul>

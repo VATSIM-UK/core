@@ -38,6 +38,10 @@ class VisittransferServiceProvider extends ServiceProvider
 		parent::registerPolicies($gate);
 
 		Application::observe(new ApplicationObserver());
+
+		view()->composer(
+			["visittransfer::admin._sidebar"], App\Modules\Visittransfer\Composers\StatisticsComposer::class
+		);
 	}
 
 	/**
