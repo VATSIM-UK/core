@@ -145,10 +145,10 @@
                     @foreach($statisticsGraph as $date => $counts)
                 {
                     date: '{{ $date }}',
-                    applications_total: {{ $counts['applications.total'] }},
-                    applications_accepted: {{ $counts['applications.accepted'] }},
-                    applications_rejected: {{ $counts['applications.rejected'] }},
-                    applications_new: {{ $counts['applications.new'] }}
+                    applications_total: {{ array_get($counts, 'applications.total', 0) }},
+                    applications_accepted: {{ array_get($counts, 'applications.accepted', 0) }},
+                    applications_rejected: {{ array_get($counts, 'applications.rejected', 0) }},
+                    applications_new: {{ array_get($counts, 'applications.new', 0) }}
                 },
                 @endforeach
             ],

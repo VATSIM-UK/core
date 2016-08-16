@@ -35,11 +35,12 @@ class AdmController extends \App\Http\Controllers\BaseController
 
         $view->with("_account", $this->_account);
 
-        $this->buildBreadcrumb("Administration", "/adm");
+        $this->buildBreadcrumb("Administration Control Panel", "/adm/dashboard");
 
         $view->with("_breadcrumb", $this->_breadcrumb);
 
         $view->with("_pageTitle", $this->getTitle());
+        $view->with("_pageSubTitle", $this->getSubTitle());
 
         return $view;
     }

@@ -17,11 +17,10 @@ class BaseController extends \Illuminate\Routing\Controller {
 
     protected $_account;
     protected $_pageTitle;
+    protected $_pageSubTitle;
     protected $_breadcrumb;
 
     public function __construct() {
-        $this->_breadcrumb = collect();
-
         if(Auth::check()) {
             $this->_account = Auth::user();
             $this->_account->load("roles", "roles.permissions");
@@ -58,6 +57,7 @@ class BaseController extends \Illuminate\Routing\Controller {
         $view->with("_breadcrumb", $this->_breadcrumb);
 
         $view->with("_pageTitle", $this->getTitle());
+        $view->with("_pageSubTitle", $this->getSubTitle());
 
         return $view;
     }
@@ -68,10 +68,32 @@ class BaseController extends \Illuminate\Routing\Controller {
 
     public function getTitle(){
         if($this->_pageTitle == null){
-            return ucfirst($this->_breadcrumb->first()->get("name"));
+
+            if($this->isModuleRequest()){
+                return $this->getModuleRequest()->get("name");
+            }
+
+            return $this->_breadcrumb->first()->get("name");
         }
 
-        return ucfirst($this->_pageTitle);
+        return $this->_pageTitle;
+    }
+
+    public function setSubTitle($title){
+        $this->_pageSubTitle = $title;
+    }
+
+    public function getSubTitle(){
+        if($this->_pageSubTitle == null){
+
+            if($this->isModuleRequest()){
+                return $this->getControllerRequest();
+            }
+
+            return null;
+        }
+
+        return $this->_pageSubTitle;
     }
 
     protected function setupLayout() {
@@ -115,10 +137,6 @@ class BaseController extends \Illuminate\Routing\Controller {
 
     protected function addControllerBreadcrumbs(){
         $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
-
-        if($this->_pageTitle){
-            $this->addBreadcrumb($this->_pageTitle);
-        }
     }
 
     /**
