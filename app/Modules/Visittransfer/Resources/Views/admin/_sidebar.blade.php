@@ -85,40 +85,63 @@
                     </a>
                 </li>
 
-                <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
-                    <a href="#">
-                        <i class="fa fa-bars"></i>
-                        <span>Pending Approval</span>
-
-                        <span class="pull-right-container">
-                            <small class="label pull-right bg-red">{!! $visittransfer_statistics_references_pending_approval !!}</small>
-                        </span>
-
-                    </a>
-                </li>
-
                 <li {{ (\Request::is('adm/visit-transfer/reference/pending') ? ' class="active"' : '') }}>
-                    <a href="#">
+                    <a href="{{ URL::route("visiting.admin.reference", ["pending-submission"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Pending Submission</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-orange">{!! $visittransfer_statistics_references_pending_submission !!}</small>
+                            <small class="label pull-right bg-orange">{!! $visittransfer_statistics_references_requested !!}</small>
                         </span>
                     </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/submitted') ? ' class="active"' : '') }}>
-                    <a href="#">
+                    <a href="{{ URL::route("visiting.admin.reference", ["submitted"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Submitted References</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_references_submitted!!}</small>
+                            <small class="label pull-right bg-blue">{!! $visittransfer_statistics_references_submitted!!}</small>
                         </span>
                     </a>
                 </li>
 
+                <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.reference", ["under-review"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Under Review</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-orange">{!! $visittransfer_statistics_references_under_review !!}</small>
+                        </span>
+
+                    </a>
+                </li>
+
+                <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.reference", ["accepted"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Accepted</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_references_accepted !!}</small>
+                        </span>
+
+                    </a>
+                </li>
+
+                <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.reference", ["rejected"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Rejected</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red">{!! $visittransfer_statistics_references_rejected !!}</small>
+                        </span>
+
+                    </a>
+                </li>
             </ul>
         </li>
 

@@ -110,10 +110,9 @@ class Application extends Model
     }
 
     /** All Laravel relationships */
-
-    public function applicant()
+    public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
     }
 
     public function facility(){

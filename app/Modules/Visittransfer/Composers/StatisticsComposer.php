@@ -16,9 +16,11 @@ class StatisticsComposer {
 
 
         $view->with("visittransfer_statistics_references_total", Reference::all()->count());
-        $view->with("visittransfer_statistics_references_pending_approval", Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count());
-        $view->with("visittransfer_statistics_references_pending_submission", Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count());
-        $view->with("visittransfer_statistics_references_submitted", Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count());
+        $view->with("visittransfer_statistics_references_requested", Reference::requested()->count());
+        $view->with("visittransfer_statistics_references_submitted", Reference::submitted()->count());
+        $view->with("visittransfer_statistics_references_under_review", Reference::underReview()->count());
+        $view->with("visittransfer_statistics_references_accepted", Reference::accepted()->count());
+        $view->with("visittransfer_statistics_references_rejected", Reference::rejected()->count());
 
 
     }
