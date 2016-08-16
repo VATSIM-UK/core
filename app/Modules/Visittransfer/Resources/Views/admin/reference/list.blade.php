@@ -19,11 +19,12 @@
                     <table id="facilities" class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th class="col-md-1">ID #</th>
-                            <th class="col-md-1">App ID</th>
-                            <th class="col-md-1" style="text-align: center;">Applicant</th>
-                            <th class="col-md-1" style="text-align: center;">App Type &amp; Facility</th>
-                            <th class="col-md-1" style="text-align: center;">Referee Name</th>
+                            {{--<th class="col-md-1">ID #</th>--}}
+                            {{--<th class="col-md-1">Application</th>--}}
+                            <th class="col-md-2" style="text-align: center;">Applicant</th>
+                            <th class="col-md-1" style="text-align: center;">Applicant Rating</th>
+                            <th class="col-md-2" style="text-align: center;">App Type &amp; Facility</th>
+                            <th class="col-md-2" style="text-align: center;">Referee Name</th>
                             <th class="col-md-1" style="text-align: center;">Referee Rating</th>
                             <th class="col-md-1" style="text-align: center;">Referee EMail</th>
                             <th class="col-md-1" style="text-align: center;">Status</th>
@@ -32,26 +33,31 @@
                         <tbody>
                         @forelse($references as $r)
                             <tr>
+                                {{--<td align="center">--}}
+                                    {{--{!! link_to_route('visiting.admin.reference.view', $r->id, [$r->id]) !!}--}}
+                                {{--</td>--}}
+                                {{--<td align="center">--}}
+                                    {{--{!! link_to_route('visiting.admin.application.view', $r->application_id, [$r->application_id]) !!}--}}
+                                {{--</td>--}}
                                 <td align="center">
-                                    {!! link_to_route('visiting.admin.reference.view', $r->id, [$r->id]) !!}
+                                    @include("adm.partials._account_link", ["account" => $r->application->account])
+                                </td><td align="center">
+                                    {{ $r->application->account->qualification_atc }}
                                 </td>
-                                <td align="center">
-                                    {!! link_to_route('visiting.admin.application.view', $r->application_id, [$r->application_id]) !!}
-                                </td>
-                                <td>{{ $r->application->account->name }}</td>
                                 <td align="center">
                                     {{ $r->application->type_string }} - {{ $r->application->facility_name }}
                                 </td>
                                 <td align="center">
-                                    {{ $r->referee_name }}
+                                    @include("adm.partials._account_link", ["account" => $r->account])
                                 </td>
                                 <td align="center">
+                                    {{ $r->account->qualification_atc }}
                                 </td>
                                 <td align="center">
+                                    {{ $r->account->email }}
                                 </td>
                                 <td align="center">
-                                </td>
-                                <td align="center">
+
                                 </td>
                             </tr>
                         @empty

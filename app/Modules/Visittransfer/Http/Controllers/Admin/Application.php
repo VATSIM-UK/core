@@ -25,38 +25,29 @@ class Application extends AdmController
 
         // ORM it all!
         $totalApplications = ApplicationModel::count();
-        $applicationsQuery = ApplicationModel::orderBy($sortBy, $sortDir)
-                                              ->with("applicant")
+        $applications = ApplicationModel::orderBy($sortBy, $sortDir)
+                                              ->with("account")
                                               ->with("facility")
-                                              ->with("referees.account");
+                                              ->with("referees");
 
         switch ($scope) {
             case "open":
-                $this->setTitle("Open Applications");
-                $applicationsQuery = $applicationsQuery->open();
+                $this->setSubTitle("Open Applications");
+                $applications = $applications->open();
                 break;
             case "closed":
-                $this->setTitle("Closed Applications");
-                $applicationsQuery = $applicationsQuery->closed();
+                $this->setSubTitle("Closed Applications");
+                $applications = $applications->closed();
                 break;
             case "all":
             default:
-                $this->setTitle("All Applications");
+                $this->setSubTitle("All Applications");
         }
 
-        $applicationsQuery = $applicationsQuery->paginate(50);
+        $applications = $applications->paginate(50);
 
-        // Now we need to prepare the collection as a result for the view!
-        $applications = new Collection();
-        foreach ($applicationsQuery as $a) {
-            $applications->prepend($a);
-        }
-        $applications = $applications->reverse();
-
-        $this->_pageSubTitle = "Visiting &amp; Transferring";
         return $this->viewMake("visittransfer::admin.application.list")
                     ->with("applications", $applications)
-                    ->with("applicationsQuery", $applicationsQuery)
                     ->with("sortBy", $sortBy)
                     ->with("sortDir", $sortDir)
                     ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"));

@@ -20,7 +20,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div align="center">
-                        {!! $applicationsQuery->render() !!}
+                        {!! $applications->links() !!}
                     </div>
                     <table id="applications" class="table table-bordered table-striped">
                         <thead>
@@ -88,8 +88,8 @@
                             <tr>
                                 <td>{!! link_to_route('visiting.admin.application.view', $a->id, [$a->id]) !!}</td>
                                 <td>{!! link_to_route('adm.mship.account.details', $a->account_id, [$a->account_id]) !!}</td>
-                                <td>{{ $a->applicant->name  }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $a->applicant->email : "[ No Permission ]" }}</td>
+                                <td>{{ $a->account->name  }}</td>
+                                <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $a->account->email : "[ No Permission ]" }}</td>
                                 <td>{{ $a->type_string }} - {{ $a->facility_name }}</td>
                                 <td class="text-center">
                                     {!! HTML::fuzzyDate($a->created_at) !!}
@@ -107,7 +107,7 @@
                         </tbody>
                     </table>
                     <div align="center">
-                        {!! $applicationsQuery->render() !!}
+                        {!! $applications->links() !!}
                     </div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
