@@ -75,19 +75,48 @@
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/all') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference") }}"><i class="fa fa-bars"></i> All References</a>
+                    <a href="{{ URL::route("visiting.admin.reference") }}">
+                        <i class="fa fa-bars"></i>
+                        <span>All References</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-blue">{!! $visittransfer_statistics_references_total !!}</small>
+                        </span>
+                    </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> Pending Approval</a>
+                    <a href="#">
+                        <i class="fa fa-bars"></i>
+                        <span>Pending Approval</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red">{!! $visittransfer_statistics_references_pending_approval !!}</small>
+                        </span>
+
+                    </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/pending') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> Pending Submission</a>
+                    <a href="#">
+                        <i class="fa fa-bars"></i>
+                        <span>Pending Submission</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-orange">{!! $visittransfer_statistics_references_pending_submission !!}</small>
+                        </span>
+                    </a>
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/submitted') ? ' class="active"' : '') }}>
-                    <a href="#"><i class="fa fa-bars"></i> Submitted References</a>
+                    <a href="#">
+                        <i class="fa fa-bars"></i>
+                        <span>Submitted References</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_references_submitted!!}</small>
+                        </span>
+                    </a>
                 </li>
 
             </ul>
