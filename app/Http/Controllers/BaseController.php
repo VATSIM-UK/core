@@ -17,8 +17,11 @@ class BaseController extends \Illuminate\Routing\Controller {
 
     protected $_account;
     protected $_pageTitle;
+    protected $_breadcrumb;
 
     public function __construct() {
+        $this->_breadcrumb = collect();
+
         if(Auth::check()) {
             $this->_account = Auth::user();
             $this->_account->load("roles", "roles.permissions");
@@ -45,8 +48,30 @@ class BaseController extends \Illuminate\Routing\Controller {
         }
     }
 
+    protected function viewMake($view) {
+        $view = View::make($view);
+
+        $view->with("_account", $this->_account);
+
+        $this->buildBreadcrumb("Home", "/");
+
+        $view->with("_breadcrumb", $this->_breadcrumb);
+
+        $view->with("_pageTitle", $this->getTitle());
+
+        return $view;
+    }
+
     public function setTitle($title) {
         $this->_pageTitle = $title;
+    }
+
+    public function getTitle(){
+        if($this->_pageTitle == null){
+            return ucfirst($this->_breadcrumb->first()->get("name"));
+        }
+
+        return ucfirst($this->_pageTitle);
     }
 
     protected function setupLayout() {
@@ -55,31 +80,88 @@ class BaseController extends \Illuminate\Routing\Controller {
         }
     }
 
-    protected function viewMake($view) {
-        $view = View::make($view);
-
-        // Accounts!
-        $view->with("_account", $this->_account);
-
-        // Let's also display the breadcrumb
-        $breadcrumb = [];
-        $uri = "/adm/";
-        for($i = 1; $i <= 10; $i++) {
-            if(Request::segment($i) != null) {
-                $uri .= Request::segment($i);
-                $b = [Request::segment($i)];
-                $b[1] = rtrim($uri, "/");
-                $breadcrumb[] = $b;
-            }
+    /**
+     * Add a new element to the breadcrumb to be shown on this page.
+     *
+     * @param      $name The text to display on the page.
+     * @param      $uri  The URI the text should link to.
+     * @param bool $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
+     */
+    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false){
+        if($this->_breadcrumb == null){
+            $this->_breadcrumb = collect();
         }
-        $view->with("_breadcrumb", $breadcrumb);
 
-        // Page titles
-        if($this->_pageTitle == null) {
-            $this->_pageTitle = last($breadcrumb)[0];
+        if($linkToPrevious){
+            $uri = $this->_breadcrumb->last()->get("uri") . "/" . $uri;
         }
-        $view->with("_pageTitle", ucfirst($this->_pageTitle));
 
-        return $view;
+        $element = collect(["name" => $name, "uri" => $uri]);
+
+        $this->_breadcrumb->push($element);
+    }
+
+    protected function buildBreadcrumb($startName, $startUri){
+        $this->addBreadcrumb($startName, $startUri);
+        $this->addModuleBreadcrumb();
+        $this->addControllerBreadcrumbs();
+    }
+
+    protected function addModuleBreadcrumb(){
+        if($this->isModuleRequest()){
+            $this->addBreadcrumb($this->getModuleRequest()->get("name"), $this->getModuleRequest()->get("slug"), true);
+        }
+    }
+
+    protected function addControllerBreadcrumbs(){
+        $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
+
+        if($this->_pageTitle){
+            $this->addBreadcrumb($this->_pageTitle);
+        }
+    }
+
+    /**
+     * Determine if this request is for a module, rather than the core code.
+     *
+     * @return bool True if this request is for a module.
+     */
+    protected function isModuleRequest()
+    {
+        return strcasecmp($this->getRequestClassAsArray(false)[1], "modules") == 0;
+    }
+
+    /**
+     * Get the information about the module use for this request.
+     *
+     * @return \Caffeinated\Modules\Collection
+     */
+    protected function getModuleRequest(){
+        $requestClass = $this->getRequestClassAsArray(false);
+
+        return \Module::where("slug", strtolower($requestClass[2]));
+    }
+
+    protected function getControllerRequest(){
+        $requestClass = $this->getRequestClassAsArray(true);
+
+        return $requestClass[0];
+    }
+
+    protected function getRequestClassAsArray($clean = true){
+        $requestClass = explode("\\", get_called_class());
+
+        // Return the dirty path.
+        if(!$clean){
+            return $requestClass;
+        }
+
+        // Remove app/modules/.../Http/Controllers/... from the class path.
+        if($this->isModuleRequest()){
+            return array_slice($requestClass, 6);
+        }
+
+        // Remove App/ From the class path.
+        return array_slice($requestClass, 4);
     }
 }
