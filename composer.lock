@@ -4,12 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "hash": "99386914eb5a70a595acd4200d86b10d",
-=======
-    "hash": "622fb3497fbe6dd90c35e3e4e63530d3",
->>>>>>> development
-    "content-hash": "e5b95c98f8ae5f692d1b49f6fc367e57",
+    "hash": "8988e2c9c451843465e4be40ee91d5ec",
+    "content-hash": "c5433d2b3886441954e149568620827e",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -266,16 +262,16 @@
         },
         {
             "name": "caffeinated/modules",
-            "version": "v3.2.5",
+            "version": "dev-extra-directories",
             "source": {
                 "type": "git",
-                "url": "https://github.com/caffeinated/modules.git",
-                "reference": "cfe9fc125450449ca849c9b1decff0e03dc080fc"
+                "url": "https://github.com/A-Lawrence/modules.git",
+                "reference": "3f21f27383f9517f5bb246b553ff7231758fd09c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/caffeinated/modules/zipball/cfe9fc125450449ca849c9b1decff0e03dc080fc",
-                "reference": "cfe9fc125450449ca849c9b1decff0e03dc080fc",
+                "url": "https://api.github.com/repos/A-Lawrence/modules/zipball/3f21f27383f9517f5bb246b553ff7231758fd09c",
+                "reference": "3f21f27383f9517f5bb246b553ff7231758fd09c",
                 "shasum": ""
             },
             "require": {
@@ -292,7 +288,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -300,7 +296,6 @@
                     "Caffeinated\\Modules\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -316,7 +311,10 @@
                 "laravel",
                 "modules"
             ],
-            "time": "2016-08-08 17:50:59"
+            "support": {
+                "source": "https://github.com/A-Lawrence/modules/tree/dev-extradirectories"
+            },
+            "time": "2016-06-20 16:50:54"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -1090,6 +1088,63 @@
             "time": "2016-06-24 23:00:38"
         },
         {
+            "name": "hashids/hashids",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivanakimov/hashids.php.git",
+                "reference": "991a88b01b01b053fbd39a56780a66e572f1dc1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivanakimov/hashids.php/zipball/991a88b01b01b053fbd39a56780a66e572f1dc1a",
+                "reference": "991a88b01b01b053fbd39a56780a66e572f1dc1a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hashids": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Akimov",
+                    "email": "ivan@barreleye.com",
+                    "homepage": "https://twitter.com/IvanAkimov"
+                }
+            ],
+            "description": "Generate hashids like YouTube or Bitly from numbers to obfuscate your database primary ids, or navigate to the right shard.",
+            "homepage": "http://hashids.org/php",
+            "keywords": [
+                "bitly",
+                "decrypt",
+                "encrypt",
+                "hash",
+                "hashid",
+                "hashids",
+                "ids",
+                "obfuscate",
+                "youtube"
+            ],
+            "time": "2015-01-21 00:49:41"
+        },
+        {
             "name": "illuminate/html",
             "version": "v5.0.0",
             "source": {
@@ -1652,6 +1707,53 @@
                 "slack"
             ],
             "time": "2015-06-03 03:35:16"
+        },
+        {
+            "name": "malahierba-lab/public-id",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/malahierba-lab/public-id.git",
+                "reference": "b4fd2ea5cb7906718c7e409482e273218ee1596c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/malahierba-lab/public-id/zipball/b4fd2ea5cb7906718c7e409482e273218ee1596c",
+                "reference": "b4fd2ea5cb7906718c7e409482e273218ee1596c",
+                "shasum": ""
+            },
+            "require": {
+                "hashids/hashids": "1.0.5",
+                "laravel/framework": "5.*",
+                "php": ">=5.5.18"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Malahierba\\PublicId\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "malahierba team",
+                    "email": "lab@malahierba.cl",
+                    "homepage": "http://malahierba.cl"
+                }
+            ],
+            "description": "Easy id obfuscation for Laravel. Powered by hashids",
+            "keywords": [
+                "hashids",
+                "id obfuscator",
+                "laravel",
+                "obfuscate id",
+                "public id",
+                "short id"
+            ],
+            "time": "2015-08-16 22:19:33"
         },
         {
             "name": "maximebf/debugbar",
@@ -4601,23 +4703,23 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.3.7",
+            "version": "1.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716"
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4e8f0da10ac5802913afc151413bc8c53b6c2716",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/be2c607e43ce4c89ecd60e75c6a85c126e754aea",
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.4"
+                "phpunit/phpunit": "^4.8 || ^5.0"
             },
             "type": "library",
             "extra": {
@@ -4647,7 +4749,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-05-17 03:18:57"
+            "time": "2016-08-18 05:49:44"
         },
         {
             "name": "sebastian/exporter",
@@ -5068,7 +5170,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "planetteamspeak/ts3-php-framework": 20,
-        "vluzrmos/slack-api": 20
+        "vluzrmos/slack-api": 20,
+        "caffeinated/modules": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

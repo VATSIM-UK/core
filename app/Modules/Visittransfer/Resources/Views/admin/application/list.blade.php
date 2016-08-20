@@ -86,7 +86,7 @@
                         <tbody>
                         @forelse($applications as $a)
                             <tr>
-                                <td>{!! link_to_route('visiting.admin.application.view', $a->id, [$a->id]) !!}</td>
+                                <td>{!! link_to_route('visiting.admin.application.view', $a->public_id, [$a->id]) !!}</td>
                                 <td>{!! link_to_route('adm.mship.account.details', $a->account_id, [$a->account_id]) !!}</td>
                                 <td>{{ $a->account->name  }}</td>
                                 <td>{{ $_account->hasPermission("adm/mship/account/view/email") ? $a->account->email : "[ No Permission ]" }}</td>

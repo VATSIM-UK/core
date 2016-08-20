@@ -57,9 +57,9 @@ class Facility extends Model
 
     public function removeTrainingSpace()
     {
-        $this->guardAgainstRemovingSpacesFromNonTrainingFacility();
-
-        $this->decrement("training_spaces");
+        if ($this->training_required == 1) {
+            $this->decrement("training_spaces");
+        }
     }
 
     private function guardAgainstDuplicateFacilityName($proposedName)
@@ -68,12 +68,4 @@ class Facility extends Model
             throw new DuplicateFacilityNameException($proposedName);
         }
     }
-
-    private function guardAgainstRemovingSpacesFromNonTrainingFacility()
-    {
-        if ($this->training_required == 0) {
-            // NO IDEA WHAT WE'RE DOING HERE YET.
-        }
-    }
-
 }

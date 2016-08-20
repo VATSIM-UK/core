@@ -11,6 +11,7 @@ use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
 use App\Modules\Vt\Events\ApplicationCreated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Malahierba\PublicId\PublicId;
 
 /**
  * App\Modules\Ais\Models\Fir
@@ -20,6 +21,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Application extends Model
 {
+    use PublicId;
+
+    static protected $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
+    static protected $public_id_min_length = 8;
+    static protected $public_id_alphabet = 'upper_alphanumeric';
+
     protected $table    = "vt_application";
     protected $fillable = [
         "type",

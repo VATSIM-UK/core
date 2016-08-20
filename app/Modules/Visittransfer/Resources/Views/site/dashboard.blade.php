@@ -131,7 +131,7 @@
                         @else
                             @foreach($allApplications as $application)
                                 <tr>
-                                    <td>{{ $application->id }}</td>
+                                    <td>{{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}</td>
                                     <td>{{ $application->type_string }}</td>
                                     <td>{{ $application->facility ? $application->facility->name : "None Selected" }}</td>
                                     <td class="hidden-xs hidden-sm">
@@ -165,7 +165,7 @@
                                         @if($application->is_in_progress)
                                             {!! link_to_route("visiting.application.continue", "Continue") !!}
                                         @else
-                                            {!! link_to_route("visiting.application.view", "View", [$application->id]) !!}
+                                            {!! link_to_route("visiting.application.view", "View", [$application->public_id]) !!}
                                         @endif
                                     </td>
                                 </tr>

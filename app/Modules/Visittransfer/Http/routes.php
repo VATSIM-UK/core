@@ -119,7 +119,7 @@ Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".conf
             "uses" => "Application@postSubmit",
         ]);
 
-        Route::get("/view/{application}", [
+        Route::get("/view/{applicationByPublicId}", [
             "as" => "view",
             "uses" => "Application@getView"
         ]);
