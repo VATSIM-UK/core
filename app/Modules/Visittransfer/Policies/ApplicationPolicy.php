@@ -39,6 +39,10 @@ class ApplicationPolicy {
     }
 
     public function selectFacility(Account $user, Application $application){
+        if(!$application->exists){
+            return false;
+        }
+
         return $application->facility_id == null;
     }
 
@@ -47,11 +51,23 @@ class ApplicationPolicy {
             return false;
         }
 
+        if(!$application->facility->stage_statement_enabled){
+            return false;
+        }
+
         return $application->statement == null;
     }
 
     public function addReferee(Account $user, Application $application){
-        if($application->statement == null){
+        if(!$application->facility){
+            return false;
+        }
+
+        if(!$application->facility->stage_reference_enabled){
+            return false;
+        }
+
+        if($application->statement == null && $application->facility->stage_statement_enabled){
             return false;
         }
 
@@ -67,7 +83,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if($application->number_references_required_relative > 0){
+        if($application->number_references_required_relative > 0 && $application->facility->stage_reference_enabled){
             return false;
         }
 
@@ -79,6 +95,6 @@ class ApplicationPolicy {
     }
 
     public function viewApplication(Account $user, Application $application){
-        return $user->id == $application->account_id;
+        return $application && $user->id == $application->account_id;
     }
 }

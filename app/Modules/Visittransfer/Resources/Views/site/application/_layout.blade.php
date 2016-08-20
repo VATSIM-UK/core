@@ -40,21 +40,21 @@
 
                         @can("add-statement", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.statement") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement") }}
+                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".(!$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 3 - Personal Statement") }}
+                                {{ link_to("#", "Stage 3 - Personal Statement".(!$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @endif
 
                         @can("add-referee", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.referees") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees") }}
+                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".(!$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 4 - Referees") }}
+                                {{ link_to("#", "Stage 4 - Referees".(!$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @endcan
 
@@ -68,9 +68,15 @@
                             </li>
                         @endif
 
-                        <li role="presentation" {!! (Route::is("visiting.application.view") ? "class='active'" : "") !!}>
-                            {{ link_to_route("visiting.application.view", "View Full Application", [$application->public_id], ["class" => (Route::is("visiting.application.referees") ? "active" : "")]) }}
-                        </li>
+                        @can("view", $application)
+                            <li role="presentation" {!! (Route::is("visiting.application.view") ? "class='active'" : "") !!}>
+                                {{ link_to_route("visiting.application.view", "View Full Application", [$application->public_id], ["class" => (Route::is("visiting.application.referees") ? "active" : "")]) }}
+                            </li>
+                        @else
+                            <li role="presentation" class="disabled">
+                                {{ link_to("#", "View Full Application") }}
+                            </li>
+                        @endif
                     </ul>
                     {!! HTML::panelClose() !!}
                 </div>
