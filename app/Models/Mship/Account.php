@@ -26,6 +26,7 @@ use Bus;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 
@@ -189,6 +190,26 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $defaultRole = RoleData::isDefault()->first();
         if ($defaultRole) {
             $model->roles()->attach($defaultRole);
+        }
+    }
+
+    public static function findOrRetrieve($accountId){
+        try {
+            return self::findOrFail($accountId);
+        } catch(ModelNotFoundException $e){
+            $retrievedData = \VatsimXML::getData($accountId);
+
+            $account = Account::create([
+                "id" => $retrievedData->cid,
+                "name_first" => $retrievedData->name_first,
+                "name_last" => $retrievedData->name_last,
+            ]);
+
+            \Artisan::queue("Members:CertUpdate", [
+                "--force" => $accountId,
+            ]);
+
+            return $account;
         }
     }
 

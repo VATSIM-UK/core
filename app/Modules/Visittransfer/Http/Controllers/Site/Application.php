@@ -121,7 +121,7 @@ class Application extends BaseController
     public function postReferees(ApplicationRefereeAddRequest $request){
         try {
             $this->application->addReferee(
-                Account::find(Input::get("referee_cid")),
+                Account::findOrRetrieve(Input::get("referee_cid")),
                 Input::get("referee_email"),
                 Input::get("referee_relationship")
             );
