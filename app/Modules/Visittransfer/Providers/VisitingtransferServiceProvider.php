@@ -44,6 +44,7 @@ class VisittransferServiceProvider extends ServiceProvider
 		parent::registerPolicies($gate);
 
 		Application::observe(new ApplicationObserver());
+		Reference::observe(new ReferenceObserver());
 	}
 
 	/**
