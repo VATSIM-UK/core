@@ -39,6 +39,8 @@ class ApplicationsCleanup extends aCommand
                 continue;
             }
         }
+
+        $this->runAutomatedChecks();
     }
 
     private function runAutomatedChecks(){
@@ -50,7 +52,7 @@ class ApplicationsCleanup extends aCommand
         foreach($underReviewApplications as $application){
 
             if($application->facility->stage_checks){
-                $application->underReview();
+                $application->markAsUnderReview();
                 continue;
             }
 
