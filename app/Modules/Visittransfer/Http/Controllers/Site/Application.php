@@ -63,7 +63,7 @@ class Application extends BaseController
         }
 
         if(Auth::user()->visitTransferCurrent() != null){
-            return Redirect::route("visiting.application.view", [Auth::user()->visitTransferCurrent()->id]);
+            return Redirect::route("visiting.application.view", [Auth::user()->visitTransferCurrent()->public_id]);
         }
 
         return Redirect::route("visiting.dashboard");
@@ -152,7 +152,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.submit")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.view", [$this->application->id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
+        return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
     }
 
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
