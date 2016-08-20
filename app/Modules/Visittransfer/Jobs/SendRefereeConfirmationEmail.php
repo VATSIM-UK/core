@@ -2,6 +2,7 @@
 
 use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
+use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
@@ -39,9 +40,12 @@ class SendRefereeConfirmationEmail extends Job implements ShouldQueue {
 
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml = true;
-        $systemGenerated = true;
-        $createNewMessage = new CreateNewMessage($sender, $this->reference->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+
+        $createNewMessage = new SendNotificationEmail($subject, $body, $this->reference->account, $sender, [
+            "sender_display_as" => $displayFrom,
+            "sender_email" => "community@vatsim-uk.co.uk",
+            "recipient_email" => $this->reference->email,
+        ]);
 
         dispatch($createNewMessage->onQueue("emails"));
     }

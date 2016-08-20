@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendApplicantStatusChangeEmail extends Job implements ShouldQueue {
+class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     private $application = null;
@@ -21,25 +21,27 @@ class SendApplicantStatusChangeEmail extends Job implements ShouldQueue {
     }
 
     /**
-     * Send the user an email to advise them that their application's status has changed.
+     * Send the community department an email to advise of a reference that requires completion.
      *
      * @return void
      */
     public function handle(){
         $displayFrom = "VATSIM UK - Community Department";
 
-        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Application " . $this->application->status_string;
+        $subject = "[".$this->application->public_id."] New ".$this->application->type_status." Application";
 
-        $body = View::make("visittransfer::emails.applicant.status_changed")
+        $body = View::make("visittransfer::emails.community.new_application")
                     ->with("application", $this->application)
                     ->render();
 
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $recipient = Account::find(1002707);
 
-        $createNewMessage = new SendNotificationEmail($subject, $body, $this->application->account, $sender, [
+        // TODO: Use the staff services feature to get all community members.
+        $createNewMessage = new SendNotificationEmail($subject, $body, $recipient, $sender, [
             "sender_display_as" => $displayFrom,
-            "sender_email" => "community@vatsim-uk.co.uk",
+            "sender_email" => "community@vatsim-uk.co.uk"
         ]);
 
         dispatch($createNewMessage->onQueue("emails"));
