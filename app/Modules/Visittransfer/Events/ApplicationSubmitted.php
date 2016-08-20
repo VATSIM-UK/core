@@ -1,10 +1,8 @@
-<?php
-
-namespace App\Modules\Visittransfer\Events;
+<?php namespace App\Modules\Visittransfer\Events;
 
 use App\Events\Event;
 
-use App\Modules\Vt\Models\Application;
+use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 
 class ApplicationSubmitted extends Event {
@@ -14,5 +12,7 @@ class ApplicationSubmitted extends Event {
 
     public function __construct(Application $application){
         $this->application = $application;
+
+        $this->application->load("referees.account")->load("facility");
     }
 }

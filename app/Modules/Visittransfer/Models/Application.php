@@ -297,13 +297,11 @@ class Application extends Model
     public function submit(){
         $this->guardAgainstInvalidSubmission();
 
-        $this->load("referees.account")->load("facility");
-
         $this->attributes['submitted_at'] = Carbon::now();
         $this->attributes['status'] = self::STATUS_SUBMITTED;
         $this->save();
 
-        event(ApplicationSubmitted::class, $this->application);
+        event(ApplicationSubmitted::class, $this);
 
         $this->facility->removeTrainingSpace();
     }
