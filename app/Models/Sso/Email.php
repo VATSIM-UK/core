@@ -34,7 +34,7 @@ class Email extends \Eloquent {
     protected $hidden = ['id'];
 
     public function email(){
-        return $this->belongsTo(\App\Models\Mship\Account\Email::class, "account_email_id", "account_email_id");
+        return $this->belongsTo(\App\Models\Mship\Account\Email::class, "account_email_id", "id");
     }
 
     public function ssoAccount(){

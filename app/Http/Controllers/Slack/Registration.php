@@ -11,7 +11,6 @@ use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
-
     /**
      * Create a new Slack registration code.
      *
@@ -23,7 +22,12 @@ class Registration extends \App\Http\Controllers\BaseController
     {
         if ($this->_account->slack_id != "") {
             return Redirect::route("mship.manage.dashboard")
-                           ->withError("Your slack account doesn't need registrating.");
+                           ->withError("Your Slack account doesn't need registering.");
+        }
+
+        if (!$_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
+            return Redirect::route("mship.manage.dashboard")
+                           ->withError("You need to be a division member to register for Slack.");
         }
 
         if (!($_slackToken = $this->_account->tokens()->ofType("slack_registration")->first())) {
@@ -42,7 +46,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if ($_slackToken->expired) {
             return Redirect::route("mship.manage.dashboard")
-                           ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact web services.");
+                           ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact Web Services.");
         }
 
         $this->_pageTitle = "New Slack Registration";

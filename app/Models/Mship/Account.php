@@ -416,7 +416,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function readNotifications()
     {
         return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
-            'id')
+            'notification_id')
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();
@@ -1183,7 +1183,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function isValidDisplayName($displayName)
     {
-        return (strcasecmp($displayName, $this->name) === 0 || strcasecmp($displayName, $this->real_name) == 0);
+        return (strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0);
     }
 
     public function getDisplayValueAttribute()

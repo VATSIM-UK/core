@@ -30,15 +30,10 @@ class TriggerPasswordReset extends Job implements ShouldQueue {
      * @return void
      */
     public function handle(){
-        $shouldBeHashed = false;
-        $temporaryPassword = Security::generate($shouldBeHashed);
-
-        $passwordType = $this->account->current_security ? $this->account->current_security : \App\Models\Mship\Security::getDefault();
-
-        $isTemporary = true;
-        $this->account->setPassword($temporaryPassword, $passwordType, $isTemporary);
+        $temporaryPassword = str_random(12);
+        $this->account->setPassword($temporaryPassword, true);
 
         $sendSecurityTemporaryPasswordEmail = new SendSecurityTemporaryPasswordEmail($this->account, $temporaryPassword);
-        dispatch($sendSecurityTemporaryPasswordEmail->onQueue("med"));
+        dispatch($sendSecurityTemporaryPasswordEmail->onQueue("emails"));
     }
 }

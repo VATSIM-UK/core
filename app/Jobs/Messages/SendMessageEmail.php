@@ -29,7 +29,7 @@ class SendMessageEmail extends Job implements ShouldQueue
 
         // Let's get all participants of the post.
         foreach($post->thread->participants as $participant){
-            if($post->account_id == $participant->account_id){ continue; } // We won't send to the writer!
+            if($post->account_id == $participant->id){ continue; } // We won't send to the writer!
 
             $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function($m) use($participant, $post, $isNew) {
                 $m->subject(($isNew ? $post->thread->subject : "RE: ".$post->thread->subject));

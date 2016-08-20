@@ -73,12 +73,13 @@ class Security extends \App\Http\Controllers\BaseController {
         })->values();
 
         if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
+            \Log::info($ssoEmailAssigned);
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
 
-        $return["atc_rating"] = $account->qualification_atc->qualification->vatsim;
-        $return["atc_rating_human_short"] = $account->qualification_atc->qualification->name_small;
-        $return["atc_rating_human_long"] = $account->qualification_atc->qualification->name_long;
+        $return["atc_rating"] = $account->qualification_atc->vatsim;
+        $return["atc_rating_human_short"] = $account->qualification_atc->name_small;
+        $return["atc_rating_human_long"] = $account->qualification_atc->name_long;
         $return["atc_rating_date"] = $account->qualification_atc->created_at->toDateTimeString();
 
         $return["pilot_ratings_bin"] = 0;
@@ -90,12 +91,12 @@ class Security extends \App\Http\Controllers\BaseController {
         } else {
             foreach($account->qualifications_pilot as $qual){
                 $e = array();
-                $e["rating"] = $qual->qualification->vatsim;
-                $e["human_short"] = $qual->qualification->name_small;
-                $e["human_long"] = $qual->qualification->name_long;
+                $e["rating"] = $qual->vatsim;
+                $e["human_short"] = $qual->name_small;
+                $e["human_long"] = $qual->name_long;
                 $e["date"] = $qual->created_at->toDateTimeString();
                 $return["pilot_ratings"][] = (array) $e;
-                $return["pilot_ratings_bin"]+= $qual->qualification->vatsim;
+                $return["pilot_ratings_bin"]+= $qual->vatsim;
             }
         }
         $return["pilot_ratings_bin"] = decbin($return["pilot_ratings_bin"]);
@@ -103,9 +104,9 @@ class Security extends \App\Http\Controllers\BaseController {
         $return["admin_ratings"] = array();
         foreach($account->qualifications_admin as $qual){
             $e = array();
-            $e["rating"] = $qual->qualification->vatsim;
-            $e["human_short"] = $qual->qualification->name_small;
-            $e["human_long"] = $qual->qualification->name_long;
+            $e["rating"] = $qual->vatsim;
+            $e["human_short"] = $qual->name_small;
+            $e["human_long"] = $qual->name_long;
             $e["date"] = $qual->created_at->toDateTimeString();
             $return["admin_ratings"][] = (array) $e;
         }
@@ -113,9 +114,9 @@ class Security extends \App\Http\Controllers\BaseController {
         $return["training_pilot_ratings"] = array();
         foreach($account->qualifications_pilot_training as $qual){
             $e = array();
-            $e["rating"] = $qual->qualification->vatsim;
-            $e["human_short"] = $qual->qualification->name_small;
-            $e["human_long"] = $qual->qualification->name_long;
+            $e["rating"] = $qual->vatsim;
+            $e["human_short"] = $qual->name_small;
+            $e["human_long"] = $qual->name_long;
             $e["date"] = $qual->created_at->toDateTimeString();
             $return["training_pilot_ratings"][] = (array) $e;
         }
@@ -123,9 +124,9 @@ class Security extends \App\Http\Controllers\BaseController {
         $return["training_atc_ratings"] = array();
         foreach($account->qualifications_atc_training as $qual){
             $e = array();
-            $e["rating"] = $qual->qualification->vatsim;
-            $e["human_short"] = $qual->qualification->name_small;
-            $e["human_long"] = $qual->qualification->name_long;
+            $e["rating"] = $qual->vatsim;
+            $e["human_short"] = $qual->name_small;
+            $e["human_long"] = $qual->name_long;
             $e["date"] = $qual->created_at->toDateTimeString();
             $return["training_atc_ratings"][] = (array) $e;
         }

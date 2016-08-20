@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Teamspeak\Channel;
-use App\Models\Teamspeak\ChannelGroup;
-use App\Models\Teamspeak\ServerGroup;
+use App\Models\TeamSpeak\Channel;
+use App\Models\TeamSpeak\ChannelGroup;
+use App\Models\TeamSpeak\ServerGroup;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -25,8 +25,8 @@ class TeamSpeakTest extends TestCase
         $this->channel->save();
         $this->channel = $this->channel->fresh(['parent', 'children']);
 
-        $this->serverGroups = factory(\App\Models\Teamspeak\ServerGroup::class, 5)->create();
-        $this->channelGroups = factory(\App\Models\Teamspeak\ChannelGroup::class, 5)->create();
+        $this->serverGroups = factory(\App\Models\TeamSpeak\ServerGroup::class, 5)->create();
+        $this->channelGroups = factory(\App\Models\TeamSpeak\ChannelGroup::class, 5)->create();
     }
 
     public function testChannelParent()

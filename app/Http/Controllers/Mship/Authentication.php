@@ -179,10 +179,9 @@ class Authentication extends BaseController {
                         $atcRating = $user->rating->id;
                         if ($atcRating > 7) {
                             // Store the admin/ins rating.
-                            if ($atcRating >= 11) {
-                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
-                            } else {
-                                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+                            $qualification = QualificationType::parseVatsimATCQualification($atcRating);
+                            if (!is_null($qualification)) {
+                                $account->addQualification($qualification);
                             }
 
                             $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');

@@ -97,7 +97,7 @@ class SyncRTS extends aCommand
         $updateData = array(
             'name' => $member->name_first . ' ' . $member->name_last,
             'email' => $email,
-            'rating' => $member->qualification_atc->qualification->vatsim,
+            'rating' => $member->qualification_atc->vatsim,
             'prating' => $pRating,
             'last_cert_check' => $member->cert_checked_at
         );

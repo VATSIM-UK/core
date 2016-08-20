@@ -178,7 +178,7 @@
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at->diffForHumans() }}</em>
+                                                <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -189,7 +189,7 @@
                                         @foreach($_account->qualifications_pilot_training as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
-                                                <em>granted {{ $qual->created_at }}</em>
+                                                <em>granted {{ $qual->pivot->created_at }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -232,6 +232,7 @@
 
                         <div class="col-xs-4">
                             <b>STATUS:</b>
+                            <br />
                                 Verified
                         </div>
                     </div>
@@ -239,7 +240,7 @@
 
                     <br/>
 
-                    @foreach($_account->secondaryEmails as $email)
+                    @forelse($_account->secondaryEmails as $email)
                         <div class="row">
                             <div class="col-xs-4">
                                 <b>SECONDARY EMAIL:</b>
@@ -261,17 +262,16 @@
                                 <b>ADDED:</b>
                                 <br />
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
-                                    <em>added {{ $email->created_at }}</em>
+                                    <em>on {{ $email->created_at }}</em>
                                 </a>
                             </div>
 
                         </div>
 
                         <br />
-                    @endforeach
-                    @if(count($_account->emails) < 2)
+                    @empty
                         You have no secondary email addresses.
-                    @endif
+                    @endforelse
 
                 </div>
             </div>

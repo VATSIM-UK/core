@@ -3,7 +3,11 @@
 namespace App\Console;
 
 use App\Console\Commands\TestCommand;
+use Caffeinated\Modules\Facades\Module;
+use File;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -26,9 +30,26 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
-
-//        \App\Modules\Statistics\Console\Commands\StatisticsDownloadAndParse::class,
+        \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
     ];
+
+    /**
+     * Get the Artisan application instance.
+     *
+     * @return \Illuminate\Console\Application
+     */
+    protected function getArtisan()
+    {
+        foreach (Module::enabled() as $module) {
+            $moduleCommandsFile = config('modules.path').'/'.$module['namespace'].'/Console/commands.php';
+            if (File::exists($moduleCommandsFile)) {
+                $moduleCommands = require $moduleCommandsFile;
+                $this->commands = array_merge($this->commands, $moduleCommands);
+            }
+        }
+
+        return parent::getArtisan();
+    }
 
     /**
      * Define the application's command schedule.

@@ -63,32 +63,36 @@
                     </li>
                 </ul>
 
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-6">
-                                <ul>
-                                    <li class="dropdown-header">Password</li>
-                                    <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
-                                    <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Email Address</li>
-                                    <li>{!! link_to_route("mship.manage.email.add", "Add Email") !!}</li>
-                                    <li>{!! link_to_route("mship.manage.email.assignments", "SSO Assignments") !!}</li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-6">
-                                <ul>
-                                    <li class="dropdown-header">Third-Party</li>
-                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
-                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
+                @if(Auth::check())
+                    <ul class="nav navbar-nav navcustom">
+                        <li class="dropdown dropdown-large">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-6">
+                                    <ul>
+                                        <li class="dropdown-header">Password</li>
+                                        <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
+                                        @if(!$_account->mandatory_password)
+                                            <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                        @endif
+                                        <li class="divider"></li>
+                                        <li class="dropdown-header">Email Address</li>
+                                        <li>{!! link_to_route("mship.manage.email.add", "Add Email") !!}</li>
+                                        <li>{!! link_to_route("mship.manage.email.assignments", "SSO Assignments") !!}</li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-6">
+                                    <ul>
+                                        <li class="dropdown-header">Third-Party</li>
+                                        <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
+                                        <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                    </ul>
+                                </li>
+                            </ul>
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                @endif
                 <!--<ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">RTS <b class="caret"></b></a>
@@ -135,9 +139,11 @@
 
                     </li>
                 </ul>-->
-                <ul class="nav navbar-nav navcustom navbar-right">
-                    <li><a href="#">LOG OUT</a></li>
-                </ul>
+                @if(Auth::check())
+                    <ul class="nav navbar-nav navcustom navbar-right">
+                        <li><a href="{{ route('mship.auth.logout', ['Core']) }}">LOG OUT</a></li>
+                    </ul>
+                @endif
 
             </div>
         </div>

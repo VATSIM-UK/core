@@ -8,6 +8,10 @@
         {
             "type" : "vcs",
             "url" : "https://github.com/A-Lawrence/laravel-slack-api"
+        },
+        {
+            "type" : "vcs",
+            "url" : "https://github.com/A-Lawrence/modules"
         }
     ],
     "require": {
@@ -30,7 +34,7 @@
         "alawrence/laravel-ipboard": "1.0",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "^3.0"
+        "caffeinated/modules": "dev-extra-directories"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

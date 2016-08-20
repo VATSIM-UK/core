@@ -6,13 +6,8 @@ before_script:
   - cp .env.example .env
   - php artisan key:generate
   - /home/gitlabci/gitlabci_vukcore.sh
-  - php artisan migrate
-  - composer dump-autoload
-  
-variables:
-  MYSQL_DATABASE: vuk_core
-  MYSQL_USER: vuk_core
-  MYSQL_PASSWORD: FoBBiT7qLvWLa9XWkzsSwaIxqd0d1H
+  - php artisan migrate -vvv
+  - php artisan serve -q &
 
 phpunit:php5.5:mysql5.5:
   image: php:5.5
@@ -23,5 +18,3 @@ phpunit:php5.5:mysql5.5:
     - production
   script:
     - php vendor/bin/phpunit --colors
-    - vendor/bin/phpmd app/ text phpmd.xml
-    - vendor/bin/phpcs --standard=psr2 app

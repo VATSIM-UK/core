@@ -277,9 +277,9 @@ class TeamSpeak
                 || (!is_null($group->permission) && $member->hasPermission($group->permission));
             if (!in_array($group->dbid, $currentGroups) && $qualified) {
                 $client->addServerGroup($group->dbid);
-            } else if (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && empty($member->qualifications_pilot)) {
+            } else if (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
                 $client->addServerGroup($group->dbid);
-            } else if (in_array($group->dbid, $currentGroups) && !$qualified && !$group->default) {
+            } else if (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
                 $client->remServerGroup($group->dbid);
             }
         }

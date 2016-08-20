@@ -67,7 +67,7 @@ class SlackManager extends aCommand
                 $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
             }
 
-            if($localUser->isValidDisplayName($slackUser->real_name)){
+            if(!$localUser->isValidDisplayName($slackUser->real_name)){
                 $this->messageAskingForRealName($localUser, $slackUser);
             }
 
