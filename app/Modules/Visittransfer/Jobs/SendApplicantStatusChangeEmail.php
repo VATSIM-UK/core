@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendApplicantSubmissionConfirmationEmail extends Job implements ShouldQueue {
+class SendApplicantStatusChangeEmail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     private $application = null;
@@ -20,16 +20,16 @@ class SendApplicantSubmissionConfirmationEmail extends Job implements ShouldQueu
     }
 
     /**
-     * Send the user an email confirming that their application has been submitted and we'll update them on the progress.
+     * Send the user an email to advise them that their application's status has changed.
      *
      * @return void
      */
     public function handle(){
         $displayFrom = "VATSIM UK - Community Department";
 
-        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Application Submitted";
+        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Application " . $this->application->status_string;
 
-        $body = View::make("visittransfer::emails.applicant.confirm_submission")
+        $body = View::make("visittransfer::emails.applicant.status_changed")
                     ->with("application", $this->application)
                     ->render();
 

@@ -23,7 +23,7 @@ class SendApplicantReferenceSubmissionEmail extends Job implements ShouldQueue {
     }
 
     /**
-     * Send the user an email confirming that their application has been submitted and we'll update them on the progress.
+     * Send the user an email confirming that a referee has provided a reference.
      *
      * @return void
      */

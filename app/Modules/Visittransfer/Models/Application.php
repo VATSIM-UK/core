@@ -4,6 +4,7 @@ namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
+use App\Modules\Visittransfer\Events\ApplicationUnderReview;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
@@ -180,9 +181,7 @@ class Application extends Model
     }
 
     public function getIsPendingReferencesAttribute(){
-        return $this->referees->filter(function($ref){
-            return !$ref->is_submitted;
-        })->count() > 0;
+        return $this->references_not_written->count() > 0;
     }
 
     public function getIsUnderReviewAttribute(){
@@ -226,6 +225,14 @@ class Application extends Model
         }
     }
 
+    public function getTypeStringAttribute(){
+        if($this->is_visit){
+            return "Visit";
+        }
+
+        return "Transfer";
+    }
+
     public function getIsTrainingRequiredAttribute(){
         if(!$this->attributes['facility_id'] || !$this->facility){
             return true; // TODO: Logic check this.
@@ -260,6 +267,12 @@ class Application extends Model
 
     public function getNumberReferencesRequiredRelativeAttribute(){
         return $this->facility->stage_reference_quantity - $this->referees->count();
+    }
+
+    public function getReferencesNotWrittenAttribute(){
+        return $this->referees->filter(function($ref){
+            return $ref->is_submitted;
+        });
     }
 
     public function getAreChecksEnabledAttribute(){
@@ -335,6 +348,13 @@ class Application extends Model
         $this->facility->removeTrainingSpace();
     }
 
+    public function markAsUnderReview(){
+        $this->attributes['status'] = self::STATUS_UNDER_REVIEW;
+        $this->save();
+
+        event(new ApplicationUnderReview($this));
+    }
+
     /** Guards */
     private function guardAgainstTransferringToANonTrainingFacility(Facility $requestedFacility){
         if($this->is_transfer && $requestedFacility->training_required == 0){
@@ -368,142 +388,5 @@ class Application extends Model
         if($this->is_submitted){
             throw new ApplicationAlreadySubmittedException($this);
         }
-    }
-
-
-    // -- OLD -- //
-
-    public function skippedStages()
-    {
-        return $this->hasMany(StageSkip::class, 'application_id', 'id');
-    }
-
-    public static function stageUnfinished($status)
-    {
-        return $status === self::STAGE_PENDING || $status === self::STAGE_INCOMPLETE;
-    }
-
-    public static function stageFinished($status)
-    {
-        return $status === self::STAGE_COMPLETE || $status === self::STAGE_SKIPPED;
-    }
-
-    public function stageSkipped($stage_key)
-    {
-        $this->skippedStages->load('stage');
-
-        return !$this->skippedStages->filter(function ($skip) use ($stage_key) {
-            return $skip->stage->key === $stage_key;
-        })->isEmpty();
-    }
-
-    public function termsStatus()
-    {
-        return self::STAGE_COMPLETE;
-    }
-
-    public function typeStatus()
-    {
-        if ($this->type_id === null) {
-            return self::STAGE_INCOMPLETE;
-        } else {
-            return self::STAGE_COMPLETE;
-        }
-    }
-
-    public function facilityStatus()
-    {
-        if ($this->stageSkipped('FACILITY')) {
-            return self::STAGE_SKIPPED;
-        } elseif ($this->stageUnfinished($this->typeStatus())) {
-            return self::STAGE_PENDING;
-        } elseif ($this->facility_id === null) {
-            return self::STAGE_INCOMPLETE;
-        } else {
-            return self::STAGE_COMPLETE;
-        }
-    }
-
-    public function statementStatus()
-    {
-        if ($this->stageSkipped('STATEMENT')) {
-            return self::STAGE_SKIPPED;
-        } elseif ($this->stageUnfinished($this->facilityStatus())) {
-            return self::STAGE_PENDING;
-        } elseif (!$this->submitted_statement) {
-            return self::STAGE_INCOMPLETE;
-        } else {
-            return self::STAGE_COMPLETE;
-        }
-    }
-
-    public function addRefereeStatus()
-    {
-        if ($this->stageSkipped('ADD_REFEREES')) {
-            return self::STAGE_SKIPPED;
-        } elseif ($this->stageUnfinished($this->statementStatus())) {
-            return self::STAGE_PENDING;
-        } elseif (!$this->submitted_referees) {
-            return self::STAGE_INCOMPLETE;
-        } else {
-            return self::STAGE_COMPLETE;
-        }
-    }
-
-    public function submitStatus()
-    {
-        if ($this->submitted_application) {
-            return self::STAGE_COMPLETE;
-        } elseif ($this->stageFinished($this->addRefereeStatus())) {
-            return self::STAGE_INCOMPLETE;
-        } else {
-            return self::STAGE_PENDING;
-        }
-    }
-
-    public function checksStatus()
-    {
-        //
-    }
-
-    public function refreviewStatus()
-    {
-        //
-    }
-
-    public function refsubmitStatus()
-    {
-        //
-    }
-
-    public function refdecisionStatus()
-    {
-        //
-    }
-
-    public function reviewStatus()
-    {
-        //
-    }
-
-    public function outcomeStatus()
-    {
-        //
-    }
-
-    public function getTypeStringAttribute(){
-        if($this->is_visit){
-            return "Visit";
-        }
-
-        return "Transfer";
-    }
-
-    public function getIsVisitAttribute(){
-        return $this->type == self::TYPE_VISIT;
-    }
-
-    public function getIsTransferAttribute(){
-        return $this->type == self::TYPE_TRANSFER;
     }
 }

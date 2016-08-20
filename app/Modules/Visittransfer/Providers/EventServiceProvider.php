@@ -11,30 +11,22 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Modules\Visittransfer\Events\ApplicationAccepted' => [
-
+        \App\Modules\Visittransfer\Events\ApplicationUnderReview::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
         ],
 
-        'App\Modules\Visittransfer\Events\ApplicationCreated' => [
-
+        \App\Modules\Visittransfer\Events\ApplicationSubmitted::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
+            \App\Modules\Visittransfer\Listeners\NotifyAllReferees::class,
         ],
 
-        'App\Modules\Visittransfer\Events\ApplicationRejected' => [
-
+        \App\Modules\Visittransfer\Events\ReferenceUnderReview::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyRefereeOnReferenceCompletion::class,
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceCompletion::class,
         ],
 
-        'App\Modules\Visittransfer\Events\ApplicationSubmitted' => [
-            '\App\Modules\Visittransfer\Listeners\SendSubmissionConfirmationToApplicant',
-            '\App\Modules\Visittransfer\Listeners\InitialContactOfAllReferees',
-        ],
-
-        'App\Modules\Visittransfer\Events\ApplicationUpdated' => [
-
-        ],
-
-        'App\Modules\Visittransfer\Events\ReferenceUnderReview' => [
-            '\App\Modules\Visittransfer\Listeners\NotifyRefereeOnReferenceCompletion',
-            '\App\Modules\Visittransfer\Listeners\NotifyApplicantOnReferenceCompletion',
+        \App\Modules\Visittransfer\Events\ApplicationStatusChanged::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
         ],
     ];
 

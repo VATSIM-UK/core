@@ -5,7 +5,7 @@ use App\Modules\Visittransfer\Jobs\SendApplicantReferenceSubmissionEmail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyApplicantOnReferenceCompletion implements ShouldQueue
+class NotifyApplicantOfReferenceCompletion implements ShouldQueue
 {
     public function __construct()
     {

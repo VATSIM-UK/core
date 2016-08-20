@@ -33,6 +33,8 @@ class VisitingTransferInitialSetup extends Migration
             $table->string("relationship", 85)->nullable();
             $table->text('reference')->nullable();
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Reference::STATUS_DRAFT);
+            $table->timestamp("contacted_at")->nullable();
+            $table->timestamp("reminded_at")->nullable();
             $table->timestamp("submitted_at")->nullable();
             $table->softDeletes();
         });

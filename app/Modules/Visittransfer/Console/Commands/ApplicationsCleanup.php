@@ -41,7 +41,28 @@ class ApplicationsCleanup extends aCommand
         }
     }
 
+    private function runAutomatedChecks(){
+        $underReviewApplications = $this->loadSubmittedApplications()
+                                        ->filter(function($application){
+                                            return !$application->is_pending_references;
+                                        });
+
+        foreach($underReviewApplications as $application){
+
+            if($application->facility->stage_checks){
+                $application->underReview();
+                continue;
+            }
+
+            dispatch(new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application));
+        }
+    }
+
     private function loadAllApplications(){
         return Application::all();
+    }
+
+    private function loadSubmittedApplications(){
+        return Application::status(Application::STATUS_SUBMITTED)->get();
     }
 }

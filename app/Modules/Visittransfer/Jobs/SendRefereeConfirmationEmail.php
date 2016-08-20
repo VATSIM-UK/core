@@ -11,30 +11,30 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendReferenceRequestEmail extends Job implements ShouldQueue {
+class SendRefereeConfirmationEmail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
-    private $reference = null;
     private $application = null;
+    private $reference = null;
 
     public function __construct(Reference $reference){
         $this->reference = $reference;
-        $this->application = $this->reference->application;
+        $this->application = $reference->application;
     }
 
     /**
-     * Send the referee an email requesting a reference for this applicant.
+     * Send a referee an email to say thanks!
      *
      * @return void
      */
     public function handle(){
         $displayFrom = "VATSIM UK - Community Department";
-        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Reference Request";
 
-        $body = View::make("visittransfer::emails.reference.request")
+        $subject = "[".$this->application->public_id."] Thank you for your reference.";
+
+        $body = View::make("visittransfer::emails.reference.reference_submitted")
                     ->with("reference", $this->reference)
-                    ->with("application", $this->reference->application)
-                    ->with("token", $this->reference->token)
+                    ->with("application", $this->application)
                     ->render();
 
 
@@ -44,8 +44,5 @@ class SendReferenceRequestEmail extends Job implements ShouldQueue {
         $createNewMessage = new CreateNewMessage($sender, $this->reference->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
 
         dispatch($createNewMessage->onQueue("emails"));
-
-        $this->reference->status = Reference::STATUS_REQUESTED;
-        $this->reference->save();
     }
 }

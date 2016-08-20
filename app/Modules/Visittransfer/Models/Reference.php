@@ -3,6 +3,7 @@
 namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Sys\Token;
+use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Exceptions\Application\ReferenceAlreadySubmittedException;
 use Illuminate\Database\Eloquent\Model;
 
@@ -142,6 +143,8 @@ class Reference extends Model
         $this->reference = $referenceContent;
         $this->status = self::STATUS_UNDER_REVIEW;
         $this->save();
+
+        event(new ReferenceUnderReview($this));
     }
 
     private function guardAgainstReSubmittingReference()

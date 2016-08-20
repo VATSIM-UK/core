@@ -5,7 +5,7 @@ use App\Events\Event;
 use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 
-class ApplicationSubmitted extends Event {
+class ApplicationSubmitted extends ApplicationStatusChanged {
     use SerializesModels;
 
     public $application = null;
