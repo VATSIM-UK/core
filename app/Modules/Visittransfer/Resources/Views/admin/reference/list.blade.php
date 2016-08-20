@@ -54,7 +54,7 @@
                                     {{ $r->account->qualification_atc }}
                                 </td>
                                 <td align="center">
-                                    {{ $r->account->email }}
+                                    {{ $r->email }}
                                 </td>
                                 <td align="center">
 
