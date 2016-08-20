@@ -3,7 +3,6 @@ namespace App\Modules\Visittransfer\Providers;
 
 use App;
 use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Observers\ReferenceObserver;
 use Config;
 use Lang;
 use View;
@@ -11,7 +10,6 @@ use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Policies\ApplicationPolicy;
 use App\Modules\Visittransfer\Policies\ReferencePolicy;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use App\Modules\Visittransfer\Observers\ApplicationObserver;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class VisittransferServiceProvider extends ServiceProvider
@@ -42,9 +40,6 @@ class VisittransferServiceProvider extends ServiceProvider
 
 	public function boot(GateContract $gate){
 		parent::registerPolicies($gate);
-
-		Application::observe(new ApplicationObserver());
-		Reference::observe(new ReferenceObserver());
 	}
 
 	/**
