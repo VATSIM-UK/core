@@ -52,6 +52,10 @@ class Application extends Model
     const STATUS_CANCELLED    = 98; // Application has been cancelled
     const STATUS_REJECTED     = 99; // Application has been rejected by staff
 
+    static $APPLICATION_IS_CONSIDERED_EDITABLE = [
+        self::STATUS_IN_PROGRESS,
+    ];
+
     static $APPLICATION_IS_CONSIDERED_OPEN = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
@@ -149,6 +153,14 @@ class Application extends Model
 
     public function getIsOpenAttribute(){
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_OPEN);
+    }
+
+    public function getIsEditableAttribute(){
+        return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
+    }
+
+    public function getIsNotEditableAttribute(){
+        return $this->isStatusNotIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
     }
 
     public function getRequiresActionAttribute(){
@@ -279,6 +291,10 @@ class Application extends Model
         return in_array($this->attributes['status'], $stati);
     }
 
+    public function isStatusNotIn($stati){
+        return !$this->isStatusIn($stati);
+    }
+
     public function setFacility(Facility $facility){
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
@@ -314,7 +330,7 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_SUBMITTED;
         $this->save();
 
-        event(ApplicationSubmitted::class, $this);
+        event(new ApplicationSubmitted($this));
 
         $this->facility->removeTrainingSpace();
     }

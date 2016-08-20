@@ -1,11 +1,14 @@
 <?php namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
+use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
 use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use View;
 
 class SendApplicantSubmissionConfirmationEmail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
@@ -23,17 +26,19 @@ class SendApplicantSubmissionConfirmationEmail extends Job implements ShouldQueu
      */
     public function handle(){
         $displayFrom = "VATSIM UK - Community Department";
-        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Submitted";
-        $body = View::make("visittransfer::XXXXXXXXXXXXXXX")
-                    ->with("account", $this->recipient)
-                    ->with("token", $this->token)
+
+        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Application Submitted";
+
+        $body = View::make("visittransfer::emails.applicant.confirm_submission")
+                    ->with("application", $this->application)
                     ->render();
 
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+        $createNewMessage = new CreateNewMessage($sender, $this->application->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+
         dispatch($createNewMessage->onQueue("emails"));
     }
 }

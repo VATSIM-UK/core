@@ -9,18 +9,18 @@ use App\Modules\Visittransfer\Events\ApplicationRejected;
 class ApplicationObserver {
 
     public function created($model){
-        event(ApplicationCreated::class, [$model]);
+        event(new ApplicationCreated($model));
     }
 
     public function updated($model){
-        event(ApplicationUpdated::class, [$model]);
+        event(new ApplicationUpdated($model));
 
         if($model->status == Application::STATUS_REJECTED){
-            event(ApplicationRejected::class, [$model]);
+            event(new ApplicationRejected($model));
         }
 
         if($model->status == Application::STATUS_ACCEPTED){
-            event(ApplicationAccepted::class, [$model]);
+            event(new ApplicationAccepted($model));
         }
     }
 }

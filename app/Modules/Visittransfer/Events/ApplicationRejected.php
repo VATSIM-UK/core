@@ -4,7 +4,7 @@ namespace App\Modules\Visittransfer\Events;
 
 use App\Events\Event;
 
-use App\Modules\Vt\Models\Application;
+use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 
 class ApplicationRejected extends Event {

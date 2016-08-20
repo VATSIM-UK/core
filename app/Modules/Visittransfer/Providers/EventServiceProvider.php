@@ -24,8 +24,8 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Modules\Visittransfer\Events\ApplicationSubmitted' => [
-            \App\Modules\Visittransfer\Listeners\SendSubmissionConfirmationToApplicant::class,
-            \App\Modules\Visittransfer\Listeners\InitialContactOfAllReferees::class,
+            '\App\Modules\Visittransfer\Listeners\SendSubmissionConfirmationToApplicant',
+            '\App\Modules\Visittransfer\Listeners\InitialContactOfAllReferees',
         ],
 
         'App\Modules\Visittransfer\Events\ApplicationUpdated' => [
