@@ -270,6 +270,14 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
     }
 
+    public function getVisitTransferRefereePendingAttribute(){
+        return $this->visitTransferReferee->filter(function($ref){
+            return $ref->is_requested;
+        })->sort(function($ref1, $ref2){
+            return $ref1->application->submitted_at->lt($ref2->application->submitted_at);
+        });
+    }
+
     /**
      * Fetch all related secondary emails.
      *

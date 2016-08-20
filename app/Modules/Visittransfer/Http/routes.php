@@ -123,28 +123,17 @@ Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".conf
             "as" => "view",
             "uses" => "Application@getView"
         ]);
-
-        Route::get("/history", [
-            "as" => "history",
-            function () {
-                return "You are at: " . route("visiting.application.history");
-            }
-        ]);
     });
 
     Route::group(["as" => "reference.", "prefix" => "reference"], function () {
-        Route::get("/", [
-            "as" => "landing",
-            function () {
-                return "You are at: " . route("visiting.reference.landing");
-            }
+        Route::get("/complete/{token}", [
+            "as" => "complete",
+            "uses" => "Reference@getComplete"
         ]);
 
-        Route::get("/complete", [
-            "as" => "complete",
-            function () {
-                return "You are at: " . route("visiting.reference.complete");
-            }
+        Route::post("/complete/{token}", [
+            "as" => "complete.post",
+            "uses" => "Reference@postComplete"
         ]);
     });
 });

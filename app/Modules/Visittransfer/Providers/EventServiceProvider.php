@@ -31,6 +31,11 @@ class EventServiceProvider extends ServiceProvider
         'App\Modules\Visittransfer\Events\ApplicationUpdated' => [
 
         ],
+
+        'App\Modules\Visittransfer\Events\ReferenceUnderReview' => [
+            '\App\Modules\Visittransfer\Listeners\NotifyRefereeOnReferenceCompletion',
+            '\App\Modules\Visittransfer\Listeners\NotifyApplicantOnReferenceCompletion',
+        ],
     ];
 
     /**

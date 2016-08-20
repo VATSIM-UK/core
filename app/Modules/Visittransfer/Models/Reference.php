@@ -2,6 +2,8 @@
 
 namespace App\Modules\Visittransfer\Models;
 
+use App\Models\Sys\Token;
+use App\Modules\Visittransfer\Exceptions\Application\ReferenceAlreadySubmittedException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,11 +25,11 @@ class Reference extends Model
     protected $touches    = ["application"];
     public    $timestamps = false;
 
-    const STATUS_DRAFT              = 10;
-    const STATUS_REQUESTED          = 30;
-    const STATUS_UNDER_REVIEW       = 50;
-    const STATUS_ACCEPTED           = 90;
-    const STATUS_REJECTED           = 95;
+    const STATUS_DRAFT        = 10;
+    const STATUS_REQUESTED    = 30;
+    const STATUS_UNDER_REVIEW = 50;
+    const STATUS_ACCEPTED     = 90;
+    const STATUS_REJECTED     = 95;
 
     static $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
@@ -50,7 +52,8 @@ class Reference extends Model
         return $query->whereIn("status", $stati);
     }
 
-    public static function scopeDraft($query){
+    public static function scopeDraft($query)
+    {
         return $query->status(self::STATUS_DRAFT);
     }
 
@@ -69,11 +72,13 @@ class Reference extends Model
         return $query->status(self::STATUS_UNDER_REVIEW);
     }
 
-    public static function scopeAccepted($query){
+    public static function scopeAccepted($query)
+    {
         return $query->status(self::STATUS_ACCEPTED);
     }
 
-    public static function scopeRejected($query){
+    public static function scopeRejected($query)
+    {
         return $query->status(self::STATUS_REJECTED);
     }
 
@@ -85,5 +90,64 @@ class Reference extends Model
     public function application()
     {
         return $this->belongsTo(\App\Modules\Visittransfer\Models\Application::class);
+    }
+
+    public function tokens()
+    {
+        return $this->morphOne(Token::class, 'related');
+    }
+
+    public function getTokenAttribute()
+    {
+        return $this->tokens;
+    }
+
+    public function getIsSubmittedAttribute()
+    {
+        return in_array($this->state, self::$REFERENCE_IS_SUBMITTED);
+    }
+
+    public function getIsRequestedAttribute()
+    {
+        return $this->status == self::STATUS_REQUESTED;
+    }
+
+    public function getStatusStringAttribute()
+    {
+        switch ($this->attributes['status']) {
+            case self::STATUS_DRAFT:
+                return "Draft";
+            case self::STATUS_REQUESTED:
+                return "Requested";
+            case self::STATUS_UNDER_REVIEW:
+                return "Under Review";
+            case self::STATUS_ACCEPTED:
+                return "Accepted";
+            case self::STATUS_REJECTED:
+                return "Rejected";
+        }
+    }
+
+    public function generateToken()
+    {
+        $expiryTimeInMinutes = 1440 * 14; // 14 days
+
+        return Token::generate("visittransfer_reference_request", false, $this, $expiryTimeInMinutes);
+    }
+
+    public function submit($referenceContent)
+    {
+        $this->guardAgainstReSubmittingReference();
+
+        $this->reference = $referenceContent;
+        $this->status = self::STATUS_UNDER_REVIEW;
+        $this->save();
+    }
+
+    private function guardAgainstReSubmittingReference()
+    {
+        if (!$this->is_requested) {
+            throw new ReferenceAlreadySubmittedException($this);
+        }
     }
 }

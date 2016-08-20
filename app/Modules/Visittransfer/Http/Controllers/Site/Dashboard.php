@@ -14,10 +14,15 @@ class Dashboard extends BaseController {
 
         $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->latest()->first();
 
+        $pendingReferences = $this->_account->visitTransferReferee->filter(function($ref){
+            return $ref->is_requested;
+        });
+
         return $this->viewMake("visittransfer::site.dashboard")
                     ->with("allApplications", $allApplications)
                     ->with("currentVisitApplication", $currentVisitApplication)
-                    ->with("currentTransferApplication", $currentTransferApplication);
+                    ->with("currentTransferApplication", $currentTransferApplication)
+                    ->with("pendingReferences", $pendingReferences);
     }
 
 }

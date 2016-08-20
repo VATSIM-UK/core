@@ -167,6 +167,12 @@ class Application extends Model
         return $this->isStatus(self::STATUS_SUBMITTED);
     }
 
+    public function getIsPendingReferencesAttribute(){
+        return $this->referees->filter(function($ref){
+            return !$ref->is_submitted;
+        })->count() > 0;
+    }
+
     public function getIsUnderReviewAttribute(){
         return $this->isStatus(self::STATUS_UNDER_REVIEW);
     }
