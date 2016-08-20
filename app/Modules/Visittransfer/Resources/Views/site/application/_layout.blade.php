@@ -40,21 +40,21 @@
 
                         @can("add-statement", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.statement") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".(!$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".($application->facility && !$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 3 - Personal Statement".(!$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to("#", "Stage 3 - Personal Statement".($application->facility && !$application->facility->stage_statement_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @endif
 
                         @can("add-referee", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.referees") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".(!$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->facility && !$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 4 - Referees".(!$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to("#", "Stage 4 - Referees".($application->facility && !$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
                             </li>
                         @endcan
 
