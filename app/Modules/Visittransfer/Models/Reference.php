@@ -142,6 +142,7 @@ class Reference extends Model
 
         $this->reference = $referenceContent;
         $this->status = self::STATUS_UNDER_REVIEW;
+        $this->submitted_at = \Carbon\Carbon::now();
         $this->save();
 
         event(new ReferenceUnderReview($this));
