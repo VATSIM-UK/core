@@ -117,12 +117,12 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                         <tr>
-                            <th width="5%">ID</th>
-                            <th width="10%">Type</th>
-                            <th width="25%">Facility</th>
-                            <th width="10%" class="hidden-xs hidden-sm">Submitted</th>
+                            <th width="col-md-1">ID</th>
+                            <th width="col-md-2">Type</th>
+                            <th width="col-md-3">Facility</th>
+                            <th class="col-md-2 hidden-xs hidden-sm">Submitted</th>
                             <th>Outcome</th>
-                            <th class="text-center">Action</th>
+                            <th class="col-md-1 text-center">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -138,8 +138,8 @@
                                         @if($application->submitted_at == null)
                                             Not yet submitted
                                         @else
-                                            <span class="hidden-xs">{{ $application->submitted_at }}</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}</span>
+                                            <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
+                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>
                                         @endif
                                     </td>
                                     <td>
