@@ -39,7 +39,7 @@ class Application extends BaseController
                 "type" => Input::get("application_type"),
             ]);
         } catch(Exception $e){
-            return Redirect::route("visiting.application.terms")->withError($e->getMessage());
+            return Redirect::route("visiting.application.start", [Input::get("application_type")])->withError($e->getMessage());
         }
 
         return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
@@ -86,7 +86,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.facility")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.statement")->withSuccess("Facility selection saved!");
+        return Redirect::route("visiting.application.continue")->withSuccess("Facility selection saved!");
     }
 
     public function getStatement()
@@ -106,7 +106,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.statement")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.referees")->withSuccess("Statement completed");
+        return Redirect::route("visiting.application.continue")->withSuccess("Statement completed");
     }
 
     public function getReferees(){
