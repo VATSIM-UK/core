@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 
 /**
  * App\Models\Mship\Account
@@ -136,7 +137,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
+    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
     public $incrementing = false;
