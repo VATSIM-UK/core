@@ -41,7 +41,7 @@ Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "name
     ])->where("reference", "\d+");
 
     Route::get("/reference/{scope?}", [
-        "as" => "reference",
+        "as" => "reference.list",
         "uses" => "Reference@getList",
     ])->where("scope", "[a-zA-Z-]+");
 

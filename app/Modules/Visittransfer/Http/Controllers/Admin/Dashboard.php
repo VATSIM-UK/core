@@ -18,19 +18,16 @@ class Dashboard extends AdmController
 
             $statistics['applications_total'] = Application::all()->count();
 
-            $statistics['applications_open'] = Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
+            $statistics['applications_open'] = Application::status(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
 
-            $statistics['applications_closed'] = Application::statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
+            $statistics['applications_closed'] = Application::status(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
 
             $statistics['references_pending'] = Reference::statusIn([
                 Reference::STATUS_DRAFT,
                 Reference::STATUS_REQUESTED,
             ])->count();
 
-            $statistics['references_approval'] = Reference::statusIn([
-                Reference::STATUS_COMPLETED,
-                Reference::STATUS_UNDER_REVIEW,
-            ])->count();
+            $statistics['references_approval'] = Reference::status(Reference::STATUS_UNDER_REVIEW)->count();
 
             $statistics['references_accepted'] = Reference::statusIn([
                 Reference::STATUS_ACCEPTED,
