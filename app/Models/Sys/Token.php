@@ -49,6 +49,10 @@ class Token extends \App\Models\aModel {
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $hidden = ['token_id'];
 
+    public function getRouteKeyName(){
+        return 'code';
+    }
+
     public function related() {
         return $this->morphTo();
     }
