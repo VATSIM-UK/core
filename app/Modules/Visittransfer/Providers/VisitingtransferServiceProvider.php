@@ -37,16 +37,13 @@ class VisittransferServiceProvider extends ServiceProvider
 		$this->registerNamespaces();
 		$this->registerComposers();
 		$this->registerCommands();
+		$this->registerComposers();
 	}
 
 	public function boot(GateContract $gate){
 		parent::registerPolicies($gate);
 
 		Application::observe(new ApplicationObserver());
-
-		view()->composer(
-			["visittransfer::admin._sidebar"], App\Modules\Visittransfer\Composers\StatisticsComposer::class
-		);
 	}
 
 	/**
@@ -68,7 +65,9 @@ class VisittransferServiceProvider extends ServiceProvider
 	 * @return void
 	 */
 	protected function registerComposers(){
-		//View::composer("visittransfer::admin.partials");
+		view()->composer(
+			["visittransfer::admin._sidebar"], App\Modules\Visittransfer\Composers\StatisticsComposer::class
+		);
 	}
 
 	protected function registerCommands(){
