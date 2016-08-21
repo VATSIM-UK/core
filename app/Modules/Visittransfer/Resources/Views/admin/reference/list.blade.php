@@ -57,7 +57,7 @@
                                     {{ $r->email }}
                                 </td>
                                 <td align="center">
-
+                                    {{ $r->status_string }}
                                 </td>
                             </tr>
                         @empty

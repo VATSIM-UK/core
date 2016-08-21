@@ -121,7 +121,7 @@
                             <th width="col-md-2">Type</th>
                             <th width="col-md-3">Facility</th>
                             <th class="col-md-2 hidden-xs hidden-sm">Submitted</th>
-                            <th>Outcome</th>
+                            <th class="col-md-1 text-center">Status</th>
                             <th class="col-md-1 text-center">Action</th>
                         </tr>
                         </thead>
@@ -142,24 +142,8 @@
                                             <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        @if($application->is_open)
-                                            <span class="btn btn-success btn-xs text-center">{{ $application->status_string }}</span>
-                                            <span class="hidden-xs hidden-sm">
-                                                Some text.
-                                            </span>
-                                        @elseif($application->requires_action)
-                                            <span class="btn btn-warning btn-xs text-center">{{ $application->status_string }}</span>
-                                            <span class="hidden-xs hidden-sm">
-                                                Some text.
-                                            </span>
-                                        @else
-                                            <span class="btn btn-danger btn-xs text-center">{{ $application->status_string }}</span>
-                                            <span class="hidden-xs hidden-sm">
-                                                Some text.
-                                            </span>
-                                        @endif
-
+                                    <td class="text-center">
+                                        @include("visittransfer::partials.application_status", ["application" => $application])
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)

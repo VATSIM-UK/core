@@ -97,7 +97,9 @@
                                 <td class="text-center">
                                     {!! HTML::fuzzyDate($a->updated_at) !!}
                                 </td>
-                                <td class="text-center">{!! $a->is_open ? '<span class="label label-success">'.$a->status_string.'</span>' : '<span class="label label-danger">'.$a->status_string.'</span>' !!}</td>
+                                <td class="text-center">
+                                    @include("visittransfer::partials.application_status", ["application" => $a])
+                                </td>
                             </tr>
                         @empty
                             <tr>
