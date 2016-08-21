@@ -21,6 +21,7 @@ class SendNotificationEmail extends Job implements ShouldQueue
     private $senderDisplayAs = null;
     private $recipient;
     private $recipientEmail  = null;
+    private $recipientName  = null;
 
     public function __construct($subject, $body, Account $recipient, Account $sender, Array $overrides = [])
     {
@@ -31,6 +32,7 @@ class SendNotificationEmail extends Job implements ShouldQueue
         $this->senderEmail = array_get($overrides, 'sender_email');
         $this->recipient = $recipient;
         $this->recipientEmail = array_get($overrides, 'recipient_email');
+        $this->recipientName = array_get($overrides, 'recipient_name');
     }
 
     public function handle(Mailer $mailer)
@@ -43,9 +45,11 @@ class SendNotificationEmail extends Job implements ShouldQueue
         $senderDisplayAs = $this->senderDisplayAs;
         $senderEmail = $this->senderEmail;
         $recipientEmail = $this->recipientEmail;
+        $recipientName = $this->recipientName;
 
         $mailer->send("emails.messages.post", [
             "recipient" => $recipient,
+            "recipientName" => $recipientName,
             "sender"    => $sender,
             "body"      => $body,
         ], function ($m) use ($subject, $recipient, $recipientEmail, $sender, $senderEmail, $senderDisplayAs) {
