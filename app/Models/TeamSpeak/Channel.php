@@ -11,6 +11,13 @@ use App\Models\aModel as Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
  * @property-read mixed $protected
  * @mixin \Eloquent
+ * @property integer $id
+ * @property integer $parent_id
+ * @property string $name
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereProtected($value)
  */
 class Channel extends Model
 {

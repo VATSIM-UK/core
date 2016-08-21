@@ -135,6 +135,10 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[] $visitTransferReferee
+ * @property-read mixed $visit_transfer_referee_pending
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract
 {

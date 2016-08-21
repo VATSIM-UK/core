@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property integer $id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereId($value)
  */
 class Read extends \App\Models\aModel {
 
