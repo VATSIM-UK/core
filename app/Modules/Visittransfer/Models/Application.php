@@ -4,10 +4,12 @@ namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
+use App\Modules\Visittransfer\Events\ApplicationCompleted;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
@@ -234,6 +236,15 @@ class Application extends Model
         }
     }
 
+    public function getIsVisitAttribute(){
+        return $this->type == self::TYPE_VISIT;
+    }
+
+
+    public function getIsTransferAttribute(){
+        return $this->type == self::TYPE_TRANSFER;
+    }
+
     public function getTypeStringAttribute(){
         if($this->is_visit){
             return "Visit";
@@ -409,6 +420,23 @@ class Application extends Model
         event(new ApplicationAccepted($this));
     }
 
+    public function complete($staffComment = null, Account $actor = null)
+    {
+        $this->guardAgainstNonAcceptedApplication();
+
+        $this->status = self::STATUS_COMPLETED;
+        $this->save();
+
+        if ($staffComment) {
+            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was completed.\n" . $staffComment;
+            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
+
+        event(new ApplicationCompleted($this));
+    }
+
     public function check90DayQualification(){
         $currentATCQualification = $this->account->qualification_atc;
         $application90DayCutOff = $this->submitted_at->subDays(90);
@@ -461,5 +489,13 @@ class Application extends Model
         }
 
         throw new ApplicationNotUnderReviewException($this);
+    }
+
+    private function guardAgainstNonAcceptedApplication(){
+        if($this->is_accepted){
+            return;
+        }
+
+        throw new ApplicationNotAcceptedException($this);
     }
 }

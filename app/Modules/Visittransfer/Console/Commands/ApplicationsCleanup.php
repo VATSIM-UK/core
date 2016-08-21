@@ -33,14 +33,18 @@ class ApplicationsCleanup extends aCommand
      */
     public function handle()
     {
+        $this->cancelOldApplications();
+        $this->runAutomatedChecks();
+        $this->autoCompleteNonTrainingApplications();
+    }
+
+    private function cancelOldApplications(){
         foreach($this->loadAllApplications() as $application){
             if($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))){
                 //$application->cancel();
                 continue;
             }
         }
-
-        $this->runAutomatedChecks();
     }
 
     private function runAutomatedChecks(){
@@ -60,11 +64,27 @@ class ApplicationsCleanup extends aCommand
         }
     }
 
+    private function autoCompleteNonTrainingApplications(){
+        $acceptedApplications = $this->loadAcceptedApplications()
+                                     ->filter(function($application){
+                                         return !$application->facility->training_required;
+                                     });
+
+        foreach($acceptedApplications as $application){
+            $application->complete();
+            continue;
+        }
+    }
+
     private function loadAllApplications(){
         return Application::all();
     }
 
     private function loadSubmittedApplications(){
         return Application::status(Application::STATUS_SUBMITTED)->get();
+    }
+
+    private function loadAcceptedApplications(){
+        return Application::status(Application::STATUS_ACCEPTED)->get();
     }
 }
