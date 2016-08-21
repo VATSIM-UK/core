@@ -25,13 +25,17 @@
 
                             {!! ControlGroup::generate(
                                 Form::label('description', 'Description:'),
-                                Form::textarea('description', Input::old("description", $facility->description), ["rows" => 21])
+                                Form::textarea('description', Input::old("description", $facility->description), ["rows" => 24])
                             ) !!}
                         </div>
                         <div class="col-md-5">
                             {!! ControlGroup::generate(
                                     Form::label('training_required', 'Is training required?'),
                                     Form::select("training_required", [0 => "No", 1 => "Yes"], Input::old("training_required", $facility->training_required))
+                            ) !!}
+                            {!! ControlGroup::generate(
+                                    Form::label('training_team', 'Which team are they part of?'),
+                                    Form::select("training_team", ['atc' => "ATC Training", "pilot" => "Pilot Training"], Input::old("training_team", $facility->training_team))
                             ) !!}
 
                             {!! ControlGroup::generate(

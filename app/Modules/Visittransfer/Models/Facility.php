@@ -20,6 +20,7 @@ class Facility extends Model
         "name",
         "description",
         "training_required",
+        "training_team",
         "training_spaces",
         "stage_statement_enabled",
         "stage_reference_enabled",

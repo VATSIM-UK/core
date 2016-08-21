@@ -15,11 +15,8 @@ class VisitingTransferInitialSetup extends Migration
             $table->integer('account_id')->unsigned();
             $table->integer('facility_id')->unsigned()->nullable();
             $table->text('statement')->nullable();
-//            $table->boolean('approved')->nullable();
-//            $table->integer('reason_id')->unsigned()->nullable();
-//            $table->integer('reviewed_by')->unsigned()->nullable();
-//            $table->timestamp('reapplication_date')->nullable();
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Application::STATUS_IN_PROGRESS);
+            $table->text("status_note");
             $table->timestamp("submitted_at")->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -33,6 +30,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->string("relationship", 85)->nullable();
             $table->text('reference')->nullable();
             $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Reference::STATUS_DRAFT);
+            $table->text("status_note");
             $table->timestamp("contacted_at")->nullable();
             $table->timestamp("reminded_at")->nullable();
             $table->timestamp("submitted_at")->nullable();
@@ -44,6 +42,7 @@ class VisitingTransferInitialSetup extends Migration
             $table->string('name', 30);
             $table->string("description", 500);
             $table->boolean("training_required")->default(0);
+            $table->enum("training_team", ["atc", "pilot"]);
             $table->mediumInteger('training_spaces')->unsigned()->default(0);
             $table->boolean("stage_statement_enabled")->default(1);
             $table->boolean("stage_reference_enabled")->default(1);
@@ -53,6 +52,11 @@ class VisitingTransferInitialSetup extends Migration
             $table->boolean("open")->default(0);
             $table->softDeletes();
         });
+
+        DB::table("mship_note_type")->insert(array(
+            ["name" => "Visiting &amp; Transfer", "short_code" => "visittransfer", "is_available" => 1, "is_system" => 1, "is_default" => 0, "colour_code" => "info", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+
+        ));
         
         //--POSSIBLY NOT NEEDED BELOW HERE //
 //
