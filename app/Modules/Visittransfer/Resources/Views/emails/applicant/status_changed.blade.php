@@ -21,5 +21,34 @@
         <p>
             Your application will now be reviewed by a member of the Community Department.  You do not need to do anything further at this stage.
         </p>
+    @elseif($application->status == \App\Modules\Visittransfer\Models\Application::STATUS_ACCEPTED)
+        <p>
+            Your application has been accepted by the community department.  It is important to note that <strong>this does not</strong> mean you
+            have completed your application, it simply means the details of your application have been checked and deemed valid.
+            You will be informed when your application is <strong>completed</strong>.
+        </p>
+        @if($application->facility->training_required)
+            <p>
+                In order for your application to be deemed completed, you will be required to undergo training.  The training department will contact you
+                to outline the bespoke training plan we will put together for you.
+            </p>
+            <p>
+                To remain compliant with the Visiting &amp; Transferring policy, you must engage with training <strong>within</strong> 90 days of the date of application.
+                As such, if you <strong>do not</strong> engage with training before {{ $application->submitted_at->addDays(90)->toDateString() }} then your
+                application will lapse and your {{ $application->type_string }} request denied.
+            </p>
+        @endif
+    @elseif($application->status == \App\Modules\Visittransfer\Models\Application::STATUS_REJECTED)
+        <p>
+            Your application to {{ $application->type_string }} {{ $application->facility->name }} has been rejected.  Your application
+            will not progress any further.
+        </p>
+        <p>
+            The reason provided for this is as follows:<br />
+            {!! nl2br($application->status_note) !!}
+        </p>
+        <p>
+            We would ask that you do not open a new application until the above points have been addressed.
+        </p>
     @endif
 @stop

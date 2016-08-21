@@ -22,6 +22,7 @@
                             <th class="col-md-1">ID #</th>
                             <th>Name</th>
                             <th class="col-md-1" style="text-align: center;">Training Required</th>
+                            <th class="col-md-1" style="text-align: center;">Training Dept</th>
                             <th class="col-md-1" style="text-align: center;">Statement</th>
                             <th class="col-md-1" style="text-align: center;">Reference</th>
                             <th class="col-md-1" style="text-align: center;">Checks</th>
@@ -41,6 +42,9 @@
                                     @else
                                         {!! Label::danger("NO") !!}
                                     @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ strtoupper($f->training_team) }}
                                 </td>
                                 <td align="center">
                                     @if($f->stage_statement_enabled)

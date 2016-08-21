@@ -968,8 +968,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)
     {
-        if (is_object($noteType)) {
+        if(is_string($noteType)){
+            $noteType = Type::isShortCode('visittransfer')->first();
+        }
+        if (is_object($noteType) && $noteType->exists) {
             $noteType = $noteType->getKey();
+        } else {
+            $noteType = Type::isDefault()->first()->getKey();
         }
 
         if ($writer == null) {

@@ -11,14 +11,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        \App\Modules\Visittransfer\Events\ApplicationSubmitted::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
+            \App\Modules\Visittransfer\Listeners\NotifyAllReferees::class,
+        ],
+
         \App\Modules\Visittransfer\Events\ApplicationUnderReview::class => [
             \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
             \App\Modules\Visittransfer\Listeners\NotifyCommunityOfUnderReviewApplication::class,
         ],
 
-        \App\Modules\Visittransfer\Events\ApplicationSubmitted::class => [
+        \App\Modules\Visittransfer\Events\ApplicationRejected::class => [
             \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
-            \App\Modules\Visittransfer\Listeners\NotifyAllReferees::class,
+        ],
+
+        \App\Modules\Visittransfer\Events\ApplicationAccepted::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfStatusChange::class,
+            \App\Modules\Visittransfer\Listeners\NotifyTrainingDepartmentOfAcceptedApplication::class,
         ],
 
         \App\Modules\Visittransfer\Events\ApplicationStatusChanged::class => [
@@ -28,6 +37,14 @@ class EventServiceProvider extends ServiceProvider
         \App\Modules\Visittransfer\Events\ReferenceUnderReview::class => [
             \App\Modules\Visittransfer\Listeners\NotifyRefereeOnReferenceCompletion::class,
             \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceCompletion::class,
+        ],
+
+        \App\Modules\Visittransfer\Events\ReferenceAccepted::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceAcceptance::class,
+        ],
+
+        \App\Modules\Visittransfer\Events\ReferenceRejected::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceRejection::class,
         ],
     ];
 

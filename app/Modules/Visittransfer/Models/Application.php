@@ -3,8 +3,12 @@
 namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Mship\Account;
+use App\Modules\Visittransfer\Events\ApplicationAccepted;
+use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
@@ -135,6 +139,11 @@ class Application extends Model
         return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
     }
 
+    public function notes()
+    {
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+    }
+
     /** All Laravel magic attributes **/
     public function setStatementAttribute($statement){
         $this->attributes['statement'] = trim($statement);
@@ -249,7 +258,7 @@ class Application extends Model
         return $this->facility->stage_statement_enabled == 1;
     }
 
-    public function getIsRefernceRequiredAttribute(){
+    public function getIsReferenceRequiredAttribute(){
         if(!$this->attributes['facility_id'] || !$this->facility){
             return true; // TODO: Logic check this.
         }
@@ -270,9 +279,19 @@ class Application extends Model
     }
 
     public function getReferencesNotWrittenAttribute(){
-        return $this->referees->filter(function($ref){
-            return $ref->is_submitted;
-        });
+        return $this->referees()->pending()->get();
+    }
+
+    public function getReferencesUnderReviewAttribute(){
+        return $this->referees()->underReview()->get();
+    }
+
+    public function getReferencesAcceptedAttribute(){
+        return $this->referees()->accepted()->get();
+    }
+
+    public function getReferencesRejectedAttribute(){
+        return $this->referees()->rejected()->get();
     }
 
     public function getAreChecksEnabledAttribute(){
@@ -355,6 +374,52 @@ class Application extends Model
         event(new ApplicationUnderReview($this));
     }
 
+    public function reject($publicReason = "No reason was provided.", $staffReason = null, Account $actor = null)
+    {
+        $this->guardAgainstNonUnderReviewApplication();
+
+        $this->status = self::STATUS_REJECTED;
+        $this->status_note = $publicReason;
+        $this->save();
+
+        if ($staffReason) {
+            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was rejected.\n" . $staffReason;
+            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
+
+        event(new ApplicationRejected($this));
+    }
+
+    public function accept($staffComment = null, Account $actor = null)
+    {
+        $this->guardAgainstNonUnderReviewApplication();
+
+        $this->status = self::STATUS_ACCEPTED;
+        $this->save();
+
+        if ($staffComment) {
+            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was accepted.\n" . $staffComment;
+            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
+
+        event(new ApplicationAccepted($this));
+    }
+
+    public function check90DayQualification(){
+        $currentATCQualification = $this->account->qualification_atc;
+        $application90DayCutOff = $this->submitted_at->subDays(90);
+
+        return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
+    }
+
+    public function check50Hours(){
+        return false;
+    }
+
     /** Guards */
     private function guardAgainstTransferringToANonTrainingFacility(Facility $requestedFacility){
         if($this->is_transfer && $requestedFacility->training_required == 0){
@@ -388,5 +453,13 @@ class Application extends Model
         if($this->is_submitted){
             throw new ApplicationAlreadySubmittedException($this);
         }
+    }
+
+    private function guardAgainstNonUnderReviewApplication(){
+        if($this->is_under_review){
+            return;
+        }
+
+        throw new ApplicationNotUnderReviewException($this);
     }
 }

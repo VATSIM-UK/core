@@ -97,4 +97,14 @@ class ApplicationPolicy {
     public function viewApplication(Account $user, Application $application){
         return $application && $user->id == $application->account_id;
     }
+
+    public function accept(Account $user, Application $application){
+        // TODO: Figure this permission stuff out for ACP.
+        return true;
+    }
+
+    public function reject(Account $user, Application $application){
+        // TODO: Figure this permission stuff out for ACP.
+        return true;
+    }
 }

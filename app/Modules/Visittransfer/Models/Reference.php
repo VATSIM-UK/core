@@ -1,27 +1,31 @@
-<?php
+<?php namespace App\Modules\Visittransfer\Models;
 
-namespace App\Modules\Visittransfer\Models;
-
+use App\Models\Mship\Account;
+use App\Models\Mship\Note\Type;
 use App\Models\Sys\Token;
+use App\Modules\Visittransfer\Events\ReferenceAccepted;
+use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
-use App\Modules\Visittransfer\Exceptions\Application\ReferenceAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Modules\Ais\Models\Fir
+ * App\Modules\Visittransfer\Models\Reference
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Aerodrome[]  $airfields
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Fir\Sector[] $sectors
  */
 class Reference extends Model
 {
 
     protected $table      = "vt_reference";
+    protected $primaryKey = "id";
     protected $fillable   = [
         "application_id",
         "account_id",
         "email",
         "relationship",
+        "status",
+        "status_note",
     ];
     protected $touches    = ["application"];
     public    $timestamps = false;
@@ -98,6 +102,11 @@ class Reference extends Model
         return $this->morphOne(Token::class, 'related');
     }
 
+    public function notes()
+    {
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+    }
+
     public function getTokenAttribute()
     {
         return $this->tokens;
@@ -111,6 +120,21 @@ class Reference extends Model
     public function getIsRequestedAttribute()
     {
         return $this->status == self::STATUS_REQUESTED;
+    }
+
+    public function getIsUnderReviewAttribute()
+    {
+        return $this->status == self::STATUS_UNDER_REVIEW;
+    }
+
+    public function getIsAcceptedAttribute()
+    {
+        return $this->status == self::STATUS_ACCEPTED;
+    }
+
+    public function getIsRejectedAttribute()
+    {
+        return $this->status == self::STATUS_REJECTED;
     }
 
     public function getStatusStringAttribute()
@@ -148,10 +172,53 @@ class Reference extends Model
         event(new ReferenceUnderReview($this));
     }
 
+    public function reject($publicReason = "No reason was provided.", $staffReason = null, Account $actor = null)
+    {
+        $this->guardAgainstNonUnderReviewReference();
+
+        $this->status = self::STATUS_REJECTED;
+        $this->status_note = $publicReason;
+        $this->save();
+
+        if ($staffReason) {
+            $noteContent = "VT Reference from " . $this->account->name . " was rejected.\n" . $staffReason;
+            $note = $this->application->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
+
+        event(new ReferenceRejected($this));
+    }
+
+    public function accept($staffComment = null, Account $actor = null)
+    {
+        $this->guardAgainstNonUnderReviewReference();
+
+        $this->status = self::STATUS_ACCEPTED;
+        $this->save();
+
+        if ($staffComment) {
+            $noteContent = "VT Reference from " . $this->account->name . " was accepted.\n" . $staffComment;
+            $note = $this->application->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
+
+        event(new ReferenceAccepted($this));
+    }
+
     private function guardAgainstReSubmittingReference()
     {
         if (!$this->is_requested) {
             throw new ReferenceAlreadySubmittedException($this);
+        }
+
+    }
+
+    private function guardAgainstNonUnderReviewReference()
+    {
+        if ($this->status != self::STATUS_UNDER_REVIEW) {
+            throw new ReferenceNotUnderReviewException($this);
         }
     }
 }

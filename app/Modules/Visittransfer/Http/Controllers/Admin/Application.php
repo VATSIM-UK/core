@@ -3,12 +3,15 @@
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
+use App\Modules\Visittransfer\Http\Requests\ApplicationAcceptRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Cache;
 use Illuminate\Support\Collection;
 use Input;
+use Redirect;
 
 class Application extends AdmController
 {
@@ -63,5 +66,35 @@ class Application extends AdmController
         return $this->viewMake("visittransfer::admin.application.view")
                     ->with("application", $application)
                     ->with("unacceptedReferences", $unacceptedReferences);
+    }
+
+    public function postReject(ApplicationRejectRequest $request, ApplicationModel $application){
+        $rejectionReason = "";
+
+        if(Input::get("rejection_reason") != "other"){
+            $rejectionReason = Input::get("rejection_reason");
+        }
+
+        if(Input::get("rejection_reason_extra", null)){
+            $rejectionReason.= "\n" . Input::get("rejection_reason_extra");
+        }
+
+        try {
+            $application->reject($rejectionReason, Input::get("rejection_staff_note", null), Auth::user());
+        } catch(\Exception $e){
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::back()->withSuccess("Application #".$application->public_id." - " . $application->account->name. " rejected &amp; candidate notified.");
+    }
+
+    public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application){
+        try {
+            $application->accept(Input::get("accept_staff_note", null), Auth::user());
+        } catch(\Exception $e){
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::back()->withSuccess("Application #".$application->public_id." - " . $application->account->name. " accepted &amp; candidate notified.");
     }
 }

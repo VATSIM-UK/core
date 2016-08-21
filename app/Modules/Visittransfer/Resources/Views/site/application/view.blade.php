@@ -96,37 +96,46 @@
                                 This application has not yet been submitted.
                             </p>
                         </div>
-                    @elseif($application->is_submitted)
-                        @if($application->is_pending_references)
-                            <div class="alert alert-danger" role="alert">
-                                <p>
-                                    Your references have been contacted and we are awaiting submission of their reference details.  We will notify you when this occurs.
-                                </p>
-                            </div>
-                        @elseif($application->is_under_review)
-                            <div class="alert alert-warning" role="alert">
-                                <p>
-                                    We have received your references and we are reviewing your application.  You will be notified of the outcome.
-                                </p>
-                            </div>
-                        @elseif($application->is_rejected)
-                            <div class="alert alert-warning" role="alert">
-                                <p>
-                                    Your application has been rejected.
-                                </p>
-                            </div>
-                        @elseif($application->is_accepted)
-                            <div class="alert alert-warning" role="alert">
-                                <p>
-                                    Your application has been accepted! Congratulations.  You will be contacted to discuss the next steps.
-                                </p>
-                            </div>
-                        @else<div class="alert alert-info" role="alert">
+                    @elseif($application->is_pending_references)
+                        <div class="alert alert-danger" role="alert">
                             <p>
-                                Your application is currently undergoing some final automated checks.  It will automatically be submitted for review once these are complete.
+                                Your references have been contacted and we are awaiting submission of their reference details.  We will notify you when this occurs.
                             </p>
                         </div>
-                        @endif
+                    @elseif($application->is_under_review)
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                We have received your references and we are reviewing your application.  You will be notified of the outcome.
+                            </p>
+                        </div>
+                    @elseif($application->is_rejected)
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                Your application has been rejected.  The reason provided was:<br />
+                                {!! nl2br($application->status_note) !!}
+                            </p>
+                        </div>
+                    @elseif($application->is_accepted)
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                Congratulations, your application has been accepted! You will be contacted to discuss the next steps.
+                            </p>
+                            @if($application->facility->training_required)
+                                <p class="text-danger">
+                                    Your application cannot be completed without receiving training from the {{ strtoupper($application->facility->training_team) }} department.
+                                    They will be in touch to discuss this with you.<br />
+                                    <strong>
+                                        You must engage with training before {{ $application->submitted_at->addDays(90)->toDateString() }} otherwise your
+                                        application will be terminated under section 1.9 of the Visiting & Transferring Policy.
+                                    </strong>
+                                </p>
+                            @endif
+                        </div>
+                    @else<div class="alert alert-info" role="alert">
+                        <p>
+                            Your application is currently undergoing some final automated checks.  It will automatically be submitted for review once these are complete.
+                        </p>
+                    </div>
                     @endif
                 </div>
 

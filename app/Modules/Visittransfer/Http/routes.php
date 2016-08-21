@@ -45,24 +45,14 @@ Route::group(["as"         => "visiting.admin.",
         "uses" => "Reference@getView",
     ])->where("reference", "\d+");
 
-    Route::get("/reference/{reference}/reject", [
-        "as"   => "reference.reject",
-        "uses" => "Reference@getReject",
-    ])->where("reference", "\d+");
-
     Route::post("/reference/{reference}/reject", [
         "as"   => "reference.reject.post",
         "uses" => "Reference@postReject",
     ])->where("reference", "\d+");
 
-    Route::get("/reference/{reference}/accept", [
-        "as"   => "reference.accept",
-        "uses" => "Reference@getApprove",
-    ])->where("reference", "\d+");
-
     Route::post("/reference/{reference}/accept", [
         "as"   => "reference.accept.post",
-        "uses" => "Reference@getApprove",
+        "uses" => "Reference@postAccept",
     ])->where("reference", "\d+");
 
     Route::get("/reference/{scope?}", [
@@ -75,19 +65,9 @@ Route::group(["as"         => "visiting.admin.",
         "uses" => "Application@getView",
     ])->where("application", "\d+");
 
-    Route::get("/application/{application}/accept", [
-        "as"   => "application.accept",
-        "uses" => "Application@getAccept",
-    ])->where("application", "\d+");
-
     Route::post("/application/{application}/accept", [
         "as"   => "application.accept.post",
-        "uses" => "Application@getAccept",
-    ])->where("application", "\d+");
-
-    Route::get("/application/{application}/reject", [
-        "as"   => "application.reject",
-        "uses" => "Application@getReject",
+        "uses" => "Application@postAccept",
     ])->where("application", "\d+");
 
     Route::post("/application/{application}/reject", [
