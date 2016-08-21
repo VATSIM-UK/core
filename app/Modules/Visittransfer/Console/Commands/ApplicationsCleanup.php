@@ -35,6 +35,7 @@ class ApplicationsCleanup extends aCommand
     {
         $this->cancelOldApplications();
         $this->runAutomatedChecks();
+        $this->autoAcceptApplications();
         $this->autoCompleteNonTrainingApplications();
     }
 
@@ -55,12 +56,24 @@ class ApplicationsCleanup extends aCommand
 
         foreach($underReviewApplications as $application){
 
-            if($application->facility->stage_checks){
+            if($application->are_checks_enabled){
                 $application->markAsUnderReview();
                 continue;
             }
 
             dispatch(new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application));
+        }
+    }
+
+    private function autoAcceptApplications(){
+        $acceptedApplications = $this->loadSubmittedApplications()
+                                     ->filter(function($application){
+                                         return $application->will_be_auto_accepted;
+                                     });
+
+        foreach($acceptedApplications as $application){
+            $application->accept("Application was automatically accepted as per the facility settings.");
+            continue;
         }
     }
 
@@ -71,7 +84,7 @@ class ApplicationsCleanup extends aCommand
                                      });
 
         foreach($acceptedApplications as $application){
-            $application->complete();
+            $application->complete("Application was automatically completed as there is no training requirement.");
             continue;
         }
     }

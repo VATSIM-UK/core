@@ -1,5 +1,5 @@
 <p>
-    A new {{ $application->type_string }} application for {{ $application->facility->name }} has been accepted by the Community Department.
+    A new {{ $application->type_string }} application has been completed.  Please perform the necessary steps on CERT:
 </p>
 
 <h3>Application Details</h3>
@@ -24,5 +24,5 @@
 @endforeach
 
 <p>
-    Please login to the administrative panel to review this application, along with any additional notes/comments.
+    Please login to the administrative panel to review this application, along with many others.
 </p>

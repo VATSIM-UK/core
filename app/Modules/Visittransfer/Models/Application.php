@@ -54,6 +54,7 @@ class Application extends Model
     const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
     const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
+    const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
     const STATUS_COMPLETED    = 90; // Application has been formally completed, visit/transfer complete.
     const STATUS_LAPSED       = 97; // Application has lapsed.
     const STATUS_CANCELLED    = 98; // Application has been cancelled
@@ -204,7 +205,7 @@ class Application extends Model
     }
 
     public function getIsCompletedAttribute(){
-        return $this->isStatus(self::STATUS_COMPLETED);
+        return $this->isStatusIn([self::STATUS_PENDING_CERT, self::STATUS_COMPLETED]);
     }
 
     public function getIsLapsedAttribute(){
@@ -425,6 +426,7 @@ class Application extends Model
         $this->guardAgainstNonAcceptedApplication();
 
         $this->status = self::STATUS_COMPLETED;
+//        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
         $this->save();
 
         if ($staffComment) {
