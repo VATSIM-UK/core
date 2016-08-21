@@ -194,7 +194,7 @@ class aCommand extends Command
     {
         // get the current relative directory, and set the link to GitLab
         preg_match('/\/app\/Console\/Commands\/.*$/', __FILE__, $directory);
-        $directory = $directory[0];
+        $directory = array_get($directory, 0, "");
         if (App::environment('production')) {
             return 'https://gitlab.com/vatsim-uk/core/blob/production' . $directory;
         } else {

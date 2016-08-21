@@ -13,6 +13,12 @@ namespace App\Models\Sys;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session wherePayload($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereLastActivity($value)
  * @mixin \Eloquent
+ * @property integer $user_id
+ * @property string $ip_address
+ * @property string $user_agent
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereUserAgent($value)
  */
 class Session extends \App\Models\aModel {
         protected $table = "sys_sessions";

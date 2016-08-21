@@ -4,20 +4,31 @@ namespace App\Models\Mship;
 
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Http\Controllers\Mship\Security;
+use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
+use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Models\Mship\Account\Qualification as AccountQualification;
 use App\Models\Mship\Account\State;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Qualification;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Sys\Notification as SysNotification;
+use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
+use App\Modules\Visittransfer\Models\Application;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
+use Bus;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 
 /**
  * App\Models\Mship\Account
@@ -124,10 +135,14 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[] $visitTransferReferee
+ * @property-read mixed $visit_transfer_referee_pending
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  */
 class Account extends \App\Models\aModel implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, RecordsActivityTrait;
+    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
 
     protected $table = 'mship_account';
     public $incrementing = false;
@@ -182,6 +197,26 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
     }
 
+    public static function findOrRetrieve($accountId){
+        try {
+            return self::findOrFail($accountId);
+        } catch(ModelNotFoundException $e){
+            $retrievedData = \VatsimXML::getData($accountId);
+
+            $account = Account::create([
+                "id" => $retrievedData->cid,
+                "name_first" => $retrievedData->name_first,
+                "name_last" => $retrievedData->name_last,
+            ]);
+
+            \Artisan::queue("Members:CertUpdate", [
+                "--force" => $accountId,
+            ]);
+
+            return $account;
+        }
+    }
+
     /**
      * Find and fetch the user with the given slack ID.
      *
@@ -210,6 +245,65 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     /**
+     * Fetch all related visiting/transfer applications
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function visitTransferApplications(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy("submitted_at", "DESC");
+    }
+
+    public function visitApplications(){
+        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_VISIT);
+    }
+
+    public function transferApplications(){
+        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_TRANSFER);
+    }
+
+    public function visitTransferCurrent(){
+        return $this->visitTransferApplications()->latest()->first();
+    }
+
+    public function createVisitingTransferApplication(array $attributes){
+        $this->guardAgainstDivisionMemberVisitingTransferApplication();
+        $this->guardAgainstDuplicateVisitingTransferApplications();
+
+        return $this->visitTransferApplications()->create($attributes);
+    }
+
+    private function guardAgainstDivisionMemberVisitingTransferApplication()
+    {
+        if($this->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)){
+            throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
+        }
+    }
+
+    private function guardAgainstDuplicateVisitingTransferApplications(){
+        if($this->hasOpenVisitingTransferApplication()){
+            throw new DuplicateApplicationException($this);
+        }
+    }
+
+    public function hasOpenVisitingTransferApplication(){
+        return $this->visitTransferApplications->contains(function($key, $application){
+            return in_array($application->status, \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN);
+        });
+    }
+
+    public function visitTransferReferee(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
+    }
+
+    public function getVisitTransferRefereePendingAttribute(){
+        return $this->visitTransferReferee->filter(function($ref){
+            return $ref->is_requested;
+        })->sort(function($ref1, $ref2){
+            return $ref1->application->submitted_at->lt($ref2->application->submitted_at);
+        });
+    }
+
+    /**
      * Fetch all related secondary emails.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -223,6 +317,12 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')
                     ->orderBy('created_at', 'DESC');
+    }
+
+    public function messageThreads()
+    {
+        return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
+                    ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
     }
 
     public function messagePosts()
@@ -328,7 +428,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function states()
     {
-        return $this->hasMany(\App\Models\Mship\Account\State::class, 'account_id')
+        return $this->hasMany(\App\Models\Mship\Account\State::class)
                     ->orderBy('created_at', 'DESC');
     }
 
@@ -868,8 +968,13 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)
     {
-        if (is_object($noteType)) {
+        if(is_string($noteType)){
+            $noteType = Type::isShortCode('visittransfer')->first();
+        }
+        if (is_object($noteType) && $noteType->exists) {
             $noteType = $noteType->getKey();
+        } else {
+            $noteType = Type::isDefault()->first()->getKey();
         }
 
         if ($writer == null) {
@@ -881,7 +986,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $note               = new AccountNoteData();
         $note->account_id   = $this->id;
         $note->writer_id    = $writer;
-        $note->id           = $noteType;
+        $note->note_type_id           = $noteType;
         $note->content      = $noteContent;
         $note->save();
 
@@ -945,28 +1050,36 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function getIsSystemBannedAttribute()
     {
-        $bans = $this->bans()->isActive()->isLocal();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_local;
+        });
 
         return ($bans->count() > 0);
     }
 
     public function getSystemBanAttribute()
     {
-        $bans = $this->bans()->isActive()->isLocal();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_local;
+        });
 
         return $bans->first();
     }
 
     public function getIsNetworkBannedAttribute()
     {
-        $bans = $this->bans()->isActive()->isNetwork();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_network;
+        });
 
         return ($bans->count() > 0);
     }
 
     public function getNetworkBanAttribute()
     {
-        $bans = $this->bans()->isActive()->isNetwork();
+        $bans = $this->bans->filter(function($ban){
+            return $ban->is_active && $ban->is_network;
+        });
 
         return $bans->first();
     }
@@ -1147,7 +1260,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         } else {
             $state = \App\Models\Mship\Account\State::STATE_INTERNATIONAL;
         }
-        $this->states()->save(new Account\State(['state' => $state]));
+        $this->states()->save(new Account\State([
+            'state' => $state
+        ]));
     }
 
     public function getNewTsRegistrationAttribute()

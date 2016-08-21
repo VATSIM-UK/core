@@ -8,7 +8,7 @@ before_script:
   - /home/gitlabci/gitlabci_vukcore.sh
   - php artisan migrate -vvv
   - php artisan serve -q &
-  
+
 phpunit:php5.5:mysql5.5:
   image: php:5.5
   services:

@@ -24,7 +24,8 @@ class AuthUserFull
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                return Redirect::to('/mship/auth/redirect');
+                Session::set("auth_return", Request::fullUrl());
+                return Redirect::route("mship.auth.redirect");
             }
         }
         

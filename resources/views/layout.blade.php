@@ -28,6 +28,41 @@
                         {!! link_to_route("default", "Home") !!}
                     </li>
                 </ul>
+
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-6">
+                                <ul>
+                                    @if(Module::isEnabled("visittransfer"))
+                                        <li class="dropdown-header">Division Membership</li>
+                                        <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
+                                        <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
+                                        <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
+                                    @endif
+
+                                    @if(Module::isEnabled("visittransfer") && true)
+                                        <li class="divider"></li>
+                                    @endif
+
+                                    <li class="dropdown-header">Disputes</li>
+                                    <li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>
+                                    <li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>
+                                </ul>
+                            </li>
+                            <li class="col-sm-6">
+                                <ul>
+                                    <li class="dropdown-header">Third-Party</li>
+                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
+                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ul>
+
                 @if(Auth::check())
                     <ul class="nav navbar-nav navcustom">
                         <li class="dropdown dropdown-large">
@@ -37,7 +72,7 @@
                                     <ul>
                                         <li class="dropdown-header">Password</li>
                                         <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
-                                        @if(!$_account->mandatory_password)
+                                        @if(!Auth::user()->mandatory_password)
                                             <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
                                         @endif
                                         <li class="divider"></li>
@@ -131,6 +166,17 @@
             @if(Session::has('error') OR isset($error))
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>Error!</strong> There is something wrong with your request:
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 

@@ -227,6 +227,7 @@ return [
         'SlackUserAdmin'       => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
         'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
         'SlackTeam'            => Vluzrmos\SlackApi\Facades\SlackTeam::class,
+        
 //        'Form'                 => Collective\Html\FormFacade::class,
         'HTML'                 => Collective\Html\HtmlFacade::class,
         'VatsimSSO'            => Vatsim\OAuth\Facades\SSO::class,

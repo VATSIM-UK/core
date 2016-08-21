@@ -6,4 +6,4 @@
         @endif
         {{ $title }}
     </div>
-    <div class="panel-body">
+    <div class="panel-body" @foreach($attr as $k => $v) {!! $k.'="'.$v.'" ' !!} @endforeach>
