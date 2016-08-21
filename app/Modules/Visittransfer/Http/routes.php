@@ -1,62 +1,111 @@
 <?php
 
-Route::get("/visiting-transferring", function(){
+Route::get("/visiting-transferring", function () {
     return Redirect::route("visiting.landing");
 });
 
-Route::group(["as" => "visiting.admin.", "prefix" => "adm/visit-transfer", "namespace" => "Admin", "domain" => config("app.url"), "middleware" => ["auth.admin"]], function(){
+Route::group(["as"         => "visiting.admin.",
+              "prefix"     => "adm/visit-transfer",
+              "namespace"  => "Admin",
+              "domain"     => config("app.url"),
+              "middleware" => ["auth.admin"]
+], function () {
     Route::get("/", [
-        "as" => "dashboard",
+        "as"   => "dashboard",
         "uses" => "Dashboard@getDashboard",
     ]);
 
     Route::get("/facility", [
-        "as" => "facility",
+        "as"   => "facility",
         "uses" => "Facility@getList",
     ]);
 
     Route::get("/facility/create", [
-        "as" => "facility.create",
+        "as"   => "facility.create",
         "uses" => "Facility@getCreate",
     ]);
 
     Route::post("/facility/create", [
-        "as" => "facility.create.post",
+        "as"   => "facility.create.post",
         "uses" => "Facility@postCreate",
     ]);
 
     Route::get("/facility/{facility}/update", [
-        "as" => "facility.update",
+        "as"   => "facility.update",
         "uses" => "Facility@getUpdate",
     ])->where("facility", "\d+");
 
     Route::post("/facility/{facility}/update", [
-        "as" => "facility.update.post",
+        "as"   => "facility.update.post",
         "uses" => "Facility@postUpdate",
     ])->where("facility", "\d+");
 
     Route::get("/reference/{reference}", [
-        "as" => "reference.view",
+        "as"   => "reference.view",
         "uses" => "Reference@getView",
     ])->where("reference", "\d+");
 
+    Route::get("/reference/{reference}/reject", [
+        "as"   => "reference.reject",
+        "uses" => "Reference@getReject",
+    ])->where("reference", "\d+");
+
+    Route::post("/reference/{reference}/reject", [
+        "as"   => "reference.reject.post",
+        "uses" => "Reference@postReject",
+    ])->where("reference", "\d+");
+
+    Route::get("/reference/{reference}/accept", [
+        "as"   => "reference.accept",
+        "uses" => "Reference@getApprove",
+    ])->where("reference", "\d+");
+
+    Route::post("/reference/{reference}/accept", [
+        "as"   => "reference.accept.post",
+        "uses" => "Reference@getApprove",
+    ])->where("reference", "\d+");
+
     Route::get("/reference/{scope?}", [
-        "as" => "reference.list",
+        "as"   => "reference.list",
         "uses" => "Reference@getList",
     ])->where("scope", "[a-zA-Z-]+");
 
     Route::get("/application/{application}", [
-        "as" => "application.view",
+        "as"   => "application.view",
         "uses" => "Application@getView",
     ])->where("application", "\d+");
 
+    Route::get("/application/{application}/accept", [
+        "as"   => "application.accept",
+        "uses" => "Application@getAccept",
+    ])->where("application", "\d+");
+
+    Route::post("/application/{application}/accept", [
+        "as"   => "application.accept.post",
+        "uses" => "Application@getAccept",
+    ])->where("application", "\d+");
+
+    Route::get("/application/{application}/reject", [
+        "as"   => "application.reject",
+        "uses" => "Application@getReject",
+    ])->where("application", "\d+");
+
+    Route::post("/application/{application}/reject", [
+        "as"   => "application.reject.post",
+        "uses" => "Application@postReject",
+    ])->where("application", "\d+");
+
     Route::get("/application/{scope?}", [
-        "as" => "application.list",
+        "as"   => "application.list",
         "uses" => "Application@getList",
     ])->where("scope", "\w+");
 });
 
-Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".config("app.url"), 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+Route::group(["as"         => "visiting.",
+              "namespace"  => "Site",
+              "domain"     => "vt." . config("app.url"),
+              'middleware' => ['auth.user.full', 'user.must.read.notifications']
+], function () {
     Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 
     Route::group(["as" => "application.", "prefix" => "application"], function () {
@@ -75,64 +124,64 @@ Route::group(["as" => "visiting.", "namespace" => "Site", "domain" => "vt.".conf
         ])->where("type", "\d+");
 
         Route::get("/continue", [
-            "as" => "continue",
+            "as"   => "continue",
             "uses" => "Application@getContinue",
         ]);
 
         Route::get("/facility", [
-            "as" => "facility",
+            "as"   => "facility",
             "uses" => "Application@getFacility",
         ]);
 
         Route::post("/facility", [
-            "as" => "facility.post",
+            "as"   => "facility.post",
             "uses" => "Application@postFacility",
         ]);
 
         Route::get("/statement", [
-            "as" => "statement",
+            "as"   => "statement",
             "uses" => "Application@getStatement",
         ]);
 
         Route::post("/statement", [
-            "as" => "statement.post",
+            "as"   => "statement.post",
             "uses" => "Application@postStatement",
         ]);
 
         Route::get("/referees", [
-            "as" => "referees",
+            "as"   => "referees",
             "uses" => "Application@getReferees",
         ]);
 
         Route::post("/referees", [
-            "as" => "referees.post",
+            "as"   => "referees.post",
             "uses" => "Application@postReferees",
         ]);
 
         Route::get("/submit", [
-            "as" => "submit",
+            "as"   => "submit",
             "uses" => "Application@getSubmit",
         ]);
 
         Route::post("/submit", [
-            "as" => "submit.post",
+            "as"   => "submit.post",
             "uses" => "Application@postSubmit",
         ]);
 
         Route::get("/view/{applicationByPublicId}", [
-            "as" => "view",
+            "as"   => "view",
             "uses" => "Application@getView"
         ]);
     });
 
     Route::group(["as" => "reference.", "prefix" => "reference"], function () {
         Route::get("/complete/{token}", [
-            "as" => "complete",
+            "as"   => "complete",
             "uses" => "Reference@getComplete"
         ]);
 
         Route::post("/complete/{token}", [
-            "as" => "complete.post",
+            "as"   => "complete.post",
             "uses" => "Reference@postComplete"
         ]);
     });

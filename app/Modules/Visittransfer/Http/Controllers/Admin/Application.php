@@ -52,4 +52,16 @@ class Application extends AdmController
                     ->with("sortDir", $sortDir)
                     ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"));
     }
+
+    public function getView(ApplicationModel $application){
+        $this->setSubTitle("Application #".$application->public_id);
+
+        $unacceptedReferences = $application->referees->filter(function($ref){
+            return $ref->status == Reference::STATUS_UNDER_REVIEW;
+        });
+
+        return $this->viewMake("visittransfer::admin.application.view")
+                    ->with("application", $application)
+                    ->with("unacceptedReferences", $unacceptedReferences);
+    }
 }

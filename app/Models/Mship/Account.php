@@ -1251,7 +1251,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         } else {
             $state = \App\Models\Mship\Account\State::STATE_INTERNATIONAL;
         }
-        $this->states()->save(new Account\State(['state' => $state]));
+        $this->states()->save(new Account\State([
+            'state' => $state
+        ]));
     }
 
     public function getNewTsRegistrationAttribute()
