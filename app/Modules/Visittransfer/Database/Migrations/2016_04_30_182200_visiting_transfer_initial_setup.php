@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -57,67 +58,47 @@ class VisitingTransferInitialSetup extends Migration
             ["name" => "Visiting &amp; Transfer", "short_code" => "visittransfer", "is_available" => 1, "is_system" => 1, "is_default" => 0, "colour_code" => "info", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
 
         ));
-        
-        //--POSSIBLY NOT NEEDED BELOW HERE //
-//
-//        Schema::create('vt_stage', function (Blueprint $table) {
-//            $table->mediumIncrements('id');
-//            $table->string('key', 50)->unique();
-//            $table->string('name', 50);
-//            $table->text('description');
-//        });
-//
-//        Schema::create('vt_stage_skip', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->mediumInteger('stage_id')->unsigned();
-//            $table->integer('facility_id')->unsigned()->nullable();
-//            $table->integer('application_id')->unsigned()->nullable();
-//            $table->string('reason', 100);
-//        });
-//
-//        Schema::create('vt_check', function (Blueprint $table) {
-//            $table->mediumIncrements('id');
-//            $table->string('name', 50);
-//            $table->text('description');
-//        });
-//
-//        Schema::create('vt_application_check', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->integer('application_id')->unsigned();
-//            $table->mediumInteger('check_id')->unsigned();
-//            $table->text('notes');
-//            $table->boolean('status');
-//        });
-//
-//        Schema::create('vt_reason', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->text('description');
-//            $table->mediumInteger('default_timelimit');
-//        });
+
+        DB::table('mship_permission')->insert([
+            ['name' => 'adm/visit-transfer', 'display_name' => 'Admin / Visit &amp; Transfer', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/dashboard', 'display_name' => 'Admin / Visit &amp; Transfer / Dashboard', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/facility', 'display_name' => 'Admin / Visit &amp; Transfer / Facility', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/create', 'display_name' => 'Admin / Visit &amp; Transfer / Facility / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/*/update', 'display_name' => 'Admin / Visit &amp; Transfer / Facility / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application', 'display_name' => 'Admin / Visit &amp; Transfer / Applications', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/open', 'display_name' => 'Admin / Visit &amp; Transfer / Applications (Open)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/closed', 'display_name' => 'Admin / Visit &amp; Transfer / Applications (Closed)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/review', 'display_name' => 'Admin / Visit &amp; Transfer / Applications (Under Review)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/accepted', 'display_name' => 'Admin / Visit &amp; Transfer / Applications (Accepted)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/completed', 'display_name' => 'Admin / Visit &amp; Transfer / Applications (Completed)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/*', 'display_name' => 'Admin / Visit &amp; Transfer / Applications / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/*/accept', 'display_name' => 'Admin / Visit &amp; Transfer / Applications / Accept', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/application/*/reject', 'display_name' => 'Admin / Visit &amp; Transfer / Applications / Reject', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference', 'display_name' => 'Admin / Visit &amp; Transfer / References', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/pending-submission', 'display_name' => 'Admin / Visit &amp; Transfer / References (Pending Submission)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/submitted', 'display_name' => 'Admin / Visit &amp; Transfer / References (Submitted)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/under-review', 'display_name' => 'Admin / Visit &amp; Transfer / References (Under Review)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/accepted', 'display_name' => 'Admin / Visit &amp; Transfer / References (Accepted)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/rejected', 'display_name' => 'Admin / Visit &amp; Transfer / References (Rejected)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/*', 'display_name' => 'Admin / Visit &amp; Transfer / References / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/*/accept', 'display_name' => 'Admin / Visit &amp; Transfer / References / Accept', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'adm/visit-transfer/reference/*/reject', 'display_name' => 'Admin / Visit &amp; Transfer / References / Reject', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
     }
 
     public function down()
     {
-        //
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
-
         $tables = [
             'vt_application',
-            'vt_referee',
-            'vt_type',
+            'vt_reference',
             'vt_facility',
-            'vt_stage',
-            'vt_stage_skip',
-            'vt_check',
-            'vt_application_check',
-            'vt_reason'
         ];
 
         foreach ($tables as $table) {
             Schema::dropIfExists($table);
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
+        DB::table("mship_permission")->where("name", "LIKE", "adm/visit-transfer%")->delete();
     }
 
 }

@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('visittransfer::site._layout')
 
 @section('content')
     <div class="row">

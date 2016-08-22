@@ -116,7 +116,9 @@ class Authentication extends BaseController {
     }
 
     public function getLogin() {
-        Session::set('auth_return', Input::get('returnURL', URL::route('mship.manage.dashboard')));
+        if(!Session::has("auth_return")){
+            Session::set('auth_return', Input::get('returnURL', URL::route('mship.manage.dashboard')));
+        }
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
         if (Auth::check() || Auth::viaRemember()) {
