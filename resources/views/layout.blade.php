@@ -42,18 +42,18 @@
                                         <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
                                     @endif
 
-                                    @if(Module::isEnabled("visittransfer") && true)
-                                        <li class="divider"></li>
-                                    @endif
+                                    {{--@if(Module::isEnabled("visittransfer") && true)--}}
+                                        {{--<li class="divider"></li>--}}
+                                    {{--@endif--}}
 
-                                    <li class="dropdown-header">Disputes</li>
-                                    <li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>
-                                    <li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>
+                                    {{--<li class="dropdown-header">Disputes</li>--}}
+                                    {{--<li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>--}}
+                                    {{--<li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>--}}
                                 </ul>
                             </li>
                             <li class="col-sm-6">
                                 <ul>
-                                    <li class="dropdown-header">Third-Party</li>
+                                    <li class="dropdown-header">Third-Party Services</li>
                                     <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
                                 </ul>
@@ -83,7 +83,7 @@
                                 </li>
                                 <li class="col-sm-6">
                                     <ul>
-                                        <li class="dropdown-header">Third-Party</li>
+                                        <li class="dropdown-header">Third-Party Services</li>
                                         <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
                                         <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
                                     </ul>
