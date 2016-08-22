@@ -12,6 +12,22 @@ use App\Models\Mship\Qualification;
  * @property-read \App\Models\Mship\Permission $permission
  * @property-read \App\Models\Mship\Qualification $qualification
  * @mixin \Eloquent
+ * @property integer $id
+ * @property integer $dbid
+ * @property string $name
+ * @property string $type
+ * @property boolean $default
+ * @property boolean $protected
+ * @property integer $permission_id
+ * @property integer $qualification_id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereDbid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereProtected($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group wherePermissionId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereQualificationId($value)
  */
 class Group extends Model
 {

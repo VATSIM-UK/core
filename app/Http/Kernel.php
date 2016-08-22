@@ -27,9 +27,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth.user' => Middleware\AuthUser::class,
-        'auth.user.full' => Middleware\AuthUserFull::class,
-        'auth.admin' => Middleware\AuthAdmin::class,
+        'auth.user'                    => Middleware\AuthUser::class,
+        'auth.user.full'               => Middleware\AuthUserFull::class,
+        'auth.admin'                   => Middleware\AuthAdmin::class,
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
     ];
 }

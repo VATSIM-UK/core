@@ -8,74 +8,51 @@ use Route;
 use View;
 use App\Models\Mship\Account;
 use Request;
-class AdmController extends \App\Http\Controllers\BaseController {
 
-    protected $_pageSubTitle = NULL;
+class AdmController extends \App\Http\Controllers\BaseController
+{
 
-	/**
-	 * Setup the layout used by the controller.
-	 *
-	 * @return void
-	 */
-	protected function setupLayout()
-	{
-		if ( ! is_null($this->layout))
-		{
-			$this->layout = View::make($this->layout);
-		}
-	}
-
-        public function __controller(){
-            parent::__controller();
+    /**
+     * Setup the layout used by the controller.
+     *
+     * @return void
+     */
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
+            $this->layout = View::make($this->layout);
         }
+    }
 
-        public function viewMake($view){
-            $view = View::make($view);
+    public function __controller()
+    {
+        parent::__controller();
+    }
 
-            // Accounts!
-            $view->with("_account", $this->_account);
+    public function viewMake($view)
+    {
+        $view = View::make($view);
 
-            // Let's also display the breadcrumb
-            $breadcrumb = array();
-            $uri = "/adm";
-            $bcBase = explode("\\", str_replace("App\\Http\\Controllers\\Adm\\", "", get_called_class()));
-            /*for($i=2; $i<=10; $i++){
-                if(Request::segment($i) != NULL){
-                    $uri.= Request::segment($i);
-                    $b = [Request::segment($i)];
-                    $b[1] = rtrim($uri, "/");
-                    $breadcrumb[] = $b;
-                }
-            }*/
-            foreach($bcBase as $bc){
-                $uri.= "/".strtolower($bc);
-                $breadcrumb[] = [strtolower($bc), $uri, Route::has($uri)];
-            }
-            $view->with("_breadcrumb", $breadcrumb);
+        $view->with("_account", $this->_account);
 
-            // Page titles
-            if($this->_pageTitle == NULL){
-                $this->setTitle(last($breadcrumb)[0]);
-            }
-            $view->with("_pageTitle", ucfirst($this->_pageTitle));
-            if($this->_pageSubTitle == NULL){
-                $this->_pageSubTitle = head($breadcrumb)[0];
-            }
-            if($this->_pageSubTitle == $this->_pageTitle){
-                $this->_pageSubTitle = NULL;
-            }
-            $view->with("_pageSubTitle", $this->_pageSubTitle);
+        $this->buildBreadcrumb("Administration Control Panel", "/adm/dashboard");
 
-            return $view;
+        $view->with("_breadcrumb", $this->_breadcrumb);
+
+        $view->with("_pageTitle", $this->getTitle());
+        $view->with("_pageSubTitle", $this->getSubTitle());
+
+        return $view;
+    }
+
+    public function __construct()
+    {
+        if (Auth::check()) {
+            $this->_account = Auth::user();
+            $this->_account->load("roles", "roles.permissions");
+        } else {
+            $this->_account = new Account();
         }
-
-        public function __construct(){
-            if(Auth::check()){
-                $this->_account = Auth::user();
-                $this->_account->load("roles", "roles.permissions");
-            } else {
-                $this->_account = new Account();
-            }
-        }
+    }
 
 }

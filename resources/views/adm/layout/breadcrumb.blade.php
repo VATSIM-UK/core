@@ -5,15 +5,14 @@
         <small>{{ $subTitle }}</small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ URL::route("adm.dashboard") }}"><i class="fa fa-location-arrow"></i>VATSIM UK</a></li>
-        <li><a href="{{ URL::route("adm.dashboard") }}">Admin CP</a></li>
+        <li><a><i class="fa fa-location-arrow"></i>VATSIM UK</a></li>
         @foreach($breadcrumb as $b)
-            @if(last($breadcrumb) == $b)
-                <li class="active">{{ ucfirst($b[0]) }}</li>
-            @elseif($b[2])
-                <li><a href="{{ URL::to($b[1]) }}">{{ ucfirst($b[0]) }}</a></li>
+            @if($breadcrumb->last() == $b)
+                <li class="active">{{ $b->get("name") }}</li>
+            @elseif($b->get("uri"))
+                <li><a href="{{ URL::to($b->get("uri")) }}">{{ $b->get("name") }}</a></li>
             @else
-                <li>{{ ucfirst($b[0]) }}</li>
+                <li>{{ $b->get("name") }}</li>
             @endif
         @endforeach
     </ol>

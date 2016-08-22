@@ -14,8 +14,8 @@ class MshipAccountTest extends TestCase
 
         $this->account = factory(App\Models\Mship\Account::class)->create([
             "name_first" => "John",
-            "name_last"  => "Doe",
-            "email"      => "i_sleep@gmail.com",
+            "name_last" => "Doe",
+            "email" => "i_sleep@gmail.com",
         ]);
     }
 
@@ -24,8 +24,8 @@ class MshipAccountTest extends TestCase
     {
         $this->seeInDatabase("mship_account", [
             "name_first" => "John",
-            "name_last"  => "Doe",
-            "email"      => "i_sleep@gmail.com",
+            "name_last" => "Doe",
+            "email" => "i_sleep@gmail.com",
         ]);
 
         $this->assertTrue($this->account->exists);
@@ -36,16 +36,16 @@ class MshipAccountTest extends TestCase
     {
         $member = factory(\App\Models\Mship\Account::class)->create([
             "name_first" => "mary",
-            "name_last"  => "JANE",
+            "name_last" => "JANE",
         ]);
 
         $this->assertEquals("Mary", $member->name_first);
         $this->assertEquals("Jane", $member->name_last);
 
         $this->seeInDatabase("mship_account", [
-            "id"         => $member->id,
+            "id" => $member->id,
             "name_first" => "Mary",
-            "name_last"  => "Jane",
+            "name_last" => "Jane",
         ]);
     }
 
@@ -62,7 +62,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->seeInDatabase("mship_account", [
-            "id"       => $this->account->id,
+            "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
 
@@ -77,7 +77,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->seeInDatabase("mship_account", [
-            "id"       => $this->account->id,
+            "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
 
@@ -91,7 +91,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->seeInDatabase("mship_account", [
-            "id"       => $this->account->id,
+            "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
 
@@ -105,31 +105,31 @@ class MshipAccountTest extends TestCase
         $this->assertEquals("i_sleep@gmail.com", $this->account->email);
 
         $this->seeInDatabase("mship_account", [
-            "id"    => $this->account->id,
+            "id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_determines_if_the_given_email_exists_on_the_account()
     {
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
 
         $this->assertTrue($this->account->fresh()->hasEmail($email->email));
     }
 
-    /** @test **/
+    /** @test * */
     public function it_determines_if_the_given_email_exists_on_the_account_as_a_secondary_email()
     {
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
 
         $checkPrimaryEmail = false;
         $this->assertTrue($this->account->fresh()->hasEmail($email->email, $checkPrimaryEmail));
     }
 
-    /** @test **/
+    /** @test * */
     public function it_determines_if_the_given_email_already_exists_on_the_account_as_a_primary_email()
     {
         $this->assertTrue($this->account->fresh()->hasEmail("i_sleep@gmail.com"));
@@ -141,13 +141,13 @@ class MshipAccountTest extends TestCase
         $this->setExpectedException(App\Exceptions\Mship\DuplicateEmailException::class);
 
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
         $this->notSeeInDatabase("mship_account_email", [
             "account_id" => $this->account->id,
-            "email"      => "i_sleep@gmail.com",
+            "email" => "i_sleep@gmail.com",
         ]);
     }
 
@@ -167,14 +167,14 @@ class MshipAccountTest extends TestCase
         $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = false;
-        $email    = $this->account->addSecondaryEmail("i_also_sleep@hotmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_also_sleep@hotmail.com", $verified);
 
         $this->assertCount(1, $this->account->fresh()->secondaryEmails);
         $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
 
         $this->seeInDatabase("mship_account_email", [
             "account_id" => $this->account->id,
-            "email"      => "i_also_sleep@hotmail.com",
+            "email" => "i_also_sleep@hotmail.com",
         ]);
     }
 
@@ -184,7 +184,7 @@ class MshipAccountTest extends TestCase
         $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = false;
-        $email    = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified);
 
         $this->assertCount(0, $this->account->verified_secondary_emails);
         $this->assertNotContains($email->id, $this->account->verified_secondary_emails->pluck("id"));
@@ -196,7 +196,7 @@ class MshipAccountTest extends TestCase
         $this->doesntExpectJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
 
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
 
         $this->assertContains($email->id, $this->account->fresh()->verified_secondary_emails->pluck("id"));
     }
@@ -205,7 +205,7 @@ class MshipAccountTest extends TestCase
     public function it_deletes_email_from_db()
     {
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
 
         $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
 
@@ -215,7 +215,7 @@ class MshipAccountTest extends TestCase
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
     }
 
-    /** @test **/
+    /** @test * */
     public function it_upgrades_email_from_secondary_to_primary()
     {
         $verified = true;
@@ -238,7 +238,7 @@ class MshipAccountTest extends TestCase
         sleep(1);
 
         $verified = true;
-        $email    = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
+        $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
         $email->save();
 
         $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
@@ -254,9 +254,9 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->fresh()->hasQualification($qualification));
 
         $this->seeInDatabase("mship_account_qualification", [
-            "account_id"       => $this->account->id,
+            "account_id" => $this->account->id,
             "qualification_id" => $qualification->id,
-            "deleted_at"       => null,
+            "deleted_at" => null,
         ]);
     }
 
@@ -307,12 +307,12 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
-            "state"      => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
             "deleted_at" => null,
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_verifies_if_the_given_state_is_present_on_the_account()
     {
         $STATE_DIVISION = \App\Models\Mship\Account\State::STATE_DIVISION;
@@ -340,7 +340,7 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
-            "state"      => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
             "deleted_at" => null,
         ]);
 
@@ -350,14 +350,14 @@ class MshipAccountTest extends TestCase
         $this->assertFalse($this->account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION));
         $this->notSeeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
-            "state"      => \App\Models\Mship\Account\State::STATE_DIVISION,
+            "state" => \App\Models\Mship\Account\State::STATE_DIVISION,
             "deleted_at" => null,
         ]);
 
         $this->assertTrue($this->account->hasState(\App\Models\Mship\Account\State::STATE_REGION));
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
-            "state"      => \App\Models\Mship\Account\State::STATE_REGION,
+            "state" => \App\Models\Mship\Account\State::STATE_REGION,
             "deleted_at" => null,
         ]);
     }
@@ -380,9 +380,9 @@ class MshipAccountTest extends TestCase
         $this->assertFalse($this->account->hasPassword());
 
         $this->seeInDatabase("mship_account", [
-            "id"                  => $this->account->id,
-            "password"            => null,
-            "password_set_at"     => null,
+            "id" => $this->account->id,
+            "password" => null,
+            "password_set_at" => null,
             "password_expires_at" => null,
         ]);
     }
@@ -397,13 +397,13 @@ class MshipAccountTest extends TestCase
         $this->assertTrue(\Hash::check("testing123", $this->account->password));
 
         $this->seeInDatabase("mship_account", [
-            "id"       => $this->account->id,
+            "id" => $this->account->id,
             "password" => $this->account->password,
         ]);
 
         $this->notSeeInDatabase("mship_account", [
-            "id"                  => $this->account->id,
-            "password_set_at"     => null,
+            "id" => $this->account->id,
+            "password_set_at" => null,
             "password_expires_at" => null,
         ]);
     }
@@ -418,13 +418,13 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->hasPassword());
 
         $this->seeInDatabase("mship_account", [
-            "id"       => $this->account->id,
+            "id" => $this->account->id,
             "password" => $this->account->password,
         ]);
 
         $this->notSeeInDatabase("mship_account", [
-            "id"                  => $this->account->id,
-            "password_set_at"     => null,
+            "id" => $this->account->id,
+            "password_set_at" => null,
             "password_expires_at" => null,
         ]);
     }
@@ -442,7 +442,7 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->hasPasswordExpired());
     }
 
-    /** @test **/
+    /** @test * */
     public function it_throws_an_exception_when_the_same_password_is_set()
     {
         $this->setExpectedException(\App\Exceptions\Mship\DuplicatePasswordException::class);
@@ -456,30 +456,30 @@ class MshipAccountTest extends TestCase
     {
         $this->account->setPassword("testing123");
 
-        $oldPassword          = $this->account->password;
-        $oldPasswordSetAt     = $this->account->password_set_at;
+        $oldPassword = $this->account->password;
+        $oldPasswordSetAt = $this->account->password_set_at;
         $oldPasswordExpiresAt = $this->account->password_expires_at;
 
         $this->account = $this->account->fresh();
 
         $this->seeInDatabase("mship_account", [
-            "id"                  => $this->account->id,
-            "password"            => $oldPassword,
-            "password_set_at"     => $oldPasswordSetAt,
+            "id" => $this->account->id,
+            "password" => $oldPassword,
+            "password_set_at" => $oldPasswordSetAt,
             "password_expires_at" => $oldPasswordExpiresAt,
         ]);
 
         $this->account->setPassword("testing456");
 
         $this->notSeeInDatabase("mship_account", [
-            "id"                  => $this->account->id,
-            "password"            => $oldPassword,
-            "password_set_at"     => $oldPasswordSetAt,
+            "id" => $this->account->id,
+            "password" => $oldPassword,
+            "password_set_at" => $oldPasswordSetAt,
             "password_expires_at" => $oldPasswordExpiresAt,
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_adds_role_to_account()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
@@ -494,7 +494,7 @@ class MshipAccountTest extends TestCase
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_determines_if_the_account_has_a_given_role()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
@@ -504,7 +504,7 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->fresh()->hasRole($role));
     }
 
-    /** @test **/
+    /** @test * */
     public function it_throws_duplicate_role_exception_when_adding_duplicate_role()
     {
         $this->setExpectedException(\App\Exceptions\Mship\DuplicateRoleException::class);
@@ -515,7 +515,7 @@ class MshipAccountTest extends TestCase
         $this->account->fresh()->addRole($role);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_removes_role_from_account()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
@@ -555,22 +555,31 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->mandatory_password);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_returns_an_infinite_session_timeout()
     {
-        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 0]);
-        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 10]);
+        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+            "session_timeout" => 0
+        ]);
+        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+            "session_timeout" => 10
+        ]);
 
         $this->account->addRole($roleWithInfiniteTimeout);
 
         $this->assertEquals(0, $this->account->fresh()->session_timeout);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_returns_a_non_infinite_session_timeout()
     {
-        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 0]);
-        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 10]);
+        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+            "session_timeout" => 0
+        ]);
+
+        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+            "session_timeout" => 10
+        ]);
 
         $this->account->addRole($roleWithInfiniteTimeout);
         $this->account->addRole($roleWithNonInfiniteTimeout);
@@ -578,37 +587,37 @@ class MshipAccountTest extends TestCase
         $this->assertEquals(10, $this->account->fresh()->session_timeout);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_sets_a_users_active_status()
     {
 
     }
 
-    /** @test **/
+    /** @test * */
     public function it_returns_a_users_active_status()
     {
 
     }
 
-    /** @test **/
+    /** @test * */
     public function it_sets_a_users_inactive_status()
     {
 
     }
 
-    /** @test **/
+    /** @test * */
     public function it_returns_a_users_inactive_status()
     {
 
     }
 
-    /** @test **/
+    /** @test * */
     public function it_sets_a_users_locked_status()
     {
 
     }
 
-    /** @test **/
+    /** @test * */
     public function it_returns_a_users_locked_status()
     {
 

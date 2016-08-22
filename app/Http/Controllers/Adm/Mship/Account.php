@@ -41,6 +41,7 @@ class Account extends AdmController
                                    ->orderBy($sortBy, $sortDir)
                                    ->with("qualifications")
                                    ->with("states")
+                                   ->with("bans")
                                    ->with("secondaryEmails");
 
         switch ($scope) {
@@ -61,8 +62,8 @@ class Account extends AdmController
                                                                ->with("account")
                                                                ->with("account.qualifications")
                                                                ->with("account.states")
-                                                               ->with("account.secondaryEmails")
-                                                               ->orderBy("id", "ASC");
+                                                               ->with("account.bans")
+                                                               ->with("account.secondaryEmails");
                 break;
             case "division":
             default:
@@ -71,8 +72,8 @@ class Account extends AdmController
                                                                ->with("account")
                                                                ->with("account.qualifications")
                                                                ->with("account.states")
-                                                               ->with("account.secondaryEmails")
-                                                               ->orderBy("id", "ASC");
+                                                               ->with("account.bans")
+                                                               ->with("account.secondaryEmails");
                 break;
         }
 

@@ -1,9 +1,6 @@
 var elixir = require('laravel-elixir');
 
 elixir(function (mix) {
-    //mix.sass('app.scss', './public/css/app.css');
-    //mix.sass('app.scss', './public/css/adm.css');
-
     /* Concatenate all CSS */
     mix.sass([
         /*"jquery-ui.cupertino.1.11.4.css",
@@ -30,8 +27,8 @@ elixir(function (mix) {
 
     /* Cache Busting */
     mix.version([
-        "css/app-all.css",
-        "js/app-all.js"
+        "public/css/app-all.css",
+        "public/js/app-all.js"
     ]);
 
     /* Move and shake our dependency files around too! */

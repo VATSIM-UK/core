@@ -30,7 +30,6 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
-
         \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
     ];
 
@@ -60,7 +59,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
+//        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
 
         // Work the queue - the last thing that should be processed!
         $schedule->command("queue:work")->everyMinute()->withoutOverlapping();

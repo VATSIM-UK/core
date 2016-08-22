@@ -119,7 +119,7 @@
                         @endif
 
                         @if($_account->hasChildPermission("adm/mship/note"))
-                                <li class="treeview {{ (\Request::is('adm/mship/note*') ? 'active' : '') }}">
+                            <li class="treeview {{ (\Request::is('adm/mship/note*') ? 'active' : '') }}">
                                 <a href="#">
                                     <i class="ion ion-email"></i> <span>Note Config</span>
                                     <i class="fa fa-angle-left pull-right"></i>
@@ -135,6 +135,12 @@
                         @endif
                     </ul>
                 </li>
+            @endif
+
+            @if($_account->hasChildPermission("adm/visit-transfer"))
+                @if(Module::isEnabled("visittransfer") && View::exists("visittransfer::admin._sidebar"))
+                    @include("visittransfer::admin._sidebar")
+                @endif
             @endif
 
             @if($_account->hasChildPermission("adm/system"))

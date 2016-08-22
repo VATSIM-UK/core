@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Statistic;
+use Carbon\Carbon;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends aCommand
 {
@@ -27,7 +29,8 @@ class SysStatisticsDaily extends aCommand
      */
     protected $signature = 'sys:statistics:daily
                             {startPeriod=yesterday : The date from which to start calculating statistics}
-                            {endPeriod=yesterday : The date on which statistic calculation should terminate - inclusive}';
+                            {endPeriod=yesterday : The date on which statistic calculation should terminate - inclusive}
+                            {--modules : Call statistics on any enabled modules, if available.}';
 
     /**
      * The console command description.
@@ -36,6 +39,8 @@ class SysStatisticsDaily extends aCommand
      */
     protected $description = 'Create all statistics for a given day.';
 
+    protected $progressBar = null;
+
     /**
      * Execute the console command.
      *
@@ -43,6 +48,10 @@ class SysStatisticsDaily extends aCommand
      */
     public function handle()
     {
+        $daysOfStatistics = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
+        $this->progressBar = $this->output->createProgressBar($daysOfStatistics);
+        $this->progressBar->start();
+
         $currentPeriod = $this->getStartPeriod();
 
         while ($currentPeriod->lte($this->getEndPeriod())) {
@@ -52,63 +61,17 @@ class SysStatisticsDaily extends aCommand
             $this->addNewDivisionMembersStatistic($currentPeriod);
             $this->addCurrentDivisionMembersStatistic($currentPeriod);
 
+            $this->runModuleStatistics($currentPeriod);
+
             $currentPeriod = $currentPeriod->addDay();
+            $this->progressBar->advance();
         }
 
         $startTimestamp = $this->getStartPeriod()->toDateString();
         $endTimestamp = $this->getEndPeriod()->toDateString();
         $this->sendSlackSuccess("System Statistics for " . $startTimestamp . " to " . $endTimestamp . " have been updated.");
-    }
 
-    /**
-     * Get the start period from the arguments passed.
-     *
-     * This will also validate those arguments.
-     *
-     * @return Carbon
-     */
-    private function getStartPeriod()
-    {
-        try {
-            $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
-        } catch (\Exception $e) {
-            $this->sendSlackError(
-                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.",
-                ['Error Code' => 1]
-            );
-        }
-
-        if ($startPeriod->isFuture()) {
-            $startPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
-        }
-
-        return $startPeriod;
-    }
-
-    /**
-     * Get the end period from the arguments passed.
-     *
-     * This will also validate those arguments.
-     *
-     * @return Carbon
-     */
-    private function getEndPeriod()
-    {
-        try {
-            $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
-        } catch (\Exception $e) {
-            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.", ['Error Code' => 2]);
-        }
-
-        if ($endPeriod->isFuture()) {
-            $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
-        }
-
-        if ($endPeriod->lt($this->getStartPeriod())) {
-            $endPeriod = $this->getStartPeriod();
-        }
-
-        return $endPeriod;
+        $this->progressBar->finish();
     }
 
     /**
@@ -174,5 +137,72 @@ class SysStatisticsDaily extends aCommand
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update CURRENT DIVISION MEMBER statistics.", ['Error Code' => 3]);
         }
+    }
+
+    private function runModuleStatistics($currentPeriod)
+    {
+        foreach (\Module::enabled() as $module) {
+
+            try {
+                \Artisan::call($module['slug'] . ":statistics:daily", [
+                    "startPeriod" => $currentPeriod,
+                    "endPeriod" => $currentPeriod,
+                ]);
+            } catch (CommandNotFoundException $ex) {
+                $this->error($module['name'] . " doesn't have a daily statistics command.");
+            }
+        }
+    }
+
+    /**
+     * Get the start period from the arguments passed.
+     *
+     * This will also validate those arguments.
+     *
+     * @return Carbon
+     */
+    private function getStartPeriod()
+    {
+        try {
+            $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
+        } catch (\Exception $e) {
+            $this->sendSlackError(
+                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.",
+                ['Error Code' => 1]
+            );
+        }
+
+        if ($startPeriod->isFuture()) {
+            $startPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+        }
+
+        return $startPeriod;
+    }
+
+    /**
+     * Get the end period from the arguments passed.
+     *
+     * This will also validate those arguments.
+     *
+     * @return Carbon
+     */
+    private function getEndPeriod()
+    {
+        try {
+            $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
+        } catch (\Exception $e) {
+            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                ['Error Code' => 2]);
+        }
+
+        if ($endPeriod->isFuture()) {
+            $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+        }
+
+        if ($endPeriod->lt($this->getStartPeriod())) {
+            $endPeriod = $this->getStartPeriod();
+        }
+
+        return $endPeriod;
     }
 }

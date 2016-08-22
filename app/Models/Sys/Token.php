@@ -49,6 +49,10 @@ class Token extends \App\Models\aModel {
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $hidden = ['token_id'];
 
+    public function getRouteKeyName(){
+        return 'code';
+    }
+
     public function related() {
         return $this->morphTo();
     }
@@ -81,7 +85,7 @@ class Token extends \App\Models\aModel {
         return $query->notUsed()->notExpired();
     }
 
-    public static function generate($type, $allowDuplicates = false, $relation = null) {
+    public static function generate($type, $allowDuplicates = false, $relation = null, $expireMinutes = 1440) {
         if ($allowDuplicates == false) {
             foreach ($relation->tokens()->whereType($type)->notExpired()->get() as $t) {
                 $t->delete();
@@ -90,7 +94,7 @@ class Token extends \App\Models\aModel {
 
         $token = new Token;
         $token->type = $type;
-        $token->expires_at = \Carbon\Carbon::now()->addDay()->toDateTimeString();
+        $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
         $token->code = uniqid(uniqid());
 
         if ($relation != null) {

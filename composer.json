@@ -34,7 +34,8 @@
         "alawrence/laravel-ipboard": "1.0",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "dev-extra-directories"
+        "caffeinated/modules": "dev-extra-directories",
+        "malahierba-lab/public-id": "1.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -70,7 +71,9 @@
             "php artisan clear-compiled"
         ],
         "post-update-cmd": [
-            "php artisan optimize"
+            "php artisan optimize",
+            "php artisan module:optimize",
+            "php artisan route:clear"
         ],
         "post-root-package-install": [
             "php -r \"copy('.env.example', '.env');\""
