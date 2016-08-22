@@ -135,7 +135,7 @@ return [
     |
     */
 
-    'domain' => ".".config("app.url"), // Must include the dot to allow multi-tenancy across subdomains.
+    'domain' => env('SESSION_DOMAIN', null),
 
     /*
     |--------------------------------------------------------------------------
