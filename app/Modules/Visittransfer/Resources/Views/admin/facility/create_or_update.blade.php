@@ -56,7 +56,7 @@
 
                             {!! ControlGroup::generate(
                                     Form::label('stage_reference_quantity', 'How many references are required?'),
-                                    Form::select("stage_reference_quantity", range(1, 10), Input::old("stage_reference_quantity", $facility->stage_reference_quantity))
+                                    Form::select("stage_reference_quantity", [0,1,2,3,4,5,6,7,8,9,10], Input::old("stage_reference_quantity", $facility->stage_reference_quantity))
                             ) !!}
 
                             {!! ControlGroup::generate(
