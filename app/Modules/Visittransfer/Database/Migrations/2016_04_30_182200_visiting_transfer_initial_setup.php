@@ -40,7 +40,7 @@ class VisitingTransferInitialSetup extends Migration
 
         Schema::create('vt_facility', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 30);
+            $table->string('name', 60);
             $table->string("description", 500);
             $table->boolean("training_required")->default(0);
             $table->enum("training_team", ["atc", "pilot"]);
