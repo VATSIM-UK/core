@@ -50,7 +50,7 @@
                             @if($facility->training_required)
                                 <span class="label label-danger">TRAINING IS REQUIRED</span>
                                 <br/>
-                                PLACES AVAILABLE: {{ $facility->training_spaces }}
+                                PLACES AVAILABLE: {!! ($facility->training_spaces === null ? "&infin;" : $facility->training_spaces) !!}
                             @else
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
@@ -58,7 +58,7 @@
                         {!! Form::open(["route" => ["visiting.application.facility.post"], "method" => "POST"]) !!}
 
                         <p class="text-center">
-                            @if($facility->training_spaces > 0)
+                            @if($facility->training_spaces > 0 || $facility->training_spaces === null)
                                 {!! Button::primary("APPLY TO THIS FACILITY")->submit() !!}
                             @else
                                 {!! Button::danger("NO PLACES AVAILABLE")->disable() !!}

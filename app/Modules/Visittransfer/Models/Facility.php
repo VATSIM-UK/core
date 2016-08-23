@@ -92,7 +92,7 @@ class Facility extends Model
 
     public function removeTrainingSpace()
     {
-        if ($this->training_required == 1) {
+        if ($this->training_required == 1 && $this->training_spaces !== null) {
             $this->decrement("training_spaces");
         }
     }

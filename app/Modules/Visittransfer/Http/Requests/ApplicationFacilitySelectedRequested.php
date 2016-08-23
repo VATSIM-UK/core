@@ -52,11 +52,23 @@ class ApplicationFacilitySelectedRequested extends FormRequest
 
 		$facility = Facility::find(array_get($data, "facility_id", null));
 
-		if(!$facility->training_required && Auth::user()->visitTransferCurrent()->is_transfer){
+		if(Auth::user()->visitTransferCurrent()->is_transfer && !$facility->training_required){
 			$data['permitted'] = false;
 		}
 
-		if($facility->training_spaces < 1){
+		if(Auth::user()->visitTransferCurrent()->is_transfer && !$facility->can_transfer){
+			$data['permitted'] = false;
+		}
+
+		if(Auth::user()->visitTransferCurrent()->is_visit && !$facility->can_visit){
+			$data['permitted'] = false;
+		}
+
+		if(strcasecmp($facility->training_team, Auth::user()->visitTransferCurrent()->training_team) != 0){
+			$data['permitted'] = false;
+		}
+
+		if($facility->training_spaces < 1 && $facility->training_spaces !== null){
 			$data['permitted'] = false;
 		}
 

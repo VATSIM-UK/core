@@ -459,6 +459,10 @@ class Application extends Model
     }
 
     public function check90DayQualification(){
+        if(!$this->submitted_at){
+            return false;
+        }
+
         $currentATCQualification = $this->account->qualification_atc;
         $application90DayCutOff = $this->submitted_at->subDays(90);
 
@@ -477,7 +481,7 @@ class Application extends Model
     }
 
     private function guardAgainstApplyingToAFacilityWithNoCapacity(Facility $requestedFacility){
-        if($requestedFacility->training_required == 1 && $requestedFacility->training_spaces == 0){
+        if($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0){
             throw new FacilityHasNoCapacityException($requestedFacility);
         }
     }
