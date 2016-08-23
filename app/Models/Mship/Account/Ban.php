@@ -143,7 +143,7 @@ class Ban extends \App\Models\aModel
         $period_finish = $this->period_finish;
         $now = \Carbon\Carbon::now();
 
-        return ($now->between($period_start, $period_finish) && !$this->is_repealed);
+        return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }
 
     public function getIsExpiredAttribute()

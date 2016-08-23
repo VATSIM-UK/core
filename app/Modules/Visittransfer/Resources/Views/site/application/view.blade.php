@@ -26,7 +26,7 @@
                     </p>
 
                     <p>
-                        <strong>Facility:</strong> {{ $application->facility->name }}
+                        <strong>Facility:</strong> {{ $application->facility_name }}
                     </p>
 
                     <p>
