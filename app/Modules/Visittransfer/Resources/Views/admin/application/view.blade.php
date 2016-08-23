@@ -63,7 +63,7 @@
                                 </tr>
                                 <tr>
                                     <th>Facility</th>
-                                    <th>{{ $application->facility->name }}</th>
+                                    <th>{{ $application->facility_name }}</th>
                                 </tr>
                                 <tr>
                                     <th>Created At</th>
@@ -76,9 +76,13 @@
                                 <tr>
                                     <th>Submitted At</th>
                                     <th>
-                                        {{ $application->submitted_at->diffForHumans() }}
-                                        //
-                                        {{ $application->submitted_at }}
+                                        @if($application->submitted_at)
+                                            {{ $application->submitted_at->diffForHumans() }}
+                                            //
+                                            {{ $application->submitted_at }}
+                                        @else
+                                            Not yet submitted
+                                        @endif
                                     </th>
                                 </tr>
                                 <tr>
@@ -106,7 +110,9 @@
                                         90 Day Check
                                     </th>
                                     <th>
-                                        @if($application->check90DayQualification())
+                                        @if(!$application->submitted_at)
+                                            Application not submitted, so this cannot be checked.
+                                        @elseif($application->check90DayQualification())
                                             Qualification awarded <strong class="text-danger">in excess</strong> of 90 days prior to application submission.
                                         @else
                                             Qualification awarded <strong class="text-danger">within</strong> 90 days prior to application submission.
@@ -210,7 +216,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">
-                            Reject Application #{{ $application->public_id }} - {{ $application->type_string }} {{ $application->facility->name }}
+                            Reject Application #{{ $application->public_id }} - {{ $application->type_string }} {{ $application->facility_name }}
                         </h4>
                     </div>
                     <div class="modal-body">
@@ -259,7 +265,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">
-                            Accept Application #{{ $application->public_id }} - {{ $application->type_string }} {{ $application->facility->name }}
+                            Accept Application #{{ $application->public_id }} - {{ $application->type_string }} {{ $application->facility_name }}
                         </h4>
                     </div>
                     <div class="modal-body">
