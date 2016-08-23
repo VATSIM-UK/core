@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("Visiting", ["type" => "vuk", "key" => "letter-v"]) !!}
+            {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
                     <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
             <div class="row">
@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     @can("create", new \App\Modules\Visittransfer\Models\Application)
-                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT])) !!}
+                        {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
                     @elseif($currentVisitApplication)
-                        @if($currentVisitApplication->is_in_progress)
+                        @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
                             {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
                         @else
                             {!! Button::danger("You currently have a visit application open.")->disable() !!}
@@ -44,7 +44,7 @@
         </div>
 
         <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("Transferring", ["type" => "vuk", "key" => "letter-t"]) !!}
+            {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
                     <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
             <div class="row">
@@ -66,7 +66,7 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     @can("create", new \App\Modules\Visittransfer\Models\Application)
-                        {!! Button::success("START APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER])) !!}
+                        {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER, 'atc'])) !!}
                     @elseif($currentTransferApplication)
                         {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
                     @elseif($currentVisitApplication)
@@ -81,20 +81,40 @@
         </div>
 
         <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
-
+        {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
+        <!-- Content Of Panel [START] -->
+            <!-- Top Row [START] -->
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
-                        In order to start training towards your pilot ratings in VATSIM UK you <strong>must</strong>
-                        be a visiting member.  You must submit a <strong>visiting application</strong> using this system.
+                        You can apply to become a pilot visitor if you:
+                    <ul>
+                        <li>want to train towards <strong>any pilot rating*</strong> within the UK</li>
+                        <li><strong>do not</strong> wish to leave your current division</li>
+                    </ul>
+                    <small>*Each rating will require a separate application.</small>
                     </p>
-                    <br />
-                    <p>
-                        If you are also planning on applying to control within the United Kingdom it is
-                        <strong>highly recommended</strong> that you complete your visiting
-                        application as a pilot first.
-                    </p>
+                </div>
+
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    @can("create", new \App\Modules\Visittransfer\Models\Application)
+                        {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
+                        @elseif($currentVisitApplication)
+                            @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
+                                {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                            @else
+                                {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                            @endif
+                        @elseif($currentTransferApplication)
+                            {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                        @else
+                            {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                        @endcan
                 </div>
             </div>
 
@@ -132,8 +152,10 @@
                             @foreach($allApplications as $application)
                                 <tr>
                                     <td>{{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}</td>
-                                    <td>{{ $application->type_string }}</td>
-                                    <td>{{ $application->facility ? $application->facility->name : "None Selected" }}</td>
+                                    <td>
+                                        {{ $application->type_string }}
+                                    </td>
+                                    <td>{{ $application->facility_name }}</td>
                                     <td class="hidden-xs hidden-sm">
                                         @if($application->submitted_at == null)
                                             Not yet submitted
@@ -190,7 +212,7 @@
                                     <tr>
                                         <td>{{ $reference->application->account->name }} ({{ $reference->application->account->id }})</td>
                                         <td>{{ $reference->application->type_string }}</td>
-                                        <td>{{ $reference->application->facility->name }}</td>
+                                        <td>{{ $reference->application->facility_name }}</td>
                                         <td class="hidden-xs hidden-sm">
                                             <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
                                             <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>

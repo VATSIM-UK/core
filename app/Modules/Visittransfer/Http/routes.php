@@ -93,12 +93,12 @@ Route::group(["as"         => "visiting.",
             return Redirect::route("visiting.landing");
         });
 
-        Route::get("/start/{type}", [
+        Route::get("/start/{type}/{team}", [
             "as"   => "start",
             "uses" => "Application@getStart"
         ])->where("type", "\d+");
 
-        Route::post("/start/{type}", [
+        Route::post("/start/{type}/{team}", [
             "as"   => "start.post",
             "uses" => "Application@postStart"
         ])->where("type", "\d+");

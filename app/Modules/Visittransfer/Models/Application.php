@@ -15,7 +15,6 @@ use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTr
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
 use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
-use App\Modules\Vt\Events\ApplicationCreated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Malahierba\PublicId\PublicId;
@@ -37,6 +36,7 @@ class Application extends Model
     protected $table    = "vt_application";
     protected $fillable = [
         "type",
+        "training_team",
         "account_id",
         "facility_id",
         "statement",
@@ -148,6 +148,13 @@ class Application extends Model
     }
 
     /** All Laravel magic attributes **/
+    public function getIsPilotAttribute(){
+        return strcasecmp($this->attributes['training_team'], "pilot") == 0;
+    }
+    public function getIsAtcAttribute(){
+        return strcasecmp($this->attributes['training_team'], "atc") == 0;
+    }
+
     public function setStatementAttribute($statement){
         $this->attributes['statement'] = trim($statement);
     }
@@ -157,11 +164,15 @@ class Application extends Model
             return collect([]);
         }
 
-        if($this->is_visit){
-            return Facility::all();
+        if($this->is_pilot){
+            return Facility::pilot()->get();
         }
 
-        return Facility::trainingRequired()->get();
+        if($this->is_visit){
+            return Facility::atc()->canVisit()->get();
+        }
+
+        return Facility::atc()->canTransfer()->get();
     }
 
     public function getIsOpenAttribute(){
@@ -246,12 +257,20 @@ class Application extends Model
         return $this->type == self::TYPE_TRANSFER;
     }
 
-    public function getTypeStringAttribute(){
-        if($this->is_visit){
-            return "Visit";
+    public function getTrainingTeamAttribute(){
+        if($this->attributes['training_team'] == 'atc'){
+            return "ATC";
         }
 
-        return "Transfer";
+        return ucfirst($this->attributes['training_team']);
+    }
+
+    public function getTypeStringAttribute(){
+        if($this->is_visit){
+            return $this->training_team." Visit";
+        }
+
+        return $this->training_team." Transfer";
     }
 
     public function getIsTrainingRequiredAttribute(){
@@ -440,6 +459,10 @@ class Application extends Model
     }
 
     public function check90DayQualification(){
+        if(!$this->submitted_at){
+            return false;
+        }
+
         $currentATCQualification = $this->account->qualification_atc;
         $application90DayCutOff = $this->submitted_at->subDays(90);
 
@@ -458,7 +481,7 @@ class Application extends Model
     }
 
     private function guardAgainstApplyingToAFacilityWithNoCapacity(Facility $requestedFacility){
-        if($requestedFacility->training_required == 1 && $requestedFacility->training_spaces == 0){
+        if($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0){
             throw new FacilityHasNoCapacityException($requestedFacility);
         }
     }

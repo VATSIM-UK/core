@@ -61,6 +61,7 @@
                     </div>
 
                 {!! Form::hidden("application_type", $applicationType) !!}
+                {!! Form::hidden("training_team", $trainingTeam) !!}
 
                 {!! Form::close() !!}
 

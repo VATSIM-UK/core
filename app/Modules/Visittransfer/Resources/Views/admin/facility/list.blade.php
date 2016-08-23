@@ -21,6 +21,7 @@
                         <tr>
                             <th class="col-md-1">ID #</th>
                             <th>Name</th>
+                            <th class="col-md-1" style="text-align: center;">Xfer/Visit</th>
                             <th class="col-md-1" style="text-align: center;">Training Required</th>
                             <th class="col-md-1" style="text-align: center;">Training Dept</th>
                             <th class="col-md-1" style="text-align: center;">Statement</th>
@@ -35,10 +36,21 @@
                             <tr>
                                 <td align="center">{!! link_to_route('visiting.admin.facility.update', $f->id, [$f->id]) !!}</td>
                                 <td>{{ $f->name }}</td>
+                                <td class="text-center">
+                                    @if($f->can_visit && $f->can_transfer)
+                                        {!! Label::success("VISIT & TRANSFER") !!}
+                                    @elseif($f->can_visit)
+                                        {!! Label::warning("VISIT ONLY") !!}
+                                    @elseif($f->can_transfer)
+                                        {!! Label::warning("TRANSFER ONLY") !!}
+                                    @else
+                                        {!! Label::danger("NEITHER") !!}
+                                    @endif
+                                </td>
                                 <td align="center">
                                     @if($f->training_required)
                                         {!! Label::success("YES") !!}
-                                        {!! Label::info($f->training_spaces . " available") !!}
+                                        {!! Label::info(( $f->training_spaces === null ? "&infin;" : $f->training_spaces) . " available") !!}
                                     @else
                                         {!! Label::danger("NO") !!}
                                     @endif

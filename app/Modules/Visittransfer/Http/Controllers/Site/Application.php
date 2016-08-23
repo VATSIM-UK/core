@@ -23,26 +23,42 @@ class Application extends BaseController
         $this->application = $this->getCurrentOpenApplicationForUser();
     }
 
-    public function getStart($applicationType)
+    public function getStart($applicationType, $trainingTeam="atc")
     {
         $this->authorize("create", new \App\Modules\Visittransfer\Models\Application());
 
+        if($trainingTeam == "pilot"){
+            try {
+                $application = $this->startApplication($applicationType, $trainingTeam);
+            } catch(Exception $e){
+                return Redirect::route("visiting.dashboard")->withError($e->getMessage());
+            }
+
+            return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
+        }
+
         return $this->viewMake("visittransfer::site.application.terms")
                     ->with("applicationType", $applicationType)
+                    ->with("trainingTeam", $trainingTeam)
                     ->with("application", new \App\Modules\Visittransfer\Models\Application);
     }
 
     public function postStart(ApplicationStartRequest $request)
     {
         try {
-            $application = Auth::user()->createVisitingTransferApplication([
-                "type" => Input::get("application_type"),
-            ]);
+            $application = $this->startApplication(Input::get("application_type"), Input::get("training_team"));
         } catch(Exception $e){
             return Redirect::route("visiting.application.start", [Input::get("application_type")])->withError($e->getMessage());
         }
 
         return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
+    }
+
+    private function startApplication($type, $team){
+        return Auth::user()->createVisitingTransferApplication([
+            "type" => $type,
+            "training_team" => $team,
+        ]);
     }
     
     public function getContinue(){

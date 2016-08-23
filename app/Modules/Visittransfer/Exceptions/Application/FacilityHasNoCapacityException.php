@@ -1,5 +1,7 @@
 <?php namespace App\Modules\Visittransfer\Exceptions\Application;
 
+use App\Modules\Visittransfer\Models\Facility;
+
 class FacilityHasNoCapacityException extends \Exception {
 
     private $facility;
