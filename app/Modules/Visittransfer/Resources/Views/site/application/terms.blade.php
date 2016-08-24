@@ -15,7 +15,7 @@
 
                 </div>
 
-                {!! Form::horizontal(["route" => ["visiting.application.start.post", $applicationType], "method" => "POST"]) !!}
+                {!! Form::horizontal(["route" => ["visiting.application.start.post", $applicationType, $trainingTeam], "method" => "POST"]) !!}
                     <div class="col-md-8 col-md-offset-2">
                         {!! ControlGroup::generate(
                             Form::label("terms_read", "I confirm that I have read the Visiting &amp; Transferring Controller Policy&nbsp;&nbsp;"),
