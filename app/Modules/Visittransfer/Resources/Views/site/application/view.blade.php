@@ -70,7 +70,7 @@
                             <tbody>
                                 <tr>
                                     <th class="text-center">
-                                        @if($application->facility->stage_reference_enabled)
+                                        @if($application->is_reference_required)
                                             You have no references.
                                         @else
                                             Your application does not require any references.
@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    <pre><strong>Supporting Statement</strong><br />{{ $application->facility->stage_statement_enabled ? $application->statement : "No statement required." }}</pre>
+                    <pre><strong>Supporting Statement</strong><br />{{ $application->is_statement_required ? $application->statement : "No statement required." }}</pre>
                 </div>
 
 
@@ -122,7 +122,7 @@
                             </p>
                             @if($application->is_training_required)
                                 <p class="text-danger">
-                                    Your application cannot be completed without receiving training from the {{ strtoupper($application->facility->training_team) }} department.
+                                    Your application cannot be completed without receiving training from the {{ strtoupper($application->training_team) }} department.
                                     They will be in touch to discuss this with you.<br />
                                     <strong>
                                         You must engage with training before {{ $application->submitted_at->addDays(90)->toDateString() }} otherwise your

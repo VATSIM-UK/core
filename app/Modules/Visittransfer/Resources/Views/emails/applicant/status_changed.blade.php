@@ -64,7 +64,7 @@
             <p>
                 You will receive notification from VATSIM.net regarding your region/division change in addition to this confirmation email.
             </p>
-        @elseif($application->facility->training_team == "atc"")
+        @elseif($application->facility->training_team == "atc")
             <p>
                 Please remember that as a visitor to our division, you can only conduct 49% of your ATC activities within the UK.  Should you exceed this, then your
                 visiting status will be revoked.
