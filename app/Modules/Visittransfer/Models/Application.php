@@ -17,6 +17,7 @@ use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityExcept
 use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
 
 /**
@@ -27,7 +28,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Application extends Model
 {
-    use PublicId;
+    use PublicId, SoftDeletes;
 
     static protected $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
     static protected $public_id_min_length = 8;
@@ -258,6 +259,10 @@ class Application extends Model
     }
 
     public function getTrainingTeamAttribute(){
+        if(!$this->exists){
+            return "Unknown";
+        }
+
         if($this->attributes['training_team'] == 'atc'){
             return "ATC";
         }
