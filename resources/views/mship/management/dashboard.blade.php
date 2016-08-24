@@ -156,7 +156,7 @@
                                         @foreach($_account->qualifications_atc_training as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
-                                                <em>granted {{ $qual->pivot->created_at }}</em>
+                                                <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
@@ -348,7 +348,7 @@
                                 <div class="col-xs-12">
                                     @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
                                         @if($_account->slack_id)
-                                            Current registered with Slack ID {{ $_account->slack_id }}.
+                                            Currently registered with Slack ID {{ $_account->slack_id }}.
                                         @else
                                             You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
                                         @endif

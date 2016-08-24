@@ -25,7 +25,7 @@ class Registration extends \App\Http\Controllers\BaseController
                            ->withError("Your Slack account doesn't need registering.");
         }
 
-        if (!$_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
+        if (!$this->_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
             return Redirect::route("mship.manage.dashboard")
                            ->withError("You need to be a division member to register for Slack.");
         }
