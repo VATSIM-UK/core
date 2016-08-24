@@ -23,8 +23,8 @@ class ApplicationStartRequest extends FormRequest
 			"terms_recent_transfer" => "required",
 			"terms_90_day" => "required",
 			"terms_not_staff" => "required_if:application_type,".\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER,
-			"application_type" => "required,in:".\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER.",".\App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
-			"training_team" => "required,in:pilot,atc",
+			"application_type" => "required|in:".\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER.",".\App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+			"training_team" => "required|in:pilot,atc",
 		];
 	}
 
