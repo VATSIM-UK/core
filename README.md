@@ -1,5 +1,14 @@
 ## Upgrade Notes
 
+### 2.3.0 > 2.3.1
+* Run composer update -o --no-dev
+
+### 2.2.4 > 2.3.0
+* Run composer install -o --no-dev
+* Run `php artisan module:optimize`
+* Run `php artisan module:migrate`
+* Enable vt.core as another host for visiting/transferring
+
 ### 2.2.3 > 2.2.4
 * Run `php artisan teaman:map -v` to map TeamSpeak groups/channels to the database.
 * Check the results of the above, and correct/add any further changes to database tables.
