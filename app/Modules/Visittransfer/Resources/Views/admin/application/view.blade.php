@@ -277,14 +277,14 @@
                         @if($application->is_training_required)
                             <p>
                                 As training is required for this {{ $application->type_string }} to be completed, the applicant
-                                will be advised that the {{ strtoupper($application->facility->training_team) }} will be in touch.
-                                The {{ strtoupper($application->facility->training_team) }} will also be notified of this application via email.
+                                will be advised that the {{ strtoupper($application->training_team) }} will be in touch.
+                                The {{ strtoupper($application->training_team) }} will also be notified of this application via email.
                             </p>
                         @else
                             <p>
                                 As training is <strong class="text-danger">not</strong> required for this {{ $application->type_string }}
                                 to be completed, the applicant will be advised that their application has been <strong>completed</strong>.
-                                <strong class="text-danger">The {{ strtoupper($application->facility->training_team) }} will not be notified of this.</strong>
+                                <strong class="text-danger">The {{ strtoupper($application->training_team) }} will not be notified of this.</strong>
                             </p>
                         @endif
 
