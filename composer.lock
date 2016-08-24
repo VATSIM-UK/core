@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8988e2c9c451843465e4be40ee91d5ec",
-    "content-hash": "c5433d2b3886441954e149568620827e",
+    "hash": "06d1dc57e9ce8f80b0e100d5585dc24c",
+    "content-hash": "819c41b24475d8c8ba76e87a4fa8368a",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -369,6 +369,47 @@
                 "preload"
             ],
             "time": "2015-11-09 22:51:51"
+        },
+        {
+            "name": "comocode/laravel-ab",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/comocode/laravel-ab.git",
+                "reference": "69649f5b083fce2678c09c7f8aaaa4b6a5b8397e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/comocode/laravel-ab/zipball/69649f5b083fce2678c09c7f8aaaa4b6a5b8397e",
+                "reference": "69649f5b083fce2678c09c7f8aaaa4b6a5b8397e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "tests"
+                ],
+                "psr-4": {
+                    "ComoCode\\LaravelAb\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rulian Estivalletti",
+                    "email": "rulian.estivalletti@gmail.com"
+                }
+            ],
+            "description": "Blade level AB tests for Laravel 5",
+            "keywords": [
+                "AB",
+                "ab tests",
+                "laravel"
+            ],
+            "time": "2016-07-18 21:33:54"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
