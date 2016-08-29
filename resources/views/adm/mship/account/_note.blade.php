@@ -12,7 +12,7 @@
                             @if($note->attachment->is_repealed)
                                 *Repealed*
                             @endif
-                            Ban: {!! link_to_route("adm.mship.account.details", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$account->id, "notes", $note->attachment->id]) !!}
+                            Ban: {!! link_to_route("adm.mship.account.details", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$note->account->id, "notes", $note->attachment->id]) !!}
                         @elseif($note->attachment instanceof \App\Modules\Visittransfer\Models\Reference)
                             VT Reference: {!! link_to_route("visiting.admin.reference.view", "#".str_pad($note->attachment->id, 5, 0, STR_PAD_LEFT), [$note->attachment->id]) !!}
                         @elseif($note->attachment instanceof \App\Modules\Visittransfer\Models\Application)
