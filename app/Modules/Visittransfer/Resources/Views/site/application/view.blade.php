@@ -89,13 +89,19 @@
 
 
                 <div class="col-md-10 col-md-offset-1">
-                    <h3>Application Status</h3>
+                    <h3>Application Status - {{ $application->status_string }}</h3>
                     @if($application->is_in_progress)
                         <div class="alert alert-info" role="alert">
                             <p>
                                 This application has not yet been submitted.
                             </p>
                         </div>
+                    @elseif($application->is_cancelled)
+                        <div class="alert alert-danger" role="alert">
+                            <p>
+                                This application has been cancelled.
+                            </p>
+                        </p>
                     @elseif($application->is_pending_references)
                         <div class="alert alert-danger" role="alert">
                             <p>
