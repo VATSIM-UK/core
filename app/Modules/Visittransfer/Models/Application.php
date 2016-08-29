@@ -368,6 +368,12 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
+        $this->training_required = $facility->training_required;
+        $this->statement_required = $facility->stage_statement_enabled;
+        $this->references_required = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
+        $this->should_perform_checks = $facility->stage_checks;
+        $this->will_auto_accept = $facility->auto_acceptance;
+
         $facility->applications()->save($this);
     }
 
