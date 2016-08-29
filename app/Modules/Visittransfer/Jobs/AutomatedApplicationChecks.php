@@ -38,6 +38,8 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
     }
 
     private function checkCurrentRatingOver90Days(){
+        return true; // TODO: This will need removing once these are implemented properly.
+
         $currentAtcQualification = $this->application->account->qualification_atc;
         $dateAchieved = $currentAtcQualification->pivot->created_at->startOfDay();
         $daysDifference = $this->application->created_at->startOfDay()->diffInDays($dateAchieved);

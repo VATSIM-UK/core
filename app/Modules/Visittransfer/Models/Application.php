@@ -129,6 +129,10 @@ class Application extends Model
         return $query->status(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
+    public static function scopeSubmitted($query){
+        return $query->status(self::STATUS_SUBMITTED);
+    }
+
     /** All Laravel relationships */
     public function account()
     {

@@ -39,24 +39,27 @@ class ApplicationsCleanup extends aCommand
         $this->autoCompleteNonTrainingApplications();
     }
 
-    private function cancelOldApplications(){
-        foreach($this->loadAllApplications() as $application){
-            if($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))){
+    private function cancelOldApplications()
+    {
+        foreach ($this->loadAllApplications() as $application) {
+            if ($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))) {
                 //$application->cancel();
                 continue;
             }
         }
     }
 
-    private function runAutomatedChecks(){
-        $underReviewApplications = $this->loadSubmittedApplications()
-                                        ->filter(function($application){
-                                            return !$application->is_pending_references;
-                                        });
+    private function runAutomatedChecks()
+    {
+        $submittedApplications = Application::submitted()
+                                            ->get()
+                                            ->filter(function ($application) {
+                                                return !$application->is_pending_references;
+                                            });
 
-        foreach($underReviewApplications as $application){
+        foreach ($submittedApplications as $application) {
 
-            if($application->should_perform_checks){
+            if (!$application->should_perform_checks) {
                 $application->markAsUnderReview();
                 continue;
             }
@@ -65,39 +68,41 @@ class ApplicationsCleanup extends aCommand
         }
     }
 
-    private function autoAcceptApplications(){
-        $acceptedApplications = $this->loadSubmittedApplications()
-                                     ->filter(function($application){
-                                         return $application->will_auto_accept;
-                                     });
+    private function autoAcceptApplications()
+    {
+        $acceptedApplications = Application::submitted()
+                                           ->where("will_auto_accept", "=", 1)
+                                           ->get()
+                                           ->filter(function ($application) {
+                                               return $application->will_auto_accept;
+                                           });
 
-        foreach($acceptedApplications as $application){
+        foreach ($acceptedApplications as $application) {
             $application->accept("Application was automatically accepted as per the facility settings.");
             continue;
         }
     }
 
-    private function autoCompleteNonTrainingApplications(){
+    private function autoCompleteNonTrainingApplications()
+    {
         $acceptedApplications = $this->loadAcceptedApplications()
-                                     ->filter(function($application){
+                                     ->filter(function ($application) {
                                          return !$application->training_required;
                                      });
 
-        foreach($acceptedApplications as $application){
+        foreach ($acceptedApplications as $application) {
             $application->complete("Application was automatically completed as there is no training requirement.");
             continue;
         }
     }
 
-    private function loadAllApplications(){
+    private function loadAllApplications()
+    {
         return Application::all();
     }
 
-    private function loadSubmittedApplications(){
-        return Application::status(Application::STATUS_SUBMITTED)->get();
-    }
-
-    private function loadAcceptedApplications(){
+    private function loadAcceptedApplications()
+    {
         return Application::status(Application::STATUS_ACCEPTED)->get();
     }
 }
