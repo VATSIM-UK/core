@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    <pre><strong>Supporting Statement</strong><br />{{ $application->is_statement_required ? $application->statement : "No statement required." }}</pre>
+                    <pre><strong>Supporting Statement</strong><br />{{ $application->statement_required ? $application->statement : "No statement required." }}</pre>
                 </div>
 
 

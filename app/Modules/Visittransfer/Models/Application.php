@@ -278,14 +278,6 @@ class Application extends Model
         return $this->training_team." Transfer";
     }
 
-    public function getIsStatementRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_statement_enabled == 1;
-    }
-
     public function getIsReferenceRequiredAttribute(){
         if(!$this->attributes['facility_id'] || !$this->facility){
             return true; // TODO: Logic check this.

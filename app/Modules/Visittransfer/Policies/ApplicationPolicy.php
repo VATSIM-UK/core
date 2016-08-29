@@ -51,7 +51,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if(!$application->facility->stage_statement_enabled){
+        if(!$application->statement_required){
             return false;
         }
 
@@ -67,7 +67,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if($application->statement == null && $application->facility->stage_statement_enabled){
+        if($application->statement == null && $application->statement_required){
             return false;
         }
 
