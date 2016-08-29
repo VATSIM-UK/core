@@ -26,17 +26,15 @@ class Application extends AdmController
             ["id", "account_id", "type", "created_at", "updated_at"]) ? Input::get("sort_by") : "updated_at";
         $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "DESC";
 
-        // ORM it all!
-        $totalApplications = ApplicationModel::count();
         $applications = ApplicationModel::orderBy($sortBy, $sortDir)
-                                              ->with("account")
-                                              ->with("facility")
-                                              ->with("referees");
+                                        ->with("account")
+                                        ->with("facility")
+                                        ->with("referees");
 
         switch ($scope) {
             case "open":
                 $this->setSubTitle("Open Applications");
-                $applications = $applications->open();
+                $applications = $applications->open()->notStatus(ApplicationModel::STATUS_IN_PROGRESS);
                 break;
             case "closed":
                 $this->setSubTitle("Closed Applications");
@@ -56,10 +54,11 @@ class Application extends AdmController
                     ->with("sortDirSwitch", ($sortDir == "DESC" ? "ASC" : "DESC"));
     }
 
-    public function getView(ApplicationModel $application){
-        $this->setSubTitle("Application #".$application->public_id);
+    public function getView(ApplicationModel $application)
+    {
+        $this->setSubTitle("Application #" . $application->public_id);
 
-        $unacceptedReferences = $application->referees->filter(function($ref){
+        $unacceptedReferences = $application->referees->filter(function ($ref) {
             return $ref->status == Reference::STATUS_UNDER_REVIEW;
         });
 
@@ -68,33 +67,37 @@ class Application extends AdmController
                     ->with("unacceptedReferences", $unacceptedReferences);
     }
 
-    public function postReject(ApplicationRejectRequest $request, ApplicationModel $application){
+    public function postReject(ApplicationRejectRequest $request, ApplicationModel $application)
+    {
         $rejectionReason = "";
 
-        if(Input::get("rejection_reason") != "other"){
+        if (Input::get("rejection_reason") != "other") {
             $rejectionReason = Input::get("rejection_reason");
         }
 
-        if(Input::get("rejection_reason_extra", null)){
-            $rejectionReason.= "\n" . Input::get("rejection_reason_extra");
+        if (Input::get("rejection_reason_extra", null)) {
+            $rejectionReason .= "\n" . Input::get("rejection_reason_extra");
         }
 
         try {
             $application->reject($rejectionReason, Input::get("rejection_staff_note", null), Auth::user());
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::back()->withSuccess("Application #".$application->public_id." - " . $application->account->name. " rejected &amp; candidate notified.");
+        return Redirect::back()
+                       ->withSuccess("Application #" . $application->public_id . " - " . $application->account->name . " rejected &amp; candidate notified.");
     }
 
-    public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application){
+    public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application)
+    {
         try {
             $application->accept(Input::get("accept_staff_note", null), Auth::user());
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::back()->withSuccess("Application #".$application->public_id." - " . $application->account->name. " accepted &amp; candidate notified.");
+        return Redirect::back()
+                       ->withSuccess("Application #" . $application->public_id . " - " . $application->account->name . " accepted &amp; candidate notified.");
     }
 }
