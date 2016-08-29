@@ -55,7 +55,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        return $application->statement == null;
+        return true;
     }
 
     public function addReferee(Account $user, Application $application){
@@ -71,15 +71,15 @@ class ApplicationPolicy {
             return false;
         }
 
-        if($application->number_references_required_relative == 0){
-            return false;
-        }
-
         return true;
     }
 
     public function submitApplication(Account $user, Application $application){
         if(!$application->facility){
+            return false;
+        }
+
+        if($application->statement == null && $application->statement_required){
             return false;
         }
 

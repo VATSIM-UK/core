@@ -93,12 +93,22 @@
                                 </tr>
                             </table>
                             <table class="table table-bordered">
-                                <tr class="bg-{{ $application->references_accepted->count() == $application->number_references_required ? "success" : "danger" }}">
+                                <tr class="bg-info">
+                                    <th class="col-md-2">
+                                        Current Status
+                                    </th>
+                                    <th>
+                                        {{ $application->status_string }}
+                                    </th>
+                                </tr>
+                                <tr class="bg-{{ $application->references_accepted->count() == $application->references_required ? "success" : "danger" }}">
                                     <th class="col-md-2">
                                         Reference Check
                                     </th>
                                     <th>
-                                        @if($application->references_accepted->count() == $application->number_references_required)
+                                        @if($application->references_required < 1)
+                                            References <strong class="text-danger">are not required</strong>.
+                                        @elseif($application->number_references_required_relative == 0)
                                             All references <strong class="text-danger">have been accepted</strong>.
                                         @else
                                             Some references <strong class="text-danger">have not been accepted</strong>.
@@ -191,7 +201,9 @@
                                     </tr>
                                 </table>
                             @empty
-                                <p class="text-center">There are no references associated with this application.</p>
+                                @if($application->references_required > 0)
+                                    <p class="text-center">There are no references associated with this application.</p>
+                                @endif
                             @endforelse
 
                         </div>

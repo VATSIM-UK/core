@@ -10,7 +10,7 @@
 
                     <p>
                         Your application <strong>must be supported</strong> by a <strong>minimum</strong> of
-                        {{ $application->number_references_required }} referee(s).
+                        {{ $application->references_required }} referee(s).
 
                         @if($application->number_references_required_relative)
                             You still need to add <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).

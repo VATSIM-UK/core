@@ -10,7 +10,7 @@ class TooManyRefereesException extends \Exception {
     public function __construct(Application $application){
         $this->application = $application;
 
-        $this->message = "You cannot add more than ".$this->application->number_references_required." referees.";
+        $this->message = "You cannot add more than ".$this->application->references_required." referees.";
     }
 
     public function __toString(){

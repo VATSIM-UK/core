@@ -278,12 +278,8 @@ class Application extends Model
         return $this->training_team." Transfer";
     }
 
-    public function getNumberReferencesRequiredAttribute(){
-        return $this->reference_required;
-    }
-
     public function getNumberReferencesRequiredRelativeAttribute(){
-        return $this->reference_required - $this->referees->count();
+        return $this->references_required - $this->referees->count();
     }
 
     public function getReferencesNotWrittenAttribute(){

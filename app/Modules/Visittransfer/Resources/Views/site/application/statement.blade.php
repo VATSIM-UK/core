@@ -17,7 +17,7 @@
                 <div class="clear-both"></div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    {!! Form::textarea("statement") !!}
+                    {!! Form::textarea("statement", $application->statement) !!}
                 </div>
 
                 <div class="clear-both"></div>

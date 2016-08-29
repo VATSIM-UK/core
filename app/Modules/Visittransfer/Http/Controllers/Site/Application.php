@@ -122,7 +122,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.statement")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.continue")->withSuccess("Statement completed");
+        return Redirect::route("visiting.application.referees")->withSuccess("Statement completed");
     }
 
     public function getReferees(){
