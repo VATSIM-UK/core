@@ -29,10 +29,6 @@ class StatisticsDaily extends aCommand
      */
     protected $description = 'Generate statistics for the given time frame.';
 
-    protected $totalApplications = 0;
-    protected $acceptedApplications = 0;
-    protected $newApplications = 0;
-
     /**
      * Execute the console command.
      *
@@ -71,9 +67,6 @@ class StatisticsDaily extends aCommand
             $count = $this->totalApplications;
 
             Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.total", $count);
-
-            $this->newApplications = rand(1, 80);
-            $this->totalApplications += $this->newApplications;
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
@@ -93,8 +86,6 @@ class StatisticsDaily extends aCommand
             $count = $this->acceptedApplications;
 
             Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.open", $count);
-
-            $this->acceptedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
@@ -114,8 +105,6 @@ class StatisticsDaily extends aCommand
             $count = $this->rejectedApplications;
 
             Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.closed", $count);
-
-            $this->rejectedApplications += rand(1, ceil(($this->totalApplications-$this->acceptedApplications)*0.2));
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.",
                 ['Error Code' => 3]);
