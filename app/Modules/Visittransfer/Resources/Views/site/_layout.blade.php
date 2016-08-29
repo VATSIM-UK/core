@@ -29,6 +29,5 @@
                     'FullURL'    : '{{ Request::fullUrl() }}',
                 }, function(error){});
             };
-
     </script>
 @stop

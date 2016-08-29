@@ -18,14 +18,14 @@
                         <p>
                             You can choose from all available facilities below.
                         <ul>
-                            <li>When applying to a facility labelled as
-                                <span class="label label-success">NO TRAINING REQUIRED</span>, your visitor status will
-                                be automatically granted
-                                once staff have accepted it.
-                            </li>
-                            <li>Should you apply to a facility where <span class="label label-danger">TRAINING IS REQUIRED</span>
+                            <li>Should you apply to a facility where <span class="label label-warning" id="labelTrainingHelp">TRAINING IS REQUIRED</span>
                                 your visiting status can only be fully granted once your induction training has been
                                 completed.
+                            </li>
+                            <li>When applying to a facility labelled as
+                                <span class="label label-success" id="labelNoTrainingHelp">NO TRAINING REQUIRED</span>, your visitor status will
+                                be automatically granted
+                                once staff have accepted it.
                             </li>
                         </ul>
                         </p>
@@ -48,7 +48,7 @@
                         </p>
                         <p class="text-center">
                             @if($facility->training_required)
-                                <span class="label label-danger">TRAINING IS REQUIRED</span>
+                                <span class="label label-warning">TRAINING IS REQUIRED</span>
                                 <br/>
                                 PLACES AVAILABLE: {!! ($facility->training_spaces === null ? "&infin;" : $facility->training_spaces) !!}
                             @else

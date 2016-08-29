@@ -19,7 +19,8 @@ elixir(function (mix) {
         "../vendor/bootstrap-summernote/summernote.js",
         "../vendor/bootstrap-switch/bootstrap-switch.min.js",*/
         "jquery-2.1.4.js",
-        "../vendor/bootstrap3/js/bootstrap.js",
+        "../vendor/bootstrap3/js/bootstrap.min.js",
+        "../vendor/bootstrap-tour/bootstrap-tour.min.js",
         "classie.js",
         "cbpAnimatedHeader.js",
         "app.js",

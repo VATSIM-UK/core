@@ -1,7 +1,7 @@
 @extends('visittransfer::site.application._layout')
 
 @section('vt-content')
-    <div class="row">
+    <div class="row" id="statementHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
             {!! Form::horizontal(["route" => ["visiting.application.statement.post"], "method" => "POST"]) !!}
@@ -32,4 +32,25 @@
             {!! HTML::panelClose() !!}
         </div>
     </div>
+@stop
+
+@section("scripts")
+    @parent
+
+    <script type="text/javascript">
+        var tour = new Tour({
+            steps: [
+                {
+                    element: "#statementHelp",
+                    title: "Personal Statement",
+                    content: "It is expected that you will describe why you wish to apply to your chosen facility.",
+                    backdrop: true,
+                    placement: "top"
+                },
+            ]
+        });
+
+        tour.init();
+        tour.start();
+    </script>
 @stop

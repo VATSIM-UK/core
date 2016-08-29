@@ -1,7 +1,7 @@
 @extends('visittransfer::site.application._layout')
 
 @section('vt-content')
-    <div class="row">
+    <div class="row" id="termsBoxHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Terms &amp; Conditions", ["type" => "fa", "key" => "list"]) !!}
             <div class="row hidden-xs">
@@ -69,4 +69,32 @@
             {!! HTML::panelClose() !!}
         </div>
     </div>
+@stop
+
+@section("scripts")
+    @parent
+
+    <script type="text/javascript">
+        var tour = new Tour({
+            steps: [
+                {
+                    element: "#navBarHelp",
+                    title: "Navigation",
+                    content: "You can use this navigation menu to move between sections of your application as necessary.",
+                    backdrop: true,
+                    placement: "right"
+                },
+                {
+                    element: "#termsBoxHelp",
+                    title: "Accept the terms",
+                    content: "You should read the statements on this page carefully and only agree if they are true.",
+                    backdrop: true,
+                    placement: "top"
+                }
+            ]
+        });
+
+        tour.init();
+        tour.start();
+    </script>
 @stop

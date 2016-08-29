@@ -2,50 +2,93 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-4 hidden-xs">
+        <div class="col-md-8 hidden-xs" id="visitingBoxes">
+            <div class="col-md-6 hidden-xs">
             {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
-                    <!-- Content Of Panel [START] -->
-            <!-- Top Row [START] -->
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <p>
-                        You can apply to become a visitor if you:
-                    <ul>
-                        <li>want to control <strong>specific facilities*</strong> within the UK</li>
-                        <li><strong>do not</strong> wish to leave your current division</li>
-                    </ul>
-                    <small>*Each facility will require a separate application.</small>
-                    </p>
+            <!-- Content Of Panel [START] -->
+                <!-- Top Row [START] -->
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <p>
+                            You can apply to become a visitor if you:
+                        <ul>
+                            <li>want to control <strong>specific facilities*</strong> within the UK</li>
+                            <li><strong>do not</strong> wish to leave your current division</li>
+                        </ul>
+                        <small>*Each facility will require a separate application.</small>
+                        </p>
+                    </div>
+
                 </div>
 
-            </div>
+                <br/>
 
-            <br/>
-
-            <div class="row">
-                <div class="col-xs-12 text-center">
-                    @can("create", new \App\Modules\Visittransfer\Models\Application)
-                        {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
-                    @elseif($currentVisitApplication)
-                        @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
-                        @else
-                            {!! Button::danger("You currently have a visit application open.")->disable() !!}
-                        @endif
-                    @elseif($currentTransferApplication)
-                        {!! Button::danger("You currently have a transfer application open.")->disable() !!}
-                    @else
-                        {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
-                    @endcan
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        @can("create", new \App\Modules\Visittransfer\Models\Application)
+                            {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
+                            @elseif($currentVisitApplication)
+                                @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
+                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                                @else
+                                    {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                                @endif
+                            @elseif($currentTransferApplication)
+                                {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                            @else
+                                {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                            @endcan
+                    </div>
                 </div>
+
+                {!! HTML::panelClose() !!}
             </div>
 
-            {!! HTML::panelClose() !!}
+            <div class="col-md-6 hidden-xs">
+            {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
+            <!-- Content Of Panel [START] -->
+                <!-- Top Row [START] -->
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <p>
+                            You can apply to become a pilot visitor if you:
+                        <ul>
+                            <li>want to train towards <strong>any pilot rating*</strong> within the UK</li>
+                            <li><strong>do not</strong> wish to leave your current division</li>
+                        </ul>
+                        <small>*Each rating will require a separate application.</small>
+                        </p>
+                    </div>
+
+                </div>
+
+                <br/>
+
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        @can("create", new \App\Modules\Visittransfer\Models\Application)
+                            {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
+                            @elseif($currentVisitApplication)
+                                @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
+                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                                @else
+                                    {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                                @endif
+                            @elseif($currentTransferApplication)
+                                {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                            @else
+                                {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                            @endcan
+                    </div>
+                </div>
+
+                {!! HTML::panelClose() !!}
+            </div>
         </div>
 
-        <div class="col-md-4 hidden-xs">
-            {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
-                    <!-- Content Of Panel [START] -->
+        <div class="col-md-4 hidden-xs" id="transferringAtcBox">
+        {!! HTML::panelOpen("Transferring ATC", ["type" => "vuk", "key" => "letter-t"]) !!}
+        <!-- Content Of Panel [START] -->
             <!-- Top Row [START] -->
             <div class="row">
                 <div class="col-md-10 col-xs-offset-1">
@@ -67,53 +110,12 @@
                 <div class="col-xs-12 text-center">
                     @can("create", new \App\Modules\Visittransfer\Models\Application)
                         {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER, 'atc'])) !!}
-                    @elseif($currentTransferApplication)
-                        {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
-                    @elseif($currentVisitApplication)
-                        {!! Button::danger("You currently have a visit application open.")->disable() !!}
-                    @else
-                        {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
-                        @endcan
-                </div>
-            </div>
-
-            {!! HTML::panelClose() !!}
-        </div>
-
-        <div class="col-md-4 hidden-xs">
-        {!! HTML::panelOpen("What about pilots?", ["type" => "vuk", "key" => "letter-p"]) !!}
-        <!-- Content Of Panel [START] -->
-            <!-- Top Row [START] -->
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <p>
-                        You can apply to become a pilot visitor if you:
-                    <ul>
-                        <li>want to train towards <strong>any pilot rating*</strong> within the UK</li>
-                        <li><strong>do not</strong> wish to leave your current division</li>
-                    </ul>
-                    <small>*Each rating will require a separate application.</small>
-                    </p>
-                </div>
-
-            </div>
-
-            <br/>
-
-            <div class="row">
-                <div class="col-xs-12 text-center">
-                    @can("create", new \App\Modules\Visittransfer\Models\Application)
-                        {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
-                        @elseif($currentVisitApplication)
-                            @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
-                            @else
-                                {!! Button::danger("You currently have a visit application open.")->disable() !!}
-                            @endif
                         @elseif($currentTransferApplication)
-                            {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                        @elseif($currentVisitApplication)
+                            {!! Button::danger("You currently have a visit application open.")->disable() !!}
                         @else
-                            {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                            {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
                         @endcan
                 </div>
             </div>
@@ -123,13 +125,13 @@
 
         <div class="col-xs-12 visible-xs">
             {!! HTML::panelOpen("Start a new Application", ["type" => "fa", "key" => "exclamation"]) !!}
-                <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
+            <p class="text-center">You can only complete your application and references on a non-mobile device.</p>
             {!! HTML::panelClose() !!}
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" id="applicationHistory">
             {!! HTML::panelOpen("Application History", ["type" => "fa", "key" => "list-alt"]) !!}
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
@@ -147,7 +149,9 @@
                         </thead>
                         <tbody>
                         @if(count($allApplications) < 1)
-                            <tr><td colspan="6" class="text-center">You have no applications to display.</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center">You have no applications to display.</td>
+                            </tr>
                         @else
                             @foreach($allApplications as $application)
                                 <tr>
@@ -161,7 +165,8 @@
                                             Not yet submitted
                                         @else
                                             <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>
+                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}
+                                                UTC</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -187,7 +192,7 @@
     </div>
 
     @if($pendingReferences->count() > 0)
-        <div class="row">
+        <div class="row" id="pendingReferences">
             <div class="col-md-12">
                 {!! HTML::panelOpen("Pending References", ["type" => "fa", "key" => "list-alt"]) !!}
                 <div class="row">
@@ -206,20 +211,26 @@
                             </thead>
                             <tbody>
                             @if(count($pendingReferences) < 1)
-                                <tr><td colspan="6" class="text-center">You have no applications to display.</td></tr>
+                                <tr>
+                                    <td colspan="6" class="text-center">You have no applications to display.</td>
+                                </tr>
                             @else
                                 @foreach($pendingReferences as $reference)
                                     <tr>
-                                        <td>{{ $reference->application->account->name }} ({{ $reference->application->account->id }})</td>
+                                        <td>{{ $reference->application->account->name }}
+                                            ({{ $reference->application->account->id }})
+                                        </td>
                                         <td>{{ $reference->application->type_string }}</td>
                                         <td>{{ $reference->application->facility_name }}</td>
                                         <td class="hidden-xs hidden-sm">
                                             <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>
+                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}
+                                                UTC</span>
                                         </td>
                                         <td class="hidden-xs hidden-sm">
                                             <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }} UTC</span>
+                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}
+                                                UTC</span>
                                         </td>
                                         <td class="text-center">
                                             {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
@@ -236,4 +247,55 @@
             </div>
         </div>
     @endif
+@stop
+
+@section("scripts")
+    @parent
+
+    <script type="text/javascript">
+        var tour = new Tour({
+            name: "VT-Dashboard",
+            steps: [
+                    @if($pendingReferences->count() > 0)
+                    {
+                        element: "#pendingReferences",
+                        title: "Pending References",
+                        content: "You have pending references that require completion here.  This list will be updated automatically.",
+                        backdrop: true,
+                        placement: "top"
+                    },
+                @endif
+
+                @if($allApplications->count() > 0)
+                    {
+                        element: "#applicationHistory",
+                        title: "Application History",
+                        content: "You can view any open, or historic, applications here.",
+                        backdrop: true,
+                        placement: "top"
+                    },
+                @endif
+
+                @can("create", new \App\Modules\Visittransfer\Models\Application)
+                    {
+                        element: "#visitingBoxes",
+                        title: "Visiting the UK",
+                        content: "If you wish to visit with your Controller rating or to gain a pilot rating, you should visit the UK.",
+                        backdrop: true,
+                        placement: "top"
+                    },
+                    {
+                        element: "#transferringAtcBox",
+                        title: "Transferring ATC",
+                        content: "If you wish to transfer to the UK as a controller, start your application here.",
+                        backdrop: true,
+                        placement: "top"
+                    },
+                @endcan
+            ]
+        });
+
+        tour.init();
+        tour.start();
+    </script>
 @stop

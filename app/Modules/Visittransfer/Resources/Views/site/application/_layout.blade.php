@@ -5,8 +5,8 @@
         <div class="col-md-12">
 
             <div class="row">
-                <div class="col-md-3 hidden-xs">
-                    @if(isset($application))
+                <div class="col-md-3 hidden-xs" id="navBarHelp">
+                    @if($application->exists)
                         {!! HTML::panelOpen($application->type_string. " Application #".$application->public_id.($application->facility ? " - ".$application->facility->name : ""), ["type" => "fa", "key" => "list"]) !!}
                     @else
                         {!! HTML::panelOpen("New Application", ["type" => "fa", "key" => "list"]) !!}
@@ -91,4 +91,133 @@
             </div>
         </div>
     </div>
+@stop
+
+@section("scripts")
+    @parent
+
+    <script type="text/javascript">
+        var tour = new Tour({
+            name: "VT-Application-{{ Request::segment(2) }}"
+        });
+
+        @if(Request::segment(2) == "start")
+
+        tour.addStep({
+            element: "#termsBoxHelp",
+            title: "Accept the terms",
+            content: "You should read the statements on this page carefully and only agree if they are true.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#navBarHelp",
+            title: "Navigation",
+            content: "You can use this navigation menu to move between sections of your application as necessary.",
+            backdrop: true,
+            placement: "right"
+        });
+
+        @endif
+
+        @if(Request::segment(2) == "facility")
+
+                tour.addStep({
+            element: "#labelTrainingHelp",
+            title: "Facilities Requiring Training",
+            content: "Where a facility does require training, you may experience a brief delay in your application being fully completed.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#labelNoTrainingHelp",
+            title: "Facilities Not Requiring Training",
+            content: "Where a facility doesn't require any training, your application will progress much quicker.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        @endif
+
+        @if(Request::segment(2) == "referees")
+
+            tour.addStep({
+            element: "#minReferencesHelp",
+            title: "Minimum References",
+            content: "There is a minimum reference requirement for this application.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#divisionStaffHelp",
+            title: "Division Staff",
+            content: "Your referees <strong>must</strong> be staff within your home division.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#trainingStaffHelp",
+            title: "Training Director",
+            content: "One of your referees <strong>must</strong> be your training director.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#refereeCidHelp",
+            title: "Referee CID",
+            content: "Please enter a valid VATSIM CID for your referee.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#refereePositionHelp",
+            title: "Referee Staff Position",
+            content: "Enter a reflective staff title.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        tour.addStep({
+            element: "#refereeEmail",
+            title: "Referee E-Mail",
+            content: "Enter the E-Mail address we should write to.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        @endif
+
+        @if(Request::segment(2) == "statement")
+
+            tour.addStep({
+            element: "#statementHelp",
+            title: "Personal Statement",
+            content: "It is expected that you will describe why you wish to apply to your chosen facility.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        @endif
+
+        @if(Request::segment(2) == "submit")
+
+            tour.addStep({
+            element: "#submissionHelp",
+            title: "Submit Application",
+            content: "Once your application has been submitted it <strong>cannot</strong> be withdrawn.",
+            backdrop: true,
+            placement: "top"
+        });
+
+        @endif
+
+        tour.init();
+        tour.start();
+    </script>
 @stop
