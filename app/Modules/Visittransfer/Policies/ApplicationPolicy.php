@@ -63,7 +63,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if(!$application->facility->stage_reference_enabled){
+        if($application->references_required === 0){
             return false;
         }
 
@@ -83,7 +83,7 @@ class ApplicationPolicy {
             return false;
         }
 
-        if($application->number_references_required_relative > 0 && $application->facility->stage_reference_enabled){
+        if($application->number_references_required_relative > 0){
             return false;
         }
 

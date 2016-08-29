@@ -50,11 +50,11 @@
 
                         @can("add-referee", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.referees") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->facility && !$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)")) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
-                                {{ link_to("#", "Stage 4 - Referees".($application->facility && !$application->facility->stage_reference_enabled ? " (Not Required)" : "")) }}
+                                {{ link_to("#", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)")) }}
                             </li>
                         @endcan
 

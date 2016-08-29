@@ -278,24 +278,12 @@ class Application extends Model
         return $this->training_team." Transfer";
     }
 
-    public function getIsReferenceRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_reference_enabled == 1;
-    }
-
     public function getNumberReferencesRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_reference_quantity;
+        return $this->reference_required;
     }
 
     public function getNumberReferencesRequiredRelativeAttribute(){
-        return $this->facility->stage_reference_quantity - $this->referees->count();
+        return $this->reference_required - $this->referees->count();
     }
 
     public function getReferencesNotWrittenAttribute(){

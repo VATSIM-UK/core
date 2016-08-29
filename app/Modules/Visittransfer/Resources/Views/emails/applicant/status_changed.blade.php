@@ -6,7 +6,7 @@
     </p>
 
     @if($application->is_submitted)
-        @if($application->facility->stage_reference_enabled)
+        @if($application->references_required > 0)
             <p>
                 We will now contact your references and request that they complete a reference for you within 14 days.  If the details you have provided are invalid, unacceptable,
                 or your referees fail to complete their reference within the given time frame, your application will be automatically rejected.  Following completion of these, your
