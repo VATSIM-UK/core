@@ -4,6 +4,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeAddRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationFacilitySelectedRequested;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeDeleteRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
@@ -152,6 +153,12 @@ class Application extends BaseController
         }
 
         return Redirect::route($redirectRoute)->withSuccess("Referee ". Input::get("referee_cid") . " added successfully! They will not be contacted until you submit your application.");
+    }
+
+    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, Reference $reference){
+        $reference->delete();
+
+        return Redirect::route("visiting.application.referees")->withSuccess("Referee " . $reference->account->name . " deleted.");
     }
 
     public function getSubmit(){

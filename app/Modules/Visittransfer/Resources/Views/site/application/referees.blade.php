@@ -75,6 +75,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Position</th>
+                            <th class="col-md-1">Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -84,6 +85,11 @@
                                 <td>{{ $referee->account->name }}</td>
                                 <td>{{ $referee->email }}</td>
                                 <td>{{ $referee->relationship }}</td>
+                                <td>
+                                    {!! Form::open(array("url" => URL::route("visiting.application.referees.delete.post", $referee->id))) !!}
+                                        {!! Button::danger("DELETE")->extraSmall()->submit() !!}
+                                    {!! Form::close() !!}
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

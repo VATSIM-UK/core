@@ -3,6 +3,7 @@
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -39,7 +40,7 @@ class ApplicationPolicy {
     }
 
     public function selectFacility(Account $user, Application $application){
-        if(!$application->exists){
+        if(!$application->exists || $application->is_editable){
             return false;
         }
 
@@ -47,7 +48,7 @@ class ApplicationPolicy {
     }
 
     public function addStatement(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || $application->is_editable){
             return false;
         }
 
@@ -59,7 +60,7 @@ class ApplicationPolicy {
     }
 
     public function addReferee(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || $application->is_editable){
             return false;
         }
 
@@ -74,8 +75,22 @@ class ApplicationPolicy {
         return true;
     }
 
+    public function deleteReferee(Account $user, Application $application){
+        $reference = \Request::route("reference");
+
+        if(!$application->facility || $application->is_editable){
+            return false;
+        }
+
+        if($reference->application->account->id != $user->id){
+            return false;
+        }
+
+        return true;
+    }
+
     public function submitApplication(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || $application->is_editable){
             return false;
         }
 

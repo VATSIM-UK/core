@@ -138,6 +138,11 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postReferees",
         ]);
 
+        Route::post("/referees/{reference}/delete", [
+            "as"   => "referees.delete.post",
+            "uses" => "Application@postRefereeDelete",
+        ]);
+
         Route::get("/submit", [
             "as"   => "submit",
             "uses" => "Application@getSubmit",

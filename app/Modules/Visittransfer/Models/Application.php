@@ -76,6 +76,7 @@ class Application extends Model
     static $APPLICATION_IS_CONSIDERED_CLOSED = [
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
+        self::STATUS_WITHDRAWN,
         self::STATUS_CANCELLED,
         self::STATUS_REJECTED,
     ];
