@@ -40,7 +40,7 @@ class ApplicationPolicy {
     }
 
     public function selectFacility(Account $user, Application $application){
-        if(!$application->exists || $application->is_editable){
+        if(!$application->exists || !$application->is_editable){
             return false;
         }
 
@@ -48,7 +48,7 @@ class ApplicationPolicy {
     }
 
     public function addStatement(Account $user, Application $application){
-        if(!$application->facility || $application->is_editable){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
@@ -60,7 +60,7 @@ class ApplicationPolicy {
     }
 
     public function addReferee(Account $user, Application $application){
-        if(!$application->facility || $application->is_editable){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
@@ -78,7 +78,7 @@ class ApplicationPolicy {
     public function deleteReferee(Account $user, Application $application){
         $reference = \Request::route("reference");
 
-        if(!$application->facility || $application->is_editable){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
@@ -90,7 +90,7 @@ class ApplicationPolicy {
     }
 
     public function submitApplication(Account $user, Application $application){
-        if(!$application->facility || $application->is_editable){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
