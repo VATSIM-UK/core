@@ -274,7 +274,7 @@
                             It is important that you understand <strong class="text-danger">this action cannot be undone.</strong>
                         </p>
 
-                        @if($application->is_training_required)
+                        @if($application->training_required)
                             <p>
                                 As training is required for this {{ $application->type_string }} to be completed, the applicant
                                 will be advised that the {{ strtoupper($application->training_team) }} will be in touch.

@@ -27,7 +27,7 @@
             have completed your application, it simply means the details of your application have been checked and deemed valid.
             You will be informed when your application is <strong>completed</strong>.
         </p>
-        @if($application->is_training_required)
+        @if($application->training_required)
             <p>
                 In order for your application to be deemed completed, you will be required to undergo training.  The training department will contact you
                 to outline the bespoke training plan we will put together for you.
@@ -54,7 +54,7 @@
         <p>
             Congratulations, your {{ $application->type_string }} application for {{ $application->facility_name }} has been completed successfully.
 
-            @if($application->is_training_required)
+            @if($application->training_required)
                 The {{ strtoupper($application->facility->training_team) }} training team have notified us that you have satisfied their requirements.
             @endif
 

@@ -279,11 +279,7 @@ class Application extends Model
     }
 
     public function getIsTrainingRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->training_required == 1;
+        return $this->training_required == 1;
     }
 
     public function getIsStatementRequiredAttribute(){

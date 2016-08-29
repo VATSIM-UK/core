@@ -31,7 +31,7 @@
 
                     <p>
                         <strong>Training Required:</strong>
-                        @if($application->is_training_required)
+                        @if($application->training_required)
                             <span class="label label-success">YES</span>
                         @else
                             <span class="label label-error">NO</span>
@@ -120,7 +120,7 @@
                             <p>
                                 Congratulations, your application has been accepted! You will be contacted to discuss the next steps.
                             </p>
-                            @if($application->is_training_required)
+                            @if($application->training_required)
                                 <p class="text-danger">
                                     Your application cannot be completed without receiving training from the {{ strtoupper($application->training_team) }} department.
                                     They will be in touch to discuss this with you.<br />
