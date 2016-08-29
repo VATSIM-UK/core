@@ -377,7 +377,8 @@ class Application extends Model
     }
 
     public function setStatement($statement){
-        $this->statement = $statement;
+        $this->statement = trim(strip_tags($statement));
+
         $this->save();
     }
 
