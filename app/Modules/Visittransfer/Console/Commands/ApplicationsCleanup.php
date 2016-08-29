@@ -68,7 +68,7 @@ class ApplicationsCleanup extends aCommand
     private function autoAcceptApplications(){
         $acceptedApplications = $this->loadSubmittedApplications()
                                      ->filter(function($application){
-                                         return $application->will_be_auto_accepted;
+                                         return $application->will_auto_accept;
                                      });
 
         foreach($acceptedApplications as $application){

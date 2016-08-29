@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
-                    @if($application->will_be_auto_accepted && $application->is_submitted)
+                    @if($application->will_auto_accept && $application->is_submitted)
                         <div class="alert alert-success" role="alert">
                             <p>
                                 This application has been accepted pending the automated verification process.

@@ -302,14 +302,6 @@ class Application extends Model
         return $this->referees()->rejected()->get();
     }
 
-    public function getWillBeAutoAcceptedAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->auto_acceptance == 1;
-    }
-
     public function getFacilityNameAttribute(){
         return $this->facility ? $this->facility->name : "Not selected";
     }
