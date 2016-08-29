@@ -58,7 +58,7 @@
                         {!! Form::open(["route" => ["visiting.application.facility.post"], "method" => "POST"]) !!}
 
                         <p class="text-center">
-                            @if($facility->training_spaces > 0 || $facility->training_spaces === null)
+                            @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
                                 {!! Button::primary("APPLY TO THIS FACILITY")->submit() !!}
                             @else
                                 {!! Button::danger("NO PLACES AVAILABLE")->disable() !!}

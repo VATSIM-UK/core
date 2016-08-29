@@ -68,7 +68,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
 			$data['permitted'] = false;
 		}
 
-		if($facility->training_spaces < 1 && $facility->training_spaces !== null){
+		if($facility->training_spaces < 1 && $facility->training_spaces !== null && $facility->training_required){
 			$data['permitted'] = false;
 		}
 
