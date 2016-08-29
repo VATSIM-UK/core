@@ -67,11 +67,11 @@ class Application extends BaseController
             return Redirect::route("visiting.application.facility");
         }
 
-        if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent())){
+        if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->statement == null){
             return Redirect::route("visiting.application.statement");
         }
 
-        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent())){
+        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->number_references_required_relative > 0){
             return Redirect::route("visiting.application.referees");
         }
 

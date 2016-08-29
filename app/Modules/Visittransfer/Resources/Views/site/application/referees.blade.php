@@ -15,7 +15,8 @@
                         </span>
 
                         @if($application->number_references_required_relative)
-                            You still need to add <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).
+                            You still need to add
+                            <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).
                         @else
                             You cannot add any more referees.
                         @endif
@@ -24,7 +25,7 @@
                         <span id="divisionStaffHelp">Your referees <strong>must</strong> be staff members in your home division</span>,
                         and <span id="trainingStaffHelp"><strong>one must</strong> be your Training Director</span>.
                     </p>
-                    <p><br /></p>
+                    <p><br/></p>
                 </div>
 
                 <div class="col-md-6">
@@ -41,9 +42,19 @@
 
                                 {!! ControlGroup::generate(
                                     Form::label("referee_relationship","Staff Position"),
-                                    Form::text("referee_relationship")
-                                )->withAttributes(["id" => "refereePositionHelp"]) !!}
+                                    Form::select("referee_relationship", [
+                                        "Region Director"               => "Region Director",
+                                        "Region Staff"                  => "Region Staff",
 
+                                        "Division Director"             => "Division Director",
+                                        "Division Training Director"    => "Division Training Director",
+                                        "Division Staff"                => "Division Staff",
+
+                                        "VACC/ARTCC Director"           => "VACC/ARTCC Director",
+                                        "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
+                                        "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
+                                    ])
+                                )->withAttributes(["id" => "refereePositionHelp"]) !!}
                             </div>
 
                             <div class="col-md-6">
@@ -52,7 +63,6 @@
                                     Form::text("referee_email"),
                                     Form::help("This should be the member's staff email address.")
                                 )->withAttributes(["id" => "refereeEmail"]) !!}
-
                                 <div class="text-center" style="padding-top: 27px;">
                                     {!! Button::primary("ADD REFEREE")->submit() !!}
                                 </div>
@@ -87,7 +97,7 @@
                                 <td>{{ $referee->relationship }}</td>
                                 <td>
                                     {!! Form::open(array("url" => URL::route("visiting.application.referees.delete.post", $referee->id))) !!}
-                                        {!! Button::danger("DELETE")->extraSmall()->submit() !!}
+                                    {!! Button::danger("DELETE")->extraSmall()->submit() !!}
                                     {!! Form::close() !!}
                                 </td>
                             </tr>
