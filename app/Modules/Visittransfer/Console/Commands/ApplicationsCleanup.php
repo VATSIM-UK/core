@@ -80,7 +80,7 @@ class ApplicationsCleanup extends aCommand
     private function autoCompleteNonTrainingApplications(){
         $acceptedApplications = $this->loadAcceptedApplications()
                                      ->filter(function($application){
-                                         return !$application->facility->training_required;
+                                         return !$application->training_required;
                                      });
 
         foreach($acceptedApplications as $application){
