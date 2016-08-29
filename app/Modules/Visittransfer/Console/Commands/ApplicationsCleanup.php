@@ -56,7 +56,7 @@ class ApplicationsCleanup extends aCommand
 
         foreach($underReviewApplications as $application){
 
-            if($application->are_checks_enabled){
+            if($application->should_perform_checks){
                 $application->markAsUnderReview();
                 continue;
             }

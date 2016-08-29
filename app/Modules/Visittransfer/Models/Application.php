@@ -302,14 +302,6 @@ class Application extends Model
         return $this->referees()->rejected()->get();
     }
 
-    public function getAreChecksEnabledAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_checks_enabled == 1;
-    }
-
     public function getWillBeAutoAcceptedAttribute(){
         if(!$this->attributes['facility_id'] || !$this->facility){
             return true; // TODO: Logic check this.
