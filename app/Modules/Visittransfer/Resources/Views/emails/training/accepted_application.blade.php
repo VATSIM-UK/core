@@ -9,7 +9,7 @@
     <strong>Type:</strong> {{ $application->type_string }}<br />
     <strong>Name:</strong> {{ $application->account->name }} ({{ $application->account_id }})<br />
     <strong>Facility:</strong> {{ $application->facility->name }}<br />
-    <strong>Statement:</strong> {{ $application->statement }}
+    <strong>Statement:</strong> {{ $application->statement_required ? $application->statement : "None required for this facility" }}
 </p>
 
 <h3>References</h3>

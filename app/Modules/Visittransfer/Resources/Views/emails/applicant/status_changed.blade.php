@@ -2,7 +2,7 @@
 
 @section('email-content')
     <p>
-        Your {{ $application->type_string }} application to VATSIM UK has changed status to '{{ $application->status_string }}'.
+        Your {{ $application->type_string }} {{ $application->facility ? "(" . $application->facility_name. ")" : "" }} application to VATSIM UK has changed status to '{{ $application->status_string }}'.
     </p>
 
     @if($application->is_submitted)
