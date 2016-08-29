@@ -70,8 +70,8 @@
                             <tbody>
                                 <tr>
                                     <th class="text-center">
-                                        @if($application->is_reference_required)
-                                            You have no references.
+                                        @if($application->references_required > 0)
+                                            You have no referees/references.
                                         @else
                                             Your application does not require any references.
                                         @endif
