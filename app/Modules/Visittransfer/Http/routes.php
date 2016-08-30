@@ -168,6 +168,16 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postSubmit",
         ]);
 
+        Route::get("/withdraw", [
+            "as"   => "withdraw",
+            "uses" => "Application@getWithdraw",
+        ]);
+
+        Route::post("/withdraw", [
+            "as"   => "withdraw.post",
+            "uses" => "Application@postWithdraw",
+        ]);
+
         Route::get("/view/{applicationByPublicId}", [
             "as"   => "view",
             "uses" => "Application@getView"

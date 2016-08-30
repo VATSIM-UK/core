@@ -109,8 +109,16 @@ class ApplicationPolicy {
         return true;
     }
 
+    public function withdrawApplication(Account $user, Application $application){
+        if(!$application->is_in_progress){
+            return false;
+        }
+
+        return true;
+    }
+
     public function viewApplication(Account $user, Application $application){
-        return $application && $user->id == $application->account_id;
+        return $application->exists && $user->id == $application->account_id;
     }
 
     public function accept(Account $user, Application $application){

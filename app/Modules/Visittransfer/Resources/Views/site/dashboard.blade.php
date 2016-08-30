@@ -155,7 +155,13 @@
                         @else
                             @foreach($allApplications as $application)
                                 <tr>
-                                    <td>{{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}</td>
+                                    <td>
+                                        @if($application->is_in_progress)
+                                            {{ link_to_route('visiting.application.continue', $application->public_id) }}
+                                        @else
+                                            {{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}
+                                        @endif
+                                    </td>
                                     <td>
                                         {{ $application->type_string }}
                                     </td>
@@ -174,9 +180,19 @@
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)
-                                            {!! link_to_route("visiting.application.continue", "Continue") !!}
+                                            {!!
+                                                Modal::named("withdraw_application")
+                                                     ->withTitle("Withdraw Application")
+                                                     ->withBody("If you wish to withdraw your application (without penalty) you can do so by clicking the button below.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.application.withdraw.post"))).
+                                                        Button::danger("WITHDRAW APPLICATION - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::danger("WITHDRAW")->extraSmall())
+                                            !!}
                                         @else
-                                            {!! link_to_route("visiting.application.view", "View", [$application->public_id]) !!}
+                                            -
                                         @endif
                                     </td>
                                 </tr>

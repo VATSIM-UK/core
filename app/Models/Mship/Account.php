@@ -250,7 +250,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function visitTransferApplications(){
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy("submitted_at", "DESC");
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy("created_at", "DESC");
     }
 
     public function visitApplications(){
@@ -262,7 +262,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     public function visitTransferCurrent(){
-        return $this->visitTransferApplications()->latest()->first();
+        return $this->visitTransferApplications()->open()->latest()->first();
     }
 
     public function createVisitingTransferApplication(array $attributes){

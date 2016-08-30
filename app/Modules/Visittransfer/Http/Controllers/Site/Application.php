@@ -8,6 +8,7 @@ use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeDeleteRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationWithdrawRequest;
 use App\Modules\Visittransfer\Models\Facility;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;
@@ -178,8 +179,25 @@ class Application extends BaseController
         return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
     }
 
+    public function getWithdraw(){
+        $this->authorize("withdraw-application", $this->application);
+
+        return $this->viewMake("visittransfer::site.application.withdraw")
+                    ->with("application", $this->application);
+    }
+
+    public function postWithdraw(ApplicationWithdrawRequest $request){
+        try {
+            $this->application->withdraw();
+        } catch(Exception $e){
+            return Redirect::route("visiting.application.withdraw")->withError($e->getMessage());
+        }
+
+        return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been withdrawn! You can submit a new application as required.");
+    }
+
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
-        $this->authorize("view-application", $this->application);
+        $this->authorize("view-application", $application);
 
         $application->load("facility")->load("referees.account");
 

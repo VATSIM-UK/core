@@ -33,24 +33,3 @@
         </div>
     </div>
 @stop
-
-@section("scripts")
-    @parent
-
-    <script type="text/javascript">
-        var tour = new Tour({
-            steps: [
-                {
-                    element: "#statementHelp",
-                    title: "Personal Statement",
-                    content: "It is expected that you will describe why you wish to apply to your chosen facility.",
-                    backdrop: true,
-                    placement: "top"
-                },
-            ]
-        });
-
-        tour.init();
-        tour.start();
-    </script>
-@stop

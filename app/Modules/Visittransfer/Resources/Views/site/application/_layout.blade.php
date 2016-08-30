@@ -77,6 +77,20 @@
                                 {{ link_to("#", "View Full Application") }}
                             </li>
                         @endif
+
+                        @can("withdraw-application", $application)
+                            <li role="presentation" class="text-center" {!! (Route::is("visiting.application.withdraw") ? "class='active'" : "") !!}>
+                                {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [], ["class" => "label label-danger label-md"]) }}
+                            </li>
+                        @endif
+
+                        @if($application->exists)
+                            <li role="presentation">
+                                <a class="label label-info label-md">
+                                    Application expires in <span id="applicationExpireTimer"></span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                     {!! HTML::panelClose() !!}
                 </div>
@@ -97,6 +111,55 @@
     @parent
 
     <script type="text/javascript">
+        function initializeClock(id, endtime){
+            var clock = document.getElementById(id);
+            var timeinterval = setInterval(function(){
+                var t = getTimeRemaining(endtime);
+                clock.innerHTML = '';
+
+                if(t.minutes > 1){
+                    clock.innerHTML += t.minutes + ' minutes';
+                } else if(t.minutes == 1){
+                    clock.innerHTML += t.minutes + ' minute';
+                }
+
+                if(t.minutes > 0 && t.seconds > 0){
+                    clock.innerHTML += " and ";
+                }
+
+                if(t.seconds > 1){
+                    clock.innerHTML += t.seconds + ' seconds';
+                } else if(t.seconds == 1){
+                    clock.innerHTML += t.seconds + ' second';
+                }
+
+                clock.innerHTML += ".";
+
+                if(t.total<=0){
+                    clearInterval(timeinterval);
+                }
+            },1000);
+        }
+
+        function getTimeRemaining(endtime){
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor( (t/1000) % 60 );
+            var minutes = Math.floor( (t/1000/60) % 60 );
+//            var hours = Math.floor( (t/(1000*60*60)) % 24 );
+//            var days = Math.floor( t/(1000*60*60*24) );
+            return {
+                'total': t,
+//                'days': days,
+//                'hours': hours,
+                'minutes': minutes,
+                'seconds': seconds
+            };
+        }
+
+        @if($application->exists)
+            initializeClock('applicationExpireTimer', "<?php echo e($application->created_at->addHour()->toDateTimeString()); ?> GMT");
+        @endif
+
         var tour = new Tour({
             name: "VT-Application-{{ Request::segment(2) }}"
         });

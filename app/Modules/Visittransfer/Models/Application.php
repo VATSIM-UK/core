@@ -8,7 +8,9 @@ use App\Modules\Visittransfer\Events\ApplicationCompleted;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
+use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
@@ -268,6 +270,8 @@ class Application extends Model
         switch ($this->attributes['status']) {
             case self::STATUS_IN_PROGRESS:
                 return "In Progress";
+            case self::STATUS_WITHDRAWN:
+                return "Withdrawn";
             case self::STATUS_SUBMITTED:
                 return "Submitted";
             case self::STATUS_UNDER_REVIEW:
@@ -401,6 +405,20 @@ class Application extends Model
         $this->save();
     }
 
+    public function withdraw()
+    {
+        $this->guardAgainstInvalidWithdrawal();
+
+        $this->attributes['status'] = self::STATUS_WITHDRAWN;
+        $this->save();
+
+        event(new ApplicationWithdrawn($this));
+
+        if($this->facility){
+            $this->facility->addTrainingSpace();
+        }
+    }
+
     public function submit()
     {
         $this->guardAgainstInvalidSubmission();
@@ -494,11 +512,12 @@ class Application extends Model
 
     public function settingToggle($setting)
     {
-        switch($setting){
+        switch ($setting) {
             case "training_required":
                 return $this->settingToggleGenericBoolean("training_required");
             case "statement_required":
                 $this->statement = null;
+
                 return $this->settingToggleGenericBoolean("statement_required");
             case "references_required":
                 return $this->settingToggleReferencesRequired();
@@ -511,26 +530,31 @@ class Application extends Model
 
     private function settingToggleReferencesRequired()
     {
-        if($this->references_required == 0){
+        if ($this->references_required == 0) {
             $this->references_required = $this->facility->stage_reference_enabled ? $this->facility->stage_reference_quantity : 0;
+
             return $this->save();
         }
 
-        foreach($this->referees as $reference){
+        foreach ($this->referees as $reference) {
             $reference->delete();
         }
 
         $this->references_required = 0;
+
         return $this->save();
     }
 
-    private function settingToggleGenericBoolean($columnName){
-        if($this->{$columnName} === 1){
+    private function settingToggleGenericBoolean($columnName)
+    {
+        if ($this->{$columnName} === 1) {
             $this->{$columnName} = 0;
+
             return $this->save();
         }
 
         $this->{$columnName} = 1;
+
         return $this->save();
     }
 
@@ -615,5 +639,14 @@ class Application extends Model
         if ($this->{$tableColumnName} !== null) {
             throw new CheckOutcomeAlreadySetException($this, $check);
         }
+    }
+
+    private function guardAgainstInvalidWithdrawal()
+    {
+        if($this->is_in_progress){
+            return;
+        }
+
+        throw new ApplicationCannotBeWithdrawnException($this);
     }
 }
