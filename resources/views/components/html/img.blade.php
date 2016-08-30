@@ -1,0 +1,1 @@
+<img src="/assets/images/{{ $key }}.{{ $ext }}" width="{{ $width ? $width : "" }}" height="{{ $height ? $height : "" }}" alt="{{ $alt }}" />

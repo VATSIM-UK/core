@@ -21,7 +21,7 @@
                         <tr>
                             <th class="col-md-1">ID #</th>
                             <th>Name</th>
-                            <th class="col-md-1" style="text-align: center;">Xfer/Visit</th>
+                            <th class="col-md-1" style="text-align: center;">Transfer/Visit</th>
                             <th class="col-md-1" style="text-align: center;">Training Required</th>
                             <th class="col-md-1" style="text-align: center;">Training Dept</th>
                             <th class="col-md-1" style="text-align: center;">Statement</th>

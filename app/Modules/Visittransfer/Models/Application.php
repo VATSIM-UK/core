@@ -8,10 +8,13 @@ use App\Modules\Visittransfer\Events\ApplicationCompleted;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
+use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
+use App\Modules\Visittransfer\Exceptions\Application\CheckOutcomeAlreadySetException;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
 use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
@@ -30,12 +33,12 @@ class Application extends Model
 {
     use PublicId, SoftDeletes;
 
-    static protected $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
+    static protected $public_id_salt       = 'vatsim-uk-visiting-transfer-applications';
     static protected $public_id_min_length = 8;
-    static protected $public_id_alphabet = 'upper_alphanumeric';
+    static protected $public_id_alphabet   = 'upper_alphanumeric';
 
-    protected $table    = "vt_application";
-    protected $fillable = [
+    protected $table      = "vt_application";
+    protected $fillable   = [
         "type",
         "training_team",
         "account_id",
@@ -43,22 +46,25 @@ class Application extends Model
         "statement",
         "status",
     ];
-    public $timestamps = true;
-    protected $dates = [
-        "submitted_at", "created_at", "updated_at"
+    public    $timestamps = true;
+    protected $dates      = [
+        "submitted_at",
+        "created_at",
+        "updated_at"
     ];
 
     const TYPE_VISIT    = 10;
     const TYPE_TRANSFER = 40;
 
     const STATUS_IN_PROGRESS  = 10; // Member hasn't yet submitted application formally.
+    const STATUS_WITHDRAWN    = 15; // Application has been withdrawn
     const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
     const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
     const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
     const STATUS_COMPLETED    = 90; // Application has been formally completed, visit/transfer complete.
-    const STATUS_LAPSED       = 97; // Application has lapsed.
-    const STATUS_CANCELLED    = 98; // Application has been cancelled
+    const STATUS_LAPSED       = 93; // Application has lapsed.
+    const STATUS_CANCELLED    = 96; // Application has been cancelled
     const STATUS_REJECTED     = 99; // Application has been rejected by staff
 
     static $APPLICATION_IS_CONSIDERED_EDITABLE = [
@@ -75,6 +81,7 @@ class Application extends Model
     static $APPLICATION_IS_CONSIDERED_CLOSED = [
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
+        self::STATUS_WITHDRAWN,
         self::STATUS_CANCELLED,
         self::STATUS_REJECTED,
     ];
@@ -106,7 +113,7 @@ class Application extends Model
 
     public static function scopeNotStatus($query, $status)
     {
-        return $query->whereNotStatus($status);
+        return $query->where("status", "!=", $status);
     }
 
     public static function scopeStatusIn($query, Array $stati)
@@ -129,17 +136,29 @@ class Application extends Model
         return $query->status(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
+    public static function scopeSubmitted($query)
+    {
+        return $query->status(self::STATUS_SUBMITTED);
+    }
+
+    public static function scopeUnderReview($query)
+    {
+        return $query->status(self::STATUS_UNDER_REVIEW);
+    }
+
     /** All Laravel relationships */
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
     }
 
-    public function facility(){
+    public function facility()
+    {
         return $this->belongsTo(\App\Modules\Visittransfer\Models\Facility::class);
     }
 
-    public function referees(){
+    public function referees()
+    {
         return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
     }
 
@@ -149,89 +168,110 @@ class Application extends Model
     }
 
     /** All Laravel magic attributes **/
-    public function getIsPilotAttribute(){
+    public function getIsPilotAttribute()
+    {
         return strcasecmp($this->attributes['training_team'], "pilot") == 0;
     }
-    public function getIsAtcAttribute(){
+
+    public function getIsAtcAttribute()
+    {
         return strcasecmp($this->attributes['training_team'], "atc") == 0;
     }
 
-    public function setStatementAttribute($statement){
+    public function setStatementAttribute($statement)
+    {
         $this->attributes['statement'] = trim($statement);
     }
 
-    public function getPotentialFacilitiesAttribute(){
-        if($this->facility){
+    public function getPotentialFacilitiesAttribute()
+    {
+        if ($this->facility) {
             return collect([]);
         }
 
-        if($this->is_pilot){
+        if ($this->is_pilot) {
             return Facility::pilot()->get();
         }
 
-        if($this->is_visit){
+        if ($this->is_visit) {
             return Facility::atc()->canVisit()->get();
         }
 
         return Facility::atc()->canTransfer()->get();
     }
 
-    public function getIsOpenAttribute(){
+    public function getIsOpenAttribute()
+    {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_OPEN);
     }
 
-    public function getIsEditableAttribute(){
+    public function getIsEditableAttribute()
+    {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
     }
 
-    public function getIsNotEditableAttribute(){
+    public function getIsNotEditableAttribute()
+    {
         return $this->isStatusNotIn(self::$APPLICATION_IS_CONSIDERED_EDITABLE);
     }
 
-    public function getRequiresActionAttribute(){
+    public function getRequiresActionAttribute()
+    {
         return $this->isStatusIn(self::$APPLICATION_REQUIRES_ACTION);
     }
 
-    public function getIsClosedAttribute(){
+    public function getIsClosedAttribute()
+    {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
-    public function getIsInProgressAttribute(){
+    public function getIsInProgressAttribute()
+    {
         return $this->isStatus(self::STATUS_IN_PROGRESS);
     }
 
-    public function getIsSubmittedAttribute(){
+    public function getIsSubmittedAttribute()
+    {
         return $this->isStatus(self::STATUS_SUBMITTED);
     }
 
-    public function getIsPendingReferencesAttribute(){
+    public function getIsPendingReferencesAttribute()
+    {
         return $this->references_not_written->count() > 0;
     }
 
-    public function getIsUnderReviewAttribute(){
+    public function getIsUnderReviewAttribute()
+    {
         return $this->isStatus(self::STATUS_UNDER_REVIEW);
     }
 
-    public function getIsAcceptedAttribute(){
+    public function getIsAcceptedAttribute()
+    {
         return $this->isStatus(self::STATUS_ACCEPTED);
     }
 
-    public function getIsCompletedAttribute(){
+    public function getIsCompletedAttribute()
+    {
         return $this->isStatusIn([self::STATUS_PENDING_CERT, self::STATUS_COMPLETED]);
     }
 
-    public function getIsLapsedAttribute(){
+    public function getIsLapsedAttribute()
+    {
         return $this->isStatus(self::STATUS_LAPSED);
     }
 
-    public function getIsRejectedAttribute(){
+    public function getIsRejectedAttribute()
+    {
         return $this->isStatus(self::STATUS_REJECTED);
     }
 
-    public function getStatusStringAttribute(){
-        switch($this->attributes['status']){
+    public function getStatusStringAttribute()
+    {
+        switch ($this->attributes['status']) {
             case self::STATUS_IN_PROGRESS:
                 return "In Progress";
+            case self::STATUS_WITHDRAWN:
+                return "Withdrawn";
             case self::STATUS_SUBMITTED:
                 return "Submitted";
             case self::STATUS_UNDER_REVIEW:
@@ -249,135 +289,107 @@ class Application extends Model
         }
     }
 
-    public function getIsVisitAttribute(){
+    public function getIsVisitAttribute()
+    {
         return $this->type == self::TYPE_VISIT;
     }
 
-
-    public function getIsTransferAttribute(){
+    public function getIsTransferAttribute()
+    {
         return $this->type == self::TYPE_TRANSFER;
     }
 
-    public function getTrainingTeamAttribute(){
-        if(!$this->exists){
+    public function getTrainingTeamAttribute()
+    {
+        if (!$this->exists) {
             return "Unknown";
         }
 
-        if($this->attributes['training_team'] == 'atc'){
+        if ($this->attributes['training_team'] == 'atc') {
             return "ATC";
         }
 
         return ucfirst($this->attributes['training_team']);
     }
 
-    public function getTypeStringAttribute(){
-        if($this->is_visit){
-            return $this->training_team." Visit";
+    public function getTypeStringAttribute()
+    {
+        if ($this->is_visit) {
+            return $this->training_team . " Visit";
         }
 
-        return $this->training_team." Transfer";
+        return $this->training_team . " Transfer";
     }
 
-    public function getIsTrainingRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->training_required == 1;
+    public function getNumberReferencesRequiredRelativeAttribute()
+    {
+        return $this->references_required - $this->referees->count();
     }
 
-    public function getIsStatementRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_statement_enabled == 1;
-    }
-
-    public function getIsReferenceRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_reference_enabled == 1;
-    }
-
-    public function getNumberReferencesRequiredAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_reference_quantity;
-    }
-
-    public function getNumberReferencesRequiredRelativeAttribute(){
-        return $this->facility->stage_reference_quantity - $this->referees->count();
-    }
-
-    public function getReferencesNotWrittenAttribute(){
+    public function getReferencesNotWrittenAttribute()
+    {
         return $this->referees()->pending()->get();
     }
 
-    public function getReferencesUnderReviewAttribute(){
+    public function getReferencesUnderReviewAttribute()
+    {
         return $this->referees()->underReview()->get();
     }
 
-    public function getReferencesAcceptedAttribute(){
+    public function getReferencesAcceptedAttribute()
+    {
         return $this->referees()->accepted()->get();
     }
 
-    public function getReferencesRejectedAttribute(){
+    public function getReferencesRejectedAttribute()
+    {
         return $this->referees()->rejected()->get();
     }
 
-    public function getAreChecksEnabledAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->stage_checks_enabled == 1;
-    }
-
-    public function getWillBeAutoAcceptedAttribute(){
-        if(!$this->attributes['facility_id'] || !$this->facility){
-            return true; // TODO: Logic check this.
-        }
-
-        return $this->facility->auto_acceptance == 1;
-    }
-
-    public function getFacilityNameAttribute(){
+    public function getFacilityNameAttribute()
+    {
         return $this->facility ? $this->facility->name : "Not selected";
     }
 
     /** Business logic. */
-    public function isStatus($status){
+    public function isStatus($status)
+    {
         return $this->status == $status;
     }
 
-    public function isStatusIn($stati){
+    public function isStatusIn($stati)
+    {
         return in_array($this->attributes['status'], $stati);
     }
 
-    public function isStatusNotIn($stati){
+    public function isStatusNotIn($stati)
+    {
         return !$this->isStatusIn($stati);
     }
 
-    public function setFacility(Facility $facility){
+    public function setFacility(Facility $facility)
+    {
         $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
+        $this->training_required = $facility->training_required;
+        $this->statement_required = $facility->stage_statement_enabled;
+        $this->references_required = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
+        $this->should_perform_checks = $facility->stage_checks;
+        $this->will_auto_accept = $facility->auto_acceptance;
+
         $facility->applications()->save($this);
     }
 
-    public function addReferee(Account $refereeAccount, $email, $relationship){
+    public function addReferee(Account $refereeAccount, $email, $relationship)
+    {
         $this->guardAgainstDuplicateReferee($refereeAccount);
-        
+
         $this->guardAgainstTooManyReferees();
 
         $referee = new Reference([
-            "email" => $email,
+            "email"        => $email,
             "relationship" => $relationship,
         ]);
 
@@ -386,12 +398,29 @@ class Application extends Model
         $refereeAccount->visitTransferReferee()->save($referee);
     }
 
-    public function setStatement($statement){
-        $this->statement = $statement;
+    public function setStatement($statement)
+    {
+        $this->statement = trim(strip_tags($statement));
+
         $this->save();
     }
 
-    public function submit(){
+    public function withdraw()
+    {
+        $this->guardAgainstInvalidWithdrawal();
+
+        $this->attributes['status'] = self::STATUS_WITHDRAWN;
+        $this->save();
+
+        event(new ApplicationWithdrawn($this));
+
+        if($this->facility){
+            $this->facility->addTrainingSpace();
+        }
+    }
+
+    public function submit()
+    {
         $this->guardAgainstInvalidSubmission();
 
         $this->attributes['submitted_at'] = Carbon::now();
@@ -403,9 +432,17 @@ class Application extends Model
         $this->facility->removeTrainingSpace();
     }
 
-    public function markAsUnderReview(){
+    public function markAsUnderReview($staffReason = null, Account $actor = null)
+    {
         $this->attributes['status'] = self::STATUS_UNDER_REVIEW;
         $this->save();
+
+        if ($staffReason) {
+            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
+            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
 
         event(new ApplicationUnderReview($this));
     }
@@ -463,8 +500,67 @@ class Application extends Model
         event(new ApplicationCompleted($this));
     }
 
-    public function check90DayQualification(){
-        if(!$this->submitted_at){
+    public function setCheckOutcome($check, $outcome)
+    {
+        $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
+
+        $columnName = "check_outcome_" . $check;
+
+        $this->{$columnName} = (int)$outcome;
+        $this->save();
+    }
+
+    public function settingToggle($setting)
+    {
+        switch ($setting) {
+            case "training_required":
+                return $this->settingToggleGenericBoolean("training_required");
+            case "statement_required":
+                $this->statement = null;
+
+                return $this->settingToggleGenericBoolean("statement_required");
+            case "references_required":
+                return $this->settingToggleReferencesRequired();
+            case "should_perform_checks":
+                return $this->settingToggleGenericBoolean("should_perform_checks");
+            case "will_auto_accept":
+                return $this->settingToggleGenericBoolean("will_auto_accept");
+        }
+    }
+
+    private function settingToggleReferencesRequired()
+    {
+        if ($this->references_required == 0) {
+            $this->references_required = $this->facility->stage_reference_enabled ? $this->facility->stage_reference_quantity : 0;
+
+            return $this->save();
+        }
+
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
+
+        $this->references_required = 0;
+
+        return $this->save();
+    }
+
+    private function settingToggleGenericBoolean($columnName)
+    {
+        if ($this->{$columnName} === 1) {
+            $this->{$columnName} = 0;
+
+            return $this->save();
+        }
+
+        $this->{$columnName} = 1;
+
+        return $this->save();
+    }
+
+    public function check90DayQualification()
+    {
+        if (!$this->submitted_at) {
             return false;
         }
 
@@ -474,58 +570,83 @@ class Application extends Model
         return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
     }
 
-    public function check50Hours(){
+    public function check50Hours()
+    {
         return false;
     }
 
     /** Guards */
-    private function guardAgainstTransferringToANonTrainingFacility(Facility $requestedFacility){
-        if($this->is_transfer && $requestedFacility->training_required == 0){
+    private function guardAgainstTransferringToANonTrainingFacility(Facility $requestedFacility)
+    {
+        if ($this->is_transfer && $requestedFacility->training_required == 0) {
             throw new AttemptingToTransferToNonTrainingFacilityException($requestedFacility);
         }
     }
 
-    private function guardAgainstApplyingToAFacilityWithNoCapacity(Facility $requestedFacility){
-        if($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0){
+    private function guardAgainstApplyingToAFacilityWithNoCapacity(Facility $requestedFacility)
+    {
+        if ($requestedFacility->training_required == 1 && $requestedFacility->training_spaces === 0) {
             throw new FacilityHasNoCapacityException($requestedFacility);
         }
     }
 
-    private function guardAgainstDuplicateReferee($refereeAccount){
-        $checkContains = $this->referees->filter(function($referee) use($refereeAccount){
-            return $referee->account_id == $refereeAccount->id;
-        })->count() > 0;
+    private function guardAgainstDuplicateReferee($refereeAccount)
+    {
+        $checkContains = $this->referees->filter(function ($referee) use ($refereeAccount) {
+                return $referee->account_id == $refereeAccount->id;
+            })->count() > 0;
 
-        if($checkContains){
+        if ($checkContains) {
             throw new DuplicateRefereeException($refereeAccount);
         }
     }
-    
-    private function guardAgainstTooManyReferees(){
-        if($this->number_references_required_relative == 0){
+
+    private function guardAgainstTooManyReferees()
+    {
+        if ($this->number_references_required_relative == 0) {
             throw new TooManyRefereesException($this);
         }
     }
 
-    private function guardAgainstInvalidSubmission(){
-        if($this->is_submitted){
+    private function guardAgainstInvalidSubmission()
+    {
+        if ($this->is_submitted) {
             throw new ApplicationAlreadySubmittedException($this);
         }
     }
 
-    private function guardAgainstNonUnderReviewApplication(){
-        if($this->is_under_review){
+    private function guardAgainstNonUnderReviewApplication()
+    {
+        if ($this->is_under_review) {
             return;
         }
 
         throw new ApplicationNotUnderReviewException($this);
     }
 
-    private function guardAgainstNonAcceptedApplication(){
-        if($this->is_accepted){
+    private function guardAgainstNonAcceptedApplication()
+    {
+        if ($this->is_accepted) {
             return;
         }
 
         throw new ApplicationNotAcceptedException($this);
+    }
+
+    private function guardAgainstDuplicateCheckOutcomeSubmission($check)
+    {
+        $tableColumnName = "check_outcome_" . $check;
+        if ($this->{$tableColumnName} !== null) {
+            throw new CheckOutcomeAlreadySetException($this, $check);
+        }
+    }
+
+    private function guardAgainstInvalidWithdrawal()
+    {
+        if($this->is_in_progress){
+            return;
+        }
+
+        throw new ApplicationCannotBeWithdrawnException($this);
     }
 }

@@ -39,65 +39,58 @@ class ApplicationsCleanup extends aCommand
         $this->autoCompleteNonTrainingApplications();
     }
 
-    private function cancelOldApplications(){
-        foreach($this->loadAllApplications() as $application){
-            if($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))){
+    private function cancelOldApplications()
+    {
+        foreach (Application::all() as $application) {
+            if ($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))) {
                 //$application->cancel();
                 continue;
             }
         }
     }
 
-    private function runAutomatedChecks(){
-        $underReviewApplications = $this->loadSubmittedApplications()
-                                        ->filter(function($application){
-                                            return !$application->is_pending_references;
-                                        });
+    private function runAutomatedChecks()
+    {
+        $submittedApplications = Application::submitted()
+                                            ->get()
+                                            ->filter(function ($application) {
+                                                return !$application->is_pending_references;
+                                            });
 
-        foreach($underReviewApplications as $application){
+        foreach ($submittedApplications as $application) {
 
-            if($application->are_checks_enabled){
-                $application->markAsUnderReview();
+            if (!$application->should_perform_checks) {
+                $application->markAsUnderReview("Automated checks have been disabled for this facility - requires manual checking.");
                 continue;
             }
 
-            dispatch(new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application));
+            dispatch((new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application))->onQueue("med"));
         }
     }
 
-    private function autoAcceptApplications(){
-        $acceptedApplications = $this->loadSubmittedApplications()
-                                     ->filter(function($application){
-                                         return $application->will_be_auto_accepted;
-                                     });
+    private function autoAcceptApplications()
+    {
+        $underReviewApplications = Application::underReview()
+                                              ->where("will_auto_accept", "=", 1)
+                                              ->get();
 
-        foreach($acceptedApplications as $application){
+        foreach ($underReviewApplications as $application) {
             $application->accept("Application was automatically accepted as per the facility settings.");
             continue;
         }
     }
 
-    private function autoCompleteNonTrainingApplications(){
-        $acceptedApplications = $this->loadAcceptedApplications()
-                                     ->filter(function($application){
-                                         return !$application->facility->training_required;
-                                     });
+    private function autoCompleteNonTrainingApplications()
+    {
+        $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)
+                                           ->get()
+                                           ->filter(function ($application) {
+                                               return !$application->training_required;
+                                           });
 
-        foreach($acceptedApplications as $application){
+        foreach ($acceptedApplications as $application) {
             $application->complete("Application was automatically completed as there is no training requirement.");
             continue;
         }
-    }
-
-    private function loadAllApplications(){
-        return Application::all();
-    }
-
-    private function loadSubmittedApplications(){
-        return Application::status(Application::STATUS_SUBMITTED)->get();
-    }
-
-    private function loadAcceptedApplications(){
-        return Application::status(Application::STATUS_ACCEPTED)->get();
     }
 }

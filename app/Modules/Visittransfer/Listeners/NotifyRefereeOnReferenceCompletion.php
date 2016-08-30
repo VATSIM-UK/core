@@ -1,12 +1,11 @@
 <?php namespace App\Modules\Visittransfer\Listeners;
 
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
-use App\Modules\Visittransfer\Jobs\SendApplicantReferenceSubmissionEmail;
-use App\Modules\Visittransfer\Jobs\SendRefereeConfirmationEmail;
+use App\Modules\Visittransfer\Jobs\SendRefereeNoLongerRequiredEmail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyRefereeOnReferenceCompletion implements ShouldQueue
+class NotifyRefereeOfReferenceDeletion implements ShouldQueue
 {
     public function __construct()
     {
@@ -15,7 +14,11 @@ class NotifyRefereeOnReferenceCompletion implements ShouldQueue
 
     public function handle(ReferenceUnderReview $event)
     {
-        $confirmationEmailJob = new SendRefereeConfirmationEmail($event->reference);
+        if(!$event->reference->is_requested){
+            return;
+        }
+
+        $confirmationEmailJob = new SendRefereeNoLongerRequiredEmail($event->reference);
 
         dispatch($confirmationEmailJob->onQueue("low"));
     }

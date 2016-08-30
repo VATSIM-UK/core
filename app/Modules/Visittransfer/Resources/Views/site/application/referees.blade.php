@@ -9,20 +9,23 @@
                 <div class="col-md-6 col-md-offset-3">
 
                     <p>
-                        Your application <strong>must be supported</strong> by a <strong>minimum</strong> of
-                        {{ $application->number_references_required }} referee(s).
+                        <span id="minReferencesHelp">
+                            Your application <strong>must be supported</strong> by a <strong>minimum</strong> of
+                            {{ $application->references_required }} referee(s).
+                        </span>
 
                         @if($application->number_references_required_relative)
-                            You still need to add <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).
+                            You still need to add
+                            <strong>{{ $application->number_references_required_relative }}</strong> more referee(s).
                         @else
                             You cannot add any more referees.
                         @endif
                     </p>
                     <p>
-                        Your referees <strong>must</strong> be staff members in your home division, and <strong>one
-                            must</strong> be your Training Manager/Director.
+                        <span id="divisionStaffHelp">Your referees <strong>must</strong> be staff members in your home division</span>,
+                        and <span id="trainingStaffHelp"><strong>one must</strong> be your Training Director</span>.
                     </p>
-                    <p><br /></p>
+                    <p><br/></p>
                 </div>
 
                 <div class="col-md-6">
@@ -35,13 +38,23 @@
                                     Form::label("referee_cid","Referee CID"),
                                     Form::text("referee_cid"),
                                     Form::help("Please ensure this is correct.")
-                                ) !!}
+                                )->withAttributes(["id" => "refereeCidHelp"]) !!}
 
                                 {!! ControlGroup::generate(
                                     Form::label("referee_relationship","Staff Position"),
-                                    Form::text("referee_relationship")
-                                ) !!}
+                                    Form::select("referee_relationship", [
+                                        "Region Director"               => "Region Director",
+                                        "Region Staff"                  => "Region Staff",
 
+                                        "Division Director"             => "Division Director",
+                                        "Division Training Director"    => "Division Training Director",
+                                        "Division Staff"                => "Division Staff",
+
+                                        "VACC/ARTCC Director"           => "VACC/ARTCC Director",
+                                        "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
+                                        "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
+                                    ])
+                                )->withAttributes(["id" => "refereePositionHelp"]) !!}
                             </div>
 
                             <div class="col-md-6">
@@ -49,8 +62,7 @@
                                     Form::label("referee_email", "Email Address"),
                                     Form::text("referee_email"),
                                     Form::help("This should be the member's staff email address.")
-                                ) !!}
-
+                                )->withAttributes(["id" => "refereeEmail"]) !!}
                                 <div class="text-center" style="padding-top: 27px;">
                                     {!! Button::primary("ADD REFEREE")->submit() !!}
                                 </div>
@@ -73,6 +85,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Position</th>
+                            <th class="col-md-1">Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -82,6 +95,11 @@
                                 <td>{{ $referee->account->name }}</td>
                                 <td>{{ $referee->email }}</td>
                                 <td>{{ $referee->relationship }}</td>
+                                <td>
+                                    {!! Form::open(array("url" => URL::route("visiting.application.referees.delete.post", $referee->id))) !!}
+                                    {!! Button::danger("DELETE")->extraSmall()->submit() !!}
+                                    {!! Form::close() !!}
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

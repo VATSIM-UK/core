@@ -15,7 +15,7 @@
                         @foreach(Auth::user()->visitTransferApplications as $app)
 
                             <li role="presentation" {!! (Route::is("visiting.application.view") && $application->id == $app->id ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.view", "#".$app->public_id." - ".$app->type_string." ".$app->facility->name, [$app->public_id], ["class" => (Route::is("visiting.application.view")  && $application->id == $app->id ? "active" : "")]) }}
+                                {{ link_to_route("visiting.application.view", "#".$app->public_id." - ".$app->type_string." ".$app->facility_name, [$app->public_id], ["class" => (Route::is("visiting.application.view")  && $application->id == $app->id ? "active" : "")]) }}
                             </li>
 
                         @endforeach

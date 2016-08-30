@@ -162,6 +162,7 @@ return [
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
         Bootstrapper\BootstrapperL5ServiceProvider::class,
         Caffeinated\Modules\ModulesServiceProvider::class,
+        ComoCode\LaravelAb\LaravelAbServiceProvider::class,
     ],
     /*
     |--------------------------------------------------------------------------

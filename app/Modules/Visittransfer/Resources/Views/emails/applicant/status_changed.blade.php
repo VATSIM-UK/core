@@ -2,11 +2,11 @@
 
 @section('email-content')
     <p>
-        Your {{ $application->type_string }} application to VATSIM UK has changed status to '{{ $application->status_string }}'.
+        Your {{ $application->type_string }} {{ $application->facility ? "(" . $application->facility_name. ")" : "" }} application to VATSIM UK has changed status to '{{ $application->status_string }}'.
     </p>
 
     @if($application->is_submitted)
-        @if($application->facility->stage_reference_enabled)
+        @if($application->references_required > 0)
             <p>
                 We will now contact your references and request that they complete a reference for you within 14 days.  If the details you have provided are invalid, unacceptable,
                 or your referees fail to complete their reference within the given time frame, your application will be automatically rejected.  Following completion of these, your
@@ -27,7 +27,7 @@
             have completed your application, it simply means the details of your application have been checked and deemed valid.
             You will be informed when your application is <strong>completed</strong>.
         </p>
-        @if($application->is_training_required)
+        @if($application->training_required)
             <p>
                 In order for your application to be deemed completed, you will be required to undergo training.  The training department will contact you
                 to outline the bespoke training plan we will put together for you.
@@ -54,7 +54,7 @@
         <p>
             Congratulations, your {{ $application->type_string }} application for {{ $application->facility_name }} has been completed successfully.
 
-            @if($application->is_training_required)
+            @if($application->training_required)
                 The {{ strtoupper($application->facility->training_team) }} training team have notified us that you have satisfied their requirements.
             @endif
 

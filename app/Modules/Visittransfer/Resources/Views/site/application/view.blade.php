@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
 
-                    @if($application->will_be_auto_accepted && $application->is_submitted)
+                    @if($application->will_auto_accept && $application->is_submitted)
                         <div class="alert alert-success" role="alert">
                             <p>
                                 This application has been accepted pending the automated verification process.
@@ -31,7 +31,7 @@
 
                     <p>
                         <strong>Training Required:</strong>
-                        @if($application->is_training_required)
+                        @if($application->training_required)
                             <span class="label label-success">YES</span>
                         @else
                             <span class="label label-error">NO</span>
@@ -70,8 +70,8 @@
                             <tbody>
                                 <tr>
                                     <th class="text-center">
-                                        @if($application->is_reference_required)
-                                            You have no references.
+                                        @if($application->references_required > 0)
+                                            You have no referees/references.
                                         @else
                                             Your application does not require any references.
                                         @endif
@@ -84,18 +84,24 @@
                 </div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    <pre><strong>Supporting Statement</strong><br />{{ $application->is_statement_required ? $application->statement : "No statement required." }}</pre>
+                    <pre><strong>Supporting Statement</strong><br />{{ $application->statement_required ? $application->statement : "No statement required." }}</pre>
                 </div>
 
 
                 <div class="col-md-10 col-md-offset-1">
-                    <h3>Application Status</h3>
+                    <h3>Application Status - {{ $application->status_string }}</h3>
                     @if($application->is_in_progress)
                         <div class="alert alert-info" role="alert">
                             <p>
                                 This application has not yet been submitted.
                             </p>
                         </div>
+                    @elseif($application->is_cancelled)
+                        <div class="alert alert-danger" role="alert">
+                            <p>
+                                This application has been cancelled.
+                            </p>
+                        </p>
                     @elseif($application->is_pending_references)
                         <div class="alert alert-danger" role="alert">
                             <p>
@@ -120,7 +126,7 @@
                             <p>
                                 Congratulations, your application has been accepted! You will be contacted to discuss the next steps.
                             </p>
-                            @if($application->is_training_required)
+                            @if($application->training_required)
                                 <p class="text-danger">
                                     Your application cannot be completed without receiving training from the {{ strtoupper($application->training_team) }} department.
                                     They will be in touch to discuss this with you.<br />

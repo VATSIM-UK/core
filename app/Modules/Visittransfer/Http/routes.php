@@ -65,6 +65,21 @@ Route::group(["as"         => "visiting.admin.",
         "uses" => "Application@getView",
     ])->where("application", "\d+");
 
+    Route::post("/application/{application}/check/met", [
+        "as" => "application.check.met.post",
+        "uses" => "Application@postCheckMet",
+    ]);
+
+    Route::post("/application/{application}/check/not-met", [
+        "as" => "application.check.notmet.post",
+        "uses" => "Application@postCheckNotMet",
+    ]);
+
+    Route::post("/application/{application}/setting/toggle", [
+        "as" => "application.setting.toggle.post",
+        "uses" => "Application@postSettingToggle",
+    ]);
+
     Route::post("/application/{application}/accept", [
         "as"   => "application.accept.post",
         "uses" => "Application@postAccept",
@@ -138,6 +153,11 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postReferees",
         ]);
 
+        Route::post("/referees/{reference}/delete", [
+            "as"   => "referees.delete.post",
+            "uses" => "Application@postRefereeDelete",
+        ]);
+
         Route::get("/submit", [
             "as"   => "submit",
             "uses" => "Application@getSubmit",
@@ -146,6 +166,16 @@ Route::group(["as"         => "visiting.",
         Route::post("/submit", [
             "as"   => "submit.post",
             "uses" => "Application@postSubmit",
+        ]);
+
+        Route::get("/withdraw", [
+            "as"   => "withdraw",
+            "uses" => "Application@getWithdraw",
+        ]);
+
+        Route::post("/withdraw", [
+            "as"   => "withdraw.post",
+            "uses" => "Application@postWithdraw",
         ]);
 
         Route::get("/view/{applicationByPublicId}", [

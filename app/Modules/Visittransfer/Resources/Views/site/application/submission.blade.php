@@ -1,7 +1,7 @@
 @extends('visittransfer::site.application._layout')
 
 @section('vt-content')
-    <div class="row">
+    <div class="row" id="submissionHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Submission", ["type" => "fa", "key" => "tick"]) !!}
             <div class="row">

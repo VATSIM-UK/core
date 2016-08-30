@@ -1,7 +1,7 @@
 @extends('visittransfer::site.application._layout')
 
 @section('vt-content')
-    <div class="row">
+    <div class="row" id="termsBoxHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Terms &amp; Conditions", ["type" => "fa", "key" => "list"]) !!}
             <div class="row hidden-xs">

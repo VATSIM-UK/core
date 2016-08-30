@@ -4,9 +4,11 @@ use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeAddRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationFacilitySelectedRequested;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeDeleteRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationWithdrawRequest;
 use App\Modules\Visittransfer\Models\Facility;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;
@@ -66,11 +68,11 @@ class Application extends BaseController
             return Redirect::route("visiting.application.facility");
         }
 
-        if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent())){
+        if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->statement == null){
             return Redirect::route("visiting.application.statement");
         }
 
-        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent())){
+        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->number_references_required_relative > 0){
             return Redirect::route("visiting.application.referees");
         }
 
@@ -122,7 +124,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.statement")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.continue")->withSuccess("Statement completed");
+        return Redirect::route("visiting.application.referees")->withSuccess("Statement completed");
     }
 
     public function getReferees(){
@@ -154,6 +156,12 @@ class Application extends BaseController
         return Redirect::route($redirectRoute)->withSuccess("Referee ". Input::get("referee_cid") . " added successfully! They will not be contacted until you submit your application.");
     }
 
+    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, Reference $reference){
+        $reference->delete();
+
+        return Redirect::route("visiting.application.referees")->withSuccess("Referee " . $reference->account->name . " deleted.");
+    }
+
     public function getSubmit(){
         $this->authorize("submit-application", $this->application);
 
@@ -171,8 +179,25 @@ class Application extends BaseController
         return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
     }
 
+    public function getWithdraw(){
+        $this->authorize("withdraw-application", $this->application);
+
+        return $this->viewMake("visittransfer::site.application.withdraw")
+                    ->with("application", $this->application);
+    }
+
+    public function postWithdraw(ApplicationWithdrawRequest $request){
+        try {
+            $this->application->withdraw();
+        } catch(Exception $e){
+            return Redirect::route("visiting.application.withdraw")->withError($e->getMessage());
+        }
+
+        return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been withdrawn! You can submit a new application as required.");
+    }
+
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
-        $this->authorize("view-application", $this->application);
+        $this->authorize("view-application", $application);
 
         $application->load("facility")->load("referees.account");
 

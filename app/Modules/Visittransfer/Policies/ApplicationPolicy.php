@@ -3,6 +3,7 @@
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Models\Reference;
 use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -39,7 +40,7 @@ class ApplicationPolicy {
     }
 
     public function selectFacility(Account $user, Application $application){
-        if(!$application->exists){
+        if(!$application->exists || !$application->is_editable){
             return false;
         }
 
@@ -47,31 +48,41 @@ class ApplicationPolicy {
     }
 
     public function addStatement(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
-        if(!$application->facility->stage_statement_enabled){
+        if(!$application->statement_required){
             return false;
         }
 
-        return $application->statement == null;
+        return true;
     }
 
     public function addReferee(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
-        if(!$application->facility->stage_reference_enabled){
+        if($application->references_required === 0){
             return false;
         }
 
-        if($application->statement == null && $application->facility->stage_statement_enabled){
+        if($application->statement == null && $application->statement_required){
             return false;
         }
 
-        if($application->number_references_required_relative == 0){
+        return true;
+    }
+
+    public function deleteReferee(Account $user, Application $application){
+        $reference = \Request::route("reference");
+
+        if(!$application->facility || !$application->is_editable){
+            return false;
+        }
+
+        if($reference->application->account->id != $user->id){
             return false;
         }
 
@@ -79,11 +90,15 @@ class ApplicationPolicy {
     }
 
     public function submitApplication(Account $user, Application $application){
-        if(!$application->facility){
+        if(!$application->facility || !$application->is_editable){
             return false;
         }
 
-        if($application->number_references_required_relative > 0 && $application->facility->stage_reference_enabled){
+        if($application->statement == null && $application->statement_required){
+            return false;
+        }
+
+        if($application->number_references_required_relative > 0){
             return false;
         }
 
@@ -94,17 +109,59 @@ class ApplicationPolicy {
         return true;
     }
 
+    public function withdrawApplication(Account $user, Application $application){
+        if(!$application->is_in_progress){
+            return false;
+        }
+
+        return true;
+    }
+
     public function viewApplication(Account $user, Application $application){
-        return $application && $user->id == $application->account_id;
+        return $application->exists && $user->id == $application->account_id;
     }
 
     public function accept(Account $user, Application $application){
-        // TODO: Figure this permission stuff out for ACP.
+        if($application->check_outcome_90_day === 0 || $application->check_outcome_90_day === null){
+            return false;
+        }
+
+        if($application->check_outcome_50_hours === 0 || $application->check_outcome_50_hours === null){
+            return false;
+        }
+
+        if(!$application->is_under_review){
+            return false;
+        }
+
+        if($application->is_pending_references){
+            return false;
+        }
+
+        $unacceptedReferences = $application->referees->filter(function ($ref) {
+            return $ref->status == Reference::STATUS_UNDER_REVIEW;
+        })->count();
+
+        if($unacceptedReferences > 0){
+            return false;
+        }
+
         return true;
     }
 
     public function reject(Account $user, Application $application){
-        // TODO: Figure this permission stuff out for ACP.
+        if($application->is_editable || $application->is_closed){
+            return false;
+        }
+
         return true;
+    }
+
+    public function checkOutcome(Account $user, Application $application){
+        return $application->is_under_review;
+    }
+
+    public function settingToggle(Account $user, Application $application){
+        return $application->is_editable;
     }
 }

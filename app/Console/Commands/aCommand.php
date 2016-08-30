@@ -13,11 +13,11 @@ class aCommand extends Command
      * Log a string to STDOUT.
      * If STDOUT is piped/redirected, styling is removed.
      *
-     * @param string $string  The string to output.
+     * @param string $message The string to output.
      * @param null   $style   The styling to output.
      * @param bool   $newline If a new line should be returned at the end.
      */
-    protected function log($string, $style = null, $newline = true)
+    protected function log($message, $style = null, $newline = true)
     {
         // keep styling if output is not piped, or if we can't tell
         if (function_exists('posix_isatty')) {
@@ -28,8 +28,11 @@ class aCommand extends Command
             }
         }
 
+        // Add artisan command name to output
+        $message = $newline ? $this->getName() . " - " . $message : $message;
+
         // add style tags to the output string
-        $styled = $style ? "<$style>$string</$style>" : $string;
+        $styled = $style ? "<$style>$message</$style>" : $message;
 
         // write the output
         $this->output->write($styled, $newline, OutputInterface::VERBOSITY_VERBOSE);

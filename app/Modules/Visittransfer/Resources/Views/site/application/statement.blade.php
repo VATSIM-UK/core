@@ -1,7 +1,7 @@
 @extends('visittransfer::site.application._layout')
 
 @section('vt-content')
-    <div class="row">
+    <div class="row" id="statementHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
             {!! Form::horizontal(["route" => ["visiting.application.statement.post"], "method" => "POST"]) !!}
@@ -17,7 +17,7 @@
                 <div class="clear-both"></div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    {!! Form::textarea("statement") !!}
+                    {!! Form::textarea("statement", $application->statement) !!}
                 </div>
 
                 <div class="clear-both"></div>

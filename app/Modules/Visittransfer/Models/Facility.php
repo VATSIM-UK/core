@@ -90,6 +90,13 @@ class Facility extends Model
         return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class);
     }
 
+    public function addTrainingSpace()
+    {
+        if ($this->training_required == 1 && $this->training_spaces !== null) {
+            $this->increment("training_spaces");
+        }
+    }
+
     public function removeTrainingSpace()
     {
         if ($this->training_required == 1 && $this->training_spaces !== null) {
