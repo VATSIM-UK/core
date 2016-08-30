@@ -12,6 +12,7 @@ use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmitted
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
+use App\Modules\Visittransfer\Exceptions\Application\CheckOutcomeAlreadySetException;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
 use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
@@ -428,8 +429,18 @@ class Application extends Model
         event(new ApplicationCompleted($this));
     }
 
-    public function check90DayQualification(){
-        if(!$this->submitted_at){
+    public function setCheckOutcome($check, $outcome)
+    {
+        $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
+
+        $columnName = "check_outcome_" . $check;
+
+        $this->{$columnName} = (int)$outcome;
+        $this->save();
+    }
+    public function check90DayQualification()
+    {
+        if (!$this->submitted_at) {
             return false;
         }
 
@@ -439,7 +450,8 @@ class Application extends Model
         return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
     }
 
-    public function check50Hours(){
+    public function check50Hours()
+    {
         return false;
     }
 
@@ -492,5 +504,13 @@ class Application extends Model
         }
 
         throw new ApplicationNotAcceptedException($this);
+    }
+
+    private function guardAgainstDuplicateCheckOutcomeSubmission($check)
+    {
+        $tableColumnName = "check_outcome_" . $check;
+        if ($this->{$tableColumnName} !== null) {
+            throw new CheckOutcomeAlreadySetException($this, $check);
+        }
     }
 }

@@ -65,6 +65,16 @@ Route::group(["as"         => "visiting.admin.",
         "uses" => "Application@getView",
     ])->where("application", "\d+");
 
+    Route::post("/application/{application}/check/met", [
+        "as" => "application.check.met.post",
+        "uses" => "Application@postCheckMet",
+    ]);
+
+    Route::post("/application/{application}/check/not-met", [
+        "as" => "application.check.notmet.post",
+        "uses" => "Application@postCheckNotMet",
+    ]);
+
     Route::post("/application/{application}/accept", [
         "as"   => "application.accept.post",
         "uses" => "Application@postAccept",

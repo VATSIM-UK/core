@@ -4,6 +4,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Http\Requests\ApplicationAcceptRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
 use App\Modules\Visittransfer\Models\Reference;
@@ -100,4 +101,29 @@ class Application extends AdmController
         return Redirect::back()
                        ->withSuccess("Application #" . $application->public_id . " - " . $application->account->name . " accepted &amp; candidate notified.");
     }
+
+    public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
+    {
+        try {
+            $application->setCheckOutcome(Input::get("check", null), true);
+        } catch (\Exception $e) {
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
+                Input::get("check", null)) . " check was marked as 'MET'!");
+    }
+
+    public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
+    {
+        try {
+            $application->setCheckOutcome(Input::get("check", null), false);
+        } catch (\Exception $e) {
+            return Redirect::back()->withError($e->getMessage());
+        }
+
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
+                Input::get("check", null)) . " check was marked as 'NOT MET'!");
+    }
+
 }

@@ -122,4 +122,8 @@ class ApplicationPolicy {
         // TODO: Figure this permission stuff out for ACP.
         return true;
     }
+
+    public function checkOutcome(Account $user, Application $application){
+        return $application->is_under_review;
+    }
 }
