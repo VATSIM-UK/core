@@ -7,6 +7,7 @@ use Closure;
 use Redirect;
 use Request;
 use Response;
+use Session;
 
 class AuthUser
 {
