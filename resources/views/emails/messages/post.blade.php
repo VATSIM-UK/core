@@ -2,7 +2,7 @@
 
 @section('content')
     <p>
-        Dear {!! $recipientName ? $recipientName : $recipient->name !!},
+        Dear {!! isset($recipientName) ? $recipientName : $recipient->name !!},
     </p>
 
     {!! $body !!}
