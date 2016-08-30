@@ -10,27 +10,23 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @if($application->is_under_review)
-                                @if($unacceptedReferences->count() > 0)
-                                    {!! Button::danger("Not all references reviewed.")->disable()->withAttributes(["class" => "pull-left"]) !!}
+                            @can("reject", $application)
+                                {!! Button::danger("Reject Application")
+                                           ->withAttributes([
+                                                "class" => "pull-left",
+                                                "data-toggle" => "modal",
+                                                "data-target" => "#modalApplicationReject",
+                                           ]) !!}
+                            @endcan
 
-                                    {!! Button::success("Not all references reviewed.")->disable()->withAttributes(["class" => "pull-right"]) !!}
-                                @else
-                                    {!! Button::danger("Reject Application")
-                                               ->withAttributes([
-                                                    "class" => "pull-left",
-                                                    "data-toggle" => "modal",
-                                                    "data-target" => "#modalApplicationReject",
-                                               ]) !!}
-
-                                    {!! Button::success("Accept Application")
-                                               ->withAttributes([
-                                                    "class" => "pull-right",
-                                                    "data-toggle" => "modal",
-                                                    "data-target" => "#modalApplicationAccept",
-                                               ]) !!}
-                                @endif
-                            @endif
+                            @can("accept", $application)
+                                {!! Button::success("Accept Application")
+                                           ->withAttributes([
+                                                "class" => "pull-right",
+                                                "data-toggle" => "modal",
+                                                "data-target" => "#modalApplicationAccept",
+                                           ]) !!}
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -108,9 +104,11 @@
                                 </h4>
                                 <table class="table table-striped table-bordered table-condensed">
                                     <tr>
-                                        <th class="col-md-2">Referee</small></th>
+                                        <th class="col-md-2">Referee</th>
                                         <td>
                                             @include("adm.partials._account_link", ["account" => $reference->account])
+                                            identified as
+                                            {{ $reference->relationship }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -280,6 +278,7 @@
                                     </th>
                                     <th>
                                         {{ $application->status_string }}
+                                        {!! $application->status_note ? "<br /><small>" . $application->status_note . "</small>" : "" !!}
                                     </th>
                                 </tr>
                                 <tr class="bg-{{ $application->references_accepted->count() == $application->references_required ? "success" : "danger" }}">
@@ -353,7 +352,7 @@
                                         @elseif($application->check_outcome_50_hours === 1)
                                             Applicant has <strong class="text-danger">in excess</strong> of 50 hours at their
                                             present qualified level and has ratified their rating.
-                                        @elseif($application->check_outcome_90_day === null)
+                                        @elseif($application->check_outcome_50_hours === null)
                                             <strong class="text-danger">Data unvailable</strong> - manual check required.<br />
 
                                             @can("check-outcome", $application)

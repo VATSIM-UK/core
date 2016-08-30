@@ -122,12 +122,38 @@ class ApplicationPolicy {
     }
 
     public function accept(Account $user, Application $application){
-        // TODO: Figure this permission stuff out for ACP.
+        if($application->check_outcome_90_day === 0 || $application->check_outcome_90_day === null){
+            return false;
+        }
+
+        if($application->check_outcome_50_hours === 0 || $application->check_outcome_50_hours === null){
+            return false;
+        }
+
+        if(!$application->is_under_review){
+            return false;
+        }
+
+        if($application->is_pending_references){
+            return false;
+        }
+
+        $unacceptedReferences = $application->referees->filter(function ($ref) {
+            return $ref->status == Reference::STATUS_UNDER_REVIEW;
+        })->count();
+
+        if($unacceptedReferences > 0){
+            return false;
+        }
+
         return true;
     }
 
     public function reject(Account $user, Application $application){
-        // TODO: Figure this permission stuff out for ACP.
+        if($application->is_editable || $application->is_closed){
+            return false;
+        }
+
         return true;
     }
 
