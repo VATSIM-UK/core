@@ -139,6 +139,11 @@ class Application extends Model
         return $query->status(self::STATUS_SUBMITTED);
     }
 
+    public static function scopeUnderReview($query)
+    {
+        return $query->status(self::STATUS_UNDER_REVIEW);
+    }
+
     /** All Laravel relationships */
     public function account()
     {
@@ -409,10 +414,17 @@ class Application extends Model
         $this->facility->removeTrainingSpace();
     }
 
-    public function markAsUnderReview()
+    public function markAsUnderReview($staffReason = null, Account $actor = null)
     {
         $this->attributes['status'] = self::STATUS_UNDER_REVIEW;
         $this->save();
+
+        if ($staffReason) {
+            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
+            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $this->notes()->save($note);
+            // TODO: Investigate why this is required!!!!
+        }
 
         event(new ApplicationUnderReview($this));
     }

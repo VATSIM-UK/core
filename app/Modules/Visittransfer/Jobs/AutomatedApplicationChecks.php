@@ -1,21 +1,14 @@
 <?php namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
-use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
-use Bus;
-use Carbon\Carbon;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
 
 class AutomatedApplicationChecks extends Job implements ShouldQueue {
-    use InteractsWithQueue, SerializesModels;
+    use SerializesModels;
 
     private $application = null;
-    private $testsPassed = true;
 
     public function __construct(Application $application){
         $this->application = $application;
@@ -27,31 +20,31 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
      * @return void
      */
     public function handle(){
-        if(!$this->application->is_under_review){
-            return true;
+        if(!$this->application->is_submitted){
+            return;
+        }
+
+        if($this->application->submitted_at == null){
+            return;
         }
 
         $this->checkCurrentRatingOver90Days();
         $this->checkCurrentRating50Hours();
 
-        $this->application->markAsUnderReview();
+        $this->application->markAsUnderReview("Automated checks have completed.");
     }
 
     private function checkCurrentRatingOver90Days(){
-        return true; // TODO: This will need removing once these are implemented properly.
+        $currentATCQualification = $this->account->qualification_atc;
+        $application90DayCutOff = $this->submitted_at->subDays(90);
 
-        $currentAtcQualification = $this->application->account->qualification_atc;
-        $dateAchieved = $currentAtcQualification->pivot->created_at->startOfDay();
-        $daysDifference = $this->application->created_at->startOfDay()->diffInDays($dateAchieved);
+        $hasPassed = $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
 
-        if($daysDifference >= 90){
-            return true;
-        }
-
-        $this->testsPassed = false;
+        $this->application->setCheckOutcome("90_day", $hasPassed);
     }
 
     private function checkCurrentRating50Hours(){
         // TODO: Figure this out.
+        return;
     }
 }

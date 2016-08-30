@@ -41,7 +41,7 @@ class ApplicationsCleanup extends aCommand
 
     private function cancelOldApplications()
     {
-        foreach ($this->loadAllApplications() as $application) {
+        foreach (Application::all() as $application) {
             if ($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))) {
                 //$application->cancel();
                 continue;
@@ -60,7 +60,7 @@ class ApplicationsCleanup extends aCommand
         foreach ($submittedApplications as $application) {
 
             if (!$application->should_perform_checks) {
-                $application->markAsUnderReview();
+                $application->markAsUnderReview("Automated checks have been disabled for this facility - requires manual checking.");
                 continue;
             }
 
@@ -70,14 +70,11 @@ class ApplicationsCleanup extends aCommand
 
     private function autoAcceptApplications()
     {
-        $acceptedApplications = Application::submitted()
-                                           ->where("will_auto_accept", "=", 1)
-                                           ->get()
-                                           ->filter(function ($application) {
-                                               return $application->will_auto_accept;
-                                           });
+        $underReviewApplications = Application::underReview()
+                                              ->where("will_auto_accept", "=", 1)
+                                              ->get();
 
-        foreach ($acceptedApplications as $application) {
+        foreach ($underReviewApplications as $application) {
             $application->accept("Application was automatically accepted as per the facility settings.");
             continue;
         }
@@ -85,24 +82,15 @@ class ApplicationsCleanup extends aCommand
 
     private function autoCompleteNonTrainingApplications()
     {
-        $acceptedApplications = $this->loadAcceptedApplications()
-                                     ->filter(function ($application) {
-                                         return !$application->training_required;
-                                     });
+        $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)
+                                           ->get()
+                                           ->filter(function ($application) {
+                                               return !$application->training_required;
+                                           });
 
         foreach ($acceptedApplications as $application) {
             $application->complete("Application was automatically completed as there is no training requirement.");
             continue;
         }
-    }
-
-    private function loadAllApplications()
-    {
-        return Application::all();
-    }
-
-    private function loadAcceptedApplications()
-    {
-        return Application::status(Application::STATUS_ACCEPTED)->get();
     }
 }
