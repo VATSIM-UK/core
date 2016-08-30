@@ -35,8 +35,8 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
     }
 
     private function checkCurrentRatingOver90Days(){
-        $currentATCQualification = $this->account->qualification_atc;
-        $application90DayCutOff = $this->submitted_at->subDays(90);
+        $currentATCQualification = $this->application->account->qualification_atc;
+        $application90DayCutOff = $this->application->submitted_at->subDays(90);
 
         $hasPassed = $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
 

@@ -64,7 +64,7 @@ class ApplicationsCleanup extends aCommand
                 continue;
             }
 
-            dispatch(new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application));
+            dispatch((new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application))->onQueue("med"));
         }
     }
 
