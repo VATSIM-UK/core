@@ -6,6 +6,7 @@ use App\Models\Statistic;
 use App\Modules\Visittransfer\Http\Requests\ApplicationAcceptRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationSettingToggleRequest;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;
@@ -126,4 +127,10 @@ class Application extends AdmController
                 Input::get("check", null)) . " check was marked as 'NOT MET'!");
     }
 
+    public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)
+    {
+        $application->settingToggle(Input::get("setting"));
+
+        return Redirect::back()->withSuccess("Setting '".Input::get("setting")."' toggled successfully!");
+    }
 }

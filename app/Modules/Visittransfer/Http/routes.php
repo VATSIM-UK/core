@@ -75,6 +75,11 @@ Route::group(["as"         => "visiting.admin.",
         "uses" => "Application@postCheckNotMet",
     ]);
 
+    Route::post("/application/{application}/setting/toggle", [
+        "as" => "application.setting.toggle.post",
+        "uses" => "Application@postSettingToggle",
+    ]);
+
     Route::post("/application/{application}/accept", [
         "as"   => "application.accept.post",
         "uses" => "Application@postAccept",

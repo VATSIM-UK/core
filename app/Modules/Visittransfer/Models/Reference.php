@@ -4,6 +4,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Sys\Token;
 use App\Modules\Visittransfer\Events\ReferenceAccepted;
+use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
@@ -85,6 +86,13 @@ class Reference extends Model
     public static function scopeRejected($query)
     {
         return $query->status(self::STATUS_REJECTED);
+    }
+
+    public function delete()
+    {
+        event(new ReferenceDeleted($this));
+
+        parent::delete();
     }
 
     public function account()
@@ -182,7 +190,8 @@ class Reference extends Model
 
         if ($staffReason) {
             $noteContent = "VT Reference from " . $this->account->name . " was rejected.\n" . $staffReason;
-            $note = $this->application->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent, $actor, $this);
+            $note = $this->application->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent,
+                $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }

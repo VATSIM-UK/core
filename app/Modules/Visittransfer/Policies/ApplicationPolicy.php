@@ -126,4 +126,8 @@ class ApplicationPolicy {
     public function checkOutcome(Account $user, Application $application){
         return $application->is_under_review;
     }
+
+    public function settingToggle(Account $user, Application $application){
+        return $application->is_editable;
+    }
 }

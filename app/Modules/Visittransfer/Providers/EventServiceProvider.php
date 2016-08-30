@@ -50,6 +50,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Modules\Visittransfer\Events\ReferenceRejected::class => [
             \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceRejection::class,
         ],
+
+        \App\Modules\Visittransfer\Events\ReferenceDeleted::class => [
+            \App\Modules\Visittransfer\Listeners\NotifyRefereeOfReferenceDeletion::class,
+        ],
     ];
 
     /**
