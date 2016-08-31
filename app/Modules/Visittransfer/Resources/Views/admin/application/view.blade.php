@@ -343,7 +343,7 @@
                                         @endif
                                     </th>
                                 </tr>
-                                <tr class="bg-{{ $application->check50Hours() ? "success" : "danger" }}">
+                                <tr class="bg-{{ $application->check_outcome_50_hours ? "success" : "danger" }}">
                                     <th>
                                         50 Hour Check
                                     </th>
