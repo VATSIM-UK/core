@@ -45,6 +45,7 @@
                                     <th class="col-md-2">Applicant</th>
                                     <td>
                                         @include("adm.partials._account_link", ["account" => $application->account])
+                                        ({{ $application->account->email }})
                                     </td>
                                 </tr>
                                 <tr>
