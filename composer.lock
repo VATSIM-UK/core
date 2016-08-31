@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a5ba142edc227404620dffbf5ef0007",
-    "content-hash": "52e75102160be1375ca41a050fb44437",
+    "hash": "574a905919bbf41be12408dbe6ff432d",
+    "content-hash": "e848bb8f8bfff786bf3f04898cc95b07",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -1752,16 +1752,16 @@
         },
         {
             "name": "malahierba-lab/public-id",
-            "version": "1.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/malahierba-lab/public-id.git",
-                "reference": "b4fd2ea5cb7906718c7e409482e273218ee1596c"
+                "url": "https://github.com/A-Lawrence/public-id.git",
+                "reference": "89c587710895a4469c4e936a9772e9d4c4154e44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/malahierba-lab/public-id/zipball/b4fd2ea5cb7906718c7e409482e273218ee1596c",
-                "reference": "b4fd2ea5cb7906718c7e409482e273218ee1596c",
+                "url": "https://api.github.com/repos/A-Lawrence/public-id/zipball/89c587710895a4469c4e936a9772e9d4c4154e44",
+                "reference": "89c587710895a4469c4e936a9772e9d4c4154e44",
                 "shasum": ""
             },
             "require": {
@@ -1775,7 +1775,6 @@
                     "Malahierba\\PublicId\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1795,7 +1794,10 @@
                 "public id",
                 "short id"
             ],
-            "time": "2015-08-16 22:19:33"
+            "support": {
+                "source": "https://github.com/A-Lawrence/public-id/tree/master"
+            },
+            "time": "2016-08-20 12:31:28"
         },
         {
             "name": "maximebf/debugbar",
@@ -5213,7 +5215,8 @@
     "stability-flags": {
         "planetteamspeak/ts3-php-framework": 20,
         "vluzrmos/slack-api": 20,
-        "caffeinated/modules": 20
+        "caffeinated/modules": 20,
+        "malahierba-lab/public-id": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
