@@ -355,7 +355,6 @@
                                         @elseif($application->check_outcome_50_hours === null)
                                             <strong class="text-danger">Data unvailable</strong> - manual check required.<br />
 
-                                            @can("check-outcome", $application)
                                                 {!!
                                                 Modal::named("outcome_50_hour_not_met")
                                                      ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
@@ -381,7 +380,6 @@
                                                      )
                                                      ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
                                                 !!}
-                                            @endcan
 
                                         @elseif($application->check_outcome_50_hours === 0)
                                             Applicant <strong class="text-danger">does not have in excess</strong> of 50 hours at their
