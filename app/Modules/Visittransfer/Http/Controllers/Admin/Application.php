@@ -105,6 +105,7 @@ class Application extends AdmController
 
     public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
     {
+die("HUH");
         try {
             $application->setCheckOutcome(Input::get("check", null), true);
         } catch (\Exception $e) {
