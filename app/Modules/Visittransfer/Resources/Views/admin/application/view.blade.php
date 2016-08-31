@@ -45,6 +45,7 @@
                                     <th class="col-md-2">Applicant</th>
                                     <td>
                                         @include("adm.partials._account_link", ["account" => $application->account])
+                                        ({{ $application->account->email }})
                                     </td>
                                 </tr>
                                 <tr>
@@ -342,7 +343,7 @@
                                         @endif
                                     </th>
                                 </tr>
-                                <tr class="bg-{{ $application->check50Hours() ? "success" : "danger" }}">
+                                <tr class="bg-{{ $application->check_outcome_50_hours ? "success" : "danger" }}">
                                     <th>
                                         50 Hour Check
                                     </th>
@@ -355,7 +356,6 @@
                                         @elseif($application->check_outcome_50_hours === null)
                                             <strong class="text-danger">Data unvailable</strong> - manual check required.<br />
 
-                                            @can("check-outcome", $application)
                                                 {!!
                                                 Modal::named("outcome_50_hour_not_met")
                                                      ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
@@ -381,7 +381,6 @@
                                                      )
                                                      ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
                                                 !!}
-                                            @endcan
 
                                         @elseif($application->check_outcome_50_hours === 0)
                                             Applicant <strong class="text-danger">does not have in excess</strong> of 50 hours at their

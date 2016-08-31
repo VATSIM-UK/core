@@ -12,13 +12,14 @@ class ApplicationPolicy {
     use HandlesAuthorization;
 
     public function before(Account $user){
+    }
+
+    public function create(Account $user, Application $application){
         // If they are currently a division member, they are not authorised.
         if($user->hasState(State::STATE_DIVISION)){
             return false;
         }
-    }
 
-    public function create(Account $user, Application $application){
         // If they currently HAVE an application open, then they are not authorised.
         $countCurrentApplications = $user->visitTransferApplications()
                                          ->open()

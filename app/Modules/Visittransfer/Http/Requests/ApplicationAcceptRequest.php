@@ -15,7 +15,7 @@ class ApplicationAcceptRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			"accept_staff_note" => "required|string|min:40",
+			"accept_staff_note" => "string",
 		];
 	}
 
@@ -26,9 +26,7 @@ class ApplicationAcceptRequest extends FormRequest
 	 */
 	public function messages(){
 		return [
-			"accept_staff_note.required" => "You must provide a detailed staff note for this acceptance.",
 			"accept_staff_note.string" => "You must only provide alphanumeric text in your staff note.",
-			"accept_staff_note.min" => "When providing a staff note it must be a minimum of 40 characters.",
 		];
 	}
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "28acb80dc7575249e007397ef75bf32a",
+    "hash": "6a5ba142edc227404620dffbf5ef0007",
     "content-hash": "52e75102160be1375ca41a050fb44437",
     "packages": [
         {
@@ -312,7 +312,7 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/A-Lawrence/modules/tree/dev-extradirectories"
+                "source": "https://github.com/A-Lawrence/modules/tree/extra-directories"
             },
             "time": "2016-06-20 16:50:54"
         },
@@ -1229,6 +1229,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
+            "abandoned": "laravelcollective/html",
             "time": "2015-01-01 16:31:18"
         },
         {
