@@ -252,13 +252,13 @@
                                         <td>{{ $reference->application->type_string }}</td>
                                         <td>{{ $reference->application->facility_name }}</td>
                                         <td class="hidden-xs hidden-sm">
-                                            <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}
+                                            <span class="hidden-xs">{{ $reference->application->submitted_at }} UTC</span>
+                                            <span class="visible-xs">{{ $reference->application->submitted_at->toFormattedDateString() }}
                                                 UTC</span>
                                         </td>
                                         <td class="hidden-xs hidden-sm">
-                                            <span class="hidden-xs">{{ $application->submitted_at }} UTC</span>
-                                            <span class="visible-xs">{{ $application->submitted_at->toFormattedDateString() }}
+                                            <span class="hidden-xs">{{ $reference->application->submitted_at->addDays(10) }} UTC</span>
+                                            <span class="visible-xs">{{ $reference->application->submitted_at->addDays(10)->toFormattedDateString() }}
                                                 UTC</span>
                                         </td>
                                         <td class="text-center">
