@@ -3,6 +3,7 @@
 ### 2.3.3 > 2.3.4
 * Run `php artisan module:migrate visittransfer -vvv`
 * Modify cronjob for visittransfer:cleanup to run every minute
+* Run `gulp --production`
 
 ### 2.3.2 > 2.3.3
 * Run composer update -o --no-dev
