@@ -21,6 +21,7 @@ class ApplicationRefereeAddRequest extends FormRequest
             "referee_cid"      => "required|numeric|min:800000|max:2000000",
             "referee_email"    => "required|email",
             "referee_relationship" => "required|string",
+            "no_self_reference" => "required|accepted",
         ];
     }
 
@@ -53,11 +54,13 @@ class ApplicationRefereeAddRequest extends FormRequest
         return Gate::allows("add-referee", Auth::user()->visitTransferCurrent());
     }
 
-    protected function getValidatorInstance()
-    {
+    protected function getValidatorInstance(){
         $data = $this->all();
+        $data['no_self_reference'] = true;
 
-        // Extra.
+        if(Auth::user()->id == array_get($data, "referee_cid", null)){
+            $data['no_self_reference'] = false;
+        }
 
         $this->getInputSource()->replace($data);
 
