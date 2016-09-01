@@ -25,8 +25,12 @@
 
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        @can("create", new \App\Modules\Visittransfer\Models\Application)
-                            {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
+                        @if(!\App\Modules\Visittransfer\Models\Facility::isPossibleToVisitAtc())
+                            {!! Button::danger("THERE ARE NO VISITING ATC PLACES")->disable() !!}
+                        @else
+                            @can("create", new \App\Modules\Visittransfer\Models\Application)
+                                {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
+
                             @elseif($currentVisitApplication)
                                 @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
                                     {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
@@ -38,6 +42,7 @@
                             @else
                                 {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
                             @endcan
+                        @endif
                     </div>
                 </div>
 
@@ -66,8 +71,11 @@
 
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        @can("create", new \App\Modules\Visittransfer\Models\Application)
-                            {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
+                        @if(!\App\Modules\Visittransfer\Models\Facility::isPossibleToVisitPilot())
+                            {!! Button::danger("THERE ARE NO VISITING ATC PLACES")->disable() !!}
+                        @else
+                            @can("create", new \App\Modules\Visittransfer\Models\Application)
+                                {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
                             @elseif($currentVisitApplication)
                                 @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
                                     {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
@@ -79,6 +87,7 @@
                             @else
                                 {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
                             @endcan
+                        @endif
                     </div>
                 </div>
 
@@ -108,8 +117,11 @@
 
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    @can("create", new \App\Modules\Visittransfer\Models\Application)
-                        {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER, 'atc'])) !!}
+                    @if(!\App\Modules\Visittransfer\Models\Facility::isPossibleToTransfer())
+                        {!! Button::danger("THERE ARE NO TRANSFER PLACES")->disable() !!}
+                    @else
+                        @can("create", new \App\Modules\Visittransfer\Models\Application)
+                            {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER, 'atc'])) !!}
                         @elseif($currentTransferApplication)
                             {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
                         @elseif($currentVisitApplication)
@@ -117,6 +129,7 @@
                         @else
                             {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
                         @endcan
+                    @endif
                 </div>
             </div>
 

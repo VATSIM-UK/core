@@ -1,5 +1,10 @@
 ## Upgrade Notes
 
+### 2.3.2 > 2.3.3
+* Run composer update -o --no-dev
+* Run `php artisan visittransfer:statistics:daily 2016-08-22 yesterday -vvv`
+* Run `gulp --production`
+
 ### 2.3.1 > 2.3.2
 * Run composer install -o --no-dev
 * Run `php artisan module:migrate visittransfer -vvv`

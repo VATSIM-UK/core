@@ -52,6 +52,8 @@
                                     <th class="col-md-2">Current Rating</th>
                                     <td>
                                         @include("mship.partials._qualification", ["qualification" => $application->account->qualification_atc])
+                                        /
+                                        {{ $application->account->qualifications_pilot_string }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -289,10 +291,12 @@
                                     <th>
                                         @if($application->references_required < 1)
                                             References <strong class="text-danger">are not required</strong>.
-                                        @elseif($application->number_references_required_relative == 0)
-                                            All references <strong class="text-danger">have been accepted</strong>.
-                                        @else
+                                        @elseif($application->is_pending_references)
+                                            Some references <strong class="text-danger">have not been submitted</strong>.
+                                        @elseif($application->references_required != $application->references_accepted->count())
                                             Some references <strong class="text-danger">have not been accepted</strong>.
+                                        @else
+                                            All references <strong class="text-danger">have been accepted</strong>.
                                         @endif
                                     </th>
                                 </tr>
