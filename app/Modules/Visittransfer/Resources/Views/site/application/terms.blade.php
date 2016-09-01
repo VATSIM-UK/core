@@ -24,6 +24,12 @@
                         ) !!}
 
                         {!! ControlGroup::generate(
+                            Form::label("terms_one_hour", "I confirm that will complete this application within 60 minutes&nbsp;&nbsp;"),
+                            Form::checkbox("terms_one_hour", true, false),
+                            Form::help("After 60 minutes your application will automatically be deleted if it isn't submitted.")
+                        ) !!}
+
+                        {!! ControlGroup::generate(
                             Form::label("terms_hours_minimum", "I confirm that I have consolidated my rating by controlling for 50 hours in my home division&nbsp;&nbsp;"),
                             Form::checkbox("terms_hours_minimum", true, false),
                             Form::help("A rating that has not been consolidated cannot be considered for an application to visit or transfer.")

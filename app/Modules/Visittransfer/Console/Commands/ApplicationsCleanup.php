@@ -6,6 +6,7 @@ use App\Console\Commands\aCommand;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\State;
 use App\Models\Statistic;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationsCleanup extends aCommand
@@ -41,10 +42,14 @@ class ApplicationsCleanup extends aCommand
 
     private function cancelOldApplications()
     {
-        foreach (Application::all() as $application) {
-            if ($application->updated_at->lt(\Carbon\Carbon::now()->subMinutes("30"))) {
-                //$application->cancel();
-                continue;
+        foreach (Application::status(Application::STATUS_IN_PROGRESS)->get() as $application) {
+            if($application->expires_at->lt(\Carbon\Carbon::now())){
+                try {
+                    $application->expire();
+                } catch(ApplicationCannotBeExpiredException $e){
+                    dd($e);
+                    // Do nothing here.  We don't care.  Maybe we were just late in catching them.
+                }
             }
         }
     }

@@ -5,11 +5,13 @@ namespace App\Modules\Visittransfer\Models;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Events\ApplicationCompleted;
+use App\Modules\Visittransfer\Events\ApplicationExpired;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
 use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
@@ -45,6 +47,7 @@ class Application extends Model
         "facility_id",
         "statement",
         "status",
+        "expires_at",
     ];
     public    $timestamps = true;
     protected $dates      = [
@@ -92,6 +95,13 @@ class Application extends Model
     static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
     ];
+
+    public static function create(array $attributes = [])
+    {
+        $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
+
+        return parent::create($attributes); //
+    }
 
     /** All Laravel scopes **/
     public static function scopeOfType($query, $type)
@@ -424,6 +434,20 @@ class Application extends Model
         }
     }
 
+    public function expire()
+    {
+        $this->guardAgainstInvalidExpiry();
+
+        $this->attributes['status'] = self::STATUS_EXPIRED;
+        $this->save();
+
+        event(new ApplicationExpired($this));
+
+        if ($this->facility) {
+            $this->facility->addTrainingSpace();
+        }
+    }
+
     public function submit()
     {
         $this->guardAgainstInvalidSubmission();
@@ -653,5 +677,14 @@ class Application extends Model
         }
 
         throw new ApplicationCannotBeWithdrawnException($this);
+    }
+
+    private function guardAgainstInvalidExpiry()
+    {
+        if ($this->is_in_progress) {
+            return;
+        }
+
+        throw new ApplicationCannotBeExpiredException($this);
     }
 }
