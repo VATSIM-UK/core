@@ -52,6 +52,8 @@
                                     <th class="col-md-2">Current Rating</th>
                                     <td>
                                         @include("mship.partials._qualification", ["qualification" => $application->account->qualification_atc])
+                                        /
+                                        {{ $application->account->qualifications_pilot_string }}
                                     </td>
                                 </tr>
                                 <tr>
