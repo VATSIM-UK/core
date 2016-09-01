@@ -5,12 +5,6 @@ namespace App\Modules\Visittransfer\Models;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Modules\Ais\Models\Fir
- *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Aerodrome[]  $airfields
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Ais\Models\Fir\Sector[] $sectors
- */
 class Facility extends Model
 {
 
@@ -32,6 +26,21 @@ class Facility extends Model
         "auto_acceptance",
     ];
 
+    public static function isPossibleToVisitAtc()
+    {
+        return Facility::canVisit()->atc()->isOpen()->count() > 0;
+    }
+
+    public static function isPossibleToVisitPilot()
+    {
+        return Facility::canVisit()->pilot()->isOpen()->count() > 0;
+    }
+
+    public static function isPossibleToTransfer()
+    {
+        return Facility::canTransfer()->isOpen()->hasTrainingSpace()->count() > 0;
+    }
+
     public static function create(array $attributes = [])
     {
         (new Facility)->guardAgainstDuplicateFacilityName(array_get($attributes, "name", ""));
@@ -43,46 +52,64 @@ class Facility extends Model
     {
         (new Facility)->guardAgainstDuplicateFacilityName(array_get($attributes, "name", ""), $this->id);
 
-        if(strcasecmp(array_get($attributes, "training_spaces", null), "null") == 0){
+        if (strcasecmp(array_get($attributes, "training_spaces", null), "null") == 0) {
             $attributes['training_spaces'] = null;
         }
 
         return parent::update($attributes, $options);
     }
 
-    public static function scopeAtc($query)
+    public function scopeAtc($query)
     {
         return $query->where("training_team", "=", "atc");
     }
 
-    public static function scopePilot($query)
+    public function scopePilot($query)
     {
         return $query->where("training_team", "=", "pilot");
     }
 
-    public static function scopeCanVisit($query)
+    public function scopeIsOpen($query)
+    {
+        return $query;
+    }
+
+    public function scopeIsClosed($query)
+    {
+        return $query;
+    }
+
+    public function scopeCanVisit($query)
     {
         return $query->where("can_visit", "=", "1");
     }
 
-    public static function scopeOnlyVisit($query)
+    public function scopeOnlyVisit($query)
     {
         return $query->where("can_visit", "=", "1")->where("can_transfer", "=", "0");
     }
 
-    public static function scopeCanTransfer($query)
+    public function scopeCanTransfer($query)
     {
         return $query->where("can_transfer", "=", "1")->trainingRequired();
     }
 
-    public static function scopeOnlyTransfer($query)
+    public function scopeOnlyTransfer($query)
     {
         return $query->where("can_visit", "=", "0")->where("can_transfer", "=", "1");
     }
 
-    public static function scopeTrainingRequired($query)
+    public function scopeTrainingRequired($query)
     {
         return $query->where("training_required", "=", 1);
+    }
+
+    public function scopeHasTrainingSpace($query)
+    {
+        return $query->where(function ($query) {
+                         $query->where("training_spaces", ">", 0)
+                               ->orWhereNull("training_spaces");
+                     });
     }
 
     public function applications()
