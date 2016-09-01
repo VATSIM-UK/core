@@ -133,7 +133,7 @@ class Application extends Model
 
     public static function scopeClosed($query)
     {
-        return $query->status(self::$APPLICATION_IS_CONSIDERED_CLOSED);
+        return $query->statusIn(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
     public static function scopeSubmitted($query)
