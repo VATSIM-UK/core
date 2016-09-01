@@ -38,6 +38,14 @@ class Application extends AdmController
                 $this->setSubTitle("Open Applications");
                 $applications = $applications->open()->notStatus(ApplicationModel::STATUS_IN_PROGRESS);
                 break;
+            case "review":
+                $this->setSubTitle("Under Review Applications");
+                $applications = $applications->status(ApplicationModel::STATUS_UNDER_REVIEW);
+                break;
+            case "accepted":
+                $this->setSubTitle("Accepted Applications");
+                $applications = $applications->status(ApplicationModel::STATUS_ACCEPTED);
+                break;
             case "closed":
                 $this->setSubTitle("Closed Applications");
                 $applications = $applications->closed();

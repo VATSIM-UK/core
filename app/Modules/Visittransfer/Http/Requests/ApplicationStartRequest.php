@@ -18,6 +18,7 @@ class ApplicationStartRequest extends FormRequest
 	{
 		return [
 			"terms_read" => "required",
+			"terms_one_hour" => "required",
 			"terms_hours_minimum" => "required",
 			"terms_hours_minimum_relevant" => "required",
 			"terms_recent_transfer" => "required",
@@ -36,6 +37,7 @@ class ApplicationStartRequest extends FormRequest
 	public function messages(){
 		return [
 			"terms_read.required" => "You are required to read the VTCP.",
+			"terms_one_hour.required" => "You must agree to complete your application within 1 hour.",
 			"terms_hours_minimum.required" => "You must confirm that you have the minimum number of hours at your present rating.",
 			"terms_hours_minimum_relevant.required" => "The hours you have achieved, must be at a relevant rating.",
 			"terms_recent_transfer.required" => "You are only permitted to visit/transfer once every 90 days.",

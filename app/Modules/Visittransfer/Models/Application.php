@@ -5,11 +5,13 @@ namespace App\Modules\Visittransfer\Models;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Events\ApplicationCompleted;
+use App\Modules\Visittransfer\Events\ApplicationExpired;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
 use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
@@ -45,19 +47,22 @@ class Application extends Model
         "facility_id",
         "statement",
         "status",
+        "expires_at",
     ];
     public    $timestamps = true;
     protected $dates      = [
+        "expires_at",
         "submitted_at",
         "created_at",
-        "updated_at"
+        "updated_at",
     ];
 
     const TYPE_VISIT    = 10;
     const TYPE_TRANSFER = 40;
 
     const STATUS_IN_PROGRESS  = 10; // Member hasn't yet submitted application formally.
-    const STATUS_WITHDRAWN    = 15; // Application has been withdrawn
+    const STATUS_WITHDRAWN    = 15; // Application has been withdrawn.
+    const STATUS_EXPIRED      = 16; // Application expired after 1 hour.
     const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
     const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
@@ -82,6 +87,7 @@ class Application extends Model
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
         self::STATUS_WITHDRAWN,
+        self::STATUS_EXPIRED,
         self::STATUS_CANCELLED,
         self::STATUS_REJECTED,
     ];
@@ -89,6 +95,13 @@ class Application extends Model
     static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
     ];
+
+    public static function create(array $attributes = [])
+    {
+        $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
+
+        return parent::create($attributes); //
+    }
 
     /** All Laravel scopes **/
     public static function scopeOfType($query, $type)
@@ -272,6 +285,8 @@ class Application extends Model
                 return "In Progress";
             case self::STATUS_WITHDRAWN:
                 return "Withdrawn";
+            case self::STATUS_EXPIRED:
+                return "Expired Automatically";
             case self::STATUS_SUBMITTED:
                 return "Submitted";
             case self::STATUS_UNDER_REVIEW:
@@ -414,7 +429,21 @@ class Application extends Model
 
         event(new ApplicationWithdrawn($this));
 
-        if($this->facility){
+        if ($this->facility) {
+            $this->facility->addTrainingSpace();
+        }
+    }
+
+    public function expire()
+    {
+        $this->guardAgainstInvalidExpiry();
+
+        $this->attributes['status'] = self::STATUS_EXPIRED;
+        $this->save();
+
+        event(new ApplicationExpired($this));
+
+        if ($this->facility) {
             $this->facility->addTrainingSpace();
         }
     }
@@ -643,10 +672,19 @@ class Application extends Model
 
     private function guardAgainstInvalidWithdrawal()
     {
-        if($this->is_in_progress){
+        if ($this->is_in_progress) {
             return;
         }
 
         throw new ApplicationCannotBeWithdrawnException($this);
+    }
+
+    private function guardAgainstInvalidExpiry()
+    {
+        if ($this->is_in_progress) {
+            return;
+        }
+
+        throw new ApplicationCannotBeExpiredException($this);
     }
 }

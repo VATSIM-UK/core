@@ -33,7 +33,7 @@ class Application extends BaseController
             try {
                 $application = $this->startApplication($applicationType, $trainingTeam);
             } catch(Exception $e){
-                return Redirect::route("visiting.dashboard")->withError($e->getMessage());
+                return Redirect::route("visiting.landing")->withError($e->getMessage());
             }
 
             return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
@@ -193,7 +193,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.withdraw")->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been withdrawn! You can submit a new application as required.");
+        return Redirect::route("visiting.landing")->withSuccess("Your application has been withdrawn! You can submit a new application as required.");
     }
 
     public function getView(\App\Modules\Visittransfer\Models\Application $application){
