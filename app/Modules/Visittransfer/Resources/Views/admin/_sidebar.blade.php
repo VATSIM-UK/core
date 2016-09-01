@@ -51,6 +51,28 @@
                     </a>
                 </li>
 
+                <li {{ (\Request::is('adm/visit-transfer/application/lists/review') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["review"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Review Applications</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_applications_review !!}</small>
+                        </span>
+                    </a>
+                </li>
+
+                <li {{ (\Request::is('adm/visit-transfer/application/lists/accepted') ? ' class="active"' : '') }}>
+                    <a href="{{ URL::route("visiting.admin.application.list", ["accepted"]) }}">
+                        <i class="fa fa-bars"></i>
+                        <span>Accepted Applications</span>
+
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-green">{!! $visittransfer_statistics_applications_accepted !!}</small>
+                        </span>
+                    </a>
+                </li>
+
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/closed') ? ' class="active"' : '') }}>
                     <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}">
                         <i class="fa fa-bars"></i>

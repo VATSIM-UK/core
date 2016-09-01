@@ -12,6 +12,8 @@ class StatisticsComposer {
     public function compose(View $view){
         $view->with("visittransfer_statistics_applications_total", Application::all()->count());
         $view->with("visittransfer_statistics_applications_open", Application::open()->notStatus(Application::STATUS_IN_PROGRESS)->count());
+        $view->with("visittransfer_statistics_applications_review", Application::open()->status(Application::STATUS_UNDER_REVIEW)->count());
+        $view->with("visittransfer_statistics_applications_accepted", Application::open()->status(Application::STATUS_ACCEPTED)->count());
         $view->with("visittransfer_statistics_applications_closed", Application::closed()->count());
 
 
