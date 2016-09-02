@@ -182,6 +182,7 @@ We welcome merge requests with fixes and improvements to the project.  The featu
 If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core Web Services Repository](https://gitlab.com/vatsim-uk/core/issues).
 
 The work-flow for submitting a new merge request is designed to be simple, but also ensure consistency from **all** contributors:
+
 * Fork the project into your personal space on GitLab.com
 * Create a new branch (with the name `<issue_number>-<name>`, replacing issue_number with the issue number you're resolving)
  * The exception to this is where an entire feature is being tackled, spanning multiple issues.  In this case you can create a `feature/<name>` branch.
