@@ -254,6 +254,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
                 "name_last"  => $retrievedData->name_last,
             ]);
 
+            $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
+            $account->addState($state);
+
             \Artisan::queue("Members:CertUpdate", [
                 "--force" => $accountId,
             ]);
