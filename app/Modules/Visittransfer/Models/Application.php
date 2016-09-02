@@ -513,7 +513,7 @@ class Application extends Model
         event(new ApplicationCompleted($this));
 
         if ($this->is_visit) {
-            $this->account->addState(State::findByCode("VISITNG"));
+            $this->account->addState(State::findByCode("VISITING"));
         } elseif ($this->is_transfer) {
             $this->account->removeState(State::findByCode("TRANSFERRING"));
             $this->account->addState(State::findByCode("DIVISION"));
