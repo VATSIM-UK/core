@@ -519,6 +519,9 @@ class Application extends Model
             $this->account->addState(State::findByCode("TRANSFERRING"));
         }
 
+        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(3));
+        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($this->account))->delay($delayOffset));
+
         event(new ApplicationAccepted($this));
     }
 
