@@ -25,7 +25,7 @@ class MshipStateTest extends TestCase
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
 
-        $this->account->addState($divisionState);
+        $this->account->fresh()->addState($divisionState, "EUR", "GBR");
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -39,7 +39,7 @@ class MshipStateTest extends TestCase
     {
         $this->setExpectedException(\App\Exceptions\Mship\InvalidStateException::class);
 
-        $this->account->hasState($this->account);
+        $this->account->fresh()->hasState($this->account);
     }
 
     /** @test */
@@ -48,7 +48,7 @@ class MshipStateTest extends TestCase
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
         $regionState = \App\Models\Mship\State::findByCode("REGION");
 
-        $this->account->addState($regionState);
+        $this->account->fresh()->addState($regionState, "EUR", "EUD");
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -56,7 +56,7 @@ class MshipStateTest extends TestCase
             "end_at" => null,
         ]);
 
-        $this->account->fresh()->addState($divisionState);
+        $this->account->fresh()->fresh()->addState($divisionState, "EUR", "GBR");
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -82,7 +82,7 @@ class MshipStateTest extends TestCase
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
         $regionState = \App\Models\Mship\State::findByCode("REGION");
 
-        $this->account->addState($visitorState);
+        $this->account->fresh()->addState($visitorState);
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -90,7 +90,7 @@ class MshipStateTest extends TestCase
             "end_at" => null,
         ]);
 
-        $this->account->fresh()->addState($regionState);
+        $this->account->fresh()->fresh()->addState($regionState, "EUR", "EUD");
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -111,7 +111,7 @@ class MshipStateTest extends TestCase
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
 
-        $this->account->addState($visitorState);
+        $this->account->fresh()->addState($visitorState);
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -119,7 +119,7 @@ class MshipStateTest extends TestCase
             "end_at" => null,
         ]);
 
-        $this->account->fresh()->addState($divisionState);
+        $this->account->fresh()->addState($divisionState, "EUR", "GBR");
 
         $this->seeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
@@ -144,7 +144,7 @@ class MshipStateTest extends TestCase
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
 
-        $this->account->addState($divisionState);
+        $this->account->fresh()->addState($divisionState, "EUR", "GBR");
 
         $this->assertEquals($divisionState->id, $this->account->fresh()->primary_state->id);
     }
@@ -155,8 +155,8 @@ class MshipStateTest extends TestCase
         $regionState = \App\Models\Mship\State::findByCode("REGION");
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
 
-        $this->account->addState($regionState);
-        $this->account->addState($visitorState);
+        $this->account->fresh()->addState($regionState, "EUR", "EUD");
+        $this->account->fresh()->addState($visitorState);
 
         $this->assertEquals($visitorState->id, $this->account->fresh()->primary_state->id);
     }
@@ -168,9 +168,9 @@ class MshipStateTest extends TestCase
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
         $transferringState = \App\Models\Mship\State::findByCode("TRANSFERRING");
 
-        $this->account->addState($regionState);
-        $this->account->addState($visitorState);
-        $this->account->addState($transferringState);
+        $this->account->fresh()->addState($regionState, "EUR", "EUD");
+        $this->account->fresh()->addState($visitorState);
+        $this->account->fresh()->addState($transferringState);
 
         $this->assertEquals($transferringState->id, $this->account->fresh()->primary_state->id);
     }
@@ -182,7 +182,15 @@ class MshipStateTest extends TestCase
 
         $regionState = \App\Models\Mship\State::findByCode("REGION");
 
-        $this->account->addState($regionState);
-        $this->account->fresh()->addState($regionState);
+        $this->account->fresh()->addState($regionState, "EUR", "EUD");
+        $this->account->fresh()->addState($regionState, "EUR", "EUD");
+    }
+
+    /** @test */
+    public function it_remains_idempotent_when_trying_to_remove_a_state_that_isnt_set()
+    {
+        $regionState = \App\Models\Mship\State::findByCode("REGION");
+
+        $this->account->fresh()->removeState($regionState);
     }
 }

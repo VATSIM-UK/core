@@ -477,7 +477,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     }
 
     /**
-     * Return all related states for this account.
+     * Return all active related states for this account.
      *
      * @return mixed
      */
@@ -486,6 +486,18 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->belongsToMany(State::class, "mship_account_state", "account_id", "state_id")
                     ->withPivot(["region", "division", "start_at", "end_at"])
                     ->wherePivot("end_at", null);
+    }
+
+    /**
+     * Return all related states for this account.
+     *
+     * @return mixed
+     */
+    public function statesHistory()
+    {
+        return $this->belongsToMany(State::class, "mship_account_state", "account_id", "state_id")
+                    ->withPivot(["region", "division", "start_at", "end_at"])
+                    ->orderBy("pivot_start_at", "DESC");
     }
 
     public function ssoEmails()
@@ -652,7 +664,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      *
      * @return bool
      */
-    public function hasState($search, $region, $division)
+    public function hasState($search)
     {
         if (is_string($search)) {
             $search = State::findByCode($search);
@@ -661,33 +673,36 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
 
         return $this->states
-                    ->where("id", $search->id)
-                    ->where("region", $region)
-                    ->where("division", $division);
+            ->contains("id", $search->id);
     }
 
     /**
      * Set the account's current state to the given value.
      *
-     * @param State $state The state to set.
-     * @param string|null  $region Member's region
-     * @param string|null  $division Member's division
+     * @param State       $state    The state to set.
+     * @param string|null $region   Member's region
+     * @param string|null $division Member's division
      *
      * @return mixed
      * @throws \App\Exceptions\Mship\DuplicateStateException
      * @throws \App\Exceptions\Mship\InvalidStateException
      */
-    public function addState(\App\Models\Mship\State $state, $region, $division)
+    public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
         /**
          * THIS IS LEGACY FUNCTIONALITY TO CONVERT ALL OLD STATES TO ACTUALLY STORING
          * REGION AND DIVISION.
          */
-        $checkLegacy = $this->hasState($state, NULL, NULL);
+        $checkLegacy = DB::table("mship_account_state")
+                         ->where("account_id", "=", $this->id)
+                         ->where("state_id", "=", $state->id)
+                         ->whereNull("region")
+                         ->whereNull("division")
+                         ->count() > 0;
 
-        if($checkLegacy){
+        if ($checkLegacy) {
             $this->fresh()->states()->updateExistingPivot($state->id, [
-                "region" => $region,
+                "region"   => $region,
                 "division" => $division,
             ]);
 
@@ -698,33 +713,29 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
          * END OF LEGACY FUNCTIONALITY.
          */
 
-        if ($this->fresh()->hasState($state)) {
+        if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
 
         if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
-            $this->fresh()->removeState($this->primary_state);
+            $this->removeState($this->primary_state);
         }
 
         if ($state->delete_all_temps) {
             $this->temporaryStates->map(function ($tempState) {
-                $this->fresh()->removeState($tempState);
+                $this->removeState($tempState);
             });
         }
 
-        return $this->fresh()->states()->attach($state, [
+        return $this->states()->attach($state, [
             "start_at" => \Carbon\Carbon::now(),
-            "region" => $region,
+            "region"   => $region,
             "division" => $division,
         ]);
     }
 
     public function removeState(\App\Models\Mship\State $state)
     {
-        if (!$this->hasState($state)) {
-            throw new \App\Exceptions\Mship\InvalidStateException($state);
-        }
-
         return $this->states()->updateExistingPivot($state->id, [
             "end_at" => \Carbon\Carbon::now(),
         ]);

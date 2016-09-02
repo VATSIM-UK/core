@@ -3,6 +3,7 @@
 namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\State;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Events\ApplicationCompleted;
 use App\Modules\Visittransfer\Events\ApplicationRejected;
@@ -414,8 +415,12 @@ class Application extends Model
 
         event(new ApplicationWithdrawn($this));
 
-        if($this->facility){
+        if ($this->facility) {
             $this->facility->addTrainingSpace();
+        }
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode("TRANSFERRING"));
         }
     }
 
@@ -430,6 +435,10 @@ class Application extends Model
         event(new ApplicationSubmitted($this));
 
         $this->facility->removeTrainingSpace();
+
+        if ($this->is_transfer) {
+            $this->account->addState(State::findByCode("TRANSFERRING"));
+        }
     }
 
     public function markAsUnderReview($staffReason = null, Account $actor = null)
@@ -463,6 +472,10 @@ class Application extends Model
         }
 
         event(new ApplicationRejected($this));
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode("TRANSFERRING"));
+        }
     }
 
     public function accept($staffComment = null, Account $actor = null)
@@ -498,6 +511,13 @@ class Application extends Model
         }
 
         event(new ApplicationCompleted($this));
+
+        if ($this->is_visit) {
+            $this->account->addState(State::findByCode("VISITNG"));
+        } elseif ($this->is_transfer) {
+            $this->account->removeState(State::findByCode("TRANSFERRING"));
+            $this->account->addState(State::findByCode("DIVISION"));
+        }
     }
 
     public function setCheckOutcome($check, $outcome)
@@ -643,7 +663,7 @@ class Application extends Model
 
     private function guardAgainstInvalidWithdrawal()
     {
-        if($this->is_in_progress){
+        if ($this->is_in_progress) {
             return;
         }
 

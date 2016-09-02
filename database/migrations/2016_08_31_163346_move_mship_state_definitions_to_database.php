@@ -30,7 +30,7 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
             $table->integer("state_id")->after("account_id");
             $table->string("region", 5)->nullable();
             $table->string("division", 3)->nullable();
-            $table->timestamp("start_at")->after("state");
+            $table->timestamp("start_at")->after("state")->nullable();
             $table->timestamp("end_at")->after("updated_at")->nullable();
         });
 
