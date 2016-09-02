@@ -11,7 +11,7 @@ class SiteTest extends TestCase {
     /** @test */
     public function it_can_create_a_new_application_for_a_user(){
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->setState(\App\Models\Mship\Account\State::STATE_INTERNATIONAL);
+        $account->addState(\App\Models\Mship\State::findByCode("INTERNATIONAL"));
 
         $this->assertCount(0, $account->visitTransferApplications);
 
@@ -28,7 +28,7 @@ class SiteTest extends TestCase {
         $this->setExpectedException(\App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->setState(\App\Models\Mship\Account\State::STATE_INTERNATIONAL);
+        $account->addState(\App\Models\Mship\State::findByCode("INTERNATIONAL"));
 
         $this->assertCount(0, $account->visitTransferApplications);
 
@@ -46,7 +46,7 @@ class SiteTest extends TestCase {
         $this->setExpectedException(\App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->setState(\App\Models\Mship\Account\State::STATE_DIVISION);
+        $account->addState(\App\Models\Mship\State::findByCode("DIVISION"));
 
         $this->assertCount(0, $account->visitTransferApplications);
 

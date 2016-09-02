@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\State;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
 use DB;
 use VatsimXML;
 
@@ -51,9 +51,9 @@ class MembersCertImport extends aCommand
         foreach ($members as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
-            DB::transaction(function () use ($member) {
+//            DB::transaction(function () use ($member) {
                 $this->processMember($member);
-            });
+//            });
         }
 
         $this->sendSlackSuccess('Members imported.', [
@@ -65,7 +65,7 @@ class MembersCertImport extends aCommand
 
     protected function processMember($member)
     {
-        if (array_get($this->member_list, $member["cid"], null) !== null) {
+        if (array_get($this->member_list, $member["cid"], "unknown") != "unknown") {
 
             if (strcasecmp($this->member_list[$member["cid"]], $member["email"]) == 0) {
                 $this->updateMember($member);
@@ -98,7 +98,7 @@ class MembersCertImport extends aCommand
         $member->is_inactive = (boolean) ($member_data["rating_atc"] < 0);
         $member->save();
 
-        $member->determineState($member_data["region"], $member_data["division"]);
+        $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
@@ -124,7 +124,7 @@ class MembersCertImport extends aCommand
         }
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating
-        if (($member_data["rating_atc"] < 8) || $member->current_state->state === State::STATE_DIVISION) {
+        if (($member_data["rating_atc"] < 8) || $member->hasState("DIVISION")) {
             try {
                 $atcRating = Qualification::parseVatsimATCQualification($member_data["rating_atc"]);
 
@@ -148,6 +148,8 @@ class MembersCertImport extends aCommand
         $member->name_last = $member_data["name_last"];
         $member->email = $member_data["email"];
         $member->save();
+
+        $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
     }
 
     protected function getMemberIdAndEmail()

@@ -84,7 +84,19 @@
                             <td>{{ $m->qualifications_pilot_string }}</td>
                             <td>{{ $m->qualifications_pilot_training->count() > 0 ? $m->qualifications_pilot_training->first() : null }}</td>
                             <td>{{ $m->qualifications_admin->count() > 0 ? $m->qualifications_admin->first() : null }}</td>
-                            <td>{{ $m->current_state }}</td>
+                            <td>
+                                {{ $m->primary_state->name }}
+
+                                @if($m->primary_state->pivot->region)
+                                    ({{ $m->primary_state->pivot->region }}
+                                    @if($m->primary_state->pivot->division)
+                                        / {{ $m->primary_state->pivot->division }}
+                                    @endif
+                                    )
+                                @endif
+                            </td>
+
+
                             <td>{!! $m->status_string == "Active" ? '<span class="label label-success">Active</span>' : '<span class="label label-danger">'.$m->status_string.'</span>' !!}</td>
                         </tr>
                         @endforeach

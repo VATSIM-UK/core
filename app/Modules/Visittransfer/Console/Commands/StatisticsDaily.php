@@ -4,7 +4,6 @@ namespace App\Modules\Visittransfer\Console\Commands;
 
 use App\Console\Commands\aCommand;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\State;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
 use Cache;

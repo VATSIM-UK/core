@@ -35,6 +35,14 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
+    public function it_throws_invalid_exception_when_searching_for_invalid_state()
+    {
+        $this->setExpectedException(\App\Exceptions\Mship\InvalidStateException::class);
+
+        $this->account->hasState($this->account);
+    }
+
+    /** @test */
     public function it_deletes_old_permanent_state()
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
@@ -165,5 +173,16 @@ class MshipStateTest extends TestCase
         $this->account->addState($transferringState);
 
         $this->assertEquals($transferringState->id, $this->account->fresh()->primary_state->id);
+    }
+
+    /** @test */
+    public function it_throws_duplicate_exception_when_adding_duplicate_state()
+    {
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateStateException::class);
+
+        $regionState = \App\Models\Mship\State::findByCode("REGION");
+
+        $this->account->addState($regionState);
+        $this->account->fresh()->addState($regionState);
     }
 }

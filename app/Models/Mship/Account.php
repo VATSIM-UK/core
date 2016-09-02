@@ -4,6 +4,7 @@ namespace App\Models\Mship;
 
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Exceptions\Mship\InvalidStateException;
 use App\Http\Controllers\Mship\Security;
 use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
 use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
@@ -323,7 +324,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     private function guardAgainstDivisionMemberVisitingTransferApplication()
     {
-        if ($this->hasState(\App\Models\Mship\Account\State::STATE_DIVISION)) {
+        if ($this->hasState("DIVISION")) {
             throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
         }
     }
@@ -647,48 +648,81 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     /**
      * Check whether the user has the given state presently.
      *
-     * @param State $search The given state to check if the account has.
+     * @param string|State $search The given state to check if the account has.
      *
      * @return bool
      */
-    public function hasState(State $search)
+    public function hasState($search, $region, $division)
     {
-        return $this->states->contains(function ($key, $state) use ($search) {
-            return $state->id == $search->id;
-        });
+        if (is_string($search)) {
+            $search = State::findByCode($search);
+        } elseif (!($search instanceof State)) {
+            throw new InvalidStateException();
+        }
+
+        return $this->states
+                    ->where("id", $search->id)
+                    ->where("region", $region)
+                    ->where("division", $division);
     }
 
     /**
      * Set the account's current state to the given value.
      *
      * @param State $state The state to set.
+     * @param string|null  $region Member's region
+     * @param string|null  $division Member's division
      *
      * @return mixed
      * @throws \App\Exceptions\Mship\DuplicateStateException
+     * @throws \App\Exceptions\Mship\InvalidStateException
      */
-    public function addState(\App\Models\Mship\State $state)
+    public function addState(\App\Models\Mship\State $state, $region, $division)
     {
-        if ($this->hasState($state)) {
+        /**
+         * THIS IS LEGACY FUNCTIONALITY TO CONVERT ALL OLD STATES TO ACTUALLY STORING
+         * REGION AND DIVISION.
+         */
+        $checkLegacy = $this->hasState($state, NULL, NULL);
+
+        if($checkLegacy){
+            $this->fresh()->states()->updateExistingPivot($state->id, [
+                "region" => $region,
+                "division" => $division,
+            ]);
+
+            return true;
+        }
+
+        /**
+         * END OF LEGACY FUNCTIONALITY.
+         */
+
+        if ($this->fresh()->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
 
         if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
-            $this->removeState($this->primary_state);
+            $this->fresh()->removeState($this->primary_state);
         }
 
         if ($state->delete_all_temps) {
             $this->temporaryStates->map(function ($tempState) {
-                $this->removeState($tempState);
+                $this->fresh()->removeState($tempState);
             });
         }
 
-        return $this->states()->attach($state);
+        return $this->fresh()->states()->attach($state, [
+            "start_at" => \Carbon\Carbon::now(),
+            "region" => $region,
+            "division" => $division,
+        ]);
     }
 
     public function removeState(\App\Models\Mship\State $state)
     {
-        if(!$this->hasState($state)){
-            throw new \App\Exceptions\Mship\StateDoesNotExistException($state);
+        if (!$this->hasState($state)) {
+            throw new \App\Exceptions\Mship\InvalidStateException($state);
         }
 
         return $this->states()->updateExistingPivot($state->id, [

@@ -37,7 +37,7 @@
 
                             <div class="col-xs-4">
                                 <b>STATUS: </b>
-                                {{ $_account->status_string }} {{ $_account->current_state }}
+                                {{ $_account->status_string }} {{ $_account->primary_state->name }} Member
                             </div>
 
                             <div class="col-xs-4">
@@ -336,7 +336,7 @@
                             &thinsp;
                             Slack Registration
                             <div class="pull-right">
-                                @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
+                                @if($_account->hasState("DIVISION"))
                                     <a href="{{ route("slack.new") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
@@ -346,7 +346,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    @if($_account->hasState(\App\Models\Mship\Account\State::STATE_DIVISION))
+                                    @if($_account->hasState("DIVISION"))
                                         @if($_account->slack_id)
                                             Currently registered with Slack ID {{ $_account->slack_id }}.
                                         @else

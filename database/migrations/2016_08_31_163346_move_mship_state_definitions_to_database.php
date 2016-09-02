@@ -51,8 +51,8 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
                 "code"             => "TRANSFERRING",
                 "type"             => "temp",
                 "name"             => "Transferring",
-                "division"         => "",
-                "region"           => "",
+                "division"         => "[]",
+                "region"           => "[]",
                 "delete_all_temps" => 0,
                 "priority"         => 20
             ],
@@ -61,8 +61,8 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
                 "code"             => "VISITING",
                 "type"             => "temp",
                 "name"             => "Visiting",
-                "division"         => "",
-                "region"           => "",
+                "division"         => "[]",
+                "region"           => "[]",
                 "delete_all_temps" => 0,
                 "priority"         => 30
             ],
@@ -83,7 +83,7 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
                 "code"             => "REGION",
                 "type"             => "perm",
                 "name"             => "Region",
-                "division"         => "*",
+                "division"         => json_encode(["*"]),
                 "region"           => json_encode(["EUR"]),
                 "delete_all_temps" => 0,
                 "priority"         => 40
@@ -93,8 +93,18 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
                 "code"             => "INTERNATIONAL",
                 "type"             => "perm",
                 "name"             => "International",
-                "division"         => "*",
-                "region"           => "*",
+                "division"         => json_encode(["*"]),
+                "region"           => json_encode(["*"]),
+                "delete_all_temps" => 0,
+                "priority"         => 70
+            ],
+
+            [
+                "code"             => "UNKNOWN",
+                "type"             => "perm",
+                "name"             => "Unknown",
+                "division"         => json_encode(["*"]),
+                "region"           => json_encode(["*"]),
                 "delete_all_temps" => 0,
                 "priority"         => 99
             ],

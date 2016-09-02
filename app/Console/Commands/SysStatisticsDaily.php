@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\State;
+use App\Models\Mship\State;
 use App\Models\Statistic;
 use Carbon\Carbon;
+use DB;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends aCommand
@@ -113,9 +114,10 @@ class SysStatisticsDaily extends aCommand
     private function addNewDivisionMembersStatistic($currentPeriod)
     {
         try {
-            $divisionCreated = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
-                                    ->where("created_at", "LIKE", $currentPeriod->toDateString() . "%")
-                                    ->count();
+            $divisionCreated = DB::table("mship_account_state")
+                                 ->where("state_id", "=", State::findByCode("DIVISION")->id)
+                                 ->where("start_at", "LIKE", $currentPeriod->toDateString . "%")
+                                 ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.division.new", $divisionCreated);
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update NEW DIVISION MEMBER statistics.", ['Error Code' => 3]);
@@ -130,9 +132,10 @@ class SysStatisticsDaily extends aCommand
     private function addCurrentDivisionMembersStatistic($currentPeriod)
     {
         try {
-            $divisionCurrent = State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)
-                                    ->where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
-                                    ->count();
+            $divisionCurrent = DB::table("mship_account_state")
+                                 ->where("state_id", "=", State::findByCode("DIVISION")->id)
+                                 ->where("start_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+                                 ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.division.current", $divisionCurrent);
         } catch (\Exception $e) {
             $this->sendSlackError("Unable to update CURRENT DIVISION MEMBER statistics.", ['Error Code' => 3]);
@@ -146,7 +149,7 @@ class SysStatisticsDaily extends aCommand
             try {
                 \Artisan::call($module['slug'] . ":statistics:daily", [
                     "startPeriod" => $currentPeriod,
-                    "endPeriod" => $currentPeriod,
+                    "endPeriod"   => $currentPeriod,
                 ]);
             } catch (CommandNotFoundException $ex) {
                 $this->error($module['name'] . " doesn't have a daily statistics command.");

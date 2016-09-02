@@ -1,7 +1,6 @@
 <?php namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;

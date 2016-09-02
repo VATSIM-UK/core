@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use Cache;
 use League\Csv\Reader;
+use League\Csv\Writer;
 
 class AutoTools
 {
@@ -20,9 +21,9 @@ class AutoTools
         );
 
         return Cache::remember('autotools_divdbfullwpilot', 60*12, function() use ($url) {
-            \Storage::put('app/autotools/divdbfullwpilot.csv', file_get_contents($url));
+            \Storage::put("autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv", file_get_contents($url));
 
-            $reader = Reader::createFromPath(storage_path("app/autotools/divdbfullwpilot.csv"));
+            $reader = Reader::createFromPath(storage_path("app".DIRECTORY_SEPARATOR."autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv"), 'r');
 
             $keys = [
                 "cid", "rating_atc", "rating_pilot",

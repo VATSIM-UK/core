@@ -92,9 +92,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="state">State:</label>
-                                        {{ $account->current_state }}<br />
-                                        @if($account->current_state)
-                                            <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
+                                        @if($account->primary_state)
+                                            {{ $account->primary_state->name }}<br />
+                                            <em>({{ $account->primary_state->pivot->start_at->diffForHumans() }}, {{ $account->primary_state->pivot->start_at }})</em>
                                         @endif
                                     </div>
                                 </div><!-- /.box-body -->

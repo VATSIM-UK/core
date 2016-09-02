@@ -44,6 +44,22 @@ class State extends \Eloquent
                     ->withPivot(["region", "division", "start_at", "end_at"]);
     }
 
+    public function setDivisionAttribute(array $division){
+        $this->attributes['division'] = json_encode($division);
+    }
+
+    public function getDivisionAttribute(){
+        return collect(json_decode($this->attributes['division']));
+    }
+
+    public function setRegionAttribute(array $division){
+        $this->attributes['region'] = json_encode($division);
+    }
+
+    public function getRegionAttribute(){
+        return collect(json_decode($this->attributes['region']));
+    }
+
     public function getIsPermanentAttribute(){
         return $this->type == "perm";
     }
