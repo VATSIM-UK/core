@@ -29,7 +29,7 @@
 
                         @can("select-facility", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.facility") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.facility", "Stage 2 - Facility Selection") }}
+                                {{ link_to_route("visiting.application.facility", "Stage 2 - Facility Selection", [$application->public_id]) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
@@ -40,7 +40,7 @@
 
                         @can("add-statement", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.statement") ? 'class="active"' : "") !!}>
-                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".($application->statement_required ? "" : " (Not Required)")) }}
+                                {{ link_to_route("visiting.application.statement", "Stage 3 - Personal Statement".($application->statement_required ? "" : " (Not Required)"), [$application->public_id]) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
@@ -50,7 +50,7 @@
 
                         @can("add-referee", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.referees") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)")) }}
+                                {{ link_to_route("visiting.application.referees", "Stage 4 - Referees".($application->references_required > 0 ? "" : " (Not Required)"), [$application->public_id]) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
@@ -60,7 +60,7 @@
 
                         @can("submit-application", $application)
                             <li role="presentation" {!! (Route::is("visiting.application.submit") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.submit", "Stage 5 - Submission") }}
+                                {{ link_to_route("visiting.application.submit", "Stage 5 - Submission", [$application->public_id]) }}
                             </li>
                         @else
                             <li role="presentation" class="disabled">
@@ -80,7 +80,7 @@
 
                         @can("withdraw-application", $application)
                             <li role="presentation" class="text-center" {!! (Route::is("visiting.application.withdraw") ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [], ["class" => "label label-danger label-md"]) }}
+                                {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [$application->public_id], ["class" => "label label-danger label-md"]) }}
                             </li>
                         @endif
 

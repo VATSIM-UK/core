@@ -31,7 +31,7 @@
                 <div class="col-md-6">
                     <div class="row">
                         @if($application->number_references_required_relative > 0)
-                            {!! Form::open(["route" => ["visiting.application.referees.post"], "method" => "POST"]) !!}
+                            {!! Form::open(["route" => ["visiting.application.referees.post", $application->public_id], "method" => "POST"]) !!}
 
                             <div class="col-md-6">
                                 {!! ControlGroup::generate(
@@ -96,7 +96,7 @@
                                 <td>{{ $referee->email }}</td>
                                 <td>{{ $referee->relationship }}</td>
                                 <td>
-                                    {!! Form::open(array("url" => URL::route("visiting.application.referees.delete.post", $referee->id))) !!}
+                                    {!! Form::open(["route" => ["visiting.application.referees.delete.post", $application->public_id, $referee->id], "method" => "POST"]) !!}
                                     {!! Button::danger("DELETE")->extraSmall()->submit() !!}
                                     {!! Form::close() !!}
                                 </td>

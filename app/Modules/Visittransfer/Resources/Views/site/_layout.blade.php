@@ -27,6 +27,13 @@
                 Tawk_API.addEvent('visited-page', {
                     'FullURL'    : '{{ Request::fullUrl() }}',
                 }, function(error){});
+
+                @if(Auth::check() && Auth::user()->hasOpenVisitingTransferApplication())
+                      Tawk_API.setAttributes({
+                    'id'    : '{{ Auth::user()->visit_transfer_current->id }}',
+                    'publicid' : '{{ Auth::user()->visit_transfer_current->public_id }}'
+                }, function(error){});
+                @endif
             };
     </script>
 @stop

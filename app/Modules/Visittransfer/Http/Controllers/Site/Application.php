@@ -19,11 +19,6 @@ use Redirect;
 
 class Application extends BaseController
 {
-    private $application = null;
-
-    public function __construct(){
-        $this->application = $this->getCurrentOpenApplicationForUser();
-    }
 
     public function getStart($applicationType, $trainingTeam="atc")
     {
@@ -36,7 +31,7 @@ class Application extends BaseController
                 return Redirect::route("visiting.landing")->withError($e->getMessage());
             }
 
-            return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
+            return Redirect::route("visiting.application.facility", [$application->public_id])->withSuccess("Application started! Please complete all sections to submit your application.");
         }
 
         return $this->viewMake("visittransfer::site.application.terms")
@@ -53,7 +48,7 @@ class Application extends BaseController
             return Redirect::route("visiting.application.start", [Input::get("application_type")])->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.facility")->withSuccess("Application started! Please complete all sections to submit your application.");
+        return Redirect::route("visiting.application.facility", [$application->public_id])->withSuccess("Application started! Please complete all sections to submit your application.");
     }
 
     private function startApplication($type, $team){
@@ -64,9 +59,6 @@ class Application extends BaseController
     }
     
     public function getContinue(\App\Modules\Visittransfer\Models\Application $application){
-
-        dd($application);
-
         if(Gate::allows("select-facility", $application)){
             return Redirect::route("visiting.application.facility", [$application->public_id]);
         }
@@ -101,101 +93,101 @@ class Application extends BaseController
                     ->with("facilities", $this->getCurrentOpenApplicationForUser()->potential_facilities);
     }
 
-    public function postFacility(ApplicationFacilitySelectedRequested $request)
+    public function postFacility(ApplicationFacilitySelectedRequested $request, \App\Modules\Visittransfer\Models\Application $application)
     {
         try {
-            $this->application->setFacility(Facility::find(Input::get("facility_id")));
+            $application->setFacility(Facility::find(Input::get("facility_id")));
         } catch(Exception $e){
-            return Redirect::route("visiting.application.facility")->withError($e->getMessage());
+            return Redirect::route("visiting.application.facility", [$application->public_id])->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.continue")->withSuccess("Facility selection saved!");
+        return Redirect::route("visiting.application.continue", [$application->public_id])->withSuccess("Facility selection saved!");
     }
 
-    public function getStatement()
+    public function getStatement(\App\Modules\Visittransfer\Models\Application $application)
     {
-        $this->authorize("add-statement", $this->application);
+        $this->authorize("add-statement", $application);
 
-        $this->application->load("facility");
+        $application->load("facility");
 
         return $this->viewMake("visittransfer::site.application.statement")
-                    ->with("application", $this->application);
+                    ->with("application", $application);
     }
 
-    public function postStatement(ApplicationStatementSubmitRequest $request){
+    public function postStatement(ApplicationStatementSubmitRequest $request, \App\Modules\Visittransfer\Models\Application $application){
         try {
-            $this->application->setStatement(Input::get("statement"));
+            $application->setStatement(Input::get("statement"));
         } catch(Exception $e){
-            return Redirect::route("visiting.application.statement")->withError($e->getMessage());
+            return Redirect::route("visiting.application.statement", [$application->public_id])->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.referees")->withSuccess("Statement completed");
+        return Redirect::route("visiting.application.referees", [$application->public_id])->withSuccess("Statement completed");
     }
 
-    public function getReferees(){
-        $this->authorize("add-referee", $this->application);
+    public function getReferees(\App\Modules\Visittransfer\Models\Application $application){
+        $this->authorize("add-referee", $application);
 
-        $this->application->load("referees.account");
+        $application->load("referees.account");
 
         return $this->viewMake("visittransfer::site.application.referees")
-                    ->with("application", $this->application);
+                    ->with("application", $application);
     }
 
-    public function postReferees(ApplicationRefereeAddRequest $request){
+    public function postReferees(ApplicationRefereeAddRequest $request, \App\Modules\Visittransfer\Models\Application $application){
         try {
-            $this->application->addReferee(
+            $application->addReferee(
                 Account::findOrRetrieve(Input::get("referee_cid")),
                 Input::get("referee_email"),
                 Input::get("referee_relationship")
             );
         } catch(Exception $e){
-            return Redirect::route("visiting.application.referees")->withError($e->getMessage());
+            return Redirect::route("visiting.application.referees", [$application->public_id])->withError($e->getMessage());
         }
 
         $redirectRoute = "visiting.application.referees";
 
-        if($this->application->fresh()->number_references_required_relative == 0){
+        if($application->fresh()->number_references_required_relative == 0){
             $redirectRoute = "visiting.application.submit";
         }
 
-        return Redirect::route($redirectRoute)->withSuccess("Referee ". Input::get("referee_cid") . " added successfully! They will not be contacted until you submit your application.");
+        return Redirect::route($redirectRoute, [$application->public_id])->withSuccess("Referee ". Input::get("referee_cid") . " added successfully! They will not be contacted until you submit your application.");
     }
 
-    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, Reference $reference){
+    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, Reference $reference, \App\Modules\Visittransfer\Models\Application $application){
         $reference->delete();
 
-        return Redirect::route("visiting.application.referees")->withSuccess("Referee " . $reference->account->name . " deleted.");
+        return Redirect::route("visiting.application.referees", [$application->public_id])->withSuccess("Referee " . $reference->account->name . " deleted.");
     }
 
-    public function getSubmit(){
-        $this->authorize("submit-application", $this->application);
+    public function getSubmit(\App\Modules\Visittransfer\Models\Application $application){
+        $this->authorize("submit-application", $application);
 
         return $this->viewMake("visittransfer::site.application.submission")
-                    ->with("application", $this->application);
+                    ->with("application", $application);
     }
 
-    public function postSubmit(ApplicationSubmitRequest $request){
+    public function postSubmit(ApplicationSubmitRequest $request, \App\Modules\Visittransfer\Models\Application $application){
         try {
-            $this->application->submit();
+            $application->submit();
         } catch(Exception $e){
-            return Redirect::route("visiting.application.submit")->withError($e->getMessage());
+            return Redirect::route("visiting.application.submit", [$application->public_id])->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.application.view", [$this->application->public_id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
+        return Redirect::route("visiting.application.view", [$application->public_id])->withSuccess("Your application has been submitted! You will be notified when staff have reviewed the details.");
     }
 
-    public function getWithdraw(){
-        $this->authorize("withdraw-application", $this->application);
+    public function getWithdraw(\App\Modules\Visittransfer\Models\Application $application){
+        $this->authorize("withdraw-application", $application);
 
         return $this->viewMake("visittransfer::site.application.withdraw")
-                    ->with("application", $this->application);
+                    ->with("application", $application);
     }
 
-    public function postWithdraw(ApplicationWithdrawRequest $request){
+    public function postWithdraw(ApplicationWithdrawRequest $request, \App\Modules\Visittransfer\Models\Application $application){
         try {
-            $this->application->withdraw();
+            $application->withdraw();
         } catch(Exception $e){
-            return Redirect::route("visiting.application.withdraw")->withError($e->getMessage());
+            return Redirect::route("visiting.application.withdraw", [$application->public_id])->withError($e->getMessage());
         }
 
         return Redirect::route("visiting.landing")->withSuccess("Your application has been withdrawn! You can submit a new application as required.");
@@ -212,6 +204,6 @@ class Application extends BaseController
 
     private function getCurrentOpenApplicationForUser()
     {
-        return Auth::check() ? Auth::user()->visitTransferCurrent() : new \App\Modules\Visittransfer\Models\Application;
+        return Auth::check() ? Auth::user()->visit_transfer_current : new \App\Modules\Visittransfer\Models\Application;
     }
 }

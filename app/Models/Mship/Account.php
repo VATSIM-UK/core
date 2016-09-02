@@ -312,7 +312,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         return $this->visitTransferApplications()->where("type", "=", Application::TYPE_TRANSFER);
     }
 
-    public function visitTransferCurrent()
+    public function getVisitTransferCurrentAttribute()
     {
         return $this->visitTransferApplications()->open()->latest()->first();
     }

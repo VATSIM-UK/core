@@ -41,6 +41,6 @@ class ApplicationStatementSubmitRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("add-statement", Auth::user()->visitTransferCurrent());
+		return Gate::allows("add-statement", Auth::user()->visit_transfer_current);
 	}
 }

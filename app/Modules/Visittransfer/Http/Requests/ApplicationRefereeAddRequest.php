@@ -54,7 +54,7 @@ class ApplicationRefereeAddRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("add-referee", Auth::user()->visitTransferCurrent());
+        return Gate::allows("add-referee", Auth::user()->visit_transfer_current);
     }
 
     protected function getValidatorInstance()

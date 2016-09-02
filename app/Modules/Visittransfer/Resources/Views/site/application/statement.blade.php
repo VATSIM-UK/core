@@ -4,7 +4,7 @@
     <div class="row" id="statementHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
-            {!! Form::horizontal(["route" => ["visiting.application.statement.post"], "method" => "POST"]) !!}
+            {!! Form::horizontal(["route" => ["visiting.application.statement.post", $application->public_id], "method" => "POST"]) !!}
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
 
