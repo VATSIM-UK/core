@@ -64,6 +64,9 @@ class Application extends BaseController
     }
     
     public function getContinue(\App\Modules\Visittransfer\Models\Application $application){
+
+        dd($application);
+
         if(Gate::allows("select-facility", $application)){
             return Redirect::route("visiting.application.facility", [$application->public_id]);
         }
@@ -86,7 +89,7 @@ class Application extends BaseController
 
 
 
-        return Redirect::route("visiting.dashboard");
+        return Redirect::route("visiting.landing");
     }
 
     public function getFacility()

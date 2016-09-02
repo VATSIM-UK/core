@@ -118,70 +118,72 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postStart"
         ])->where("type", "\d+");
 
-        Route::get("/{applicationByPublicId}/continue", [
-            "as"   => "continue",
-            "uses" => "Application@getContinue",
-        ]);
+        Route::group(["prefix" => "/{applicationByPublicId}"], function() {
+            Route::get("/continue", [
+                "as"   => "continue",
+                "uses" => "Application@getContinue",
+            ]);
 
-        Route::get("/{applicationByPublicId}/facility", [
-            "as"   => "facility",
-            "uses" => "Application@getFacility",
-        ]);
+            Route::get("/facility", [
+                "as"   => "facility",
+                "uses" => "Application@getFacility",
+            ]);
 
-        Route::post("/{applicationByPublicId}/facility", [
-            "as"   => "facility.post",
-            "uses" => "Application@postFacility",
-        ]);
+            Route::post("/facility", [
+                "as"   => "facility.post",
+                "uses" => "Application@postFacility",
+            ]);
 
-        Route::get("/{applicationByPublicId}/statement", [
-            "as"   => "statement",
-            "uses" => "Application@getStatement",
-        ]);
+            Route::get("/statement", [
+                "as"   => "statement",
+                "uses" => "Application@getStatement",
+            ]);
 
-        Route::post("/{applicationByPublicId}/statement", [
-            "as"   => "statement.post",
-            "uses" => "Application@postStatement",
-        ]);
+            Route::post("/statement", [
+                "as"   => "statement.post",
+                "uses" => "Application@postStatement",
+            ]);
 
-        Route::get("/{applicationByPublicId}/referees", [
-            "as"   => "referees",
-            "uses" => "Application@getReferees",
-        ]);
+            Route::get("/referees", [
+                "as"   => "referees",
+                "uses" => "Application@getReferees",
+            ]);
 
-        Route::post("/{applicationByPublicId}/referees", [
-            "as"   => "referees.post",
-            "uses" => "Application@postReferees",
-        ]);
+            Route::post("/referees", [
+                "as"   => "referees.post",
+                "uses" => "Application@postReferees",
+            ]);
 
-        Route::post("/{applicationByPublicId}/referees/{reference}/delete", [
-            "as"   => "referees.delete.post",
-            "uses" => "Application@postRefereeDelete",
-        ]);
+            Route::post("/referees/{reference}/delete", [
+                "as"   => "referees.delete.post",
+                "uses" => "Application@postRefereeDelete",
+            ]);
 
-        Route::get("/{applicationByPublicId}/submit", [
-            "as"   => "submit",
-            "uses" => "Application@getSubmit",
-        ]);
+            Route::get("/submit", [
+                "as"   => "submit",
+                "uses" => "Application@getSubmit",
+            ]);
 
-        Route::post("/{applicationByPublicId}/submit", [
-            "as"   => "submit.post",
-            "uses" => "Application@postSubmit",
-        ]);
+            Route::post("/submit", [
+                "as"   => "submit.post",
+                "uses" => "Application@postSubmit",
+            ]);
 
-        Route::get("/{applicationByPublicId}/withdraw", [
-            "as"   => "withdraw",
-            "uses" => "Application@getWithdraw",
-        ]);
+            Route::get("/withdraw", [
+                "as"   => "withdraw",
+                "uses" => "Application@getWithdraw",
+            ]);
 
-        Route::post("/{applicationByPublicId}/withdraw", [
-            "as"   => "withdraw.post",
-            "uses" => "Application@postWithdraw",
-        ]);
+            Route::post("/withdraw", [
+                "as"   => "withdraw.post",
+                "uses" => "Application@postWithdraw",
+            ]);
 
-        Route::get("/{applicationByPublicId}", [
-            "as"   => "view",
-            "uses" => "Application@getView"
-        ]);
+        });
+            Route::get("/view/{applicationByPublicId}", [
+                "as"   => "view",
+                "uses" => "Application@getView"
+            ]);
     });
 
     Route::group(["as" => "reference.", "prefix" => "reference"], function () {
