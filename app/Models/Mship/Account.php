@@ -732,11 +732,16 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
             });
         }
 
-        return $this->states()->attach($state, [
+
+        $state = $this->states()->attach($state, [
             "start_at" => \Carbon\Carbon::now(),
             "region"   => $region,
             "division" => $division,
         ]);
+
+        $this->touch();
+
+        return $state;
     }
 
     public function removeState(\App\Models\Mship\State $state)
@@ -1061,6 +1066,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         }
 
         $this->qualifications()->attach($qualification);
+
+        $this->touch();
 
         return true;
     }
