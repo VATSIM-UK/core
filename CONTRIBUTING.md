@@ -131,6 +131,14 @@ The first time you try and run gulp, you'll get an error.  To fix that:
 
 Now you can run gulp with the command `gulp` in your project directory.
 
+#### 5 - Add your own account
+
+Open a new command prompt and within your project directory type `php artisan tinker`.
+
+Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXXX)->setPassword("this_is_my_password");`
+
+Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
+
 #### Relax
 
 After all that setup, relax for 5 minutes!  If you've had any problems, come and find someone in the Slack team.
