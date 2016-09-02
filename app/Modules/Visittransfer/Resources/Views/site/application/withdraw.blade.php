@@ -19,7 +19,7 @@
 
                 </div>
 
-                {!! Form::horizontal(["route" => "visiting.application.withdraw.post", "method" => "POST"]) !!}
+                {!! Form::horizontal(["route" => ["visiting.application.withdraw.post", $application->public_id], "method" => "POST"]) !!}
                     <div class="col-md-6 col-md-offset-3 text-center">
                         {!! Button::danger("WITHDRAW APPLICATION")->submit() !!}
                     </div>

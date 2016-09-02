@@ -36,7 +36,7 @@ class ApplicationRefereeDeleteRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("delete-referee", Auth::user()->visitTransferCurrent());
+        return Gate::allows("delete-referee", Auth::user()->visit_transfer_current);
     }
 
     protected function getValidatorInstance()

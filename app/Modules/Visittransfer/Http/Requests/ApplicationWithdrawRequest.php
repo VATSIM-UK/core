@@ -36,6 +36,6 @@ class ApplicationWithdrawRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("withdraw-application", Auth::user()->visitTransferCurrent());
+		return Gate::allows("withdraw-application", Auth::user()->visit_transfer_current);
 	}
 }

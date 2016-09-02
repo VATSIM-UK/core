@@ -38,6 +38,6 @@ class ApplicationSubmitRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("submit-application", Auth::user()->visitTransferCurrent());
+		return Gate::allows("submit-application", Auth::user()->visit_transfer_current);
 	}
 }

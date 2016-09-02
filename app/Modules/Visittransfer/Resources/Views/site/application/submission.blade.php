@@ -13,7 +13,7 @@
 
                 </div>
 
-                {!! Form::horizontal(["route" => "visiting.application.submit.post", "method" => "POST"]) !!}
+                {!! Form::horizontal(["route" => ["visiting.application.submit.post", $application->public_id], "method" => "POST"]) !!}
                     <div class="col-md-9 col-md-offset-1 text-center">
                         {!! ControlGroup::generate(
                             Form::label("submission_terms", "I confirm that the details within this application are correct to the best of my ability and that my application will be rejected if any details are inaccurate&nbsp;&nbsp;"),

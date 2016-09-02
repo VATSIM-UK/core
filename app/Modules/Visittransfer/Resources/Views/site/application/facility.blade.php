@@ -55,7 +55,7 @@
                                 <span class="label label-success">NO TRAINING REQUIRED</span>
                             @endif
                         </p>
-                        {!! Form::open(["route" => ["visiting.application.facility.post"], "method" => "POST"]) !!}
+                        {!! Form::open(["route" => ["visiting.application.facility.post", $application->public_id], "method" => "POST"]) !!}
 
                         <p class="text-center">
                             @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)

@@ -169,6 +169,8 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
 
         Schema::table("mship_account_state", function (Blueprint $table) {
             $table->dropColumn("state_id");
+            $table->dropColumn("region");
+            $table->dropColumn("division");
             $table->dropColumn("start_at");
             $table->dropColumn("end_at");
         });
