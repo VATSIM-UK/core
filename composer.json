@@ -31,7 +31,7 @@
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
         "caffeinated/modules": "dev-extra-directories",
-        "malahierba-lab/public-id": "master",
+        "malahierba-lab/public-id": "dev-master",
         "comocode/laravel-ab": "^0.3.0"
     },
     "require-dev": {
