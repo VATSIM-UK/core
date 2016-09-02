@@ -1,5 +1,6 @@
 <?php namespace App\Modules\Visittransfer\Providers;
 
+use App\Modules\Visittransfer\Models\Application;
 use Caffeinated\Modules\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 
@@ -25,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
 		parent::boot($router);
 
 		$router->bind('applicationByPublicId', function($value){
-			return \App\Modules\Visittransfer\Models\Application::findByPublicId($value);
+			return Application::findByPublicId($value);
 		});
 	}
 

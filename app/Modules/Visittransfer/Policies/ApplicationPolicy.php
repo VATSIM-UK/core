@@ -1,7 +1,6 @@
 <?php namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
 use Auth;
@@ -16,7 +15,7 @@ class ApplicationPolicy {
 
     public function create(Account $user, Application $application){
         // If they are currently a division member, they are not authorised.
-        if($user->hasState(State::STATE_DIVISION)){
+        if($user->hasState("DIVISION")){
             return false;
         }
 

@@ -10,9 +10,9 @@ class Dashboard extends BaseController {
     public function getDashboard(){
         $allApplications = Auth::user()->visitTransferApplications;
 
-        $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->latest()->first();
+        $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();
 
-        $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->latest()->first();
+        $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
 
         $pendingReferences = $this->_account->visitTransferReferee->filter(function($ref){
             return $ref->is_requested;

@@ -18,6 +18,7 @@ use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\State;
 use Auth;
 use DB;
 use Illuminate\Support\Collection;
@@ -48,32 +49,44 @@ class Account extends AdmController
             case "active":
                 $memberSearch = $memberSearch->where("status", "=", 0);
                 break;
+
             case "inactive":
                 $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_INACTIVE), "=",
                     AccountData::STATUS_INACTIVE);
                 break;
+
             case "suspended":
                 $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED), "=",
                     AccountData::STATUS_NETWORK_SUSPENDED);
                 break;
+
             case "nondivision":
-                $memberSearch = AccountData\State::where("state", "!=",
-                    AccountData\State::STATE_DIVISION)
-                                                               ->with("account")
-                                                               ->with("account.qualifications")
-                                                               ->with("account.states")
-                                                               ->with("account.bans")
-                                                               ->with("account.secondaryEmails");
+                $nonDivIds = collect(DB::table("mship_account_state")
+                                       ->whereNull("end_at")
+                                       ->where("state_id", "!=", State::findByCode("DIVISION")->id)
+                                       ->select("account_id")
+                                       ->get())->pluck("account_id")->toArray();
+
+                $memberSearch = AccountData::whereIn("id", $nonDivIds)
+                                           ->with("qualifications")
+                                           ->with("states")
+                                           ->with("bans")
+                                           ->with("secondaryEmails");
                 break;
+
             case "division":
             default:
-                $memberSearch = AccountData\State::where("state", "=",
-                    AccountData\State::STATE_DIVISION)
-                                                               ->with("account")
-                                                               ->with("account.qualifications")
-                                                               ->with("account.states")
-                                                               ->with("account.bans")
-                                                               ->with("account.secondaryEmails");
+                $divIds = collect(DB::table("mship_account_state")
+                                    ->whereNull("end_at")
+                                    ->where("state_id", "=", State::findByCode("DIVISION")->id)
+                                    ->select("account_id")
+                                    ->get())->pluck("account_id")->toArray();
+
+                $memberSearch = AccountData::whereIn("id", $divIds)
+                                           ->with("qualifications")
+                                           ->with("states")
+                                           ->with("bans")
+                                           ->with("secondaryEmails");
                 break;
         }
 
@@ -304,7 +317,8 @@ class Account extends AdmController
         $banReason = Reason::find(Input::get("ban_reason_id"));
 
         // Create the user's ban
-        $ban = $account->addBan($banReason, Input::get("ban_reason_extra"), Input::get("ban_note_content"), $this->_account->id);
+        $ban = $account->addBan($banReason, Input::get("ban_reason_extra"), Input::get("ban_note_content"),
+            $this->_account->id);
 
         $job = (new SendCreationEmail($ban))->onQueue("high");
         dispatch($job);
@@ -341,7 +355,8 @@ class Account extends AdmController
         $job = (new SendRepealedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Ban has been repealed.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])
+                       ->withSuccess("Ban has been repealed.");
     }
 
     public function getBanComment(AccountData\Ban $ban)
@@ -365,10 +380,12 @@ class Account extends AdmController
         }
 
         // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"), Auth::getUser());
+        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"),
+            Auth::getUser());
         $ban->notes()->save($note);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])
+                       ->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function getBanModify(AccountData\Ban $ban)
@@ -391,32 +408,33 @@ class Account extends AdmController
             return Redirect::route("adm.mship.account.index");
         }
 
-        $period_finish = \Carbon\Carbon::parse(Input::get("finish_date")." ".Input::get("finish_time"), "UTC");
-        if($ban->period_finish->eq($period_finish)){
+        $period_finish = \Carbon\Carbon::parse(Input::get("finish_date") . " " . Input::get("finish_time"), "UTC");
+        if ($ban->period_finish->eq($period_finish)) {
             return Redirect::back()->withInput()->withError("You didn't change the ban period.");
         }
 
-        if($ban->period_finish->gt($period_finish)){
-            $noteComment = "Ban has been reduced from ".$ban->period_finish->toDateTimeString().".\n";
+        if ($ban->period_finish->gt($period_finish)) {
+            $noteComment = "Ban has been reduced from " . $ban->period_finish->toDateTimeString() . ".\n";
         } else {
-            $noteComment = "Ban has been extended from ".$ban->period_finish->toDateTimeString().".\n";
+            $noteComment = "Ban has been extended from " . $ban->period_finish->toDateTimeString() . ".\n";
         }
-        $noteComment.= "New finish: ".$period_finish->toDateTimeString()."\n";
-        $noteComment.= Input::get("note");
+        $noteComment .= "New finish: " . $period_finish->toDateTimeString() . "\n";
+        $noteComment .= Input::get("note");
 
         // Attach the note.
         $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), $noteComment, Auth::getUser());
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra = $ban->reason_extra."\n".Input::get("reason_extra");
+        $ban->reason_extra = $ban->reason_extra . "\n" . Input::get("reason_extra");
         $ban->period_finish = $period_finish;
         $ban->save();
 
         $job = (new SendModifiedEmail($ban))->onQueue("high");
         dispatch($job);
 
-        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])->withSuccess("Your comment for this ban has been noted.");
+        return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])
+                       ->withSuccess("Your comment for this ban has been noted.");
     }
 
     public function postNoteCreate(AccountData $account)

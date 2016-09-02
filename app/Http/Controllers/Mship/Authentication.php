@@ -202,7 +202,8 @@ class Authentication extends BaseController {
                         // TODO: Something.
                     }
 
-                    $account->determineState($user->region->code, $user->division->code);
+                    $state = determine_mship_state_from_vatsim($user->region->code, $user->division->code);
+                    $account->addState($state, $user->region->code, $user->division->code);
 
                     $account->last_login = Carbon::now();
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
@@ -238,7 +239,6 @@ class Authentication extends BaseController {
                     $account->session_id = Session::getId();
                     $account->experience = $user->experience;
                     $account->joined_at = $user->reg_date;
-                    $account->determineState($user->region->code, $user->division->code);
                     $account->save();
 
                     Session::forget('auth_extra');

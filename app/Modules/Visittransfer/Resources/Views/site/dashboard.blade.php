@@ -33,7 +33,7 @@
 
                             @elseif($currentVisitApplication)
                                 @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
                                 @else
                                     {!! Button::danger("You currently have a visit application open.")->disable() !!}
                                 @endif
@@ -78,7 +78,7 @@
                                 {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
                             @elseif($currentVisitApplication)
                                 @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
                                 @else
                                     {!! Button::danger("You currently have a visit application open.")->disable() !!}
                                 @endif
@@ -123,7 +123,7 @@
                         @can("create", new \App\Modules\Visittransfer\Models\Application)
                             {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER, 'atc'])) !!}
                         @elseif($currentTransferApplication)
-                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue")) !!}
+                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentTransferApplication->public_id])) !!}
                         @elseif($currentVisitApplication)
                             {!! Button::danger("You currently have a visit application open.")->disable() !!}
                         @else
@@ -170,7 +170,7 @@
                                 <tr>
                                     <td>
                                         @if($application->is_in_progress)
-                                            {{ link_to_route('visiting.application.continue', $application->public_id) }}
+                                            {{ link_to_route('visiting.application.continue', $application->public_id, [$application->public_id]) }}
                                         @else
                                             {{ link_to_route('visiting.application.view', $application->public_id, [$application->public_id]) }}
                                         @endif
@@ -198,7 +198,7 @@
                                                      ->withTitle("Withdraw Application")
                                                      ->withBody("If you wish to withdraw your application (without penalty) you can do so by clicking the button below.")
                                                      ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.application.withdraw.post"))).
+                                                        Form::horizontal(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))).
                                                         Button::danger("WITHDRAW APPLICATION - THIS CANNOT BE UNDONE")->submit().
                                                         Form::close()
                                                      )

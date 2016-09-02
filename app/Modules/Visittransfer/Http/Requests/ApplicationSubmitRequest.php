@@ -1,7 +1,6 @@
 <?php
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,6 +38,6 @@ class ApplicationSubmitRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("submit-application", Auth::user()->visitTransferCurrent());
+		return Gate::allows("submit-application", Auth::user()->visit_transfer_current);
 	}
 }

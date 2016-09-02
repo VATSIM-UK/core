@@ -1,5 +1,41 @@
 <?php
 
+function determine_mship_state_from_vatsim($region, $division){
+    $states = \App\Models\Mship\State::orderBy("priority")->get();
+    
+    foreach($states as $state){
+        $regionMatch = false;
+        $divisionMatch = false;
+
+        // We don't care about temps.
+        if($state->is_temporary){
+            continue;
+        }
+
+        if($state->region->first() == "*"){
+            $regionMatch = true;
+        }
+
+        if($state->region->search($region) >= 0 && $state->region->search($region) !== false){
+            $regionMatch = true;
+        }
+
+        if($state->division->first() == "*"){
+            $divisionMatch = true;
+        }
+
+        if($state->division->search($division) >= 0 && $state->division->search($division) !== false){
+            $divisionMatch = true;
+        }
+
+        if($regionMatch && $divisionMatch){
+            return $state;
+        }
+    }
+
+    return \App\Models\Mship\State::findByCode("UNKNOWN");
+}
+
 function format_name($name){
     $name = trim($name);
 

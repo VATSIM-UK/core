@@ -1,7 +1,6 @@
 <?php
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -37,6 +36,6 @@ class ApplicationWithdrawRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return Gate::allows("withdraw-application", Auth::user()->visitTransferCurrent());
+		return Gate::allows("withdraw-application", Auth::user()->visit_transfer_current);
 	}
 }
