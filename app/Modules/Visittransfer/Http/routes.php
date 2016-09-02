@@ -118,67 +118,67 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postStart"
         ])->where("type", "\d+");
 
-        Route::get("/continue", [
+        Route::get("/{applicationByPublicId}/continue", [
             "as"   => "continue",
             "uses" => "Application@getContinue",
         ]);
 
-        Route::get("/facility", [
+        Route::get("/{applicationByPublicId}/facility", [
             "as"   => "facility",
             "uses" => "Application@getFacility",
         ]);
 
-        Route::post("/facility", [
+        Route::post("/{applicationByPublicId}/facility", [
             "as"   => "facility.post",
             "uses" => "Application@postFacility",
         ]);
 
-        Route::get("/statement", [
+        Route::get("/{applicationByPublicId}/statement", [
             "as"   => "statement",
             "uses" => "Application@getStatement",
         ]);
 
-        Route::post("/statement", [
+        Route::post("/{applicationByPublicId}/statement", [
             "as"   => "statement.post",
             "uses" => "Application@postStatement",
         ]);
 
-        Route::get("/referees", [
+        Route::get("/{applicationByPublicId}/referees", [
             "as"   => "referees",
             "uses" => "Application@getReferees",
         ]);
 
-        Route::post("/referees", [
+        Route::post("/{applicationByPublicId}/referees", [
             "as"   => "referees.post",
             "uses" => "Application@postReferees",
         ]);
 
-        Route::post("/referees/{reference}/delete", [
+        Route::post("/{applicationByPublicId}/referees/{reference}/delete", [
             "as"   => "referees.delete.post",
             "uses" => "Application@postRefereeDelete",
         ]);
 
-        Route::get("/submit", [
+        Route::get("/{applicationByPublicId}/submit", [
             "as"   => "submit",
             "uses" => "Application@getSubmit",
         ]);
 
-        Route::post("/submit", [
+        Route::post("/{applicationByPublicId}/submit", [
             "as"   => "submit.post",
             "uses" => "Application@postSubmit",
         ]);
 
-        Route::get("/withdraw", [
+        Route::get("/{applicationByPublicId}/withdraw", [
             "as"   => "withdraw",
             "uses" => "Application@getWithdraw",
         ]);
 
-        Route::post("/withdraw", [
+        Route::post("/{applicationByPublicId}/withdraw", [
             "as"   => "withdraw.post",
             "uses" => "Application@postWithdraw",
         ]);
 
-        Route::get("/view/{applicationByPublicId}", [
+        Route::get("/{applicationByPublicId}", [
             "as"   => "view",
             "uses" => "Application@getView"
         ]);

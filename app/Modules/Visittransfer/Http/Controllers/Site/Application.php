@@ -63,26 +63,28 @@ class Application extends BaseController
         ]);
     }
     
-    public function getContinue(){
-        if(Gate::allows("select-facility", Auth::user()->visitTransferCurrent())){
-            return Redirect::route("visiting.application.facility");
+    public function getContinue(\App\Modules\Visittransfer\Models\Application $application){
+        if(Gate::allows("select-facility", $application)){
+            return Redirect::route("visiting.application.facility", [$application->public_id]);
         }
 
-        if(Gate::allows("add-statement", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->statement == null){
-            return Redirect::route("visiting.application.statement");
+        if(Gate::allows("add-statement", $application) && $application->statement == null){
+            return Redirect::route("visiting.application.statement", [$application->public_id]);
         }
 
-        if(Gate::allows("add-referee", Auth::user()->visitTransferCurrent()) && Auth::user()->visitTransferCurrent()->number_references_required_relative > 0){
-            return Redirect::route("visiting.application.referees");
+        if(Gate::allows("add-referee", $application) && $application->number_references_required_relative > 0){
+            return Redirect::route("visiting.application.referees", [$application->public_id]);
         }
 
-        if(Gate::allows("submit-application", Auth::user()->visitTransferCurrent())){
-            return Redirect::route("visiting.application.submit");
+        if(Gate::allows("submit-application", $application)){
+            return Redirect::route("visiting.application.submit", [$application->public_id]);
         }
 
-        if(Auth::user()->visitTransferCurrent() != null){
-            return Redirect::route("visiting.application.view", [Auth::user()->visitTransferCurrent()->public_id]);
+        if(Gate::allows("view-application", $application)){
+            return Redirect::route("visiting.application.view", [$application->public_id]);
         }
+
+
 
         return Redirect::route("visiting.dashboard");
     }
