@@ -147,7 +147,8 @@ It is expected that you will follow the GitFlow Workflow for managing the reposi
 * On completion it should be merged **not rebased** with development
 * You may see us creating `release/<version>` branches - this is where final testing will occur.
 * Where an issue is **assigned** to somebody it means they're working on it.  Speak to them before trying to contribute.
-* Where an issue is marked as **acknowledged** or **development started** then it's also likely to be in progress.
+* Where an issue is marked as **acknowledged** then it's been agreed that it is required and can be produced.
+ * We would advise against working on issues without an Acknowledged label.
  * If you want to start work on an issue, comment on the issue asking to work on it and it'll be assigned to you by a developer.
 * Any code change **must** have an associated issue detailing (in full) why the change is being made
 * Commit messages **must** make use of the issue management commands
