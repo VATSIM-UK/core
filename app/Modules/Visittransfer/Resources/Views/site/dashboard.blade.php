@@ -10,12 +10,7 @@
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
                         <p>
-                            You can apply to become a visitor if you:
-                        <ul>
-                            <li>want to control <strong>specific facilities*</strong> within the UK</li>
-                            <li><strong>do not</strong> wish to leave your current division</li>
-                        </ul>
-                        <small>*Each facility will require a separate application.</small>
+                            {!! trans("visittransfer::application.dashboard.apply.atc.visit.info") !!}
                         </p>
                     </div>
 
@@ -26,21 +21,17 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Modules\Visittransfer\Models\Facility::isPossibleToVisitAtc())
-                            {!! Button::danger("THERE ARE NO VISITING ATC PLACES")->disable() !!}
+                            {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.no_places"))->disable() !!}
                         @else
                             @can("create", new \App\Modules\Visittransfer\Models\Application)
-                                {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
+                                {!! Button::success(trans("visittransfer::application.dashboard.apply.atc.visit.start"))->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
 
-                            @elseif($currentVisitApplication)
-                                @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
-                                @else
-                                    {!! Button::danger("You currently have a visit application open.")->disable() !!}
-                                @endif
+                            @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
+                                {!! Button::primary(trans("visittransfer::application.dashboard.continue"))->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
                             @elseif($currentTransferApplication)
-                                {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                                {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.xfer_open"))->disable() !!}
                             @else
-                                {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                                {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.unable"))->disable() !!}
                             @endcan
                         @endif
                     </div>
@@ -76,12 +67,8 @@
                         @else
                             @can("create", new \App\Modules\Visittransfer\Models\Application)
                                 {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "pilot"])) !!}
-                            @elseif($currentVisitApplication)
-                                @if($currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
+                            @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
                                     {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
-                                @else
-                                    {!! Button::danger("You currently have a visit application open.")->disable() !!}
-                                @endif
                             @elseif($currentTransferApplication)
                                 {!! Button::danger("You currently have a transfer application open.")->disable() !!}
                             @else
