@@ -103,6 +103,7 @@ Beyond your initial setup, you can just run `composer update` on future code pul
  * `APP_DEBUGBAR` = `true`
  * `APP_KEY` = Leave blank, we'll fix this in a second
  * `APP_URL` = Whatever URL you setup in the last section (recommended `vukcore.localhost`)
+ * `SESSION_DOMAIN` = Leave this blank (i.e `SESSION_DOMAIN=`)
  * `DB_MYSQL_*` = Should match the MySQL account you setup.
  * `TS_*` = If you have your own TS server, integration information can be added here.
  * `MAIL_*` = SMTP, setup the details as per your MailTrap.io settings
