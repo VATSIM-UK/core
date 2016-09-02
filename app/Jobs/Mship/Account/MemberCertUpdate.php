@@ -3,6 +3,7 @@
 namespace App\Jobs\Mship\Account;
 
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Exceptions\Mship\DuplicateStateException;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
@@ -62,8 +63,12 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $member->joined_at = $this->data->regdate;
             $member->save();
 
-            $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
-            $member->addState($state, $this->data->region, $this->data->division);
+            try {
+                $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
+                $member->addState($state, $this->data->region, $this->data->division);
+            } catch(DuplicateStateException $e){
+                // Todo: Something.
+            }
 
             $member = $this->processBans($member);
             $member = $this->processRating($member);
@@ -101,42 +106,46 @@ class MemberCertUpdate extends Job implements ShouldQueue
 
     protected function processRating($member)
     {
-        // if they have an extra rating, log their previous rating
-        if ($this->data->rating >= 8) {
-            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-            if (isset($_prevRat->PreviousRatingInt)) {
-                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
-                    $member->addQualification($prevAtcRating);
+        try {
+            // if they have an extra rating, log their previous rating
+            if ($this->data->rating >= 8) {
+                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+                if (isset($_prevRat->PreviousRatingInt)) {
+                    $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                    if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
+                        $member->addQualification($prevAtcRating);
+                    }
+                }
+            } else {
+                // remove any extra ratings
+                foreach ($member->qualifications_atc_training as $qual) {
+                    $qual->pivot->delete();
+                }
+                foreach ($member->qualifications_pilot_training as $qual) {
+                    $qual->pivot->delete();
+                }
+                foreach ($member->qualifications_admin as $qual) {
+                    $qual->pivot->delete();
                 }
             }
-        } else {
-            // remove any extra ratings
-            foreach ($member->qualifications_atc_training as $qual) {
-                $qual->pivot->delete();
-            }
-            foreach ($member->qualifications_pilot_training as $qual) {
-                $qual->pivot->delete();
-            }
-            foreach ($member->qualifications_admin as $qual) {
-                $qual->pivot->delete();
-            }
-        }
 
-        // log their current rating (unless they're a non-UK instructor)
-        if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState("DIVISION")
-        ) {
-            $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-            if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
-                $member->addQualification($atcRating);
+            // log their current rating (unless they're a non-UK instructor)
+            if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState("DIVISION")
+            ) {
+                $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
+                if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
+                    $member->addQualification($atcRating);
+                }
             }
-        }
 
-        $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
-        foreach ($pilotRatings as $pr) {
-            if (!$member->hasQualification($pr)) {
-                $member->addQualification($pr);
+            $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
+            foreach ($pilotRatings as $pr) {
+                if (!$member->hasQualification($pr)) {
+                    $member->addQualification($pr);
+                }
             }
+        } catch(DuplicateQualificationException $e){
+            // TOdo: Something.
         }
 
         return $member;
