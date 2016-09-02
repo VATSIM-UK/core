@@ -18,4 +18,4 @@ phpunit:php5.6:mysql5.5:
     - development
     - production
   script:
-    - php vendor/bin/phpunit --colors
+    - php vendor/bin/phpunit  --coverage-text --colors=never
