@@ -1,5 +1,10 @@
 ## Upgrade Notes
 
+### 2.3.3 > 2.3.4
+* Increase the frequency of `php artisan Member:CertImport` to every hour
+* Add cronjob for `php artisan Member:CertImport --full` for midnight
+ * It cannot be on the same offset as the first job.  Ideally, just after.
+
 ### 2.3.1 > 2.3.2
 * Run composer install -o --no-dev
 * Run `php artisan module:migrate visittransfer -vvv`

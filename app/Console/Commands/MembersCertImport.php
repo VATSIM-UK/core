@@ -20,7 +20,7 @@ class MembersCertImport extends aCommand
      *
      * @var string
      */
-    protected $signature = 'Members:CertImport';
+    protected $signature = 'Members:CertImport {--full}';
 
     /**
      * The console command description.
@@ -46,14 +46,14 @@ class MembersCertImport extends aCommand
 
         $this->log('Member list and email list obtained.');
 
-        $members = AutoTools::getDivisionData();
+        $members = AutoTools::getDivisionData(!$this->option("full"));
 
         foreach ($members as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);
 
-//            DB::transaction(function () use ($member) {
+            DB::transaction(function () use ($member) {
                 $this->processMember($member);
-//            });
+            });
         }
 
         $this->sendSlackSuccess('Members imported.', [
