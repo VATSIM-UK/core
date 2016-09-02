@@ -1,7 +1,18 @@
 ## Upgrade Notes
 
+### All Versions (2.3.5 onwards)
+* Stop all queue processes
+* Disable all cronjobs
+* Run `composer install -o --no-dev`
+* Run `php artisan migrate --step -vvv`
+* Run `npm install --production`
+* Run `gulp --production`
+* **Perform version-specific upgrade steps (below)**
+* Enable all cronjobs
+* Restart all queue processes
+
 ### 2.3.5 > 2.4.6
-* Run a range of consolidation destorying SQL:
+* Run a range of consolidation destroying SQL:
 ```
 DELETE FROM `migrations`
 WHERE `migration` LIKE '0000_00_00_000000_consolidation_%'
@@ -40,6 +51,9 @@ LIMIT 1;
 * Run `composer dumpautoload`
 
 ### 2.3.4 > 2.3.5
+* Remove/reset storage/app/modules.json
+
+### 2.3.3 > 2.3.4
 * Run `php artisan migrate --step -vvv`
 * Increase the frequency of `php artisan Member:CertImport` to every hour
 * Add cronjob for `php artisan Member:CertImport --full` for midnight

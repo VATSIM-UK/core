@@ -5,9 +5,7 @@ namespace App\Exceptions;
 use App;
 use Auth;
 use Log;
-use Redirect;
 use Request;
-use Route;
 use Slack;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -24,10 +22,11 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        \Illuminate\Session\TokenMismatchException::class,
     ];
 
     /**
@@ -47,7 +46,7 @@ class Handler extends ExceptionHandler
                 } catch (Exception $e) {}
             }
 
-            if (App::environment('production')) {
+            if (class_exists('App') && App::environment('production')) {
                 $channel = 'wslogging';
             } else {
                 $channel = 'wslogging_dev';
@@ -84,7 +83,7 @@ class Handler extends ExceptionHandler
                 ],
             ];
 
-            if (!App::runningInConsole()) {
+            if (class_exists('App') && !App::runningInConsole()) {
                 if (Auth::check()) {
                     $attachment['fields'][] = [
                         'title' => 'Member:',
@@ -105,11 +104,15 @@ class Handler extends ExceptionHandler
                 ];
             }
 
-            try {
-                Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
-            } catch (Exception $e) {}
+            if (class_exists('Slack')) {
+                try {
+                    Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+                } catch (Exception $e) {}
+            }
 
-            Log::info(Request::fullUrl());
+            if (class_exists('Log')) {
+                Log::info(Request::fullUrl());
+            }
         }
 
         parent::report($e);

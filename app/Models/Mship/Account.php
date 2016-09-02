@@ -348,7 +348,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function hasOpenVisitingTransferApplication()
     {
-        return $this->visitTransferApplications->contains(function ($key, $application) {
+        return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array($application->status,
                 \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN);
         });

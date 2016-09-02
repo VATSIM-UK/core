@@ -21,30 +21,34 @@ class BaseController extends \Illuminate\Routing\Controller {
     protected $_breadcrumb;
 
     public function __construct() {
-        if(Auth::check()) {
-            $this->_account = Auth::user();
-            $this->_account->load("roles", "roles.permissions");
+        $this->middleware(function ($request, $next) {
+            if (Auth::check()) {
+                $this->_account = Auth::user();
+                $this->_account->load("roles", "roles.permissions");
 
-            // Do we need to do some debugging on this user?
-            if($this->_account->debug){
-                \Debugbar::enable();
-            }
-            
-            // if last login recorded is older than 45 minutes, record the new timestamp
-            if($this->_account->last_login < \Carbon\Carbon::now()
-                                                           ->subMinutes(45)
-                                                           ->toDateTimeString()
-            ) {
-                $this->_account->last_login = \Carbon\Carbon::now();
-                // if the ip has changed, record this too
-                if($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
-                    $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                // Do we need to do some debugging on this user?
+                if ($this->_account->debug) {
+                    \Debugbar::enable();
                 }
-                $this->_account->save();
+
+                // if last login recorded is older than 45 minutes, record the new timestamp
+                if ($this->_account->last_login < \Carbon\Carbon::now()
+                        ->subMinutes(45)
+                        ->toDateTimeString()
+                ) {
+                    $this->_account->last_login = \Carbon\Carbon::now();
+                    // if the ip has changed, record this too
+                    if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
+                        $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                    }
+                    $this->_account->save();
+                }
+            } else {
+                $this->_account = new Account();
             }
-        } else {
-            $this->_account = new Account();
-        }
+
+            return $next($request);
+        });
     }
 
     protected function viewMake($view) {
