@@ -28,8 +28,8 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
 
         Schema::table("mship_account_state", function (Blueprint $table) {
             $table->integer("state_id")->after("account_id");
-            $table->string("region", 5)->nullable();
-            $table->string("division", 3)->nullable();
+            $table->string("region", 5)->nullable()->after("state_id");
+            $table->string("division", 3)->nullable()->after("state_id");
             $table->timestamp("start_at")->after("state")->nullable();
             $table->timestamp("end_at")->after("updated_at")->nullable();
         });

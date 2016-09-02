@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mship;
 
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Exceptions\Mship\DuplicateStateException;
 use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
@@ -202,8 +203,12 @@ class Authentication extends BaseController {
                         // TODO: Something.
                     }
 
-                    $state = determine_mship_state_from_vatsim($user->region->code, $user->division->code);
-                    $account->addState($state, $user->region->code, $user->division->code);
+                    try {
+                        $state = determine_mship_state_from_vatsim($user->region->code, $user->division->code);
+                        $account->addState($state, $user->region->code, $user->division->code);
+                    } catch(DuplicateStateException $e){
+                        // TODO: Something.
+                    }
 
                     $account->last_login = Carbon::now();
                     $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
