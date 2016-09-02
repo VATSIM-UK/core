@@ -269,7 +269,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         $this->guardAgainstDivisionMemberVisitingTransferApplication();
         $this->guardAgainstDuplicateVisitingTransferApplications();
 
-        return $this->visitTransferApplications()->create($attributes);
+        $application = Application::create($attributes);
+
+        return $this->visitTransferApplications()->save($application);
     }
 
     private function guardAgainstDivisionMemberVisitingTransferApplication()

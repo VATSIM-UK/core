@@ -156,8 +156,8 @@
             };
         }
 
-        @if($application->exists)
-            initializeClock('applicationExpireTimer', "<?php echo e($application->created_at->addHour()->toDateTimeString()); ?> GMT");
+        @if($application->exists && $application->expires_at !== null)
+            initializeClock('applicationExpireTimer', "{{ $application->expires_at->toDateTimeString() }} GMT");
         @endif
 
         var tour = new Tour({

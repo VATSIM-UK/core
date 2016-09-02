@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8ffa70425504735d7446be99339bffcc",
+    "hash": "574a905919bbf41be12408dbe6ff432d",
     "content-hash": "e848bb8f8bfff786bf3f04898cc95b07",
     "packages": [
         {
@@ -312,7 +312,7 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/A-Lawrence/modules/tree/dev-extradirectories"
+                "source": "https://github.com/A-Lawrence/modules/tree/extra-directories"
             },
             "time": "2016-06-20 16:50:54"
         },
