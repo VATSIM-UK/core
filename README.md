@@ -1,26 +1,27 @@
 ## Upgrade Notes
 
 ### 2.3.3 > 2.3.4
+* Run `php artisan migrate --step -vvv`
 * Increase the frequency of `php artisan Member:CertImport` to every hour
 * Add cronjob for `php artisan Member:CertImport --full` for midnight
  * It cannot be on the same offset as the first job.  Ideally, just after.
 
 ### 2.3.2 > 2.3.3
-* Run composer update -o --no-dev
+* Run `composer update -o --no-dev`
 * Run `php artisan visittransfer:statistics:daily 2016-08-22 yesterday -vvv`
 * Run `gulp --production`
 
 ### 2.3.1 > 2.3.2
-* Run composer install -o --no-dev
+* Run `composer install -o --no-dev`
 * Run `php artisan module:migrate visittransfer -vvv`
 * Run `php artisan visittransfer:statistics:daily 2016-08-22 yesterday -vvv`
 * Run `gulp --production`
 
 ### 2.3.0 > 2.3.1
-* Run composer update -o --no-dev
+* Run `composer update -o --no-dev`
 
 ### 2.2.4 > 2.3.0
-* Run composer install -o --no-dev
+* Run `composer install -o --no-dev`
 * Run `php artisan module:optimize`
 * Run `php artisan module:migrate`
 * Enable vt.core as another host for visiting/transferring
