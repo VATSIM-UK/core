@@ -435,10 +435,6 @@ class Application extends Model
         event(new ApplicationSubmitted($this));
 
         $this->facility->removeTrainingSpace();
-
-        if ($this->is_transfer) {
-            $this->account->addState(State::findByCode("TRANSFERRING"));
-        }
     }
 
     public function markAsUnderReview($staffReason = null, Account $actor = null)
@@ -492,6 +488,14 @@ class Application extends Model
             // TODO: Investigate why this is required!!!!
         }
 
+        if($this->is_visit){
+            $this->account->addState(State::findByCode("VISITING"));
+        }
+
+        if($this->is_transfer){
+            $this->account->addState(State::findByCode("TRANSFERRING"));
+        }
+
         event(new ApplicationAccepted($this));
     }
 
@@ -511,13 +515,6 @@ class Application extends Model
         }
 
         event(new ApplicationCompleted($this));
-
-        if ($this->is_visit) {
-            $this->account->addState(State::findByCode("VISITING"));
-        } elseif ($this->is_transfer) {
-            $this->account->removeState(State::findByCode("TRANSFERRING"));
-            $this->account->addState(State::findByCode("DIVISION"));
-        }
     }
 
     public function setCheckOutcome($check, $outcome)
