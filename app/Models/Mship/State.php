@@ -25,6 +25,14 @@ class State extends \Eloquent
         return $query->whereType($type);
     }
 
+    public function scopePermanent($query){
+        return $query->ofType("perm");
+    }
+
+    public function scopeTemporary($query){
+        return $query->ofType("temp");
+    }
+
     public function scopeHasCode($query, $code)
     {
         return $query->whereCode($code);
@@ -33,7 +41,16 @@ class State extends \Eloquent
     public function account()
     {
         return $this->belongsToMany(Account::class, "mship_account_state", "state_id", "account_id")
-                    ->withPivot(["start_at", "end_at"]);
+                    ->withPivot(["region", "division", "start_at", "end_at"]);
+    }
+
+    public function getIsPermanentAttribute(){
+        return $this->type == "perm";
+    }
+
+    public function getIsTemporaryAttribute()
+    {
+        return $this->type == "temp";
     }
 
     public function __toString()

@@ -24,6 +24,7 @@ use App\Modules\Visittransfer\Models\Application;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Bus;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -482,11 +483,8 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     public function states()
     {
         return $this->belongsToMany(State::class, "mship_account_state", "account_id", "state_id")
-                    ->withPivot(["start_at", "end_at"]);
-    }
-
-    public function activeStates(){
-        return $this->states()->wherePivot("end_at", null);
+                    ->withPivot(["region", "division", "start_at", "end_at"])
+                    ->wherePivot("end_at", null);
     }
 
     public function ssoEmails()
@@ -655,7 +653,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function hasState(State $search)
     {
-        return $this->activeStates->contains(function ($key, $state) use ($search) {
+        return $this->states->contains(function ($key, $state) use ($search) {
             return $state->id == $search->id;
         });
     }
@@ -674,11 +672,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
 
-        var_dump($this->primary_state);
-        var_dump($this->primary_state->is_permanent);
-        dd($state);
-
-        if ($this->primary_state && $this->primary_state->is_permanent) {
+        if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
             $this->removeState($this->primary_state);
         }
 
@@ -697,19 +691,9 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
             throw new \App\Exceptions\Mship\StateDoesNotExistException($state);
         }
 
-        if(!$state->pivot){
-            $state = $this->activeStates->filter(function($filteredState) use ($state){
-                return $filteredState->id == $state->id;
-            })->first();
-        }
-
-        dd($state);
-
-        $state->pivot->end_at = \Carbon\Carbon::now();
-
-        dd($state);
-
-        $state->pivot->save();
+        return $this->states()->updateExistingPivot($state->id, [
+            "end_at" => \Carbon\Carbon::now(),
+        ]);
     }
 
     /**
@@ -719,7 +703,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getPrimaryStateAttribute()
     {
-        return $this->activeStates->first();
+        return $this->states->sortBy("priority")->first();
     }
 
     /**
@@ -729,9 +713,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getTemporaryStatesAttribute()
     {
-        return $this->activeStates->filter(function ($state) {
-            return strcasecmp($state->type, "temp") == 0;
-        });
+        return $this->states()->temporary()->get();
     }
 
     /**
@@ -741,9 +723,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
      */
     public function getPermanentStatesAttribute()
     {
-        return $this->activeStates->filter(function ($state) {
-            return strcasecmp($state->type, "perm") == 0;
-        });
+        return $this->states()->permanent()->get();
     }
 
     //--
