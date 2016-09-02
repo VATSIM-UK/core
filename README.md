@@ -1,5 +1,44 @@
 ## Upgrade Notes
 
+### 2.3.5 > 2.4.6
+* Run a range of consolidation destorying SQL:
+```
+DELETE FROM `migrations`
+WHERE `migration` LIKE '0000_00_00_000000_consolidation_%'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000000_initial_mship'
+WHERE `migration` = '2015_01_01_000000_vanilla_mship_v224'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000010_initial_system'
+WHERE `migration` = '2015_01_01_000010_vanilla_system_v221'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000020_initial_sso'
+WHERE `migration` = '2015_01_01_000020_vanilla_sso_v221'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000030_initial_teamspeak'
+WHERE `migration` = '2015_01_01_000030_vanilla_teamspeak_v221'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000040_initial_messages'
+WHERE `migration` = '2015_01_01_000040_vanilla_messages_v221'
+LIMIT 1;
+
+UPDATE `migrations`
+SET `migration` = '2015_01_01_000050_initial_statistic'
+WHERE `migration` = '2015_01_01_000050_vanilla_statistic_v224'
+LIMIT 1;
+```
+* Run `composer dumpautoload`
+
 ### 2.3.4 > 2.3.5
 * Run `php artisan migrate --step -vvv`
 * Increase the frequency of `php artisan Member:CertImport` to every hour
