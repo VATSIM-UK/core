@@ -1,9 +1,9 @@
 ## Upgrade Notes
 
 ### 2.3.3 > 2.3.4
-* Run `php artisan module:migrate visittransfer -vvv`
-* Modify cronjob for visittransfer:cleanup to run every minute
-* Run `gulp --production`
+* Increase the frequency of `php artisan Member:CertImport` to every hour
+* Add cronjob for `php artisan Member:CertImport --full` for midnight
+ * It cannot be on the same offset as the first job.  Ideally, just after.
 
 ### 2.3.2 > 2.3.3
 * Run composer update -o --no-dev

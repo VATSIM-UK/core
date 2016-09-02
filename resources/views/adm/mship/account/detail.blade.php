@@ -83,20 +83,31 @@
                             <!-- general form elements -->
                             <div class="box box-primary">
                                 <div class="box-header">
-                                    <h3 class="box-title">Membership Status</h3>
+                                    <h3 class="box-title">Membership Status - {{ $account->status_string }}</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="status">Status:</label>
-                                        {{ $account->status_string }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="state">State:</label>
-                                        {{ $account->current_state }}<br />
-                                        @if($account->current_state)
-                                            <em>({{ $account->current_state->created_at->diffForHumans() }}, {{ $account->current_state->created_at }})</em>
-                                        @endif
-                                    </div>
+                                    <table class="table table-striped table-bordered table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>State</th>
+                                                <th>Region</th>
+                                                <th>Division</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($account->statesHistory as $state)
+                                                <tr>
+                                                    <td>{{ $state->name }}</td>
+                                                    <td>{{ $state->pivot->region }}</td>
+                                                    <td>{{ $state->pivot->division }}</td>
+                                                    <td>{{ $state->pivot->start_at }}</td>
+                                                    <td>{{ $state->pivot->end_at }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div><!-- /.box-body -->
                             </div>
                         </div>

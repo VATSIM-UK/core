@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adm;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\State;
 use App\Models\Statistic;
 use App\Models\Mship\Account\Email as AccountEmail;
 use DB;
@@ -21,12 +22,21 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
             $statistics = array();
             $statistics['members_total'] = (\App\Models\Mship\Account::count());
             $statistics['members_active'] = (\App\Models\Mship\Account::where("status", "=", 0)->count());
-            $statistics['members_division'] = (\App\Models\Mship\Account\State::where("state", "=", \App\Models\Mship\Account\State::STATE_DIVISION)->count());
-            $statistics['members_nondivision'] = (\App\Models\Mship\Account\State::where("state", "!=", \App\Models\Mship\Account\State::STATE_DIVISION)->count());
+
+            $statistics['members_division'] = DB::table("mship_account_state")
+                ->where("state_id", "=", State::findByCode("DIVISION")->id)
+                ->count();
+
+            $statistics['members_nondivision'] = DB::table("mship_account_state")
+                ->where("state_id", "!=", State::findByCode("DIVISION")->id)
+                ->count();
+
             $statistics['members_pending_update'] = (\App\Models\Mship\Account::where("cert_checked_at", "<=", \Carbon\Carbon::now()
                 ->subDay()->toDateTimeString())->where('last_login', '>=', \Carbon\Carbon::now()
                 ->subMonths(3)->toDateTimeString())->count());
+
             $statistics['members_qualifications'] = (DB::table('mship_account_qualification')->count());
+
             return $statistics;
         });
 

@@ -3,6 +3,7 @@
 namespace App\Modules\Visittransfer\Models;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\State;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Events\ApplicationCompleted;
 use App\Modules\Visittransfer\Events\ApplicationExpired;
@@ -446,6 +447,10 @@ class Application extends Model
         if ($this->facility) {
             $this->facility->addTrainingSpace();
         }
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode("TRANSFERRING"));
+        }
     }
 
     public function submit()
@@ -492,6 +497,10 @@ class Application extends Model
         }
 
         event(new ApplicationRejected($this));
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode("TRANSFERRING"));
+        }
     }
 
     public function accept($staffComment = null, Account $actor = null)
@@ -506,6 +515,14 @@ class Application extends Model
             $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
+        }
+
+        if($this->is_visit){
+            $this->account->addState(State::findByCode("VISITING"));
+        }
+
+        if($this->is_transfer){
+            $this->account->addState(State::findByCode("TRANSFERRING"));
         }
 
         event(new ApplicationAccepted($this));

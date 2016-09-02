@@ -1,7 +1,6 @@
 <?php
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Models\Mship\Account\State;
 use App\Modules\Visittransfer\Models\Application;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
