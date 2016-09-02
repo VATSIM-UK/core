@@ -86,9 +86,15 @@ Once your environment has been setup, you'll need to define some [virtual hosts]
 
 TL;DR: A standard Laravel deployment process - install Composer Dependancies, edit the .env directory, run migrations, run gulp for production.
 
-**You will need to follow sections 2, 3 and 4 on every new pull of our codebase**
+**You will need to follow sections 1, 3 and 4 on every new pull of our codebase**
 
-#### 1 - Environment Variables
+#### 1 - Composer Dependancies
+
+In the command line, run `composer install` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
+
+Beyond your initial setup, you can just run `composer update` on future code pulls.
+
+#### 2 - Environment Variables
 
 * Within your checked out code, copy `.env.example` to `.env`
 * Edit the settings within that file as appropriate
@@ -105,12 +111,6 @@ TL;DR: A standard Laravel deployment process - install Composer Dependancies, ed
  * `SSO_*` = If you have an [VATSIM SSO Account](https://cert.vatsim.net/sso) by all means use it.
 
 Once you've saved that, in the command line run `php artisan key:generate` to set the `APP_KEY` variable.
-
-#### 2 - Composer Dependancies
-
-In the command line, run `composer install` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
-
-Beyond your initial setup, you can just run `composer update` on future code pulls.
 
 #### 3 - Migrate the databases
 
