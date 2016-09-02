@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Exceptions\Mship\DuplicateStateException;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -98,7 +99,11 @@ class MembersCertImport extends aCommand
         $member->is_inactive = (boolean) ($member_data["rating_atc"] < 0);
         $member->save();
 
-        $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
+        try {
+            $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
+        } catch(DuplicateStateException $e){
+            // TODO: Do something.
+        }
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
@@ -149,7 +154,11 @@ class MembersCertImport extends aCommand
         $member->email = $member_data["email"];
         $member->save();
 
-        $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
+        try {
+            $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
+        } catch(DuplicateStateException $e){
+            // TODO: Something.
+        }
     }
 
     protected function getMemberIdAndEmail()
