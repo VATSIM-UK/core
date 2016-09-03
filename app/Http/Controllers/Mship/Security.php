@@ -62,12 +62,13 @@ class Security extends \App\Http\Controllers\BaseController {
 
         if (!Auth::user()->hasPassword()) {
             $this->setTitle("Create");
-            $slsType = 'requested';
-        } else {
             if (Auth::user()->mandatory_password) {
-                $this->setTitle("Create");
                 $slsType = "forced";
-            } elseif (Auth::user()->hasPasswordExpired()) {
+            } else {
+                $slsType = 'requested';
+            }
+        } else {
+            if (Auth::user()->hasPasswordExpired()) {
                 $slsType = "expired";
             } elseif(!$disable) {
                 $slsType = 'replace';
