@@ -10,6 +10,8 @@ class SiteDivisionMember extends TestCase
 
     public function setUp()
     {
+        parent::setUp();
+        
         $this->account = factory(\App\Models\Mship\Account::class)->create();
 
         $this->account->addState(\App\Models\Mship\State::findByCode("DIVISION"), "EUR", "GBR");
