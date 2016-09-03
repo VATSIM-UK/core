@@ -236,9 +236,14 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
         // Add the user to the default role.
         $defaultRole = RoleData::isDefault()->first();
+
         if ($defaultRole) {
             $model->roles()->attach($defaultRole);
         }
+
+        // Queue the slack email
+        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
+        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($model))->delay($delayOffset));
     }
 
     public static function findOrRetrieve($accountId)
@@ -343,7 +348,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
 
     public function hasOpenVisitingTransferApplication()
     {
-        return $this->visitTransferApplications->contains(function ($key, $application) {
+        return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array($application->status,
                 \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN);
         });

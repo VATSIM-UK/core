@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8ffa70425504735d7446be99339bffcc",
-    "content-hash": "e848bb8f8bfff786bf3f04898cc95b07",
+    "hash": "500c6095297a838cf924e7fea5b4f116",
+    "content-hash": "79e1665db7fb5d146b4a4f9324e6e200",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -1708,13 +1708,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/A-Lawrence/public-id.git",
-                "reference": "89c587710895a4469c4e936a9772e9d4c4154e44"
+                "url": "https://github.com/malahierba-lab/public-id.git",
+                "reference": "6a39d2c19401edbf3eeac60e88e93c17f202bd0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/A-Lawrence/public-id/zipball/89c587710895a4469c4e936a9772e9d4c4154e44",
-                "reference": "89c587710895a4469c4e936a9772e9d4c4154e44",
+                "url": "https://api.github.com/repos/malahierba-lab/public-id/zipball/6a39d2c19401edbf3eeac60e88e93c17f202bd0e",
+                "reference": "6a39d2c19401edbf3eeac60e88e93c17f202bd0e",
                 "shasum": ""
             },
             "require": {
@@ -1728,6 +1728,7 @@
                     "Malahierba\\PublicId\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1747,10 +1748,7 @@
                 "public id",
                 "short id"
             ],
-            "support": {
-                "source": "https://github.com/A-Lawrence/public-id/tree/master"
-            },
-            "time": "2016-08-20 12:31:28"
+            "time": "2016-08-27 15:50:44"
         },
         {
             "name": "maximebf/debugbar",

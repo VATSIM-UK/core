@@ -2,8 +2,8 @@
 
 namespace App\Modules\Ais\Providers;
 
-use Caffeinated\Modules\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Routing\Router;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,12 +17,11 @@ class RouteServiceProvider extends ServiceProvider
 	/**
 	 * Define your module's route model bindings, pattern filters, etc.
 	 *
-	 * @param  \Illuminate\Routing\Router  $router
 	 * @return void
 	 */
-	public function boot(Router $router)
+	public function boot()
 	{
-		parent::boot($router);
+		parent::boot();
 
 		//
 	}
@@ -30,12 +29,11 @@ class RouteServiceProvider extends ServiceProvider
 	/**
 	 * Define the routes for the module.
 	 *
-	 * @param  \Illuminate\Routing\Router $router
 	 * @return void
 	 */
-	public function map(Router $router)
+	public function map()
 	{
-		$router->group([
+		Route::group([
 			'namespace'  => $this->namespace,
 			'middleware' => ['web']
 		], function($router) {

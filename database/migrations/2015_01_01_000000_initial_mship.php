@@ -4,7 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class VanillaMshipV224 extends Migration
+class InitialMship extends Migration
 {
     /**
      * Run the migrations.

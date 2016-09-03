@@ -86,9 +86,15 @@ Once your environment has been setup, you'll need to define some [virtual hosts]
 
 TL;DR: A standard Laravel deployment process - install Composer Dependancies, edit the .env directory, run migrations, run gulp for production.
 
-**You will need to follow sections 2, 3 and 4 on every new pull of our codebase**
+**You will need to follow sections 1, 3 and 4 on every new pull of our codebase**
 
-#### 1 - Environment Variables
+#### 1 - Composer Dependancies
+
+In the command line, run `composer install` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
+
+Beyond your initial setup, you can just run `composer update` on future code pulls.
+
+#### 2 - Environment Variables
 
 * Within your checked out code, copy `.env.example` to `.env`
 * Edit the settings within that file as appropriate
@@ -97,6 +103,7 @@ TL;DR: A standard Laravel deployment process - install Composer Dependancies, ed
  * `APP_DEBUGBAR` = `true`
  * `APP_KEY` = Leave blank, we'll fix this in a second
  * `APP_URL` = Whatever URL you setup in the last section (recommended `vukcore.localhost`)
+ * `SESSION_DOMAIN` = Leave this blank (i.e `SESSION_DOMAIN=`)
  * `DB_MYSQL_*` = Should match the MySQL account you setup.
  * `TS_*` = If you have your own TS server, integration information can be added here.
  * `MAIL_*` = SMTP, setup the details as per your MailTrap.io settings
@@ -105,12 +112,6 @@ TL;DR: A standard Laravel deployment process - install Composer Dependancies, ed
  * `SSO_*` = If you have an [VATSIM SSO Account](https://cert.vatsim.net/sso) by all means use it.
 
 Once you've saved that, in the command line run `php artisan key:generate` to set the `APP_KEY` variable.
-
-#### 2 - Composer Dependancies
-
-In the command line, run `composer install` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
-
-Beyond your initial setup, you can just run `composer update` on future code pulls.
 
 #### 3 - Migrate the databases
 
@@ -130,6 +131,14 @@ The first time you try and run gulp, you'll get an error.  To fix that:
 * Install dependencies `npm install`
 
 Now you can run gulp with the command `gulp` in your project directory.
+
+#### 5 - Add your own account
+
+Open a new command prompt and within your project directory type `php artisan tinker`.
+
+Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXXX)->setPassword("this_is_my_password");`
+
+Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
 
 #### Relax
 
