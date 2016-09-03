@@ -34,7 +34,7 @@ class AddMemberNicknameToAccount extends Migration
      */
     public function down()
     {
-        Schema::table("teamspeak_alias", function(Blueprint $table){
+        Schema::create("teamspeak_alias", function(Blueprint $table){
             $table->increments('id')->unsigned();
             $table->integer('account_id')->unique()->unsigned();
             $table->string('display_name', 30);
@@ -42,13 +42,15 @@ class AddMemberNicknameToAccount extends Migration
             $table->timestamps();
         });
 
-        $nicknames = DB::table("mship_account")->select("account_id", "nickname")->get();
+        $nicknames = DB::table("mship_account")->select("id", "nickname")->get();
 
         foreach($nicknames as $nick){
-            DB::table("teamspeak_alias")->insert([
-                "account_id" => $nick->account_id,
-                "display_name" => $nick->nickname,
-            ]);
+            if (!is_null($nick->nickname)) {
+                DB::table("teamspeak_alias")->insert([
+                    "account_id" => $nick->id,
+                    "display_name" => $nick->nickname,
+                ]);
+            }
         }
 
         Schema::table("mship_account", function(Blueprint $table){
