@@ -116,12 +116,12 @@ class Application extends Model
 
     public static function scopeStatus($query, $status)
     {
-        return $query->whereStatus($status);
+        return $query->statusIn([$status]);
     }
 
     public static function scopeNotStatus($query, $status)
     {
-        return $query->where("status", "!=", $status);
+        return $query->statusNotIn([$status]);
     }
 
     public static function scopeStatusIn($query, Array $stati)

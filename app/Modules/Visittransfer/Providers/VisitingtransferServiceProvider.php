@@ -62,7 +62,8 @@ class VisittransferServiceProvider extends ServiceProvider
 	 */
 	protected function registerComposers(){
 		view()->composer(
-			["visittransfer::admin._sidebar"], App\Modules\Visittransfer\Composers\StatisticsComposer::class
+			["visittransfer::admin._sidebar", "Visittransfer::admin._sidebar", "admin._sidebar"],
+			App\Modules\Visittransfer\Resources\ViewComposers\StatisticsComposer::class
 		);
 	}
 

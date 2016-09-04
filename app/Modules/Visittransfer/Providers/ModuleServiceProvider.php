@@ -13,8 +13,8 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/Lang', 'Visittransfer');
-        $this->loadViewsFrom(__DIR__.'/../Resources/Views', 'Visittransfer');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/Lang', 'visittransfer');
+        $this->loadViewsFrom(__DIR__.'/../Resources/Views', 'visittransfer');
     }
 
     /**

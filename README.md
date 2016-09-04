@@ -51,6 +51,8 @@ LIMIT 1;
 ```
 
 * Run `composer dumpautoload`
+* Delete `storage/app/modules.json`
+ * Run `php artisan optimize && php artisan module:optimize && php artisan route:clear`
 
 ### 2.3.4 > 2.3.5
 * Remove/reset storage/app/modules.json
