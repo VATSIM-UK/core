@@ -1,4 +1,4 @@
-<?php namespace App\Modules\Visittransfer\Resources\ViewComposers;
+<?php namespace App\Modules\Visittransfer\Resources\Viewcomposers;
 
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
@@ -6,7 +6,7 @@ use Illuminate\View\View;
 
 class StatisticsComposer {
     public function __construct(){
-        
+
     }
 
     public function compose(View $view){

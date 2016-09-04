@@ -8,7 +8,7 @@ use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationSettingToggleRequest;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
-use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
 use Auth;
 use Cache;
 use Illuminate\Support\Collection;
@@ -69,7 +69,7 @@ class Application extends AdmController
         $this->setSubTitle("Application #" . $application->public_id);
 
         $unacceptedReferences = $application->referees->filter(function ($ref) {
-            return $ref->status == Reference::STATUS_UNDER_REVIEW;
+            return $ref->status == ReferenceModel::STATUS_UNDER_REVIEW;
         });
 
         return $this->viewMake("visittransfer::admin.application.view")
