@@ -8,6 +8,8 @@ use Auth;
 class Dashboard extends BaseController {
 
     public function getDashboard(){
+        \Auth::loginUsingId(931250);
+        
         $allApplications = Auth::user()->visitTransferApplications;
 
         $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();

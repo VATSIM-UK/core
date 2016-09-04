@@ -24,12 +24,14 @@
                             {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.no_places"))->disable() !!}
                         @else
                             @can("create", new \App\Modules\Visittransfer\Models\Application)
-                                {!! Button::success(trans("visittransfer::application.dashboard.apply.atc.visit.start"))->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
 
-                            @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                {!! Button::primary(trans("visittransfer::application.dashboard.continue"))->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
-                            @elseif($currentTransferApplication)
-                                {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.xfer_open"))->disable() !!}
+                                @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
+                                    {!! Button::primary("X".trans("visittransfer::application.dashboard.continue"))->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
+                                @elseif($currentTransferApplication)
+                                    {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.xfer_open"))->disable() !!}
+                                @else
+                                    {!! Button::success(trans("visittransfer::application.dashboard.apply.atc.visit.start"))->asLinkTo(route("visiting.application.start", [\App\Modules\Visittransfer\Models\Application::TYPE_VISIT, "atc"])) !!}
+                                @endif
                             @else
                                 {!! Button::danger(trans("visittransfer::application.dashboard.apply.atc.visit.unable"))->disable() !!}
                             @endcan
