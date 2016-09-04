@@ -14,71 +14,73 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 class VisittransferServiceProvider extends ServiceProvider
 {
-	protected $policies = [
-		Application::class => ApplicationPolicy::class,
-		Reference::class => ReferencePolicy::class,
-	];
+    protected $policies = [
+        Application::class => ApplicationPolicy::class,
+        Reference::class   => ReferencePolicy::class,
+    ];
 
-	/**
-	 * Register the Visittransfer module service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		// This service provider is a convenient place to register your modules
-		// services in the IoC container. If you wish, you may make additional
-		// methods or service providers to keep the code more focused and granular.
-		App::register('App\Modules\Visittransfer\Providers\RouteServiceProvider');
-		App::register('App\Modules\Visittransfer\Providers\EventServiceProvider');
+    /**
+     * Register the Visittransfer module service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // This service provider is a convenient place to register your modules
+        // services in the IoC container. If you wish, you may make additional
+        // methods or service providers to keep the code more focused and granular.
+        App::register('App\Modules\Visittransfer\Providers\RouteServiceProvider');
+        App::register('App\Modules\Visittransfer\Providers\EventServiceProvider');
 
-		$this->registerNamespaces();
-		$this->registerComposers();
-		$this->registerCommands();
-		$this->registerComposers();
-	}
+        $this->registerNamespaces();
+        $this->registerComposers();
+        $this->registerCommands();
+        $this->registerComposers();
+    }
 
-	public function boot(GateContract $gate){
-		parent::registerPolicies($gate);
-	}
+    public function boot(GateContract $gate)
+    {
+        parent::registerPolicies($gate);
+    }
 
-	/**
-	 * Register the Visittransfer module resource namespaces.
-	 *
-	 * @return void
-	 */
-	protected function registerNamespaces()
-	{
-		Lang::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Lang'));
+    /**
+     * Register the Visittransfer module resource namespaces.
+     *
+     * @return void
+     */
+    protected function registerNamespaces()
+    {
+        Lang::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Lang'));
 
-		View::addNamespace('visittransfer', base_path('resources/views/vendor/visittransfer'));
-		View::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Views'));
-	}
+        View::addNamespace('visittransfer', base_path('resources/views/vendor/visittransfer'));
+        View::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Views'));
+    }
 
-	/**
-	 * Register the Visittransfer module composers.
-	 *
-	 * @return void
-	 */
-	protected function registerComposers(){
-		view()->composer(
-			["visittransfer::admin._sidebar", "Visittransfer::admin._sidebar", "admin._sidebar"],
-			App\Modules\Visittransfer\Resources\ViewComposers\StatisticsComposer::class
-		);
-	}
+    /**
+     * Register the Visittransfer module composers.
+     *
+     * @return void
+     */
+    protected function registerComposers()
+    {
+        View::composer(
+            ["visittransfer::admin._sidebar", "Visittransfer::admin._sidebar", "admin._sidebar", ],
+            App\Modules\Visittransfer\Resources\ViewComposers\StatisticsComposer::class
+        );
+    }
 
-	protected function registerCommands(){
-		// Commands.statistics.daily
-		$this->app->singleton("visittransfer::commands.statistics.daily", function($app){
-			return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
-		});
-		$this->commands("visittransfer::commands.statistics.daily");
+    protected function registerCommands()
+    {
+        // Commands.statistics.daily
+        $this->app->singleton("visittransfer::commands.statistics.daily", function ($app) {
+            return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
+        });
+        $this->commands("visittransfer::commands.statistics.daily");
 
-
-		// commands.applications.cleanup
-		$this->app->singleton("visittransfer::commands.applications.cleanup", function($app){
-			return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
-		});
-		$this->commands("visittransfer::commands.applications.cleanup");
-	}
+        // commands.applications.cleanup
+        $this->app->singleton("visittransfer::commands.applications.cleanup", function ($app) {
+            return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
+        });
+        $this->commands("visittransfer::commands.applications.cleanup");
+    }
 }

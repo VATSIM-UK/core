@@ -6,7 +6,7 @@ use Illuminate\View\View;
 
 class StatisticsComposer {
     public function __construct(){
-
+        
     }
 
     public function compose(View $view){
@@ -23,7 +23,5 @@ class StatisticsComposer {
         $view->with("visittransfer_statistics_references_under_review", Reference::underReview()->count());
         $view->with("visittransfer_statistics_references_accepted", Reference::accepted()->count());
         $view->with("visittransfer_statistics_references_rejected", Reference::rejected()->count());
-
-        return $view;
     }
 }
