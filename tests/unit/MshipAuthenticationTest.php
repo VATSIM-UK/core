@@ -80,6 +80,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getLastLoginIpAttribute')->times(2)->andReturn(2);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
 
@@ -109,6 +110,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getMandatoryPasswordAttribute')->once()->andReturn(true);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
 
@@ -138,6 +140,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getMandatoryPasswordAttribute')->once()->andReturn(false);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
 
@@ -171,6 +174,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getHasUnreadMustAcknowledgeNotificationsAttribute')->once()->andReturn(true);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
 
@@ -204,6 +208,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getHasUnreadMustAcknowledgeNotificationsAttribute')->never();
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
 
@@ -232,6 +237,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getHasUnreadMustAcknowledgeNotificationsAttribute')->never();
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
         Session::set('auth_extra', Carbon::now());
@@ -261,6 +267,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getLastLoginIpAttribute')->times(2)->andReturn(2);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
         Session::set('auth_extra', Carbon::now()->subHours(5));
@@ -293,6 +300,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getLastLoginIpAttribute')->times(2)->andReturn(2);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
         Session::set('auth_extra', Carbon::now()->subHours(5));
@@ -318,6 +326,7 @@ class MshipAuthenticationTest extends TestCase
         $account->shouldReceive('getMandatoryPasswordAttribute')->once()->andReturn(false);
         $account->makePartial();
 
+        // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
         Session::set('auth_duplicate_ip', true);
