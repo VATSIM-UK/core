@@ -90,9 +90,9 @@ TL;DR: A standard Laravel deployment process - install Composer Dependancies, ed
 
 #### 1 - Composer Dependancies
 
-In the command line, run `composer install` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
+In the command line, run `composer install -o` to install all of the needed dependencies.  This might take a while, so go and whack that kettle on!
 
-Beyond your initial setup, you can just run `composer update` on future code pulls.
+Beyond your initial setup, you can just run `composer update -o` on future code pulls.
 
 #### 2 - Environment Variables
 
