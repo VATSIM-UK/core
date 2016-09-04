@@ -1,4 +1,4 @@
-<?php namespace App\Modules\Visittransfer\Composers;
+<?php namespace App\Modules\Visittransfer\Resources\Viewcomposers;
 
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
@@ -23,7 +23,5 @@ class StatisticsComposer {
         $view->with("visittransfer_statistics_references_under_review", Reference::underReview()->count());
         $view->with("visittransfer_statistics_references_accepted", Reference::accepted()->count());
         $view->with("visittransfer_statistics_references_rejected", Reference::rejected()->count());
-
-
     }
 }

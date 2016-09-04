@@ -47,12 +47,16 @@ class AdmController extends \App\Http\Controllers\BaseController
 
     public function __construct()
     {
-        if (Auth::check()) {
-            $this->_account = Auth::user();
-            $this->_account->load("roles", "roles.permissions");
-        } else {
-            $this->_account = new Account();
-        }
+        $this->middleware(function ($request, $next) {
+            if (Auth::check()) {
+                $this->_account = Auth::user();
+                $this->_account->load("roles", "roles.permissions");
+            } else {
+                $this->_account = new Account();
+            }
+
+            return $next($request);
+        });
     }
 
 }

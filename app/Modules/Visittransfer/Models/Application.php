@@ -116,12 +116,12 @@ class Application extends Model
 
     public static function scopeStatus($query, $status)
     {
-        return $query->whereStatus($status);
+        return $query->statusIn([$status]);
     }
 
     public static function scopeNotStatus($query, $status)
     {
-        return $query->where("status", "!=", $status);
+        return $query->statusNotIn([$status]);
     }
 
     public static function scopeStatusIn($query, Array $stati)
@@ -518,6 +518,9 @@ class Application extends Model
         if($this->is_transfer){
             $this->account->addState(State::findByCode("TRANSFERRING"));
         }
+
+        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(3));
+        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($this->account))->delay($delayOffset));
 
         event(new ApplicationAccepted($this));
     }

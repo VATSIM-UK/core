@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
     protected function getArtisan()
     {
         foreach (Module::enabled() as $module) {
-            $moduleCommandsFile = config('modules.path').'/'.$module['namespace'].'/Console/commands.php';
+            $moduleCommandsFile = config('modules.path').'/'.$module['basename'].'/Console/commands.php';
+
             if (File::exists($moduleCommandsFile)) {
                 $moduleCommands = require $moduleCommandsFile;
                 $this->commands = array_merge($this->commands, $moduleCommands);

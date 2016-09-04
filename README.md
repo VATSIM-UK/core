@@ -1,8 +1,20 @@
 ## Upgrade Notes
 
-### 2.3.5 > 2.4.6
-* Run a range of consolidation destorying SQL:
-```
+### All Versions (2.3.5 onwards)
+* Stop all queue processes
+* Disable all cronjobs
+* Run `composer install -o --no-dev`
+* Run `php artisan migrate --step -vvv`
+* Run `npm install --production`
+* Run `gulp --production`
+* **Perform version-specific upgrade steps (below)**
+* Enable all cronjobs
+* Restart all queue processes
+
+### 2.3.5 > 2.3.6
+* Run a range of consolidation destroying SQL:
+
+```sql
 DELETE FROM `migrations`
 WHERE `migration` LIKE '0000_00_00_000000_consolidation_%'
 LIMIT 1;
@@ -37,9 +49,15 @@ SET `migration` = '2015_01_01_000050_initial_statistic'
 WHERE `migration` = '2015_01_01_000050_vanilla_statistic_v224'
 LIMIT 1;
 ```
+
 * Run `composer dumpautoload`
+* Delete `storage/app/modules.json`
+ * Run `php artisan optimize && php artisan module:optimize && php artisan route:clear`
 
 ### 2.3.4 > 2.3.5
+* Remove/reset storage/app/modules.json
+
+### 2.3.3 > 2.3.4
 * Run `php artisan migrate --step -vvv`
 * Increase the frequency of `php artisan Member:CertImport` to every hour
 * Add cronjob for `php artisan Member:CertImport --full` for midnight
@@ -84,7 +102,7 @@ LIMIT 1;
 * * renamed:    database/migrations/2015_12_27_221903_vanilla_teamspeak_v221.php -> database/migrations/2015_01_01_000030_vanilla_teamspeak_v221.php
 * * renamed:    database/migrations/2015_12_27_221904_vanilla_messages_v221.php -> database/migrations/2015_01_01_000040_vanilla_messages_v221.php
 
-```mysql
+```sql
 UPDATE `migrations`
 SET `migration` = '2015_01_01_000000_vanilla_mship_v221'
 WHERE `migration` = '2015_12_27_221900_vanilla_mship_v221';
@@ -151,7 +169,7 @@ WHERE `migration` = '2015_12_27_221904_vanilla_messages_v221';
 * * [Update] `2015_08_29_203828_create_jobs_table, batch=10` => `2015_08_29_203828_create_jobs_table`, batch=6
 * * [Update] `2015_08_29_204330_create_failed_jobs_table, batch=10` => `2015_08_29_204330_create_failed_jobs_table`, batch=6
 
-```mysql
+```sql
 UPDATE migrations
 SET migration = '2015_12_27_221900_vanilla_mship_v221'
 WHERE migration = '2014_09_12_200312_initial_membership';

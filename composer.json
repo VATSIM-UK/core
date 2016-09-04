@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
+        "laravel/framework": "5.3.*",
         "vatsim/xml": "2.*",
         "vatsim/sso": "2.*",
         "flynsarmy/db-blade-compiler": "1.*",
@@ -30,9 +30,10 @@
         "alawrence/laravel-ipboard": "1.0",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "dev-extra-directories",
+        "caffeinated/modules": "^4.0",
         "malahierba-lab/public-id": "dev-master",
-        "comocode/laravel-ab": "^0.3.0"
+        "comocode/laravel-ab": "^0.3.0",
+        "pusher/pusher-php-server": "~2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
