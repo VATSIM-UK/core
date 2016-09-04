@@ -70,6 +70,6 @@ class Activity extends aModel
     public function save(array $options = []){
         $this->ip = Request::ip();
 
-        parent::save($options);
+        return parent::save($options);
     }
 }

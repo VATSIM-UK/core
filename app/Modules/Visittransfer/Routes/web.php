@@ -5,10 +5,10 @@ Route::get("/visiting-transferring", function () {
 });
 
 Route::group(["as"         => "visiting.admin.",
-              "prefix"     => "adm/visit-transfer",
-              "namespace"  => "Admin",
-              "domain"     => config("app.url"),
-              "middleware" => ["auth.admin"]
+    "prefix"     => "adm/visit-transfer",
+    "namespace"  => "Admin",
+    "domain"     => config("app.url"),
+    "middleware" => ["auth.admin"]
 ], function () {
     Route::get("/", [
         "as"   => "dashboard",
@@ -97,9 +97,9 @@ Route::group(["as"         => "visiting.admin.",
 });
 
 Route::group(["as"         => "visiting.",
-              "namespace"  => "Site",
-              "domain"     => "vt." . config("app.url"),
-              'middleware' => ['auth.user.full', 'user.must.read.notifications']
+    "namespace"  => "Site",
+    "domain"     => "vt." . config("app.url"),
+    'middleware' => ['auth.user.full', 'user.must.read.notifications']
 ], function () {
     Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 

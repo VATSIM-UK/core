@@ -119,7 +119,7 @@ Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), functio
     });
 });
 
-Route::group(["domain" => config("app.url")], function () {
+Route::group(['domain' => config('app.url')], function () {
     Route::get('/error/{code?}', ['as' => 'error', 'uses' => 'Error@getDisplay']);
 
     Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
