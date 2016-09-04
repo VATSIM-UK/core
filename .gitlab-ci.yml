@@ -19,5 +19,5 @@ phpunit:php5.6:mysql5.5:
     - production
   script:
     - php vendor/bin/phpunit  --coverage-text --colors=never
-    - phpcs "--standard=PSR1" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8"
-    - phpcs "--standard=PSR2" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8"
+    - phpcs "--standard=PSR1" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8" -p -v .
+    - phpcs "--standard=PSR2" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8" -p -v .
