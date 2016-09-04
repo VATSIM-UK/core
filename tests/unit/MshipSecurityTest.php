@@ -48,6 +48,7 @@ class MshipSecurityTest extends TestCase
         // We're expecting a redirect and some sort of error message, so we'll check for these.
         $expectedError = 'You cannot disable your secondary password.';
         $expectedStatus = 302;
+        $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock('App\Models\Mship\Account[hasPassword,getMandatoryPasswordAttribute, hasPasswordExpired]');
@@ -57,6 +58,7 @@ class MshipSecurityTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($account);
 
         $result = $this->securityInstance->getReplace(true);
+        $this->assertInstanceOf('Illuminate\Http\RedirectResponse', $result);
         $this->assertEquals($expectedStatus, $result->status());
         $this->assertEquals($expectedError, $result->getSession()->get('error'));
     }
