@@ -55,6 +55,11 @@ class Authentication extends BaseController {
             return Redirect::route('mship.auth.redirect');
         }
 
+        // If a secondary is required, but they haven't set one, send them away to set one.
+        if ($this->_account->mandatory_password && !$this->_account->hasPassword()) {
+            return Redirect::route('mship.security.replace');
+        }
+
         if (!$this->_account->hasPassword()) {
             Session::set('auth_extra', false);
         }
