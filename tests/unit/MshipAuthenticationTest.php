@@ -40,13 +40,13 @@ class MshipAuthenticationTest extends TestCase
      *
      * @test
      **/
-    public function test_it_constructs()
+    public function it_constructs()
     {
         $this->assertInstanceOf('\App\Http\Controllers\Mship\Authentication', $this->authenticationInstance);
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_login_if_no_auth()
+    public function it_redirects_to_login_if_no_auth()
     {
         // In this test, we assert that we're getting a redirect to the login page if no auth at all
         $expectedStatus = 302;
@@ -62,7 +62,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_secondary_login_if_there_is_none_and_password_set()
+    public function it_redirects_to_secondary_login_if_hasnt_already_been_done_and_password_set()
     {
         /*
          * In this test, we assert that we're getting a redirect to the secondary password page if one is
@@ -94,7 +94,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_secondary_password_setting_page_if_not_set_but_mandatory()
+    public function it_redirects_to_secondary_password_setting_page_if_not_set_but_mandatory()
     {
         // In this test, we assert that we're getting a redirect to the secondary password replace page
         $expectedStatus = 302;
@@ -124,7 +124,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_dashboard_if_no_notifications()
+    public function it_redirects_to_dashboard_if_no_notifications()
     {
         // In this test, we assert that we're getting a redirect to the dashboard
         $expectedStatus = 302;
@@ -154,7 +154,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_notifications_if_must_acknowledge_notifications_present()
+    public function it_redirects_to_notifications_if_must_acknowledge_notifications_present()
     {
         // In this test, we assert that we're getting a redirect to the notification page
         $expectedStatus = 302;
@@ -188,7 +188,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_goes_to_notifications_if_important_notifications_present()
+    public function it_redirects_to_notifications_if_important_notifications_present()
     {
         // In this test, we assert that we're getting a redirect to the notification page
         $expectedStatus = 302;
@@ -222,7 +222,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_sets_auth_extra_to_false_if_no_secondary_password()
+    public function it_sets_auth_extra_to_false_if_no_secondary_password_is_set()
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
@@ -250,7 +250,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_forgets_auth_extra_if_secondary_password_has_expired()
+    public function it_forgets_auth_extra_if_secondary_password_has_expired()
     {
         // In this test, we assert that we're getting a redirect to the redirect if a secondary password has expired
         $expectedStatus = 302;
@@ -283,7 +283,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_redirects_to_itself_if_secondary_password_has_expired()
+    public function it_redirects_to_itself_if_secondary_password_has_expired()
     {
         // In this test, we assert that we're getting a redirect to the redirect if a secondary password has expired
         $expectedStatus = 302;
@@ -315,7 +315,7 @@ class MshipAuthenticationTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_redirect_forgets_duplicate_ip_when_going_to_dashboard()
+    public function it_forgets_duplicate_ip_when_going_to_dashboard()
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock('App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute]');

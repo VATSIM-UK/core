@@ -37,13 +37,13 @@ class MshipSecurityTest extends TestCase
      *
      * @test
      **/
-    public function test_it_constructs()
+    public function it_constructs()
     {
         $this->assertInstanceOf('\App\Http\Controllers\Mship\Security', $this->securityInstance);
     }
 
     /** @test **/
-    public function test_get_replace_sets_redirect_when_attempting_to_disable_but_password_is_mandatory()
+    public function it_sets_redirect_when_attempting_to_disable_but_password_is_mandatory()
     {
         // We're expecting a redirect and some sort of error message, so we'll check for these.
         $expectedError = 'You cannot disable your secondary password.';
@@ -64,7 +64,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_disable_false_when_attempting_to_disable_but_no_password_set()
+    public function it_sets_disable_variable_to_false_when_attempting_to_disable_secondary_password_but_no_password_set()
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock('App\Models\Mship\Account[hasPassword,getMandatoryPasswordAttribute, hasPasswordExpired]');
@@ -79,7 +79,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_disable_true_when_attempting_to_disable_and_password_set()
+    public function it_sets_disable_to_true_when_attempting_to_disable_secondary_password_and_password_set()
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock('App\Models\Mship\Account[hasPassword,getMandatoryPasswordAttribute, hasPasswordExpired]');
@@ -94,7 +94,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_disable_sls_type_when_attempting_to_disable_and_password_set()
+    public function it_sets_disable_sls_type_when_attempting_to_disable_and_password_set()
     {
         $expected = 'disable';
 
@@ -111,7 +111,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_does_not_set_disable_sls_type_when_attempting_to_disable_and_password_not_set()
+    public function it_does_not_set_disable_sls_type_when_attempting_to_disable_and_password_not_set()
     {
         $expected = 'requested';
 
@@ -128,7 +128,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_replace_sls_type_when_password_set_and_is_non_mandatory()
+    public function it_sets_replace_sls_type_when_password_set_and_is_non_mandatory()
     {
         $expected = 'replace';
 
@@ -145,7 +145,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_replace_sls_type_when_password_set_and_is_mandatory()
+    public function it_sets_replace_sls_type_when_password_set_and_is_mandatory()
     {
         $expected = 'replace';
 
@@ -162,7 +162,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_requested_sls_type_when_password_not_set_and_is_non_mandatory()
+    public function it_sets_requested_sls_type_when_password_not_set_and_is_non_mandatory()
     {
         $expected = 'requested';
 
@@ -179,7 +179,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_forced_sls_type_when_password_not_set_and_is_mandatory()
+    public function it_sets_forced_sls_type_when_password_not_set_and_is_mandatory()
     {
         $expected = 'forced';
 
@@ -196,7 +196,7 @@ class MshipSecurityTest extends TestCase
     }
 
     /** @test **/
-    public function test_get_replace_sets_forced_sls_type_when_password_set_and_has_expired()
+    public function it_sets_expired_sls_type_when_password_set_and_has_expired()
     {
         $expected = 'expired';
 
