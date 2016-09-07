@@ -11,13 +11,15 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TriggerPasswordReset extends Job implements ShouldQueue {
+class TriggerPasswordReset extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $token = null;
     private $account = null;
 
-    public function __construct(Token $token){
+    public function __construct(Token $token)
+    {
         $this->token = $token;
         $this->account = $token->related;
     }
@@ -29,7 +31,8 @@ class TriggerPasswordReset extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $temporaryPassword = str_random(12);
         $this->account->setPassword($temporaryPassword, true);
 

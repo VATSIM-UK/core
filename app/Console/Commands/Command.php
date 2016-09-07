@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use App;
 use Slack;
-use Illuminate\Console\Command;
+use Illuminate\Console\Command as BaseCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class aCommand extends Command
+class Command extends BaseCommand
 {
     /**
      * Log a string to STDOUT.
@@ -62,21 +62,23 @@ class aCommand extends Command
      * @param Account|string $to    Either the local Account or the SlackUserID to send a message to.
      * @param string         $message The message to send to the user
      */
-    protected function sendSlackMessagePlain($to, $message, $from=null){
-        if(is_object($to) && $to->exists){
+    protected function sendSlackMessagePlain($to, $message, $from = null)
+    {
+        if (is_object($to) && $to->exists) {
             $to = $to->slack_id;
         }
 
         $slack = $this->slack()->to($to);
 
-        if($from != null){
+        if ($from != null) {
             $slack = $slack->from($from);
         }
 
         $slack->send($message);
     }
 
-    protected function sendSlackMessageFormatted($to, $pretext, $message, $colour="danger", $fields = [], $from=null){
+    protected function sendSlackMessageFormatted($to, $pretext, $message, $colour = "danger", $fields = [], $from = null)
+    {
         $attachment = [
             'pretext'     => '@here: '.$pretext,
             'fallback'    => $message,
@@ -96,7 +98,7 @@ class aCommand extends Command
 
         $slack = $this->slack()->to($to);
 
-        if($from != null){
+        if ($from != null) {
             $slack = $slack->from($from);
         }
 

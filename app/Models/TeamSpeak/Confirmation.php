@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Confirmation extends \App\Models\aModel
+class Confirmation extends \App\Models\Model
 {
     use RecordsActivity;
 

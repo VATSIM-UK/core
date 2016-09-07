@@ -16,7 +16,7 @@
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Attribute whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Attribute extends \App\Models\aModel
+class Attribute extends \App\Models\Model
 {
     protected $table = 'staff_attributes';
     protected $primaryKey = 'id';

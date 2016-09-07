@@ -184,7 +184,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         // Is it valid and linked to something?!?!
-        if (!$token->related OR $token->type != "mship_account_email_verify") {
+        if (!$token->related or $token->type != "mship_account_email_verify") {
             return $this->viewMake("mship.management.email.verify")->with("error",
                 "You have provided an invalid email verification token. (ERR4)");
         }

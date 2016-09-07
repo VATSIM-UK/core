@@ -11,7 +11,8 @@ use View;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class BaseController extends \Illuminate\Routing\Controller {
+class BaseController extends \Illuminate\Routing\Controller
+{
 
     use DispatchesJobs, ValidatesRequests, AuthorizesRequests;
 
@@ -20,7 +21,8 @@ class BaseController extends \Illuminate\Routing\Controller {
     protected $_pageSubTitle;
     protected $_breadcrumb;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
                 $this->_account = Auth::user();
@@ -51,7 +53,8 @@ class BaseController extends \Illuminate\Routing\Controller {
         });
     }
 
-    protected function viewMake($view) {
+    protected function viewMake($view)
+    {
         $view = View::make($view);
 
         $view->with("_account", $this->_account);
@@ -66,14 +69,15 @@ class BaseController extends \Illuminate\Routing\Controller {
         return $view;
     }
 
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->_pageTitle = $title;
     }
 
-    public function getTitle(){
-        if($this->_pageTitle == null){
-
-            if($this->isModuleRequest()){
+    public function getTitle()
+    {
+        if ($this->_pageTitle == null) {
+            if ($this->isModuleRequest()) {
                 return $this->getModuleRequest()->get("name");
             }
 
@@ -83,14 +87,15 @@ class BaseController extends \Illuminate\Routing\Controller {
         return $this->_pageTitle;
     }
 
-    public function setSubTitle($title){
+    public function setSubTitle($title)
+    {
         $this->_pageSubTitle = $title;
     }
 
-    public function getSubTitle(){
-        if($this->_pageSubTitle == null){
-
-            if($this->isModuleRequest()){
+    public function getSubTitle()
+    {
+        if ($this->_pageSubTitle == null) {
+            if ($this->isModuleRequest()) {
                 return $this->getControllerRequest();
             }
 
@@ -100,8 +105,9 @@ class BaseController extends \Illuminate\Routing\Controller {
         return $this->_pageSubTitle;
     }
 
-    protected function setupLayout() {
-        if(!is_null($this->layout)) {
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }
@@ -113,12 +119,13 @@ class BaseController extends \Illuminate\Routing\Controller {
      * @param      $uri  The URI the text should link to.
      * @param bool $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
      */
-    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false){
-        if($this->_breadcrumb == null){
+    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false)
+    {
+        if ($this->_breadcrumb == null) {
             $this->_breadcrumb = collect();
         }
 
-        if($linkToPrevious){
+        if ($linkToPrevious) {
             $uri = $this->_breadcrumb->last()->get("uri") . "/" . $uri;
         }
 
@@ -127,19 +134,22 @@ class BaseController extends \Illuminate\Routing\Controller {
         $this->_breadcrumb->push($element);
     }
 
-    protected function buildBreadcrumb($startName, $startUri){
+    protected function buildBreadcrumb($startName, $startUri)
+    {
         $this->addBreadcrumb($startName, $startUri);
         $this->addModuleBreadcrumb();
         $this->addControllerBreadcrumbs();
     }
 
-    protected function addModuleBreadcrumb(){
-        if($this->isModuleRequest()){
+    protected function addModuleBreadcrumb()
+    {
+        if ($this->isModuleRequest()) {
             $this->addBreadcrumb($this->getModuleRequest()->get("name"), $this->getModuleRequest()->get("slug"), true);
         }
     }
 
-    protected function addControllerBreadcrumbs(){
+    protected function addControllerBreadcrumbs()
+    {
         $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
     }
 
@@ -158,28 +168,31 @@ class BaseController extends \Illuminate\Routing\Controller {
      *
      * @return \Caffeinated\Modules\Collection
      */
-    protected function getModuleRequest(){
+    protected function getModuleRequest()
+    {
         $requestClass = $this->getRequestClassAsArray(false);
 
         return \Module::where("slug", strtolower($requestClass[2]));
     }
 
-    protected function getControllerRequest(){
+    protected function getControllerRequest()
+    {
         $requestClass = $this->getRequestClassAsArray(true);
 
         return $requestClass[0];
     }
 
-    protected function getRequestClassAsArray($clean = true){
+    protected function getRequestClassAsArray($clean = true)
+    {
         $requestClass = explode("\\", get_called_class());
 
         // Return the dirty path.
-        if(!$clean){
+        if (!$clean) {
             return $requestClass;
         }
 
         // Remove app/modules/.../Http/Controllers/... from the class path.
-        if($this->isModuleRequest()){
+        if ($this->isModuleRequest()) {
             return array_slice($requestClass, 6);
         }
 

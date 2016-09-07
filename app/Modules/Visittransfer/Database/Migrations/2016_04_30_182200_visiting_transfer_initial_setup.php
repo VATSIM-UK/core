@@ -100,5 +100,4 @@ class VisitingTransferInitialSetup extends Migration
 
         DB::table("mship_permission")->where("name", "LIKE", "adm/visit-transfer%")->delete();
     }
-
 }

@@ -40,7 +40,7 @@ use TeamSpeak3;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDeletedAt($value)
  * @mixin \Eloquent
  */
-class Registration extends \App\Models\aModel
+class Registration extends \App\Models\Model
 {
     use SoftDeletingTrait, RecordsActivity;
 
@@ -70,7 +70,8 @@ class Registration extends \App\Models\aModel
             if (is_numeric($this->dbid)) {
                 $tscon->clientDeleteDb($this->dbid);
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         parent::delete();
     }

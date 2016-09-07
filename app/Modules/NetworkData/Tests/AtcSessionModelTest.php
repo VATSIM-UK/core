@@ -3,10 +3,12 @@
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AtcSessionModelTest extends TestCase {
+class AtcSessionModelTest extends TestCase
+{
     use DatabaseTransactions;
 
-    public function test_can_create_an_atc_session(){
+    public function test_can_create_an_atc_session()
+    {
         $this->expectsEvents(App\Modules\NetworkData\Events\AtcSessionStarted::class);
 
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, "online")->create();
@@ -15,7 +17,8 @@ class AtcSessionModelTest extends TestCase {
         $this->assertAttributeEquals(true, "exists", $atcSession, "Statistics::AtcSession doesn't exist.");
     }
 
-    public function test_can_create_an_atc_session_and_mark_as_disconnected(){
+    public function test_can_create_an_atc_session_and_mark_as_disconnected()
+    {
         $this->expectsEvents(App\Modules\NetworkData\Events\AtcSessionStarted::class);
 
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, "online")->create();
@@ -28,7 +31,8 @@ class AtcSessionModelTest extends TestCase {
         $this->assertTrue(($atcSession->disconnected_at == $currentTimestamp), "Statistics::AtcSession not disconnected.");
     }
 
-    public function test_can_delete_an_atc_session(){
+    public function test_can_delete_an_atc_session()
+    {
         $this->expectsEvents(App\Modules\NetworkData\Events\AtcsessionDeleted::class);
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, "online")->create();
 
@@ -36,6 +40,5 @@ class AtcSessionModelTest extends TestCase {
 
         $this->assertInstanceOf("App\Modules\Statistics\Models\Atc", $atcSession, "Statistics::AtcSession cannot deleted an uncreated session.");
         $this->assertAttributeEquals(false, "exists", $atcSession, "Statistics::AtcSession not deleted.");
-
     }
 }

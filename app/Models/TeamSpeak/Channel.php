@@ -2,7 +2,7 @@
 
 namespace App\Models\TeamSpeak;
 
-use App\Models\aModel as Model;
+use App\Models\Model as Model;
 
 /**
  * App\Models\TeamSpeak\Channel

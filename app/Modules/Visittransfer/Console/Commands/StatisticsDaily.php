@@ -2,13 +2,13 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
-use App\Console\Commands\aCommand;
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
 use Cache;
 
-class StatisticsDaily extends aCommand
+class StatisticsDaily extends Command
 {
     /**
      * The console command signature.
@@ -196,7 +196,7 @@ class StatisticsDaily extends aCommand
                 ['Error Code' => 2]);
         }
 
-        if ($endPeriod->isFuture()){
+        if ($endPeriod->isFuture()) {
             $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
         }
 

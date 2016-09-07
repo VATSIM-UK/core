@@ -52,7 +52,7 @@ class TeamSpeak
 
     /**
      * Check the client's registration.
-     * 
+     *
      * @param TeamSpeak3_Node_Client $client
      * @return Account
      * @throws RegistrationNotFoundException
@@ -277,11 +277,11 @@ class TeamSpeak
                 || (!is_null($group->permission) && $member->hasPermission($group->permission));
             if (!in_array($group->dbid, $currentGroups) && $qualified) {
                 $client->addServerGroup($group->dbid);
-            } else if (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
+            } elseif (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
                 $client->addServerGroup($group->dbid);
-            } else if (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && !$member->qualifications_pilot->isEmpty()) {
+            } elseif (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && !$member->qualifications_pilot->isEmpty()) {
                 $client->remServerGroup($group->dbid);
-            } else if (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
+            } elseif (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
                 $client->remServerGroup($group->dbid);
             }
         }
@@ -312,7 +312,7 @@ class TeamSpeak
 
             if ($member->hasPermission($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } else if (!$member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
+            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }

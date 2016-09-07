@@ -16,9 +16,11 @@ use DB;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Mship\Permission as PermissionData;
 
-class Permission extends \App\Http\Controllers\Adm\AdmController {
+class Permission extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getIndex() {
+    public function getIndex()
+    {
         // ORM it all!
         $permissions = PermissionData::orderBy("name", "ASC")
                                      ->with("roles")
@@ -28,17 +30,19 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
                         ->with("permissions", $permissions);
     }
 
-    public function getCreate() {
+    public function getCreate()
+    {
         $roles = RoleData::orderBy("name", "ASC")->get();
 
         return $this->viewMake("adm.mship.permission.create_or_update")
                         ->with("roles", $roles);
     }
 
-    public function postCreate() {
+    public function postCreate()
+    {
         // Let's create!
         $permission = new PermissionData(Input::all());
-        if(!$permission->save()){
+        if (!$permission->save()) {
             return Redirect::route("adm.mship.permission.create")->withErrors($permission->errors());
         }
 
@@ -49,8 +53,9 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
         return Redirect::route("adm.mship.permission.index")->withSuccess("Permission '" . $permission->display_name . "' has been created - don't forget to attach it to some roles!");
     }
 
-    public function getUpdate(PermissionData $permission) {
-        if (!$permission OR ! $permission->exists) {
+    public function getUpdate(PermissionData $permission)
+    {
+        if (!$permission or ! $permission->exists) {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
@@ -64,8 +69,9 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
                         ->with("roles", $roles);
     }
 
-    public function postUpdate(PermissionData $permission) {
-        if (!$permission OR ! $permission->exists) {
+    public function postUpdate(PermissionData $permission)
+    {
+        if (!$permission or ! $permission->exists) {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
@@ -90,8 +96,9 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
         return Redirect::route("adm.mship.permission.index")->withSuccess("Permission '" . $permission->display_name . "' has been updated - don't forget to set the roles properly!");
     }
 
-    public function anyDelete(PermissionData $permission) {
-        if (!$permission OR ! $permission->exists) {
+    public function anyDelete(PermissionData $permission)
+    {
+        if (!$permission or ! $permission->exists) {
             return Redirect::route("adm.mship.permissions.index")->withError("Permission doesn't exist!");
         }
 
@@ -99,5 +106,4 @@ class Permission extends \App\Http\Controllers\Adm\AdmController {
         $permission->delete();
         return Redirect::route("adm.mship.permission.index")->withSuccess("Permission and associated roles deleted.");
     }
-
 }

@@ -6,7 +6,6 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Role as RoleData;
 
-
 /**
  * App\Models\Mship\Permission
  *
@@ -24,7 +23,8 @@ use App\Models\Mship\Role as RoleData;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
  * @mixin \Eloquent
  */
-class Permission extends \App\Models\aModel {
+class Permission extends \App\Models\Model
+{
     use RecordsActivity;
 
     protected $table = "mship_permission";
@@ -36,52 +36,59 @@ class Permission extends \App\Models\aModel {
         'display_name' => 'required|between:3,50',
     ];
 
-    public static function eventDeleted($model) {
+    public static function eventDeleted($model)
+    {
         parent::eventCreated($model);
 
         // When we delete a permission, we delete the role assignments too.
         $model->detachRoles($model->roles);
     }
 
-    public static function scopeIsName($query, $name){
+    public static function scopeIsName($query, $name)
+    {
         return $query->whereName($name);
     }
 
-    public function roles(){
+    public function roles()
+    {
         return $this->belongsToMany("\App\Models\Mship\Role", "mship_permission_role")->withTimestamps();
     }
 
-    public function attachRole(RoleData $role){
-        if($this->roles->contains($role->getKey())){
+    public function attachRole(RoleData $role)
+    {
+        if ($this->roles->contains($role->getKey())) {
             return false;
         }
 
         return $this->roles()->attach($role);
     }
 
-    public function attachRoles($roles){
-        foreach($roles as $r){
-            if($r instanceof RoleData){
+    public function attachRoles($roles)
+    {
+        foreach ($roles as $r) {
+            if ($r instanceof RoleData) {
                 $this->attachRole($r);
-            } elseif(is_numeric($r) && $r = RoleData::find($r)){
+            } elseif (is_numeric($r) && $r = RoleData::find($r)) {
                 $this->attachRole($r);
             }
         }
     }
 
-    public function detachRole(RoleData $role){
-        if(!$this->roles->contains($role->getKey())){
+    public function detachRole(RoleData $role)
+    {
+        if (!$this->roles->contains($role->getKey())) {
             return false;
         }
 
         return $this->roles()->detach($role);
     }
 
-    public function detachRoles($roles){
-        foreach($roles as $r){
-            if($r instanceof RoleData){
+    public function detachRoles($roles)
+    {
+        foreach ($roles as $r) {
+            if ($r instanceof RoleData) {
                 $this->detachRole($r);
-            } elseif(is_numeric($r) && $r = RoleData::find($r)){
+            } elseif (is_numeric($r) && $r = RoleData::find($r)) {
                 $this->detachRole($r);
             }
         }

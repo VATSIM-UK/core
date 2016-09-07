@@ -11,8 +11,8 @@
 |
 */
 
-Route::group(['prefix' => 'networkdata'], function() {
-	Route::get('/', function() {
-		dd('This is the VATSIM Network Data module index page.');
-	});
+Route::group(['prefix' => 'networkdata'], function () {
+    Route::get('/', function () {
+        dd('This is the VATSIM Network Data module index page.');
+    });
 });

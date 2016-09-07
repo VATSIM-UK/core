@@ -23,7 +23,7 @@ class SendNotificationEmail extends Job implements ShouldQueue
     private $recipientEmail  = null;
     private $recipientName  = null;
 
-    public function __construct($subject, $body, Account $recipient, Account $sender, Array $overrides = [])
+    public function __construct($subject, $body, Account $recipient, Account $sender, array $overrides = [])
     {
         $this->subject = $subject;
         $this->body = $body;

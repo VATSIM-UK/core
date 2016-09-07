@@ -109,7 +109,7 @@ class Account extends AdmController
 
     public function getDetail(AccountData $account, $tab = "basic", $tabId = 0)
     {
-        if (!$account OR $account->is_system) {
+        if (!$account or $account->is_system) {
             return Redirect::route("adm.mship.account.index");
         }
 
@@ -251,7 +251,7 @@ class Account extends AdmController
         // We can't reset non-existant security!
         $currentSecurity = $account->current_security;
 
-        if (!$currentSecurity OR !$currentSecurity->exists) {
+        if (!$currentSecurity or !$currentSecurity->exists) {
             return Redirect::route("adm.mship.account.details", [$account->id, "security"])
                            ->withError("You cannot reset non-existant security.");
         }
@@ -282,7 +282,7 @@ class Account extends AdmController
         $currentSecurity = $account->current_security;
 
         // It's also pointless changing to the same security ID.
-        if (!$currentSecurity OR !$currentSecurity->exists OR $currentSecurity->security_id == $security->security_id) {
+        if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
             return Redirect::route("adm.mship.account.details", [$account->id, "security"])
                            ->withError("You cannot change security on this account.");
         }
@@ -451,7 +451,7 @@ class Account extends AdmController
 
         // Check this type exists!
         $noteType = NoteTypeData::find(Input::get("note_type_id"));
-        if (!$noteType OR !$noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route("adm.mship.account.details", [$account->id, "notes"])
                            ->withError("You selected an invalid note type.");
         }

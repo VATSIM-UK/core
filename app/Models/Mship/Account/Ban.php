@@ -53,7 +53,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
  * @mixin \Eloquent
  */
-class Ban extends \App\Models\aModel
+class Ban extends \App\Models\Model
 {
 
     use RecordsActivity;

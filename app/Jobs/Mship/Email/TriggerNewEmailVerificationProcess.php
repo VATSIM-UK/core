@@ -10,13 +10,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue {
+class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $email = null;
     private $account = null;
 
-    public function __construct(Account\Email $email){
+    public function __construct(Account\Email $email)
+    {
         $this->email = $email;
         $this->account = $email->account;
     }
@@ -30,7 +32,8 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $tokenType = "mship_account_email_verify";
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);

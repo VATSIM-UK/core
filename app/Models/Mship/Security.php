@@ -36,19 +36,22 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Security whereDeletedAt($value)
  * @mixin \Eloquent
  */
-class Security extends \Eloquent {
+class Security extends \Eloquent
+{
 
-	use SoftDeletingTrait, RecordsActivity;
-        protected $table = "mship_security";
-        protected $primaryKey = "security_id";
-        protected $dates = ['created_at', 'deleted_at'];
-        protected $hidden = ['security_id'];
+    use SoftDeletingTrait, RecordsActivity;
+    protected $table = "mship_security";
+    protected $primaryKey = "security_id";
+    protected $dates = ['created_at', 'deleted_at'];
+    protected $hidden = ['security_id'];
 
-        public function accountSecurity(){
-            return $this->hasMany("\App\Models\Mship\Account\Security", "security_id", "security_id");
-        }
+    public function accountSecurity()
+    {
+        return $this->hasMany("\App\Models\Mship\Account\Security", "security_id", "security_id");
+    }
 
-        public static function getDefault(){
-            return Security::where("default", "=", 1)->first();
-        }
+    public static function getDefault()
+    {
+        return Security::where("default", "=", 1)->first();
+    }
 }

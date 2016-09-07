@@ -10,17 +10,19 @@ use App\Models\Sso\Token;
 use App\Models\Mship\Account as MemberAccount;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class Security extends \App\Http\Controllers\BaseController {
+class Security extends \App\Http\Controllers\BaseController
+{
 
     private $_ssoAccount;
 
-    public function postGenerate() {
+    public function postGenerate()
+    {
         if ($x = $this->security()) {
             return $x;
         }
 
         // Return URL must be provided!
-        if(!Input::get("return_url", false)){
+        if (!Input::get("return_url", false)) {
             return Response::json(array("status" => "error", "error" => "NO_RETURN_URL"));
         }
 
@@ -36,13 +38,14 @@ class Security extends \App\Http\Controllers\BaseController {
         return Response::json(array("status" => "success", "token" => $_t, "timestamp" => strtotime($token->created_at)));
     }
 
-    public function postDetails() {
+    public function postDetails()
+    {
         if ($x = $this->security()) {
             return $x;
         }
 
         // Did we receive a token?  If we didn't get rid of them!
-        if(!Input::get("access_token", false)){
+        if (!Input::get("access_token", false)) {
             die("SOME GENERIC ERROR");
         }
 
@@ -68,11 +71,11 @@ class Security extends \App\Http\Controllers\BaseController {
         // Let's get their email for this system (if they've got one set).
         $return["email"] = $account->email;
 
-        $ssoEmailAssigned = $account->ssoEmails->filter(function($ssoemail) use ($accessToken) {
+        $ssoEmailAssigned = $account->ssoEmails->filter(function ($ssoemail) use ($accessToken) {
             return $ssoemail->sso_account_id == $accessToken->sso_account_id;
         })->values();
 
-        if($ssoEmailAssigned && count($ssoEmailAssigned) > 0){
+        if ($ssoEmailAssigned && count($ssoEmailAssigned) > 0) {
             \Log::info($ssoEmailAssigned);
             $return['email'] = $ssoEmailAssigned[0]->email->email;
         }
@@ -84,12 +87,12 @@ class Security extends \App\Http\Controllers\BaseController {
 
         $return["pilot_ratings_bin"] = 0;
         $return["pilot_ratings"] = array();
-        if(count($account->qualifications_pilot) < 1){
+        if (count($account->qualifications_pilot) < 1) {
             $return["pilot_ratings"][]= 0;
             $return["pilot_ratings_human_short"][] = "NA";
             $return["pilot_ratings_human_long"][] = "None Awarded";
         } else {
-            foreach($account->qualifications_pilot as $qual){
+            foreach ($account->qualifications_pilot as $qual) {
                 $e = array();
                 $e["rating"] = $qual->vatsim;
                 $e["human_short"] = $qual->name_small;
@@ -102,7 +105,7 @@ class Security extends \App\Http\Controllers\BaseController {
         $return["pilot_ratings_bin"] = decbin($return["pilot_ratings_bin"]);
 
         $return["admin_ratings"] = array();
-        foreach($account->qualifications_admin as $qual){
+        foreach ($account->qualifications_admin as $qual) {
             $e = array();
             $e["rating"] = $qual->vatsim;
             $e["human_short"] = $qual->name_small;
@@ -112,7 +115,7 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         $return["training_pilot_ratings"] = array();
-        foreach($account->qualifications_pilot_training as $qual){
+        foreach ($account->qualifications_pilot_training as $qual) {
             $e = array();
             $e["rating"] = $qual->vatsim;
             $e["human_short"] = $qual->name_small;
@@ -122,7 +125,7 @@ class Security extends \App\Http\Controllers\BaseController {
         }
 
         $return["training_atc_ratings"] = array();
-        foreach($account->qualifications_atc_training as $qual){
+        foreach ($account->qualifications_atc_training as $qual) {
             $e = array();
             $e["rating"] = $qual->vatsim;
             $e["human_short"] = $qual->name_small;
@@ -148,7 +151,8 @@ class Security extends \App\Http\Controllers\BaseController {
         return Response::json(array("status" => "success", "data" => $return));
     }
 
-    private function security() {
+    private function security()
+    {
         if (!Input::get("username", false)) {
             return Response::json(array("status" => "error", "error" => "NO_USERNAME"));
         }
@@ -170,5 +174,4 @@ class Security extends \App\Http\Controllers\BaseController {
             return Response::json(array("status" => "error", "error" => "INVALID_CREDENTIALS"));
         }
     }
-
 }

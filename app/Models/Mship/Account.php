@@ -184,12 +184,12 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[]
  *                $messageThreads
  */
-class Account extends \App\Models\aModel implements AuthenticatableContract
+class Account extends \App\Models\Model implements AuthenticatableContract
 {
     use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
 
     protected $table        = 'mship_account';
-    public    $incrementing = false;
+    public $incrementing = false;
     protected $dates        = [
         'last_login',
         'joined_at',
@@ -823,7 +823,7 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
         // Let's check all roles for this permission!
         $hasPermission = $this->roles->filter(function ($role) use ($parent) {
                 return $role->hasPermission($parent);
-            })->count() > 0;
+        })->count() > 0;
 
         return $hasPermission;
     }
@@ -996,7 +996,6 @@ class Account extends \App\Models\aModel implements AuthenticatableContract
     {
         $checkPrimaryEmail = false;
         if ($this->hasEmail($primaryEmail, $checkPrimaryEmail)) {
-
             $secondaryEmail = $this->secondaryEmails->filter(function ($secondaryEmail) use ($primaryEmail) {
                 return strcasecmp($secondaryEmail->email, $primaryEmail) == 0;
             })->first();

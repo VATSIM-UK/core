@@ -8,7 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class DispatchNotificationEmail extends Job implements ShouldQueue {
+class DispatchNotificationEmail extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $senderEmail = null;
@@ -19,7 +20,8 @@ class DispatchNotificationEmail extends Job implements ShouldQueue {
     private $body = null;
 
     // TODO: Not happy with this many params.  Fix it, please.
-    public function __construct($senderName, $senderEmail, Account $recipient, Account\Email $recipientEmail = null, $subject, $body){
+    public function __construct($senderName, $senderEmail, Account $recipient, Account\Email $recipientEmail = null, $subject, $body)
+    {
         $this->$senderEmail = $senderEmail;
         $this->displaySenderAs = $senderName;
         $this->recipient = $recipient;
@@ -28,8 +30,9 @@ class DispatchNotificationEmail extends Job implements ShouldQueue {
         $this->body = $body;
     }
 
-    public function handle(Mailer $mailer){
-        $mailer->send("emails.messages.post", ["recipient" => $this->recipient, "body" => $this->body], function($m) {
+    public function handle(Mailer $mailer)
+    {
+        $mailer->send("emails.messages.post", ["recipient" => $this->recipient, "body" => $this->body], function ($m) {
             $m->subject($this->subject);
             $m->to($this->recipientEmail->email, $this->recipient->name);
         });

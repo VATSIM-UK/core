@@ -40,7 +40,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
  * @mixin \Eloquent
  */
-class Token extends \App\Models\aModel {
+class Token extends \App\Models\Model
+{
 
     use SoftDeletingTrait;
 
@@ -49,43 +50,53 @@ class Token extends \App\Models\aModel {
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $hidden = ['token_id'];
 
-    public function getRouteKeyName(){
+    public function getRouteKeyName()
+    {
         return 'code';
     }
 
-    public function related() {
+    public function related()
+    {
         return $this->morphTo();
     }
 
-    public function scopeHasCode($query, $code){
+    public function scopeHasCode($query, $code)
+    {
         return $query->where("code", "=", $code);
     }
 
-    public function scopeOfType($query, $type){
+    public function scopeOfType($query, $type)
+    {
         return $query->where("type", "=", $type);
     }
 
-    public function scopeExpired($query){
+    public function scopeExpired($query)
+    {
         return $query->where("expires_at", "<=", \Carbon\Carbon::now()->toDateTimeString());
     }
 
-    public function scopeNotExpired($query){
+    public function scopeNotExpired($query)
+    {
         return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
     }
 
-    public function scopeUsed($query){
+    public function scopeUsed($query)
+    {
         return $query->whereNotNull("used_at");
     }
 
-    public function scopeNotUsed($query){
+    public function scopeNotUsed($query)
+    {
         return $query->whereNull("used_at");
     }
 
-    public function scopeValid($query){
+    public function scopeValid($query)
+    {
         return $query->notUsed()->notExpired();
     }
 
-    public static function generate($type, $allowDuplicates = false, $relation = null, $expireMinutes = 1440) {
+    public static function generate($type, $allowDuplicates = false, $relation = null, $expireMinutes = 1440)
+    {
         if ($allowDuplicates == false) {
             foreach ($relation->tokens()->whereType($type)->notExpired()->get() as $t) {
                 $t->delete();
@@ -106,8 +117,9 @@ class Token extends \App\Models\aModel {
         return $token;
     }
 
-    public function consume(){
-        if(!$this OR $this->is_used OR $this->is_expired){
+    public function consume()
+    {
+        if (!$this or $this->is_used or $this->is_expired) {
             return false;
         }
 
@@ -115,20 +127,22 @@ class Token extends \App\Models\aModel {
         $this->save();
     }
 
-    public function getIsUsedAttribute() {
-        return ($this->attributes['used_at'] != NULL && \Carbon\Carbon::parse($this->attributes['used_at'])->isPast());
+    public function getIsUsedAttribute()
+    {
+        return ($this->attributes['used_at'] != null && \Carbon\Carbon::parse($this->attributes['used_at'])->isPast());
     }
 
-    public function getIsExpiredAttribute(){
+    public function getIsExpiredAttribute()
+    {
         return \Carbon\Carbon::parse($this->attributes['expires_at'])->isPast();
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return array_get($this->attributes, "code", "NoValue");
     }
 
-    public function getDisplayValueAttribute() {
-
+    public function getDisplayValueAttribute()
+    {
     }
-
 }

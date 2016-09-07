@@ -13,7 +13,7 @@ class Dropbox extends WebhookController
     public function getDropbox(Request $request)
     {
         // return the provided challenge
-        $challenge = $request->input('challenge') OR abort(404);
+        $challenge = $request->input('challenge') or abort(404);
 
         return $challenge;
     }

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use DB;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
-class SysStatisticsDaily extends aCommand
+class SysStatisticsDaily extends Command
 {
     /**
      * Errors:
@@ -145,7 +145,6 @@ class SysStatisticsDaily extends aCommand
     private function runModuleStatistics($currentPeriod)
     {
         foreach (\Module::enabled() as $module) {
-
             try {
                 \Artisan::call($module['slug'] . ":statistics:daily", [
                     "startPeriod" => $currentPeriod,

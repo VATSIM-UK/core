@@ -28,21 +28,23 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Account extends \App\Models\aModel {
+class Account extends \App\Models\Model
+{
 
-	use RecordsActivity;
+    use RecordsActivity;
 
-        protected $table = "sso_account";
-        protected $primaryKey = "id";
-        protected $dates = ['created_at', 'updated_at'];
-        protected $hidden = ['account_id'];
+    protected $table = "sso_account";
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
+    protected $hidden = ['account_id'];
 
-        public function tokens(){
-            return $this->hasMany(\App\Models\Sso\Token::class, "sso_account_id", "id");
-        }
-
-    public function getDisplayValueAttribute() {
-        return "NOT YET DEFINED IN __ACCOUNT__ MODELS";
+    public function tokens()
+    {
+        return $this->hasMany(\App\Models\Sso\Token::class, "sso_account_id", "id");
     }
 
+    public function getDisplayValueAttribute()
+    {
+        return "NOT YET DEFINED IN __ACCOUNT__ MODELS";
+    }
 }

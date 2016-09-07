@@ -16,7 +16,7 @@ class GroupScope implements Scope
         $class = get_class($model);
         if ($class === ServerGroup::class) {
             return $builder->where('type', 's');
-        } else if ($class === ChannelGroup::class) {
+        } elseif ($class === ChannelGroup::class) {
             return $builder->where('type', 'c');
         } else {
             throw new InvalidArgumentException(

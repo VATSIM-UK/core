@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use DB;
 use App\Models\Mship\Account;
 
-class SyncCommunity extends aCommand
+class SyncCommunity extends Command
 {
 
     /**
@@ -70,7 +70,7 @@ class SyncCommunity extends aCommand
             }
 
             $member_core = Account::where('id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
-            if ($member_core === NULL) {
+            if ($member_core === null) {
                 if ($verbose) {
                     $this->output->writeln(' // <error>FAILURE: cannot retrieve member ' . $member['member_id'] . ' from Core.</error>');
                 }

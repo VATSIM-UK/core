@@ -63,7 +63,7 @@ class Qualification extends \Eloquent
         $network = intval($network);
         if ($network < 1) {
             return null;
-        } elseif ($network >= 8 AND $network <= 10) {
+        } elseif ($network >= 8 and $network <= 10) {
             $type = "training_atc";
         } elseif ($network >= 11) {
             $type = "admin";

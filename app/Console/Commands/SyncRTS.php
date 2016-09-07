@@ -6,7 +6,7 @@ use DB;
 use Symfony\Component\Console\Input\InputOption;
 use App\Models\Mship\Account;
 
-class SyncRTS extends aCommand
+class SyncRTS extends Command
 {
     /**
      * The console command name.
@@ -65,7 +65,8 @@ class SyncRTS extends aCommand
         $this->log("\n\n$numupdated members were updated\nRTS SYNC COMPLETED\n");
     }
 
-    protected function pullCoreData($cid, $ignoreRating=false) {
+    protected function pullCoreData($cid, $ignoreRating = false)
+    {
         // get account
         try {
             $member = Account::findOrFail($cid);
@@ -102,12 +103,16 @@ class SyncRTS extends aCommand
             'last_cert_check' => $member->cert_checked_at
         );
 
-        if ($member->network_banned || $member->inactive) $updateData['rating'] = 0;
+        if ($member->network_banned || $member->inactive) {
+            $updateData['rating'] = 0;
+        }
         if ($ignoreRating) {
             unset($updateData['rating']);
             unset($updateData['prating']);
         }
-        if (empty($updateData['email'])) unset($updateData['email']);
+        if (empty($updateData['email'])) {
+            unset($updateData['email']);
+        }
 
         DB::table('prod_rts.members')
             ->where('cid', '=', $cid)

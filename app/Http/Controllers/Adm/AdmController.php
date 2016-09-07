@@ -58,5 +58,4 @@ class AdmController extends \App\Http\Controllers\BaseController
             return $next($request);
         });
     }
-
 }

@@ -3,15 +3,17 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAtcStatisticsTables extends Migration {
+class CreateAtcStatisticsTables extends Migration
+{
 
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up() {
-        Schema::create("statistic_atc", function($table) {
+    public function up()
+    {
+        Schema::create("statistic_atc", function ($table) {
             $table->bigIncrements("id")->unsigned();
             $table->integer("account_id")->unsigned();
             $table->string("callsign", 10);
@@ -29,8 +31,8 @@ class CreateAtcStatisticsTables extends Migration {
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists("statistic_atc");
     }
-
 }

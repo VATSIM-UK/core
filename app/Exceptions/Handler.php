@@ -43,7 +43,8 @@ class Handler extends ExceptionHandler
             if (extension_loaded('newrelic')) {
                 try {
                     newrelic_notice_error(null, $e);
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             }
 
             if (class_exists('App') && App::environment('production')) {
@@ -107,7 +108,8 @@ class Handler extends ExceptionHandler
             if (class_exists('Slack')) {
                 try {
                     Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             }
 
             if (class_exists('Log')) {

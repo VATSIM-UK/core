@@ -5,16 +5,18 @@ use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
 use Auth;
 
-class Dashboard extends BaseController {
+class Dashboard extends BaseController
+{
 
-    public function getDashboard(){
+    public function getDashboard()
+    {
         $allApplications = Auth::user()->visitTransferApplications;
 
         $currentVisitApplication = Auth::user()->visitTransferApplications()->visit()->open()->latest()->first();
 
         $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
 
-        $pendingReferences = $this->_account->visitTransferReferee->filter(function($ref){
+        $pendingReferences = $this->_account->visitTransferReferee->filter(function ($ref) {
             return $ref->is_requested;
         });
 
@@ -24,5 +26,4 @@ class Dashboard extends BaseController {
                     ->with("currentTransferApplication", $currentTransferApplication)
                     ->with("pendingReferences", $pendingReferences);
     }
-
 }

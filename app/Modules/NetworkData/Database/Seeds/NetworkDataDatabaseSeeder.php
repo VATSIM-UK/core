@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class NetworkDataDatabaseSeeder extends Seeder
 {
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		Model::unguard();
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Model::unguard();
 
-		// $this->call('App\Modules\NetworkData\Database\Seeds\FoobarTableSeeder');
-	}
+        // $this->call('App\Modules\NetworkData\Database\Seeds\FoobarTableSeeder');
+    }
 }

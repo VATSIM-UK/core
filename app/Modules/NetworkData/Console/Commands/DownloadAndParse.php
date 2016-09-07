@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class DownloadAndParse extends \App\Console\Commands\aCommand
+class DownloadAndParse extends \App\Console\Commands\Command
 {
     use DispatchesJobs;
 

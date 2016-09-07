@@ -46,8 +46,8 @@ class Atc extends Model
     protected $table      = "statistic_atc";
     protected $primaryKey = "id";
     protected $fillable   = ["account_id", "qualification_id", "facility_type", "callsign", "connected_at", "disconnected_at"];
-    public    $dates      = ["connected_at", "disocnnected_at", "created_at", "updated_at", "deleted_at"];
-    public    $timestamps = true;
+    public $dates      = ["connected_at", "disocnnected_at", "created_at", "updated_at", "deleted_at"];
+    public $timestamps = true;
 
     public static function boot()
     {
@@ -57,10 +57,9 @@ class Atc extends Model
             event(new AtcSessionStarted($model));
         });
 
-        static::deleted(function($model){
+        static::deleted(function ($model) {
             event(new AtcSessionDeleted($model));
         });
-
     }
 
     public static function scopeForAccountId($query, $id)

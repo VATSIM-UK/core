@@ -20,7 +20,7 @@ class CreateNewMessage extends Job
     private $systemGenerated = false;
 
     // TODO: Find a nice way of overriding the email we're sending to.
-    public function __construct(Account $sender, Account $recipient, $subject, $body, $displaySenderAs=null, $isHtml=true, $systemGenerated=false)
+    public function __construct(Account $sender, Account $recipient, $subject, $body, $displaySenderAs = null, $isHtml = true, $systemGenerated = false)
     {
         $this->sender = $sender;
         $this->displaySenderAs = $displaySenderAs;

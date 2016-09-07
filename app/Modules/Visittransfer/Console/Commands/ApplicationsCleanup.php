@@ -2,13 +2,13 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
-use App\Console\Commands\aCommand;
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Models\Application;
 
-class ApplicationsCleanup extends aCommand
+class ApplicationsCleanup extends Command
 {
     /**
      * The console command signature.
@@ -42,10 +42,10 @@ class ApplicationsCleanup extends aCommand
     private function cancelOldApplications()
     {
         foreach (Application::status(Application::STATUS_IN_PROGRESS)->get() as $application) {
-            if($application->expires_at->lt(\Carbon\Carbon::now())){
+            if ($application->expires_at->lt(\Carbon\Carbon::now())) {
                 try {
                     $application->expire();
-                } catch(ApplicationCannotBeExpiredException $e){
+                } catch (ApplicationCannotBeExpiredException $e) {
                     dd($e);
                     // Do nothing here.  We don't care.  Maybe we were just late in catching them.
                 }
@@ -62,7 +62,6 @@ class ApplicationsCleanup extends aCommand
                                             });
 
         foreach ($submittedApplications as $application) {
-
             if (!$application->should_perform_checks) {
                 $application->markAsUnderReview("Automated checks have been disabled for this facility - requires manual checking.");
                 continue;

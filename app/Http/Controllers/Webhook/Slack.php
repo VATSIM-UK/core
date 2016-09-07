@@ -20,7 +20,8 @@ class Slack extends WebhookController
         ],
     ];
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->commandRoutes['/register']['token'] = env("SLACK_TOKEN_REGISTER", null);
     }
 
@@ -31,34 +32,36 @@ class Slack extends WebhookController
      *
      * @return \Illuminate\Http\Response
      */
-    public function anyRouter(Request $request){
+    public function anyRouter(Request $request)
+    {
         $this->slackPayload = $request->all();
 
-        if(!($route = $this->route($this->payload("command")))){
-           return Response::make("Invalid command routing.  Please seek support (web-support@vatsim-uk.co.uk).");
+        if (!($route = $this->route($this->payload("command")))) {
+            return Response::make("Invalid command routing.  Please seek support (web-support@vatsim-uk.co.uk).");
         }
 
-        if($route['token'] != $this->payload("token")){
+        if ($route['token'] != $this->payload("token")) {
             return Response::make("Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).");
         }
 
         return Response::make(call_user_func( [ $this, $route['method']] ));
     }
 
-    private function getRegister(){
+    private function getRegister()
+    {
         $slackToken = Token::ofType("slack_registration")->hasCode($this->payload("text"))->first();
 
-        if(!$slackToken || !$slackToken->exists){
+        if (!$slackToken || !$slackToken->exists) {
             return "Invalid registration token provided.";
         }
 
         $account = $slackToken->related;
 
-        if(!$account || !$account->exists){
+        if (!$account || !$account->exists) {
             return "Invalid user associated with token.";
         }
 
-        if($account->slack_id || $account->slack_id != ""){
+        if ($account->slack_id || $account->slack_id != "") {
             return "You've already registered - not further registrations are permitted.";
         }
 
@@ -70,12 +73,14 @@ class Slack extends WebhookController
         return "Registration completed successfully, ".$account->name." (".$account->id.").";
     }
 
-    private function payload($key){
+    private function payload($key)
+    {
         return array_get($this->slackPayload, $key, null);
     }
 
-    private function route($command){
-        if(array_key_exists($command, $this->commandRoutes)){
+    private function route($command)
+    {
+        if (array_key_exists($command, $this->commandRoutes)) {
             return $this->commandRoutes[$command];
         }
 

@@ -23,7 +23,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        Route::bind('applicationByPublicId', function($value){
+        Route::bind('applicationByPublicId', function ($value) {
             return \App\Modules\Visittransfer\Models\Application::findByPublicId($value);
         });
     }

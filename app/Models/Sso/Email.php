@@ -24,7 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Email extends \Eloquent {
+class Email extends \Eloquent
+{
 
     use RecordsActivity;
 
@@ -33,11 +34,13 @@ class Email extends \Eloquent {
     protected $dates = ['created_at', 'updated_at'];
     protected $hidden = ['id'];
 
-    public function email(){
+    public function email()
+    {
         return $this->belongsTo(\App\Models\Mship\Account\Email::class, "account_email_id", "id");
     }
 
-    public function ssoAccount(){
+    public function ssoAccount()
+    {
         return $this->belongsTo(\App\Models\Sso\Account::class, "sso_account_id", "id");
     }
 }

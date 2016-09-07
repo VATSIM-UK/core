@@ -1,6 +1,6 @@
 <?php
 
-$factory->define(App\Modules\Vt\Models\Application::class, function($faker){
+$factory->define(App\Modules\Vt\Models\Application::class, function ($faker) {
     return [
         "sector_id" => factory(App\Modules\Ais\Models\Fir\Sector::class)->create()->id,
         "icao" => "EG".$faker->randomElement(["TE","LL","KK","BB","CC","NX","GW","SS"]),

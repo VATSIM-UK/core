@@ -15,7 +15,7 @@ use Carbon\Carbon;
  * @todo Add more detailed logging
  * @todo Remove groups from ineligible members
  */
-class SyncMentors extends aCommand
+class SyncMentors extends Command
 {
     /**
      * The name and signature of the console command.
@@ -78,7 +78,8 @@ class SyncMentors extends aCommand
         $this->addGroupsToMembers();
     }
 
-    protected function addGroupsToMembers() {
+    protected function addGroupsToMembers()
+    {
         // get all mentor position assignments
         $positions = DB::table('prod_rts.position_validations AS v')
             ->select(
@@ -134,10 +135,10 @@ class SyncMentors extends aCommand
         }
     }
 
-    protected function determineGroup($position, $forumMember) {
+    protected function determineGroup($position, $forumMember)
+    {
         // don't process if the cutoff has been reached
-        if (
-            ($position->rts_id === $this->rtsIDs['pilots'] && $position->pilot_cutoff)
+        if (($position->rts_id === $this->rtsIDs['pilots'] && $position->pilot_cutoff)
             || ($position->rts_id !== $this->rtsIDs['pilots'] && $position->atc_cutoff)
         ) {
             $this->log("Cutoff reached - skipping position {$position->position}");
@@ -168,19 +169,20 @@ class SyncMentors extends aCommand
         return $forumMember;
     }
 
-    protected function calculateGroupID($position) {
+    protected function calculateGroupID($position)
+    {
         $addGroup = null;
         if ($position->rts_id === $this->rtsIDs['military']) {
             $addGroup = array_search('Secondary Only - ATC Mentor MIL', $this->forumGroupIDs);
-        } else if (preg_match('/\_TWR$|\_GND$|\_DEL$|\_SBTT$|\_SBGT$/i', $position->callsign)) {
+        } elseif (preg_match('/\_TWR$|\_GND$|\_DEL$|\_SBTT$|\_SBGT$/i', $position->callsign)) {
             $addGroup = array_search('Secondary Only - ATC Mentor GNTW', $this->forumGroupIDs);
-        } else if (preg_match('/\_APP$|\_SBAT$/i', $position->callsign)) {
+        } elseif (preg_match('/\_APP$|\_SBAT$/i', $position->callsign)) {
             $addGroup = array_search('Secondary Only - ATC Mentor APP', $this->forumGroupIDs);
-        } else if (preg_match('/\_OBS$/i', $position->callsign)) {
+        } elseif (preg_match('/\_OBS$/i', $position->callsign)) {
             $addGroup = array_search('Secondary Only - ATC Mentor OBS', $this->forumGroupIDs);
-        } else if (preg_match('/\_CTR$|\_SBCT$|^EGGX/i', $position->callsign)) {
+        } elseif (preg_match('/\_CTR$|\_SBCT$|^EGGX/i', $position->callsign)) {
             $addGroup = array_search('Secondary Only - ATC Mentor CTR', $this->forumGroupIDs);
-        } else if ($position->rts_id === $this->rtsIDs['pilots']) {
+        } elseif ($position->rts_id === $this->rtsIDs['pilots']) {
             switch (substr($position->callsign, 0, 2)) {
                 case 'P1':
                     $addGroup = array_search('Secondary Only - Pilot Mentor P1', $this->forumGroupIDs);

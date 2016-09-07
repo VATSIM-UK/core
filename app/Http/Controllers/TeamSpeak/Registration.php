@@ -63,7 +63,7 @@ class Registration extends \App\Http\Controllers\BaseController
     public function postStatus($registration)
     {
         if ($this->_account->id == $registration->account_id) {
-            return ($registration->dbid === NULL) ? Response::make('new') : Response::make('active');
+            return ($registration->dbid === null) ? Response::make('new') : Response::make('active');
         } else {
             return Response::make("Cannot retrieve registration status.");
         }

@@ -13,7 +13,7 @@
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Service whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Service extends \App\Models\aModel
+class Service extends \App\Models\Model
 {
     protected $table = 'staff_services';
     protected $primaryKey = 'id';

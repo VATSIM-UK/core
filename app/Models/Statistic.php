@@ -22,16 +22,18 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Statistic extends \App\Models\aModel {
+class Statistic extends \App\Models\Model
+{
 
     protected $table = "statistic";
     protected $primaryKey = "id";
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['period', 'key'];
 
-    public static function setStatistic($period, $key, $value) {
+    public static function setStatistic($period, $key, $value)
+    {
         $_s = Statistic::where("period", "=", $period)->where("key", "=", $key)->first();
-        if(!$_s){
+        if (!$_s) {
             $_s = new Statistic(array("period" => $period, "key" => $key));
         }
 
@@ -40,14 +42,14 @@ class Statistic extends \App\Models\aModel {
         return $_s;
     }
 
-    public static function getStatistic($period, $key){
+    public static function getStatistic($period, $key)
+    {
         $_s = Statistic::where("period", "=", $period)->where("key", "=", $key)->first();
 
-        if(!$_s){
+        if (!$_s) {
             return 0;
         }
 
         return $_s->value;
     }
-
 }
