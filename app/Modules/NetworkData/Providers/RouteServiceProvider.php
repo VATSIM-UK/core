@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
             'namespace'  => $this->namespace,
             'middleware' => ['web']
         ], function ($router) {
-            require (config('modules.path').'/NetworkData/Http/routes.php');
+            require(config('modules.path').'/NetworkData/Http/routes.php');
         });
     }
 }

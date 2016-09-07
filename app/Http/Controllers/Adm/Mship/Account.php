@@ -33,8 +33,10 @@ class Account extends AdmController
     public function getIndex($scope = "division")
     {
         // Sorting and searching!
-        $sortBy = in_array(Input::get("sort_by"),
-            ["id", "name_first", "name_last"]) ? Input::get("sort_by") : "id";
+        $sortBy = in_array(
+            Input::get("sort_by"),
+            ["id", "name_first", "name_last"]
+        ) ? Input::get("sort_by") : "id";
         $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "ASC";
 
         // ORM it all!
@@ -51,13 +53,19 @@ class Account extends AdmController
                 break;
 
             case "inactive":
-                $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_INACTIVE), "=",
-                    AccountData::STATUS_INACTIVE);
+                $memberSearch = $memberSearch->where(
+                    DB::raw("status&" . AccountData::STATUS_INACTIVE),
+                    "=",
+                    AccountData::STATUS_INACTIVE
+                );
                 break;
 
             case "suspended":
-                $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED), "=",
-                    AccountData::STATUS_NETWORK_SUSPENDED);
+                $memberSearch = $memberSearch->where(
+                    DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED),
+                    "=",
+                    AccountData::STATUS_NETWORK_SUSPENDED
+                );
                 break;
 
             case "nondivision":
@@ -122,10 +130,18 @@ class Account extends AdmController
 
         // Lazy eager loading
         $account->load(
-            "bans", "bans.banner", "bans.reason", "bans.notes", "bans.notes.writer",
-            "notes", "notes.type", "notes.writer", "notes.attachment",
+            "bans",
+            "bans.banner",
+            "bans.reason",
+            "bans.notes",
+            "bans.notes.writer",
+            "notes",
+            "notes.type",
+            "notes.writer",
+            "notes.attachment",
             "dataChanges",
-            "roles", "roles.permissions",
+            "roles",
+            "roles.permissions",
             "qualifications",
             "states",
             "secondaryEmails"
@@ -317,8 +333,12 @@ class Account extends AdmController
         $banReason = Reason::find(Input::get("ban_reason_id"));
 
         // Create the user's ban
-        $ban = $account->addBan($banReason, Input::get("ban_reason_extra"), Input::get("ban_note_content"),
-            $this->_account->id);
+        $ban = $account->addBan(
+            $banReason,
+            Input::get("ban_reason_extra"),
+            Input::get("ban_note_content"),
+            $this->_account->id
+        );
 
         $job = (new SendCreationEmail($ban))->onQueue("high");
         dispatch($job);
@@ -380,8 +400,11 @@ class Account extends AdmController
         }
 
         // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"),
-            Auth::getUser());
+        $note = $ban->account->addNote(
+            Type::isShortCode("discipline")->first(),
+            Input::get("comment"),
+            Auth::getUser()
+        );
         $ban->notes()->save($note);
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])

@@ -37,6 +37,6 @@ class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
         $systemGenerated = true;
         $createNewMessageJob = new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
 
-        dispatch( $createNewMessageJob->onQueue("emails") );
+        dispatch($createNewMessageJob->onQueue("emails"));
     }
 }

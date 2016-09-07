@@ -193,8 +193,10 @@ class SysStatisticsDaily extends Command
         try {
             $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
         } catch (\Exception $e) {
-            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
-                ['Error Code' => 2]);
+            $this->sendSlackError(
+                "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                ['Error Code' => 2]
+            );
         }
 
         if ($endPeriod->isFuture()) {

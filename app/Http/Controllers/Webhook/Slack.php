@@ -44,7 +44,7 @@ class Slack extends WebhookController
             return Response::make("Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).");
         }
 
-        return Response::make(call_user_func( [ $this, $route['method']] ));
+        return Response::make(call_user_func([ $this, $route['method']]));
     }
 
     private function getRegister()

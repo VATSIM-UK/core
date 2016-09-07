@@ -349,8 +349,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function hasOpenVisitingTransferApplication()
     {
         return $this->visitTransferApplications->contains(function ($application, $key) {
-            return in_array($application->status,
-                \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN);
+            return in_array(
+                $application->status,
+                \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN
+            );
         });
     }
 
@@ -397,8 +399,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function bans()
     {
-        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy('created_at',
-            'DESC');
+        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy(
+            'created_at',
+            'DESC'
+        );
     }
 
     public function bansAsInstigator()
@@ -430,8 +434,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function qualifications()
     {
-        return $this->belongsToMany(Qualification::class, "mship_account_qualification", "account_id",
-            "qualification_id")
+        return $this->belongsToMany(
+            Qualification::class,
+            "mship_account_qualification",
+            "account_id",
+            "qualification_id"
+        )
                     ->withTimestamps();
     }
 
@@ -527,8 +535,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function readNotifications()
     {
-        return $this->belongsToMany(\App\Models\Sys\Notification::class, 'sys_notification_read', 'account_id',
-            'notification_id')
+        return $this->belongsToMany(
+            \App\Models\Sys\Notification::class,
+            'sys_notification_read',
+            'account_id',
+            'notification_id'
+        )
                     ->orderBy('status', 'DESC')
                     ->orderBy('effective_at', 'DESC')
                     ->withTimestamps();

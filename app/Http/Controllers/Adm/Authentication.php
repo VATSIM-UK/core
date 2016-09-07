@@ -32,10 +32,12 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
     {
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-            [URL::route("adm.authentication.verify")], function ($key, $secret, $url) {
+            [URL::route("adm.authentication.verify")],
+            function ($key, $secret, $url) {
                 Session::put('vatsimauth', compact('key', 'secret'));
                 return Redirect::to($url);
-            }, function ($error) {
+            },
+            function ($error) {
                 // TODO: LOG
                 throw new Exception($error['message']);
             }

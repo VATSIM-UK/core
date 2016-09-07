@@ -167,26 +167,34 @@ class Management extends \App\Http\Controllers\BaseController
 
         // Is it valid? Has it expired? Etc?
         if (!$token) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR1)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR1)"
+            );
         }
 
         // Is it valid? Has it expired? Etc?
         if ($token->is_used) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR2)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR2)"
+            );
         }
 
         // Is it valid? Has it expired? Etc?
         if ($token->is_expired) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR3)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR3)"
+            );
         }
 
         // Is it valid and linked to something?!?!
         if (!$token->related or $token->type != "mship_account_email_verify") {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR4)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR4)"
+            );
         }
 
         // Let's now consume this token.
@@ -200,8 +208,10 @@ class Management extends \App\Http\Controllers\BaseController
         if ($this->_account) {
             return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (" . $token->related->email . ") has been verified!");
         } else {
-            return $this->viewMake("mship.management.email.verify")->with("success",
-                "Your new email address (" . $token->related->email . ") has been verified!");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "success",
+                "Your new email address (" . $token->related->email . ") has been verified!"
+            );
         }
     }
 }

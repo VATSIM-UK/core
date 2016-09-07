@@ -176,7 +176,8 @@ class TeamSpeak
      */
     public static function checkClientDescription(TeamSpeak3_Node_Client $client, Account $member)
     {
-        $description = sprintf('%s %s (%s)',
+        $description = sprintf(
+            '%s %s (%s)',
             $member->name_first,
             $member->name_last,
             $member->id

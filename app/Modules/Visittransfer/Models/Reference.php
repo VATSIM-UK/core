@@ -190,8 +190,12 @@ class Reference extends Model
 
         if ($staffReason) {
             $noteContent = "VT Reference from " . $this->account->name . " was rejected.\n" . $staffReason;
-            $note = $this->application->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent,
-                $actor, $this);
+            $note = $this->application->account->addNote(
+                Type::isShortCode('visittransfer')->first(),
+                $noteContent,
+                $actor,
+                $this
+            );
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
