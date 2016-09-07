@@ -34,5 +34,4 @@ phpcs:php5.6:mysql5.5:
     - production
     - release/*
   script:
-    - phpcs "--standard=PSR1" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8" "--ignore=blade.php" -p -v app/
     - phpcs "--standard=PSR2" "--report=full" "--extensions=inc,php,phpt,php4,php5,php3,phtml" "--encoding=UTF-8" "--ignore=blade.php" -p -v app/
