@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Mship\Account;
-use Illuminate\Console\Command;
-use \SlackChat;
-use \SlackUser;
-use \SlackUserAdmin;
+use SlackChat;
+use SlackUser;
+use SlackUserAdmin;
 
 class SlackManager extends Command
 {

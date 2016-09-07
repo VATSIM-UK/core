@@ -9,7 +9,6 @@ use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Group;
 use DB;
-use Illuminate\Console\Command;
 use TeamSpeak3_Node_Server;
 
 class TeamSpeakMapper extends Command

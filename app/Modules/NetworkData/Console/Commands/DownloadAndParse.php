@@ -4,7 +4,6 @@ namespace App\Modules\NetworkData\Console\Commands;
 
 use App\Modules\NetworkData\Jobs\NetworkDataDownloadAndParse as StatisticsDownloadAndParseJob;
 use DB;
-use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Models\Mship\Account;
