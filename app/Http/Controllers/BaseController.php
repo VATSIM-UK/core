@@ -16,37 +16,37 @@ class BaseController extends \Illuminate\Routing\Controller
 
     use DispatchesJobs, ValidatesRequests, AuthorizesRequests;
 
-    protected $_account;
-    protected $_pageTitle;
-    protected $_pageSubTitle;
-    protected $_breadcrumb;
+    protected $account;
+    protected $pageTitle;
+    protected $pageSubTitle;
+    protected $breadcrumb;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
-                $this->_account = Auth::user();
-                $this->_account->load("roles", "roles.permissions");
+                $this->account = Auth::user();
+                $this->account->load("roles", "roles.permissions");
 
                 // Do we need to do some debugging on this user?
-                if ($this->_account->debug) {
+                if ($this->account->debug) {
                     \Debugbar::enable();
                 }
 
                 // if last login recorded is older than 45 minutes, record the new timestamp
-                if ($this->_account->last_login < \Carbon\Carbon::now()
+                if ($this->account->last_login < \Carbon\Carbon::now()
                         ->subMinutes(45)
                         ->toDateTimeString()
                 ) {
-                    $this->_account->last_login = \Carbon\Carbon::now();
+                    $this->account->last_login = \Carbon\Carbon::now();
                     // if the ip has changed, record this too
-                    if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
-                        $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                    if ($this->account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
+                        $this->account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
                     }
-                    $this->_account->save();
+                    $this->account->save();
                 }
             } else {
-                $this->_account = new Account();
+                $this->account = new Account();
             }
 
             return $next($request);
@@ -57,11 +57,11 @@ class BaseController extends \Illuminate\Routing\Controller
     {
         $view = View::make($view);
 
-        $view->with("_account", $this->_account);
+        $view->with("_account", $this->account);
 
         $this->buildBreadcrumb("Home", "/");
 
-        $view->with("_breadcrumb", $this->_breadcrumb);
+        $view->with("_breadcrumb", $this->breadcrumb);
 
         $view->with("_pageTitle", $this->getTitle());
         $view->with("_pageSubTitle", $this->getSubTitle());
@@ -71,30 +71,30 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function setTitle($title)
     {
-        $this->_pageTitle = $title;
+        $this->pageTitle = $title;
     }
 
     public function getTitle()
     {
-        if ($this->_pageTitle == null) {
+        if ($this->pageTitle == null) {
             if ($this->isModuleRequest()) {
                 return $this->getModuleRequest()->get("name");
             }
 
-            return $this->_breadcrumb->first()->get("name");
+            return $this->breadcrumb->first()->get("name");
         }
 
-        return $this->_pageTitle;
+        return $this->pageTitle;
     }
 
     public function setSubTitle($title)
     {
-        $this->_pageSubTitle = $title;
+        $this->pageSubTitle = $title;
     }
 
     public function getSubTitle()
     {
-        if ($this->_pageSubTitle == null) {
+        if ($this->pageSubTitle == null) {
             if ($this->isModuleRequest()) {
                 return $this->getControllerRequest();
             }
@@ -102,7 +102,7 @@ class BaseController extends \Illuminate\Routing\Controller
             return null;
         }
 
-        return $this->_pageSubTitle;
+        return $this->pageSubTitle;
     }
 
     protected function setupLayout()
@@ -121,17 +121,17 @@ class BaseController extends \Illuminate\Routing\Controller
      */
     protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false)
     {
-        if ($this->_breadcrumb == null) {
-            $this->_breadcrumb = collect();
+        if ($this->breadcrumb == null) {
+            $this->breadcrumb = collect();
         }
 
         if ($linkToPrevious) {
-            $uri = $this->_breadcrumb->last()->get("uri") . "/" . $uri;
+            $uri = $this->breadcrumb->last()->get("uri") . "/" . $uri;
         }
 
         $element = collect(["name" => $name, "uri" => $uri]);
 
-        $this->_breadcrumb->push($element);
+        $this->breadcrumb->push($element);
     }
 
     protected function buildBreadcrumb($startName, $startUri)

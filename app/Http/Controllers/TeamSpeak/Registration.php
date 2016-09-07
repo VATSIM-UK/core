@@ -13,31 +13,31 @@ class Registration extends \App\Http\Controllers\BaseController
     // create new registration process
     public function getNew()
     {
-        if (count($this->_account->teamspeak_registrations) >= 3) {
+        if (count($this->account->teamspeak_registrations) >= 3) {
             return Redirect::route("mship.manage.dashboard");
         }
 
-        if (!$this->_account->new_ts_registration) {
+        if (!$this->account->new_ts_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
-            $registration = $this->createRegistration($this->_account->id, $registration_ip);
+            $registration = $this->createRegistration($this->account->id, $registration_ip);
         } else {
-            $registration = $this->_account->new_ts_registration->load('confirmation');
+            $registration = $this->account->new_ts_registration->load('confirmation');
         }
 
         if (!$registration->confirmation) {
             $confirmation = $this->createConfirmation(
                 $registration->id,
                 md5($registration->created_at->timestamp),
-                $this->_account->id
+                $this->account->id
             );
         } else {
             $confirmation = $registration->confirmation;
         }
 
-        $autoURL = "ts3server://" . $_ENV['TS_HOST'] . "?nickname=" . $this->_account->name_first . "%20";
-        $autoURL.= $this->_account->name_last . "&amp;token=" . $confirmation->privilege_key;
+        $autoURL = "ts3server://" . $_ENV['TS_HOST'] . "?nickname=" . $this->account->name_first . "%20";
+        $autoURL.= $this->account->name_last . "&amp;token=" . $confirmation->privilege_key;
 
-        $this->_pageTitle = "New Registration";
+        $this->pageTitle = "New Registration";
         $view = $this->viewMake("teamspeak.new")
                      ->withRegistration($registration)
                      ->withConfirmation($confirmation)
@@ -53,7 +53,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // delete registration (if owned)
     public function getDelete($registration)
     {
-        if ($this->_account->id == $registration->account_id) {
+        if ($this->account->id == $registration->account_id) {
             $registration->delete();
         }
         return Redirect::back();
@@ -62,7 +62,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // get status of registration
     public function postStatus($registration)
     {
-        if ($this->_account->id == $registration->account_id) {
+        if ($this->account->id == $registration->account_id) {
             return ($registration->dbid === null) ? Response::make('new') : Response::make('active');
         } else {
             return Response::make("Cannot retrieve registration status.");

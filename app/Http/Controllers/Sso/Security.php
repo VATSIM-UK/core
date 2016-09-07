@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class Security extends \App\Http\Controllers\BaseController
 {
 
-    private $_ssoAccount;
+    private $ssoAccount;
 
     public function postGenerate()
     {
@@ -27,12 +27,12 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         $token = new Token();
-        $_t = sha1(uniqid($this->_ssoAccount->username, true));
-        $token->token = md5($_t . $this->_ssoAccount->api_key_private);
+        $_t = sha1(uniqid($this->ssoAccount->username, true));
+        $token->token = md5($_t . $this->ssoAccount->api_key_private);
         $token->return_url = Input::get("return_url");
         $token->created_at = \Carbon\Carbon::now()->toDateTimeString();
         $token->expires_at = \Carbon\Carbon::now()->addMinutes(30)->toDateTimeString();
-        $this->_ssoAccount->tokens()->save($token);
+        $this->ssoAccount->tokens()->save($token);
 
         // We want to return the token to the user for later use in their requests.
         return Response::json(array("status" => "success", "token" => $_t, "timestamp" => strtotime($token->created_at)));
@@ -163,14 +163,14 @@ class Security extends \App\Http\Controllers\BaseController
 
         // Authenticate....
         try {
-            $this->_ssoAccount = Account::where("username", "=", Input::get("username"))
+            $this->ssoAccount = Account::where("username", "=", Input::get("username"))
                     ->where("api_key_public", "=", Input::get("apikey_pub"))
                     ->first();
         } catch (Exception $e) {
             return Response::json(array("status" => "error", "error" => "INVALID_CREDENTIALS"));
         }
 
-        if (is_null($this->_ssoAccount)) {
+        if (is_null($this->ssoAccount)) {
             return Response::json(array("status" => "error", "error" => "INVALID_CREDENTIALS"));
         }
     }

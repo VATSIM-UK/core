@@ -123,7 +123,7 @@ class Account extends AdmController
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->_account->id == $account->id && !$this->_account->hasPermission("adm/mship/account/own")) {
+        if ($this->account->id == $account->id && !$this->account->hasPermission("adm/mship/account/own")) {
             return Redirect::route("adm.mship.account.index")
                            ->withError("You cannot view or manage your own profile.");
         }
@@ -337,7 +337,7 @@ class Account extends AdmController
             $banReason,
             Input::get("ban_reason_extra"),
             Input::get("ban_note_content"),
-            $this->_account->id
+            $this->account->id
         );
 
         $job = (new SendCreationEmail($ban))->onQueue("high");

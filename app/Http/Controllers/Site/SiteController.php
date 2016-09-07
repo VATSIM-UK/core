@@ -11,5 +11,5 @@ use Request;
 
 class SiteController extends \App\Http\Controllers\BaseController
 {
-    protected $_template = "sitev2";
+    protected $template = "sitev2";
 }

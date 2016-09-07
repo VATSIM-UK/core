@@ -30,9 +30,9 @@ class Authentication extends BaseController
         }
 
         // Has this user logged in from a similar IP as somebody else?
-        $check = Account::withIp($this->_account->last_login_ip)
+        $check = Account::withIp($this->account->last_login_ip)
                         ->where('last_login', '>=', Carbon::now()->subHours(4))
-                        ->where('id', '!=', $this->_account->id)
+                        ->where('id', '!=', $this->account->id)
                         ->count();
 
         if ($check > 0 && !Session::get('auth_duplicate_ip', false)) {
@@ -41,7 +41,7 @@ class Authentication extends BaseController
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Session::has('auth_extra') && $this->_account->hasPassword() && !Session::has('auth_override')) {
+        if (!Session::has('auth_extra') && $this->account->hasPassword() && !Session::has('auth_override')) {
             return Redirect::route('mship.security.auth');
         }
 
@@ -57,11 +57,11 @@ class Authentication extends BaseController
         }
 
         // If a secondary is required, but they haven't set one, send them away to set one.
-        if ($this->_account->mandatory_password && !$this->_account->hasPassword()) {
+        if ($this->account->mandatory_password && !$this->account->hasPassword()) {
             return Redirect::route('mship.security.replace');
         }
 
-        if (!$this->_account->hasPassword()) {
+        if (!$this->account->hasPassword()) {
             Session::set('auth_extra', false);
         }
 
@@ -69,7 +69,7 @@ class Authentication extends BaseController
         Session::forget('auth_duplicate_ip');
 
         $returnURL = Session::pull('auth_return', URL::route('mship.manage.dashboard'));
-        if ($returnURL == URL::route('mship.manage.dashboard') && ($this->_account->has_unread_important_notifications || $this->_account->has_unread_must_acknowledge_notifications)) {
+        if ($returnURL == URL::route('mship.manage.dashboard') && ($this->account->has_unread_important_notifications || $this->account->has_unread_must_acknowledge_notifications)) {
             Session::put('force_notification_read_return_url', $returnURL);
             $returnURL = URL::route('mship.notification.list');
         }
@@ -83,7 +83,7 @@ class Authentication extends BaseController
         }
 
         // Display an alternative login form.
-        $this->_pageTitle = 'Alternative Login';
+        $this->pageTitle = 'Alternative Login';
         return $this->viewMake('mship.authentication.login_alternative');
     }
 

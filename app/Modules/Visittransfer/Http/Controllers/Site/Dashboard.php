@@ -16,7 +16,7 @@ class Dashboard extends BaseController
 
         $currentTransferApplication = Auth::user()->visitTransferApplications()->transfer()->open()->latest()->first();
 
-        $pendingReferences = $this->_account->visitTransferReferee->filter(function ($ref) {
+        $pendingReferences = $this->account->visitTransferReferee->filter(function ($ref) {
             return $ref->is_requested;
         });
 

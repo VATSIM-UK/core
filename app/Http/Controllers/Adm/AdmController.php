@@ -33,11 +33,11 @@ class AdmController extends \App\Http\Controllers\BaseController
     {
         $view = View::make($view);
 
-        $view->with("_account", $this->_account);
+        $view->with("_account", $this->account);
 
         $this->buildBreadcrumb("Administration Control Panel", "/adm/dashboard");
 
-        $view->with("_breadcrumb", $this->_breadcrumb);
+        $view->with("_breadcrumb", $this->breadcrumb);
 
         $view->with("_pageTitle", $this->getTitle());
         $view->with("_pageSubTitle", $this->getSubTitle());
@@ -49,10 +49,10 @@ class AdmController extends \App\Http\Controllers\BaseController
     {
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
-                $this->_account = Auth::user();
-                $this->_account->load("roles", "roles.permissions");
+                $this->account = Auth::user();
+                $this->account->load("roles", "roles.permissions");
             } else {
-                $this->_account = new Account();
+                $this->account = new Account();
             }
 
             return $next($request);
