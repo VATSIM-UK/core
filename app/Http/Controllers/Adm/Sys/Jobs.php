@@ -43,6 +43,9 @@ class Jobs extends AdmController
                         $startObject = true;
                     } else if (starts_with($line, '}')) {
                         $count -= 4;
+                        if ($count < 0) {
+                            $count = 0;
+                        }
                     }
 
                     $line = str_repeat('&nbsp;', $count) . $line;
