@@ -40,6 +40,13 @@ class MemberCertUpdate extends Job implements ShouldQueue
         DB::beginTransaction();
 
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
+        if (!is_string($this->data->region)) {
+            $this->data->region = '';
+        }
+        if (!is_string($this->data->division)) {
+            $this->data->division = '';
+        }
+
         $member = Account::find($this->accountID);
 
         // if member no longer exists, delete
