@@ -14,7 +14,7 @@ class AutoTools
     {
         $sprintUrl = '%sdivdbfullwpilot.php?authid=%s&authpassword=%s&div=%s';
         
-        if($withTimestamp) {
+        if ($withTimestamp) {
             $sprintUrl .= "&timestamp=" . (time() - 60 * 119);
         }
 
@@ -29,7 +29,7 @@ class AutoTools
         $cacheName = $withTimestamp ? "autotools_divdbfullwpilot_timestamp" : "autotools_dividbfullwpilot_full";
         $cacheLength = $withTimestamp ? 60*118 : 60 * 12;
 
-        return Cache::remember($cacheName, $cacheLength, function() use ($url) {
+        return Cache::remember($cacheName, $cacheLength, function () use ($url) {
             \Storage::put("autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv", file_get_contents($url));
 
             $reader = Reader::createFromPath(storage_path("app".DIRECTORY_SEPARATOR."autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv"), 'r');
@@ -44,7 +44,7 @@ class AutoTools
 
             $memberCollection = collect();
 
-            foreach($results as $r){
+            foreach ($results as $r) {
                 $memberCollection->push($r);
             }
 

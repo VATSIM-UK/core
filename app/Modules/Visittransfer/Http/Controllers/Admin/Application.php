@@ -24,8 +24,10 @@ class Application extends AdmController
         $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         // Sorting and searching!
-        $sortBy = in_array(Input::get("sort_by"),
-            ["id", "account_id", "type", "created_at", "updated_at"]) ? Input::get("sort_by") : "updated_at";
+        $sortBy = in_array(
+            Input::get("sort_by"),
+            ["id", "account_id", "type", "created_at", "updated_at"]
+        ) ? Input::get("sort_by") : "updated_at";
         $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "DESC";
 
         $applications = ApplicationModel::orderBy($sortBy, $sortDir)
@@ -119,8 +121,11 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
-                Input::get("check", null)) . " check was marked as 'MET'!");
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace(
+            "_",
+            " ",
+            Input::get("check", null)
+        ) . " check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -131,8 +136,11 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
-                Input::get("check", null)) . " check was marked as 'NOT MET'!");
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace(
+            "_",
+            " ",
+            Input::get("check", null)
+        ) . " check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)

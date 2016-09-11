@@ -11,7 +11,7 @@ use ReflectionException;
 use ReflectionMethod;
 use stdClass;
 
-class GenerateEloquentMethodPHPDoc extends aCommand
+class GenerateEloquentMethodPHPDoc extends Command
 {
     /**
      * The name and signature of the console command.
@@ -27,7 +27,7 @@ class GenerateEloquentMethodPHPDoc extends aCommand
      */
     protected $description = 'Generate autocompletion for models extending an abstract model';
 
-    protected $abstract_model = aCommand::class;
+    protected $abstract_model = Command::class;
     protected $eloquent_model = Model::class;
     protected $eloquent_methods = [];
     protected $scraped_class = Builder::class;
@@ -43,8 +43,7 @@ class GenerateEloquentMethodPHPDoc extends aCommand
         $this->getEloquentMethods();
 
         $scrapedInfo = new ReflectionClass($this->scraped_class);
-        foreach ($scrapedInfo->getMethods() as $method)
-        {
+        foreach ($scrapedInfo->getMethods() as $method) {
             if (!$this->isMagicMethod($method) && !$this->isModelMethod($method)) {
                 $this->log('* @method static ', null, false);
                 $docBlockTags = (new DocBlock($method))->getTags();
@@ -153,7 +152,8 @@ class GenerateEloquentMethodPHPDoc extends aCommand
                     $value = preg_replace('/\n+|\s+/', '', $rawValue);
 
                     return " = $value";
-                } catch (ReflectionException $e) {}
+                } catch (ReflectionException $e) {
+                }
             }
         }
 

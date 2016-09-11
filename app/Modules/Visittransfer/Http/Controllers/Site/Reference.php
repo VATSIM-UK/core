@@ -25,13 +25,14 @@ class Reference extends BaseController
                     ->with("application", $reference->application);
     }
 
-    public function postComplete(ReferenceSubmitRequest $request, Token $token){
+    public function postComplete(ReferenceSubmitRequest $request, Token $token)
+    {
         $reference = $token->related;
 
         try {
             $reference->submit(Input::get("reference"));
             $token->consume();
-        } catch(Exception $e){
+        } catch (Exception $e) {
             dd($e);
             return Redirect::route("visiting.reference.complete", [$token->code])->withError($e->getMessage());
         }

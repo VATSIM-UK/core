@@ -163,6 +163,12 @@ It is expected that you will follow the GitFlow Workflow for managing the reposi
 * Commit messages **must** make use of the issue management commands
  * When resolving an issue via a commit `Fixes #123 - Added the user's profile picture to their profile.`
  * When addressing an issue via a commit `Restructured the user's profile page to make room for the badges in #456`
+* Commits should ideally be "atomic" in nature
+ * A good article explaining atomic commits and their benefits can be viewed [here](https://www.freshconsulting.com/atomic-commits/)
+ * Atomic commits allow project maintainers (and you!) to roll back small parts of changes made without having widespread knock-on effects, among other benefits
+ * Each task that needs completing should go into a separate commit
+ * For example, if you're fixing a bug and making a layout change in one branch, you would do the layout change in one commit and the bug fix in another
+ * Ideally, you should only commit when a particular task is completed, though this may not happen for perfectly valid reasons. More commits are preferable to less.
 
 ## Testing a new release
 

@@ -57,30 +57,32 @@ class Reference extends AdmController
                     ->with("references", $references);
     }
 
-    public function postReject(ReferenceRejectRequest $request, ReferenceModel $reference){
+    public function postReject(ReferenceRejectRequest $request, ReferenceModel $reference)
+    {
         $rejectionReason = "";
 
-        if(Input::get("rejection_reason") != "other"){
+        if (Input::get("rejection_reason") != "other") {
             $rejectionReason = Input::get("rejection_reason");
         }
 
-        if(Input::get("rejection_reason_extra", null)){
+        if (Input::get("rejection_reason_extra", null)) {
             $rejectionReason.= "\n" . Input::get("rejection_reason_extra");
         }
 
         try {
             $reference->reject($rejectionReason, Input::get("rejection_staff_note", null), Auth::user());
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 
         return Redirect::back()->withSuccess("Reference #".$reference->id." - " . $reference->account->name. " rejected &amp; candidate notified.");
     }
 
-    public function postAccept(ReferenceAcceptRequest $request, ReferenceModel $reference){
+    public function postAccept(ReferenceAcceptRequest $request, ReferenceModel $reference)
+    {
         try {
             $reference->accept(Input::get("accept_staff_note", null), Auth::user());
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::back()->withError($e->getMessage());
         }
 

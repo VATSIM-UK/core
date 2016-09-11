@@ -11,54 +11,57 @@ use View;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class BaseController extends \Illuminate\Routing\Controller {
+class BaseController extends \Illuminate\Routing\Controller
+{
 
     use DispatchesJobs, ValidatesRequests, AuthorizesRequests;
 
-    protected $_account;
-    protected $_pageTitle;
-    protected $_pageSubTitle;
-    protected $_breadcrumb;
+    protected $account;
+    protected $pageTitle;
+    protected $pageSubTitle;
+    protected $breadcrumb;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
-                $this->_account = Auth::user();
-                $this->_account->load("roles", "roles.permissions");
+                $this->account = Auth::user();
+                $this->account->load("roles", "roles.permissions");
 
                 // Do we need to do some debugging on this user?
-                if ($this->_account->debug) {
+                if ($this->account->debug) {
                     \Debugbar::enable();
                 }
 
                 // if last login recorded is older than 45 minutes, record the new timestamp
-                if ($this->_account->last_login < \Carbon\Carbon::now()
+                if ($this->account->last_login < \Carbon\Carbon::now()
                         ->subMinutes(45)
                         ->toDateTimeString()
                 ) {
-                    $this->_account->last_login = \Carbon\Carbon::now();
+                    $this->account->last_login = \Carbon\Carbon::now();
                     // if the ip has changed, record this too
-                    if ($this->_account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
-                        $this->_account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                    if ($this->account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
+                        $this->account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
                     }
-                    $this->_account->save();
+                    $this->account->save();
                 }
             } else {
-                $this->_account = new Account();
+                $this->account = new Account();
             }
 
             return $next($request);
         });
     }
 
-    protected function viewMake($view) {
+    protected function viewMake($view)
+    {
         $view = View::make($view);
 
-        $view->with("_account", $this->_account);
+        $view->with("_account", $this->account);
 
         $this->buildBreadcrumb("Home", "/");
 
-        $view->with("_breadcrumb", $this->_breadcrumb);
+        $view->with("_breadcrumb", $this->breadcrumb);
 
         $view->with("_pageTitle", $this->getTitle());
         $view->with("_pageSubTitle", $this->getSubTitle());
@@ -66,42 +69,45 @@ class BaseController extends \Illuminate\Routing\Controller {
         return $view;
     }
 
-    public function setTitle($title) {
-        $this->_pageTitle = $title;
+    public function setTitle($title)
+    {
+        $this->pageTitle = $title;
     }
 
-    public function getTitle(){
-        if($this->_pageTitle == null){
-
-            if($this->isModuleRequest()){
+    public function getTitle()
+    {
+        if ($this->pageTitle == null) {
+            if ($this->isModuleRequest()) {
                 return $this->getModuleRequest()->get("name");
             }
 
-            return $this->_breadcrumb->first()->get("name");
+            return $this->breadcrumb->first()->get("name");
         }
 
-        return $this->_pageTitle;
+        return $this->pageTitle;
     }
 
-    public function setSubTitle($title){
-        $this->_pageSubTitle = $title;
+    public function setSubTitle($title)
+    {
+        $this->pageSubTitle = $title;
     }
 
-    public function getSubTitle(){
-        if($this->_pageSubTitle == null){
-
-            if($this->isModuleRequest()){
+    public function getSubTitle()
+    {
+        if ($this->pageSubTitle == null) {
+            if ($this->isModuleRequest()) {
                 return $this->getControllerRequest();
             }
 
             return null;
         }
 
-        return $this->_pageSubTitle;
+        return $this->pageSubTitle;
     }
 
-    protected function setupLayout() {
-        if(!is_null($this->layout)) {
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }
@@ -113,33 +119,37 @@ class BaseController extends \Illuminate\Routing\Controller {
      * @param      $uri  The URI the text should link to.
      * @param bool $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
      */
-    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false){
-        if($this->_breadcrumb == null){
-            $this->_breadcrumb = collect();
+    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false)
+    {
+        if ($this->breadcrumb == null) {
+            $this->breadcrumb = collect();
         }
 
-        if($linkToPrevious){
-            $uri = $this->_breadcrumb->last()->get("uri") . "/" . $uri;
+        if ($linkToPrevious) {
+            $uri = $this->breadcrumb->last()->get("uri") . "/" . $uri;
         }
 
         $element = collect(["name" => $name, "uri" => $uri]);
 
-        $this->_breadcrumb->push($element);
+        $this->breadcrumb->push($element);
     }
 
-    protected function buildBreadcrumb($startName, $startUri){
+    protected function buildBreadcrumb($startName, $startUri)
+    {
         $this->addBreadcrumb($startName, $startUri);
         $this->addModuleBreadcrumb();
         $this->addControllerBreadcrumbs();
     }
 
-    protected function addModuleBreadcrumb(){
-        if($this->isModuleRequest()){
+    protected function addModuleBreadcrumb()
+    {
+        if ($this->isModuleRequest()) {
             $this->addBreadcrumb($this->getModuleRequest()->get("name"), $this->getModuleRequest()->get("slug"), true);
         }
     }
 
-    protected function addControllerBreadcrumbs(){
+    protected function addControllerBreadcrumbs()
+    {
         $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
     }
 
@@ -158,28 +168,31 @@ class BaseController extends \Illuminate\Routing\Controller {
      *
      * @return \Caffeinated\Modules\Collection
      */
-    protected function getModuleRequest(){
+    protected function getModuleRequest()
+    {
         $requestClass = $this->getRequestClassAsArray(false);
 
         return \Module::where("slug", strtolower($requestClass[2]));
     }
 
-    protected function getControllerRequest(){
+    protected function getControllerRequest()
+    {
         $requestClass = $this->getRequestClassAsArray(true);
 
         return $requestClass[0];
     }
 
-    protected function getRequestClassAsArray($clean = true){
+    protected function getRequestClassAsArray($clean = true)
+    {
         $requestClass = explode("\\", get_called_class());
 
         // Return the dirty path.
-        if(!$clean){
+        if (!$clean) {
             return $requestClass;
         }
 
         // Remove app/modules/.../Http/Controllers/... from the class path.
-        if($this->isModuleRequest()){
+        if ($this->isModuleRequest()) {
             return array_slice($requestClass, 6);
         }
 

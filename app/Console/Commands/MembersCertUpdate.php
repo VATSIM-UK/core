@@ -7,7 +7,7 @@ use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class MembersCertUpdate extends aCommand
+class MembersCertUpdate extends Command
 {
     use DispatchesJobs;
 

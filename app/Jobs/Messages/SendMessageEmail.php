@@ -16,7 +16,7 @@ class SendMessageEmail extends Job implements ShouldQueue
     private $post;
     private $isNew = true;
 
-    public function __construct(Post $post, $isNew=true)
+    public function __construct(Post $post, $isNew = true)
     {
         $this->post = $post;
         $this->isNew = (boolean) $isNew;
@@ -28,10 +28,12 @@ class SendMessageEmail extends Job implements ShouldQueue
         $isNew = $this->isNew;
 
         // Let's get all participants of the post.
-        foreach($post->thread->participants as $participant){
-            if($post->account_id == $participant->id){ continue; } // We won't send to the writer!
+        foreach ($post->thread->participants as $participant) {
+            if ($post->account_id == $participant->id) {
+                continue;
+            } // We won't send to the writer!
 
-            $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function($m) use($participant, $post, $isNew) {
+            $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function ($m) use ($participant, $post, $isNew) {
                 $m->subject(($isNew ? $post->thread->subject : "RE: ".$post->thread->subject));
                 $m->to($participant->email, $participant->name);
 
@@ -42,6 +44,5 @@ class SendMessageEmail extends Job implements ShouldQueue
                 }*/
             });
         }
-
     }
 }

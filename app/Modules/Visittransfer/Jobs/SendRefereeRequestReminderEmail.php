@@ -12,13 +12,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendRefereeRequestReminderEmail extends Job implements ShouldQueue {
+class SendRefereeRequestReminderEmail extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $reference = null;
     private $application = null;
 
-    public function __construct(Reference $reference){
+    public function __construct(Reference $reference)
+    {
         $this->reference = $reference;
         $this->application = $this->reference->application;
     }
@@ -28,12 +30,13 @@ class SendRefereeRequestReminderEmail extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
-        if(!$this->reference->is_requested){
+    public function handle()
+    {
+        if (!$this->reference->is_requested) {
             return true; // Already been completed
         }
 
-        if($this->reference->reminded_at !== null){
+        if ($this->reference->reminded_at !== null) {
             return true; // Already been reminded.
         }
 

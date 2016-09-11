@@ -8,12 +8,14 @@ use Redirect;
 use View;
 use Input;
 
-class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookController {
+class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookController
+{
     protected $messageId = null;
     protected $queueEntry = null;
 
-    protected function runDelivered($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runDelivered($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -24,8 +26,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: LOG.
     }
 
-    protected function runOpened($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runOpened($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -36,8 +39,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: Log
     }
 
-    protected function runClicked($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runClicked($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -48,8 +52,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: Log
     }
 
-    protected function runUnsubscribed($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runUnsubscribed($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -60,8 +65,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: LOG
     }
 
-    protected function runSpam($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runSpam($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -72,8 +78,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: LOG
     }
 
-    protected function runBounce($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runBounce($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -84,8 +91,9 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
         // TODO: LOG
     }
 
-    protected function runDropped($data=[]){
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+    protected function runDropped($data = [])
+    {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return;
         }
 
@@ -95,5 +103,4 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
         // TODO: LOG
     }
-
 }

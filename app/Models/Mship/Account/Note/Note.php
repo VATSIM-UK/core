@@ -33,7 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Note extends \Eloquent {
+class Note extends \Eloquent
+{
     use SoftDeletingTrait, RecordsActivity;
 
     protected $table = "mship_account_note";
@@ -41,23 +42,28 @@ class Note extends \Eloquent {
     protected $dates = ['created_at', 'deleted_at'];
     protected $hidden = ['id'];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
-    public function actioner(){
+    public function actioner()
+    {
         return $this->belongsTo("\App\Models\Mship\Account", "actioner_id");
     }
 
-    public function flag(){
+    public function flag()
+    {
         return $this->hasOne("\App\Models\Mship\Account\Note\Flag", "account_note_id", "id");
     }
 
-    public function format(){
+    public function format()
+    {
         return $this->hasOne("\App\Models\Mship\Account\Note\Format", "account_note_id", "id");
     }
 
-    public function setDataAttribute($value){
+    public function setDataAttribute($value)
+    {
         $this->attributes['data'] = serialize($value);
     }
 }

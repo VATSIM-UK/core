@@ -11,8 +11,8 @@
 |
 */
 
-Route::group(['prefix' => 'ais'], function() {
-	Route::get('/', function() {
-		dd('This is the Airfield Information Services module index page.');
-	});
+Route::group(['prefix' => 'ais'], function () {
+    Route::get('/', function () {
+        dd('This is the Airfield Information Services module index page.');
+    });
 });

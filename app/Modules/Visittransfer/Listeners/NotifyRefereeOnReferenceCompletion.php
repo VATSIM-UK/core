@@ -14,7 +14,7 @@ class NotifyRefereeOfReferenceDeletion implements ShouldQueue
 
     public function handle(ReferenceUnderReview $event)
     {
-        if(!$event->reference->is_requested){
+        if (!$event->reference->is_requested) {
             return;
         }
 

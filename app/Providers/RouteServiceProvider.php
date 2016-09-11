@@ -31,7 +31,7 @@ class RouteServiceProvider extends ServiceProvider
             return Redirect::route('adm.mship.account.index')->withError('The account ID you provided was not found.');
         });
 
-        Route::model('ban', \App\Models\Mship\Account\Ban::class, function() {
+        Route::model('ban', \App\Models\Mship\Account\Ban::class, function () {
             return Redirect::route('adm.mship.account.index')->withError('The ban ID you provided was not found.');
         });
 
@@ -47,7 +47,7 @@ class RouteServiceProvider extends ServiceProvider
             Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
         });
 
-        Route::model("mshipNoteType", \App\Models\Mship\Note\Type::class, function(){
+        Route::model("mshipNoteType", \App\Models\Mship\Note\Type::class, function () {
             Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist.");
         });
     }

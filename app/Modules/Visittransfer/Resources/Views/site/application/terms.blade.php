@@ -24,7 +24,7 @@
                         ) !!}
 
                         {!! ControlGroup::generate(
-                            Form::label("terms_one_hour", "I confirm that will complete this application within 60 minutes&nbsp;&nbsp;"),
+                            Form::label("terms_one_hour", "I confirm that I will complete this application within 60 minutes&nbsp;&nbsp;"),
                             Form::checkbox("terms_one_hour", true, false),
                             Form::help("After 60 minutes your application will automatically be deleted if it isn't submitted.")
                         ) !!}

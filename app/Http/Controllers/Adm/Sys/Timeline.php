@@ -11,9 +11,11 @@ use Config;
 use Redirect;
 use App\Models\Sys\Timeline\Entry;
 
-class Timeline extends \App\Http\Controllers\Adm\AdmController {
+class Timeline extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getIndex(){
+    public function getIndex()
+    {
         $entries = Entry::orderBy("created_at", "DESC")
                         ->with("owner")
                         ->with("extra")

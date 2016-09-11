@@ -2,13 +2,13 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
-use App\Console\Commands\aCommand;
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Statistic;
 use App\Modules\Visittransfer\Models\Application;
 use Cache;
 
-class StatisticsDaily extends aCommand
+class StatisticsDaily extends Command
 {
     /**
      * The console command signature.
@@ -80,8 +80,10 @@ class StatisticsDaily extends aCommand
             $this->log("Done.  " . $count . " total applications");
         } catch (\Exception $e) {
             $this->log("Error: ".$e->getMessage());
-            $this->sendSlackError("Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.",
-                ['Error Code' => 3]);
+            $this->sendSlackError(
+                "Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.",
+                ['Error Code' => 3]
+            );
         }
     }
 
@@ -103,8 +105,10 @@ class StatisticsDaily extends aCommand
             $this->log("Done.  " . $count . " open applications");
         } catch (\Exception $e) {
             $this->log("Error: ".$e->getMessage());
-            $this->sendSlackError("Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.",
-                ['Error Code' => 3]);
+            $this->sendSlackError(
+                "Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.",
+                ['Error Code' => 3]
+            );
         }
     }
 
@@ -126,8 +130,10 @@ class StatisticsDaily extends aCommand
             $this->log("Done. " . $count . " rejected applications");
         } catch (\Exception $e) {
             $this->log("Error: ".$e->getMessage());
-            $this->sendSlackError("Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.",
-                ['Error Code' => 3]);
+            $this->sendSlackError(
+                "Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.",
+                ['Error Code' => 3]
+            );
         }
     }
 
@@ -148,8 +154,10 @@ class StatisticsDaily extends aCommand
             $this->log("Done. " . $count . " new applications");
         } catch (\Exception $e) {
             $this->log("Error: ".$e->getMessage());
-            $this->sendSlackError("Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
-                ['Error Code' => 3]);
+            $this->sendSlackError(
+                "Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
+                ['Error Code' => 3]
+            );
         }
     }
 
@@ -192,11 +200,13 @@ class StatisticsDaily extends aCommand
             $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
         } catch (\Exception $e) {
             $this->log("Error: ".$e->getMessage());
-            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
-                ['Error Code' => 2]);
+            $this->sendSlackError(
+                "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                ['Error Code' => 2]
+            );
         }
 
-        if ($endPeriod->isFuture()){
+        if ($endPeriod->isFuture()) {
             $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
         }
 

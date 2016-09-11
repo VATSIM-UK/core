@@ -6,7 +6,8 @@ use App\Events\Event;
 use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Queue\SerializesModels;
 
-class AtcSessionStarted extends Event {
+class AtcSessionStarted extends Event
+{
     use SerializesModels;
 
     public $atcSession = null;
@@ -16,7 +17,8 @@ class AtcSessionStarted extends Event {
      *
      * There's little to construct at the minute as it's simply a notification!
      */
-    public function __construct(Atc $atc){
+    public function __construct(Atc $atc)
+    {
         $this->atcSession = $atc;
     }
 }

@@ -2,15 +2,18 @@
 
 use App\Models\Mship\State;
 
-class InvalidStateException extends \Exception {
+class InvalidStateException extends \Exception
+{
 
     private $state;
 
-    public function __construct(State $state = null){
+    public function __construct(State $state = null)
+    {
         $this->state = $state;
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return "State is not valid.";
     }
 }

@@ -8,7 +8,8 @@ use App\Models\TeamSpeak\Registration;
 use Carbon\Carbon;
 use Exception;
 
-class TeamSpeakCleanup extends aCommand {
+class TeamSpeakCleanup extends Command
+{
 
     /**
      * The console command name.

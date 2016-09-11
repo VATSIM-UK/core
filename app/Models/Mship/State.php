@@ -25,11 +25,13 @@ class State extends \Eloquent
         return $query->whereType($type);
     }
 
-    public function scopePermanent($query){
+    public function scopePermanent($query)
+    {
         return $query->ofType("perm");
     }
 
-    public function scopeTemporary($query){
+    public function scopeTemporary($query)
+    {
         return $query->ofType("temp");
     }
 
@@ -44,23 +46,28 @@ class State extends \Eloquent
                     ->withPivot(["region", "division", "start_at", "end_at"]);
     }
 
-    public function setDivisionAttribute(array $division){
+    public function setDivisionAttribute(array $division)
+    {
         $this->attributes['division'] = json_encode($division);
     }
 
-    public function getDivisionAttribute(){
+    public function getDivisionAttribute()
+    {
         return collect(json_decode($this->attributes['division']));
     }
 
-    public function setRegionAttribute(array $division){
+    public function setRegionAttribute(array $division)
+    {
         $this->attributes['region'] = json_encode($division);
     }
 
-    public function getRegionAttribute(){
+    public function getRegionAttribute()
+    {
         return collect(json_decode($this->attributes['region']));
     }
 
-    public function getIsPermanentAttribute(){
+    public function getIsPermanentAttribute()
+    {
         return $this->type == "perm";
     }
 

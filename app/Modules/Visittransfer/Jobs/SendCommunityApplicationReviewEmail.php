@@ -11,12 +11,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue {
+class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $application = null;
 
-    public function __construct(Application $application){
+    public function __construct(Application $application)
+    {
         $this->application = $application;
     }
 
@@ -25,7 +27,8 @@ class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $displayFrom = "VATSIM UK - Community Department";
 
         $subject = "[".$this->application->public_id."] New ".$this->application->type_status." Application";

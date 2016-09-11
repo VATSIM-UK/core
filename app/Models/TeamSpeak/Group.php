@@ -2,7 +2,7 @@
 
 namespace App\Models\TeamSpeak;
 
-use App\Models\aModel as Model;
+use App\Models\Model as Model;
 use App\Models\Mship\Permission;
 use App\Models\Mship\Qualification;
 
@@ -37,7 +37,7 @@ class Group extends Model
 
     /**
      * The permission a user should have in order to be in this group.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function permission()

@@ -25,7 +25,7 @@ class Slack
         return SlackInterface::setUsername('Core Notifications')->to($channel);
     }
 
-    protected static function send($author, $message = '', $fields = [], $color)
+    protected static function send($author, $message = '', $fields = [], $color = 'good')
     {
         // define the message/attachment to send
         $attachment = [
@@ -74,7 +74,6 @@ class Slack
     public static function sendSuccess($author, $message = '', $fields = [])
     {
         self::send($author, $message, $fields, 'good');
-
     }
 
     /**

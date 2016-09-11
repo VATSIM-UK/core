@@ -14,7 +14,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
+class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue
+{
 
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
@@ -25,7 +26,8 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
      *
      * @return void
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->vatsimPHP = new \Vatsimphp\VatsimData();
         $this->vatsimPHP->setConfig("forceDataRefresh", true);
     }
@@ -36,7 +38,8 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
      * By-product of this is that the StatisticsDownload event will fire.
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $this->vatsimPHP->loadData();
         event(new NetworkDataDownloaded);
 
@@ -52,9 +55,10 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
      *
      * @return void
      */
-    private function parseRecentDownload(){
+    private function parseRecentDownload()
+    {
 
-        foreach($this->vatsimPHP->getControllers() as $controllerData){
+        foreach ($this->vatsimPHP->getControllers() as $controllerData) {
             // We need to convert a VATSIM rating to a local qualification.
             $qualification = Qualification::parseVatsimATCQualification($controllerData["rating"]);
 
@@ -63,7 +67,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
                 "callsign" => $controllerData['callsign'],
                 "qualification_id" => is_null($qualification) ? 0 : $qualification->id,
                 "facility_type" => $controllerData['facilitytype'],
-                "deleted_at" => NULL, // Must be here as firstOrCreate doesn't honour softDeletes
+                "deleted_at" => null, // Must be here as firstOrCreate doesn't honour softDeletes
             ]);
 
             $eloquentController = $this->setControllerConnectedAt($eloquentController, $controllerData);
@@ -84,8 +88,9 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
      *
      * @return mixed
      */
-    private function setControllerConnectedAt(Atc $eloquentController, Array $controllerData){
-        if($eloquentController->connected_at == NULL){
+    private function setControllerConnectedAt(Atc $eloquentController, array $controllerData)
+    {
+        if ($eloquentController->connected_at == null) {
             $eloquentController->connected_at = Carbon::createFromFormat("YmdHis", $controllerData['time_logon']);
             $eloquentController->save();
         }
@@ -98,12 +103,13 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue {
      *
      * @return void
      */
-    private function endExpiredAtcSessions($feedLastUpdatedAt){
+    private function endExpiredAtcSessions($feedLastUpdatedAt)
+    {
         $expiringAtc = Atc::where("updated_at", "<", $feedLastUpdatedAt)
-                          ->where("disconnected_at", "IS", NULL)
+                          ->where("disconnected_at", "IS", null)
                           ->get();
 
-        foreach($expiringAtc as $atc){
+        foreach ($expiringAtc as $atc) {
             $atc->disconnected_at = $feedLastUpdatedAt;
             $atc->save();
         }

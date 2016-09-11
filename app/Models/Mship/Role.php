@@ -33,7 +33,7 @@ use App\Models\Mship\Permission as PermissionData;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
  * @mixin \Eloquent
  */
-class Role extends \App\Models\aModel
+class Role extends \App\Models\Model
 {
 
     use RecordsActivity;
@@ -93,7 +93,8 @@ class Role extends \App\Models\aModel
      *
      * @return \Illuminate\Database\Eloquent\Model|mixed|null|static
      */
-    public static function findDefault(){
+    public static function findDefault()
+    {
         return Role::isDefault()->first();
     }
 
@@ -103,7 +104,8 @@ class Role extends \App\Models\aModel
      * @return \Illuminate\Database\Eloquent\Model|static
      * @exception \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public static function findDefaultOrFail(){
+    public static function findDefaultOrFail()
+    {
         return Role::isDefault()->firstOrFail();
     }
 
@@ -129,13 +131,13 @@ class Role extends \App\Models\aModel
 
     public function hasPermission($permission)
     {
-        if (is_object($permission) OR is_numeric($permission)) {
+        if (is_object($permission) or is_numeric($permission)) {
             return $this->permissions->contains($permission);
         }
 
         // It's a string, let's be a bit more creative.
         return !$this->permissions->filter(function ($perm) use ($permission) {
-            return strcasecmp($perm->name, $permission) == 0 OR $perm->name == "*";
+            return strcasecmp($perm->name, $permission) == 0 or $perm->name == "*";
         })->isEmpty();
     }
 
@@ -194,7 +196,8 @@ class Role extends \App\Models\aModel
      *
      * @return bool
      */
-    public function hasMandatoryPassword(){
+    public function hasMandatoryPassword()
+    {
         return $this->password_mandatory === true || $this->password_mandatory == 1;
     }
 
@@ -203,7 +206,8 @@ class Role extends \App\Models\aModel
      *
      * @return bool
      */
-    public function getIsDefaultAttribute(){
+    public function getIsDefaultAttribute()
+    {
         return $this->default === 1;
     }
 

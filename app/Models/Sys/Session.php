@@ -20,12 +20,14 @@ namespace App\Models\Sys;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereIpAddress($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Session whereUserAgent($value)
  */
-class Session extends \App\Models\aModel {
-        protected $table = "sys_sessions";
-        protected $primaryKey = "id";
-        protected $hidden = ['session_id'];
+class Session extends \App\Models\Model
+{
+    protected $table = "sys_sessions";
+    protected $primaryKey = "id";
+    protected $hidden = ['session_id'];
 
-        public function account(){
-            return $this->belongsTo("\App\Models\Mship\Account", "session_id", "id");
-        }
+    public function account()
+    {
+        return $this->belongsTo("\App\Models\Mship\Account", "session_id", "id");
+    }
 }

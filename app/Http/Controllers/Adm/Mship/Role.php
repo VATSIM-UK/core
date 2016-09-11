@@ -16,9 +16,11 @@ use DB;
 use App\Models\Mship\Role as RoleData;
 use App\Models\Mship\Permission as PermissionData;
 
-class Role extends \App\Http\Controllers\Adm\AdmController {
+class Role extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getIndex() {
+    public function getIndex()
+    {
         // ORM it all!
         $roles = RoleData::orderBy("name", "ASC")
                          ->with("permissions")
@@ -28,34 +30,37 @@ class Role extends \App\Http\Controllers\Adm\AdmController {
                     ->with("roles", $roles);
     }
 
-    public function getCreate() {
+    public function getCreate()
+    {
         $permissions = PermissionData::orderBy("name", "ASC")->get();
 
         return $this->viewMake("adm.mship.role.create_or_update")
                     ->with("permissions", $permissions);
     }
 
-    public function postCreate(){
+    public function postCreate()
+    {
         // Let's create!
-        if(!$this->_account->hasPermission("adm/mship/role/default")){
+        if (!$this->account->hasPermission("adm/mship/role/default")) {
             $data = Input::except("default");
         } else {
             $data = Input::all();
         }
         $role = new RoleData($data);
-        if(!$role->save()){
+        if (!$role->save()) {
             return Redirect::route("adm.mship.role.create")->withErrors($role->errors());
         }
 
-        if(count(Input::get("permissions")) > 0 && $this->_account->hasPermission("adm/mship/permission/attach")){
+        if (count(Input::get("permissions")) > 0 && $this->account->hasPermission("adm/mship/permission/attach")) {
             $role->attachPermissions(Input::get("permissions"));
         }
 
         return Redirect::route("adm.mship.role.index")->withSuccess("Role '".$role->name."' has been created - don't forget to set the permissions properly!");
     }
 
-    public function getUpdate(RoleData $role) {
-        if(!$role OR !$role->exists){
+    public function getUpdate(RoleData $role)
+    {
+        if (!$role or !$role->exists) {
             return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
         }
 
@@ -67,28 +72,29 @@ class Role extends \App\Http\Controllers\Adm\AdmController {
                     ->with("permissions", $permissions);
     }
 
-    public function postUpdate(RoleData $role){
-        if(!$role OR !$role->exists){
+    public function postUpdate(RoleData $role)
+    {
+        if (!$role or !$role->exists) {
             return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
         }
 
         $role->load("permissions");
 
         // Let's create!
-        if(!$this->_account->hasPermission("adm/mship/role/default")){
+        if (!$this->account->hasPermission("adm/mship/role/default")) {
             $data = Input::except("default");
         } else {
             $data = Input::all();
         }
         $role = $role->fill($data);
-        if(!$role->save()){
+        if (!$role->save()) {
             return Redirect::route("adm.mship.role.update")->withErrors($role->errors());
         }
 
-        if($this->_account->hasPermission("adm/mship/permission/attach")){
+        if ($this->account->hasPermission("adm/mship/permission/attach")) {
             // Detatch permissions!
-            foreach($role->permissions as $p){
-                if(!in_array($p->id, Input::get("permissions", []))){
+            foreach ($role->permissions as $p) {
+                if (!in_array($p->id, Input::get("permissions", []))) {
                     $role->detachPermission($p);
                 }
             }
@@ -100,13 +106,14 @@ class Role extends \App\Http\Controllers\Adm\AdmController {
         return Redirect::route("adm.mship.role.index")->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");
     }
 
-    public function anyDelete(RoleData $role){
-        if(!$role OR !$role->exists){
+    public function anyDelete(RoleData $role)
+    {
+        if (!$role or !$role->exists) {
             return Redirect::route("adm.mship.role.index")->withError("Role doesn't exist!");
         }
 
         // Is it the default role?
-        if($role->default){
+        if ($role->default) {
             return Redirect::route("adm.mship.role.index")->withError("You cannot delete the default role.");
         }
 

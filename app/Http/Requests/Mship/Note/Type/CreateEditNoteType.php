@@ -28,7 +28,7 @@ class CreateEditNoteType extends Request
         $currentNoteType = $this->route("mshipNoteType");
 
         $currentNoteTypeId = null;
-        if($currentNoteType){
+        if ($currentNoteType) {
             $currentNoteTypeId = $currentNoteType->id;
         }
 
@@ -41,19 +41,20 @@ class CreateEditNoteType extends Request
         ];
     }
 
-    protected function getValidatorInstance(){
+    protected function getValidatorInstance()
+    {
         $data = $this->all();
 
         $currentNoteType = $this->route("mshipNoteType");
 
-        if($currentNoteType != null && $currentNoteType->exists){
-            if(Auth::user()->hasPermission("adm/mship/note/type/default")){
+        if ($currentNoteType != null && $currentNoteType->exists) {
+            if (Auth::user()->hasPermission("adm/mship/note/type/default")) {
                 $data['is_default'] = array_get($data, "is_default", $currentNoteType->is_default);
             } else {
                 $data['is_default'] = $currentNoteType->is_default;
             }
         } else {
-            if(Auth::user()->hasPermission("adm/mship/note/type/default")){
+            if (Auth::user()->hasPermission("adm/mship/note/type/default")) {
                 $data['is_default'] = array_get($data, "is_default", false);
             } else {
                 $data['is_default'] = false;

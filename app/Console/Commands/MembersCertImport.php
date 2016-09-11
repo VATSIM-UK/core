@@ -14,7 +14,7 @@ use VatsimXML;
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
  */
-class MembersCertImport extends aCommand
+class MembersCertImport extends Command
 {
     /**
      * The console command name.
@@ -67,7 +67,6 @@ class MembersCertImport extends aCommand
     protected function processMember($member)
     {
         if (array_get($this->member_list, $member["cid"], "unknown") != "unknown") {
-
             if (strcasecmp($this->member_list[$member["cid"]], $member["email"]) == 0) {
                 $this->updateMember($member);
                 $this->log("updated member");
@@ -101,26 +100,25 @@ class MembersCertImport extends aCommand
 
         try {
             $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
-        } catch(DuplicateStateException $e){
+        } catch (DuplicateStateException $e) {
             // TODO: Do something.
         }
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data["rating_atc"] >= 8) {
-
             $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
 
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
 
                 try {
-                    if($prevAtcRating){
+                    if ($prevAtcRating) {
                         $member->addQualification($prevAtcRating);
                     }
                 } catch (DuplicateQualificationException $e) {
                     // TODO: Something.
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     // TODO: Something.
                 }
             } else {
@@ -133,12 +131,12 @@ class MembersCertImport extends aCommand
             try {
                 $atcRating = Qualification::parseVatsimATCQualification($member_data["rating_atc"]);
 
-                if($atcRating){
+                if ($atcRating) {
                     $member->addQualification($atcRating);
                 }
-            } catch(DuplicateQualificationException $e){
+            } catch (DuplicateQualificationException $e) {
                 // TODO: Something.
-            } catch(ErrorException $e){
+            } catch (ErrorException $e) {
                 // TODO: Something.
             }
         }
@@ -156,7 +154,7 @@ class MembersCertImport extends aCommand
 
         try {
             $member->addState(State::findByCode("DIVISION"), "EUR", "GBR");
-        } catch(DuplicateStateException $e){
+        } catch (DuplicateStateException $e) {
             // TODO: Something.
         }
     }

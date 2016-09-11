@@ -40,6 +40,13 @@ class MemberCertUpdate extends Job implements ShouldQueue
         DB::beginTransaction();
 
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
+        if (!is_string($this->data->region)) {
+            $this->data->region = '';
+        }
+        if (!is_string($this->data->division)) {
+            $this->data->division = '';
+        }
+
         $member = Account::find($this->accountID);
 
         // if member no longer exists, delete
@@ -66,7 +73,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             try {
                 $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
                 $member->addState($state, $this->data->region, $this->data->division);
-            } catch(DuplicateStateException $e){
+            } catch (DuplicateStateException $e) {
                 // Todo: Something.
             }
 
@@ -144,7 +151,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
                     $member->addQualification($pr);
                 }
             }
-        } catch(DuplicateQualificationException $e){
+        } catch (DuplicateQualificationException $e) {
             // TOdo: Something.
         }
 

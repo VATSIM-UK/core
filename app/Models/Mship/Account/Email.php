@@ -36,7 +36,8 @@ class Email extends \Eloquent
     protected $fillable   = ['email'];
     protected $touches    = ['account'];
 
-    public function scopeEmailMatches($query, $email){
+    public function scopeEmailMatches($query, $email)
+    {
         return $query->where("email", "LIKE", sanitize_email($email));
     }
 
@@ -65,8 +66,7 @@ class Email extends \Eloquent
         // Let's just check it's not already assigned.
         $alreadyAssigned = $this->ssoEmails->filter(function ($email) use ($ssoAccount) {
             return $email->sso_account_id == $ssoAccount->id;
-        }
-        );
+        });
 
         if ($alreadyAssigned && count($alreadyAssigned) > 0) {
             return true;
@@ -104,10 +104,11 @@ class Email extends \Eloquent
      * @param array $options Additional options to use when saving this Email.
      * @return boolean
      */
-    public function save(array $options=[]){
+    public function save(array $options = [])
+    {
         $saveResult = parent::save($options);
 
-        if(!$this->is_verified){
+        if (!$this->is_verified) {
             dispatch(new TriggerNewEmailVerificationProcess($this));
         }
 

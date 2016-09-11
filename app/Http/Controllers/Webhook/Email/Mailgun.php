@@ -10,7 +10,8 @@ use Input;
 
 class Mailgun extends EmailWebhookController
 {
-    public function anyRoute(){
+    public function anyRoute()
+    {
         // Verify that this is a valid request!
         $timestamp = Input::get("timestamp");
         $token = Input::get("token");
@@ -18,7 +19,7 @@ class Mailgun extends EmailWebhookController
 
         $encHmac = hash_hmac("sha256", $ts_token, env('MAILGUN_SECRET'));
 
-        if($encHmac != Input::get("signature")){
+        if ($encHmac != Input::get("signature")) {
             return Response::make("Unauthorised", 406);
         }
         // END OF VERIFICATION
@@ -33,12 +34,12 @@ class Mailgun extends EmailWebhookController
         // Try and find this queue message based on the ID.
         $this->queueEntry = Queue::whereMessageId($this->messageId)->first();
 
-        if(!$this->queueEntry OR !$this->queueEntry->exists){
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return Response::make("Accepted, but email doesn't exist.", 200);
         }
 
         // Now, let's deal with the message itself.
-        switch(Input::get("event")){
+        switch (Input::get("event")) {
             case "delivered":
                 $this->runDelivered(Input::get("message-headers"));
                 break;
@@ -62,5 +63,4 @@ class Mailgun extends EmailWebhookController
                 break;
         }
     }
-
 }

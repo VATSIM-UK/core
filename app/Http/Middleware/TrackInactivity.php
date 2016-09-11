@@ -44,7 +44,6 @@ class TrackInactivity
         Session::put('last_activity', Carbon::now());
 
         return $response;
-
     }
 
     /**

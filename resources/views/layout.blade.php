@@ -169,7 +169,7 @@
                 </div>
             @endif
 
-            @if($errors->any())
+            @if(isset($errors) && $errors->any())
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> There is something wrong with your request:
                     <ul>

@@ -33,8 +33,10 @@ class Account extends AdmController
     public function getIndex($scope = "division")
     {
         // Sorting and searching!
-        $sortBy = in_array(Input::get("sort_by"),
-            ["id", "name_first", "name_last"]) ? Input::get("sort_by") : "id";
+        $sortBy = in_array(
+            Input::get("sort_by"),
+            ["id", "name_first", "name_last"]
+        ) ? Input::get("sort_by") : "id";
         $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "ASC";
 
         // ORM it all!
@@ -51,13 +53,19 @@ class Account extends AdmController
                 break;
 
             case "inactive":
-                $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_INACTIVE), "=",
-                    AccountData::STATUS_INACTIVE);
+                $memberSearch = $memberSearch->where(
+                    DB::raw("status&" . AccountData::STATUS_INACTIVE),
+                    "=",
+                    AccountData::STATUS_INACTIVE
+                );
                 break;
 
             case "suspended":
-                $memberSearch = $memberSearch->where(DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED), "=",
-                    AccountData::STATUS_NETWORK_SUSPENDED);
+                $memberSearch = $memberSearch->where(
+                    DB::raw("status&" . AccountData::STATUS_NETWORK_SUSPENDED),
+                    "=",
+                    AccountData::STATUS_NETWORK_SUSPENDED
+                );
                 break;
 
             case "nondivision":
@@ -109,23 +117,31 @@ class Account extends AdmController
 
     public function getDetail(AccountData $account, $tab = "basic", $tabId = 0)
     {
-        if (!$account OR $account->is_system) {
+        if (!$account or $account->is_system) {
             return Redirect::route("adm.mship.account.index");
         }
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->_account->id == $account->id && !$this->_account->hasPermission("adm/mship/account/own")) {
+        if ($this->account->id == $account->id && !$this->account->hasPermission("adm/mship/account/own")) {
             return Redirect::route("adm.mship.account.index")
                            ->withError("You cannot view or manage your own profile.");
         }
 
         // Lazy eager loading
         $account->load(
-            "bans", "bans.banner", "bans.reason", "bans.notes", "bans.notes.writer",
-            "notes", "notes.type", "notes.writer", "notes.attachment",
+            "bans",
+            "bans.banner",
+            "bans.reason",
+            "bans.notes",
+            "bans.notes.writer",
+            "notes",
+            "notes.type",
+            "notes.writer",
+            "notes.attachment",
             "dataChanges",
-            "roles", "roles.permissions",
+            "roles",
+            "roles.permissions",
             "qualifications",
             "states",
             "secondaryEmails"
@@ -251,7 +267,7 @@ class Account extends AdmController
         // We can't reset non-existant security!
         $currentSecurity = $account->current_security;
 
-        if (!$currentSecurity OR !$currentSecurity->exists) {
+        if (!$currentSecurity or !$currentSecurity->exists) {
             return Redirect::route("adm.mship.account.details", [$account->id, "security"])
                            ->withError("You cannot reset non-existant security.");
         }
@@ -282,7 +298,7 @@ class Account extends AdmController
         $currentSecurity = $account->current_security;
 
         // It's also pointless changing to the same security ID.
-        if (!$currentSecurity OR !$currentSecurity->exists OR $currentSecurity->security_id == $security->security_id) {
+        if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
             return Redirect::route("adm.mship.account.details", [$account->id, "security"])
                            ->withError("You cannot change security on this account.");
         }
@@ -317,8 +333,12 @@ class Account extends AdmController
         $banReason = Reason::find(Input::get("ban_reason_id"));
 
         // Create the user's ban
-        $ban = $account->addBan($banReason, Input::get("ban_reason_extra"), Input::get("ban_note_content"),
-            $this->_account->id);
+        $ban = $account->addBan(
+            $banReason,
+            Input::get("ban_reason_extra"),
+            Input::get("ban_note_content"),
+            $this->account->id
+        );
 
         $job = (new SendCreationEmail($ban))->onQueue("high");
         dispatch($job);
@@ -380,8 +400,11 @@ class Account extends AdmController
         }
 
         // Attach the note.
-        $note = $ban->account->addNote(Type::isShortCode("discipline")->first(), Input::get("comment"),
-            Auth::getUser());
+        $note = $ban->account->addNote(
+            Type::isShortCode("discipline")->first(),
+            Input::get("comment"),
+            Auth::getUser()
+        );
         $ban->notes()->save($note);
 
         return Redirect::route("adm.mship.account.details", [$ban->account_id, "bans", $ban->id])
@@ -451,7 +474,7 @@ class Account extends AdmController
 
         // Check this type exists!
         $noteType = NoteTypeData::find(Input::get("note_type_id"));
-        if (!$noteType OR !$noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route("adm.mship.account.details", [$account->id, "notes"])
                            ->withError("You selected an invalid note type.");
         }

@@ -30,35 +30,40 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
  * @mixin \Eloquent
  */
-class Participant extends \App\Models\aModel
+class Participant extends \App\Models\Model
 {
 
     protected $table      = 'messages_thread_participant';
     protected $primaryKey = "id";
     protected $fillable   = ["display_as"];
-    public    $dates      = ["read_at", 'created_at', 'updated_at'];
-    public    $timestamps = true;
+    public $dates      = ["read_at", 'created_at', 'updated_at'];
+    public $timestamps = true;
 
     const STATUS_OWNER = 90;
     const STATUS_VIEWER = 10;
 
-    public static function scopeIsOwner($query){
+    public static function scopeIsOwner($query)
+    {
         return self::scopeIsStatus($query, self::STATUS_OWNER);
     }
 
-    public static function scopeIsViewer($query){
+    public static function scopeIsViewer($query)
+    {
         return self::scopeIsStatus($query, self::STATUS_VIEWER);
     }
 
-    public static function scopeIsStatus($query, $status){
+    public static function scopeIsStatus($query, $status)
+    {
         return $query->where("status", "=", $status);
     }
 
-    public function thread(){
+    public function thread()
+    {
         return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
     }
 
-    public function account(){
+    public function account()
+    {
         return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
     }
 }
