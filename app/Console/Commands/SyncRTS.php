@@ -80,7 +80,7 @@ class SyncRTS extends Command
         $pQuals = $member->qualifications_pilot;
         if (count($pQuals) > 0) {
             foreach ($pQuals as $qual) {
-                $pRating += $qual->qualification->vatsim;
+                $pRating += $qual->vatsim;
             }
         }
 

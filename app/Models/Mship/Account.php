@@ -779,6 +779,16 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     }
 
     /**
+     * Laravel magic-getter - return the primary permanent state.
+     *
+     * @return mixed
+     */
+    public function getPrimaryPermanentStateAttribute()
+    {
+        return $this->states->where("type", "perm")->sortBy("priority")->first();
+    }
+
+    /**
      * Get all temporary states.
      *
      * @return \Illuminate\Support\Collection
