@@ -69,7 +69,7 @@ class ApplicationRefereeAddRequest extends FormRequest
 
         $referee = Account::findOrRetrieve(array_get($data, "referee_cid", null));
 
-        if ($referee->primary_state->pivot->region == \Auth::user()->primary_state->pivot->region) {
+        if ($referee->primary_permanent_state->pivot->region == \Auth::user()->primary_state->pivot->region) {
             $data['must_be_home_region'] = true;
         }
 
