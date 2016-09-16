@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="reason">Reason:<br /><small>The member will be sent this information.</small></label>
+                        <label for="reason">Reason:<br /><small>The member will *not* be sent this information.</small></label>
                         <textarea name="reason" class="form-control" rows="5">{{ old('reason') }}</textarea>
                     </div>
 
