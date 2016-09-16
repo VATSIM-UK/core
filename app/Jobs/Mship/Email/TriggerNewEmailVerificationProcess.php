@@ -4,6 +4,7 @@ namespace App\Jobs\Mship\Email;
 
 use App\Jobs\Job;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
 use App\Models\Sys\Token;
 use Bus;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,7 +39,7 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
-        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->account, $generatedToken);
+        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->account, $generatedToken, $this->email);
         dispatch($sendNewEmailVerificationEmail->onQueue("med"));
     }
 }
