@@ -21,11 +21,11 @@ class SendNewEmailVerificationEmail extends Job implements ShouldQueue
     private $token = null;
     private $email = null;
 
-    public function __construct(Account $recipient, Token $token, Account\Email $email)
+    public function __construct(Account\Email $recipientEmail, Token $token)
     {
-        $this->recipient = $recipient;
+        $this->recipient = $recipientEmail->account;
         $this->token = $token;
-        $this->email = $email;
+        $this->email = $recipientEmail;
     }
 
     public function handle(Mailer $mailer)

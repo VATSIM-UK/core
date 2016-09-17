@@ -39,7 +39,7 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
-        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->account, $generatedToken, $this->email);
+        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->email, $generatedToken);
         dispatch($sendNewEmailVerificationEmail->onQueue("med"));
     }
 }
