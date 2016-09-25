@@ -9,6 +9,7 @@ use App\Models\Messages\Thread\Post;
 use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use \App\Models\Mship\Account as Account;
+use \App\Models\Mship\Account\Email;
 
 class CreateNewMessage extends Job
 {
@@ -18,9 +19,10 @@ class CreateNewMessage extends Job
     private $subject = null;
     private $body = null;
     private $systemGenerated = false;
+    private $verificationEmail = null;
 
     // TODO: Find a nice way of overriding the email we're sending to.
-    public function __construct(Account $sender, Account $recipient, $subject, $body, $displaySenderAs = null, $isHtml = true, $systemGenerated = false)
+    public function __construct(Account $sender, Account $recipient, $subject, $body, $displaySenderAs = null, $isHtml = true, $systemGenerated = false, Account\Email $email = null)
     {
         $this->sender = $sender;
         $this->displaySenderAs = $displaySenderAs;
@@ -28,6 +30,7 @@ class CreateNewMessage extends Job
         $this->subject = $subject;
         $this->body = $body;
         $this->systemGenerated = $systemGenerated;
+        $this->verificationEmail = $email;
     }
 
     public function handle(Mailer $mailer)
@@ -49,6 +52,6 @@ class CreateNewMessage extends Job
         $thread->posts()->save($post);
         $this->sender->messagePosts()->save($post);
 
-        dispatch((new SendMessageEmail($post))->onQueue("emails"));
+        dispatch((new SendMessageEmail($post, true, $this->verificationEmail))->onQueue("emails"));
     }
 }

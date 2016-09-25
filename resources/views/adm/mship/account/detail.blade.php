@@ -65,12 +65,12 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="secondary_email">Secondary Email(s):</label>
-                                            @if(count($account->secondary_emails) < 1)
+                                            @if(count($account->secondaryEmails) < 1)
                                             <em>There are no secondary emails.</em>
                                             @else
                                             <br />
-                                            @foreach($account->secondary_emails as $se)
-                                            <em>{{ $se->email }}</em><br />
+                                            @foreach($account->secondaryEmails as $se)
+                                            <em> - {{ $se->email }}</em><br />
                                             @endforeach
                                             @endif
                                         </div>
