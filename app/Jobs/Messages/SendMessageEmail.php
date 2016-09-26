@@ -39,7 +39,7 @@ class SendMessageEmail extends Job implements ShouldQueue
             $recipientAddress = $participant->email;
 
             // Check if there is a verification email address to be used instead of account primary
-            if ($this->verificationEmail != null){
+            if ($this->verificationEmail != null) {
                 // Use the newly added verification email address instead
                 $recipientAddress = $this->verificationEmail->email;
             }
