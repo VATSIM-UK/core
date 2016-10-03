@@ -186,15 +186,6 @@ Route::group([
                 "uses" => "Application@getView"
             ]);
         });
-
-        // Support legacy routes.  Can probably be removed sometime after September 30th.
-        // TODO: Remove.
-        Route::get(
-            "/view/{applicationByPublicId}",
-            function (\App\Modules\Visittransfer\Models\Application $application) {
-                return Redirect::route("visiting.application.view", [$application->public_id]);
-            }
-        );
     });
 
     Route::group(["as" => "reference.", "prefix" => "reference"], function () {
