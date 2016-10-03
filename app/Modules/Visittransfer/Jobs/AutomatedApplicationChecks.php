@@ -5,12 +5,14 @@ use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AutomatedApplicationChecks extends Job implements ShouldQueue {
+class AutomatedApplicationChecks extends Job implements ShouldQueue
+{
     use SerializesModels;
 
     private $application = null;
 
-    public function __construct(Application $application){
+    public function __construct(Application $application)
+    {
         $this->application = $application;
     }
 
@@ -19,12 +21,13 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
-        if(!$this->application->is_submitted){
+    public function handle()
+    {
+        if (!$this->application->is_submitted) {
             return;
         }
 
-        if($this->application->submitted_at == null){
+        if ($this->application->submitted_at == null) {
             return;
         }
 
@@ -34,7 +37,8 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
         $this->application->markAsUnderReview("Automated checks have completed.");
     }
 
-    private function checkCurrentRatingOver90Days(){
+    private function checkCurrentRatingOver90Days()
+    {
         $currentATCQualification = $this->application->account->qualification_atc;
         $application90DayCutOff = $this->application->submitted_at->subDays(90);
 
@@ -43,7 +47,8 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue {
         $this->application->setCheckOutcome("90_day", $hasPassed);
     }
 
-    private function checkCurrentRating50Hours(){
+    private function checkCurrentRating50Hours()
+    {
         // TODO: Figure this out.
         return;
     }

@@ -4,11 +4,12 @@ Route::get("/visiting-transferring", function () {
     return Redirect::route("visiting.landing");
 });
 
-Route::group(["as"         => "visiting.admin.",
-              "prefix"     => "adm/visit-transfer",
-              "namespace"  => "Admin",
-              "domain"     => config("app.url"),
-              "middleware" => ["auth.admin"]
+Route::group([
+    "as"         => "visiting.admin.",
+    "prefix"     => "adm/visit-transfer",
+    "namespace"  => "Admin",
+    "domain"     => config("app.url"),
+    "middleware" => ["auth.admin"]
 ], function () {
     Route::get("/", [
         "as"   => "dashboard",
@@ -66,17 +67,17 @@ Route::group(["as"         => "visiting.admin.",
     ])->where("application", "\d+");
 
     Route::post("/application/{application}/check/met", [
-        "as" => "application.check.met.post",
+        "as"   => "application.check.met.post",
         "uses" => "Application@postCheckMet",
     ]);
 
     Route::post("/application/{application}/check/not-met", [
-        "as" => "application.check.notmet.post",
+        "as"   => "application.check.notmet.post",
         "uses" => "Application@postCheckNotMet",
     ]);
 
     Route::post("/application/{application}/setting/toggle", [
-        "as" => "application.setting.toggle.post",
+        "as"   => "application.setting.toggle.post",
         "uses" => "Application@postSettingToggle",
     ]);
 
@@ -96,10 +97,11 @@ Route::group(["as"         => "visiting.admin.",
     ])->where("scope", "\w+");
 });
 
-Route::group(["as"         => "visiting.",
-              "namespace"  => "Site",
-              "domain"     => "vt." . config("app.url"),
-              'middleware' => ['auth.user.full', 'user.must.read.notifications']
+Route::group([
+    "as"         => "visiting.",
+    "namespace"  => "Site",
+    "domain"     => "vt." . config("app.url"),
+    'middleware' => ['auth.user.full', 'user.must.read.notifications']
 ], function () {
     Route::get("/", ["as" => "landing", "uses" => "Dashboard@getDashboard"]);
 
@@ -118,7 +120,7 @@ Route::group(["as"         => "visiting.",
             "uses" => "Application@postStart"
         ])->where("type", "\d+");
 
-        Route::group(["prefix" => "/{applicationByPublicId}"], function() {
+        Route::group(["prefix" => "/{applicationByPublicId}"], function () {
             Route::get("/continue", [
                 "as"   => "continue",
                 "uses" => "Application@getContinue",
@@ -183,12 +185,6 @@ Route::group(["as"         => "visiting.",
                 "as"   => "view",
                 "uses" => "Application@getView"
             ]);
-        });
-
-        // Support legacy routes.  Can probably be removed sometime after September 30th.
-        // TODO: Remove.
-        Route::get("/view/{applicationByPublicId}", function(\App\Modules\Visittransfer\Models\Application $application){
-            return Redirect::route("visiting.application.view", [$application->public_id]);
         });
     });
 

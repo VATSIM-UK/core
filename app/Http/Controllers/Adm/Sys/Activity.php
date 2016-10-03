@@ -12,9 +12,11 @@ use Config;
 use Redirect;
 use App\Models\Sys\Activity as ActivityData;
 
-class Activity extends \App\Http\Controllers\Adm\AdmController {
+class Activity extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getIndex(){
+    public function getIndex()
+    {
         $activities = ActivityData::orderBy("created_at", "DESC")
                                ->with("actor")
                                ->with("subject")

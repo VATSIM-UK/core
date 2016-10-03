@@ -5,7 +5,8 @@ namespace App\Modules\NetworkData\Events;
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 
-class NetworkDataDownloaded extends Event {
+class NetworkDataDownloaded extends Event
+{
     use SerializesModels;
 
     /**
@@ -13,7 +14,7 @@ class NetworkDataDownloaded extends Event {
      *
      * There's little to construct at the minute as it's simply a notification!
      */
-    public function __construct(){
-
+    public function __construct()
+    {
     }
 }

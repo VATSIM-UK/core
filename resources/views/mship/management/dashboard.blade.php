@@ -37,7 +37,7 @@
 
                             <div class="col-xs-4">
                                 <b>STATUS: </b>
-                                {{ $_account->status_string }} {{ $_account->primary_state->name }} Member
+                                {{ $_account->status_string }} {{ !is_null($_account->primary_state) ? $_account->primary_state->name : 'unknown state' }} Member
                             </div>
 
                             <div class="col-xs-4">

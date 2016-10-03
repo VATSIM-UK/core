@@ -23,7 +23,7 @@
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position positions()
  * @mixin \Eloquent
  */
-class Position extends \App\Models\aModel
+class Position extends \App\Models\Model
 {
     protected $table = 'staff_positions';
     protected $primaryKey = 'id';

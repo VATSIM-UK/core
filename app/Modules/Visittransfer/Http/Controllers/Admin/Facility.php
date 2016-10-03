@@ -21,33 +21,37 @@ class Facility extends AdmController
                     ->with("facilities", $faciilites);
     }
 
-    public function getCreate(){
+    public function getCreate()
+    {
         return $this->viewMake("visittransfer::admin.facility.create_or_update")
                     ->with("facility", new \App\Modules\Visittransfer\Models\Facility);
     }
 
-    public function postCreate(FacilityCreateUpdateRequest $request){
+    public function postCreate(FacilityCreateUpdateRequest $request)
+    {
         $facility = \App\Modules\Visittransfer\Models\Facility::create($this->getFacilityInputData());
 
         return Redirect::route("visiting.admin.facility")->withSuccess($facility->name . " has been created.");
     }
 
-    public function getUpdate(\App\Modules\Visittransfer\Models\Facility $facility){
+    public function getUpdate(\App\Modules\Visittransfer\Models\Facility $facility)
+    {
         return $this->viewMake("visittransfer::admin.facility.create_or_update")
                     ->with("facility", $facility);
     }
 
-    public function postUpdate(FacilityCreateUpdateRequest $request, \App\Modules\Visittransfer\Models\Facility $facility){
+    public function postUpdate(FacilityCreateUpdateRequest $request, \App\Modules\Visittransfer\Models\Facility $facility)
+    {
         $facility->update($this->getFacilityInputData());
 
         return Redirect::route("visiting.admin.facility")->withSuccess($facility->name . " has been updated.");
     }
 
-    private function getFacilityInputData(){
+    private function getFacilityInputData()
+    {
         return \Input::only([
             "name", "description", "can_visit", "can_transfer", "training_required", "training_team", "training_spaces", "stage_statement_enabled",
             "stage_reference_enabled", "stage_reference_quantity", "stage_checks", "auto_acceptance",
         ]);
     }
-
 }

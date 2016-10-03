@@ -31,33 +31,38 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
  * @mixin \Eloquent
  */
-class Token extends \App\Models\aModel {
+class Token extends \App\Models\Model
+{
 
-	use RecordsActivity;
+    use RecordsActivity;
 
-        protected $table = "sso_token";
-        protected $primaryKey = "id";
-        protected $dates = ['created_at', 'updated_at'];
-        protected $hidden = ['token_id'];
+    protected $table = "sso_token";
+    protected $primaryKey = "id";
+    protected $dates = ['created_at', 'updated_at'];
+    protected $hidden = ['token_id'];
 
-        public function account(){
-            return $this->belongsTo("\App\Models\Mship\Account", "account_id");
-        }
-
-        public function getIsExpiredAttribute(){
-            return \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
-        }
-
-        public function scopeTokenValue($query, $tokenValue){
-            return $query->whereToken($tokenValue);
-        }
-
-        public function scopeValid($query){
-            return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
-        }
-
-    public function getDisplayValueAttribute() {
-        return "NOT YET DEFINED IN __TOKEN__ MODEL";
+    public function account()
+    {
+        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
     }
 
+    public function getIsExpiredAttribute()
+    {
+        return \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
+    }
+
+    public function scopeTokenValue($query, $tokenValue)
+    {
+        return $query->whereToken($tokenValue);
+    }
+
+    public function scopeValid($query)
+    {
+        return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
+    }
+
+    public function getDisplayValueAttribute()
+    {
+        return "NOT YET DEFINED IN __TOKEN__ MODEL";
+    }
 }

@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Note extends \App\Models\aModel
+class Note extends \App\Models\Model
 {
 
     use RecordsActivity;
@@ -57,7 +57,8 @@ class Note extends \App\Models\aModel
         return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "id");
     }
 
-    public function attachment(){
+    public function attachment()
+    {
         return $this->morphTo();
     }
 }

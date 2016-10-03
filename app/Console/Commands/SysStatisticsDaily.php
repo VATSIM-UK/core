@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use DB;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
-class SysStatisticsDaily extends aCommand
+class SysStatisticsDaily extends Command
 {
     /**
      * Errors:
@@ -145,7 +145,6 @@ class SysStatisticsDaily extends aCommand
     private function runModuleStatistics($currentPeriod)
     {
         foreach (\Module::enabled() as $module) {
-
             try {
                 \Artisan::call($module['slug'] . ":statistics:daily", [
                     "startPeriod" => $currentPeriod,
@@ -194,8 +193,10 @@ class SysStatisticsDaily extends aCommand
         try {
             $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
         } catch (\Exception $e) {
-            $this->sendSlackError("Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
-                ['Error Code' => 2]);
+            $this->sendSlackError(
+                "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                ['Error Code' => 2]
+            );
         }
 
         if ($endPeriod->isFuture()) {

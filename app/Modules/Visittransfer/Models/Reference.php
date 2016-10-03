@@ -29,7 +29,7 @@ class Reference extends Model
         "status_note",
     ];
     protected $touches    = ["application"];
-    public    $timestamps = false;
+    public $timestamps = false;
 
     const STATUS_DRAFT        = 10;
     const STATUS_REQUESTED    = 30;
@@ -37,7 +37,7 @@ class Reference extends Model
     const STATUS_ACCEPTED     = 90;
     const STATUS_REJECTED     = 95;
 
-    static $REFERENCE_IS_SUBMITTED = [
+    static public $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
         self::STATUS_REJECTED,
@@ -53,7 +53,7 @@ class Reference extends Model
         return $query->where("status", "=", $status);
     }
 
-    public static function scopeStatusIn($query, Array $stati)
+    public static function scopeStatusIn($query, array $stati)
     {
         return $query->whereIn("status", $stati);
     }
@@ -190,8 +190,12 @@ class Reference extends Model
 
         if ($staffReason) {
             $noteContent = "VT Reference from " . $this->account->name . " was rejected.\n" . $staffReason;
-            $note = $this->application->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent,
-                $actor, $this);
+            $note = $this->application->account->addNote(
+                Type::isShortCode('visittransfer')->first(),
+                $noteContent,
+                $actor,
+                $this
+            );
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -221,7 +225,6 @@ class Reference extends Model
         if (!$this->is_requested) {
             throw new ReferenceAlreadySubmittedException($this);
         }
-
     }
 
     private function guardAgainstNonUnderReviewReference()

@@ -8,7 +8,7 @@ use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
 use App\Modules\Visittransfer\Http\Requests\ApplicationSettingToggleRequest;
 use App\Modules\Visittransfer\Models\Application as ApplicationModel;
-use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
 use Auth;
 use Cache;
 use Illuminate\Support\Collection;
@@ -20,12 +20,14 @@ class Application extends AdmController
 
     public function getList($scope = "all")
     {
-        $permittedScope = ['all', 'open', 'closed'];
+        $permittedScope = ['all', 'open', 'closed', 'review', 'accepted'];
         $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         // Sorting and searching!
-        $sortBy = in_array(Input::get("sort_by"),
-            ["id", "account_id", "type", "created_at", "updated_at"]) ? Input::get("sort_by") : "updated_at";
+        $sortBy = in_array(
+            Input::get("sort_by"),
+            ["id", "account_id", "type", "created_at", "updated_at"]
+        ) ? Input::get("sort_by") : "updated_at";
         $sortDir = in_array(Input::get("sort_dir"), ["ASC", "DESC"]) ? Input::get("sort_dir") : "DESC";
 
         $applications = ApplicationModel::orderBy($sortBy, $sortDir)
@@ -69,7 +71,7 @@ class Application extends AdmController
         $this->setSubTitle("Application #" . $application->public_id);
 
         $unacceptedReferences = $application->referees->filter(function ($ref) {
-            return $ref->status == Reference::STATUS_UNDER_REVIEW;
+            return $ref->status == ReferenceModel::STATUS_UNDER_REVIEW;
         });
 
         return $this->viewMake("visittransfer::admin.application.view")
@@ -119,8 +121,11 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
-                Input::get("check", null)) . " check was marked as 'MET'!");
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace(
+            "_",
+            " ",
+            Input::get("check", null)
+        ) . " check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -131,8 +136,11 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace("_", " ",
-                Input::get("check", null)) . " check was marked as 'NOT MET'!");
+        return Redirect::route("visiting.admin.application.view", $application->id)->withSuccess(str_replace(
+            "_",
+            " ",
+            Input::get("check", null)
+        ) . " check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)

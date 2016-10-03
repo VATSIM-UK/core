@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class VanillaStatisticV224 extends Migration
+class InitialStatistic extends Migration
 {
 
     /**

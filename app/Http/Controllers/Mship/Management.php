@@ -30,7 +30,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function getDashboard()
     {
         // Load necessary data, early!
-        $this->_account->load(
+        $this->account->load(
             "secondaryEmails",
             "qualifications",
             "states",
@@ -67,7 +67,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         try {
-            $this->_account->addSecondaryEmail($email);
+            $this->account->addSecondaryEmail($email);
         } catch (DuplicateEmailException $e) {
             return Redirect::route("mship.manage.email.add")
                            ->withError($e);
@@ -83,11 +83,11 @@ class Management extends \App\Http\Controllers\BaseController
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail   = $this->_account->email;
-        $userVerifiedEmails = $this->_account->verified_secondary_emails;
+        $userPrimaryEmail   = $this->account->email;
+        $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!
-        $userSsoEmails = $this->_account->ssoEmails;
+        $userSsoEmails = $this->account->ssoEmails;
 
         // Now build the user's matrix!
         $userMatrix = [];
@@ -122,11 +122,11 @@ class Management extends \App\Http\Controllers\BaseController
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail   = $this->_account->email;
-        $userVerifiedEmails = $this->_account->verified_secondary_emails;
+        $userPrimaryEmail   = $this->account->email;
+        $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!
-        $userSsoEmails = $this->_account->ssoEmails;
+        $userSsoEmails = $this->account->ssoEmails;
 
         // Now, let's go through and see if any that are CURRENTLY assigned have switched back to PRIMARY
         // If they have, we can just delete them!
@@ -167,26 +167,34 @@ class Management extends \App\Http\Controllers\BaseController
 
         // Is it valid? Has it expired? Etc?
         if (!$token) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR1)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR1)"
+            );
         }
 
         // Is it valid? Has it expired? Etc?
         if ($token->is_used) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR2)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR2)"
+            );
         }
 
         // Is it valid? Has it expired? Etc?
         if ($token->is_expired) {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR3)");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR3)"
+            );
         }
 
         // Is it valid and linked to something?!?!
-        if (!$token->related OR $token->type != "mship_account_email_verify") {
-            return $this->viewMake("mship.management.email.verify")->with("error",
-                "You have provided an invalid email verification token. (ERR4)");
+        if (!$token->related or $token->type != "mship_account_email_verify") {
+            return $this->viewMake("mship.management.email.verify")->with(
+                "error",
+                "You have provided an invalid email verification token. (ERR4)"
+            );
         }
 
         // Let's now consume this token.
@@ -197,11 +205,13 @@ class Management extends \App\Http\Controllers\BaseController
         $token->related->save();
 
         // Consumed, let's send away!
-        if ($this->_account) {
+        if ($this->account) {
             return Redirect::route("mship.manage.dashboard")->withSuccess("Your new email address (" . $token->related->email . ") has been verified!");
         } else {
-            return $this->viewMake("mship.management.email.verify")->with("success",
-                "Your new email address (" . $token->related->email . ") has been verified!");
+            return $this->viewMake("mship.management.email.verify")->with(
+                "success",
+                "Your new email address (" . $token->related->email . ") has been verified!"
+            );
         }
     }
 }

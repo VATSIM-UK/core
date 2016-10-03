@@ -7,19 +7,23 @@ use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
-class ReferencePolicy {
+class ReferencePolicy
+{
     use HandlesAuthorization;
 
-    public function complete(Account $user, Reference $reference){
+    public function complete(Account $user, Reference $reference)
+    {
         return $reference->account_id == $user->id && $reference->is_requested;
     }
 
-    public function reject(Account $user, Reference $reference){
+    public function reject(Account $user, Reference $reference)
+    {
         return true;
         // TODO: Figure out these permissions.
     }
 
-    public function accept(Account $user, Reference $reference){
+    public function accept(Account $user, Reference $reference)
+    {
         return true;
         // TODO: Figure out these permissions.
     }

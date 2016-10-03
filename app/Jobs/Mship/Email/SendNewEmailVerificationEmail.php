@@ -5,6 +5,7 @@ namespace App\Jobs\Mship\Email;
 use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
 use App\Models\Sys\Token;
 use Bus;
 use Illuminate\Contracts\Mail\Mailer;
@@ -18,11 +19,13 @@ class SendNewEmailVerificationEmail extends Job implements ShouldQueue
 
     private $recipient = null;
     private $token = null;
+    private $email = null;
 
-    public function __construct(Account $recipient, Token $token)
+    public function __construct(Account\Email $recipientEmail, Token $token)
     {
-        $this->recipient = $recipient;
+        $this->recipient = $recipientEmail->account;
         $this->token = $token;
+        $this->email = $recipientEmail;
     }
 
     public function handle(Mailer $mailer)
@@ -37,7 +40,7 @@ class SendNewEmailVerificationEmail extends Job implements ShouldQueue
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
-        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
+        $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated, $this->email);
         dispatch($createNewMessage->onQueue("emails"));
     }
 }

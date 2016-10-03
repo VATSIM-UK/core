@@ -8,6 +8,8 @@ use Route;
 use View;
 use App\Models\Mship\Account;
 use Request;
-class SiteController extends \App\Http\Controllers\BaseController {
-    protected $_template = "sitev2";
+
+class SiteController extends \App\Http\Controllers\BaseController
+{
+    protected $template = "sitev2";
 }

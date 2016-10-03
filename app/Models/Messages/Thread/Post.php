@@ -23,20 +23,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Post extends \App\Models\aModel
+class Post extends \App\Models\Model
 {
 
     protected $table      = 'messages_thread_post';
     protected $primaryKey = "id";
     protected $fillable   = ["content"];
-    public    $dates      = ['created_at', 'updated_at'];
-    public    $timestamps = true;
+    public $dates      = ['created_at', 'updated_at'];
+    public $timestamps = true;
 
-    public function thread(){
+    public function thread()
+    {
         return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
     }
 
-    public function author(){
+    public function author()
+    {
         return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
     }
 }

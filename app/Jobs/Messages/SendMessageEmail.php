@@ -8,6 +8,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use \App\Models\Mship\Account\Email as Email;
 
 class SendMessageEmail extends Job implements ShouldQueue
 {
@@ -15,11 +16,13 @@ class SendMessageEmail extends Job implements ShouldQueue
 
     private $post;
     private $isNew = true;
+    private $verificationEmail = null;
 
-    public function __construct(Post $post, $isNew=true)
+    public function __construct(Post $post, $isNew = true, Email $verificationEmail = null)
     {
         $this->post = $post;
         $this->isNew = (boolean) $isNew;
+        $this->verificationEmail = $verificationEmail;
     }
 
     public function handle(Mailer $mailer)
@@ -28,12 +31,23 @@ class SendMessageEmail extends Job implements ShouldQueue
         $isNew = $this->isNew;
 
         // Let's get all participants of the post.
-        foreach($post->thread->participants as $participant){
-            if($post->account_id == $participant->id){ continue; } // We won't send to the writer!
+        foreach ($post->thread->participants as $participant) {
+            if ($post->account_id == $participant->id) {
+                continue;
+            } // We won't send to the writer!
 
-            $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function($m) use($participant, $post, $isNew) {
+            $recipientAddress = $participant->email;
+
+            // Check if there is a verification email address to be used instead of account primary
+            if ($this->verificationEmail != null) {
+                // Use the newly added verification email address instead
+                $recipientAddress = $this->verificationEmail->email;
+            }
+
+
+            $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
                 $m->subject(($isNew ? $post->thread->subject : "RE: ".$post->thread->subject));
-                $m->to($participant->email, $participant->name);
+                $m->to($recipientAddress, $participant->name);
 
                 // Send this one to all the secondary emails.
                 // @disabled 2.2.0 Awaiting improvement in 2.2.2
@@ -42,6 +56,5 @@ class SendMessageEmail extends Job implements ShouldQueue
                 }*/
             });
         }
-
     }
 }

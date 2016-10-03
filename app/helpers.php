@@ -1,34 +1,35 @@
 <?php
 
-function determine_mship_state_from_vatsim($region, $division){
+function determine_mship_state_from_vatsim($region, $division)
+{
     $states = \App\Models\Mship\State::orderBy("priority")->get();
     
-    foreach($states as $state){
+    foreach ($states as $state) {
         $regionMatch = false;
         $divisionMatch = false;
 
         // We don't care about temps.
-        if($state->is_temporary){
+        if ($state->is_temporary) {
             continue;
         }
 
-        if($state->region->first() == "*"){
+        if ($state->region->first() == "*") {
             $regionMatch = true;
         }
 
-        if($state->region->search($region) >= 0 && $state->region->search($region) !== false){
+        if ($state->region->search($region) >= 0 && $state->region->search($region) !== false) {
             $regionMatch = true;
         }
 
-        if($state->division->first() == "*"){
+        if ($state->division->first() == "*") {
             $divisionMatch = true;
         }
 
-        if($state->division->search($division) >= 0 && $state->division->search($division) !== false){
+        if ($state->division->search($division) >= 0 && $state->division->search($division) !== false) {
             $divisionMatch = true;
         }
 
-        if($regionMatch && $divisionMatch){
+        if ($regionMatch && $divisionMatch) {
             return $state;
         }
     }
@@ -36,7 +37,8 @@ function determine_mship_state_from_vatsim($region, $division){
     return \App\Models\Mship\State::findByCode("UNKNOWN");
 }
 
-function format_name($name){
+function format_name($name)
+{
     $name = trim($name);
 
     if ($name == strtoupper($name) || $name == strtolower($name)) {
@@ -46,25 +48,29 @@ function format_name($name){
     return $name;
 }
 
-function sanitize_email($email){
+function sanitize_email($email)
+{
     return strtolower(trim($email));
 }
 
-function is_date_string($suspectedDateString){
+function is_date_string($suspectedDateString)
+{
     return preg_match("/^(\d{4})\-(\d{2})\-(\d{2})$/i", $suspectedDateString);
 }
 
-function is_relative_date_string($suspectedRelativeDateString){
+function is_relative_date_string($suspectedRelativeDateString)
+{
     try {
         \Carbon\Carbon::parse($suspectedRelativeDateString, "UTC");
         return true;
-    } Catch(Exception $e) {
+    } catch (Exception $e) {
         return false;
     }
 }
 
-function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false){
-    if(!$ts1 or !$ts2){
+function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false)
+{
+    if (!$ts1 or !$ts2) {
         return "unknown length";
     }
 
@@ -88,7 +94,7 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
         $units[] = $diff->h . " " . str_plural("hour", $diff->h);
     }
 
-    if(count($units) == 1){
+    if (count($units) == 1) {
         return $units[0];
     }
 
@@ -98,13 +104,14 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
     return $unitsString;
 }
 
-function array_merge_concat($a1, $a2, $sep=" "){
+function array_merge_concat($a1, $a2, $sep = " ")
+{
     $final_array = $a1;
 
-    foreach($a2 as $key => $value){
-        if(is_numeric($key)){
+    foreach ($a2 as $key => $value) {
+        if (is_numeric($key)) {
             $final_array[] = $value;
-        } elseif(array_key_exists($key, $a1)){
+        } elseif (array_key_exists($key, $a1)) {
             $final_array[$key] = $final_array[$key] . $sep . $value;
         } else {
             $final_array[$key] = $value;

@@ -59,5 +59,4 @@ class Dashboard extends AdmController
                     ->with("statisticsRaw", $statisticsRaw)
                     ->with("statisticsGraph", $statisticsGraph);
     }
-
 }

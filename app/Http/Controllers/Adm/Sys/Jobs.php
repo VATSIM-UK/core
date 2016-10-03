@@ -41,7 +41,7 @@ class Jobs extends AdmController
                     $startObject = false;
                     if (starts_with($line, 'O:')) {
                         $startObject = true;
-                    } else if (starts_with($line, '}')) {
+                    } elseif (starts_with($line, '}')) {
                         $count -= 4;
                         if ($count < 0) {
                             $count = 0;
@@ -51,7 +51,6 @@ class Jobs extends AdmController
                     $line = str_repeat('&nbsp;', $count) . $line;
 
                     $count += $startObject ? 4 : 0;
-
                 }
 
                 $data = implode("<br>", $data);

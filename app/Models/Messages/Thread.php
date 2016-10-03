@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Thread extends \App\Models\aModel
+class Thread extends \App\Models\Model
 {
 
     protected $table = 'messages_thread';
@@ -34,12 +34,11 @@ class Thread extends \App\Models\aModel
     public function participants()
     {
         return $this->belongsToMany(Account::class, "messages_thread_participant")
-                    ->withPivot("display_as", "read_at", "status")->withTimestamps();
+                    ->withPivot(["display_as", "read_at", "status"])->withTimestamps();
     }
 
     public function posts()
     {
         return $this->hasMany(\App\Models\Messages\Thread\Post::class, "thread_id", "id");
     }
-
 }

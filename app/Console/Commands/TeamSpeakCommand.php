@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 
-abstract class TeamSpeakCommand extends aCommand
+abstract class TeamSpeakCommand extends Command
 {
     /**
      * @var TeamSpeakDaemon|TeamSpeakManager The console command object, used by static event-driven functions.
@@ -26,7 +26,7 @@ abstract class TeamSpeakCommand extends aCommand
     
     /**
      * Run the console command.
-     * 
+     *
      * In order to avoid self::$command being overwritten when each inherited class is constructed, the assignment
      * must be made here, when it is known that this is the command to be run.
      *
@@ -68,7 +68,7 @@ abstract class TeamSpeakCommand extends aCommand
         if (get_class($e) === ClientKickedFromServerException::class) {
             self::$command->log('Kicked from server.');
             return;
-        } else if (get_class($e) === RegistrationNotFoundException::class) {
+        } elseif (get_class($e) === RegistrationNotFoundException::class) {
             self::$command->log('Registration not found.');
             return;
         }

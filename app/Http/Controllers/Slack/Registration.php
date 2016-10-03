@@ -20,22 +20,22 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if ($this->_account->slack_id != "") {
+        if ($this->account->slack_id != "") {
             return Redirect::route("mship.manage.dashboard")
                            ->withError("Your Slack account doesn't need registering.");
         }
 
-        if (!$this->_account->hasState("DIVISION")) {
+        if (!$this->account->hasState("DIVISION")) {
             return Redirect::route("mship.manage.dashboard")
                            ->withError("You need to be a division member to register for Slack.");
         }
 
-        if (!($_slackToken = $this->_account->tokens()->ofType("slack_registration")->first())) {
-            $_slackToken = Token::generate("slack_registration", false, $this->_account);
+        if (!($_slackToken = $this->account->tokens()->ofType("slack_registration")->first())) {
+            $_slackToken = Token::generate("slack_registration", false, $this->account);
 
-            $slackUserAdmin = SlackUserAdmin::invite($this->_account->email, [
-                "first_name" => $this->_account->name_first,
-                "last_name"  => $this->_account->name_last
+            $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
+                "first_name" => $this->account->name_first,
+                "last_name"  => $this->account->name_last
             ]);
 
             /*if($slackUserAdmin->ok != "true"){
@@ -49,7 +49,7 @@ class Registration extends \App\Http\Controllers\BaseController
                            ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact Web Services.");
         }
 
-        $this->_pageTitle = "New Slack Registration";
+        $this->pageTitle = "New Slack Registration";
 
         return $this->viewMake("slack.new")
                     ->with("slackToken", $_slackToken);
@@ -57,7 +57,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function getConfirmed()
     {
-        if (!$this->_account->slack_id) {
+        if (!$this->account->slack_id) {
             return Redirect::route("slack.new");
         }
 
@@ -71,7 +71,7 @@ class Registration extends \App\Http\Controllers\BaseController
             return Response::make("invalid");
         }
 
-        if ($slackToken->related_id != $this->_account->id) {
+        if ($slackToken->related_id != $this->account->id) {
             return Response::make("auth.error");
         }
 
@@ -79,7 +79,7 @@ class Registration extends \App\Http\Controllers\BaseController
             return Response::make("expired");
         }
 
-        if ($this->_account->slack_id) {
+        if ($this->account->slack_id) {
             return Response::make("active");
         }
 

@@ -26,12 +26,14 @@ namespace App\Models\Sys\Data;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Change extends \App\Models\aModel {
-        protected $table = "sys_data_change";
-        protected $primaryKey = "data_change_id";
-        protected $hidden = ['data_change_id'];
+class Change extends \App\Models\Model
+{
+    protected $table = "sys_data_change";
+    protected $primaryKey = "data_change_id";
+    protected $hidden = ['data_change_id'];
 
-        public function model(){
-            return $this->morphTo();
-        }
+    public function model()
+    {
+        return $this->morphTo();
+    }
 }

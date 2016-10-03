@@ -10,8 +10,8 @@ class Facility extends Model
 
     protected $table      = "vt_facility";
     protected $primaryKey = "id";
-    public    $timestamps = false;
-    public    $fillable   = [
+    public $timestamps = false;
+    public $fillable   = [
         "name",
         "description",
         "can_visit",
@@ -109,7 +109,7 @@ class Facility extends Model
         return $query->where(function ($query) {
                          $query->where("training_spaces", ">", 0)
                                ->orWhereNull("training_spaces");
-                     });
+        });
     }
 
     public function applications()

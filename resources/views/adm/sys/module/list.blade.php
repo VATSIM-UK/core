@@ -24,7 +24,7 @@
                             <tr>
                                 <td>{{ $m['name'] }}</td>
                                 <td>{{ $m['description'] }}</td>
-                                <td>{{ $m['slug'] }} - {{ $m['namespace'] }}</td>
+                                <td>{{ $m['slug'] }} - {{ $m['basename'] }}</td>
                                 <td>{{ $m['version'] }}</td>
                                 <td align="center">
                                     @if($m['enabled'])

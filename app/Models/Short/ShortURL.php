@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Short\ShortURL whereDeletedAt($value)
  * @mixin \Eloquent
  */
-class ShortURL extends \App\Models\aModel
+class ShortURL extends \App\Models\Model
 {
     use SoftDeletingTrait;
 

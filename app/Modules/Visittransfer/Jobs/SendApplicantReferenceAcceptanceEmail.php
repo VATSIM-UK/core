@@ -12,13 +12,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use View;
 
-class SendApplicantReferenceAcceptanceEmail extends Job implements ShouldQueue {
+class SendApplicantReferenceAcceptanceEmail extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $application = null;
     private $reference = null;
 
-    public function __construct(Reference $reference){
+    public function __construct(Reference $reference)
+    {
         $this->reference = $reference;
         $this->application = $reference->application;
     }
@@ -28,7 +30,8 @@ class SendApplicantReferenceAcceptanceEmail extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $displayFrom = "VATSIM UK - Community Department";
 
         $subject = "[".$this->application->public_id."] Reference from '".$this->reference->account->name."' Accepted";

@@ -14,10 +14,12 @@ use View;
 use Input;
 use Cache;
 
-class Dashboard extends \App\Http\Controllers\Adm\AdmController {
+class Dashboard extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getIndex() {
-        $statistics = Cache::remember("statistics.mship", 60, function() {
+    public function getIndex()
+    {
+        $statistics = Cache::remember("statistics.mship", 60, function () {
             // All Stats
             $statistics = array();
             $statistics['members_total'] = (\App\Models\Mship\Account::count());
@@ -40,7 +42,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
             return $statistics;
         });
 
-        $membershipStats = Cache::remember("statistics.membership.graph", 60 * 24, function() {
+        $membershipStats = Cache::remember("statistics.membership.graph", 60 * 24, function () {
             $membershipStats = array();
             $membershipStatsKeys = ["members.division.current", "members.division.new", "members.new", "members.current"];
             $date = \Carbon\Carbon::parse("45 days ago");
@@ -60,12 +62,13 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
                         ->with("membershipStats", $membershipStats);
     }
 
-    public function anySearch($searchQuery = null) {
+    public function anySearch($searchQuery = null)
+    {
         if ($searchQuery == null) {
             $searchQuery = Input::get("q", null);
         }
 
-        if (strlen($searchQuery) < 2 OR $searchQuery == null) {
+        if (strlen($searchQuery) < 2 or $searchQuery == null) {
             return Redirect::route("adm.dashboard");
         }
 
@@ -93,5 +96,4 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController {
                         ->with("members", $members)
                         ->with("emails", $emails);
     }
-
 }

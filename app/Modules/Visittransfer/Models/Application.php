@@ -44,7 +44,7 @@ class Application extends Model
         "status",
         "expires_at",
     ];
-    public    $timestamps = true;
+    public $timestamps = true;
     protected $dates      = [
         "expires_at",
         "submitted_at",
@@ -67,18 +67,18 @@ class Application extends Model
     const STATUS_CANCELLED    = 96; // Application has been cancelled
     const STATUS_REJECTED     = 99; // Application has been rejected by staff
 
-    static $APPLICATION_IS_CONSIDERED_EDITABLE = [
+    static public $APPLICATION_IS_CONSIDERED_EDITABLE = [
         self::STATUS_IN_PROGRESS,
     ];
 
-    static $APPLICATION_IS_CONSIDERED_OPEN = [
+    static public $APPLICATION_IS_CONSIDERED_OPEN = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
     ];
 
-    static $APPLICATION_IS_CONSIDERED_CLOSED = [
+    static public $APPLICATION_IS_CONSIDERED_CLOSED = [
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
         self::STATUS_WITHDRAWN,
@@ -87,7 +87,7 @@ class Application extends Model
         self::STATUS_REJECTED,
     ];
 
-    static $APPLICATION_REQUIRES_ACTION = [
+    static public $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
     ];
 
@@ -116,20 +116,20 @@ class Application extends Model
 
     public static function scopeStatus($query, $status)
     {
-        return $query->whereStatus($status);
+        return $query->statusIn([$status]);
     }
 
     public static function scopeNotStatus($query, $status)
     {
-        return $query->where("status", "!=", $status);
+        return $query->statusNotIn([$status]);
     }
 
-    public static function scopeStatusIn($query, Array $stati)
+    public static function scopeStatusIn($query, array $stati)
     {
         return $query->whereIn("status", $stati);
     }
 
-    public static function scopeStatusNotIn($query, Array $stati)
+    public static function scopeStatusNotIn($query, array $stati)
     {
         return $query->whereNotIn("status", $stati);
     }
@@ -511,13 +511,16 @@ class Application extends Model
             // TODO: Investigate why this is required!!!!
         }
 
-        if($this->is_visit){
+        if ($this->is_visit) {
             $this->account->addState(State::findByCode("VISITING"));
         }
 
-        if($this->is_transfer){
+        if ($this->is_transfer) {
             $this->account->addState(State::findByCode("TRANSFERRING"));
         }
+
+        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(3));
+        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($this->account))->delay($delayOffset));
 
         event(new ApplicationAccepted($this));
     }
@@ -634,7 +637,7 @@ class Application extends Model
     {
         $checkContains = $this->referees->filter(function ($referee) use ($refereeAccount) {
                 return $referee->account_id == $refereeAccount->id;
-            })->count() > 0;
+        })->count() > 0;
 
         if ($checkContains) {
             throw new DuplicateRefereeException($refereeAccount);

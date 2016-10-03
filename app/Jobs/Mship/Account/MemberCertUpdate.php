@@ -73,7 +73,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             try {
                 $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
                 $member->addState($state, $this->data->region, $this->data->division);
-            } catch(DuplicateStateException $e){
+            } catch (DuplicateStateException $e) {
                 // Todo: Something.
             }
 
@@ -151,7 +151,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
                     $member->addQualification($pr);
                 }
             }
-        } catch(DuplicateQualificationException $e){
+        } catch (DuplicateQualificationException $e) {
             // TOdo: Something.
         }
 

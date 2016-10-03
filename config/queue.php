@@ -39,14 +39,14 @@ return [
             'driver' => 'database',
             'table' => 'jobs_pending',
             'queue' => 'default',
-            'expire' => 60,
+            'retry_after' => 60,
         ],
 
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host'   => 'localhost',
             'queue'  => 'default',
-            'ttr'    => 60,
+            'retry_after'    => 60,
         ],
 
         'sqs' => [
@@ -70,7 +70,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue'  => 'default',
-            'expire' => 60,
+            'retry_after' => 60,
         ],
 
     ],
@@ -87,7 +87,8 @@ return [
     */
 
     'failed' => [
-        'database' => 'mysql', 'table' => 'jobs_failed',
+        'database' => 'mysql',
+        'table' => 'jobs_failed',
     ],
 
 ];

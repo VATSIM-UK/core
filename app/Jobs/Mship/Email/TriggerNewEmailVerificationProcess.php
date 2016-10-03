@@ -4,19 +4,22 @@ namespace App\Jobs\Mship\Email;
 
 use App\Jobs\Job;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Email;
 use App\Models\Sys\Token;
 use Bus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue {
+class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
+{
     use InteractsWithQueue, SerializesModels;
 
     private $email = null;
     private $account = null;
 
-    public function __construct(Account\Email $email){
+    public function __construct(Account\Email $email)
+    {
         $this->email = $email;
         $this->account = $email->account;
     }
@@ -30,12 +33,13 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue {
      *
      * @return void
      */
-    public function handle(){
+    public function handle()
+    {
         $tokenType = "mship_account_email_verify";
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
-        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->account, $generatedToken);
+        $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->email, $generatedToken);
         dispatch($sendNewEmailVerificationEmail->onQueue("med"));
     }
 }

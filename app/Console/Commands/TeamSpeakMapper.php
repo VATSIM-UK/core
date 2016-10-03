@@ -9,7 +9,6 @@ use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Group;
 use DB;
-use Illuminate\Console\Command;
 use TeamSpeak3_Node_Server;
 
 class TeamSpeakMapper extends Command
@@ -56,7 +55,7 @@ class TeamSpeakMapper extends Command
         $qualifications = Qualification::all();
 
         $serverGroups = $tscon->serverGroupList(['type' => 1]);
-        foreach($serverGroups as $group) {
+        foreach ($serverGroups as $group) {
             $qualificationId = null;
             foreach ($qualifications as $qual) {
                 if (preg_match("/^{$qual->code}/", $group['name'])) {
@@ -130,7 +129,7 @@ class TeamSpeakMapper extends Command
             $newModels[] = [
                 'channel_id' => $channel->id,
                 'channelgroup_id' => $rtsGroup->dbid,
-                'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / '.explode(' ',$channel->name)[0].'%')->first()->id,
+                'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / '.explode(' ', $channel->name)[0].'%')->first()->id,
             ];
         }
 

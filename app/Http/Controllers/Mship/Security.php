@@ -17,10 +17,12 @@ use Redirect;
 use Session;
 use View;
 
-class Security extends \App\Http\Controllers\BaseController {
+class Security extends \App\Http\Controllers\BaseController
+{
 
-    public function getAuth() {
-        if(Session::has("auth_override")){
+    public function getAuth()
+    {
+        if (Session::has("auth_override")) {
             return Redirect::route("mship.auth.redirect");
         }
 
@@ -38,7 +40,8 @@ class Security extends \App\Http\Controllers\BaseController {
         return $this->viewMake("mship.security.auth");
     }
 
-    public function postAuth() {
+    public function postAuth()
+    {
         if (Auth::user()->verifyPassword(Input::get("password"))) {
             Session::put('auth_extra', Carbon::now());
             return Redirect::route("mship.auth.redirect");
@@ -47,29 +50,32 @@ class Security extends \App\Http\Controllers\BaseController {
         return Redirect::route("mship.security.auth")->with("error", "Invalid password entered - please try again.");
     }
 
-    public function getEnable() {
+    public function getEnable()
+    {
         return Redirect::route("mship.security.replace");
     }
 
-    public function getReplace($disable = false) {
+    public function getReplace($disable = false)
+    {
         if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         } elseif ($disable && !Auth::user()->hasPassword()) {
             $disable = false;
-        } elseif($disable) {
+        } elseif ($disable) {
             $this->setTitle("Disable");
         }
 
         if (!Auth::user()->hasPassword()) {
             $this->setTitle("Create");
-            $slsType = 'requested';
-        } else {
             if (Auth::user()->mandatory_password) {
-                $this->setTitle("Create");
                 $slsType = "forced";
-            } elseif (Auth::user()->hasPasswordExpired()) {
+            } else {
+                $slsType = 'requested';
+            }
+        } else {
+            if (Auth::user()->hasPasswordExpired()) {
                 $slsType = "expired";
-            } elseif(!$disable) {
+            } elseif (!$disable) {
                 $slsType = 'replace';
                 $this->setTitle("Replace");
             } else {
@@ -81,7 +87,8 @@ class Security extends \App\Http\Controllers\BaseController {
         return $this->viewMake("mship.security.replace")->with("sls_type", $slsType)->with("disable", $disable);
     }
 
-    public function postReplace($disable = false) {
+    public function postReplace($disable = false)
+    {
         if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route("mship.manage.dashboard")->with("error", "You cannot disable your secondary password.");
         }
@@ -121,7 +128,7 @@ class Security extends \App\Http\Controllers\BaseController {
         // All requirements met, set the password!
         try {
             Auth::user()->setPassword($newPassword);
-        } catch(DuplicatePasswordException $e){
+        } catch (DuplicatePasswordException $e) {
             return Redirect::route("mship.security.replace")->with("error", "Your new password cannot be the same as your old password.");
         }
 
@@ -129,7 +136,8 @@ class Security extends \App\Http\Controllers\BaseController {
         return Redirect::route("mship.security.auth");
     }
 
-    public function getForgotten() {
+    public function getForgotten()
+    {
         if (!Auth::user()->hasPassword()) {
             return Redirect::route("mship.manage.dashboard");
         }
@@ -140,27 +148,28 @@ class Security extends \App\Http\Controllers\BaseController {
         return $this->viewMake("mship.security.forgotten")->with("success", trans("mship.security.forgotten.success")."<br />".trans("general.dialog.youcanclose"));
     }
 
-    public function getForgottenLink($code=null) {
+    public function getForgottenLink($code = null)
+    {
         // Search tokens for this code!
         $token = SystemToken::where("code", "=", $code)->valid()->first();
 
         // Is it valid? Has it expired? Etc?
-        if(!$token){
+        if (!$token) {
             return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Is it valid? Has it expired? Etc?
-        if($token->is_used){
+        if ($token->is_used) {
             return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Is it valid? Has it expired? Etc?
-        if($token->is_expired){
+        if ($token->is_expired) {
             return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
         // Is it related and for the right thing?!
-        if(!$token->related OR $token->type != "mship_account_security_reset"){
+        if (!$token->related or $token->type != "mship_account_security_reset") {
             return $this->viewMake("mship.security.forgotten")->with("error", "You have provided an invalid password reset token.");
         }
 
@@ -174,5 +183,4 @@ class Security extends \App\Http\Controllers\BaseController {
             for you and emailed to your <strong>primary</strong> VATSIM email.<br />
                 You can now close this window.");
     }
-
 }

@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
     protected function getArtisan()
     {
         foreach (Module::enabled() as $module) {
-            $moduleCommandsFile = config('modules.path').'/'.$module['namespace'].'/Console/commands.php';
+            $moduleCommandsFile = config('modules.path').'/'.$module['basename'].'/Console/commands.php';
+
             if (File::exists($moduleCommandsFile)) {
                 $moduleCommands = require $moduleCommandsFile;
                 $this->commands = array_merge($this->commands, $moduleCommands);
@@ -64,5 +65,15 @@ class Kernel extends ConsoleKernel
         // Work the queue - the last thing that should be processed!
         $schedule->command("queue:work")->everyMinute()->withoutOverlapping();
         //-- end
+    }
+
+    /**
+     * Register the Closure based commands for the application.
+     *
+     * @return void
+     */
+    protected function commands()
+    {
+        require base_path('routes/console.php');
     }
 }

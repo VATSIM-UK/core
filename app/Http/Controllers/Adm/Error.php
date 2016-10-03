@@ -6,10 +6,12 @@ use Session;
 use Response;
 use View;
 
-class Error extends \App\Http\Controllers\Adm\AdmController {
+class Error extends \App\Http\Controllers\Adm\AdmController
+{
 
-    public function getDisplay($code){
-        if(View::exists("adm.error.".$code)){
+    public function getDisplay($code)
+    {
+        if (View::exists("adm.error.".$code)) {
             return $this->viewMake("adm.error.".$code);
         }
 
