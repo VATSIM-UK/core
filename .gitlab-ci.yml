@@ -1,7 +1,3 @@
-cache:
-  paths:
-    - node_modules/
-
 before_script:
   - composer install --prefer-dist --no-interaction -o > /dev/null
   - cp .env.example .env

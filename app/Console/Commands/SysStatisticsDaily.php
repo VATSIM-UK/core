@@ -116,7 +116,7 @@ class SysStatisticsDaily extends Command
         try {
             $divisionCreated = DB::table("mship_account_state")
                                  ->where("state_id", "=", State::findByCode("DIVISION")->id)
-                                 ->where("start_at", "LIKE", $currentPeriod->toDateString . "%")
+                                 ->where("start_at", "LIKE", $currentPeriod->toDateString() . "%")
                                  ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), "members.division.new", $divisionCreated);
         } catch (\Exception $e) {

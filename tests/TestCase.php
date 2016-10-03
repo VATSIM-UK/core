@@ -7,7 +7,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @var string
      */
-    protected $baseUrl = "localhost";
+    protected $baseUrl = 'http://localhost';
 
     /**
      * Creates the application.
@@ -23,9 +23,5 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         $this->baseUrl = 'http://'.env("APP_URL").'/';
 
         return $app;
-    }
-
-    public function testIgnore(){
-
     }
 }

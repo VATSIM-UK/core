@@ -20,8 +20,8 @@
             </div><!-- /.box-header -->
             <div class="box-body">
                 <p>
-                    Please ensure that this page is completed correctly as it <strong>will</strong> notify the member automatically.  The reason you provide on this page will
-                    <strong>not</strong> be sent in the email.
+                    Please ensure that this page is completed correctly as it <strong>will</strong> notify the member automatically.  The reason you provide on this page <strong>will</strong>
+                     be sent in the email, but the note will <strong>not</strong>.
                 </p>
                 {!! Form::open(["route" => ["adm.mship.ban.modify", $ban->id]]) !!}
                     <div class="row">
@@ -46,8 +46,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="reason">Reason:<br /><small>The member will be sent this information.</small></label>
-                        <textarea name="reason" class="form-control" rows="5">{{ old('reason') }}</textarea>
+                        <label for="reason_extra">Reason:<br /><small>The member *will* be sent this information.</small></label>
+                        <textarea name="reason_extra" class="form-control" rows="5">{{ old('reason_extra') }}</textarea>
                     </div>
 
                     <div class="form-group">
