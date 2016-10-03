@@ -1,11 +1,20 @@
 <?php namespace App\Modules\Visittransfer\Providers;
 
-use Caffeinated\Modules\Support\ServiceProvider;
+use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Policies\ApplicationPolicy;
+use App\Modules\Visittransfer\Policies\ReferencePolicy;
+use Caffeinated\Modules\Support\AuthServiceProvider;
 use Lang;
 use View;
 
-class ModuleServiceProvider extends ServiceProvider
+class ModuleServiceProvider extends AuthServiceProvider
 {
+    protected $policies = [
+        Application::class => ApplicationPolicy::class,
+        Reference::class => ReferencePolicy::class,
+    ];
+
     /**
      * Bootstrap the module services.
      *
@@ -15,6 +24,7 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $this->loadTranslationsFrom(__DIR__.'/../Resources/Lang', 'visittransfer');
         $this->loadViewsFrom(__DIR__.'/../Resources/Views', 'visittransfer');
+        $this->registerPolicies();
     }
 
     /**

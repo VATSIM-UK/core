@@ -11,8 +11,13 @@ class ApplicationPolicy
 {
     use HandlesAuthorization;
 
-    public function before(Account $user)
+    public function before(Account $user, $ability)
     {
+        $application = \Request::route("applicationByPublicId");
+
+        if($application && $user->id != $application->account_id){
+            return false;
+        }
     }
 
     public function create(Account $user, Application $application)
