@@ -33,7 +33,7 @@ class Authentication extends AdmController
         \Debugbar::disable();
         Session::deleteOldSessions();
 
-        $account = Account::findOrRetrieve(Input::get("userid", 0));
+        $account = Account::findOrRetrieve(Input::get("userid"));
 
         if($account->is_banned){
             return "ACCOUNT_INACTIVE";

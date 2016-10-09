@@ -8,43 +8,10 @@ Route::group([
     "middleware" => []
 ], function () {
 
-    Route::get("/call", function(){
-        switch(Request::get("action")){
-            case "manuallogin":
-                return redirect()->route("api.smartcars.auth.manual", Request::all());
-            case "automaticlogin":
-                return redirect()->route("api.smartcars.auth.auto", Request::all());
-            case "verifysession":
-                return redirect()->route("api.smartcars.auth.verify", Request::all());
-            case "getpilotcenterdata":
-                return "0,0,0,0";
-
-            case "getairports":
-                return null;
-            case "getaircraft":
-                return null;
-            case "getbidflights":
-                return null;
-            case "bidonflight":
-                return null;
-            case "deletebidflight":
-                return null;
-            case "searchpireps":
-                return null;
-            case "getpirepdata":
-                return null;
-            case "searchflights":
-                return null;
-            case "createflight":
-                return null;
-            case "positionreport":
-                return null;
-            case "filepirep":
-                return null;
-            default:
-                return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
-        }
-    })->name("call");
+    Route::any("/call", [
+        "as"   => "call",
+        "uses" => "Router@route",
+    ]);
 
     Route::group(["as" => "auth.", "prefix" => "auth/"], function(){
 
