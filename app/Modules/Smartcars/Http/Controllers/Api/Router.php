@@ -13,43 +13,48 @@ use Request;
 
 class Router extends AdmController
 {
-    public function route(){
-        switch(Request::get("action")){
+    public function route()
+    {
+        switch (Request::get("action")) {
             case "manuallogin":
-                \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postManual", Request::all());
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postManual", Request::all());
 
             case "automaticlogin":
-                \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postAuto", Request::all());
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postAuto", Request::all());
 
             case "verifysession":
-                \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postVerify", Request::all());
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postVerify", Request::all());
 
             case "getpilotcenterdata":
                 return "0,0,0,0";
 
             case "getairports":
-                return null;
+                return "";
+
             case "getaircraft":
-                return null;
+                return "";
+
             case "getbidflights":
-                return null;
+                return "";
             case "bidonflight":
-                return null;
+                return "";
             case "deletebidflight":
-                return null;
+                return "";
             case "searchpireps":
-                return null;
+                return "";
             case "getpirepdata":
-                return null;
+                return "";
             case "searchflights":
-                return null;
+                return "";
             case "createflight":
-                return null;
+                return "";
             case "positionreport":
-                return null;
+                return "";
             case "filepirep":
-                return null;
+                return "";
             default:
                 return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
+        }
     }
 }
+

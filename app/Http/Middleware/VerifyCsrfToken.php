@@ -15,5 +15,6 @@ class VerifyCsrfToken extends BaseVerifier
         'sso/security/generate',
         'sso/security/details',
         'webhook/*',
+        'frame.php',
     ];
 }
