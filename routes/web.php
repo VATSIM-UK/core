@@ -6,7 +6,9 @@
 Route::any("frame.php", function(){
     \Log::info(\Request::fullUrl());
     \Log::info(\Request::all());
-    return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Router@route", Request::all());
+    $return = \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Router@route", Request::all());
+    \Log::info($return);
+    return $return;
 });
 
 /*
