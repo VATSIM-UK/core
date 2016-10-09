@@ -29,10 +29,10 @@ class Router extends AdmController
                 return "0,0,0,0";
 
             case "getairports":
-                return "";
+                return "1|egbb|Birmingham|0.0|0.0|UK";
 
             case "getaircraft":
-                return "";
+                return "1,Airbus A320,A320,G-ABCD,182,190000,1";
 
             case "getbidflights":
                 return "";
