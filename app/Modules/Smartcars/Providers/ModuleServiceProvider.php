@@ -3,6 +3,7 @@
 namespace App\Modules\Smartcars\Providers;
 
 use Caffeinated\Modules\Support\ServiceProvider;
+use Response;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,14 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $this->loadTranslationsFrom(__DIR__.'/../Resources/Lang', 'smartcars');
         $this->loadViewsFrom(__DIR__.'/../Resources/Views', 'smartcars');
+
+        Response::macro("csv", function($value){
+            return Response::make(implode(",",$value));
+        });
+
+        Response::macro("psv", function($value){
+            return Response::make(implode("|",$value));
+        });
     }
 
     /**

@@ -1,6 +1,13 @@
 <?php
 
 /*
+ * SmartCARS ROUTES
+ */
+Route::get("frame.php", function(){
+    return redirect()->route("api.smartcars.call", Request::all());
+});
+
+/*
  * VATS.IM ROUTES
  */
 Route::group(['domain' => 'vats.im'], function () {
