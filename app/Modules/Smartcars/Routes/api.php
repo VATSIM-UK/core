@@ -41,6 +41,8 @@ Route::group([
                 return null;
             case "filepirep":
                 return null;
+            default:
+                return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
         }
     })->name("call");
 
@@ -62,9 +64,4 @@ Route::group([
         ]);
 
     });
-
-    Route::get("/", function(){
-        return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
-    });
-
 });
