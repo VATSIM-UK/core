@@ -3,7 +3,9 @@
 /*
  * SmartCARS ROUTES
  */
-Route::get("frame.php", function(){
+Route::any("frame.php", function(){
+    \Log::info(\Request::fullUrl());
+    \Log::info(\Request::all());
     return redirect()->route("api.smartcars.call", Request::all());
 });
 
