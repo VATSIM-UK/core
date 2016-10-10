@@ -4,9 +4,13 @@
  * SmartCARS ROUTES
  */
 Route::any("frame.php", function(){
-    \Log::info(\Request::fullUrl());
+    \Log::info(\Request::method() . "::" . \Request::fullUrl());
     \Log::info(\Request::all());
-    $return = \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Router@route", Request::all());
+    if(\Request::method() == "POST"){
+        $return = \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Router@postRoute", Request::all());
+    } else {
+        $return = \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Router@getRoute", Request::all());
+    }
     \Log::info($return);
     return $return;
 });

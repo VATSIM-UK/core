@@ -8,9 +8,14 @@ Route::group([
     "middleware" => []
 ], function () {
 
-    Route::any("/call", [
+    Route::get("/call", [
         "as"   => "call",
-        "uses" => "Router@route",
+        "uses" => "Router@getRoute",
+    ]);
+
+    Route::post("/call", [
+        "as"   => "call.post",
+        "uses" => "Router@postRoute",
     ]);
 
     Route::group(["as" => "auth.", "prefix" => "auth/"], function(){

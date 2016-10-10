@@ -13,12 +13,26 @@ use Request;
 
 class Router extends AdmController
 {
-    public function route()
-    {
-        switch (Request::get("action")) {
-            case "manuallogin":
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postManual", Request::all());
+    private $pilot = null;
 
+    public function __construct()
+    {
+        $this->pilot = Account::find(Input::get("dbid"));
+        $this->session = Session::findBySessionId(Input::get("sessionid", null));
+    }
+
+    private function verify(){
+        if($this->session->account_id != $this->pilot->id){
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getRoute()
+    {
+        \Debugbar::disable();
+        switch (Request::get("action")) {
             case "automaticlogin":
                 return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postAuto", Request::all());
 
@@ -26,32 +40,94 @@ class Router extends AdmController
                 return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postVerify", Request::all());
 
             case "getpilotcenterdata":
-                return "0,0,0,0";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getPilotInfo", Request::all());
 
             case "getairports":
-                return "1|egbb|Birmingham|0.0|0.0|UK";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getAirports", Request::all());
 
             case "getaircraft":
-                return "1,Airbus A320,A320,G-ABCD,182,190000,1";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getAircraft", Request::all());
+
+            case "searchflights":
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getSearch", Request::all());
 
             case "getbidflights":
-                return "";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBids", Request::all());
+
             case "bidonflight":
-                return "";
+                if(!$this->verify()){
+                    return "AUTH_FAILED";
+                }
+
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBid", Request::all());
+
             case "deletebidflight":
-                return "";
+                if(!$this->verify()){
+                    return "AUTH_FAILED";
+                }
+
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBidDelete", Request::all());
+
             case "searchpireps":
-                return "";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Pirep@getSearch", Request::all());
+
             case "getpirepdata":
-                return "";
-            case "searchflights":
-                return "";
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Pirep@getData", Request::all());
+
             case "createflight":
                 return "";
-            case "positionreport":
-                return "";
+
             case "filepirep":
                 return "";
+
+            default:
+                return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
+        }
+    }
+
+
+    public function postRoute()
+    {
+        \Debugbar::disable();
+        switch (Request::get("action")) {
+            case "manuallogin":
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postManual", Request::all());
+
+            case "searchflights":
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getSearch", Request::all());
+
+            case "getbidflights":
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBids", Request::all());
+
+            case "bidonflight":
+                return "";
+
+            case "deletebidflight":
+                return "";
+
+            case "searchpireps":
+                return "";
+
+            case "getpirepdata":
+                return "";
+
+            case "createflight":
+                return "";
+
+            case "positionreport":
+                if(!$this->verify()){
+                    return "AUTH_FAILED";
+                }
+
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@postPosition", Request::all());
+
+            case "filepirep":
+                if(!$this->verify()){
+                    return "AUTH_FAILED";
+                }
+
+                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@postReport", Request::all());
+
             default:
                 return "Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1";
         }

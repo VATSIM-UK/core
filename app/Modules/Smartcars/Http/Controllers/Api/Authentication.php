@@ -16,21 +16,20 @@ class Authentication extends AdmController
     private function preparePilotInfo($account, $session){
         $info = [];
 
-        $info[] = $account->id;
-        $info[] = $account->id;
-        $info[] = $account->id;
-        $info[] = $session->session_id;
-        $info[] = $account->name_first;
-        $info[] = $account->name_last;
-        $info[] = $account->email;
-        $info[] = 1;
-        $info[] = "Cadet";
+        $info['dbid'] = $account->id;
+        $info['code'] = "PTE";
+        $info['pilotid'] = $account->id;
+        $info['sessionid'] = $session->session_id;
+        $info['firstname'] = $account->name_first;
+        $info['lastname'] = $account->name_last;
+        $info['email'] = $account->email;
+        $info['ranklevel'] = 1;
+        $info['rankstring'] = $account->qualifications_pilot_string;
 
         return $info;
     }
 
     public function postManual(){
-        \Debugbar::disable();
         Session::deleteOldSessions();
 
         $account = Account::findOrRetrieve(Input::get("userid"));
@@ -51,7 +50,6 @@ class Authentication extends AdmController
     }
 
     public function postAuto(){
-        \Debugbar::disable();
         Session::deleteOldSessions();
 
         $session = Session::sessionId(Input::get("oldsessionid"))->accountId(Input::get("dbid"))->first();
@@ -72,7 +70,6 @@ class Authentication extends AdmController
     }
 
     public function postVerify(){
-        \Debugbar::disable();
         Session::deleteOldSessions();
 
         $session = Session::sessionId(Input::get("sessionid"))->accountId(Input::get("dbid"))->first();
