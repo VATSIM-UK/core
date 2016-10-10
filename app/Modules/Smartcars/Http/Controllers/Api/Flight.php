@@ -54,7 +54,7 @@ class Flight extends AdmController
             $return .= $f->departure->icao . "|";
             $return .= $f->arrival->icao . "|";
             $return .= $f->route . "|";
-            $return .= "5000|"; // Cruise altitude.
+            $return .= $f->cruise_altitude."|"; // Cruise altitude.
             $return .= $f->aircraft->id . "|";
             $return .= $f->flight_time . ":00|";
             $return .= "00:00 GMT|"; // Departure time
@@ -82,13 +82,13 @@ class Flight extends AdmController
             $return .= $f->departure->icao . "|";
             $return .= $f->arrival->icao . "|";
             $return .= $f->route . "|";
-            $return .= "36000|"; // Cruise altitude.
+            $return .= $f->cruise_altitude."|"; // Cruise altitude.
             $return .= $f->aircraft->id . "|";
             $return .= $f->flight_time . ":00|";
             $return .= "00:00 GMT|"; // Departure time
             $return .= "23:55 GMT|"; // Arrival time
             $return .= "0|"; // Load
-            $return .= "T|"; // Type
+            $return .= "P|"; // Type (p=Pax,c=Cargo)
             $return .= "0123456;"; // Days of week.
         }
 

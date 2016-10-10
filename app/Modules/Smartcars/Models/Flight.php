@@ -15,7 +15,7 @@ class Flight extends Model
         "route",
         "route_details",
         "aircraft_id",
-        "flight_level",
+        "cruise_altitude",
         "distance",
         "flight_time",
         "notes",

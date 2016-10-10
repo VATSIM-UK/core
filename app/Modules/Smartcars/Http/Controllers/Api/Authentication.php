@@ -24,7 +24,7 @@ class Authentication extends AdmController
         $info['lastname'] = $account->name_last;
         $info['email'] = $account->email;
         $info['ranklevel'] = 1;
-        $info['rankstring'] = $account->qualifications_pilot_string;
+        $info['rankstring'] = str_replace(",","-",$account->qualifications_pilot_string);
 
         return $info;
     }

@@ -22,7 +22,7 @@ class CreateFlightTable extends Migration
             $table->text("route");
             $table->text("route_details");
             $table->integer("aircraft_id");
-            $table->integer("flight_level")->default(0);
+            $table->integer("cruise_altitude")->default(0);
             $table->float("distance")->default(0);
             $table->float("flight_time")->default(0);
             $table->text("notes");

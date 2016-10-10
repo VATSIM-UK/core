@@ -23,6 +23,7 @@ class CreatePirepTable extends Migration
             $table->text("comments");
             $table->float("fuel_used");
             $table->text("log");
+            $table->tinyInteger("status")->default(2);
             $table->timestamps();
         });
     }
