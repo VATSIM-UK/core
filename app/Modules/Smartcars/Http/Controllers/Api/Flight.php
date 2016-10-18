@@ -158,7 +158,7 @@ class Flight extends AdmController
             return "INVALID_ROUTEID";
         }
 
-        $bidCheck = Bid::flightId($flight->id)->accountId(Input::get("dbid"))->count();
+        $bidCheck = Bid::pending()->flightId($flight->id)->accountId(Input::get("dbid"))->count();
 
         if($bidCheck > 0){
             return "FLIGHT_ALREADY_BID";
