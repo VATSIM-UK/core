@@ -30,7 +30,6 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
-        \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
     ];
 
     /**

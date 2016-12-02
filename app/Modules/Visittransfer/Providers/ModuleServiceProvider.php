@@ -39,7 +39,6 @@ class ModuleServiceProvider extends AuthServiceProvider
 
         $this->registerNamespaces();
         $this->registerComposers();
-        $this->registerCommands();
         $this->registerComposers();
     }
 
@@ -67,20 +66,5 @@ class ModuleServiceProvider extends AuthServiceProvider
             ["visittransfer::admin._sidebar"],
             \App\Modules\Visittransfer\Resources\Viewcomposers\StatisticsComposer::class
         );
-    }
-
-    protected function registerCommands()
-    {
-        // Commands.statistics.daily
-        $this->app->singleton("visittransfer::commands.statistics.daily", function ($app) {
-            return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
-        });
-        $this->commands("visittransfer::commands.statistics.daily");
-
-        // commands.applications.cleanup
-        $this->app->singleton("visittransfer::commands.applications.cleanup", function ($app) {
-            return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
-        });
-        $this->commands("visittransfer::commands.applications.cleanup");
     }
 }
