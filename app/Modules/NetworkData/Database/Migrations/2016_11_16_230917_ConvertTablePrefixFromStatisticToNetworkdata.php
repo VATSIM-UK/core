@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
@@ -13,7 +12,7 @@ class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
      */
     public function up()
     {
-        Schema::rename("statistic_atc", "networkdata_atc");
+        Schema::rename('statistic_atc', 'networkdata_atc');
     }
 
     /**
@@ -23,6 +22,6 @@ class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
      */
     public function down()
     {
-        Schema::rename("networkdata_atc", "statistic_atc");
+        Schema::rename('networkdata_atc', 'statistic_atc');
     }
 }

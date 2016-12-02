@@ -8,7 +8,6 @@ use App\Modules\NetworkData\Events\NetworkDataDownloaded;
 use App\Modules\NetworkData\Models\Atc;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -40,7 +39,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
         $this->vatsimPHP->loadData();
         event(new NetworkDataDownloaded());
 
-        $feedLastUpdatedAt = \Cache::pull("networkdata_last_update_of_data", \Carbon\Carbon::now());
+        $feedLastUpdatedAt = \Cache::pull('networkdata_last_update_of_data', \Carbon\Carbon::now());
 
         $this->parseRecentDownload();
 
@@ -57,27 +56,27 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
     private function parseRecentDownload()
     {
         foreach ($this->vatsimPHP->getControllers() as $controllerData) {
-            $qualification = Qualification::parseVatsimATCQualification($controllerData["rating"]);
+            $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
 
             Atc::updateOrCreate(
                 [
-                    "account_id" => $controllerData['cid'],
-                    "callsign" => $controllerData['callsign'],
-                    "qualification_id" => is_null($qualification) ? 0 : $qualification->id,
-                    "facility_type" => $controllerData['facilitytype'],
-                    "connected_at" => Carbon::createFromFormat("YmdHis", $controllerData['time_logon']),
-                    "disconnected_at" => null,
-                    "deleted_at" => null,
+                    'account_id' => $controllerData['cid'],
+                    'callsign' => $controllerData['callsign'],
+                    'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
+                    'facility_type' => $controllerData['facilitytype'],
+                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at' => null,
+                    'deleted_at' => null,
                 ],
                 [
-                    "updated_at" => \Carbon\Carbon::now(),
+                    'updated_at' => \Carbon\Carbon::now(),
                 ]
             );
         }
 
         event(new NetworkDataParsed());
 
-        \Cache::put("networkdata_last_update_of_data", \Carbon\Carbon::now(), 60*60*24*7);
+        \Cache::put('networkdata_last_update_of_data', \Carbon\Carbon::now(), 60 * 60 * 24 * 7);
     }
 
     /**
@@ -107,8 +106,8 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
      */
     private function endExpiredAtcSessions($feedLastUpdatedAt)
     {
-        $expiringAtc = Atc::where("updated_at", "<", $feedLastUpdatedAt)
-                          ->whereNull("disconnected_at");
+        $expiringAtc = Atc::where('updated_at', '<', $feedLastUpdatedAt)
+                          ->whereNull('disconnected_at');
 
         foreach ($expiringAtc as $atc) {
             $atc->disconnected_at = $feedLastUpdatedAt;
