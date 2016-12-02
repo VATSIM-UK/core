@@ -14,7 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue
+class NetworkDataDownloadAndParse extends \App\Jobs\Job
 {
 
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
@@ -41,11 +41,13 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue
     public function handle()
     {
         $this->vatsimPHP->loadData();
-        event(new NetworkDataDownloaded);
+        event(new NetworkDataDownloaded());
 
-        $feedLastUpdatedAt = Carbon::now();
+        $feedLastUpdatedAt = \Cache::pull("networkdata_last_update_of_data", \Carbon\Carbon::now());
 
         $this->parseRecentDownload();
+
+        print_r($feedLastUpdatedAt);
 
         $this->endExpiredAtcSessions($feedLastUpdatedAt);
     }
@@ -59,23 +61,27 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue
     {
 
         foreach ($this->vatsimPHP->getControllers() as $controllerData) {
-            // We need to convert a VATSIM rating to a local qualification.
             $qualification = Qualification::parseVatsimATCQualification($controllerData["rating"]);
 
-            $eloquentController = Atc::firstOrCreate([
-                "account_id" => $controllerData['cid'],
-                "callsign" => $controllerData['callsign'],
-                "qualification_id" => is_null($qualification) ? 0 : $qualification->id,
-                "facility_type" => $controllerData['facilitytype'],
-                "deleted_at" => null, // Must be here as firstOrCreate doesn't honour softDeletes
-            ]);
-
-            $eloquentController = $this->setControllerConnectedAt($eloquentController, $controllerData);
-
-            $eloquentController->touch(); // Keeping them online in the database.
+            Atc::updateOrCreate(
+                [
+                    "account_id" => $controllerData['cid'],
+                    "callsign" => $controllerData['callsign'],
+                    "qualification_id" => is_null($qualification) ? 0 : $qualification->id,
+                    "facility_type" => $controllerData['facilitytype'],
+                    "connected_at" => Carbon::createFromFormat("YmdHis", $controllerData['time_logon']),
+                    "disconnected_at" => null,
+                    "deleted_at" => null,
+                ],
+                [
+                    "updated_at" => \Carbon\Carbon::now(),
+                ]
+            );
         }
 
         event(new NetworkDataParsed());
+
+        \Cache::put("networkdata_last_update_of_data", \Carbon\Carbon::now(), 60*60*24*7);
     }
 
     /**
@@ -106,7 +112,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job implements ShouldQueue
     private function endExpiredAtcSessions($feedLastUpdatedAt)
     {
         $expiringAtc = Atc::where("updated_at", "<", $feedLastUpdatedAt)
-                          ->where("disconnected_at", "IS", null)
+                          ->whereNull("disconnected_at")
                           ->get();
 
         foreach ($expiringAtc as $atc) {
