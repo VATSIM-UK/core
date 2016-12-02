@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class StoreFrequencyOfAtcSession extends Migration
@@ -14,7 +13,7 @@ class StoreFrequencyOfAtcSession extends Migration
     public function up()
     {
         Schema::table('networkdata_atc', function ($table) {
-            $table->double("frequency", 6, 3)->after("callsign")->nullable();
+            $table->double('frequency', 6, 3)->after('callsign')->nullable();
         });
     }
 
@@ -25,8 +24,8 @@ class StoreFrequencyOfAtcSession extends Migration
      */
     public function down()
     {
-        Schema::table("networkdata_atc", function($table){
-            $table->dropColumn("frequency");
+        Schema::table('networkdata_atc', function ($table) {
+            $table->dropColumn('frequency');
         });
     }
 }

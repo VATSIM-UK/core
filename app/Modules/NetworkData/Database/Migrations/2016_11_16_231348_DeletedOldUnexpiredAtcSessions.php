@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class DeletedOldUnexpiredAtcSessions extends Migration
@@ -13,9 +11,9 @@ class DeletedOldUnexpiredAtcSessions extends Migration
      */
     public function up()
     {
-        DB::table("networkdata_atc")
-            ->whereNull("disconnected_at")
-            ->where("connected_at", "<=", \Carbon\Carbon::now()->subDays(1))
+        DB::table('networkdata_atc')
+            ->whereNull('disconnected_at')
+            ->where('connected_at', '<=', \Carbon\Carbon::now()->subDays(1))
             ->delete();
     }
 
