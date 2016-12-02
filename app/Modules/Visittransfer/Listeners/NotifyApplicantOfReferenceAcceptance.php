@@ -1,8 +1,9 @@
-<?php namespace App\Modules\Visittransfer\Listeners;
+<?php
+
+namespace App\Modules\Visittransfer\Listeners;
 
 use App\Modules\Visittransfer\Events\ReferenceAccepted;
 use App\Modules\Visittransfer\Jobs\SendApplicantReferenceAcceptanceEmail;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyApplicantOfReferenceAcceptance implements ShouldQueue
@@ -16,6 +17,6 @@ class NotifyApplicantOfReferenceAcceptance implements ShouldQueue
     {
         $confirmationEmailJob = new SendApplicantReferenceAcceptanceEmail($event->reference);
 
-        dispatch($confirmationEmailJob->onQueue("low"));
+        dispatch($confirmationEmailJob->onQueue('low'));
     }
 }

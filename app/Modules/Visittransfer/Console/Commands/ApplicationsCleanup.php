@@ -3,8 +3,6 @@
 namespace App\Modules\Visittransfer\Console\Commands;
 
 use App\Console\Commands\Command;
-use App\Models\Mship\Account;
-use App\Models\Statistic;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Models\Application;
 
@@ -58,27 +56,27 @@ class ApplicationsCleanup extends Command
         $submittedApplications = Application::submitted()
                                             ->get()
                                             ->filter(function ($application) {
-                                                return !$application->is_pending_references;
+                                                return ! $application->is_pending_references;
                                             });
 
         foreach ($submittedApplications as $application) {
-            if (!$application->should_perform_checks) {
-                $application->markAsUnderReview("Automated checks have been disabled for this facility - requires manual checking.");
+            if (! $application->should_perform_checks) {
+                $application->markAsUnderReview('Automated checks have been disabled for this facility - requires manual checking.');
                 continue;
             }
 
-            dispatch((new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application))->onQueue("med"));
+            dispatch((new \App\Modules\Visittransfer\Jobs\AutomatedApplicationChecks($application))->onQueue('med'));
         }
     }
 
     private function autoAcceptApplications()
     {
         $underReviewApplications = Application::underReview()
-                                              ->where("will_auto_accept", "=", 1)
+                                              ->where('will_auto_accept', '=', 1)
                                               ->get();
 
         foreach ($underReviewApplications as $application) {
-            $application->accept("Application was automatically accepted as per the facility settings.");
+            $application->accept('Application was automatically accepted as per the facility settings.');
             continue;
         }
     }
@@ -88,11 +86,11 @@ class ApplicationsCleanup extends Command
         $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)
                                            ->get()
                                            ->filter(function ($application) {
-                                               return !$application->training_required;
+                                               return ! $application->training_required;
                                            });
 
         foreach ($acceptedApplications as $application) {
-            $application->complete("Application was automatically completed as there is no training requirement.");
+            $application->complete('Application was automatically completed as there is no training requirement.');
             continue;
         }
     }

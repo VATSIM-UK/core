@@ -1,5 +1,5 @@
 <?php
 
 return [
-    "title" => "Visiting &amp; Transferring",
+    'title' => 'Visiting &amp; Transferring',
 ];

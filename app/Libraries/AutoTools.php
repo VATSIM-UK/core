@@ -4,7 +4,6 @@ namespace App\Libraries;
 
 use Cache;
 use League\Csv\Reader;
-use League\Csv\Writer;
 
 class AutoTools
 {
@@ -13,9 +12,9 @@ class AutoTools
     public static function getDivisionData($withTimestamp = true)
     {
         $sprintUrl = '%sdivdbfullwpilot.php?authid=%s&authpassword=%s&div=%s';
-        
+
         if ($withTimestamp) {
-            $sprintUrl .= "&timestamp=" . (time() - 60 * 119);
+            $sprintUrl .= '&timestamp='.(time() - 60 * 119);
         }
 
         $url = sprintf(
@@ -26,19 +25,19 @@ class AutoTools
             env('VATSIM_CERT_AT_DIV')
         );
 
-        $cacheName = $withTimestamp ? "autotools_divdbfullwpilot_timestamp" : "autotools_dividbfullwpilot_full";
-        $cacheLength = $withTimestamp ? 60*118 : 60 * 12;
+        $cacheName = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';
+        $cacheLength = $withTimestamp ? 60 * 118 : 60 * 12;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {
-            \Storage::put("autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv", file_get_contents($url));
+            \Storage::put('autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv', file_get_contents($url));
 
-            $reader = Reader::createFromPath(storage_path("app".DIRECTORY_SEPARATOR."autotools".DIRECTORY_SEPARATOR."divdbfullwpilot.csv"), 'r');
+            $reader = Reader::createFromPath(storage_path('app'.DIRECTORY_SEPARATOR.'autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv'), 'r');
 
             $keys = [
-                "cid", "rating_atc", "rating_pilot",
-                "name_first", "name_last", "email",
-                "age_band", "city", "country", "experience",
-                "unknown", "reg_date", "region", "division",
+                'cid', 'rating_atc', 'rating_pilot',
+                'name_first', 'name_last', 'email',
+                'age_band', 'city', 'country', 'experience',
+                'unknown', 'reg_date', 'region', 'division',
             ];
             $results = $reader->fetchAssoc($keys);
 

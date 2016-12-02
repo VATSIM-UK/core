@@ -1,11 +1,10 @@
-<?php namespace App\Modules\Visittransfer\Policies;
+<?php
+
+namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
-use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Gate;
 
 class ReferencePolicy
 {

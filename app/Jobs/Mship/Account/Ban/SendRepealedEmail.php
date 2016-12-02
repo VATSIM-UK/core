@@ -22,15 +22,15 @@ class SendRepealedEmail extends Job implements ShouldQueue
 
     public function handle()
     {
-        if (!$this->ban->is_local) {
+        if (! $this->ban->is_local) {
             return true;
         }
 
-        $displayFrom = "VATSIM UK - Community Department";
-        $subject = "Account Ban - Repealed";
-        $body = \View::make("emails.mship.account.ban.repealed")
-                     ->with("account", $this->recipient)
-                     ->with("ban", $this->ban)
+        $displayFrom = 'VATSIM UK - Community Department';
+        $subject = 'Account Ban - Repealed';
+        $body = \View::make('emails.mship.account.ban.repealed')
+                     ->with('account', $this->recipient)
+                     ->with('ban', $this->ban)
                      ->render();
 
         $sender = \App\Models\Mship\Account::find(VATUK_ACCOUNT_SYSTEM);

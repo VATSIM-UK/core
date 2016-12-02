@@ -8,33 +8,32 @@ use Input;
 use Session;
 use Response;
 use URL;
-use View;
 use VatsimSSO;
-use Config;
 use Redirect;
 use App\Models\Mship\Account;
 
 class Authentication extends \App\Http\Controllers\Adm\AdmController
 {
-
     public function getLogin()
     {
-        return $this->viewMake("adm.authentication.login");
+        return $this->viewMake('adm.authentication.login');
     }
 
     public function getLogout()
     {
         Auth::logout();
-        return Redirect::route("adm.authentication.login");
+
+        return Redirect::route('adm.authentication.login');
     }
 
     public function postLogin()
     {
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-            [URL::route("adm.authentication.verify")],
+            [URL::route('adm.authentication.verify')],
             function ($key, $secret, $url) {
                 Session::put('vatsimauth', compact('key', 'secret'));
+
                 return Redirect::to($url);
             },
             function ($error) {
@@ -46,7 +45,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
 
     public function getVerify()
     {
-        if (!Session::has('vatsimauth')) {
+        if (! Session::has('vatsimauth')) {
             throw new \Exception('Session does not exist');
         }
 
@@ -57,7 +56,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             throw new \Exception('Returned token does not match');
         }
 
-        if (!Input::has('oauth_verifier')) {
+        if (! Input::has('oauth_verifier')) {
             // TODO: LOG
             throw new \Exception('No verification code provided');
         }
@@ -68,15 +67,15 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             // At this point WE HAVE data in the form of $user;
             $account = Account::find($user->id);
 
-            if (!$account) {
+            if (! $account) {
                 // TODO: LOG
-                return Response::make("Unauthorised", 401);
+                return Response::make('Unauthorised', 401);
             }
 
             Auth::login($account);
 
             // Let's send them over to the authentication redirect now.
-            return Redirect::route("adm.dashboard");
+            return Redirect::route('adm.dashboard');
         }, function ($error) {
             // TODO: LOG
             throw new \Exception($error['message']);

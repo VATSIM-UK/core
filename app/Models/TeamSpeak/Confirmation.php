@@ -2,14 +2,12 @@
 
 namespace App\Models\TeamSpeak;
 
-use App\Models\TeamSpeak\Registration;
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\TeamSpeak\Confirmation
+ * App\Models\TeamSpeak\Confirmation.
  *
- * @property integer $registration_id
+ * @property int $registration_id
  * @property string $privilege_key
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -25,7 +23,7 @@ class Confirmation extends \App\Models\Model
     use RecordsActivity;
 
     public $incrementing = false;
-    protected $table      = 'teamspeak_confirmation';
+    protected $table = 'teamspeak_confirmation';
     protected $primaryKey = 'registration_id';
 
     public function registration()

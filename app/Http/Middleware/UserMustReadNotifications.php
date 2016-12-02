@@ -26,10 +26,10 @@ class UserMustReadNotifications
             )
         ) {
             Session::set('force_notification_read_return_url', Request::fullUrl());
-            
+
             return Redirect::route('mship.notification.list');
         }
-        
+
         return $next($request);
     }
 }

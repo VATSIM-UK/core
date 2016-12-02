@@ -44,7 +44,7 @@ class GenerateEloquentMethodPHPDoc extends Command
 
         $scrapedInfo = new ReflectionClass($this->scraped_class);
         foreach ($scrapedInfo->getMethods() as $method) {
-            if (!$this->isMagicMethod($method) && !$this->isModelMethod($method)) {
+            if (! $this->isMagicMethod($method) && ! $this->isModelMethod($method)) {
                 $this->log('* @method static ', null, false);
                 $docBlockTags = (new DocBlock($method))->getTags();
 
@@ -136,7 +136,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     }
 
     /**
-     * Get the default value of a parameter;
+     * Get the default value of a parameter;.
      *
      * @param ReflectionMethod $method
      * @param Tag\ParamTag $tag
@@ -169,7 +169,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     protected function getReturnDefinition($tag)
     {
         if ($tag->getType() === '$this' || $tag->getType() === 'self') {
-            return '\\' . $this->scraped_class;
+            return '\\'.$this->scraped_class;
         } else {
             return $tag->getType();
         }

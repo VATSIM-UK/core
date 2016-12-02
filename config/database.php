@@ -54,8 +54,8 @@ return [
 
         'mysql' => [
             'driver'    => 'mysql',
-            'host'	    => env('DB_MYSQL_HOST'),
-            'port'	    => env('DB_MYSQL_PORT'),
+            'host'        => env('DB_MYSQL_HOST'),
+            'port'        => env('DB_MYSQL_PORT'),
             'database'  => env('DB_MYSQL_NAME'),
             'username'  => env('DB_MYSQL_USER'),
             'password'  => env('DB_MYSQL_PASS'),

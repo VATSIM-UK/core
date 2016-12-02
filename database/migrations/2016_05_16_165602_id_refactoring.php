@@ -43,10 +43,10 @@ class IdRefactoring extends Migration
         DB::statement('ALTER TABLE mship_note_type CHANGE note_type_id id INTEGER UNSIGNED AUTO_INCREMENT');
 
         try {
-            Schema::table('mship_account_ban', function(Blueprint $table) {
+            Schema::table('mship_account_ban', function (Blueprint $table) {
                 $table->dropForeign('mship_account_ban_reason_id_foreign');
             });
-        } catch(Exception $e){
+        } catch (Exception $e) {
             // Do nothing with the lack of a foreign key.
         }
 

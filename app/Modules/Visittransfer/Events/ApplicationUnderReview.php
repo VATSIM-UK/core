@@ -1,6 +1,6 @@
-<?php namespace App\Modules\Visittransfer\Events;
+<?php
 
-use App\Events\Event;
+namespace App\Modules\Visittransfer\Events;
 
 use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;

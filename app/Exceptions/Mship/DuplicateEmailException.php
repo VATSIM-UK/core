@@ -1,8 +1,9 @@
-<?php namespace App\Exceptions\Mship;
+<?php
+
+namespace App\Exceptions\Mship;
 
 class DuplicateEmailException extends \Exception
 {
-
     private $emailAddress;
 
     public function __construct($emailAddress)
@@ -12,6 +13,6 @@ class DuplicateEmailException extends \Exception
 
     public function __toString()
     {
-        return "Email address ".$this->emailAddress." was already in use for this account.";
+        return 'Email address '.$this->emailAddress.' was already in use for this account.';
     }
 }
