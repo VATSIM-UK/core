@@ -20,11 +20,12 @@ class AuthUser
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                Session::set("auth_return", Request::fullUrl());
+                Session::set('auth_return', Request::fullUrl());
+
                 return Redirect::to('/');
             }
         }

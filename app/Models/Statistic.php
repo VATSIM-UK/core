@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Carbon\Carbon;
-
 /**
- * App\Models\Statistic
+ * App\Models\Statistic.
  *
- * @property integer $id
+ * @property int $id
  * @property string $period
  * @property string $key
  * @property string $value
@@ -24,29 +21,29 @@ use Carbon\Carbon;
  */
 class Statistic extends \App\Models\Model
 {
-
-    protected $table = "statistic";
-    protected $primaryKey = "id";
+    protected $table = 'statistic';
+    protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['period', 'key'];
 
     public static function setStatistic($period, $key, $value)
     {
-        $_s = Statistic::where("period", "=", $period)->where("key", "=", $key)->first();
-        if (!$_s) {
-            $_s = new Statistic(array("period" => $period, "key" => $key));
+        $_s = self::where('period', '=', $period)->where('key', '=', $key)->first();
+        if (! $_s) {
+            $_s = new self(['period' => $period, 'key' => $key]);
         }
 
         $_s->value = $value;
         $_s->save();
+
         return $_s;
     }
 
     public static function getStatistic($period, $key)
     {
-        $_s = Statistic::where("period", "=", $period)->where("key", "=", $key)->first();
+        $_s = self::where('period', '=', $period)->where('key', '=', $key)->first();
 
-        if (!$_s) {
+        if (! $_s) {
             return 0;
         }
 

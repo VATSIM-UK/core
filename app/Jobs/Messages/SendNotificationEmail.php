@@ -17,11 +17,11 @@ class SendNotificationEmail extends Job implements ShouldQueue
     private $subject;
     private $body;
     private $sender;
-    private $senderEmail     = null;
+    private $senderEmail = null;
     private $senderDisplayAs = null;
     private $recipient;
-    private $recipientEmail  = null;
-    private $recipientName  = null;
+    private $recipientEmail = null;
+    private $recipientName = null;
 
     public function __construct($subject, $body, Account $recipient, Account $sender, array $overrides = [])
     {
@@ -47,11 +47,11 @@ class SendNotificationEmail extends Job implements ShouldQueue
         $recipientEmail = $this->recipientEmail;
         $recipientName = $this->recipientName;
 
-        $mailer->send("emails.messages.post", [
-            "recipient" => $recipient,
-            "recipientName" => $recipientName,
-            "sender"    => $sender,
-            "body"      => $body,
+        $mailer->send('emails.messages.post', [
+            'recipient' => $recipient,
+            'recipientName' => $recipientName,
+            'sender'    => $sender,
+            'body'      => $body,
         ], function ($m) use ($subject, $recipient, $recipientEmail, $sender, $senderEmail, $senderDisplayAs) {
             $m->subject($subject);
             $m->to(($recipientEmail ? $recipientEmail : $recipient->email), $recipient->name);

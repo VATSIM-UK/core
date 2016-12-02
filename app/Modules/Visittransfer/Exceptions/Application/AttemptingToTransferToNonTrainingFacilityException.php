@@ -1,8 +1,9 @@
-<?php namespace App\Modules\Visittransfer\Exceptions\Application;
+<?php
+
+namespace App\Modules\Visittransfer\Exceptions\Application;
 
 class AttemptingToTransferToNonTrainingFacilityException extends \Exception
 {
-
     private $facility;
 
     public function __construct(Facility $facility)

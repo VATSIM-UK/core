@@ -1,8 +1,9 @@
-<?php namespace App\Modules\Visittransfer\Listeners;
+<?php
+
+namespace App\Modules\Visittransfer\Listeners;
 
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Jobs\SendTrainingTeamNewAcceptedApplicationEmail;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
@@ -16,6 +17,6 @@ class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
     {
         $confirmationEmailJob = new SendTrainingTeamNewAcceptedApplicationEmail($event->application);
 
-        dispatch($confirmationEmailJob->onQueue("low"));
+        dispatch($confirmationEmailJob->onQueue('low'));
     }
 }

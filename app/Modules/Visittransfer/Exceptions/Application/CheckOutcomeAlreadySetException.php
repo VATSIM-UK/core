@@ -1,10 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Exceptions\Application;
+<?php
+
+namespace App\Modules\Visittransfer\Exceptions\Application;
 
 use App\Modules\Visittransfer\Models\Application;
 
 class CheckOutcomeAlreadySetException extends \Exception
 {
-
     private $application;
     private $check;
 

@@ -30,55 +30,55 @@ class Application extends Model
 {
     use PublicId, SoftDeletes;
 
-    static protected $public_id_salt       = 'vatsim-uk-visiting-transfer-applications';
-    static protected $public_id_min_length = 8;
-    static protected $public_id_alphabet   = 'upper_alphanumeric';
+    protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
+    protected static $public_id_min_length = 8;
+    protected static $public_id_alphabet = 'upper_alphanumeric';
 
-    protected $table      = "vt_application";
-    protected $fillable   = [
-        "type",
-        "training_team",
-        "account_id",
-        "facility_id",
-        "statement",
-        "status",
-        "expires_at",
+    protected $table = 'vt_application';
+    protected $fillable = [
+        'type',
+        'training_team',
+        'account_id',
+        'facility_id',
+        'statement',
+        'status',
+        'expires_at',
     ];
     public $timestamps = true;
-    protected $dates      = [
-        "expires_at",
-        "submitted_at",
-        "created_at",
-        "updated_at",
+    protected $dates = [
+        'expires_at',
+        'submitted_at',
+        'created_at',
+        'updated_at',
     ];
 
-    const TYPE_VISIT    = 10;
+    const TYPE_VISIT = 10;
     const TYPE_TRANSFER = 40;
 
-    const STATUS_IN_PROGRESS  = 10; // Member hasn't yet submitted application formally.
-    const STATUS_WITHDRAWN    = 15; // Application has been withdrawn.
-    const STATUS_EXPIRED      = 16; // Application expired after 1 hour.
-    const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
+    const STATUS_IN_PROGRESS = 10; // Member hasn't yet submitted application formally.
+    const STATUS_WITHDRAWN = 15; // Application has been withdrawn.
+    const STATUS_EXPIRED = 16; // Application expired after 1 hour.
+    const STATUS_SUBMITTED = 30; // Member has formally submitted application.
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
-    const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
+    const STATUS_ACCEPTED = 60; // Application has been accepted by staff
     const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
-    const STATUS_COMPLETED    = 90; // Application has been formally completed, visit/transfer complete.
-    const STATUS_LAPSED       = 93; // Application has lapsed.
-    const STATUS_CANCELLED    = 96; // Application has been cancelled
-    const STATUS_REJECTED     = 99; // Application has been rejected by staff
+    const STATUS_COMPLETED = 90; // Application has been formally completed, visit/transfer complete.
+    const STATUS_LAPSED = 93; // Application has lapsed.
+    const STATUS_CANCELLED = 96; // Application has been cancelled
+    const STATUS_REJECTED = 99; // Application has been rejected by staff
 
-    static public $APPLICATION_IS_CONSIDERED_EDITABLE = [
+    public static $APPLICATION_IS_CONSIDERED_EDITABLE = [
         self::STATUS_IN_PROGRESS,
     ];
 
-    static public $APPLICATION_IS_CONSIDERED_OPEN = [
+    public static $APPLICATION_IS_CONSIDERED_OPEN = [
         self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
     ];
 
-    static public $APPLICATION_IS_CONSIDERED_CLOSED = [
+    public static $APPLICATION_IS_CONSIDERED_CLOSED = [
         self::STATUS_COMPLETED,
         self::STATUS_LAPSED,
         self::STATUS_WITHDRAWN,
@@ -87,7 +87,7 @@ class Application extends Model
         self::STATUS_REJECTED,
     ];
 
-    static public $APPLICATION_REQUIRES_ACTION = [
+    public static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
     ];
 
@@ -101,7 +101,7 @@ class Application extends Model
     /** All Laravel scopes **/
     public static function scopeOfType($query, $type)
     {
-        return $query->where("type", "=", $type);
+        return $query->where('type', '=', $type);
     }
 
     public static function scopeVisit($query)
@@ -126,12 +126,12 @@ class Application extends Model
 
     public static function scopeStatusIn($query, array $stati)
     {
-        return $query->whereIn("status", $stati);
+        return $query->whereIn('status', $stati);
     }
 
     public static function scopeStatusNotIn($query, array $stati)
     {
-        return $query->whereNotIn("status", $stati);
+        return $query->whereNotIn('status', $stati);
     }
 
     public static function scopeOpen($query)
@@ -157,7 +157,7 @@ class Application extends Model
     /** All Laravel relationships */
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
     }
 
     public function facility()
@@ -172,18 +172,18 @@ class Application extends Model
 
     public function notes()
     {
-        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
     }
 
     /** All Laravel magic attributes **/
     public function getIsPilotAttribute()
     {
-        return strcasecmp($this->attributes['training_team'], "pilot") == 0;
+        return strcasecmp($this->attributes['training_team'], 'pilot') == 0;
     }
 
     public function getIsAtcAttribute()
     {
-        return strcasecmp($this->attributes['training_team'], "atc") == 0;
+        return strcasecmp($this->attributes['training_team'], 'atc') == 0;
     }
 
     public function setStatementAttribute($statement)
@@ -277,25 +277,25 @@ class Application extends Model
     {
         switch ($this->attributes['status']) {
             case self::STATUS_IN_PROGRESS:
-                return "In Progress";
+                return 'In Progress';
             case self::STATUS_WITHDRAWN:
-                return "Withdrawn";
+                return 'Withdrawn';
             case self::STATUS_EXPIRED:
-                return "Expired Automatically";
+                return 'Expired Automatically';
             case self::STATUS_SUBMITTED:
-                return "Submitted";
+                return 'Submitted';
             case self::STATUS_UNDER_REVIEW:
-                return "Under Review";
+                return 'Under Review';
             case self::STATUS_ACCEPTED:
-                return "Accepted";
+                return 'Accepted';
             case self::STATUS_COMPLETED:
-                return "Completed";
+                return 'Completed';
             case self::STATUS_LAPSED:
-                return "Lapsed";
+                return 'Lapsed';
             case self::STATUS_CANCELLED:
-                return "Cancelled";
+                return 'Cancelled';
             case self::STATUS_REJECTED:
-                return "Rejected";
+                return 'Rejected';
         }
     }
 
@@ -311,12 +311,12 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (!$this->exists) {
-            return "Unknown";
+        if (! $this->exists) {
+            return 'Unknown';
         }
 
         if ($this->attributes['training_team'] == 'atc') {
-            return "ATC";
+            return 'ATC';
         }
 
         return ucfirst($this->attributes['training_team']);
@@ -325,10 +325,10 @@ class Application extends Model
     public function getTypeStringAttribute()
     {
         if ($this->is_visit) {
-            return $this->training_team . " Visit";
+            return $this->training_team.' Visit';
         }
 
-        return $this->training_team . " Transfer";
+        return $this->training_team.' Transfer';
     }
 
     public function getNumberReferencesRequiredRelativeAttribute()
@@ -358,7 +358,7 @@ class Application extends Model
 
     public function getFacilityNameAttribute()
     {
-        return $this->facility ? $this->facility->name : "Not selected";
+        return $this->facility ? $this->facility->name : 'Not selected';
     }
 
     /** Business logic. */
@@ -374,7 +374,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return !$this->isStatusIn($stati);
+        return ! $this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -399,8 +399,8 @@ class Application extends Model
         $this->guardAgainstTooManyReferees();
 
         $referee = new Reference([
-            "email"        => $email,
-            "relationship" => $relationship,
+            'email'        => $email,
+            'relationship' => $relationship,
         ]);
 
         $this->referees()->save($referee);
@@ -443,7 +443,7 @@ class Application extends Model
         }
 
         if ($this->is_transfer) {
-            $this->account->removeState(State::findByCode("TRANSFERRING"));
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
         }
     }
 
@@ -466,8 +466,8 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was progressed to 'Under Review'.\n" . $staffReason;
-            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -475,7 +475,7 @@ class Application extends Model
         event(new ApplicationUnderReview($this));
     }
 
-    public function reject($publicReason = "No reason was provided.", $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewApplication();
 
@@ -484,8 +484,8 @@ class Application extends Model
         $this->save();
 
         if ($staffReason) {
-            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was rejected.\n" . $staffReason;
-            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -493,7 +493,7 @@ class Application extends Model
         event(new ApplicationRejected($this));
 
         if ($this->is_transfer) {
-            $this->account->removeState(State::findByCode("TRANSFERRING"));
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
         }
     }
 
@@ -505,18 +505,18 @@ class Application extends Model
         $this->save();
 
         if ($staffComment) {
-            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was accepted.\n" . $staffComment;
-            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was accepted.\n".$staffComment;
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
 
         if ($this->is_visit) {
-            $this->account->addState(State::findByCode("VISITING"));
+            $this->account->addState(State::findByCode('VISITING'));
         }
 
         if ($this->is_transfer) {
-            $this->account->addState(State::findByCode("TRANSFERRING"));
+            $this->account->addState(State::findByCode('TRANSFERRING'));
         }
 
         $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(3));
@@ -534,8 +534,8 @@ class Application extends Model
         $this->save();
 
         if ($staffComment) {
-            $noteContent = "VT Application for " . $this->type_string . " " . $this->facility->name . " was completed.\n" . $staffComment;
-            $note = $this->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n".$staffComment;
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -547,27 +547,27 @@ class Application extends Model
     {
         $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
-        $columnName = "check_outcome_" . $check;
+        $columnName = 'check_outcome_'.$check;
 
-        $this->{$columnName} = (int)$outcome;
+        $this->{$columnName} = (int) $outcome;
         $this->save();
     }
 
     public function settingToggle($setting)
     {
         switch ($setting) {
-            case "training_required":
-                return $this->settingToggleGenericBoolean("training_required");
-            case "statement_required":
+            case 'training_required':
+                return $this->settingToggleGenericBoolean('training_required');
+            case 'statement_required':
                 $this->statement = null;
 
-                return $this->settingToggleGenericBoolean("statement_required");
-            case "references_required":
+                return $this->settingToggleGenericBoolean('statement_required');
+            case 'references_required':
                 return $this->settingToggleReferencesRequired();
-            case "should_perform_checks":
-                return $this->settingToggleGenericBoolean("should_perform_checks");
-            case "will_auto_accept":
-                return $this->settingToggleGenericBoolean("will_auto_accept");
+            case 'should_perform_checks':
+                return $this->settingToggleGenericBoolean('should_perform_checks');
+            case 'will_auto_accept':
+                return $this->settingToggleGenericBoolean('will_auto_accept');
         }
     }
 
@@ -603,7 +603,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (!$this->submitted_at) {
+        if (! $this->submitted_at) {
             return false;
         }
 
@@ -636,7 +636,7 @@ class Application extends Model
     private function guardAgainstDuplicateReferee($refereeAccount)
     {
         $checkContains = $this->referees->filter(function ($referee) use ($refereeAccount) {
-                return $referee->account_id == $refereeAccount->id;
+            return $referee->account_id == $refereeAccount->id;
         })->count() > 0;
 
         if ($checkContains) {
@@ -678,7 +678,7 @@ class Application extends Model
 
     private function guardAgainstDuplicateCheckOutcomeSubmission($check)
     {
-        $tableColumnName = "check_outcome_" . $check;
+        $tableColumnName = 'check_outcome_'.$check;
         if ($this->{$tableColumnName} !== null) {
             throw new CheckOutcomeAlreadySetException($this, $check);
         }

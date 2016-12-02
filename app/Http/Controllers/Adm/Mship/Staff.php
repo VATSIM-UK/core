@@ -1,15 +1,18 @@
-<?php namespace App\Http\Controllers\Adm\Mship;
+<?php
+
+namespace App\Http\Controllers\Adm\Mship;
 
 use App\Models\Staff\Position;
 
 class Staff extends \App\Http\Controllers\Adm\AdmController
 {
-    protected $ordered_positions = array();
+    protected $ordered_positions = [];
 
     public function getIndex()
     {
         $positions = Position::with('attributes', 'filledBy')->get();
         $this->expandPosition($positions->first(), $positions);
+
         return $this->viewMake('adm.mship.staff.index')
                     ->with('positions', $positions)
                     ->with('ordered_positions', $this->ordered_positions);

@@ -1,12 +1,12 @@
-<?php namespace App\Modules\Visittransfer\Jobs;
+<?php
+
+namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
 use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
-use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,24 +32,24 @@ class SendApplicantReferenceRejectionEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $displayFrom = "VATSIM UK - Community Department";
+        $displayFrom = 'VATSIM UK - Community Department';
 
-        $subject = "[".$this->application->public_id."] Reference from '".$this->reference->account->name."' Rejected";
+        $subject = '['.$this->application->public_id."] Reference from '".$this->reference->account->name."' Rejected";
 
-        $body = View::make("visittransfer::emails.applicant.reference_rejected")
-                    ->with("reference", $this->reference)
-                    ->with("application", $this->application)
+        $body = View::make('visittransfer::emails.applicant.reference_rejected')
+                    ->with('reference', $this->reference)
+                    ->with('application', $this->application)
                     ->render();
 
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->application->account, $sender, [
-            "sender_display_as" => $displayFrom,
-            "sender_email" => "community@vatsim-uk.co.uk",
-            "recipient_email" => $this->reference->email
+            'sender_display_as' => $displayFrom,
+            'sender_email' => 'community@vatsim-uk.co.uk',
+            'recipient_email' => $this->reference->email,
         ]);
 
-        dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue('emails'));
     }
 }

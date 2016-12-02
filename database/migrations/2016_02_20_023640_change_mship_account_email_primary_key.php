@@ -12,8 +12,8 @@ class ChangeMshipAccountEmailPrimaryKey extends Migration
      */
     public function up()
     {
-        Schema::table("mship_account_email", function(Blueprint $table){
-            $table->renameColumn("account_email_id", "id");
+        Schema::table('mship_account_email', function (Blueprint $table) {
+            $table->renameColumn('account_email_id', 'id');
         });
     }
 
@@ -24,8 +24,8 @@ class ChangeMshipAccountEmailPrimaryKey extends Migration
      */
     public function down()
     {
-        Schema::table("mship_account_email", function(Blueprint $table){
-            $table->renameColumn("id", "account_email_id");
+        Schema::table('mship_account_email', function (Blueprint $table) {
+            $table->renameColumn('id', 'account_email_id');
         });
     }
 }

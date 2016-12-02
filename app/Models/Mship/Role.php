@@ -3,19 +3,17 @@
 namespace App\Models\Mship;
 
 use App\Traits\RecordsActivity;
-use Watson\Validating\ValidatingTrait;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Permission as PermissionData;
 
 /**
- * App\Models\Mship\Role
+ * App\Models\Mship\Role.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
- * @property boolean $default
- * @property integer $session_timeout
- * @property boolean $password_mandatory
- * @property integer $password_lifetime
+ * @property bool $default
+ * @property int $session_timeout
+ * @property bool $password_mandatory
+ * @property int $password_lifetime
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
@@ -35,11 +33,10 @@ use App\Models\Mship\Permission as PermissionData;
  */
 class Role extends \App\Models\Model
 {
-
     use RecordsActivity;
 
-    protected $table = "mship_role";
-    protected $primaryKey = "id";
+    protected $table = 'mship_role';
+    protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
@@ -66,7 +63,7 @@ class Role extends \App\Models\Model
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
+            $def = self::isDefault()->where('id', '!=', $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();
@@ -80,7 +77,7 @@ class Role extends \App\Models\Model
 
         // Let's undefault any other default models.
         if ($model->default) {
-            $def = Role::isDefault()->where("id", "!=", $model->getKey())->first();
+            $def = self::isDefault()->where('id', '!=', $model->getKey())->first();
             if ($def) {
                 $def->default = 0;
                 $def->save();
@@ -95,7 +92,7 @@ class Role extends \App\Models\Model
      */
     public static function findDefault()
     {
-        return Role::isDefault()->first();
+        return self::isDefault()->first();
     }
 
     /**
@@ -106,7 +103,7 @@ class Role extends \App\Models\Model
      */
     public static function findDefaultOrFail()
     {
-        return Role::isDefault()->firstOrFail();
+        return self::isDefault()->firstOrFail();
     }
 
     public static function scopeIsDefault($query)
@@ -121,12 +118,12 @@ class Role extends \App\Models\Model
 
     public function accounts()
     {
-        return $this->belongsToMany(Account::class, "mship_account_role")->withTimestamps();
+        return $this->belongsToMany(Account::class, 'mship_account_role')->withTimestamps();
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, "mship_permission_role")->withTimestamps();
+        return $this->belongsToMany(Permission::class, 'mship_permission_role')->withTimestamps();
     }
 
     public function hasPermission($permission)
@@ -136,8 +133,8 @@ class Role extends \App\Models\Model
         }
 
         // It's a string, let's be a bit more creative.
-        return !$this->permissions->filter(function ($perm) use ($permission) {
-            return strcasecmp($perm->name, $permission) == 0 or $perm->name == "*";
+        return ! $this->permissions->filter(function ($perm) use ($permission) {
+            return strcasecmp($perm->name, $permission) == 0 or $perm->name == '*';
         })->isEmpty();
     }
 
@@ -163,7 +160,7 @@ class Role extends \App\Models\Model
 
     public function detachPermission(PermissionData $permission)
     {
-        if (!$this->permissions->contains($permission->getKey())) {
+        if (! $this->permissions->contains($permission->getKey())) {
             return false;
         }
 
@@ -210,7 +207,6 @@ class Role extends \App\Models\Model
     {
         return $this->default === 1;
     }
-
 
     /**
      * Determine if the current role has a timeout.

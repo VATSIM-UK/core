@@ -6,10 +6,9 @@ use App\Jobs\Job;
 use App\Models\Messages\Thread;
 use App\Models\Messages\Thread\Participant;
 use App\Models\Messages\Thread\Post;
-use Bus;
 use Illuminate\Contracts\Mail\Mailer;
-use \App\Models\Mship\Account as Account;
-use \App\Models\Mship\Account\Email;
+use App\Models\Mship\Account as Account;
+use App\Models\Mship\Account\Email;
 
 class CreateNewMessage extends Job
 {
@@ -38,13 +37,13 @@ class CreateNewMessage extends Job
         // Let's build the thread
         $thread = new Thread();
         $thread->subject = $this->subject;
-        $thread->read_only = (boolean) $this->systemGenerated;
+        $thread->read_only = (bool) $this->systemGenerated;
         $thread->save();
 
         // Add the participants.
-        $displaySenderAs = ($this->displaySenderAs != null ? $this->displaySenderAs : "");
-        $thread->participants()->save($this->sender, ["status" => Participant::STATUS_OWNER, "display_as" => $displaySenderAs, "read_at" => \Carbon\Carbon::now()]);
-        $thread->participants()->save($this->recipient, ["status" => Participant::STATUS_VIEWER]);
+        $displaySenderAs = ($this->displaySenderAs != null ? $this->displaySenderAs : '');
+        $thread->participants()->save($this->sender, ['status' => Participant::STATUS_OWNER, 'display_as' => $displaySenderAs, 'read_at' => \Carbon\Carbon::now()]);
+        $thread->participants()->save($this->recipient, ['status' => Participant::STATUS_VIEWER]);
 
         // Now the post.
         $post = new Post();
@@ -52,6 +51,6 @@ class CreateNewMessage extends Job
         $thread->posts()->save($post);
         $this->sender->messagePosts()->save($post);
 
-        dispatch((new SendMessageEmail($post, true, $this->verificationEmail))->onQueue("emails"));
+        dispatch((new SendMessageEmail($post, true, $this->verificationEmail))->onQueue('emails'));
     }
 }

@@ -6,19 +6,18 @@ use Illuminate\Database\Migrations\Migration;
 
 class VisitingTransferInitialSetup extends Migration
 {
-
     public function up()
     {
         //
         Schema::create('vt_application', function (Blueprint $table) {
             $table->increments('id');
-            $table->smallInteger("type")->default(\App\Modules\Visittransfer\Models\Application::TYPE_VISIT);
+            $table->smallInteger('type')->default(\App\Modules\Visittransfer\Models\Application::TYPE_VISIT);
             $table->integer('account_id')->unsigned();
             $table->integer('facility_id')->unsigned()->nullable();
             $table->text('statement')->nullable();
-            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Application::STATUS_IN_PROGRESS);
-            $table->text("status_note");
-            $table->timestamp("submitted_at")->nullable();
+            $table->smallInteger('status')->default(\App\Modules\Visittransfer\Models\Application::STATUS_IN_PROGRESS);
+            $table->text('status_note');
+            $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,37 +26,37 @@ class VisitingTransferInitialSetup extends Migration
             $table->increments('id');
             $table->integer('application_id')->unsigned();
             $table->integer('account_id')->unsigned();
-            $table->string("email", 85)->nullable();
-            $table->string("relationship", 85)->nullable();
+            $table->string('email', 85)->nullable();
+            $table->string('relationship', 85)->nullable();
             $table->text('reference')->nullable();
-            $table->smallInteger("status")->default(\App\Modules\Visittransfer\Models\Reference::STATUS_DRAFT);
-            $table->text("status_note");
-            $table->timestamp("contacted_at")->nullable();
-            $table->timestamp("reminded_at")->nullable();
-            $table->timestamp("submitted_at")->nullable();
+            $table->smallInteger('status')->default(\App\Modules\Visittransfer\Models\Reference::STATUS_DRAFT);
+            $table->text('status_note');
+            $table->timestamp('contacted_at')->nullable();
+            $table->timestamp('reminded_at')->nullable();
+            $table->timestamp('submitted_at')->nullable();
             $table->softDeletes();
         });
 
         Schema::create('vt_facility', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 60);
-            $table->string("description", 500);
-            $table->boolean("training_required")->default(0);
-            $table->enum("training_team", ["atc", "pilot"]);
+            $table->string('description', 500);
+            $table->boolean('training_required')->default(0);
+            $table->enum('training_team', ['atc', 'pilot']);
             $table->mediumInteger('training_spaces')->unsigned()->default(0);
-            $table->boolean("stage_statement_enabled")->default(1);
-            $table->boolean("stage_reference_enabled")->default(1);
-            $table->smallInteger("stage_reference_quantity")->default(1);
-            $table->boolean("stage_checks")->default(1);
-            $table->boolean("auto_acceptance")->default(0);
-            $table->boolean("open")->default(0);
+            $table->boolean('stage_statement_enabled')->default(1);
+            $table->boolean('stage_reference_enabled')->default(1);
+            $table->smallInteger('stage_reference_quantity')->default(1);
+            $table->boolean('stage_checks')->default(1);
+            $table->boolean('auto_acceptance')->default(0);
+            $table->boolean('open')->default(0);
             $table->softDeletes();
         });
 
-        DB::table("mship_note_type")->insert(array(
-            ["name" => "Visiting &amp; Transfer", "short_code" => "visittransfer", "is_available" => 1, "is_system" => 1, "is_default" => 0, "colour_code" => "info", "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+        DB::table('mship_note_type')->insert([
+            ['name' => 'Visiting &amp; Transfer', 'short_code' => 'visittransfer', 'is_available' => 1, 'is_system' => 1, 'is_default' => 0, 'colour_code' => 'info', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
-        ));
+        ]);
 
         DB::table('mship_permission')->insert([
             ['name' => 'adm/visit-transfer', 'display_name' => 'Admin / Visit &amp; Transfer', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
@@ -98,6 +97,6 @@ class VisitingTransferInitialSetup extends Migration
             Schema::dropIfExists($table);
         }
 
-        DB::table("mship_permission")->where("name", "LIKE", "adm/visit-transfer%")->delete();
+        DB::table('mship_permission')->where('name', 'LIKE', 'adm/visit-transfer%')->delete();
     }
 }
