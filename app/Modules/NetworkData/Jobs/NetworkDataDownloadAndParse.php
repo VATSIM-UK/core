@@ -3,12 +3,10 @@
 namespace App\Modules\NetworkData\Jobs;
 
 use App\Models\Mship\Qualification;
-use App\Modules\NetworkData\Events\StatisticsDownloaded;
 use App\Modules\NetworkData\Events\NetworkDataParsed;
 use App\Modules\NetworkData\Events\NetworkDataDownloaded;
 use App\Modules\NetworkData\Models\Atc;
 use Carbon\Carbon;
-use Illuminate\Queue\SerializeModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
@@ -16,7 +14,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class NetworkDataDownloadAndParse extends \App\Jobs\Job
 {
-
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     private $vatsimPHP = null;
@@ -29,7 +26,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
     public function __construct()
     {
         $this->vatsimPHP = new \Vatsimphp\VatsimData();
-        $this->vatsimPHP->setConfig("forceDataRefresh", true);
+        $this->vatsimPHP->setConfig('forceDataRefresh', true);
     }
 
     /**
@@ -59,7 +56,6 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
      */
     private function parseRecentDownload()
     {
-
         foreach ($this->vatsimPHP->getControllers() as $controllerData) {
             $qualification = Qualification::parseVatsimATCQualification($controllerData["rating"]);
 
@@ -97,7 +93,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
     private function setControllerConnectedAt(Atc $eloquentController, array $controllerData)
     {
         if ($eloquentController->connected_at == null) {
-            $eloquentController->connected_at = Carbon::createFromFormat("YmdHis", $controllerData['time_logon']);
+            $eloquentController->connected_at = Carbon::createFromFormat('YmdHis', $controllerData['time_logon']);
             $eloquentController->save();
         }
 
@@ -112,8 +108,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
     private function endExpiredAtcSessions($feedLastUpdatedAt)
     {
         $expiringAtc = Atc::where("updated_at", "<", $feedLastUpdatedAt)
-                          ->whereNull("disconnected_at")
-                          ->get();
+                          ->whereNull("disconnected_at");
 
         foreach ($expiringAtc as $atc) {
             $atc->disconnected_at = $feedLastUpdatedAt;

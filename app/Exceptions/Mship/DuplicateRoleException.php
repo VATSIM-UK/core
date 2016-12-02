@@ -1,8 +1,9 @@
-<?php namespace App\Exceptions\Mship;
+<?php
+
+namespace App\Exceptions\Mship;
 
 class DuplicateRoleException extends \Exception
 {
-
     private $role;
 
     public function __construct($role)
@@ -12,6 +13,6 @@ class DuplicateRoleException extends \Exception
 
     public function __toString()
     {
-        return "The role '" . $this->role->name . "' is already attached to this account.";
+        return "The role '".$this->role->name."' is already attached to this account.";
     }
 }

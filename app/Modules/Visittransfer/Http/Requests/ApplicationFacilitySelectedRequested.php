@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Facility;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,8 +17,8 @@ class ApplicationFacilitySelectedRequested extends FormRequest
     public function rules()
     {
         return [
-            "facility_id" => "required|exists:vt_facility,id",
-            "permitted" => "accepted",
+            'facility_id' => 'required|exists:vt_facility,id',
+            'permitted' => 'accepted',
         ];
     }
 
@@ -30,8 +30,8 @@ class ApplicationFacilitySelectedRequested extends FormRequest
     public function messages()
     {
         return [
-            "facility_id.required" => "You have chosen an invalid facility.",
-            "permitted.accepted" => "You are not permitted to apply to this facility.",
+            'facility_id.required' => 'You have chosen an invalid facility.',
+            'permitted.accepted' => 'You are not permitted to apply to this facility.',
         ];
     }
 
@@ -42,7 +42,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("select-facility", Auth::user()->visit_transfer_current);
+        return Gate::allows('select-facility', Auth::user()->visit_transfer_current);
     }
 
     protected function getValidatorInstance()
@@ -51,17 +51,17 @@ class ApplicationFacilitySelectedRequested extends FormRequest
         $data['permitted'] = true;
 
 
-        $facility = Facility::find(array_get($data, "facility_id", null));
+        $facility = Facility::find(array_get($data, 'facility_id', null));
 
-        if (Auth::user()->visit_transfer_current->is_transfer && !$facility->training_required) {
+        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->training_required) {
             $data['permitted'] = false;
         }
 
-        if (Auth::user()->visit_transfer_current->is_transfer && !$facility->can_transfer) {
+        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->can_transfer) {
             $data['permitted'] = false;
         }
 
-        if (Auth::user()->visit_transfer_current->is_visit && !$facility->can_visit) {
+        if (Auth::user()->visit_transfer_current->is_visit && ! $facility->can_visit) {
             $data['permitted'] = false;
         }
 

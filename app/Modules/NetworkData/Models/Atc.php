@@ -5,18 +5,18 @@ namespace App\Modules\NetworkData\Models;
 use App\Modules\NetworkData\Events\AtcSessionStarted;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use \Event;
+use Event;
 use App\Modules\NetworkData\Events\AtcSessionEnded;
 use App\Modules\NetworkData\Events\AtcSessionDeleted;
 
 /**
- * App\Modules\NetworkData\Models\Atc
+ * App\Modules\NetworkData\Models\Atc.
  *
- * @property integer $id
- * @property integer $account_id
+ * @property int $id
+ * @property int $account_id
  * @property string $callsign
- * @property integer $qualification_id
- * @property boolean $facility_type
+ * @property int $qualification_id
+ * @property bool $facility_type
  * @property \Carbon\Carbon $connected_at
  * @property string $disconnected_at
  * @property \Carbon\Carbon $created_at
@@ -64,27 +64,27 @@ class Atc extends Model
 
     public static function scopeForAccountId($query, $id)
     {
-        return $query->where("account_id", "=", $id);
+        return $query->where('account_id', '=', $id);
     }
 
     public static function scopeForQualificationId($query, $id)
     {
-        return $query->where("qualification_id", "=", $id);
+        return $query->where('qualification_id', '=', $id);
     }
 
     public static function scopeWithCallsign($query, $callsign)
     {
-        return $query->where("callsign", "LIKE", $callsign);
+        return $query->where('callsign', 'LIKE', $callsign);
     }
 
     public static function scopeOnline($query)
     {
-        return $query->where("disconnected_at", "IS", null);
+        return $query->where('disconnected_at', 'IS', null);
     }
 
     public static function scopeOffline($query)
     {
-        return $query->where("disconnected_at", "IS NOT", null);
+        return $query->where('disconnected_at', 'IS NOT', null);
     }
 
     public function setDisconnectedAtAttribute($timestamp)

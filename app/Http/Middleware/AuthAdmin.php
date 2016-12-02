@@ -19,16 +19,16 @@ class AuthAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
                 return Redirect::route('adm.authentication.login');
             }
-        } elseif (!Auth::user()->hasPermission(Request::decodedPath())) {
+        } elseif (! Auth::user()->hasPermission(Request::decodedPath())) {
             return Redirect::route('adm.error', [401]);
         }
-        
+
         return $next($request);
     }
 }

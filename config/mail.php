@@ -56,7 +56,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'no-reply@vatsim-uk.co.uk'),
-        'name'    => env('MAIL_FROM_NAME', 'VATSIM UK')
+        'name'    => env('MAIL_FROM_NAME', 'VATSIM UK'),
     ],
 
     /*

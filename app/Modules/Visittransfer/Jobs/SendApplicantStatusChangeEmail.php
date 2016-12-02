@@ -1,11 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Jobs;
+<?php
+
+namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
 use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
-use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,22 +29,22 @@ class SendApplicantStatusChangeEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $displayFrom = "VATSIM UK - Community Department";
+        $displayFrom = 'VATSIM UK - Community Department';
 
-        $subject = "[".$this->application->public_id."] " . $this->application->type_string . " Application " . $this->application->status_string;
+        $subject = '['.$this->application->public_id.'] '.$this->application->type_string.' Application '.$this->application->status_string;
 
-        $body = View::make("visittransfer::emails.applicant.status_changed")
-                    ->with("application", $this->application)
+        $body = View::make('visittransfer::emails.applicant.status_changed')
+                    ->with('application', $this->application)
                     ->render();
 
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->application->account, $sender, [
-            "sender_display_as" => $displayFrom,
-            "sender_email" => "community@vatsim-uk.co.uk",
+            'sender_display_as' => $displayFrom,
+            'sender_email' => 'community@vatsim-uk.co.uk',
         ]);
 
-        dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue('emails'));
     }
 }

@@ -24,7 +24,7 @@ class RepealRequest extends Request
     public function rules()
     {
         return [
-            "reason" => "required|min:5",
+            'reason' => 'required|min:5',
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Libraries\TeamSpeak;
-use App\Models\Mship\Account;
 use Exception;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 
@@ -37,13 +36,13 @@ class TeamSpeakManager extends TeamSpeakCommand
         foreach ($clients as $client) {
             try {
                 $this->currentMember = $client['client_database_id'];
-                
+
                 // perform the necessary checks on the client
                 $member = TeamSpeak::checkClientRegistration($client);
                 $client = TeamSpeak::checkClientDescription($client, $member);
                 TeamSpeak::checkMemberStanding($client, $member);
 
-                if (!TeamSpeak::clientIsProtected($client)) {
+                if (! TeamSpeak::clientIsProtected($client)) {
                     TeamSpeak::checkMemberMandatoryNotifications($client, $member);
                     TeamSpeak::checkClientNickname($client, $member);
                     TeamSpeak::checkClientServerGroups($client, $member);

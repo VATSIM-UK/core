@@ -1,6 +1,7 @@
-<?php namespace App\Modules\Visittransfer\Providers;
+<?php
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
+namespace App\Modules\Visittransfer\Providers;
+
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

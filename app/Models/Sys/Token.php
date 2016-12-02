@@ -5,10 +5,10 @@ namespace App\Models\Sys;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sys\Token
+ * App\Models\Sys\Token.
  *
- * @property integer $token_id
- * @property integer $related_id
+ * @property int $token_id
+ * @property int $related_id
  * @property string $related_type
  * @property string $type
  * @property string $code
@@ -42,11 +42,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Token extends \App\Models\Model
 {
-
     use SoftDeletingTrait;
 
-    protected $table = "sys_token";
-    protected $primaryKey = "token_id";
+    protected $table = 'sys_token';
+    protected $primaryKey = 'token_id';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $hidden = ['token_id'];
 
@@ -62,32 +61,32 @@ class Token extends \App\Models\Model
 
     public function scopeHasCode($query, $code)
     {
-        return $query->where("code", "=", $code);
+        return $query->where('code', '=', $code);
     }
 
     public function scopeOfType($query, $type)
     {
-        return $query->where("type", "=", $type);
+        return $query->where('type', '=', $type);
     }
 
     public function scopeExpired($query)
     {
-        return $query->where("expires_at", "<=", \Carbon\Carbon::now()->toDateTimeString());
+        return $query->where('expires_at', '<=', \Carbon\Carbon::now()->toDateTimeString());
     }
 
     public function scopeNotExpired($query)
     {
-        return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
+        return $query->where('expires_at', '>=', \Carbon\Carbon::now()->toDateTimeString());
     }
 
     public function scopeUsed($query)
     {
-        return $query->whereNotNull("used_at");
+        return $query->whereNotNull('used_at');
     }
 
     public function scopeNotUsed($query)
     {
-        return $query->whereNull("used_at");
+        return $query->whereNull('used_at');
     }
 
     public function scopeValid($query)
@@ -103,7 +102,7 @@ class Token extends \App\Models\Model
             }
         }
 
-        $token = new Token;
+        $token = new self;
         $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
         $token->code = uniqid(uniqid());
@@ -119,7 +118,7 @@ class Token extends \App\Models\Model
 
     public function consume()
     {
-        if (!$this or $this->is_used or $this->is_expired) {
+        if (! $this or $this->is_used or $this->is_expired) {
             return false;
         }
 
@@ -129,7 +128,7 @@ class Token extends \App\Models\Model
 
     public function getIsUsedAttribute()
     {
-        return ($this->attributes['used_at'] != null && \Carbon\Carbon::parse($this->attributes['used_at'])->isPast());
+        return $this->attributes['used_at'] != null && \Carbon\Carbon::parse($this->attributes['used_at'])->isPast();
     }
 
     public function getIsExpiredAttribute()
@@ -139,7 +138,7 @@ class Token extends \App\Models\Model
 
     public function __toString()
     {
-        return array_get($this->attributes, "code", "NoValue");
+        return array_get($this->attributes, 'code', 'NoValue');
     }
 
     public function getDisplayValueAttribute()

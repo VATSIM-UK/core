@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
 use App\Modules\Visittransfer\Models\Application;
@@ -15,7 +16,7 @@ class ApplicationCheckOutcomeRequest extends FormRequest
     public function rules()
     {
         return [
-            "check" => "required|in:90_day,50_hours",
+            'check' => 'required|in:90_day,50_hours',
         ];
     }
 
@@ -27,8 +28,8 @@ class ApplicationCheckOutcomeRequest extends FormRequest
     public function messages()
     {
         return [
-            "check.required" => "You must specify which check you wish to set the outcome for.",
-            "check.in" => "The check you specified does not exist.",
+            'check.required' => 'You must specify which check you wish to set the outcome for.',
+            'check.in' => 'The check you specified does not exist.',
         ];
     }
 
@@ -39,8 +40,8 @@ class ApplicationCheckOutcomeRequest extends FormRequest
      */
     public function authorize()
     {
-        $application = $this->route("application");
+        $application = $this->route('application');
 
-        return Gate::allows("check-outcome", $application);
+        return Gate::allows('check-outcome', $application);
     }
 }

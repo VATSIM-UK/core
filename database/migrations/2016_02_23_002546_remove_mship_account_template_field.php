@@ -12,8 +12,8 @@ class RemoveMshipAccountTemplateField extends Migration
      */
     public function up()
     {
-        Schema::table("mship_account", function(Blueprint $table){
-            $table->dropColumn("template");
+        Schema::table('mship_account', function (Blueprint $table) {
+            $table->dropColumn('template');
         });
     }
 
@@ -24,8 +24,8 @@ class RemoveMshipAccountTemplateField extends Migration
      */
     public function down()
     {
-        Schema::table("mship_account", function(Blueprint $table){
-            $table->string("template")->before("created_at");
+        Schema::table('mship_account', function (Blueprint $table) {
+            $table->string('template')->before('created_at');
         });
     }
 }

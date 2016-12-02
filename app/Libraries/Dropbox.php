@@ -6,9 +6,8 @@ use Cache;
 use stdClass;
 
 /**
- * Class Dropbox
+ * Class Dropbox.
  *
- * @package App\Libraries
  * @todo add error handling for API requests
  * @todo add error handling for API responses
  */
@@ -25,7 +24,7 @@ class Dropbox
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($parameters));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . env('DROPBOX_ACCESS_TOKEN'),
+            'Authorization: Bearer '.env('DROPBOX_ACCESS_TOKEN'),
             'Content-Type: application/json',
         ]);
 

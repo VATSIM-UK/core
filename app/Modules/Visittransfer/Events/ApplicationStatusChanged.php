@@ -1,7 +1,8 @@
-<?php namespace App\Modules\Visittransfer\Events;
+<?php
+
+namespace App\Modules\Visittransfer\Events;
 
 use App\Events\Event;
-
 use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 
@@ -15,6 +16,6 @@ class ApplicationStatusChanged extends Event
     {
         $this->application = $application;
 
-        $this->application->load("referees.account")->load("facility");
+        $this->application->load('referees.account')->load('facility');
     }
 }
