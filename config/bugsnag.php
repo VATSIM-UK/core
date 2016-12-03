@@ -36,7 +36,7 @@ return [
     |
     */
 
-    'app_version' => env('BUGSNAG_APP_VERSION', exec('git describe --abbrev=0 --tags')),
+    'app_version' => env('BUGSNAG_APP_VERSION'),
 
     /*
     |--------------------------------------------------------------------------
