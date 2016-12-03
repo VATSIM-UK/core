@@ -1,3 +1,6 @@
+[![Code Climate](https://codeclimate.com/github/VATSIM-UK/core/badges/gpa.svg)](https://codeclimate.com/github/VATSIM-UK/core)
+[![Build Status](https://travis-ci.org/VATSIM-UK/core.svg?branch=production)](https://travis-ci.org/VATSIM-UK/core)
+
 ## Upgrade Notes
 
 ### All Versions (2.3.5 onwards)
@@ -10,6 +13,9 @@
 * **Perform version-specific upgrade steps (below)**
 * Enable all cronjobs
 * Restart all queue processes
+
+### 2.3.6 > 2.3.6.1
+* Add relevant BUGSNAP_ config variables from the .env.example file
 
 ### 2.3.5 > 2.3.6
 * Run a range of consolidation destroying SQL:

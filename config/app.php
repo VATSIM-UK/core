@@ -164,6 +164,9 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+        /* BugSnag must ALWAYS be above the App Service Providers. */
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -244,6 +247,7 @@ return [
         /*
          * Third Party
          */
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'SlackApi' => Vluzrmos\SlackApi\Facades\SlackApi::class,
         'SlackChannel' => Vluzrmos\SlackApi\Facades\SlackChannel::class,
         'SlackChat' => Vluzrmos\SlackApi\Facades\SlackChat::class,
