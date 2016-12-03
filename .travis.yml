@@ -1,7 +1,11 @@
 language: php
-
 php:
-  - 5.6
+  - '5.4'
+  - '5.5'
+  - '5.6'
+  - '7.0'
+  - hhvm
+  - nightly
 
 services:
   - mysql:5.5
@@ -9,19 +13,19 @@ services:
 before_install:
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
   - mysql -e 'create database IF NOT EXISTS rts;' -uroot
+  - composer install --prefer-dist --no-interaction -o > /dev/null
+  - npm install gulp
+  - npm install
 
 install:
-  - composer install --prefer-dist --no-interaction -o > /dev/null
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan module:migrate -vvv -n
-  - php artisan serve -q &
-  - npm install gulp
-  - npm install
   - gulp --production
 
 before_script:
+  - php artisan serve -q &
 
 script:
   - vendor/bin/phpunit
