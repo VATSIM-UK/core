@@ -37,10 +37,10 @@ class Note extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
 
-    protected $table = 'mship_account_note';
+    protected $table      = 'mship_account_note';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['id'];
+    protected $dates      = ['created_at', 'deleted_at'];
+    protected $hidden     = ['id'];
 
     public function user()
     {

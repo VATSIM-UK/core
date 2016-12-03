@@ -41,7 +41,7 @@ class TeamSpeakCleanup extends Command
 
         // check TS database for clients without registrations
         $total_clients = $this->tscon->clientCountDb();
-        $offset = 0;
+        $offset        = 0;
         while ($offset < $total_clients) {
             $clients = $this->tscon->clientListDb($offset);
             foreach ($clients as $client) {

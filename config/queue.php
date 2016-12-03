@@ -36,16 +36,16 @@ return [
         ],
 
         'database' => [
-            'driver' => 'database',
-            'table' => 'jobs_pending',
-            'queue' => 'default',
+            'driver'      => 'database',
+            'table'       => 'jobs_pending',
+            'queue'       => 'default',
             'retry_after' => 60,
         ],
 
         'beanstalkd' => [
-            'driver' => 'beanstalkd',
-            'host'   => 'localhost',
-            'queue'  => 'default',
+            'driver'         => 'beanstalkd',
+            'host'           => 'localhost',
+            'queue'          => 'default',
             'retry_after'    => 60,
         ],
 
@@ -67,9 +67,9 @@ return [
         ],
 
         'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue'  => 'default',
+            'driver'      => 'redis',
+            'connection'  => 'default',
+            'queue'       => 'default',
             'retry_after' => 60,
         ],
 
@@ -88,7 +88,7 @@ return [
 
     'failed' => [
         'database' => 'mysql',
-        'table' => 'jobs_failed',
+        'table'    => 'jobs_failed',
     ],
 
 ];

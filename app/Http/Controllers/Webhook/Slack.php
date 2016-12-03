@@ -8,10 +8,10 @@ use Response;
 
 class Slack extends WebhookController
 {
-    private $slackPayload = [];
+    private $slackPayload  = [];
     private $commandRoutes = [
         '/register' => [
-            'token' => '',
+            'token'  => '',
             'method' => 'getRegister',
         ],
     ];

@@ -38,13 +38,13 @@ class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
                     ->render();
 
 
-        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $sender    = Account::find(VATUK_ACCOUNT_SYSTEM);
         $recipient = Account::find(1002707);
 
         // TODO: Use the staff services feature to get all community members.
         $createNewMessage = new SendNotificationEmail($subject, $body, $recipient, $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
+            'sender_email'      => 'community@vatsim-uk.co.uk',
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));

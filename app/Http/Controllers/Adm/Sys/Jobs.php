@@ -27,15 +27,15 @@ class Jobs extends AdmController
         $jobs = $jobs->paginate(20);
 
         foreach ($jobs as $job) {
-            $payload = json_decode($job->payload, true);
-            $job->job = $payload['job'];
+            $payload   = json_decode($job->payload, true);
+            $job->job  = $payload['job'];
             $job->data = $payload['data'];
         }
 
         foreach ($jobs as $job) {
             foreach ($job->data as $key => &$data) {
-                $data = str_replace(['{', '}', ';'], ['{<br>', '}<br>', ';<br>'], $data);
-                $data = explode('<br>', $data);
+                $data  = str_replace(['{', '}', ';'], ['{<br>', '}<br>', ';<br>'], $data);
+                $data  = explode('<br>', $data);
                 $count = 0;
                 foreach ($data as &$line) {
                     $startObject = false;
@@ -63,7 +63,7 @@ class Jobs extends AdmController
     public function postFailed(Request $request, $id)
     {
         if ($request->has('filter_query')) {
-            $ids = DB::table('jobs_failed')->where('payload', 'LIKE', '%'.$request->input('filter_query').'%')->pluck('id');
+            $ids      = DB::table('jobs_failed')->where('payload', 'LIKE', '%'.$request->input('filter_query').'%')->pluck('id');
             $exitCode = Artisan::call('queue:retry', ['id' => $ids]);
         } elseif ($id == 'all') {
             $exitCode = Artisan::call('queue:retry', ['id' => ['all']]);

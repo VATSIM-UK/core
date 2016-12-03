@@ -26,12 +26,12 @@ class Permission extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table = 'mship_permission';
+    protected $table      = 'mship_permission';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = ['name', 'display_name'];
-    protected $rules = [
-        'name' => 'required',
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $fillable   = ['name', 'display_name'];
+    protected $rules      = [
+        'name'         => 'required',
         'display_name' => 'required|between:3,50',
     ];
 
