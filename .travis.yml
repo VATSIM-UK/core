@@ -8,6 +8,7 @@ services:
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
+  - mysql -e 'create database IF NOT EXISTS rts;' -uroot
 
 install:
   - composer install --prefer-dist --no-interaction -o > /dev/null
