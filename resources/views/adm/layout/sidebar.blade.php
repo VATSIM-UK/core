@@ -143,6 +143,12 @@
                 @endif
             @endif
 
+            @if($_account->hasChildPermission("adm/network-data"))
+                @if(Module::isEnabled("networkdata") && View::exists("networkdata::admin._sidebar"))
+                    @include("networkdata::admin._sidebar")
+                @endif
+            @endif
+
             @if($_account->hasChildPermission("adm/system"))
                 <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
                     <a href="#">
