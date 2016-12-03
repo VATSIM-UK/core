@@ -17,11 +17,11 @@ class SendRefereeNoLongerRequiredEmail extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     private $application = null;
-    private $reference = null;
+    private $reference   = null;
 
     public function __construct(Reference $reference)
     {
-        $this->reference = $reference;
+        $this->reference   = $reference;
         $this->application = $reference->application;
     }
 
@@ -46,8 +46,8 @@ class SendRefereeNoLongerRequiredEmail extends Job implements ShouldQueue
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->reference->account, $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
-            'recipient_email' => $this->reference->email,
+            'sender_email'      => 'community@vatsim-uk.co.uk',
+            'recipient_email'   => $this->reference->email,
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));

@@ -5,7 +5,7 @@ function determine_mship_state_from_vatsim($region, $division)
     $states = \App\Models\Mship\State::orderBy('priority')->get();
 
     foreach ($states as $state) {
-        $regionMatch = false;
+        $regionMatch   = false;
         $divisionMatch = false;
 
         // We don't care about temps.

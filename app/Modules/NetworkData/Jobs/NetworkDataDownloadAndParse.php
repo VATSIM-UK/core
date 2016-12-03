@@ -60,13 +60,13 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
 
             Atc::updateOrCreate(
                 [
-                    'account_id' => $controllerData['cid'],
-                    'callsign' => $controllerData['callsign'],
+                    'account_id'       => $controllerData['cid'],
+                    'callsign'         => $controllerData['callsign'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type' => $controllerData['facilitytype'],
-                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at' => null,
-                    'deleted_at' => null,
+                    'facility_type'    => $controllerData['facilitytype'],
+                    'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at'  => null,
+                    'deleted_at'       => null,
                 ],
                 [
                     'updated_at' => \Carbon\Carbon::now(),

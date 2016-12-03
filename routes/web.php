@@ -146,8 +146,8 @@ Route::group(['domain' => config('app.url')], function () {
         Route::group(['prefix' => 'manage'], function () {
             Route::get('/landing', ['as' => 'mship.manage.landing', 'uses' => 'Management@getLanding']);
             Route::get('/dashboard', [
-                'as' => 'mship.manage.dashboard',
-                'uses' => 'Management@getDashboard',
+                'as'         => 'mship.manage.dashboard',
+                'uses'       => 'Management@getDashboard',
                 'middleware' => ['auth.user.full', 'user.must.read.notifications'],
             ]);
 

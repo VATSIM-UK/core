@@ -30,13 +30,13 @@ namespace App\Models\Messages\Thread;
  */
 class Participant extends \App\Models\Model
 {
-    protected $table = 'messages_thread_participant';
+    protected $table      = 'messages_thread_participant';
     protected $primaryKey = 'id';
-    protected $fillable = ['display_as'];
-    public $dates = ['read_at', 'created_at', 'updated_at'];
-    public $timestamps = true;
+    protected $fillable   = ['display_as'];
+    public $dates         = ['read_at', 'created_at', 'updated_at'];
+    public $timestamps    = true;
 
-    const STATUS_OWNER = 90;
+    const STATUS_OWNER  = 90;
     const STATUS_VIEWER = 10;
 
     public static function scopeIsOwner($query)

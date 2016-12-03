@@ -23,7 +23,7 @@ class AtcSessionModelTest extends TestCase
 
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, 'online')->create();
 
-        $currentTimestamp = \Carbon\Carbon::now();
+        $currentTimestamp            = \Carbon\Carbon::now();
         $atcSession->disconnected_at = $currentTimestamp;
 
         $atcSession->save();

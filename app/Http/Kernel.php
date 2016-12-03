@@ -46,9 +46,9 @@ class Kernel extends HttpKernel
         'auth.user.full'               => Middleware\AuthUserFull::class,
         'auth.admin'                   => Middleware\AuthAdmin::class,
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'bindings'                     => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'                          => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'                        => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'                     => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }
