@@ -8,7 +8,6 @@ enabled:
 
 disabled:
     - "unalign_equals"
-    - "unalign_double_arrow"
 
 finder:
   exclude:
