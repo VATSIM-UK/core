@@ -22,7 +22,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     protected static $connection;
 
     /**
-     * @var array The connected clients, in the format $connectedClients[clid] = dbid;
+     * @var array The connected clients, in the format[clid] = dbid;
      */
     protected static $connectedClients = [];
 
@@ -46,9 +46,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         self::$connection = $this->establishConnection();
         self::$connection->notifyRegister('server');
         TeamSpeak3_Helper_Signal::getInstance()
-            ->subscribe('notifyCliententerview', TeamSpeakDaemon::class . '::clientJoinedEvent');
+            ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
         TeamSpeak3_Helper_Signal::getInstance()
-            ->subscribe('notifyClientleftview', TeamSpeakDaemon::class . '::clientLeftEvent');
+            ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
 
         // main loop
         while (true) {
@@ -72,7 +72,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         if ($event['client_type'] != 0) {
             return;
         }
-        
+
         try {
             $client = $host->serverGetSelected()->clientGetById($event->clid);
             self::$command->currentMember = $client['client_database_id'];
@@ -85,7 +85,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             $client = TeamSpeak::checkClientDescription($client, $member);
             TeamSpeak::checkMemberStanding($client, $member);
 
-            if (!TeamSpeak::clientIsProtected($client)) {
+            if (! TeamSpeak::clientIsProtected($client)) {
                 TeamSpeak::checkMemberMandatoryNotifications($client, $member);
                 TeamSpeak::checkClientNickname($client, $member);
                 TeamSpeak::checkClientServerGroups($client, $member);
@@ -111,7 +111,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             unset(self::$connectedClients[$event->clid]);
 
             // cache their dbid and the current datetime for n minutes
-            Cache::put(TeamSpeak::CACHE_PREFIX_CLIENT_DISCONNECT . $dbid, Carbon::now(), 5);
+            Cache::put(TeamSpeak::CACHE_PREFIX_CLIENT_DISCONNECT.$dbid, Carbon::now(), 5);
         }
     }
 

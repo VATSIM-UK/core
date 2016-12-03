@@ -1,11 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Jobs;
+<?php
+
+namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
 use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
-use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,12 +29,12 @@ class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $displayFrom = "VATSIM UK - Community Department";
+        $displayFrom = 'VATSIM UK - Community Department';
 
-        $subject = "[".$this->application->public_id."] New ".$this->application->type_status." Application";
+        $subject = '['.$this->application->public_id.'] New '.$this->application->type_status.' Application';
 
-        $body = View::make("visittransfer::emails.community.new_application")
-                    ->with("application", $this->application)
+        $body = View::make('visittransfer::emails.community.new_application')
+                    ->with('application', $this->application)
                     ->render();
 
 
@@ -43,10 +43,10 @@ class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
 
         // TODO: Use the staff services feature to get all community members.
         $createNewMessage = new SendNotificationEmail($subject, $body, $recipient, $sender, [
-            "sender_display_as" => $displayFrom,
-            "sender_email" => "community@vatsim-uk.co.uk"
+            'sender_display_as' => $displayFrom,
+            'sender_email' => 'community@vatsim-uk.co.uk',
         ]);
 
-        dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue('emails'));
     }
 }

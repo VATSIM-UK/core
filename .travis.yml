@@ -1,0 +1,35 @@
+language: php
+
+php:
+  - 5.6
+
+services:
+  - mysql:5.5
+
+before_install:
+  - mysql -e 'create database IF NOT EXISTS core;' -uroot
+
+install:
+  - composer install --prefer-dist --no-interaction -o > /dev/null
+  - cp .env.example .env
+  - php artisan key:generate
+  - php artisan migrate -vvv -n
+  - php artisan module:migrate -vvv -n
+  - php artisan serve -q &
+
+before_script:
+
+script:
+  - vendor/bin/phpunit
+
+after_success:
+
+after_failure:
+
+before_deploy:
+
+deploy:
+
+after_deploy:
+
+after_script:

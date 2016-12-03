@@ -3,17 +3,17 @@
 namespace App\Models\Sys;
 
 use App\Models\Model;
-use \Request;
+use Request;
 
 /**
- * App\Models\Sys\Activity
+ * App\Models\Sys\Activity.
  *
- * @property integer $id
- * @property integer $actor_id
- * @property integer $subject_id
+ * @property int $id
+ * @property int $actor_id
+ * @property int $subject_id
  * @property string $subject_type
  * @property string $action
- * @property integer $ip
+ * @property int $ip
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $actor
@@ -32,14 +32,14 @@ use \Request;
  */
 class Activity extends Model
 {
-    protected $table      = "sys_activity";
-    protected $primaryKey = "id";
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable = ["actor_id", "subject_id", "subject_type", "action"];
+    protected $table = 'sys_activity';
+    protected $primaryKey = 'id';
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "actor_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'actor_id');
     }
 
     public function subject()
@@ -59,8 +59,8 @@ class Activity extends Model
 
     public function getTypeAttribute()
     {
-        $strippedType = str_replace("\\", "/", $this->attributes['subject_type']);
-        $strippedType = str_replace("App/Models/", "", $strippedType);
+        $strippedType = str_replace('\\', '/', $this->attributes['subject_type']);
+        $strippedType = str_replace('App/Models/', '', $strippedType);
 
         return $strippedType;
     }

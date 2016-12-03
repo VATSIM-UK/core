@@ -65,10 +65,10 @@ class TeamspeakRefactoring extends Migration
         ]);
 
         try {
-            Schema::table('teamspeak_log', function(Blueprint $table) {
+            Schema::table('teamspeak_log', function (Blueprint $table) {
                 $table->dropForeign('teamspeak_log_registration_id_foreign');
             });
-        } catch(Exception $e){
+        } catch (Exception $e) {
             // Do nothing with a missing FK.
         }
         Schema::drop('teamspeak_log');
@@ -81,13 +81,13 @@ class TeamspeakRefactoring extends Migration
      */
     public function down()
     {
-        Schema::create('teamspeak_log', function($table) {
+        Schema::create('teamspeak_log', function ($table) {
             $table->increments('id')->unsigned();
             $table->integer('registration_id')->unsigned()->nullable();
             $table->string('type', 75);
             $table->timestamps();
         });
-        Schema::table('teamspeak_log', function($table) {
+        Schema::table('teamspeak_log', function ($table) {
             $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
         });
 

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 /**
- * App\Models\aModel
+ * App\Models\aModel.
  *
  * @method static \Illuminate\Database\Eloquent\Builder withGlobalScope(string $identifier, mixed $scope)
  * @method static \Illuminate\Database\Eloquent\Builder withoutGlobalScope(mixed $scope)
@@ -70,33 +70,31 @@ abstract class Model extends EloquentModel
     protected static function boot()
     {
         parent::boot();
-        self::created(array(get_called_class(), "eventCreated"));
-        self::updated(array(get_called_class(), "eventUpdated"));
-        self::deleted(array(get_called_class(), "eventDeleted"));
+        self::created([get_called_class(), 'eventCreated']);
+        self::updated([get_called_class(), 'eventUpdated']);
+        self::deleted([get_called_class(), 'eventDeleted']);
     }
 
     public static function eventCreated($model)
     {
-        return;
     }
 
     public static function eventUpdated($model)
     {
-        return;
     }
 
     public static function eventDeleted($model)
     {
-        return;
     }
 
     public function toArray()
     {
         $array = parent::toArray();
-        $array['status'] = ($this->deleted_at ? "Deleted" : "Active");
+        $array['status'] = ($this->deleted_at ? 'Deleted' : 'Active');
         if (isset($array['pivot'])) {
             unset($array['pivot']);
         }
+
         return $array;
     }
 
@@ -104,7 +102,7 @@ abstract class Model extends EloquentModel
     {
         // Let's check the old data vs new data, so we can store data changes!
         // We check for the presence of the dataChanges relationship, to warrent tracking changes.
-        if (get_called_class() != "App\Models\Sys\Data\Change" && method_exists($this, "dataChanges")) {
+        if (get_called_class() != "App\Models\Sys\Data\Change" && method_exists($this, 'dataChanges')) {
             // Get the changed values!
             foreach ($this->getDirty() as $attribute => $value) {
                 // There are some values we might want to remove.  They may be stored in a variable

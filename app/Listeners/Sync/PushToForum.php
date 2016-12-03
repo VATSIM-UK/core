@@ -2,10 +2,6 @@
 
 namespace App\Listeners\Sync;
 
-use App\Events\Mship\AccountBanTouch;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-
 class PushToForum
 {
     public function __construct()

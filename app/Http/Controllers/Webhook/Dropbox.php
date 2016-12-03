@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Http\Requests;
 use App\Libraries\Dropbox as DropboxLibrary;
 use App\Libraries\Slack as SlackLibrary;
 use Cache;
@@ -38,9 +37,9 @@ class Dropbox extends WebhookController
 
         // process them
         foreach ($entries as $entry) {
-            $tags .= $entry->{'.tag'} . "\n";
-            $names .= $entry->name . "\n";
-            $paths .= $entry->path_lower . "\n";
+            $tags .= $entry->{'.tag'}."\n";
+            $names .= $entry->name."\n";
+            $paths .= $entry->path_lower."\n";
         }
 
         $fields = [

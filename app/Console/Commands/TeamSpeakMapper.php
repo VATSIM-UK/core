@@ -113,7 +113,7 @@ class TeamSpeakMapper extends Command
             case 'Member':
                 return Permission::where('name', 'teamspeak/servergroup/member')->first()->id;
             default:
-                return null;
+                return;
         }
     }
 

@@ -1,10 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Exceptions\Application;
+<?php
+
+namespace App\Modules\Visittransfer\Exceptions\Application;
 
 use App\Modules\Visittransfer\Models\Facility;
 
 class FacilityHasNoCapacityException extends \Exception
 {
-
     private $facility;
 
     public function __construct(Facility $facility)

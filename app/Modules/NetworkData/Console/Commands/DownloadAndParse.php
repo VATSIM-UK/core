@@ -3,10 +3,6 @@
 namespace App\Modules\NetworkData\Console\Commands;
 
 use App\Modules\NetworkData\Jobs\NetworkDataDownloadAndParse as StatisticsDownloadAndParseJob;
-use DB;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use App\Models\Mship\Account;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class DownloadAndParse extends \App\Console\Commands\Command
@@ -44,7 +40,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     public function fire()
     {
-        $downloadJob = (new StatisticsDownloadAndParseJob())->onQueue("low");
+        $downloadJob = (new StatisticsDownloadAndParseJob())->onQueue('low');
         $this->dispatch($downloadJob);
     }
 }

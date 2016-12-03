@@ -2,12 +2,6 @@
 
 namespace App\Http\Controllers\Webhook\Email;
 
-use Session;
-use Response;
-use Redirect;
-use View;
-use Input;
-
 class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookController
 {
     protected $messageId = null;
@@ -15,7 +9,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runDelivered($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -28,7 +22,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runOpened($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -41,7 +35,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runClicked($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -54,7 +48,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runUnsubscribed($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -67,7 +61,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runSpam($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -80,7 +74,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runBounce($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 
@@ -93,7 +87,7 @@ class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookContro
 
     protected function runDropped($data = [])
     {
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
+        if (! $this->queueEntry or ! $this->queueEntry->exists) {
             return;
         }
 

@@ -3,15 +3,15 @@
 namespace App\Models\Sys\Data;
 
 /**
- * App\Models\Sys\Data\Change
+ * App\Models\Sys\Data\Change.
  *
- * @property integer $data_change_id
- * @property integer $model_id
+ * @property int $data_change_id
+ * @property int $model_id
  * @property string $model_type
  * @property string $data_key
  * @property string $data_old
  * @property string $data_new
- * @property boolean $automatic
+ * @property bool $automatic
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
@@ -28,8 +28,8 @@ namespace App\Models\Sys\Data;
  */
 class Change extends \App\Models\Model
 {
-    protected $table = "sys_data_change";
-    protected $primaryKey = "data_change_id";
+    protected $table = 'sys_data_change';
+    protected $primaryKey = 'data_change_id';
     protected $hidden = ['data_change_id'];
 
     public function model()

@@ -1,4 +1,6 @@
-<?php namespace App\Modules\Visittransfer\Providers;
+<?php
+
+namespace App\Modules\Visittransfer\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Route;

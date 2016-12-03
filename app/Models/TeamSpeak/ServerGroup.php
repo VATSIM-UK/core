@@ -5,17 +5,17 @@ namespace App\Models\TeamSpeak;
 use App\Scopes\TeamSpeak\GroupScope;
 
 /**
- * App\Models\TeamSpeak\ServerGroup
+ * App\Models\TeamSpeak\ServerGroup.
  *
  * @mixin \Eloquent
- * @property integer $id
- * @property integer $dbid
+ * @property int $id
+ * @property int $dbid
  * @property string $name
  * @property string $type
- * @property boolean $default
- * @property boolean $protected
- * @property integer $permission_id
- * @property integer $qualification_id
+ * @property bool $default
+ * @property bool $protected
+ * @property int $permission_id
+ * @property int $qualification_id
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup whereDbid($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup whereName($value)

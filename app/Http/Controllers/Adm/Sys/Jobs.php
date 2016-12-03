@@ -14,7 +14,7 @@ class Jobs extends AdmController
         parent::__construct();
 
         if (config('queue.default') !== 'database') {
-            abort(500, 'Unable to manage jobs using ' . config('queue.default') . ' queue driver.');
+            abort(500, 'Unable to manage jobs using '.config('queue.default').' queue driver.');
         }
     }
 
@@ -35,7 +35,7 @@ class Jobs extends AdmController
         foreach ($jobs as $job) {
             foreach ($job->data as $key => &$data) {
                 $data = str_replace(['{', '}', ';'], ['{<br>', '}<br>', ';<br>'], $data);
-                $data = explode("<br>", $data);
+                $data = explode('<br>', $data);
                 $count = 0;
                 foreach ($data as &$line) {
                     $startObject = false;
@@ -48,15 +48,15 @@ class Jobs extends AdmController
                         }
                     }
 
-                    $line = str_repeat('&nbsp;', $count) . $line;
+                    $line = str_repeat('&nbsp;', $count).$line;
 
                     $count += $startObject ? 4 : 0;
                 }
 
-                $data = implode("<br>", $data);
+                $data = implode('<br>', $data);
             }
         }
-        
+
         return $this->viewMake('adm.sys.jobs.failed')->with('jobs', $jobs);
     }
 
