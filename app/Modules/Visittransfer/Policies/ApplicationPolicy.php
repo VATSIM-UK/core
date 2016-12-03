@@ -1,11 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Policies;
+<?php
+
+namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
-use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Gate;
 
 class ApplicationPolicy
 {
@@ -13,9 +13,9 @@ class ApplicationPolicy
 
     public function before(Account $user, $ability)
     {
-        $application = \Request::route("applicationByPublicId");
+        $application = \Request::route('applicationByPublicId');
 
-        if($application && $user->id != $application->account_id){
+        if ($application && $user->id != $application->account_id) {
             return false;
         }
     }
@@ -23,7 +23,7 @@ class ApplicationPolicy
     public function create(Account $user, Application $application)
     {
         // If they are currently a division member, they are not authorised.
-        if ($user->hasState("DIVISION")) {
+        if ($user->hasState('DIVISION')) {
             return false;
         }
 
@@ -50,7 +50,7 @@ class ApplicationPolicy
 
     public function selectFacility(Account $user, Application $application)
     {
-        if (!$application->exists || !$application->is_editable) {
+        if (! $application->exists || ! $application->is_editable) {
             return false;
         }
 
@@ -59,11 +59,11 @@ class ApplicationPolicy
 
     public function addStatement(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
-        if (!$application->statement_required) {
+        if (! $application->statement_required) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class ApplicationPolicy
 
     public function addReferee(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -89,9 +89,9 @@ class ApplicationPolicy
 
     public function deleteReferee(Account $user, Application $application)
     {
-        $reference = \Request::route("reference");
+        $reference = \Request::route('reference');
 
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -104,7 +104,7 @@ class ApplicationPolicy
 
     public function submitApplication(Account $user, Application $application)
     {
-        if (!$application->facility || !$application->is_editable) {
+        if (! $application->facility || ! $application->is_editable) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (!$application->is_in_progress) {
+        if (! $application->is_in_progress) {
             return false;
         }
 
@@ -125,7 +125,7 @@ class ApplicationPolicy
 
     public function withdrawApplication(Account $user, Application $application)
     {
-        if (!$application->is_in_progress) {
+        if (! $application->is_in_progress) {
             return false;
         }
 
@@ -147,7 +147,7 @@ class ApplicationPolicy
             return false;
         }
 
-        if (!$application->is_under_review) {
+        if (! $application->is_under_review) {
             return false;
         }
 

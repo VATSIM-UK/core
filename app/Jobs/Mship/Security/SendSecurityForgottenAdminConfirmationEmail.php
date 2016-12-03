@@ -5,7 +5,6 @@ namespace App\Jobs\Mship\Security;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
 use App\Models\Sys\Token;
-use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,7 +25,6 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
     }
 
     /**
-     *
      * Dispatch the security password reset CONFIRMATION email (for admin resets).
      *
      * @param \Illuminate\Contracts\Mail\Mailer $mailer
@@ -34,17 +32,17 @@ class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implemen
      */
     public function handle(Mailer $mailer)
     {
-        $displayFrom = "VATSIM UK - Community Department";
-        $subject = "SSO Security - Administrative Reset Confirmation";
-        $body = View::make("emails.mship.security.reset_confirmation_admin")
-                     ->with("account", $this->recipient)
-                     ->with("token", $this->token)
+        $displayFrom = 'VATSIM UK - Community Department';
+        $subject = 'SSO Security - Administrative Reset Confirmation';
+        $body = View::make('emails.mship.security.reset_confirmation_admin')
+                     ->with('account', $this->recipient)
+                     ->with('token', $this->token)
                      ->render();
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue('emails'));
     }
 }

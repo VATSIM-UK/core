@@ -5,7 +5,6 @@ namespace App\Jobs\Mship\Security;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Sys\Token;
-use Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +31,7 @@ class TriggerPasswordResetConfirmation extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $tokenType = "mship_account_security_reset";
+        $tokenType = 'mship_account_security_reset';
         $allowDuplicates = false;
         $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->account);
 

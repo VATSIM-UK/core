@@ -1,7 +1,6 @@
 <?php
 
 use Carbon\Carbon;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddMissingAdminMembershipAccountListFilterPermissions extends Migration
@@ -28,11 +27,11 @@ class AddMissingAdminMembershipAccountListFilterPermissions extends Migration
      */
     public function down()
     {
-        DB::table("mship_permission")->whereIn('name', [
-            "adm/mship/account/all",
-            "adm/mship/account/active",
-            "adm/mship/account/division",
-            "adm/mship/account/nondivision",
+        DB::table('mship_permission')->whereIn('name', [
+            'adm/mship/account/all',
+            'adm/mship/account/active',
+            'adm/mship/account/division',
+            'adm/mship/account/nondivision',
         ])->delete();
     }
 }

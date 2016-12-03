@@ -8,7 +8,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use \App\Models\Mship\Account\Email as Email;
+use App\Models\Mship\Account\Email as Email;
 
 class SendMessageEmail extends Job implements ShouldQueue
 {
@@ -21,7 +21,7 @@ class SendMessageEmail extends Job implements ShouldQueue
     public function __construct(Post $post, $isNew = true, Email $verificationEmail = null)
     {
         $this->post = $post;
-        $this->isNew = (boolean) $isNew;
+        $this->isNew = (bool) $isNew;
         $this->verificationEmail = $verificationEmail;
     }
 
@@ -45,8 +45,8 @@ class SendMessageEmail extends Job implements ShouldQueue
             }
 
 
-            $mailer->send("emails.messages.post", ["recipient" => $participant, "sender" => $post->author, "body" => $this->post->content], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
-                $m->subject(($isNew ? $post->thread->subject : "RE: ".$post->thread->subject));
+            $mailer->send('emails.messages.post', ['recipient' => $participant, 'sender' => $post->author, 'body' => $this->post->content], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
+                $m->subject(($isNew ? $post->thread->subject : 'RE: '.$post->thread->subject));
                 $m->to($recipientAddress, $participant->name);
 
                 // Send this one to all the secondary emails.

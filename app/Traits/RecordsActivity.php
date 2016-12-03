@@ -4,8 +4,7 @@ namespace App\Traits;
 
 use App\Models\Sys\Activity;
 use Illuminate\Database\Eloquent\Model;
-use ReflectionClass;
-use \Auth;
+use Auth;
 
 trait RecordsActivity
 {
@@ -27,9 +26,9 @@ trait RecordsActivity
         }
 
         return [
-            "created",
-            "updated",
-            "deleted",
+            'created',
+            'updated',
+            'deleted',
         ];
     }
 
@@ -43,5 +42,5 @@ trait RecordsActivity
         ]);
     }
 
-    public abstract function __toString();
+    abstract public function __toString();
 }

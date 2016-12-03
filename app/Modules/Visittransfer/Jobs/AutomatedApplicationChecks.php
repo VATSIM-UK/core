@@ -1,4 +1,6 @@
-<?php namespace App\Modules\Visittransfer\Jobs;
+<?php
+
+namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
 use App\Modules\Visittransfer\Models\Application;
@@ -23,7 +25,7 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->application->is_submitted) {
+        if (! $this->application->is_submitted) {
             return;
         }
 
@@ -34,7 +36,7 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue
         $this->checkCurrentRatingOver90Days();
         $this->checkCurrentRating50Hours();
 
-        $this->application->markAsUnderReview("Automated checks have completed.");
+        $this->application->markAsUnderReview('Automated checks have completed.');
     }
 
     private function checkCurrentRatingOver90Days()
@@ -44,12 +46,11 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue
 
         $hasPassed = $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
 
-        $this->application->setCheckOutcome("90_day", $hasPassed);
+        $this->application->setCheckOutcome('90_day', $hasPassed);
     }
 
     private function checkCurrentRating50Hours()
     {
         // TODO: Figure this out.
-        return;
     }
 }

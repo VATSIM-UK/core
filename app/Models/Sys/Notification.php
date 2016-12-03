@@ -2,15 +2,13 @@
 
 namespace App\Models\Sys;
 
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-
 /**
- * App\Models\Sys\Notification
+ * App\Models\Sys\Notification.
  *
- * @property integer $id
+ * @property int $id
  * @property string $title
  * @property string $content
- * @property integer $status
+ * @property int $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $effective_at
@@ -34,9 +32,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Notification extends \App\Models\Model
 {
-
-    protected $table = "sys_notification";
-    protected $primaryKey = "id";
+    protected $table = 'sys_notification';
+    protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at', 'effective_at'];
     protected $hidden = ['id'];
 
@@ -49,13 +46,13 @@ class Notification extends \App\Models\Model
 
     public function scopePublished($query)
     {
-        return $query->where("status", "!=", self::STATUS_UNPUBLISHED)
-                     ->where("effective_at", "<=", \Carbon\Carbon::now());
+        return $query->where('status', '!=', self::STATUS_UNPUBLISHED)
+                     ->where('effective_at', '<=', \Carbon\Carbon::now());
     }
 
     public function scopeWithStatus($query, $status)
     {
-        return $query->where("status", "=", $status);
+        return $query->where('status', '=', $status);
     }
 
     public function scopeMustAcknowledge($query)
@@ -85,15 +82,15 @@ class Notification extends \App\Models\Model
 
     public function scopeSince($query, $sinceTimestamp)
     {
-        if (!($sinceTimestamp instanceof \Carbon\Carbon)) {
+        if (! ($sinceTimestamp instanceof \Carbon\Carbon)) {
             $sinceTimestamp = \Carbon\Carbon::parse($sinceTimestamp);
         }
 
-        return $query->where("effective_at", ">=", $sinceTimestamp);
+        return $query->where('effective_at', '>=', $sinceTimestamp);
     }
 
     public function readBy()
     {
-        return $this->belongsToMany("\App\Models\Mship\Account", "sys_notification_read", "notification_id")->with("created_at", "updated_at");
+        return $this->belongsToMany("\App\Models\Mship\Account", 'sys_notification_read', 'notification_id')->with('created_at', 'updated_at');
     }
 }

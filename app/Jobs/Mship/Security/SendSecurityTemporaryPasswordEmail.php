@@ -5,7 +5,6 @@ namespace App\Jobs\Mship\Security;
 use App\Jobs\Job;
 use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
-use Bus;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -33,17 +32,17 @@ class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
      */
     public function handle(Mailer $mailer)
     {
-        $displayFrom = "VATSIM UK - Community Department";
-        $subject = "SSO Security - New Password";
-        $body = View::make("emails.mship.security.reset_password")
-                     ->with("account", $this->recipient)
-                     ->with("password", $this->password)
+        $displayFrom = 'VATSIM UK - Community Department';
+        $subject = 'SSO Security - New Password';
+        $body = View::make('emails.mship.security.reset_password')
+                     ->with('account', $this->recipient)
+                     ->with('password', $this->password)
                      ->render();
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
         $isHtml = true;
         $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
-        dispatch($createNewMessage->onQueue("emails"));
+        dispatch($createNewMessage->onQueue('emails'));
     }
 }

@@ -1,11 +1,10 @@
 <?php
 
 /**
- * @var Illuminate\Database\Eloquent\Factory $factory
+ * @var Illuminate\Database\Eloquent\Factory
  */
-
 foreach (Module::enabled() as $module) {
-    $factory->load('app/Modules/' . $module['basename'] . '/Database/Factories');
+    $factory->load('app/Modules/'.$module['basename'].'/Database/Factories');
 }
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
@@ -30,11 +29,11 @@ $factory->define(App\Models\Mship\Account\Email::class, function (Faker\Generato
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
-        "code" => $faker->bothify("?##"),
-        "name_small" => $faker->word,
-        "name_long" => $faker->word,
-        "name_grp" => $faker->word,
-        "vatsim" => $faker->randomDigit,
+        'code' => $faker->bothify('?##'),
+        'name_small' => $faker->word,
+        'name_long' => $faker->word,
+        'name_grp' => $faker->word,
+        'vatsim' => $faker->randomDigit,
     ];
 });
 
@@ -42,8 +41,8 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'atc', function (Faker
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
-        'code' => $faker->numerify("C##"),
-        "type" => "atc",
+        'code' => $faker->numerify('C##'),
+        'type' => 'atc',
     ]);
 });
 
@@ -51,17 +50,17 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Fak
     $atc = $factory->raw(App\Models\Mship\Qualification::class);
 
     return array_merge($atc, [
-        'code' => $faker->numerify("P##"),
-        "type" => "pilot",
+        'code' => $faker->numerify('P##'),
+        'type' => 'pilot',
     ]);
 });
 
 $factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker) {
     return [
-        "name" => $faker->word,
-        "session_timeout" => $faker->numberBetween(100, 1000),
-        "password_mandatory" => false,
-        "password_lifetime" => 0,
+        'name' => $faker->word,
+        'session_timeout' => $faker->numberBetween(100, 1000),
+        'password_mandatory' => false,
+        'password_lifetime' => 0,
     ];
 });
 
@@ -76,7 +75,7 @@ $factory->define(\App\Models\TeamSpeak\ServerGroup::class, function (Faker\Gener
     return [
         'dbid' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
-        'type' => 's'
+        'type' => 's',
     ];
 });
 
@@ -84,7 +83,7 @@ $factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function (Faker\Gene
     return [
         'dbid' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
-        'type' => 'c'
+        'type' => 'c',
     ];
 });
 

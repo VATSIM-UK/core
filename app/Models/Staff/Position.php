@@ -1,10 +1,12 @@
-<?php namespace App\Models\Staff;
+<?php
+
+namespace App\Models\Staff;
 
 /**
- * App\Models\Staff\Position
+ * App\Models\Staff\Position.
  *
- * @property integer $id
- * @property integer $parent_id
+ * @property int $id
+ * @property int $parent_id
  * @property string $type
  * @property string $name
  * @property \Carbon\Carbon $created_at
@@ -67,12 +69,12 @@ class Position extends \App\Models\Model
      *
      * @param  \App\Models\Staff\Position                    $position
      * @param  \Illuminate\Database\Eloquent\Collection  $all_positions
-     * @return integer
+     * @return int
      */
     public static function totalParents($position, $all_positions = null)
     {
         if ($all_positions === null) {
-            $all_positions = Position::all();
+            $all_positions = self::all();
         }
 
         $count = 0;

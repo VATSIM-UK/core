@@ -1,8 +1,9 @@
-<?php namespace App\Exceptions\Mship;
+<?php
+
+namespace App\Exceptions\Mship;
 
 class DuplicateQualificationException extends \Exception
 {
-
     private $qualification;
 
     public function __construct($qualification)
@@ -12,6 +13,6 @@ class DuplicateQualificationException extends \Exception
 
     public function __toString()
     {
-        return "Qualification  ".$this->qualification->name_grp." already exists on this account.";
+        return 'Qualification  '.$this->qualification->name_grp.' already exists on this account.';
     }
 }

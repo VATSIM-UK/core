@@ -35,9 +35,9 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group([
             'namespace'  => $this->namespace,
-            'middleware' => ['web']
+            'middleware' => ['web'],
         ], function ($router) {
-            require(config('modules.path').'/Ais/Http/routes.php');
+            require config('modules.path').'/Ais/Http/routes.php';
         });
     }
 }

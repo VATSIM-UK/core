@@ -3,16 +3,15 @@
 namespace App\Models\Mship\Account;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Account\Note
+ * App\Models\Mship\Account\Note.
  *
- * @property integer $id
- * @property integer $note_type_id
- * @property integer $account_id
- * @property integer $writer_id
- * @property integer $attachment_id
+ * @property int $id
+ * @property int $note_type_id
+ * @property int $account_id
+ * @property int $writer_id
+ * @property int $attachment_id
  * @property string $attachment_type
  * @property string $content
  * @property \Carbon\Carbon $created_at
@@ -34,27 +33,26 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Note extends \App\Models\Model
 {
-
     use RecordsActivity;
 
-    protected $table      = "mship_account_note";
-    protected $primaryKey = "id";
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $touches    = ['account'];
+    protected $table = 'mship_account_note';
+    protected $primaryKey = 'id';
+    protected $dates = ['created_at', 'updated_at'];
+    protected $touches = ['account'];
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
     }
 
     public function writer()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "writer_id");
+        return $this->belongsTo("\App\Models\Mship\Account", 'writer_id');
     }
 
     public function type()
     {
-        return $this->belongsTo("\App\Models\Mship\Note\Type", "note_type_id", "id");
+        return $this->belongsTo("\App\Models\Mship\Note\Type", 'note_type_id', 'id');
     }
 
     public function attachment()

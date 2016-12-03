@@ -1,10 +1,11 @@
-<?php namespace App\Exceptions\Mship;
+<?php
+
+namespace App\Exceptions\Mship;
 
 use App\Models\Mship\State;
 
 class InvalidStateException extends \Exception
 {
-
     private $state;
 
     public function __construct(State $state = null)
@@ -14,6 +15,6 @@ class InvalidStateException extends \Exception
 
     public function __toString()
     {
-        return "State is not valid.";
+        return 'State is not valid.';
     }
 }

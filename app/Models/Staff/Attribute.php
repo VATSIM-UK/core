@@ -1,10 +1,12 @@
-<?php namespace App\Models\Staff;
+<?php
+
+namespace App\Models\Staff;
 
 /**
- * App\Models\Staff\Attribute
+ * App\Models\Staff\Attribute.
  *
- * @property integer $id
- * @property integer $service_id
+ * @property int $id
+ * @property int $service_id
  * @property string $name
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
