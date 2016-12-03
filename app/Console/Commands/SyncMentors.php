@@ -49,9 +49,9 @@ class SyncMentors extends Command
         $this->pilotCutoffDate = Carbon::now()->subYears(5);
 
         // intialise scripts for interfacing with the forums
-        require_once('/var/www/community/init.php');
-        require_once(\IPS\ROOT_PATH . '/system/Member/Member.php');
-        require_once(\IPS\ROOT_PATH . '/system/Db/Db.php');
+        require_once '/var/www/community/init.php';
+        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         // get the relevant DB IDs
         foreach (DB::table('prod_rts.rts')->get(['id', 'name']) as $rts) {
@@ -64,7 +64,7 @@ class SyncMentors extends Command
         $this->pilotGroupID = array_search('Pilot Mentors', $this->forumGroupIDs);
         $this->atcGroupID = array_search('ATC Mentors', $this->forumGroupIDs);
 
-        $this->log("Command initialised.");
+        $this->log('Command initialised.');
     }
 
     /**
@@ -104,7 +104,7 @@ class SyncMentors extends Command
         $currentForumMember = null;
         for ($i = 0; $i < count($positions); $i++) {
             // if we've started processing a new mentor
-            if (!array_key_exists($i-1, $positions) || $positions[$i]->id !== $positions[$i-1]->id) {
+            if (! array_key_exists($i - 1, $positions) || $positions[$i]->id !== $positions[$i - 1]->id) {
                 $this->log("Processing {$positions[$i]->id} - {$positions[$i]->name}");
                 $currentMentor = $positions[$i];
                 $currentForumMember = \IPS\Member::load($this->memberForumIDs[$currentMentor->id]);
@@ -114,7 +114,7 @@ class SyncMentors extends Command
 
             // the forum classes suck
             if (Carbon::parse($currentForumMember->joined)->gt(Carbon::now()->subDay())) {
-                $this->log("Forum member not found.");
+                $this->log('Forum member not found.');
                 continue;
             }
 
@@ -122,14 +122,14 @@ class SyncMentors extends Command
             $currentForumMember = $this->determineGroup($positions[$i], $currentForumMember);
 
             // if this is the last row for the current mentor
-            if (!array_key_exists($i+1, $positions) || $positions[$i]->id != $positions[$i+1]->id) {
+            if (! array_key_exists($i + 1, $positions) || $positions[$i]->id != $positions[$i + 1]->id) {
                 $groups = explode(',', $currentForumMember->mgroup_others);
                 $groups = implode("\n", array_map(function ($s) {
                     return $this->forumGroupIDs[$s];
                 }, $groups));
                 $this->log("Current groups:\n{$groups}");
                 $this->log("Finished processing {$currentMentor->id}");
-                $this->log("========================================");
+                $this->log('========================================');
                 $currentForumMember->save();
             }
         }
@@ -142,6 +142,7 @@ class SyncMentors extends Command
             || ($position->rts_id !== $this->rtsIDs['pilots'] && $position->atc_cutoff)
         ) {
             $this->log("Cutoff reached - skipping position {$position->position}");
+
             return $forumMember;
         }
 
@@ -156,12 +157,12 @@ class SyncMentors extends Command
         // add them to the overall atc/pilot mentoring groups
         if ($position->rts_id === $this->rtsIDs['pilots'] && array_search($this->pilotGroupID, $groups) === false) {
             array_push($groups, $this->pilotGroupID);
-            $this->log("Adding to pilot mentors group.");
+            $this->log('Adding to pilot mentors group.');
         }
 
         if ($position->rts_id !== $this->rtsIDs['pilots'] && array_search($this->atcGroupID, $groups) === false) {
             array_push($groups, $this->atcGroupID);
-            $this->log("Adding to ATC mentors group.");
+            $this->log('Adding to ATC mentors group.');
         }
 
         $forumMember->mgroup_others = implode(',', $groups);

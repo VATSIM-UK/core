@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        if (!$this->shouldntReport($e)) {
+        if (! $this->shouldntReport($e)) {
             if (extension_loaded('newrelic')) {
                 try {
                     newrelic_notice_error(null, $e);
@@ -76,7 +76,7 @@ class Handler extends ExceptionHandler
         }
 
         $attachment = [
-            'fallback' => 'Exception thrown: ' . get_class($e),
+            'fallback' => 'Exception thrown: '.get_class($e),
             'text' => $e->getTraceAsString(),
             'author_name' => get_class($e),
             'color' => 'danger',
@@ -109,7 +109,7 @@ class Handler extends ExceptionHandler
             ],
         ];
 
-        if (!App::runningInConsole()) {
+        if (! App::runningInConsole()) {
             if (method_exists('Auth', 'check') && Auth::check()) {
                 $attachment['fields'][] = [
                     'title' => 'Member:',

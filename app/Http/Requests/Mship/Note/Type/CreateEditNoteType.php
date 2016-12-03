@@ -4,7 +4,7 @@ namespace App\Http\Requests\Mship\Note\Type;
 
 use App\Http\Requests\Request;
 use App\Models\Mship\Note\Type;
-use \Auth;
+use Auth;
 
 class CreateEditNoteType extends Request
 {
@@ -25,7 +25,7 @@ class CreateEditNoteType extends Request
      */
     public function rules()
     {
-        $currentNoteType = $this->route("mshipNoteType");
+        $currentNoteType = $this->route('mshipNoteType');
 
         $currentNoteTypeId = null;
         if ($currentNoteType) {
@@ -33,11 +33,11 @@ class CreateEditNoteType extends Request
         }
 
         return [
-            "name" => "required|min:5",
-            "short_code" => "min:5|unique:mship_note_type,short_code,".$currentNoteTypeId.",note_type_id",
-            "is_available" => "required|boolean",
-            "is_default" => "required|boolean",
-            "colour_code" => "required|in:success,danger,warning,info,primary",
+            'name' => 'required|min:5',
+            'short_code' => 'min:5|unique:mship_note_type,short_code,'.$currentNoteTypeId.',note_type_id',
+            'is_available' => 'required|boolean',
+            'is_default' => 'required|boolean',
+            'colour_code' => 'required|in:success,danger,warning,info,primary',
         ];
     }
 
@@ -45,23 +45,24 @@ class CreateEditNoteType extends Request
     {
         $data = $this->all();
 
-        $currentNoteType = $this->route("mshipNoteType");
+        $currentNoteType = $this->route('mshipNoteType');
 
         if ($currentNoteType != null && $currentNoteType->exists) {
-            if (Auth::user()->hasPermission("adm/mship/note/type/default")) {
-                $data['is_default'] = array_get($data, "is_default", $currentNoteType->is_default);
+            if (Auth::user()->hasPermission('adm/mship/note/type/default')) {
+                $data['is_default'] = array_get($data, 'is_default', $currentNoteType->is_default);
             } else {
                 $data['is_default'] = $currentNoteType->is_default;
             }
         } else {
-            if (Auth::user()->hasPermission("adm/mship/note/type/default")) {
-                $data['is_default'] = array_get($data, "is_default", false);
+            if (Auth::user()->hasPermission('adm/mship/note/type/default')) {
+                $data['is_default'] = array_get($data, 'is_default', false);
             } else {
                 $data['is_default'] = false;
             }
         }
 
         $this->getInputSource()->replace($data);
+
         return parent::getValidatorInstance();
     }
 }

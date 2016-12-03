@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class StaffManagementData extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -58,7 +56,7 @@ class StaffManagementData extends Migration
         $department_webservices = DB::table('staff_positions')->insertGetId(['parent_id' => $department_management, 'name' => 'Web Services', 'type' => 'D', 'created_at' => $date, 'updated_at' => $date]);
         $department_webservices_assistants = DB::table('staff_positions')->insertGetId(['parent_id' => $department_webservices, 'name' => 'Assistants', 'type' => 'D', 'created_at' => $date, 'updated_at' => $date]);
 
-        DB::table('staff_positions')->insert(array(
+        DB::table('staff_positions')->insert([
             ['parent_id' => $department_management, 'name' => 'Division Director', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
             ['parent_id' => $department_management, 'name' => 'Deputy Division Director', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
             ['parent_id' => $department_community, 'name' => 'Community Director', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
@@ -103,7 +101,7 @@ class StaffManagementData extends Migration
             ['parent_id' => $department_webservices_assistants, 'name' => 'Development', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
             ['parent_id' => $department_webservices_assistants, 'name' => 'Support', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
             ['parent_id' => $department_webservices_assistants, 'name' => 'Systems Administrator', 'type' => 'P', 'created_at' => $date, 'updated_at' => $date],
-        ));
+        ]);
 
         $service_community = DB::table('staff_services')->insertGetId(['name' => 'Community (Forum)', 'created_at' => $date, 'updated_at' => $date]);
         $service_core = DB::table('staff_services')->insertGetId(['name' => 'Core', 'created_at' => $date, 'updated_at' => $date]);
@@ -115,7 +113,7 @@ class StaffManagementData extends Migration
         $service_status = DB::table('staff_services')->insertGetId(['name' => 'Status', 'created_at' => $date, 'updated_at' => $date]);
         $service_site = DB::table('staff_services')->insertGetId(['name' => 'Website', 'created_at' => $date, 'updated_at' => $date]);
 
-        DB::table('staff_attributes')->insert(array(
+        DB::table('staff_attributes')->insert([
             ['service_id' => $service_community, 'name' => 'ACP Access', 'created_at' => $date, 'updated_at' => $date],
             ['service_id' => $service_core, 'name' => 'Admin Access (Backend)', 'created_at' => $date, 'updated_at' => $date],
             ['service_id' => $service_events, 'name' => 'Git Repository Access', 'created_at' => $date, 'updated_at' => $date],
@@ -130,7 +128,7 @@ class StaffManagementData extends Migration
             ['service_id' => $service_servers, 'name' => 'Privileged Access', 'created_at' => $date, 'updated_at' => $date],
             ['service_id' => $service_servers, 'name' => 'Elevated Access (SSH User Account)', 'created_at' => $date, 'updated_at' => $date],
             ['service_id' => $service_site, 'name' => 'ACP Access', 'created_at' => $date, 'updated_at' => $date],
-        ));
+        ]);
     }
 
     /**

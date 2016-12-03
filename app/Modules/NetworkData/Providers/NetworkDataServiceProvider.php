@@ -3,7 +3,6 @@
 namespace App\Modules\NetworkData\Providers;
 
 use App;
-use Config;
 use Lang;
 use View;
 use Illuminate\Support\ServiceProvider;
@@ -45,7 +44,7 @@ class NetworkDataServiceProvider extends ServiceProvider
      */
     protected function registerNamespaces()
     {
-//		Lang::addNamespace('networkdata', realpath(__DIR__.'/../Resources/Lang'));
+        //		Lang::addNamespace('networkdata', realpath(__DIR__.'/../Resources/Lang'));
 
         View::addNamespace('networkdata', base_path('resources/views/vendor/networkdata'));
         View::addNamespace('networkdata', realpath(__DIR__.'/../Resources/Views'));

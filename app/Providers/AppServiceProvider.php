@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use \Form;
-use \HTML;
+use HTML;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,19 +14,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!defined('VATUK_ACCOUNT_SYSTEM')) {
+        if (! defined('VATUK_ACCOUNT_SYSTEM')) {
             define('VATUK_ACCOUNT_SYSTEM', '707070');
         }
 
-        if (!defined('VATSIM_ACCOUNT_SYSTEM')) {
+        if (! defined('VATSIM_ACCOUNT_SYSTEM')) {
             define('VATSIM_ACCOUNT_SYSTEM', '606060');
         }
 
-        HTML::component("icon", "components.html.icon", ["type", "key"]);
-        HTML::component("img", "components.html.img", ["key", "ext" => "png", "width" => null, "height" => null, "alt" => null]);
-        HTML::component("panelOpen", "components.html.panel_open", ["title", "icon" => [], "attr" => []]);
-        HTML::component("panelClose", "components.html.panel_close", []);
-        HTML::component("fuzzyDate", "components.html.fuzzy_date", ["timestamp"]);
+        HTML::component('icon', 'components.html.icon', ['type', 'key']);
+        HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);
+        HTML::component('panelOpen', 'components.html.panel_open', ['title', 'icon' => [], 'attr' => []]);
+        HTML::component('panelClose', 'components.html.panel_close', []);
+        HTML::component('fuzzyDate', 'components.html.fuzzy_date', ['timestamp']);
     }
 
     /**

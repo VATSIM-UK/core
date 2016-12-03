@@ -9,8 +9,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationType;
 use Auth;
 use Carbon\Carbon;
-use Config;
-use Cookie;
 use Input;
 use Redirect;
 use Request;
@@ -21,11 +19,10 @@ use VatsimSSO;
 
 class Authentication extends BaseController
 {
-
     public function getRedirect()
     {
         // If there's NO basic auth, send to login.
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return Redirect::route('mship.auth.login');
         }
 
@@ -35,18 +32,18 @@ class Authentication extends BaseController
                         ->where('id', '!=', $this->account->id)
                         ->count();
 
-        if ($check > 0 && !Session::get('auth_duplicate_ip', false)) {
+        if ($check > 0 && ! Session::get('auth_duplicate_ip', false)) {
             Session::forget('auth_extra');
             Session::set('auth_duplicate_ip', true);
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
-        if (!Session::has('auth_extra') && $this->account->hasPassword() && !Session::has('auth_override')) {
+        if (! Session::has('auth_extra') && $this->account->hasPassword() && ! Session::has('auth_override')) {
             return Redirect::route('mship.security.auth');
         }
 
         // What about if there's secondary, but it's expired?
-        if (!Session::has('auth_override')
+        if (! Session::has('auth_override')
             && Session::has('auth_extra')
             && Session::get('auth_extra') !== false
             && Session::get('auth_extra')->addHours(4)->isPast()
@@ -57,11 +54,11 @@ class Authentication extends BaseController
         }
 
         // If a secondary is required, but they haven't set one, send them away to set one.
-        if ($this->account->mandatory_password && !$this->account->hasPassword()) {
+        if ($this->account->mandatory_password && ! $this->account->hasPassword()) {
             return Redirect::route('mship.security.replace');
         }
 
-        if (!$this->account->hasPassword()) {
+        if (! $this->account->hasPassword()) {
             Session::set('auth_extra', false);
         }
 
@@ -73,39 +70,41 @@ class Authentication extends BaseController
             Session::put('force_notification_read_return_url', $returnURL);
             $returnURL = URL::route('mship.notification.list');
         }
+
         return Redirect::to($returnURL);
     }
 
     public function getLoginAlternative()
     {
-        if (!Session::has('cert_offline')) {
+        if (! Session::has('cert_offline')) {
             return Redirect::route('mship.auth.login');
         }
 
         // Display an alternative login form.
         $this->pageTitle = 'Alternative Login';
+
         return $this->viewMake('mship.authentication.login_alternative');
     }
 
     public function postLoginAlternative()
     {
-        if (!Session::has('cert_offline')) {
+        if (! Session::has('cert_offline')) {
             return Redirect::route('mship.auth.login');
         }
 
-        if (!Input::get('cid', false) || ! Input::get('password', false)) {
+        if (! Input::get('cid', false) || ! Input::get('password', false)) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a cid and password.');
         }
 
         // Let's find the member.
         $account = Account::find(Input::get('cid'));
 
-        if (!$account) {
+        if (! $account) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a valid cid and password combination.');
         }
 
         // Let's get their current security and verify...
-        if (!$account->hasPassword() || !$account->verifyPassword(Input::get('password'))) {
+        if (! $account->hasPassword() || ! $account->verifyPassword(Input::get('password'))) {
             return Redirect::route('mship.auth.loginAlternative')->withError('You must enter a valid cid and password combination.');
         }
 
@@ -126,7 +125,7 @@ class Authentication extends BaseController
 
     public function getLogin()
     {
-        if (!Session::has("auth_return")) {
+        if (! Session::has('auth_return')) {
             Session::set('auth_return', Input::get('returnURL', URL::route('mship.manage.dashboard')));
         }
 
@@ -145,10 +144,12 @@ class Authentication extends BaseController
             [URL::route('mship.auth.verify'), 'suspended' => true, 'inactive' => true],
             function ($key, $secret, $url) {
                 Session::put('vatsimauth', compact('key', 'secret'));
+
                 return Redirect::to($url);
             },
             function ($error) {
                 Session::set('cert_offline', true);
+
                 return Redirect::route('mship.auth.loginAlternative');
             }
         );
@@ -156,12 +157,11 @@ class Authentication extends BaseController
 
     public function getVerify()
     {
-
         if (Input::get('oauth_cancel') !== null) {
             return Redirect::away('http://vatsim-uk.co.uk');
         }
 
-        if (!Session::has('vatsimauth')) {
+        if (! Session::has('vatsimauth')) {
             throw new NotFoundHttpException();
         }
 
@@ -171,7 +171,7 @@ class Authentication extends BaseController
             throw new \Exception('Returned token does not match');
         }
 
-        if (!Input::has('oauth_verifier')) {
+        if (! Input::has('oauth_verifier')) {
             throw new \Exception('No verification code provided');
         }
 
@@ -184,9 +184,9 @@ class Authentication extends BaseController
                 $account = new Account();
                 $account->id = $user->id;
             }
-                    $account->name_first = $user->name_first;
-                    $account->name_last = $user->name_last;
-                    $account->email = $user->email;
+            $account->name_first = $user->name_first;
+            $account->name_last = $user->name_last;
+            $account->email = $user->email;
 
             try {
                 // Sort the ATC Rating out.
@@ -194,7 +194,7 @@ class Authentication extends BaseController
                 if ($atcRating > 7) {
                     // Store the admin/ins rating.
                     $qualification = QualificationType::parseVatsimATCQualification($atcRating);
-                    if (!is_null($qualification)) {
+                    if (! is_null($qualification)) {
                         $account->addQualification($qualification);
                     }
 
@@ -205,7 +205,7 @@ class Authentication extends BaseController
                 }
                 $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
 
-                for ($i = 1; $i <= 256; $i*=2) {
+                for ($i = 1; $i <= 256; $i *= 2) {
                     if ($i & $user->pilot_rating->rating) {
                         $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
                     }
@@ -221,8 +221,8 @@ class Authentication extends BaseController
                 // TODO: Something.
             }
 
-                    $account->last_login = Carbon::now();
-                    $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+            $account->last_login = Carbon::now();
+            $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
             if ($user->rating->id == -1) {
                 $account->is_inactive = 1;
             } else {
@@ -275,6 +275,7 @@ class Authentication extends BaseController
         if ($force) {
             return $this->postLogout($force);
         }
+
         return $this->viewMake('mship.authentication.logout');
     }
 
@@ -284,6 +285,7 @@ class Authentication extends BaseController
             Session::forget('auth_extra');
             Auth::logout();
         }
+
         return Redirect::to(Session::pull('logout_return', '/mship/manage/landing'));
     }
 

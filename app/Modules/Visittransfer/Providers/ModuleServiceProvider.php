@@ -1,4 +1,6 @@
-<?php namespace App\Modules\Visittransfer\Providers;
+<?php
+
+namespace App\Modules\Visittransfer\Providers;
 
 use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
@@ -50,10 +52,10 @@ class ModuleServiceProvider extends AuthServiceProvider
      */
     protected function registerNamespaces()
     {
-        Lang::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Lang'));
+        Lang::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Lang'));
 
         View::addNamespace('visittransfer', base_path('resources/views/vendor/visittransfer'));
-        View::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Views'));
+        View::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Views'));
     }
 
     /**
@@ -64,7 +66,7 @@ class ModuleServiceProvider extends AuthServiceProvider
     protected function registerComposers()
     {
         View::composer(
-            ["visittransfer::admin._sidebar"],
+            ['visittransfer::admin._sidebar'],
             \App\Modules\Visittransfer\Resources\Viewcomposers\StatisticsComposer::class
         );
     }
@@ -72,15 +74,15 @@ class ModuleServiceProvider extends AuthServiceProvider
     protected function registerCommands()
     {
         // Commands.statistics.daily
-        $this->app->singleton("visittransfer::commands.statistics.daily", function ($app) {
+        $this->app->singleton('visittransfer::commands.statistics.daily', function ($app) {
             return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
         });
-        $this->commands("visittransfer::commands.statistics.daily");
+        $this->commands('visittransfer::commands.statistics.daily');
 
         // commands.applications.cleanup
-        $this->app->singleton("visittransfer::commands.applications.cleanup", function ($app) {
+        $this->app->singleton('visittransfer::commands.applications.cleanup', function ($app) {
             return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
         });
-        $this->commands("visittransfer::commands.applications.cleanup");
+        $this->commands('visittransfer::commands.applications.cleanup');
     }
 }

@@ -1,8 +1,7 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Facility;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
@@ -36,7 +35,7 @@ class ApplicationRefereeDeleteRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("delete-referee", Auth::user()->visit_transfer_current);
+        return Gate::allows('delete-referee', Auth::user()->visit_transfer_current);
     }
 
     protected function getValidatorInstance()

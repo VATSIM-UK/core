@@ -63,7 +63,7 @@ class TeamSpeak
         // try to find their existing registration
         $registration = self::getActiveRegistration($client);
 
-        if (!is_null($registration)) {
+        if (! is_null($registration)) {
             self::updateClientLoginInfo($client, $registration);
 
             return $registration->account;
@@ -102,7 +102,7 @@ class TeamSpeak
             if ($e->getCode() !== self::DATABASE_EMPTY_RESULT_SET) {
                 throw $e;
             } else {
-                return null;
+                return;
             }
         }
 
@@ -115,8 +115,6 @@ class TeamSpeak
                 return $registration;
             }
         }
-
-        return null;
     }
 
     /**
@@ -221,15 +219,15 @@ class TeamSpeak
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
     {
         if ($member->has_unread_must_acknowledge_notifications) {
-            $recentlyDisconnected = Cache::has(TeamSpeak::CACHE_PREFIX_CLIENT_DISCONNECT . $client['client_database_id']);
-            $recentlyNotified = Cache::has(TeamSpeak::CACHE_NOTIFICATION_MANDATORY . $client['client_database_id']);
+            $recentlyDisconnected = Cache::has(self::CACHE_PREFIX_CLIENT_DISCONNECT.$client['client_database_id']);
+            $recentlyNotified = Cache::has(self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id']);
             $timeSincePublished = $member->unread_must_acknowledge_time_elapsed;
 
             if ($timeSincePublished < 12) {
-                if (!$recentlyNotified) {
+                if (! $recentlyNotified) {
                     self::pokeClient($client, trans('teamspeak.notification.mandatory.notify'));
                     Cache::put(
-                        TeamSpeak::CACHE_NOTIFICATION_MANDATORY . $client['client_database_id'],
+                        self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id'],
                         Carbon::now(),
                         20
                     );
@@ -254,7 +252,7 @@ class TeamSpeak
      */
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
     {
-        if (!$member->isValidDisplayName($client['client_nickname'])) {
+        if (! $member->isValidDisplayName($client['client_nickname'])) {
             self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
             self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
             self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
@@ -274,15 +272,15 @@ class TeamSpeak
         $serverGroups = ServerGroup::all();
         $memberQualifications = $member->active_qualifications;
         foreach ($serverGroups as $group) {
-            $qualified = (!is_null($group->qualification) && $memberQualifications->contains('id', $group->qualification->id))
-                || (!is_null($group->permission) && $member->hasPermission($group->permission));
-            if (!in_array($group->dbid, $currentGroups) && $qualified) {
+            $qualified = (! is_null($group->qualification) && $memberQualifications->contains('id', $group->qualification->id))
+                || (! is_null($group->permission) && $member->hasPermission($group->permission));
+            if (! in_array($group->dbid, $currentGroups) && $qualified) {
                 $client->addServerGroup($group->dbid);
-            } elseif (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
+            } elseif (! in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
                 $client->addServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && !$member->qualifications_pilot->isEmpty()) {
+            } elseif (in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && ! $member->qualifications_pilot->isEmpty()) {
                 $client->remServerGroup($group->dbid);
-            } elseif (in_array($group->dbid, $currentGroups) && !starts_with($group->name, 'P0') && !$qualified && !$group->default) {
+            } elseif (in_array($group->dbid, $currentGroups) && ! starts_with($group->name, 'P0') && ! $qualified && ! $group->default) {
                 $client->remServerGroup($group->dbid);
             }
         }
@@ -313,7 +311,7 @@ class TeamSpeak
 
             if ($member->hasPermission($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
+            } elseif (! $member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }
@@ -338,18 +336,18 @@ class TeamSpeak
             $maxIdleTime = 60;
         }
 
-        $notified = Cache::has(TeamSpeak::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id']);
+        $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id']);
         if ($idleTime >= $maxIdleTime) {
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.1', ['maxIdleTime' => $maxIdleTime]));
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.2'));
             self::kickClient($client, trans('teamspeak.idle.kick.reason'));
             throw new ClientKickedFromServerException;
-        } elseif ($idleTime >= $maxIdleTime - 5 && !$notified) {
+        } elseif ($idleTime >= $maxIdleTime - 5 && ! $notified) {
             self::pokeClient($client, trans('teamspeak.idle.poke', ['idleTime' => $idleTime]));
-            Cache::put(TeamSpeak::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id'], Carbon::now(), 5);
-        } elseif ($idleTime >= $maxIdleTime - 15 && !$notified) {
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5);
+        } elseif ($idleTime >= $maxIdleTime - 15 && ! $notified) {
             self::messageClient($client, trans('teamspeak.idle.message', ['idleTime' => $idleTime, 'maxIdleTime' => $maxIdleTime]));
-            Cache::put(TeamSpeak::CACHE_PREFIX_IDLE_NOTIFY . $client['client_database_id'], Carbon::now(), 10);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10);
         }
     }
 
@@ -374,7 +372,7 @@ class TeamSpeak
 
         // if in a protected channel, client is protected
         $channel = Channel::find($currentChannel);
-        if (!is_null($channel)) {
+        if (! is_null($channel)) {
             return (bool) $channel->protected;
         } else {
             return false;

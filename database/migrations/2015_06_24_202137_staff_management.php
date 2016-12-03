@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class StaffManagement extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -78,7 +77,7 @@ class StaffManagement extends Migration
      */
     public function down()
     {
-//        Schema::table('staff_attributes', function ($table) {
+        //        Schema::table('staff_attributes', function ($table) {
 //            $table->dropForeign('staff_attributes_service_id_foreign');
 //        });
 //

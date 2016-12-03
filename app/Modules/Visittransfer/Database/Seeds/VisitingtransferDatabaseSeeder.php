@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Visittransfer\Database\Seeds;
 
 use Illuminate\Database\Seeder;

@@ -24,15 +24,15 @@ class SendCreationEmail extends Job implements ShouldQueue
 
     public function handle()
     {
-        if (!$this->ban->is_local) {
+        if (! $this->ban->is_local) {
             return true;
         }
 
-        $displayFrom = "VATSIM UK - Community Department";
-        $subject = "Account Ban";
-        $body = \View::make("emails.mship.account.ban.created")
-                     ->with("recipient", $this->recipient)
-                     ->with("ban", $this->ban)
+        $displayFrom = 'VATSIM UK - Community Department';
+        $subject = 'Account Ban';
+        $body = \View::make('emails.mship.account.ban.created')
+                     ->with('recipient', $this->recipient)
+                     ->with('ban', $this->ban)
                      ->render();
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);

@@ -12,12 +12,12 @@ class CreateSysActivityTable extends Migration
      */
     public function up()
     {
-        Schema::create("sys_activity", function(Blueprint $table){
-            $table->bigIncrements("id")->unsigned();
-            $table->integer("actor_id")->unsigned();
-            $table->morphs("subject");
-            $table->string("action", 20);
-            $table->bigInteger("ip")->unsigned()->default(ip2long('0.0.0.0'));
+        Schema::create('sys_activity', function (Blueprint $table) {
+            $table->bigIncrements('id')->unsigned();
+            $table->integer('actor_id')->unsigned();
+            $table->morphs('subject');
+            $table->string('action', 20);
+            $table->bigInteger('ip')->unsigned()->default(ip2long('0.0.0.0'));
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateSysActivityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists("sys_activity");
+        Schema::dropIfExists('sys_activity');
     }
 }
