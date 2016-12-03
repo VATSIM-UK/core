@@ -29,10 +29,10 @@ class Slack
     {
         // define the message/attachment to send
         $attachment = [
-            'fallback' => $message,
+            'fallback'    => $message,
             'author_name' => $author,
-            'color' => $color,
-            'fields' => [
+            'color'       => $color,
+            'fields'      => [
                 [
                     'title' => 'Message:',
                     'value' => $message,

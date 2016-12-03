@@ -31,8 +31,8 @@ use App\Models\Mship\Qualification;
  */
 class Group extends Model
 {
-    public $timestamps = false;
-    protected $table = 'teamspeak_group';
+    public $timestamps    = false;
+    protected $table      = 'teamspeak_group';
     protected $primaryKey = 'id';
 
     /**

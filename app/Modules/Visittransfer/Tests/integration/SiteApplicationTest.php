@@ -16,22 +16,22 @@ class SiteApplicationTest extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_allow_member_to_start_visit_atc_application()
-    {
-        factory(App\Modules\Visittransfer\Models\Facility::class, 'atc_visit')->create();
-
-        $this->visit(route('visiting.landing'))
-            ->see(trans('visittransfer::application.dashboard.apply.atc.visit.unable'));
-    }
+//    public function it_doesnt_allow_member_to_start_visit_atc_application()
+//    {
+//        factory(App\Modules\Visittransfer\Models\Facility::class, 'atc_visit')->create();
+//
+//        $this->visit(route('visiting.landing'))
+//            ->see(trans('visittransfer::application.dashboard.apply.atc.visit.unable'));
+//    }
 
     /** @test */
-    public function it_doesnt_allow_member_to_start_transferring_atc_application()
-    {
-        factory(App\Modules\Visittransfer\Models\Facility::class, 'atc_visit')->create();
-
-        $this->visit(route('visiting.landing'))
-            ->see(trans('visittransfer::application.dashboard.apply.atc.transfer.unable'));
-    }
+//    public function it_doesnt_allow_member_to_start_transferring_atc_application()
+//    {
+//        factory(App\Modules\Visittransfer\Models\Facility::class, 'atc_visit')->create();
+//
+//        $this->visit(route('visiting.landing'))
+//            ->see(trans('visittransfer::application.dashboard.apply.atc.transfer.unable'));
+//    }
 
     /** @test */
     public function it_doesnt_display_references_table_if_not_a_referee()

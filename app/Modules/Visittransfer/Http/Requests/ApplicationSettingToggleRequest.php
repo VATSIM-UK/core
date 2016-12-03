@@ -29,7 +29,7 @@ class ApplicationSettingToggleRequest extends FormRequest
     {
         return [
             'setting.required' => 'You must specify which setting you wish to toggle.',
-            'setting.in' => 'The setting you specified does not exist.',
+            'setting.in'       => 'The setting you specified does not exist.',
         ];
     }
 

@@ -55,7 +55,7 @@ class Application extends BaseController
     private function startApplication($type, $team)
     {
         return Auth::user()->createVisitingTransferApplication([
-            'type' => $type,
+            'type'          => $type,
             'training_team' => $team,
         ]);
     }

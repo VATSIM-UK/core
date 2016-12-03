@@ -12,13 +12,13 @@ use App\Modules\NetworkData\Events\AtcSessionDeleted;
 /**
  * App\Modules\NetworkData\Models\Atc.
  *
- * @property int $id
- * @property int $account_id
- * @property string $callsign
- * @property int $qualification_id
- * @property bool $facility_type
+ * @property int            $id
+ * @property int            $account_id
+ * @property string         $callsign
+ * @property int            $qualification_id
+ * @property bool           $facility_type
  * @property \Carbon\Carbon $connected_at
- * @property string $disconnected_at
+ * @property string         $disconnected_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
@@ -43,11 +43,20 @@ class Atc extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'networkdata_atc';
+    protected $table      = 'networkdata_atc';
     protected $primaryKey = 'id';
-    protected $fillable = ['account_id', 'qualification_id', 'facility_type', 'callsign', 'frequency', 'connected_at', 'disconnected_at', 'updated_at'];
-    public $dates = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public $timestamps = true;
+    protected $fillable   = [
+        'account_id',
+        'qualification_id',
+        'facility_type',
+        'callsign',
+        'frequency',
+        'connected_at',
+        'disconnected_at',
+        'updated_at'
+    ];
+    public    $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public    $timestamps = true;
 
     public static function scopeForAccountId($query, $id)
     {

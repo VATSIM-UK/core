@@ -17,6 +17,6 @@ namespace App\Models\Staff;
  */
 class Service extends \App\Models\Model
 {
-    protected $table = 'staff_services';
+    protected $table      = 'staff_services';
     protected $primaryKey = 'id';
 }

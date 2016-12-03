@@ -30,9 +30,9 @@ class MembersCertImport extends Command
      */
     protected $description = 'Import/update member emails from CERT AutoTools';
 
-    protected $count_new = 0;
+    protected $count_new    = 0;
     protected $count_emails = 0;
-    protected $count_none = 0;
+    protected $count_none   = 0;
     protected $member_list;
     protected $member_email_list;
 
@@ -146,10 +146,10 @@ class MembersCertImport extends Command
 
     protected function updateMember($member_data)
     {
-        $member = Account::find($member_data['cid']);
+        $member             = Account::find($member_data['cid']);
         $member->name_first = $member_data['name_first'];
-        $member->name_last = $member_data['name_last'];
-        $member->email = $member_data['email'];
+        $member->name_last  = $member_data['name_last'];
+        $member->email      = $member_data['email'];
         $member->save();
 
         try {

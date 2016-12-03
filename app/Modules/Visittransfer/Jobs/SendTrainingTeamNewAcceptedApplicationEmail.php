@@ -40,15 +40,15 @@ class SendTrainingTeamNewAcceptedApplicationEmail extends Job implements ShouldQ
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
-        $recipient = $this->application->facility->training_team.'-team@vatsim-uk.co.uk';
+        $recipient     = $this->application->facility->training_team.'-team@vatsim-uk.co.uk';
         $recipientName = strtoupper($this->application->facility->training_team).' Training Team';
 
         // TODO: Use the staff services feature to get all community members.
         $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
-            'recipient_email' => $recipient,
-            'recipient_name' => $recipientName,
+            'sender_email'      => 'community@vatsim-uk.co.uk',
+            'recipient_email'   => $recipient,
+            'recipient_name'    => $recipientName,
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));
