@@ -22,8 +22,8 @@ class Confirmation extends \App\Models\Model
 {
     use RecordsActivity;
 
-    public $incrementing = false;
-    protected $table = 'teamspeak_confirmation';
+    public $incrementing  = false;
+    protected $table      = 'teamspeak_confirmation';
     protected $primaryKey = 'registration_id';
 
     public function registration()

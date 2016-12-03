@@ -18,7 +18,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
     {
         return [
             'facility_id' => 'required|exists:vt_facility,id',
-            'permitted' => 'accepted',
+            'permitted'   => 'accepted',
         ];
     }
 
@@ -31,7 +31,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
     {
         return [
             'facility_id.required' => 'You have chosen an invalid facility.',
-            'permitted.accepted' => 'You are not permitted to apply to this facility.',
+            'permitted.accepted'   => 'You are not permitted to apply to this facility.',
         ];
     }
 
@@ -47,7 +47,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
 
     protected function getValidatorInstance()
     {
-        $data = $this->all();
+        $data              = $this->all();
         $data['permitted'] = true;
 
 

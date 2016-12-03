@@ -15,9 +15,9 @@ class ReferenceRejectRequest extends FormRequest
     public function rules()
     {
         return [
-            'rejection_reason' => 'required',
+            'rejection_reason'       => 'required',
             'rejection_reason_extra' => 'required_if:rejection_reason,other',
-            'rejection_staff_note' => 'string|min:20',
+            'rejection_staff_note'   => 'string|min:20',
         ];
     }
 
@@ -29,11 +29,11 @@ class ReferenceRejectRequest extends FormRequest
     public function messages()
     {
         return [
-            'rejection_reason.required' => 'You must choose a rejection reason for this reference.',
+            'rejection_reason.required'          => 'You must choose a rejection reason for this reference.',
             'rejection_reason_extra.required_if' => "If you choose the 'other' rejection code, you must provide a reason.",
 
             'rejection_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
-            'rejection_staff_note.min' => 'When providing a staff note it must be a minimum of 20 characters.',
+            'rejection_staff_note.min'    => 'When providing a staff note it must be a minimum of 20 characters.',
         ];
     }
 

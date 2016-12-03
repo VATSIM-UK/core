@@ -19,7 +19,7 @@ class SendCreationEmail extends Job implements ShouldQueue
     public function __construct(Ban $ban)
     {
         $this->recipient = $ban->account;
-        $this->ban = $ban;
+        $this->ban       = $ban;
     }
 
     public function handle()
@@ -29,14 +29,14 @@ class SendCreationEmail extends Job implements ShouldQueue
         }
 
         $displayFrom = 'VATSIM UK - Community Department';
-        $subject = 'Account Ban';
-        $body = \View::make('emails.mship.account.ban.created')
+        $subject     = 'Account Ban';
+        $body        = \View::make('emails.mship.account.ban.created')
                      ->with('recipient', $this->recipient)
                      ->with('ban', $this->ban)
                      ->render();
 
-        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml = true;
+        $sender          = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml          = true;
         $systemGenerated = true;
 
         dispatch(new \App\Jobs\Messages\CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated));

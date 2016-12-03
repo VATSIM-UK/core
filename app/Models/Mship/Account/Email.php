@@ -30,10 +30,10 @@ use App\Models\Sso\Email as SSOEmail;
  */
 class Email extends \Eloquent
 {
-    protected $table = 'mship_account_email';
-    protected $dates = ['verified_at', 'created_at', 'updated_at'];
+    protected $table    = 'mship_account_email';
+    protected $dates    = ['verified_at', 'created_at', 'updated_at'];
     protected $fillable = ['email'];
-    protected $touches = ['account'];
+    protected $touches  = ['account'];
 
     public function scopeEmailMatches($query, $email)
     {
@@ -71,10 +71,10 @@ class Email extends \Eloquent
             return true;
         }
 
-        $ssoEmail = new SSOEmail;
-        $ssoEmail->account_id = $this->account->id;
+        $ssoEmail                   = new SSOEmail;
+        $ssoEmail->account_id       = $this->account->id;
         $ssoEmail->account_email_id = $this->getKey();
-        $ssoEmail->sso_account_id = $ssoAccount->getKey();
+        $ssoEmail->sso_account_id   = $ssoAccount->getKey();
         $ssoEmail->save();
 
         return true;

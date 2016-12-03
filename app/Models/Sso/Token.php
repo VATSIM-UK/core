@@ -34,10 +34,10 @@ class Token extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table = 'sso_token';
+    protected $table      = 'sso_token';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
-    protected $hidden = ['token_id'];
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $hidden     = ['token_id'];
 
     public function account()
     {

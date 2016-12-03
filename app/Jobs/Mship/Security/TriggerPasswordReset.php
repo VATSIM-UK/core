@@ -13,12 +13,12 @@ class TriggerPasswordReset extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    private $token = null;
+    private $token   = null;
     private $account = null;
 
     public function __construct(Token $token)
     {
-        $this->token = $token;
+        $this->token   = $token;
         $this->account = $token->related;
     }
 

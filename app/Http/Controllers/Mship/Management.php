@@ -43,7 +43,7 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $email = strtolower(Input::get('new_email'));
+        $email  = strtolower(Input::get('new_email'));
         $email2 = strtolower(Input::get('new_email2'));
 
         $validator = Validator::make(
@@ -79,7 +79,7 @@ class Management extends \App\Http\Controllers\BaseController
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->account->email;
+        $userPrimaryEmail   = $this->account->email;
         $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!
@@ -88,7 +88,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Now build the user's matrix!
         $userMatrix = [];
         foreach ($ssoSystems as $sys) {
-            $umEntry = [];
+            $umEntry               = [];
             $umEntry['sso_system'] = $sys;
 
             // Let's see if the user has this system!
@@ -118,7 +118,7 @@ class Management extends \App\Http\Controllers\BaseController
         $ssoSystems = SSOSystem::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail = $this->account->email;
+        $userPrimaryEmail   = $this->account->email;
         $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!

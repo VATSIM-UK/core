@@ -181,9 +181,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 {
     use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
 
-    protected $table = 'mship_account';
+    protected $table     = 'mship_account';
     public $incrementing = false;
-    protected $dates = [
+    protected $dates     = [
         'last_login',
         'joined_at',
         'cert_checked_at',
@@ -220,8 +220,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2
     //const STATUS_NETWORK_SUSPENDED = 2; //b"0010"; @deprecated in version 2.2
     const STATUS_INACTIVE = 4; //b"0100";
-    const STATUS_LOCKED = 8; //b"1000";
-    const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
+    const STATUS_LOCKED   = 8; //b"1000";
+    const STATUS_SYSTEM   = 8; //b"1000"; // Alias of LOCKED
 
     public static function eventCreated($model, $extra = null, $data = null)
     {
@@ -1048,7 +1048,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
+        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
         return $this->secondaryEmails()->save($newSecondaryEmail);
@@ -1106,13 +1106,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban = new Ban();
-        $ban->account_id = $this->id;
-        $ban->banned_by = $writerId;
-        $ban->type = $type;
-        $ban->reason_id = $banReason->id;
-        $ban->reason_extra = $banExtraReason;
-        $ban->period_start = Carbon::now()->second(0);
+        $ban                = new Ban();
+        $ban->account_id    = $this->id;
+        $ban->banned_by     = $writerId;
+        $ban->type          = $type;
+        $ban->reason_id     = $banReason->id;
+        $ban->reason_extra  = $banExtraReason;
+        $ban->period_start  = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1138,11 +1138,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $writer = $writer->getKey();
         }
 
-        $note = new AccountNoteData();
-        $note->account_id = $this->id;
-        $note->writer_id = $writer;
+        $note               = new AccountNoteData();
+        $note->account_id   = $this->id;
+        $note->writer_id    = $writer;
         $note->note_type_id = $noteType;
-        $note->content = $noteContent;
+        $note->content      = $noteContent;
         $note->save();
 
         if (! is_null($attachment)) {
@@ -1387,12 +1387,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function toArray()
     {
-        $array = parent::toArray();
-        $array['name'] = $this->name;
-        $array['name_real'] = $this->real_name;
-        $array['email'] = $this->email;
-        $array['atc_rating'] = $this->qualification_atc;
-        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array                 = parent::toArray();
+        $array['name']         = $this->name;
+        $array['name_real']    = $this->real_name;
+        $array['email']        = $this->email;
+        $array['atc_rating']   = $this->qualification_atc;
+        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;

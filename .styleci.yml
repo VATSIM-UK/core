@@ -3,8 +3,11 @@ preset: laravel
 risky: false
 
 enabled:
+    - "align_equals"
+    - "align_double_arrow"
 
 disabled:
+    - "unalign_equals"
 
 finder:
   exclude:
