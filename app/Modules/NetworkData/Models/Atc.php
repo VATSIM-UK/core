@@ -45,22 +45,9 @@ class Atc extends Model
 
     protected $table = 'networkdata_atc';
     protected $primaryKey = 'id';
-    protected $fillable = ['account_id', 'qualification_id', 'facility_type', 'callsign', 'frequency', 'connected_at', 'disconnected_at'];
+    protected $fillable = ['account_id', 'qualification_id', 'facility_type', 'callsign', 'frequency', 'connected_at', 'disconnected_at', 'updated_at'];
     public $dates = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
     public $timestamps = true;
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($model) {
-            event(new AtcSessionStarted($model));
-        });
-
-        static::deleted(function ($model) {
-            event(new AtcSessionDeleted($model));
-        });
-    }
 
     public static function scopeForAccountId($query, $id)
     {

@@ -3,9 +3,13 @@
 namespace App\Modules\NetworkData\Console\Commands;
 
 use App\Models\Mship\Qualification;
+use App\Modules\NetworkData\Events\AtcSessionEnded;
+use App\Modules\NetworkData\Events\AtcSessionStarted;
+use App\Modules\NetworkData\Events\AtcSessionUpdated;
 use App\Modules\NetworkData\Events\NetworkDataDownloaded;
 use App\Modules\NetworkData\Events\NetworkDataParsed;
 use App\Modules\NetworkData\Models\Atc;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class DownloadAndParse extends \App\Console\Commands\Command
@@ -26,7 +30,11 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     protected $description = 'Download and parse the VATSIM data feed file.';
 
-    private $vatsimPHP = null;
+    private $vatsimPHP               = null;
+    private $lastUpdatedAt           = null;
+    private $controllerTotalCount    = 0;
+    private $controllerAcceptedCount = 0;
+    private $controllerExpiredCount  = 0;
 
     /**
      * Create a new command instance.
@@ -48,16 +56,38 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     public function fire()
     {
-        $this->vatsimPHP->loadData();
-        event(new NetworkDataDownloaded());
+        $this->info("Loading VatsimPHP Data.", "v");
 
-        $feedLastUpdatedAt = \Cache::pull('networkdata_last_update_of_data', \Carbon\Carbon::now());
+        $this->vatsimPHP->loadData();
+
+        $this->info("Downloaded data.", "v");
+
+        $this->setLastUpdatedTimestamp();
+
+        $this->info("Last updated at " . $this->lastUpdatedAt->toDateTimeString(), "v");
+
+        event(new NetworkDataDownloaded());
 
         $this->parseRecentDownload();
 
-        print_r($feedLastUpdatedAt);
+        $this->endExpiredAtcSessions();
+    }
 
-        $this->endExpiredAtcSessions($feedLastUpdatedAt);
+    /**
+     * Set the last updated timestamp to something useable (i.e the value from the top of the file).
+     */
+    private function setLastUpdatedTimestamp()
+    {
+        $gi = $this->vatsimPHP->getGeneralInfo()->toArray();
+
+        if ($this->verbosity >= 3) {
+            $this->info("General header details:", "vvv");
+            foreach ($gi as $key => $value) {
+                $this->info("\t" . str_pad($key, 20, " ", STR_PAD_RIGHT) . " = " . $value, "vvv");
+            }
+        }
+
+        $this->lastUpdatedAt = Carbon::createFromTimestampUTC($gi['update']);
     }
 
     /*
@@ -68,10 +98,33 @@ class DownloadAndParse extends \App\Console\Commands\Command
     */
     private function parseRecentDownload()
     {
-        foreach ($this->vatsimPHP->getControllers() as $controllerData) {
-            $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
+        $this->info("Handling controller details.", "v");
 
-            Atc::updateOrCreate(
+        foreach ($this->vatsimPHP->getControllers() as $controllerData) {
+            $this->controllerTotalCount++;
+
+            $this->info("\tController #" . $this->controllerTotalCount . " - " . str_pad($controllerData['callsign'],
+                    10, " ", STR_PAD_RIGHT) . ":", "vvv");
+
+            if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == "_OBS") {
+                $this->info("\t\tFacility type - Observer.  Ignoring", "vvv");
+                continue;
+            }
+
+            if (substr($controllerData['callsign'], -4) == "_SUP") {
+                $this->info("\t\tFacility type - Supervisor.  Ignoring", "vvv");
+                continue;
+            }
+
+            if (substr($controllerData['callsign'], -5) == "_ATIS") {
+                $this->info("\t\tFacility type - ATIS.  Ignoring", "vvv");
+                continue;
+            }
+
+            $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
+            $this->info("\t\tQualification processed as " . $qualification, "vvv");
+
+            $atcSession = Atc::updateOrCreate(
                 [
                     'account_id'       => $controllerData['cid'],
                     'callsign'         => $controllerData['callsign'],
@@ -82,34 +135,29 @@ class DownloadAndParse extends \App\Console\Commands\Command
                     'deleted_at'       => null,
                 ],
                 [
-                    'updated_at' => \Carbon\Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ]
             );
+
+            if ($atcSession->wasRecentlyCreated) {
+                event(new AtcSessionStarted($atcSession));
+
+                $this->info("\t\tNew session - created & event broadcast.", "vvv");
+            } else {
+                event(new AtcSessionUpdated($atcSession));
+
+                $this->info("\t\tExisting session - updated & event broadcast.", "vvv");
+            }
+
+            $this->controllerAcceptedCount++;
         }
 
         event(new NetworkDataParsed());
 
-        \Cache::put('networkdata_last_update_of_data', \Carbon\Carbon::now(), 60 * 60 * 24 * 7);
-    }
-
-    /**
-     * Determine if we need to set the connected_at time (and parse it as required).
-     *
-     * If a none persisted eloquent model is passed to this method, it will persist it.
-     *
-     * @param $eloquentController Atc The persisted eloquent controller.
-     * @param $controllerData     Array The Array of data from the VatsimPHP feed.
-     *
-     * @return mixed
-     */
-    private function setControllerConnectedAt(Atc $eloquentController, array $controllerData)
-    {
-        if ($eloquentController->connected_at == null) {
-            $eloquentController->connected_at = Carbon::createFromFormat('YmdHis', $controllerData['time_logon']);
-            $eloquentController->save();
-        }
-
-        return $eloquentController;
+        $this->info("Controller details parsed\n", "v");
+        $this->info("\tTotal controllers: " . $this->controllerTotalCount, "v");
+        $this->info("\tAccepted controllers: " . $this->controllerAcceptedCount, "v");
+        $this->info("");
     }
 
     /**
@@ -117,14 +165,30 @@ class DownloadAndParse extends \App\Console\Commands\Command
      *
      * @return void
      */
-    private function endExpiredAtcSessions($feedLastUpdatedAt)
+    private function endExpiredAtcSessions()
     {
-        $expiringAtc = Atc::where('updated_at', '<', $feedLastUpdatedAt)
-                          ->whereNull('disconnected_at');
+        $this->info("Expiring old ATC sessions.", "v");
+
+        $expiringAtc = Atc::online()
+                          ->where('updated_at', '<', $this->lastUpdatedAt)
+                          ->get();
 
         foreach ($expiringAtc as $atc) {
-            $atc->disconnected_at = $feedLastUpdatedAt;
+            $this->info("\t" . $atc->callsign . ":", "vvv");
+
+            $this->info("\t\tConnect at: " . $atc->created_at, "vvv");
+            $this->info("\t\tUpdated at: " . $atc->updated_at, "vvv");
+
+            $atc->disconnected_at = $this->lastUpdatedAt;
             $atc->save();
+
+            event(new AtcSessionEnded($atc));
+
+            $this->info("\t\tExpired.", "vvv");
+            $this->controllerExpiredCount++;
         }
+
+        $this->info("Stale controller sessions expired", "v");
+        $this->info("\tExpired controllers: " . $this->controllerExpiredCount, "v");
     }
 }
