@@ -56,15 +56,15 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     public function fire()
     {
-        $this->info("Loading VatsimPHP Data.", "v");
+        $this->info('Loading VatsimPHP Data.', 'v');
 
         $this->vatsimPHP->loadData();
 
-        $this->info("Downloaded data.", "v");
+        $this->info('Downloaded data.', 'v');
 
         $this->setLastUpdatedTimestamp();
 
-        $this->info("Last updated at " . $this->lastUpdatedAt->toDateTimeString(), "v");
+        $this->info('Last updated at '.$this->lastUpdatedAt->toDateTimeString(), 'v');
 
         event(new NetworkDataDownloaded());
 
@@ -72,10 +72,10 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
         $this->endExpiredAtcSessions();
 
-        $this->sendSlackSuccess("Completed Successfully", [
-            "Controllers Total" => $this->controllerTotalCount,
-            "Controllers Accepted" => $this->controllerTotalCount,
-            "Controllers Expired" => $this->controllerAcceptedCount,
+        $this->sendSlackSuccess('Completed Successfully', [
+            'Controllers Total'    => $this->controllerTotalCount,
+            'Controllers Accepted' => $this->controllerTotalCount,
+            'Controllers Expired'  => $this->controllerAcceptedCount,
         ]);
     }
 
@@ -87,9 +87,9 @@ class DownloadAndParse extends \App\Console\Commands\Command
         $gi = $this->vatsimPHP->getGeneralInfo()->toArray();
 
         if ($this->verbosity >= 3) {
-            $this->info("General header details:", "vvv");
+            $this->info('General header details:', 'vvv');
             foreach ($gi as $key => $value) {
-                $this->info("\t" . str_pad($key, 20, " ", STR_PAD_RIGHT) . " = " . $value, "vvv");
+                $this->info("\t".str_pad($key, 20, ' ', STR_PAD_RIGHT).' = '.$value, 'vvv');
             }
         }
 
@@ -104,31 +104,31 @@ class DownloadAndParse extends \App\Console\Commands\Command
     */
     private function parseRecentDownload()
     {
-        $this->info("Handling controller details.", "v");
+        $this->info('Handling controller details.', 'v');
 
         foreach ($this->vatsimPHP->getControllers() as $controllerData) {
             $this->controllerTotalCount++;
 
-            $this->info("\tController #" . $this->controllerTotalCount . " - " . str_pad($controllerData['callsign'],
-                    10, " ", STR_PAD_RIGHT) . ":", "vvv");
+            $this->info("\tController #".$this->controllerTotalCount.' - '.str_pad($controllerData['callsign'],
+                    10, ' ', STR_PAD_RIGHT).':', 'vvv');
 
-            if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == "_OBS") {
-                $this->info("\t\tFacility type - Observer.  Ignoring", "vvv");
+            if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
+                $this->info("\t\tFacility type - Observer.  Ignoring", 'vvv');
                 continue;
             }
 
-            if (substr($controllerData['callsign'], -4) == "_SUP") {
-                $this->info("\t\tFacility type - Supervisor.  Ignoring", "vvv");
+            if (substr($controllerData['callsign'], -4) == '_SUP') {
+                $this->info("\t\tFacility type - Supervisor.  Ignoring", 'vvv');
                 continue;
             }
 
-            if (substr($controllerData['callsign'], -5) == "_ATIS") {
-                $this->info("\t\tFacility type - ATIS.  Ignoring", "vvv");
+            if (substr($controllerData['callsign'], -5) == '_ATIS') {
+                $this->info("\t\tFacility type - ATIS.  Ignoring", 'vvv');
                 continue;
             }
 
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
-            $this->info("\t\tQualification processed as " . $qualification, "vvv");
+            $this->info("\t\tQualification processed as ".$qualification, 'vvv');
 
             $atcSession = Atc::updateOrCreate(
                 [
@@ -148,11 +148,11 @@ class DownloadAndParse extends \App\Console\Commands\Command
             if ($atcSession->wasRecentlyCreated) {
                 event(new AtcSessionStarted($atcSession));
 
-                $this->info("\t\tNew session - created & event broadcast.", "vvv");
+                $this->info("\t\tNew session - created & event broadcast.", 'vvv');
             } else {
                 event(new AtcSessionUpdated($atcSession));
 
-                $this->info("\t\tExisting session - updated & event broadcast.", "vvv");
+                $this->info("\t\tExisting session - updated & event broadcast.", 'vvv');
             }
 
             $this->controllerAcceptedCount++;
@@ -160,10 +160,10 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
         event(new NetworkDataParsed());
 
-        $this->info("Controller details parsed\n", "v");
-        $this->info("\tTotal controllers: " . $this->controllerTotalCount, "v");
-        $this->info("\tAccepted controllers: " . $this->controllerAcceptedCount, "v");
-        $this->info("");
+        $this->info("Controller details parsed\n", 'v');
+        $this->info("\tTotal controllers: ".$this->controllerTotalCount, 'v');
+        $this->info("\tAccepted controllers: ".$this->controllerAcceptedCount, 'v');
+        $this->info('');
     }
 
     /**
@@ -173,28 +173,28 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     private function endExpiredAtcSessions()
     {
-        $this->info("Expiring old ATC sessions.", "v");
+        $this->info('Expiring old ATC sessions.', 'v');
 
         $expiringAtc = Atc::online()
                           ->where('updated_at', '<', $this->lastUpdatedAt)
                           ->get();
 
         foreach ($expiringAtc as $atc) {
-            $this->info("\t" . $atc->callsign . ":", "vvv");
+            $this->info("\t".$atc->callsign.':', 'vvv');
 
-            $this->info("\t\tConnect at: " . $atc->created_at, "vvv");
-            $this->info("\t\tUpdated at: " . $atc->updated_at, "vvv");
+            $this->info("\t\tConnect at: ".$atc->created_at, 'vvv');
+            $this->info("\t\tUpdated at: ".$atc->updated_at, 'vvv');
 
             $atc->disconnected_at = $this->lastUpdatedAt;
             $atc->save();
 
             event(new AtcSessionEnded($atc));
 
-            $this->info("\t\tExpired.", "vvv");
+            $this->info("\t\tExpired.", 'vvv');
             $this->controllerExpiredCount++;
         }
 
-        $this->info("Stale controller sessions expired", "v");
-        $this->info("\tExpired controllers: " . $this->controllerExpiredCount, "v");
+        $this->info('Stale controller sessions expired', 'v');
+        $this->info("\tExpired controllers: ".$this->controllerExpiredCount, 'v');
     }
 }
