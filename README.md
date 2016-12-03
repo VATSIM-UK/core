@@ -1,3 +1,6 @@
+[![Code Climate](https://codeclimate.com/github/VATSIM-UK/core/badges/gpa.svg)](https://codeclimate.com/github/VATSIM-UK/core)
+[![Build Status](https://travis-ci.org/VATSIM-UK/core.svg?branch=production)](https://travis-ci.org/VATSIM-UK/core)
+
 ## Upgrade Notes
 
 ### All Versions (2.3.5 onwards)
