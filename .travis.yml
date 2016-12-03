@@ -13,8 +13,8 @@ install:
   - composer install --prefer-dist --no-interaction -o > /dev/null
   - cp .env.example .env
   - php artisan key:generate
-  - php artisan migrate -vvv
-  - php artisan module:migrate -vvv
+  - php artisan migrate -vvv -n
+  - php artisan module:migrate -vvv -n
   - php artisan serve -q &
 
 before_script:
