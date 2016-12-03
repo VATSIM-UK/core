@@ -17,6 +17,9 @@ install:
   - php artisan migrate -vvv -n
   - php artisan module:migrate -vvv -n
   - php artisan serve -q &
+  - npm install gulp
+  - npm install
+  - gulp --production
 
 before_script:
 
