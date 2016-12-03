@@ -33,3 +33,7 @@ deploy:
 after_deploy:
 
 after_script:
+
+addons:
+    code_climate:
+        repo_token: b8d7102d6575c100bd3dd53ffc35378b5004348b09dc03c84536a39bde88d862
