@@ -4,8 +4,7 @@ namespace App\Modules\NetworkData\Http\Controllers\Admin;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\NetworkData\Models\Atc;
 use Cache;
 
 class Dashboard extends AdmController
@@ -15,22 +14,8 @@ class Dashboard extends AdmController
         $statisticsRaw = Cache::remember('networkdata::statistics', 60, function () {
             $statistics = [];
 
-            $statistics['applications_total'] = Application::all()->count();
-
-            $statistics['applications_open'] = Application::status(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
-
-            $statistics['applications_closed'] = Application::status(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
-
-            $statistics['references_pending'] = Reference::statusIn([
-                Reference::STATUS_DRAFT,
-                Reference::STATUS_REQUESTED,
-            ])->count();
-
-            $statistics['references_approval'] = Reference::status(Reference::STATUS_UNDER_REVIEW)->count();
-
-            $statistics['references_accepted'] = Reference::statusIn([
-                Reference::STATUS_ACCEPTED,
-            ])->count();
+            $statistics['atc_sessions_total'] = Atc::thisYear()->count();
+            $statistics['atc_sessions_hours'] = Atc::thisYear()->count();
 
             return $statistics;
         });
@@ -54,7 +39,7 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        return $this->viewMake('visittransfer::admin.dashboard')
+        return $this->viewMake('networkdata::admin.dashboard')
                     ->with('statisticsRaw', $statisticsRaw)
                     ->with('statisticsGraph', $statisticsGraph);
     }

@@ -83,9 +83,24 @@ class Atc extends Model
         return $query->where('disconnected_at', 'IS NOT', null);
     }
 
+    public static function scopeThisYear($query)
+    {
+        $startOfYear = \Carbon\Carbon::parse("first day of year");
+
+        return $query->where("connected_at", ">=", $startOfYear);
+    }
+
     public function setDisconnectedAtAttribute($timestamp)
     {
         $this->attributes['disconnected_at'] = $timestamp;
         event(new AtcSessionEnded($this));
+    }
+
+    /**
+     * Calculate the total number of minutes the user spent online
+     */
+    public function autoCalculateTimeOnline()
+    {
+        if()
     }
 }
