@@ -33,11 +33,11 @@ class CreateEditNoteType extends Request
         }
 
         return [
-            'name' => 'required|min:5',
-            'short_code' => 'min:5|unique:mship_note_type,short_code,'.$currentNoteTypeId.',note_type_id',
+            'name'         => 'required|min:5',
+            'short_code'   => 'min:5|unique:mship_note_type,short_code,'.$currentNoteTypeId.',note_type_id',
             'is_available' => 'required|boolean',
-            'is_default' => 'required|boolean',
-            'colour_code' => 'required|in:success,danger,warning,info,primary',
+            'is_default'   => 'required|boolean',
+            'colour_code'  => 'required|in:success,danger,warning,info,primary',
         ];
     }
 

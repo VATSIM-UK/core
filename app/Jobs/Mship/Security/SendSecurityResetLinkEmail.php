@@ -12,19 +12,19 @@ class SendSecurityResetLinkEmail extends \App\Jobs\Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
-    private $password = null;
+    private $password  = null;
 
     public function __construct(\App\Models\Mship\Account $recipient, $password)
     {
         $this->recipient = $recipient;
-        $this->password = $password;
+        $this->password  = $password;
     }
 
     public function handle(Mailer $mailer)
     {
         $displayFrom = 'VATSIM UK - Community Department';
-        $subject = 'New Email Added - Verification Required';
-        $body = \View::make('emails.mship.security.reset_password')
+        $subject     = 'New Email Added - Verification Required';
+        $body        = \View::make('emails.mship.security.reset_password')
                      ->with('account', $this->recipient)
                      ->with('password', $this->password)
                      ->render();

@@ -12,7 +12,7 @@ class CheckOutcomeAlreadySetException extends \Exception
     public function __construct(Application $application, $check)
     {
         $this->application = $application;
-        $this->check = $check;
+        $this->check       = $check;
 
         $this->message = "The check '".$check."' already has an outcome.";
     }

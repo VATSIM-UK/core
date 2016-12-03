@@ -27,10 +27,10 @@ class Email extends \Eloquent
 {
     use RecordsActivity;
 
-    protected $table = 'sso_email';
+    protected $table      = 'sso_email';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
-    protected $hidden = ['id'];
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $hidden     = ['id'];
 
     public function email()
     {

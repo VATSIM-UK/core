@@ -12,22 +12,22 @@ class DispatchNotificationEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    private $senderEmail = null;
+    private $senderEmail     = null;
     private $displaySenderAs = null;
-    private $recipient = null;
-    private $recipientEmail = null;
-    private $subject = null;
-    private $body = null;
+    private $recipient       = null;
+    private $recipientEmail  = null;
+    private $subject         = null;
+    private $body            = null;
 
     // TODO: Not happy with this many params.  Fix it, please.
     public function __construct($senderName, $senderEmail, Account $recipient, Account\Email $recipientEmail = null, $subject, $body)
     {
-        $this->$senderEmail = $senderEmail;
+        $this->$senderEmail    = $senderEmail;
         $this->displaySenderAs = $senderName;
-        $this->recipient = $recipient;
-        $this->recipientEmail = $recipientEmail;
-        $this->subject = $subject;
-        $this->body = $body;
+        $this->recipient       = $recipient;
+        $this->recipientEmail  = $recipientEmail;
+        $this->subject         = $subject;
+        $this->body            = $body;
     }
 
     public function handle(Mailer $mailer)

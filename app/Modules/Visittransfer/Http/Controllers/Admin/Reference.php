@@ -17,7 +17,7 @@ class Reference extends AdmController
     public function getList($scope = 'all')
     {
         $permittedScope = ['all', 'pending-submission', 'submitted', 'under-review', 'accepted', 'rejected'];
-        $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
+        $scope          = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         $references = ReferenceModel::with('application')
                                     ->with('application.account')

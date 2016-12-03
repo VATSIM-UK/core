@@ -16,12 +16,12 @@ class SendRefereeRequestReminderEmail extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    private $reference = null;
+    private $reference   = null;
     private $application = null;
 
     public function __construct(Reference $reference)
     {
-        $this->reference = $reference;
+        $this->reference   = $reference;
         $this->application = $this->reference->application;
     }
 
@@ -41,7 +41,7 @@ class SendRefereeRequestReminderEmail extends Job implements ShouldQueue
         }
 
         $displayFrom = 'VATSIM UK - Community Department';
-        $subject = '['.$this->application->public_id.'] '.$this->application->type_string.' Reference Request';
+        $subject     = '['.$this->application->public_id.'] '.$this->application->type_string.' Reference Request';
 
         $body = View::make('visittransfer::emails.reference.request')
                     ->with('reference', $this->reference)
@@ -53,13 +53,13 @@ class SendRefereeRequestReminderEmail extends Job implements ShouldQueue
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->reference->account, $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
-            'recipient_email' => $this->reference->email,
+            'sender_email'      => 'community@vatsim-uk.co.uk',
+            'recipient_email'   => $this->reference->email,
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));
 
-        $this->reference->status = Reference::STATUS_REQUESTED;
+        $this->reference->status      = Reference::STATUS_REQUESTED;
         $this->reference->reminded_at = \Carbon\Carbon::now();
         $this->reference->save();
     }

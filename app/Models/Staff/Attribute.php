@@ -20,7 +20,7 @@ namespace App\Models\Staff;
  */
 class Attribute extends \App\Models\Model
 {
-    protected $table = 'staff_attributes';
+    protected $table      = 'staff_attributes';
     protected $primaryKey = 'id';
 
     public function positions()

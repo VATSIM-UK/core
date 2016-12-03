@@ -27,7 +27,7 @@ class NotifyAllReferees implements ShouldQueue
             dispatch($referenceRequestEmailJob->onQueue('low'));
 
             $referenceRequestReminderEmailJob = new SendRefereeRequestReminderEmail($reference);
-            $delayPeriod = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
+            $delayPeriod                      = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
             dispatch($referenceRequestReminderEmailJob->delay($delayPeriod)->onQueue('low'));
         }
     }
