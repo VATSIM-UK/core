@@ -72,7 +72,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
         $this->endExpiredAtcSessions();
 
-        $this->sendSlackSuccess("networkdata:download", [
+        $this->sendSlackSuccess("Completed Successfully", [
             "Controllers Total" => $this->controllerTotalCount,
             "Controllers Accepted" => $this->controllerTotalCount,
             "Controllers Expired" => $this->controllerAcceptedCount,
