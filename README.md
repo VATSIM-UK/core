@@ -11,11 +11,22 @@
 * Run `npm install --production`
 * Run `gulp --production`
 * **Perform version-specific upgrade steps (below)**
+* Check for any additional BugSnag filter (in version-specific steps below)
 * Enable all cronjobs
 * Restart all queue processes
 
+### 2.3.6.1 > NEXT
+
 ### 2.3.6 > 2.3.6.1
 * Add relevant BUGSNAP_ config variables from the .env.example file
+* Ensure following filters are set, to avoid reporting them in BugSnag reports:
+ * username - to filter out SSO username
+ * apikey_pub - to filter out public SSO key
+ * secret - to filter out SSO secret
+ * access_token - to filter out SSO access tokens
+ * authid - to filter out auth username
+ * authpassword - to filter out auth password
+ * x-newrelic-id - to filter out newRelic ID
 
 ### 2.3.5 > 2.3.6
 * Run a range of consolidation destroying SQL:
