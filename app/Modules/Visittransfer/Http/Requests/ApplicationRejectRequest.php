@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationRejectRequest extends FormRequest
 {

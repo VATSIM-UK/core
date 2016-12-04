@@ -2,17 +2,17 @@
 
 namespace App\Jobs\Mship\Account;
 
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Jobs\Job;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification as QualificationData;
-use Carbon\Carbon;
 use DB;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use VatsimXML;
+use App\Jobs\Job;
+use Carbon\Carbon;
+use App\Models\Mship\Account;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Models\Mship\Qualification as QualificationData;
+use App\Exceptions\Mship\DuplicateQualificationException;
 
 class MemberCertUpdate extends Job implements ShouldQueue
 {

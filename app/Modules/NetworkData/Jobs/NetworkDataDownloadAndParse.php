@@ -2,14 +2,14 @@
 
 namespace App\Modules\NetworkData\Jobs;
 
+use Carbon\Carbon;
 use App\Models\Mship\Qualification;
+use Illuminate\Queue\SerializesModels;
+use App\Modules\NetworkData\Models\Atc;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Modules\NetworkData\Events\NetworkDataParsed;
 use App\Modules\NetworkData\Events\NetworkDataDownloaded;
-use App\Modules\NetworkData\Models\Atc;
-use Carbon\Carbon;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class NetworkDataDownloadAndParse extends \App\Jobs\Job
 {

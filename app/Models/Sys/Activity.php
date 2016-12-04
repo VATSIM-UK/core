@@ -2,8 +2,8 @@
 
 namespace App\Models\Sys;
 
-use App\Models\Model;
 use Request;
+use App\Models\Model;
 
 /**
  * App\Models\Sys\Activity.

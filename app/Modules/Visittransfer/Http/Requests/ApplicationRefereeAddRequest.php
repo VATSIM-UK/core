@@ -2,10 +2,10 @@
 
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Models\Mship\Account;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationRefereeAddRequest extends FormRequest
 {

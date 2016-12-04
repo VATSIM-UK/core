@@ -3,9 +3,9 @@
 namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Application;
 
 class AutomatedApplicationChecks extends Job implements ShouldQueue
 {

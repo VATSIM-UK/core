@@ -2,8 +2,8 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use App\Modules\NetworkData\Jobs\NetworkDataDownloadAndParse as StatisticsDownloadAndParseJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\Modules\NetworkData\Jobs\NetworkDataDownloadAndParse as StatisticsDownloadAndParseJob;
 
 class DownloadAndParse extends \App\Console\Commands\Command
 {

@@ -2,14 +2,14 @@
 
 namespace App\Modules\Visittransfer\Jobs;
 
+use View;
 use App\Jobs\Job;
-use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
+use App\Jobs\Messages\SendNotificationEmail;
+use App\Modules\Visittransfer\Models\Application;
 
 class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
 {
@@ -36,7 +36,6 @@ class SendCommunityApplicationReviewEmail extends Job implements ShouldQueue
         $body = View::make('visittransfer::emails.community.new_application')
                     ->with('application', $this->application)
                     ->render();
-
 
         $sender    = Account::find(VATUK_ACCOUNT_SYSTEM);
         $recipient = Account::find(1002707);

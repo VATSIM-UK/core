@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
 use App\Modules\Visittransfer\Jobs\SendCommunityApplicationReviewEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 {
