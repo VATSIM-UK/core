@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
 use SlackUser;
+use App\Models\Mship\Account;
 
 class SlackManager extends Command
 {

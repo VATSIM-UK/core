@@ -2,12 +2,12 @@
 
 namespace App\Modules\NetworkData\Models;
 
-use App\Modules\NetworkData\Events\AtcSessionStarted;
+use Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Event;
 use App\Modules\NetworkData\Events\AtcSessionEnded;
 use App\Modules\NetworkData\Events\AtcSessionDeleted;
+use App\Modules\NetworkData\Events\AtcSessionStarted;
 
 /**
  * App\Modules\NetworkData\Models\Atc.

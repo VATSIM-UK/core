@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Site;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
 use Auth;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
 
 class Dashboard extends BaseController
 {

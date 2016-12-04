@@ -2,12 +2,12 @@
 
 namespace App\Jobs\Mship\Account;
 
-use App\Jobs\Messages\CreateNewMessage;
+use View;
 use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\Messages\CreateNewMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
 
 class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
 {

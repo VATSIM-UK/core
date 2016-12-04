@@ -113,7 +113,6 @@ abstract class Model extends EloquentModel
                     }
                 }
 
-
                 $original = $this->getOriginal($attribute);
 
                 $dataChange           = new \App\Models\Sys\Data\Change();
