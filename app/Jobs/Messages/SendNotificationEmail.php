@@ -3,8 +3,8 @@
 namespace App\Jobs\Messages;
 
 use App\Jobs\Job;
-use App\Models\Messages\Thread\Post;
 use App\Models\Mship\Account;
+use App\Models\Messages\Thread\Post;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

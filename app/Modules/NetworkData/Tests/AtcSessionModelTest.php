@@ -33,7 +33,8 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function it_updates_minutes_online_when_a_session_is_marked_as_disconnected(){
+    public function it_updates_minutes_online_when_a_session_is_marked_as_disconnected()
+    {
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, 'online')->create();
 
         $atcSession->connected_at = \Carbon\Carbon::now()->subMinutes(2);
@@ -43,7 +44,7 @@ class AtcSessionModelTest extends TestCase
 
         $this->assertEquals(2, $atcSession->fresh()->minutes_online, "NetworkData::AtcSession hasn't calculated minutes online.");
     }
-    
+
     /** @test */
     public function it_triggers_an_event_when_an_atc_session_is_deleted()
     {

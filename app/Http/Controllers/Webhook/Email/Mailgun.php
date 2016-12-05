@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Webhook\Email;
 
-use Response;
 use Input;
+use Response;
 
 class Mailgun extends EmailWebhookController
 {
@@ -20,7 +20,6 @@ class Mailgun extends EmailWebhookController
             return Response::make('Unauthorised', 406);
         }
         // END OF VERIFICATION
-
 
         // Get the messageID
         $this->messageId = Input::get('message-id', 'NOTHING');

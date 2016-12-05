@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use DB;
+use URL;
+use Auth;
+use Input;
+use Session;
+use Redirect;
+use App\Models\Mship\State;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Account\Note;
+use Illuminate\Support\Collection;
+use App\Models\Mship\Role as RoleData;
 use App\Http\Controllers\Adm\AdmController;
-use App\Http\Requests\Mship\Account\Ban\CommentRequest;
-use App\Http\Requests\Mship\Account\Ban\CreateRequest;
-use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
-use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Models\Mship\Account as AccountData;
+use App\Models\Mship\Note\Type as NoteTypeData;
 use App\Jobs\Mship\Account\Ban\SendCreationEmail;
 use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
 use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
+use App\Http\Requests\Mship\Account\Ban\CreateRequest;
+use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
+use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
-use App\Models\Mship\Account as AccountData;
-use App\Models\Mship\Account\Note;
-use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Note\Type;
-use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Mship\State;
-use Auth;
-use DB;
-use Illuminate\Support\Collection;
-use Input;
-use Redirect;
-use Session;
-use URL;
 
 class Account extends AdmController
 {

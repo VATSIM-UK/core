@@ -2,15 +2,12 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use App\Models\Mship\Qualification;
-use App\Modules\NetworkData\Events\AtcSessionEnded;
-use App\Modules\NetworkData\Events\AtcSessionStarted;
-use App\Modules\NetworkData\Events\AtcSessionUpdated;
-use App\Modules\NetworkData\Events\NetworkDataDownloaded;
-use App\Modules\NetworkData\Events\NetworkDataParsed;
-use App\Modules\NetworkData\Models\Atc;
 use Carbon\Carbon;
+use App\Models\Mship\Qualification;
+use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\Modules\NetworkData\Events\NetworkDataParsed;
+use App\Modules\NetworkData\Events\NetworkDataDownloaded;
 
 class DownloadAndParse extends \App\Console\Commands\Command
 {
@@ -175,7 +172,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
                           ->where('updated_at', '<', $this->lastUpdatedAt)
                           ->get();
 
-        $expiringAtc->each(function($session){
+        $expiringAtc->each(function ($session) {
             $this->info("\t".$session->callsign.':', 'vvv');
 
             $this->info("\t\tConnect at: ".$session->created_at, 'vvv');

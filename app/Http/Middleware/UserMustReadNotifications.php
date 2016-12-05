@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
-use Session;
 use Request;
+use Session;
 use Redirect;
 
 class UserMustReadNotifications

@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Auth;
-use Carbon\Carbon;
 use Closure;
 use Session;
+use Carbon\Carbon;
 
 class TrackInactivity
 {
