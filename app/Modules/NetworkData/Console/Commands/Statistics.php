@@ -3,9 +3,9 @@
 namespace App\Modules\NetworkData\Console\Commands;
 
 use Cache;
+use Cache;
 use App\Models\Statistic;
 use App\Modules\NetworkData\Models\Atc;
-use Cache;
 
 class Statistics extends Command
 {
@@ -67,8 +67,8 @@ class Statistics extends Command
         $this->log('Counting total completed ATC sessions for given day');
 
         try {
-            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
-                                ->where("disconnected_at", "LIKE", $currentPeriod->toDateString() . " %")
+            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString().' %')
+                                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
                                 ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'networkdata::atc.global.total', $count);
