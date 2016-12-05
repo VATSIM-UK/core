@@ -146,13 +146,9 @@ class DownloadAndParse extends \App\Console\Commands\Command
             );
 
             if ($atcSession->wasRecentlyCreated) {
-                event(new AtcSessionStarted($atcSession));
-
-                $this->info("\t\tNew session - created & event broadcast.", 'vvv');
+                $this->info("\t\tNew session - created.", 'vvv');
             } else {
-                event(new AtcSessionUpdated($atcSession));
-
-                $this->info("\t\tExisting session - updated & event broadcast.", 'vvv');
+                $this->info("\t\tExisting session - updated.", 'vvv');
             }
 
             $this->controllerAcceptedCount++;
@@ -179,20 +175,17 @@ class DownloadAndParse extends \App\Console\Commands\Command
                           ->where('updated_at', '<', $this->lastUpdatedAt)
                           ->get();
 
-        foreach ($expiringAtc as $atc) {
-            $this->info("\t".$atc->callsign.':', 'vvv');
+        $expiringAtc->each(function($session){
+            $this->info("\t".$session->callsign.':', 'vvv');
 
-            $this->info("\t\tConnect at: ".$atc->created_at, 'vvv');
-            $this->info("\t\tUpdated at: ".$atc->updated_at, 'vvv');
+            $this->info("\t\tConnect at: ".$session->created_at, 'vvv');
+            $this->info("\t\tUpdated at: ".$session->updated_at, 'vvv');
 
-            $atc->disconnected_at = $this->lastUpdatedAt;
-            $atc->save();
-
-            event(new AtcSessionEnded($atc));
+            $session->disconnectAt($this->lastUpdatedAt);
 
             $this->info("\t\tExpired.", 'vvv');
             $this->controllerExpiredCount++;
-        }
+        });
 
         $this->info('Stale controller sessions expired', 'v');
         $this->info("\tExpired controllers: ".$this->controllerExpiredCount, 'v');

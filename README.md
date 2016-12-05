@@ -16,6 +16,7 @@
 
 ### 2.3.6 > 2.3.6.1
 * Add relevant BUGSNAP_ config variables from the .env.example file
+* Run `php artisan module:migrate networkdata`
 
 ### 2.3.5 > 2.3.6
 * Run a range of consolidation destroying SQL:

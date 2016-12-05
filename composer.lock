@@ -492,20 +492,20 @@
         },
         {
             "name": "classpreloader/classpreloader",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ClassPreloader/ClassPreloader.git",
-                "reference": "9b10b913c2bdf90c3d2e0d726b454fb7f77c552a"
+                "reference": "bc7206aa892b5a33f4680421b69b191efd32b096"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ClassPreloader/ClassPreloader/zipball/9b10b913c2bdf90c3d2e0d726b454fb7f77c552a",
-                "reference": "9b10b913c2bdf90c3d2e0d726b454fb7f77c552a",
+                "url": "https://api.github.com/repos/ClassPreloader/ClassPreloader/zipball/bc7206aa892b5a33f4680421b69b191efd32b096",
+                "reference": "bc7206aa892b5a33f4680421b69b191efd32b096",
                 "shasum": ""
             },
             "require": {
-                "nikic/php-parser": "^1.0|^2.0",
+                "nikic/php-parser": "^1.0|^2.0|^3.0",
                 "php": ">=5.5.9"
             },
             "require-dev": {
@@ -514,7 +514,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -542,7 +542,7 @@
                 "class",
                 "preload"
             ],
-            "time": "2015-11-09 22:51:51"
+            "time": "2016-09-16 12:50:15"
         },
         {
             "name": "comocode/laravel-ab",
@@ -4437,16 +4437,16 @@
         },
         {
             "name": "phpspec/phpspec",
-            "version": "2.5.4",
+            "version": "2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/phpspec.git",
-                "reference": "37ace4a5431821f7833091e7051f00d498404b9e"
+                "reference": "db395f435eb8e820448e8690de1a8db86d5dd8af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/phpspec/zipball/37ace4a5431821f7833091e7051f00d498404b9e",
-                "reference": "37ace4a5431821f7833091e7051f00d498404b9e",
+                "url": "https://api.github.com/repos/phpspec/phpspec/zipball/db395f435eb8e820448e8690de1a8db86d5dd8af",
+                "reference": "db395f435eb8e820448e8690de1a8db86d5dd8af",
                 "shasum": ""
             },
             "require": {
@@ -4511,7 +4511,7 @@
                 "testing",
                 "tests"
             ],
-            "time": "2016-12-02 07:48:16"
+            "time": "2016-12-04 21:03:31"
         },
         {
             "name": "phpspec/prophecy",
@@ -5233,16 +5233,16 @@
         },
         {
             "name": "sebastian/recursion-context",
-            "version": "1.0.4",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/recursion-context.git",
-                "reference": "938df7a6478e72795e5f8266cff24d06e3136f2e"
+                "reference": "913401df809e99e4f47b27cdd781f4a258d58791"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/recursion-context/zipball/938df7a6478e72795e5f8266cff24d06e3136f2e",
-                "reference": "938df7a6478e72795e5f8266cff24d06e3136f2e",
+                "url": "https://api.github.com/repos/sebastianbergmann/recursion-context/zipball/913401df809e99e4f47b27cdd781f4a258d58791",
+                "reference": "913401df809e99e4f47b27cdd781f4a258d58791",
                 "shasum": ""
             },
             "require": {
@@ -5282,7 +5282,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2016-11-15 06:55:36"
+            "time": "2015-11-11 19:50:13"
         },
         {
             "name": "sebastian/version",
