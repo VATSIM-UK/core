@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\DuplicateStateException;
+use DB;
+use VatsimXML;
+use App\Models\Mship\State;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use App\Models\Mship\State;
-use DB;
-use VatsimXML;
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Exceptions\Mship\DuplicateQualificationException;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.

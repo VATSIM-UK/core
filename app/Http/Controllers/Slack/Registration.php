@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Slack;
 
-use App\Models\Sys\Token;
 use Redirect;
 use Response;
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 

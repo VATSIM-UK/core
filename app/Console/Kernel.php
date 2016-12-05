@@ -2,8 +2,8 @@
 
 namespace App\Console;
 
-use Caffeinated\Modules\Facades\Module;
 use File;
+use Caffeinated\Modules\Facades\Module;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

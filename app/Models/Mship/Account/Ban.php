@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Traits\RecordsActivity;
 use Carbon\Carbon;
+use App\Traits\RecordsActivity;
 
 /**
  * App\Models\Mship\Account\Ban.

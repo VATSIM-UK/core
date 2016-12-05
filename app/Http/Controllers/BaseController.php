@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Models\Mship\Account;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Request;
 use View;
+use Request;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BaseController extends \Illuminate\Routing\Controller
 {

@@ -2,14 +2,14 @@
 
 namespace App\Jobs\Mship\Security;
 
-use App\Jobs\Messages\CreateNewMessage;
-use App\Models\Mship\Account;
+use View;
 use App\Models\Sys\Token;
+use App\Models\Mship\Account;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\Messages\CreateNewMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
 
 class SendSecurityForgottenAdminConfirmationEmail extends \App\Jobs\Job implements ShouldQueue
 {
