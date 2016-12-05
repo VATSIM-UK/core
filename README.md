@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/VATSIM-UK/core.png?label=ready&title=Ready)](http://waffle.io/VATSIM-UK/core)
 [![Code Climate](https://codeclimate.com/github/VATSIM-UK/core/badges/gpa.svg)](https://codeclimate.com/github/VATSIM-UK/core)
 [![Build Status](https://travis-ci.org/VATSIM-UK/core.svg?branch=production)](https://travis-ci.org/VATSIM-UK/core)
 
