@@ -4,7 +4,7 @@ namespace App\Modules\NetworkData\Console\Commands;
 
 use App\Console\Commands\Command;
 use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
+use App\Modules\NetworkData\Models\Atc;
 use Cache;
 
 class Statistics extends Command
@@ -16,7 +16,7 @@ class Statistics extends Command
      *
      * @var string
      */
-    protected $signature = 'visittransfer:statistics
+    protected $signature = 'networkdata:statistics
                             {startPeriod? : The period to start generating statistics from (inclusive), defaulted to yesterday.}
                             {endPeriod? : The period to stop generating statistics on (inclusive), defaulted to yesterday.}';
 
@@ -67,7 +67,7 @@ class Statistics extends Command
         $this->log('Counting total completed ATC sessions for given day');
 
         try {
-            $count = Application::where('connected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
+            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
                                 ->where("disconnected_at", "LIKE", $currentPeriod->toDateString() . " %")
                                 ->count();
 

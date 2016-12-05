@@ -153,7 +153,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
         event(new NetworkDataParsed());
 
-        $this->info("Controller details parsed\n", 'v');
+        $this->info("Controller details parsed", 'v');
         $this->info("\tTotal controllers: ".$this->controllerTotalCount, 'v');
         $this->info("\tAccepted controllers: ".$this->controllerAcceptedCount, 'v');
         $this->info('');

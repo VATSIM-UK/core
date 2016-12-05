@@ -2,6 +2,7 @@
 
 namespace App\Modules\NetworkData\Models;
 
+use App\Modules\NetworkData\Events\AtcSessionUpdated;
 use Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
