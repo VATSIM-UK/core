@@ -2,10 +2,10 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use App\Console\Commands\Command;
-use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
 use Cache;
+use App\Models\Statistic;
+use App\Console\Commands\Command;
+use App\Modules\Visittransfer\Models\Application;
 
 class Statistics extends Command
 {
@@ -35,14 +35,14 @@ class Statistics extends Command
     public function handle()
     {
         $currentPeriod = $this->getStartPeriod();
-        $this->log('Start Period: ' . $currentPeriod->toDateString());
+        $this->log('Start Period: '.$currentPeriod->toDateString());
 
         while ($currentPeriod->lte($this->getEndPeriod())) {
-            $this->log('=========== START OF CYCLE ' . $currentPeriod->toDateString() . ' ===========');
+            $this->log('=========== START OF CYCLE '.$currentPeriod->toDateString().' ===========');
 
             $this->addTotalAtcSessionsCount($currentPeriod);
 
-            $this->log('============ END OF CYCLE ' . $currentPeriod->toDateString() . '  ===========');
+            $this->log('============ END OF CYCLE '.$currentPeriod->toDateString().'  ===========');
 
             $currentPeriod = $currentPeriod->addDay();
         }
@@ -67,15 +67,15 @@ class Statistics extends Command
         $this->log('Counting total completed ATC sessions for given day');
 
         try {
-            $count = Application::where('connected_at', 'LIKE', $currentPeriod->toDateString() . ' %')
-                                ->where("disconnected_at", "LIKE", $currentPeriod->toDateString() . " %")
+            $count = Application::where('connected_at', 'LIKE', $currentPeriod->toDateString().' %')
+                                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
                                 ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'networkdata::atc.global.total', $count);
 
-            $this->log('Done. ' . $count . ' total ATC sessions.');
+            $this->log('Done. '.$count.' total ATC sessions.');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
                 'Unable to update TOTAL ATC SESSIONS (NETWORKDATA) statistics.',
                 ['Error Code' => 3]
@@ -95,9 +95,9 @@ class Statistics extends Command
         try {
             $startPeriod = \Carbon\Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                'Invalid startPeriod specified.  ' . $this->argument('startPeriod') . ' is invalid.',
+                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
                 ['Error Code' => 1]
             );
         }
@@ -121,9 +121,9 @@ class Statistics extends Command
         try {
             $endPeriod = \Carbon\Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log('Error: ' . $e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                'Invalid endPeriod specified.  ' . $this->argument('endPeriod') . ' is invalid.',
+                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
                 ['Error Code' => 2]
             );
         }
