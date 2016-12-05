@@ -2,12 +2,12 @@
 
 namespace App\Scopes\TeamSpeak;
 
-use App\Models\TeamSpeak\ChannelGroup;
+use InvalidArgumentException;
 use App\Models\TeamSpeak\ServerGroup;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\TeamSpeak\ChannelGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Builder;
 
 class GroupScope implements Scope
 {

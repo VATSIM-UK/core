@@ -3,9 +3,9 @@
 namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationPolicy
 {

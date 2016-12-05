@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Resources\Viewcomposers;
 
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\View\View;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
 
 class StatisticsComposer
 {
@@ -19,7 +19,6 @@ class StatisticsComposer
         $view->with('visittransfer_statistics_applications_review', Application::open()->status(Application::STATUS_UNDER_REVIEW)->count());
         $view->with('visittransfer_statistics_applications_accepted', Application::open()->status(Application::STATUS_ACCEPTED)->count());
         $view->with('visittransfer_statistics_applications_closed', Application::closed()->count());
-
 
         $view->with('visittransfer_statistics_references_total', Reference::all()->count());
         $view->with('visittransfer_statistics_references_requested', Reference::requested()->count());

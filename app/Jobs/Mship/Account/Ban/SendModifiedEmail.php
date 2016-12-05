@@ -4,9 +4,9 @@ namespace App\Jobs\Mship\Account\Ban;
 
 use App\Jobs\Job;
 use App\Models\Mship\Account\Ban;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendModifiedEmail extends Job implements ShouldQueue
 {

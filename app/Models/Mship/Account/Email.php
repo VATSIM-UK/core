@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 use App\Models\Sso\Email as SSOEmail;
+use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
 
 /**
  * App\Models\Mship\Account\Email.

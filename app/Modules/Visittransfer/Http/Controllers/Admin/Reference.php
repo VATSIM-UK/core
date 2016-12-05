@@ -2,15 +2,15 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Admin;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Http\Requests\ReferenceAcceptRequest;
-use App\Modules\Visittransfer\Http\Requests\ReferenceRejectRequest;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
 use Auth;
 use Input;
 use Redirect;
+use App\Models\Mship\Account;
+use App\Http\Controllers\Adm\AdmController;
+use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
+use App\Modules\Visittransfer\Http\Requests\ReferenceAcceptRequest;
+use App\Modules\Visittransfer\Http\Requests\ReferenceRejectRequest;
 
 class Reference extends AdmController
 {

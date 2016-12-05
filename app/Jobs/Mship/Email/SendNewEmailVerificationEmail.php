@@ -3,12 +3,12 @@
 namespace App\Jobs\Mship\Email;
 
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Email;
-use App\Models\Sys\Token;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\Messages\CreateNewMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

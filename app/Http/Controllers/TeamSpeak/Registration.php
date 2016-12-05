@@ -4,10 +4,10 @@ namespace App\Http\Controllers\TeamSpeak;
 
 use Redirect;
 use Response;
-use App\Models\Mship\Account;
-use App\Models\TeamSpeak\Registration as RegistrationModel;
-use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Libraries\TeamSpeak;
+use App\Models\Mship\Account;
+use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
+use App\Models\TeamSpeak\Registration as RegistrationModel;
 
 class Registration extends \App\Http\Controllers\BaseController
 {

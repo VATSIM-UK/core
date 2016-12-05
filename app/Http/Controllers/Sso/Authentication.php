@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Sso;
 
-use App\Models\Sso\Token;
 use Auth;
+use Input;
 use Request;
 use Redirect;
-use Input;
+use App\Models\Sso\Token;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Authentication extends \App\Http\Controllers\BaseController

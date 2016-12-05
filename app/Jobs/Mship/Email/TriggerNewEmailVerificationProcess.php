@@ -3,12 +3,12 @@
 namespace App\Jobs\Mship\Email;
 
 use App\Jobs\Job;
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Email;
-use App\Models\Sys\Token;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
 {

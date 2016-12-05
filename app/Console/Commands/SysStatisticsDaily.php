@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\State;
-use App\Models\Statistic;
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
+use App\Models\Statistic;
+use App\Models\Mship\State;
+use App\Models\Mship\Account;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends Command
