@@ -126,6 +126,81 @@
                 </div>
             </div>
 
+            @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
+                <div class="col-md-12">
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="fa fa-cogs"></i>
+                            &thinsp;
+                            Community Groups
+                            <div class="pull-right">
+                                    <a href="{{ route("community.membership.deploy") }}">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </a>
+                            </div></div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <p align="center">
+                                                <b>CURRENT MEMBERSHIP(S)</b>
+                                            </p>
+                                        </div>
+
+                                        <div class="col-xs-7">
+
+
+
+                                            <table class="table">
+                                                <tr>
+                                                    <th>UK Community</th>
+                                                    <td>{{ HTML::fuzzyDate($_account->created_at) }}</td>
+                                                </tr>
+                                                @foreach($_account->communityGroups as $cg)
+                                                    <tr>
+                                                        <th>{{ $cg->name }}</th>
+                                                        <td>{{ HTML::fuzzyDate($cg->pivot->created_at) }}</td>
+                                                    </tr>
+                                                @endforeach
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <b>TOTAL POINTS</b>
+                                        </div>
+
+                                        <div class="col-xs-7">
+                                            <table class="table">
+                                                <tr>
+                                                    <th>Weekly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Monthly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Yearly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications</div>

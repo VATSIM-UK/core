@@ -373,6 +373,18 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id');
     }
 
+    /**
+     * Fetch all community group memberships.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function communityGroups(){
+        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, "community_membership", "group_id", "account_id")
+                    ->withTimestamps()
+                    ->withPivot(["created_at", "updated_at", "deleted_at"])
+                    ->wherePivot('deleted_at', null);
+    }
+
     public function dataChanges()
     {
         return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')
