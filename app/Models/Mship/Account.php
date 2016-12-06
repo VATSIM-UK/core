@@ -378,10 +378,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function communityGroups(){
-        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, "community_membership", "group_id", "account_id")
+    public function communityGroups()
+    {
+        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, 'community_membership', 'group_id', 'account_id')
                     ->withTimestamps()
-                    ->withPivot(["created_at", "updated_at", "deleted_at"])
+                    ->withPivot(['created_at', 'updated_at', 'deleted_at'])
                     ->wherePivot('deleted_at', null);
     }
 

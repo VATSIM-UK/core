@@ -24,7 +24,7 @@ Route::group([
     'prefix'     => 'community',
     'middleware' => ['auth.user.full', 'user.must.read.notifications'],
 ], function () {
-    Route::group(["as" => "membership.", "prefix" => "membership"], function(){
+    Route::group(['as' => 'membership.', 'prefix' => 'membership'], function () {
         Route::get('/deploy', [
             'as'   => 'deploy',
             'uses' => 'Membership@getDeploy',

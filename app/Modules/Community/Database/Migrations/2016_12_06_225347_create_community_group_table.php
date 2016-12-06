@@ -14,9 +14,9 @@ class CreateCommunityGroupTable extends Migration
     public function up()
     {
         Schema::create('community_group', function (Blueprint $table) {
-            $table->increments("id")->unsigned();
-            $table->string("name", 30);
-            $table->longText("coordinate_boundaries");
+            $table->increments('id')->unsigned();
+            $table->string('name', 30);
+            $table->longText('coordinate_boundaries');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateCommunityGroupTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists("community_group");
+        Schema::dropIfExists('community_group');
     }
 }

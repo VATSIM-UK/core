@@ -7,7 +7,5 @@ class GroupTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** Unit Testing */
-
-    
+    /* Unit Testing */
 }
