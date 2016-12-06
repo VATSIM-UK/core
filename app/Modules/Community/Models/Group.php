@@ -9,14 +9,15 @@ class Group extends Model
     protected $table      = 'community_group';
     protected $primaryKey = 'id';
     public $timestamps    = true;
-    public $dates = ['created_at', 'updated_at', 'deleted_at'];
+    public $dates         = ['created_at', 'updated_at', 'deleted_at'];
     public $fillable      = [
         'name',
-        'coordinate_boundaries'
+        'coordinate_boundaries',
     ];
 
-    public function accounts(){
-        return $this->belongsToMany(\App\Models\Mship\Account::class, "community_membership", "account_id", "group_id")
+    public function accounts()
+    {
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'community_membership', 'account_id', 'group_id')
                     ->withTimestamps()
                     ->wherePivot('deleted_at', null);
     }
