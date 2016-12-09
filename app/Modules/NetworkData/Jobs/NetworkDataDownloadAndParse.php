@@ -61,7 +61,7 @@ class NetworkDataDownloadAndParse extends \App\Jobs\Job
             // Data is useless to us if we don't know what time the controller connected at.
             // This information is *sometimes* missing from the data feed.
             // Underlying reason is unknown.
-            if(!$controllerData['time_logon']){
+            if (! $controllerData['time_logon']) {
                 continue; // Skip this one.
             }
 
