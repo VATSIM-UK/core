@@ -203,7 +203,12 @@ class Authentication extends BaseController
                         $atcRating = $atcRatingInfo->PreviousRatingInt;
                     }
                 }
-                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+
+                $parsedRating = QualificationType::parseVatsimATCQualification($atcRating);
+
+                if ($parsedRating) {
+                    $account->addQualification($parsedRating);
+                }
 
                 for ($i = 1; $i <= 256; $i *= 2) {
                     if ($i & $user->pilot_rating->rating) {
