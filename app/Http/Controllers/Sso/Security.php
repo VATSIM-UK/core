@@ -62,7 +62,7 @@ class Security extends \App\Http\Controllers\BaseController
         // Create the response...
         $account              = MemberAccount::find($accessToken->account_id);
 
-        if(!$account){
+        if (! $account) {
             return Response::json(['status' => 'error', 'error' => 'NO_AUTHORISED_ACCOUNT']);
         }
 
