@@ -16,23 +16,23 @@ class CreateCommunityGroupTable extends Migration
         Schema::create('community_group', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->string('name', 30);
-            $table->smallInteger("tier")->nullable();
+            $table->smallInteger('tier')->nullable();
             $table->longText('coordinate_boundaries');
-            $table->boolean("default")->default(false);
+            $table->boolean('default')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
 
-        DB::table("community_group")->insert([
-            ["name" => "UK Community", "tier" => 1, "default" => true],
-            ["name" => "Scotland", "tier" => 2, "default" => true],
-            ["name" => "Northern Ireland", "tier" => 2, "default" => true],
-            ["name" => "Northern", "tier" => 2, "default" => true],
-            ["name" => "Midlands", "tier" => 2, "default" => true],
-            ["name" => "Wales", "tier" => 2, "default" => true],
-            ["name" => "East Anglia", "tier" => 2, "default" => true],
-            ["name" => "South West", "tier" => 2, "default" => true],
-            ["name" => "South East", "tier" => 2, "default" => true],
+        DB::table('community_group')->insert([
+            ['name' => 'UK Community', 'tier' => 1, 'default' => true],
+            ['name' => 'Scotland', 'tier' => 2, 'default' => true],
+            ['name' => 'Northern Ireland', 'tier' => 2, 'default' => true],
+            ['name' => 'Northern', 'tier' => 2, 'default' => true],
+            ['name' => 'Midlands', 'tier' => 2, 'default' => true],
+            ['name' => 'Wales', 'tier' => 2, 'default' => true],
+            ['name' => 'East Anglia', 'tier' => 2, 'default' => true],
+            ['name' => 'South West', 'tier' => 2, 'default' => true],
+            ['name' => 'South East', 'tier' => 2, 'default' => true],
         ]);
     }
 
