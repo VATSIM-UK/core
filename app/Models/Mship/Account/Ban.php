@@ -165,7 +165,7 @@ class Ban extends \App\Models\Model
 
     public function getPeriodAmountStringAttribute()
     {
-        if(!$this->period_finish){
+        if (! $this->period_finish) {
             return null;
         }
 
@@ -174,7 +174,7 @@ class Ban extends \App\Models\Model
 
     public function getPeriodLeftAttribute()
     {
-        if(!$this->period_finish){
+        if (! $this->period_finish) {
             return null;
         }
 
