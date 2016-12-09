@@ -206,7 +206,7 @@ class Authentication extends BaseController
 
                 $parsedRating = QualificationType::parseVatsimATCQualification($atcRating);
 
-                if($parsedRating){
+                if ($parsedRating) {
                     $account->addQualification($parsedRating);
                 }
 
