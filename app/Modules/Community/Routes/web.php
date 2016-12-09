@@ -6,8 +6,8 @@ Route::get('/community', function () {
 
 Route::group([
     'as'         => 'community.admin.',
-    'prefix'     => 'adm/community',
-    'namespace'  => 'Community',
+    'prefix'     => 'Admin',
+    'namespace'  => 'Community\Adm',
     'domain'     => config('app.url'),
     'middleware' => ['auth.admin'],
 ], function () {
@@ -19,7 +19,7 @@ Route::group([
 
 Route::group([
     'as'         => 'community.',
-    'namespace'  => 'Community',
+    'namespace'  => 'Site',
     'domain'     => config('app.url'),
     'prefix'     => 'community',
     'middleware' => ['auth.user.full', 'user.must.read.notifications'],
@@ -31,7 +31,7 @@ Route::group([
         ]);
 
         Route::post('/deploy', [
-            'as'   => 'deploy',
+            'as'   => 'deploy.post',
             'uses' => 'Membership@postDeploy',
         ]);
     });

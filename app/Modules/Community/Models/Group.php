@@ -21,4 +21,12 @@ class Group extends Model
                     ->withTimestamps()
                     ->wherePivot('deleted_at', null);
     }
+
+    public static function scopeIsDefault($query){
+        return $query->whereDefault(true);
+    }
+
+    public static function scopeNotDefault($query){
+        return $query->whereDefault(false);
+    }
 }

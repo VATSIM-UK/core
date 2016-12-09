@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship;
 
+use App\Modules\Community\Models\Group;
+use App\Modules\Community\Traits\CommunityAccount;
 use DB;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -28,7 +30,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
 /**
  * App\Models\Mship\Account.
  *
- * @property int                                                                         $id
+ * @property int                                                                             $id
  * @property string                                                                          $slack_id
  * @property string                                                                          $name_first
  * @property string                                                                          $name_last
@@ -47,11 +49,11 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  *           $remember_token
  * @property string                                                                          $gender
  * @property string                                                                          $experience
- * @property int                                                                         $age
- * @property int                                                                         $status
+ * @property int                                                                             $age
+ * @property int                                                                             $status
  * @property bool
  *           $is_invisible
- * @property bool                                                                         $debug
+ * @property bool                                                                            $debug
  * @property \Carbon\Carbon                                                                  $joined_at
  * @property \Carbon\Carbon                                                                  $created_at
  * @property \Carbon\Carbon                                                                  $updated_at
@@ -179,11 +181,11 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  */
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
+    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait, CommunityAccount;
 
-    protected $table     = 'mship_account';
-    public $incrementing = false;
-    protected $dates     = [
+    protected $table        = 'mship_account';
+    public    $incrementing = false;
+    protected $dates        = [
         'last_login',
         'joined_at',
         'cert_checked_at',
@@ -193,7 +195,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $fillable = [
+    protected $fillable     = [
         'id',
         'name_first',
         'name_last',
@@ -202,13 +204,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $attributes = [
+    protected $attributes   = [
         'name_first'    => '',
         'name_last'     => '',
         'status'        => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
@@ -277,12 +279,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function scopeIsSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM . '&`status`'), '=', self::STATUS_SYSTEM);
     }
 
     public static function scopeIsNotSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '!=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM . '&`status`'), '!=', self::STATUS_SYSTEM);
     }
 
     public static function scopeWithIp($query, $ip)
@@ -371,19 +373,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function secondaryEmails()
     {
         return $this->hasMany(\App\Models\Mship\Account\Email::class, 'account_id');
-    }
-
-    /**
-     * Fetch all community group memberships.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function communityGroups()
-    {
-        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, 'community_membership', 'group_id', 'account_id')
-                    ->withTimestamps()
-                    ->withPivot(['created_at', 'updated_at', 'deleted_at'])
-                    ->wherePivot('deleted_at', null);
     }
 
     public function dataChanges()
@@ -493,7 +482,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function removeRole(Role $role)
     {
-        if (! $this->hasRole($role)) {
+        if (!$this->hasRole($role)) {
             return true;
         }
 
@@ -660,7 +649,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code.', ';
+            $output .= $p->code . ', ';
         }
         if ($output == '') {
             $output = 'None';
@@ -696,7 +685,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         if (is_string($search)) {
             $search = State::findByCode($search);
-        } elseif (! ($search instanceof State)) {
+        } elseif (!($search instanceof State)) {
             throw new InvalidStateException();
         }
 
@@ -843,14 +832,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         } elseif (is_numeric($parent)) {
             $parent = PermissionData::find($parent);
             $parent = $parent ? $parent->name : 'NOTHING-AT-ALL';
-        } elseif (! is_numeric($parent)) {
+        } elseif (!is_numeric($parent)) {
             $parent = preg_replace('/\d+/', '*', $parent);
         }
 
         // Let's check all roles for this permission!
         $hasPermission = $this->roles->filter(function ($role) use ($parent) {
-            return $role->hasPermission($parent);
-        })->count() > 0;
+                return $role->hasPermission($parent);
+            })->count() > 0;
 
         return $hasPermission;
     }
@@ -900,7 +889,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function hasPasswordExpired()
     {
-        if (! $this->hasPassword()) {
+        if (!$this->hasPassword()) {
             return false;
         }
 
@@ -1060,7 +1049,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
+        $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
         return $this->secondaryEmails()->save($newSecondaryEmail);
@@ -1118,13 +1107,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban                = new Ban();
-        $ban->account_id    = $this->id;
-        $ban->banned_by     = $writerId;
-        $ban->type          = $type;
-        $ban->reason_id     = $banReason->id;
-        $ban->reason_extra  = $banExtraReason;
-        $ban->period_start  = Carbon::now()->second(0);
+        $ban = new Ban();
+        $ban->account_id = $this->id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->id;
+        $ban->reason_extra = $banExtraReason;
+        $ban->period_start = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1150,14 +1139,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $writer = $writer->getKey();
         }
 
-        $note               = new AccountNoteData();
-        $note->account_id   = $this->id;
-        $note->writer_id    = $writer;
+        $note = new AccountNoteData();
+        $note->account_id = $this->id;
+        $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content      = $noteContent;
+        $note->content = $noteContent;
         $note->save();
 
-        if (! is_null($attachment)) {
+        if (!is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -1194,9 +1183,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsInactiveAttribute($value)
     {
-        if ($value && ! $this->is_inactive) {
+        if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
-        } elseif (! $value && $this->is_inactive) {
+        } elseif (!$value && $this->is_inactive) {
             $this->unSetStatusFlag(self::STATUS_INACTIVE);
         }
     }
@@ -1208,9 +1197,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsSystemAttribute($value)
     {
-        if ($value && ! $this->is_system) {
+        if ($value && !$this->is_system) {
             $this->setStatusFlag(self::STATUS_SYSTEM);
-        } elseif (! $value && $this->is_system) {
+        } elseif (!$value && $this->is_system) {
             $this->unSetStatusFlag(self::STATUS_SYSTEM);
         }
     }
@@ -1351,7 +1340,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first.' '.$this->name_last;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     /**
@@ -1364,7 +1353,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
+            return $this->nickname . ' ' . $this->name_last;
         }
 
         return $this->real_name;
@@ -1394,17 +1383,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function getDisplayValueAttribute()
     {
-        return $this->name.' ('.$this->getKey().')';
+        return $this->name . ' (' . $this->getKey() . ')';
     }
 
     public function toArray()
     {
-        $array                 = parent::toArray();
-        $array['name']         = $this->name;
-        $array['name_real']    = $this->real_name;
-        $array['email']        = $this->email;
-        $array['atc_rating']   = $this->qualification_atc;
-        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array = parent::toArray();
+        $array['name'] = $this->name;
+        $array['name_real'] = $this->real_name;
+        $array['email'] = $this->email;
+        $array['atc_rating'] = $this->qualification_atc;
+        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;
