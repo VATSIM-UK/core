@@ -4,6 +4,7 @@ namespace App\Modules\Visittransfer\Http\Requests;
 
 use Auth;
 use App\Models\Mship\Account;
+use ErrorException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -68,7 +69,11 @@ class ApplicationRefereeAddRequest extends FormRequest
 
         $referee = Account::findOrRetrieve(array_get($data, 'referee_cid', null));
 
-        if ($referee->primary_permanent_state->pivot->region == \Auth::user()->primary_state->pivot->region) {
+        try {
+            if ($referee->primary_permanent_state->pivot->region == \Auth::user()->primary_state->pivot->region) {
+                $data['must_be_home_region'] = true;
+            }
+        } catch(ErrorException $e){ // If we don't have this data, we shouldn't penalise the applicant _at this point_.
             $data['must_be_home_region'] = true;
         }
 
