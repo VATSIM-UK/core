@@ -1,6 +1,9 @@
-<?php namespace App\Modules\Community\Traits;
+<?php
 
-trait CommunityAccount {
+namespace App\Modules\Community\Traits;
+
+trait CommunityAccount
+{
     /**
      * Fetch all community group memberships.
      *
@@ -31,7 +34,7 @@ trait CommunityAccount {
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (!$this->hasState('DIVISION')) {
+        if (! $this->hasState('DIVISION')) {
             throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
         }
     }

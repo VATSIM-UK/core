@@ -22,11 +22,13 @@ class Group extends Model
                     ->wherePivot('deleted_at', null);
     }
 
-    public static function scopeIsDefault($query){
+    public static function scopeIsDefault($query)
+    {
         return $query->whereDefault(true);
     }
 
-    public static function scopeNotDefault($query){
+    public static function scopeNotDefault($query)
+    {
         return $query->whereDefault(false);
     }
 }

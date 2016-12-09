@@ -14,5 +14,4 @@ class MembershipPolicy
     {
         return $user->communityGroups()->count() <= 1;
     }
-
 }
