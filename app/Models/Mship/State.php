@@ -7,10 +7,10 @@ use App\Traits\RecordsActivity;
 class State extends \Eloquent
 {
     use RecordsActivity;
-    protected $table = 'mship_state';
+    protected $table      = 'mship_state';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['id'];
+    protected $dates      = ['created_at', 'deleted_at'];
+    protected $hidden     = ['id'];
 
     public static function findByCode($code)
     {

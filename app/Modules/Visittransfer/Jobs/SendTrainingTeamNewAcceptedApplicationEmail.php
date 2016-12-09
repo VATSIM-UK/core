@@ -2,14 +2,14 @@
 
 namespace App\Modules\Visittransfer\Jobs;
 
+use View;
 use App\Jobs\Job;
-use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
+use App\Jobs\Messages\SendNotificationEmail;
+use App\Modules\Visittransfer\Models\Application;
 
 class SendTrainingTeamNewAcceptedApplicationEmail extends Job implements ShouldQueue
 {
@@ -37,18 +37,17 @@ class SendTrainingTeamNewAcceptedApplicationEmail extends Job implements ShouldQ
                     ->with('application', $this->application)
                     ->render();
 
-
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
-        $recipient = $this->application->facility->training_team.'-team@vatsim-uk.co.uk';
+        $recipient     = $this->application->facility->training_team.'-team@vatsim-uk.co.uk';
         $recipientName = strtoupper($this->application->facility->training_team).' Training Team';
 
         // TODO: Use the staff services feature to get all community members.
         $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
-            'recipient_email' => $recipient,
-            'recipient_name' => $recipientName,
+            'sender_email'      => 'community@vatsim-uk.co.uk',
+            'recipient_email'   => $recipient,
+            'recipient_name'    => $recipientName,
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));

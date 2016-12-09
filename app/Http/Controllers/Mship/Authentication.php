@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification as QualificationType;
+use URL;
 use Auth;
-use Carbon\Carbon;
 use Input;
-use Redirect;
 use Request;
 use Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use URL;
+use Redirect;
 use VatsimSSO;
+use Carbon\Carbon;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Models\Mship\Qualification as QualificationType;
+use App\Exceptions\Mship\DuplicateQualificationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authentication extends BaseController
 {
@@ -110,7 +110,7 @@ class Authentication extends BaseController
 
         // We're in!
         // Let's do lots of logins....
-        $account->last_login = Carbon::now();
+        $account->last_login    = Carbon::now();
         $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
         Session::put('auth_extra', Carbon::now());
         $account->save();

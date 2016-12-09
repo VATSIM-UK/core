@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationCheckOutcomeRequest extends FormRequest
 {
@@ -29,7 +29,7 @@ class ApplicationCheckOutcomeRequest extends FormRequest
     {
         return [
             'check.required' => 'You must specify which check you wish to set the outcome for.',
-            'check.in' => 'The check you specified does not exist.',
+            'check.in'       => 'The check you specified does not exist.',
         ];
     }
 

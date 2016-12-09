@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException;
-use App\Libraries\TeamSpeak;
 use Cache;
-use Carbon\Carbon;
 use Exception;
-use TeamSpeak3_Adapter_ServerQuery_Event;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
-use TeamSpeak3_Helper_Signal;
+use Carbon\Carbon;
 use TeamSpeak3_Node_Host;
 use TeamSpeak3_Node_Server;
+use App\Libraries\TeamSpeak;
+use TeamSpeak3_Helper_Signal;
 use TeamSpeak3_Transport_Exception;
+use TeamSpeak3_Adapter_ServerQuery_Event;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
+use App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
@@ -74,7 +74,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
 
         try {
-            $client = $host->serverGetSelected()->clientGetById($event->clid);
+            $client                       = $host->serverGetSelected()->clientGetById($event->clid);
             self::$command->currentMember = $client['client_database_id'];
 
             // log the client's clid and dbid in a data structure

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Webhook\Email;
 
-use Response;
 use Input;
+use Response;
 
 class Mailgun extends EmailWebhookController
 {
@@ -11,8 +11,8 @@ class Mailgun extends EmailWebhookController
     {
         // Verify that this is a valid request!
         $timestamp = Input::get('timestamp');
-        $token = Input::get('token');
-        $ts_token = $timestamp.$token;
+        $token     = Input::get('token');
+        $ts_token  = $timestamp.$token;
 
         $encHmac = hash_hmac('sha256', $ts_token, env('MAILGUN_SECRET'));
 
@@ -20,7 +20,6 @@ class Mailgun extends EmailWebhookController
             return Response::make('Unauthorised', 406);
         }
         // END OF VERIFICATION
-
 
         // Get the messageID
         $this->messageId = Input::get('message-id', 'NOTHING');

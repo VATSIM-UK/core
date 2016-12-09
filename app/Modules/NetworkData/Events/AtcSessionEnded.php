@@ -3,8 +3,8 @@
 namespace App\Modules\NetworkData\Events;
 
 use App\Events\Event;
-use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Queue\SerializesModels;
+use App\Modules\NetworkData\Models\Atc;
 
 class AtcSessionEnded extends Event
 {

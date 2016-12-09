@@ -21,10 +21,10 @@ namespace App\Models;
  */
 class Statistic extends \App\Models\Model
 {
-    protected $table = 'statistic';
+    protected $table      = 'statistic';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = ['period', 'key'];
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $fillable   = ['period', 'key'];
 
     public static function setStatistic($period, $key, $value)
     {

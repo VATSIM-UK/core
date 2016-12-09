@@ -2,12 +2,12 @@
 
 namespace App\Jobs\Mship\Account;
 
-use App\Jobs\Messages\CreateNewMessage;
+use View;
 use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\Messages\CreateNewMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
 
 class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
 {
@@ -27,12 +27,12 @@ class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
         }
 
         $displayFrom = 'VATSIM UK Community Department';
-        $subject = 'Why not join us on Slack?';
-        $body = View::make('emails.mship.account.slack_invite')->with('account', $this->account)->render();
+        $subject     = 'Why not join us on Slack?';
+        $body        = View::make('emails.mship.account.slack_invite')->with('account', $this->account)->render();
 
-        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml = true;
-        $systemGenerated = true;
+        $sender              = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml              = true;
+        $systemGenerated     = true;
         $createNewMessageJob = new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
 
         dispatch($createNewMessageJob->onQueue('emails'));

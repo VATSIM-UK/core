@@ -89,7 +89,7 @@ abstract class Model extends EloquentModel
 
     public function toArray()
     {
-        $array = parent::toArray();
+        $array           = parent::toArray();
         $array['status'] = ($this->deleted_at ? 'Deleted' : 'Active');
         if (isset($array['pivot'])) {
             unset($array['pivot']);
@@ -113,10 +113,9 @@ abstract class Model extends EloquentModel
                     }
                 }
 
-
                 $original = $this->getOriginal($attribute);
 
-                $dataChange = new \App\Models\Sys\Data\Change();
+                $dataChange           = new \App\Models\Sys\Data\Change();
                 $dataChange->data_key = $attribute;
                 $dataChange->data_old = $original;
                 $dataChange->data_new = $value;

@@ -2,24 +2,24 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Admin;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Http\Requests\ApplicationAcceptRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationSettingToggleRequest;
-use App\Modules\Visittransfer\Models\Application as ApplicationModel;
-use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
 use Auth;
 use Input;
 use Redirect;
+use App\Models\Mship\Account;
+use App\Http\Controllers\Adm\AdmController;
+use App\Modules\Visittransfer\Models\Reference as ReferenceModel;
+use App\Modules\Visittransfer\Http\Requests\ApplicationAcceptRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRejectRequest;
+use App\Modules\Visittransfer\Models\Application as ApplicationModel;
+use App\Modules\Visittransfer\Http\Requests\ApplicationCheckOutcomeRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationSettingToggleRequest;
 
 class Application extends AdmController
 {
     public function getList($scope = 'all')
     {
         $permittedScope = ['all', 'open', 'closed', 'review', 'accepted'];
-        $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
+        $scope          = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         // Sorting and searching!
         $sortBy = in_array(

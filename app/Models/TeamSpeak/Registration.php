@@ -2,11 +2,11 @@
 
 namespace App\Models\TeamSpeak;
 
+use TeamSpeak3;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use TeamSpeak3;
 
 /**
  * App\Models\TeamSpeak\Registration.
@@ -43,11 +43,11 @@ class Registration extends \App\Models\Model
 {
     use SoftDeletingTrait, RecordsActivity;
 
-    protected $table = 'teamspeak_registration';
+    protected $table      = 'teamspeak_registration';
     protected $primaryKey = 'id';
-    protected $fillable = ['*'];
+    protected $fillable   = ['*'];
     protected $attributes = ['registration_ip' => '0', 'last_ip' => '0'];
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates      = ['created_at', 'updated_at'];
 
     public function delete($tscon = null)
     {

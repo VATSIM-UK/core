@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
 use SlackUser;
+use App\Models\Mship\Account;
 
 class SlackManager extends Command
 {
@@ -48,7 +48,7 @@ class SlackManager extends Command
         $this->slackUsers = SlackUser::pluck();
 
         foreach ($this->slackUsers->members as $slackUser) {
-            $localUser = Account::findWithSlackId($slackUser->id);
+            $localUser           = Account::findWithSlackId($slackUser->id);
             $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
             if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {

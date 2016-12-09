@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\State;
-use App\Models\Statistic;
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
+use App\Models\Statistic;
+use App\Models\Mship\State;
+use App\Models\Mship\Account;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends Command
@@ -49,7 +49,7 @@ class SysStatisticsDaily extends Command
      */
     public function handle()
     {
-        $daysOfStatistics = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
+        $daysOfStatistics  = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
         $this->progressBar = $this->output->createProgressBar($daysOfStatistics);
         $this->progressBar->start();
 
@@ -69,7 +69,7 @@ class SysStatisticsDaily extends Command
         }
 
         $startTimestamp = $this->getStartPeriod()->toDateString();
-        $endTimestamp = $this->getEndPeriod()->toDateString();
+        $endTimestamp   = $this->getEndPeriod()->toDateString();
         $this->sendSlackSuccess('System Statistics for '.$startTimestamp.' to '.$endTimestamp.' have been updated.');
 
         $this->progressBar->finish();

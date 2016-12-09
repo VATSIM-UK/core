@@ -2,10 +2,10 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
 use App\Modules\Visittransfer\Jobs\SendInitialRefereeRequestEmail;
 use App\Modules\Visittransfer\Jobs\SendRefereeRequestReminderEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyAllReferees implements ShouldQueue
 {
@@ -27,7 +27,7 @@ class NotifyAllReferees implements ShouldQueue
             dispatch($referenceRequestEmailJob->onQueue('low'));
 
             $referenceRequestReminderEmailJob = new SendRefereeRequestReminderEmail($reference);
-            $delayPeriod = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
+            $delayPeriod                      = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
             dispatch($referenceRequestReminderEmailJob->delay($delayPeriod)->onQueue('low'));
         }
     }

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use Exception;
+use Carbon\Carbon;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
-use Carbon\Carbon;
-use Exception;
 
 class TeamSpeakCleanup extends Command
 {
@@ -41,7 +41,7 @@ class TeamSpeakCleanup extends Command
 
         // check TS database for clients without registrations
         $total_clients = $this->tscon->clientCountDb();
-        $offset = 0;
+        $offset        = 0;
         while ($offset < $total_clients) {
             $clients = $this->tscon->clientListDb($offset);
             foreach ($clients as $client) {

@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Jobs\SendApplicantReferenceRejectionEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyApplicantOfReferenceRejection implements ShouldQueue
 {

@@ -2,19 +2,19 @@
 
 namespace App\Modules\Visittransfer\Providers;
 
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Policies\ApplicationPolicy;
-use App\Modules\Visittransfer\Policies\ReferencePolicy;
-use Caffeinated\Modules\Support\AuthServiceProvider;
 use Lang;
 use View;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
+use Caffeinated\Modules\Support\AuthServiceProvider;
+use App\Modules\Visittransfer\Policies\ReferencePolicy;
+use App\Modules\Visittransfer\Policies\ApplicationPolicy;
 
 class ModuleServiceProvider extends AuthServiceProvider
 {
     protected $policies = [
         Application::class => ApplicationPolicy::class,
-        Reference::class => ReferencePolicy::class,
+        Reference::class   => ReferencePolicy::class,
     ];
 
     /**

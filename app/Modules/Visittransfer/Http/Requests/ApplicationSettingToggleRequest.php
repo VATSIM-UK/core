@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationSettingToggleRequest extends FormRequest
 {
@@ -29,7 +29,7 @@ class ApplicationSettingToggleRequest extends FormRequest
     {
         return [
             'setting.required' => 'You must specify which setting you wish to toggle.',
-            'setting.in' => 'The setting you specified does not exist.',
+            'setting.in'       => 'The setting you specified does not exist.',
         ];
     }
 

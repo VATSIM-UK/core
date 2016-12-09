@@ -3,9 +3,9 @@
 namespace App\Modules\Visittransfer\Jobs;
 
 use App\Jobs\Job;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Application;
 
 class AutomatedApplicationChecks extends Job implements ShouldQueue
 {
@@ -42,7 +42,7 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue
     private function checkCurrentRatingOver90Days()
     {
         $currentATCQualification = $this->application->account->qualification_atc;
-        $application90DayCutOff = $this->application->submitted_at->subDays(90);
+        $application90DayCutOff  = $this->application->submitted_at->subDays(90);
 
         $hasPassed = $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
 

@@ -3,12 +3,12 @@
 namespace App\Exceptions;
 
 use App;
+use Log;
 use Auth;
+use Slack;
+use Request;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
-use Request;
-use Slack;
 
 class Handler extends ExceptionHandler
 {
@@ -76,11 +76,11 @@ class Handler extends ExceptionHandler
         }
 
         $attachment = [
-            'fallback' => 'Exception thrown: '.get_class($e),
-            'text' => $e->getTraceAsString(),
+            'fallback'    => 'Exception thrown: '.get_class($e),
+            'text'        => $e->getTraceAsString(),
             'author_name' => get_class($e),
-            'color' => 'danger',
-            'fields' => [
+            'color'       => 'danger',
+            'fields'      => [
                 [
                     'title' => 'Exception:',
                     'value' => (new \ReflectionClass($e))->getShortName(),

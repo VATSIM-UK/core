@@ -4,10 +4,10 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
-use Response;
 use Request;
-use Redirect;
 use Session;
+use Redirect;
+use Response;
 
 class AuthUserFull
 {

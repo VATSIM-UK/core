@@ -4,10 +4,10 @@ namespace App\Http\Controllers\TeamSpeak;
 
 use Redirect;
 use Response;
-use App\Models\Mship\Account;
-use App\Models\TeamSpeak\Registration as RegistrationModel;
-use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Libraries\TeamSpeak;
+use App\Models\Mship\Account;
+use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
+use App\Models\TeamSpeak\Registration as RegistrationModel;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -20,7 +20,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (! $this->account->new_ts_registration) {
             $registration_ip = $_SERVER['REMOTE_ADDR'];
-            $registration = $this->createRegistration($this->account->id, $registration_ip);
+            $registration    = $this->createRegistration($this->account->id, $registration_ip);
         } else {
             $registration = $this->account->new_ts_registration->load('confirmation');
         }
@@ -39,7 +39,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $autoURL .= $this->account->name_last.'&amp;token='.$confirmation->privilege_key;
 
         $this->pageTitle = 'New Registration';
-        $view = $this->viewMake('teamspeak.new')
+        $view            = $this->viewMake('teamspeak.new')
                      ->withRegistration($registration)
                      ->withConfirmation($confirmation)
                      ->withAutoUrl($autoURL);
@@ -77,8 +77,8 @@ class Registration extends \App\Http\Controllers\BaseController
     {
         \Log::info($accountID);
         \Log::info(\Auth::user());
-        $_registration = new RegistrationModel();
-        $_registration->account_id = $accountID;
+        $_registration                  = new RegistrationModel();
+        $_registration->account_id      = $accountID;
         $_registration->registration_ip = $registrationIP;
         $_registration->save();
 
@@ -88,11 +88,11 @@ class Registration extends \App\Http\Controllers\BaseController
     // create a new confirmation model
     protected function createConfirmation($registrationID, $confirmationString, $accountID)
     {
-        $key_description = 'CID:'.$accountID.' RegID:'.$registrationID;
-        $key_custominfo = 'ident=registration_id value='.$registrationID;
-        $_confirmation = new ConfirmationModel();
+        $key_description                = 'CID:'.$accountID.' RegID:'.$registrationID;
+        $key_custominfo                 = 'ident=registration_id value='.$registrationID;
+        $_confirmation                  = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
-        $_confirmation->privilege_key = \App\Libraries\TeamSpeak::run()
+        $_confirmation->privilege_key   = \App\Libraries\TeamSpeak::run()
                                       ->serverGroupGetByName('New')
                                       ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();

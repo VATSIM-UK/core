@@ -2,14 +2,14 @@
 
 namespace App\Modules\Visittransfer\Jobs;
 
+use View;
 use App\Jobs\Job;
-use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
+use App\Jobs\Messages\SendNotificationEmail;
+use App\Modules\Visittransfer\Models\Application;
 
 class SendApplicantStatusChangeEmail extends Job implements ShouldQueue
 {
@@ -37,12 +37,11 @@ class SendApplicantStatusChangeEmail extends Job implements ShouldQueue
                     ->with('application', $this->application)
                     ->render();
 
-
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->application->account, $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email' => 'community@vatsim-uk.co.uk',
+            'sender_email'      => 'community@vatsim-uk.co.uk',
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));

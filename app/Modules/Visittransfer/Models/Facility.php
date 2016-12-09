@@ -2,15 +2,15 @@
 
 namespace App\Modules\Visittransfer\Models;
 
-use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 class Facility extends Model
 {
-    protected $table = 'vt_facility';
+    protected $table      = 'vt_facility';
     protected $primaryKey = 'id';
-    public $timestamps = false;
-    public $fillable = [
+    public $timestamps    = false;
+    public $fillable      = [
         'name',
         'description',
         'can_visit',

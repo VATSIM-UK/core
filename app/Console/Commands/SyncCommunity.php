@@ -42,7 +42,7 @@ class SyncCommunity extends Command
         $members = \IPS\Db::i()->select('m.member_id, m.vatsim_cid, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14', ['core_members', 'm'])
                                ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
 
-        $countTotal = $members->count();
+        $countTotal   = $members->count();
         $countSuccess = 0;
         $countFailure = 0;
 
@@ -73,7 +73,7 @@ class SyncCommunity extends Command
                 continue;
             }
 
-            $email = $member_core->email;
+            $email            = $member_core->email;
             $ssoEmailAssigned = $member_core->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
                 return $ssoemail->sso_account_id == $sso_account_id;
             })->values();
@@ -84,21 +84,21 @@ class SyncCommunity extends Command
 
             $emailLocal = false;
             if (empty($email)) {
-                $email = $member['email'];
+                $email      = $member['email'];
                 $emailLocal = true;
             }
 
-            $state = $member_core->primary_state->name;
+            $state         = $member_core->primary_state->name;
             $aRatingString = $member_core->qualification_atc->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
 
             // Check for changes
-            $changeEmail = strcasecmp($member['email'], $email);
-            $changeName = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
-            $changeState = strcasecmp($member['member_title'], $state);
-            $changeCID = strcmp($member['field_12'], $member_core->id);
-            $changeARating = strcmp($member['field_13'], $aRatingString);
-            $changePRating = strcmp($member['field_14'], $pRatingString);
+            $changeEmail    = strcasecmp($member['email'], $email);
+            $changeName     = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
+            $changeState    = strcasecmp($member['member_title'], $state);
+            $changeCID      = strcmp($member['field_12'], $member_core->id);
+            $changeARating  = strcmp($member['field_13'], $aRatingString);
+            $changePRating  = strcmp($member['field_14'], $pRatingString);
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
                               || $changeARating || $changePRating;
 
@@ -114,9 +114,9 @@ class SyncCommunity extends Command
             if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
-                    $ips_member = \IPS\Member::load($member['member_id']);
-                    $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
-                    $ips_member->email = $email;
+                    $ips_member               = \IPS\Member::load($member['member_id']);
+                    $ips_member->name         = $member_core->name_first.' '.$member_core->name_last;
+                    $ips_member->email        = $email;
                     $ips_member->member_title = $state;
                     $ips_member->save();
 
