@@ -7,6 +7,6 @@ return [
                <br />
                Regular digests of activity within each community will be published within the appropriate channel on the forum for all members to read.',
 
-    'transfer.info' => "The ability to transfer to a new region-based community will appear in Q2 of 2017.  Check back for more info!",
-    'deploy.info' => 'Please select your chosen region-based community from the list below. You will not be able to change community again until the second half of 2017 while the system gets up and running fully, so choose as you mean to go on.'
+    'transfer.info' => 'The ability to transfer to a new region-based community will appear in Q2 of 2017.  Check back for more info!',
+    'deploy.info'   => 'Please select your chosen region-based community from the list below. You will not be able to change community again until the second half of 2017 while the system gets up and running fully, so choose as you mean to go on.',
 ];
