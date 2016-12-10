@@ -2,12 +2,11 @@
 
 namespace App\Modules\Community\Http\Requests;
 
-use App\Modules\Community\Models\Group;
-use App\Modules\Community\Models\Membership;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Http\FormRequest;
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+use App\Modules\Community\Models\Group;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Community\Models\Membership;
 
 class DeployToCommunityGroupRequest extends FormRequest
 {
@@ -23,10 +22,10 @@ class DeployToCommunityGroupRequest extends FormRequest
                 'required',
                 'numeric',
                 'min:1',
-                Rule::exists("community_group", "id")->where(function($query){
-                    $query->whereNull("deleted_at");
+                Rule::exists('community_group', 'id')->where(function ($query) {
+                    $query->whereNull('deleted_at');
                 }),
-            ]
+            ],
         ];
     }
 
@@ -40,7 +39,7 @@ class DeployToCommunityGroupRequest extends FormRequest
         return [
             'check.required' => 'You must specify a group to join.',
             'check.numeric'  => 'You have selected an invalid group.',
-            'check.min'  => 'You have selected an invalid group.',
+            'check.min'      => 'You have selected an invalid group.',
         ];
     }
 

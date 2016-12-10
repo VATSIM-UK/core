@@ -11,9 +11,9 @@ return [
     'deploy.info'   => 'Please select your chosen region-based community from the list below.<br />
                         <span class="text-danger">You will not be able to change community again until the second half of 2017
                         while the system gets up and running fully, so choose as you mean to go on.</span>',
-    'deploy.button.valid' => "Join the %s Community Group!",
-    'deploy.button.invalid' => "INVALID GROUP SELECTED",
-    'deploy.uk.info' => "You do not have to choose a region-based community if you do not wish to.  You can choose to remain part of <em>only</em> the UK
-                    Community Group.  You are able to choose to join an additional community group <strong>at any point</strong>.",
-    'deploy.uk.button' => "I do not wish to join any region-based community group at this time.",
+    'deploy.button.valid'   => 'Join the %s Community Group!',
+    'deploy.button.invalid' => 'INVALID GROUP SELECTED',
+    'deploy.uk.info'        => 'You do not have to choose a region-based community if you do not wish to.  You can choose to remain part of <em>only</em> the UK
+                    Community Group.  You are able to choose to join an additional community group <strong>at any point</strong>.',
+    'deploy.uk.button' => 'I do not wish to join any region-based community group at this time.',
 ];

@@ -2,8 +2,8 @@
 
 namespace App\Modules\Community\Traits;
 
-use App\Modules\Community\Exceptions\Membership\AlreadyAGroupMemberException;
 use App\Modules\Community\Models\Group;
+use App\Modules\Community\Exceptions\Membership\AlreadyAGroupMemberException;
 
 trait CommunityAccount
 {
@@ -42,14 +42,14 @@ trait CommunityAccount
             $this->addCommunityGroup($defaultGroup);
 
             return true;
-        } catch(AlreadyAGroupMemberException $ex){
+        } catch (AlreadyAGroupMemberException $ex) {
             return false;
         }
     }
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (!$this->hasState('DIVISION')) {
+        if (! $this->hasState('DIVISION')) {
             throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
         }
     }
