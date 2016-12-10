@@ -133,7 +133,7 @@ Route::group(['domain' => config('app.url')], function () {
             Route::post('/logout/{force?}', ['as' => 'mship.auth.logout.post', 'uses' => 'Authentication@postLogout']);
 
             // /mship/auth - fully authenticated.
-            Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+            Route::group(['middleware' => ['auth_full_group']], function () {
                 Route::get('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Authentication@getInvisibility']);
             });
         });
@@ -148,13 +148,13 @@ Route::group(['domain' => config('app.url')], function () {
             Route::get('/dashboard', [
                 'as'         => 'mship.manage.dashboard',
                 'uses'       => 'Management@getDashboard',
-                'middleware' => ['auth.user.full', 'user.must.read.notifications'],
+                'middleware' => ['auth_full_group'],
             ]);
 
             Route::group(['prefix' => 'email'], function () {
                 Route::get('/verify/{code}', ['as' => 'mship.manage.email.verify', 'uses' => 'Management@getVerifyEmail']);
 
-                Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+                Route::group(['middleware' => ['auth_full_group']], function () {
                     Route::get('/add', ['as' => 'mship.manage.email.add', 'uses' => 'Management@getEmailAdd']);
                     Route::post('/add', ['as' => 'mship.manage.email.add.post', 'uses' => 'Management@postEmailAdd']);
 
@@ -178,13 +178,13 @@ Route::group(['domain' => config('app.url')], function () {
                 Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(['delete' => '[1|0]']);
             });
 
-            Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+            Route::group(['middleware' => ['auth_full_group']], function () {
                 Route::get('/enable', ['as' => 'mship.security.enable', 'uses' => 'Security@getEnable']);
             });
         });
     });
 
-    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth_full_group']], function () {
         Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
         Route::get('/new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
@@ -192,7 +192,7 @@ Route::group(['domain' => config('app.url')], function () {
         Route::post('/{tsreg}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
     });
 
-    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
         Route::model('slackToken', App\Models\Sys\Token::class);
         Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);

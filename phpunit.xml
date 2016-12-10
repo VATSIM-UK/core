@@ -19,7 +19,11 @@
         </testsuite>
 
         <testsuite name="Modules:Visiting and Transferring Test Suite">
-        <directory>./app/Modules/Visittransfer/Tests/</directory>
+            <directory>./app/Modules/Visittransfer/Tests/</directory>
+        </testsuite>
+
+        <testsuite name="Modules:Community Test Suite">
+            <directory>./app/Modules/Community/Tests/</directory>
         </testsuite>
 
         <!--<testsuite name="Modules:Statistics Test Suite">-->
