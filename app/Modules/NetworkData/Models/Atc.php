@@ -43,7 +43,7 @@ class Atc extends Model
 {
     use SoftDeletes;
 
-    protected $table      = 'networkdata_atc';
+    protected $table      = 'statistic_atc';
     protected $primaryKey = 'id';
     protected $fillable   = ['account_id', 'qualification_id', 'facility_type', 'callsign', 'frequency', 'connected_at', 'disconnected_at'];
     public $dates         = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
