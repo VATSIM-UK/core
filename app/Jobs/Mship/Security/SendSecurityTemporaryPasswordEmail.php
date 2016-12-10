@@ -2,14 +2,14 @@
 
 namespace App\Jobs\Mship\Security;
 
+use View;
 use App\Jobs\Job;
-use App\Jobs\Messages\CreateNewMessage;
 use App\Models\Mship\Account;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\Messages\CreateNewMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
 
 class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
 {

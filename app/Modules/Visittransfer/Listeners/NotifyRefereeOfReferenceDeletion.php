@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Jobs\SendRefereeConfirmationEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyRefereeOnReferenceCompletion implements ShouldQueue
 {

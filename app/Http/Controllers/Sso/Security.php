@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Sso;
 use Input;
 use Session;
 use Response;
-use App\Models\Sso\Account;
 use App\Models\Sso\Token;
+use App\Models\Sso\Account;
 use App\Models\Mship\Account as MemberAccount;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

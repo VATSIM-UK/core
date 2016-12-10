@@ -2,29 +2,29 @@
 
 namespace App\Modules\Visittransfer\Models;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\State;
-use App\Modules\Visittransfer\Events\ApplicationAccepted;
-use App\Modules\Visittransfer\Events\ApplicationCompleted;
-use App\Modules\Visittransfer\Events\ApplicationExpired;
-use App\Modules\Visittransfer\Events\ApplicationRejected;
-use App\Modules\Visittransfer\Events\ApplicationSubmitted;
-use App\Modules\Visittransfer\Events\ApplicationUnderReview;
-use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
-use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
-use App\Modules\Visittransfer\Exceptions\Application\CheckOutcomeAlreadySetException;
-use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
-use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
-use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
 use Carbon\Carbon;
+use App\Models\Mship\State;
+use App\Models\Mship\Account;
+use Malahierba\PublicId\PublicId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Malahierba\PublicId\PublicId;
+use App\Modules\Visittransfer\Events\ApplicationExpired;
+use App\Modules\Visittransfer\Events\ApplicationAccepted;
+use App\Modules\Visittransfer\Events\ApplicationRejected;
+use App\Modules\Visittransfer\Events\ApplicationCompleted;
+use App\Modules\Visittransfer\Events\ApplicationSubmitted;
+use App\Modules\Visittransfer\Events\ApplicationWithdrawn;
+use App\Modules\Visittransfer\Events\ApplicationUnderReview;
+use App\Modules\Visittransfer\Exceptions\Application\TooManyRefereesException;
+use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
+use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
+use App\Modules\Visittransfer\Exceptions\Application\CheckOutcomeAlreadySetException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
+use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 
 class Application extends Model
 {

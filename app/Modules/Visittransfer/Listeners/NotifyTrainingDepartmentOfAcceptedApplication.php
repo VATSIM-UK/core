@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ApplicationAccepted;
 use App\Modules\Visittransfer\Jobs\SendTrainingTeamNewAcceptedApplicationEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
 {

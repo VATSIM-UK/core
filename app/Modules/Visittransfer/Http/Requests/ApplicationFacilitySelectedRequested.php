@@ -2,10 +2,10 @@
 
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Facility;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Facility;
 
 class ApplicationFacilitySelectedRequested extends FormRequest
 {
@@ -49,7 +49,6 @@ class ApplicationFacilitySelectedRequested extends FormRequest
     {
         $data              = $this->all();
         $data['permitted'] = true;
-
 
         $facility = Facility::find(array_get($data, 'facility_id', null));
 
