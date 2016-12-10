@@ -22,7 +22,7 @@ Route::group([
     'namespace'  => 'Site',
     'domain'     => config('app.url'),
     'prefix'     => 'community',
-    'middleware' => ['auth.user.full', 'user.must.read.notifications'],
+    'middleware' => ['auth_full_group'],
 ], function () {
     Route::group(['as' => 'membership.', 'prefix' => 'membership'], function () {
         Route::get('/deploy', [
@@ -30,9 +30,9 @@ Route::group([
             'uses' => 'Membership@getDeploy',
         ]);
 
-        Route::post('/deploy', [
+        Route::post('/deploy/{default?}', [
             'as'   => 'deploy.post',
             'uses' => 'Membership@postDeploy',
-        ]);
+        ])->where('default', '[default|true]');
     });
 });

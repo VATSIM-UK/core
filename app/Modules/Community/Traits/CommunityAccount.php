@@ -2,6 +2,9 @@
 
 namespace App\Modules\Community\Traits;
 
+use App\Modules\Community\Exceptions\Membership\AlreadyAGroupMemberException;
+use App\Modules\Community\Models\Group;
+
 trait CommunityAccount
 {
     /**
@@ -27,14 +30,26 @@ trait CommunityAccount
     {
         $this->guardAgainstNonDivisionJoiningACommunityGroup();
 
-        $this->guardAgainstDoubleJoiningACommunityGroup($this, $group);
+        $this->guardAgainstDoubleJoiningACommunityGroup($group);
 
         $this->communityGroups()->save($group);
     }
 
+    public function syncWithDefaultCommunityGroup()
+    {
+        try {
+            $defaultGroup = Group::isDefault()->first();
+            $this->addCommunityGroup($defaultGroup);
+
+            return true;
+        } catch(AlreadyAGroupMemberException $ex){
+            return false;
+        }
+    }
+
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (! $this->hasState('DIVISION')) {
+        if (!$this->hasState('DIVISION')) {
             throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
         }
     }

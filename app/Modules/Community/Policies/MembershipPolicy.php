@@ -12,6 +12,6 @@ class MembershipPolicy
 
     public function deploy(Account $user, Membership $membership)
     {
-        return $user->communityGroups()->count() <= 1;
+        return $user->communityGroups()->count() == 0;
     }
 }

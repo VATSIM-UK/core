@@ -34,6 +34,11 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+        'auth_full_group' => [
+            'auth.user.full',
+            'user.must.read.notifications',
+            'must.have.community.group',
+        ]
     ];
 
     /**
@@ -50,5 +55,6 @@ class Kernel extends HttpKernel
         'can'                          => \Illuminate\Auth\Middleware\Authorize::class,
         'guest'                        => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'                     => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'must.have.community.group'    => \App\Modules\Community\Http\Middleware\MustHaveCommunityGroup::class,
     ];
 }

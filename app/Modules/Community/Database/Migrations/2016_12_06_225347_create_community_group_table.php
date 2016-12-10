@@ -25,14 +25,14 @@ class CreateCommunityGroupTable extends Migration
 
         DB::table('community_group')->insert([
             ['name' => 'UK Community', 'tier' => 1, 'default' => true],
-            ['name' => 'Scotland', 'tier' => 2, 'default' => true],
-            ['name' => 'Northern Ireland', 'tier' => 2, 'default' => true],
-            ['name' => 'Northern', 'tier' => 2, 'default' => true],
-            ['name' => 'Midlands', 'tier' => 2, 'default' => true],
-            ['name' => 'Wales', 'tier' => 2, 'default' => true],
-            ['name' => 'East Anglia', 'tier' => 2, 'default' => true],
-            ['name' => 'South West', 'tier' => 2, 'default' => true],
-            ['name' => 'South East', 'tier' => 2, 'default' => true],
+            ['name' => 'Scotland', 'tier' => 2, 'default' => false],
+            ['name' => 'Northern Ireland', 'tier' => 2, 'default' => false],
+            ['name' => 'Northern', 'tier' => 2, 'default' => false],
+            ['name' => 'Midlands', 'tier' => 2, 'default' => false],
+            ['name' => 'Wales', 'tier' => 2, 'default' => false],
+            ['name' => 'East Anglia', 'tier' => 2, 'default' => false],
+            ['name' => 'South West', 'tier' => 2, 'default' => false],
+            ['name' => 'South East', 'tier' => 2, 'default' => false],
         ]);
     }
 
