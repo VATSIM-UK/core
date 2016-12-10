@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
             'auth.user.full',
             'user.must.read.notifications',
             'must.have.community.group',
-        ]
+        ],
     ];
 
     /**

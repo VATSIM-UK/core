@@ -25,11 +25,11 @@ class MustHaveCommunityGroup
      */
     public function handle($request, Closure $next)
     {
-        if(\Carbon\Carbon::now()->lt(\Carbon\Carbon::parse("15th December 2016 00:00:00"))){
+        if (\Carbon\Carbon::now()->lt(\Carbon\Carbon::parse('15th December 2016 00:00:00'))) {
             return $next($request);
         }
 
-        if(in_array(\Route::current()->getName(), $this->excludedRoutes)){
+        if (in_array(\Route::current()->getName(), $this->excludedRoutes)) {
             return $next($request);
         }
 
@@ -37,7 +37,7 @@ class MustHaveCommunityGroup
             return Response::make('Unauthorised', 401);
         }
 
-        if(!Auth::user()->hasState("DIVISION")){
+        if (! Auth::user()->hasState('DIVISION')) {
             return $next($request);
         }
 
@@ -46,6 +46,7 @@ class MustHaveCommunityGroup
         }
 
         Session::set('community_group_return', Request::fullUrl());
+
         return Redirect::route('community.membership.deploy');
     }
 }
