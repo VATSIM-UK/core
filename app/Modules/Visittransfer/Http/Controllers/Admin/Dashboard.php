@@ -2,11 +2,11 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Admin;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
 use Cache;
+use App\Models\Statistic;
+use App\Http\Controllers\Adm\AdmController;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
 
 class Dashboard extends AdmController
 {

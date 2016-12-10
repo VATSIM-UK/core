@@ -2,8 +2,8 @@
 
 namespace App\Modules\Visittransfer\Models;
 
-use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 class Facility extends Model
 {

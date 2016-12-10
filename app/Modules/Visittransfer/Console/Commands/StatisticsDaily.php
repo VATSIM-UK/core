@@ -2,10 +2,10 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
-use App\Console\Commands\Command;
-use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
 use Cache;
+use App\Models\Statistic;
+use App\Console\Commands\Command;
+use App\Modules\Visittransfer\Models\Application;
 
 class StatisticsDaily extends Command
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Adm\Sys;
 
-use App\Http\Controllers\Adm\AdmController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Adm\AdmController;
 
 class Module extends AdmController
 {

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification as QualificationType;
+use URL;
 use Auth;
-use Carbon\Carbon;
 use Input;
-use Redirect;
 use Request;
 use Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use URL;
+use Redirect;
 use VatsimSSO;
+use Carbon\Carbon;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Models\Mship\Qualification as QualificationType;
+use App\Exceptions\Mship\DuplicateQualificationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authentication extends BaseController
 {
@@ -203,7 +203,12 @@ class Authentication extends BaseController
                         $atcRating = $atcRatingInfo->PreviousRatingInt;
                     }
                 }
-                $account->addQualification(QualificationType::parseVatsimATCQualification($atcRating));
+
+                $parsedRating = QualificationType::parseVatsimATCQualification($atcRating);
+
+                if ($parsedRating) {
+                    $account->addQualification($parsedRating);
+                }
 
                 for ($i = 1; $i <= 256; $i *= 2) {
                     if ($i & $user->pilot_rating->rating) {

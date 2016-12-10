@@ -126,6 +126,101 @@
                 </div>
             </div>
 
+            @if(($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING")) && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse("15th December 2016 00:00:00 GMT")))
+                <div class="col-md-12">
+                    <div class="panel panel-ukblue">
+                        <div class="panel-heading"><i class="fa fa-cogs"></i>
+                            &thinsp;
+                            Community Groups
+                            <div class="pull-right">
+                                    <a href="{{ route("community.membership.deploy") }}">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </a>
+                            </div></div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <p align="center">
+                                                <b>CURRENT MEMBERSHIP(S)</b>
+                                            </p>
+                                        </div>
+
+                                        <div class="col-xs-7">
+
+
+
+                                            <table class="table">
+                                                @forelse($_account->communityGroups as $cg)
+                                                    <tr>
+                                                        <th>{{ $cg->name }}</th>
+                                                        <td>{{ HTML::fuzzyDate($cg->pivot->created_at) }}</td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            You are not part of any community groups.
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
+                                                        </th>
+                                                    </tr>
+                                                @endforelse
+
+                                                @if($_account->communityGroups->count() == 1)
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            You are not part of any <em>region</em>-based groups.
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
+                                                        </th>
+                                                    </tr>
+                                                @endif
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <b>TOTAL POINTS</b>
+                                        </div>
+
+                                        <div class="col-xs-7">
+                                            <table class="table">
+                                                <tr>
+                                                    <th>Weekly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Monthly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Yearly</th>
+                                                    <td>0</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications</div>

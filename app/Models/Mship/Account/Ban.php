@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Traits\RecordsActivity;
 use Carbon\Carbon;
+use App\Traits\RecordsActivity;
 
 /**
  * App\Models\Mship\Account\Ban.
@@ -165,11 +165,19 @@ class Ban extends \App\Models\Model
 
     public function getPeriodAmountStringAttribute()
     {
+        if (! $this->period_finish) {
+            return null;
+        }
+
         return human_diff_string($this->period_start, $this->period_finish);
     }
 
     public function getPeriodLeftAttribute()
     {
+        if (! $this->period_finish) {
+            return null;
+        }
+
         return Carbon::now()->diffInSeconds($this->period_finish, true);
     }
 

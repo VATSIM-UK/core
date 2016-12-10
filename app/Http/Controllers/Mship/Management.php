@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Exceptions\Mship\DuplicateEmailException;
+use Auth;
+use Input;
 use Redirect;
 use Validator;
-use Input;
-use Auth;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Sys\Token as SystemToken;
 use App\Models\Sso\Account as SSOSystem;
+use App\Models\Sys\Token as SystemToken;
+use App\Exceptions\Mship\DuplicateEmailException;
+use App\Models\Mship\Account\Email as AccountEmail;
 
 class Management extends \App\Http\Controllers\BaseController
 {

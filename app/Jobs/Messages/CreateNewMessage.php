@@ -4,11 +4,11 @@ namespace App\Jobs\Messages;
 
 use App\Jobs\Job;
 use App\Models\Messages\Thread;
-use App\Models\Messages\Thread\Participant;
+use App\Models\Mship\Account\Email;
 use App\Models\Messages\Thread\Post;
 use Illuminate\Contracts\Mail\Mailer;
 use App\Models\Mship\Account as Account;
-use App\Models\Mship\Account\Email;
+use App\Models\Messages\Thread\Participant;
 
 class CreateNewMessage extends Job
 {

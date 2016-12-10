@@ -3,8 +3,8 @@
 namespace App\Modules\Visittransfer\Console\Commands;
 
 use App\Console\Commands\Command;
-use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Models\Application;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 
 class ApplicationsCleanup extends Command
 {

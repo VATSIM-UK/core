@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Tag;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 use stdClass;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionException;
+use phpDocumentor\Reflection\DocBlock;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use phpDocumentor\Reflection\DocBlock\Tag;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {

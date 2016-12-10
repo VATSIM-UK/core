@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Exceptions\Mship\DuplicatePasswordException;
-use App\Jobs\Mship\Security\TriggerPasswordReset;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
-use App\Models\Sys\Token as SystemToken;
 use Auth;
-use Carbon\Carbon;
 use Input;
-use Redirect;
 use Session;
+use Redirect;
+use Carbon\Carbon;
+use App\Models\Sys\Token as SystemToken;
+use App\Jobs\Mship\Security\TriggerPasswordReset;
+use App\Exceptions\Mship\DuplicatePasswordException;
+use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 
 class Security extends \App\Http\Controllers\BaseController
 {
