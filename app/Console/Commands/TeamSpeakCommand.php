@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
-use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use Exception;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
-use Exception;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
+use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 
 abstract class TeamSpeakCommand extends Command
 {

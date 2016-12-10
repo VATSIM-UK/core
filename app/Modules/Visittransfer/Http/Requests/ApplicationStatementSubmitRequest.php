@@ -3,8 +3,8 @@
 namespace App\Modules\Visittransfer\Http\Requests;
 
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationStatementSubmitRequest extends FormRequest
 {

@@ -2,28 +2,28 @@
 
 namespace App\Models\Mship;
 
-use App\Exceptions\Mship\DuplicateEmailException;
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\InvalidStateException;
-use App\Models\Mship\Account\Ban;
-use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Mship\Account\Email;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Note\Type;
-use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Sys\Notification as SysNotification;
-use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
-use App\Modules\Visittransfer\Models\Application;
-use App\Traits\RecordsActivity as RecordsActivityTrait;
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use App\Models\Mship\Role as RoleData;
+use App\Exceptions\Mship\InvalidStateException;
+use App\Exceptions\Mship\DuplicateEmailException;
+use App\Modules\Visittransfer\Models\Application;
+use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Sys\Notification as SysNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Traits\RecordsActivity as RecordsActivityTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\Mship\DuplicateQualificationException;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
 
 /**
  * App\Models\Mship\Account.
@@ -741,7 +741,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
                 $this->removeState($tempState);
             });
         }
-
 
         $state = $this->states()->attach($state, [
             'start_at' => \Carbon\Carbon::now(),

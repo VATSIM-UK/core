@@ -2,16 +2,16 @@
 
 namespace App\Modules\Visittransfer\Models;
 
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
-use App\Models\Sys\Token;
-use App\Modules\Visittransfer\Events\ReferenceAccepted;
+use Illuminate\Database\Eloquent\Model;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
+use App\Modules\Visittransfer\Events\ReferenceAccepted;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
-use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewException;
-use Illuminate\Database\Eloquent\Model;
+use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
 
 /**
  * App\Modules\Visittransfer\Models\Reference.

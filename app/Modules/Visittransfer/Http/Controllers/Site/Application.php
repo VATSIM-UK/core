@@ -2,22 +2,22 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Site;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeAddRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationFacilitySelectedRequested;
-use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeDeleteRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
-use App\Modules\Visittransfer\Http\Requests\ApplicationWithdrawRequest;
-use App\Modules\Visittransfer\Models\Facility;
-use App\Modules\Visittransfer\Models\Reference;
 use Auth;
-use Exception;
-use Illuminate\Support\Facades\Gate;
 use Input;
 use Redirect;
+use Exception;
+use App\Models\Mship\Account;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Controllers\BaseController;
+use App\Modules\Visittransfer\Models\Facility;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Http\Requests\ApplicationStartRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationSubmitRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationWithdrawRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeAddRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationRefereeDeleteRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationStatementSubmitRequest;
+use App\Modules\Visittransfer\Http\Requests\ApplicationFacilitySelectedRequested;
 
 class Application extends BaseController
 {
@@ -81,8 +81,6 @@ class Application extends BaseController
         if (Gate::allows('view-application', $application)) {
             return Redirect::route('visiting.application.view', [$application->public_id]);
         }
-
-
 
         return Redirect::route('visiting.landing');
     }

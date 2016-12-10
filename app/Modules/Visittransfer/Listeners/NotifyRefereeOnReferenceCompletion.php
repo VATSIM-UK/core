@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Jobs\SendRefereeNoLongerRequiredEmail;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyRefereeOfReferenceDeletion implements ShouldQueue
 {

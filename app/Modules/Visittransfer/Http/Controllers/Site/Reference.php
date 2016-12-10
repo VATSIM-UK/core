@@ -2,13 +2,13 @@
 
 namespace App\Modules\Visittransfer\Http\Controllers\Site;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use App\Models\Sys\Token;
-use App\Modules\Visittransfer\Http\Requests\ReferenceSubmitRequest;
-use Exception;
 use Input;
 use Redirect;
+use Exception;
+use App\Models\Sys\Token;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
+use App\Modules\Visittransfer\Http\Requests\ReferenceSubmitRequest;
 
 class Reference extends BaseController
 {

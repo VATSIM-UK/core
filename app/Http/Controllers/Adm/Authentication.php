@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Adm;
 
+use URL;
 use Auth;
-use Exception;
 use Input;
 use Session;
-use Response;
-use URL;
-use VatsimSSO;
 use Redirect;
+use Response;
+use Exception;
+use VatsimSSO;
 use App\Models\Mship\Account;
 
 class Authentication extends \App\Http\Controllers\Adm\AdmController

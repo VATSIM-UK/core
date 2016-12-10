@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\Mship\Account\MemberCertUpdate;
-use App\Models\Mship\Account;
 use Carbon\Carbon;
+use App\Models\Mship\Account;
+use App\Jobs\Mship\Account\MemberCertUpdate;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class MembersCertUpdate extends Command

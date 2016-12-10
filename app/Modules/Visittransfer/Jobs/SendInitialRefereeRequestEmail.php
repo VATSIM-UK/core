@@ -2,15 +2,15 @@
 
 namespace App\Modules\Visittransfer\Jobs;
 
+use View;
 use App\Jobs\Job;
-use App\Jobs\Messages\SendNotificationEmail;
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use View;
+use App\Jobs\Messages\SendNotificationEmail;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
 
 class SendInitialRefereeRequestEmail extends Job implements ShouldQueue
 {
@@ -40,7 +40,6 @@ class SendInitialRefereeRequestEmail extends Job implements ShouldQueue
                     ->with('application', $this->reference->application)
                     ->with('token', $this->reference->token)
                     ->render();
-
 
         $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
