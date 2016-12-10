@@ -171,6 +171,19 @@
                                                     </tr>
                                                 @endforelse
 
+                                                @if($_account->communityGroups->count() == 1)
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            You are not part of any <em>region</em>-based groups.
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
+                                                        </th>
+                                                    </tr>
+                                                @endif
+
                                             </table>
 
                                         </div>
