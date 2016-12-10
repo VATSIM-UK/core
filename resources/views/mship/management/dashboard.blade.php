@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
+            @if(($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING")) && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse("15th December 2016 00:00:00 GMT")))
                 <div class="col-md-12">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-cogs"></i>
@@ -153,16 +153,23 @@
 
 
                                             <table class="table">
-                                                <tr>
-                                                    <th>UK Community</th>
-                                                    <td>{{ HTML::fuzzyDate($_account->created_at) }}</td>
-                                                </tr>
-                                                @foreach($_account->communityGroups as $cg)
+                                                @forelse($_account->communityGroups as $cg)
                                                     <tr>
                                                         <th>{{ $cg->name }}</th>
                                                         <td>{{ HTML::fuzzyDate($cg->pivot->created_at) }}</td>
                                                     </tr>
-                                                @endforeach
+                                                @empty
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            You are not part of any community groups.
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            {!! link_to_route("community.membership.deploy", "Why not join one now?") !!}
+                                                        </th>
+                                                    </tr>
+                                                @endforelse
 
                                             </table>
 
