@@ -44,7 +44,7 @@ class Atc extends Model
 {
     use SoftDeletes;
 
-    protected $table      = 'statistic_atc';
+    protected $table      = 'networkdata_atc';
     protected $primaryKey = 'id';
     protected $fillable   = [
         'account_id',
