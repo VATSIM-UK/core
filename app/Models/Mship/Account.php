@@ -705,30 +705,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
-        /*
-         * THIS IS LEGACY FUNCTIONALITY TO CONVERT ALL OLD STATES TO ACTUALLY STORING
-         * REGION AND DIVISION.
-         */
-        $checkLegacy = DB::table('mship_account_state')
-                         ->where('account_id', '=', $this->id)
-                         ->where('state_id', '=', $state->id)
-                         ->whereNull('region')
-                         ->whereNull('division')
-                         ->count() > 0;
-
-        if ($checkLegacy) {
-            $this->fresh()->states()->updateExistingPivot($state->id, [
-                'region'   => $region,
-                'division' => $division,
-            ]);
-
-            return true;
-        }
-
-        /*
-         * END OF LEGACY FUNCTIONALITY.
-         */
-
         if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
