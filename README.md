@@ -17,6 +17,7 @@
 * Restart all queue processes
 
 ### 2.3.6.1 > NEXT
+* Run the Community Migration `php artisan module:migrate community`
 
 ### 2.3.6 > 2.3.6.1
 * Add relevant BUGSNAP_ config variables from the .env.example file
