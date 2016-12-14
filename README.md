@@ -16,7 +16,14 @@
 * Enable all cronjobs
 * Restart all queue processes
 
-### 2.3.6.1 > NEXT
+### 2.4.1 > NEXT
+
+### 2.4 > 2.4.1
+* Nothing to do.
+
+### 2.3.6.1 > 2.4
+* Run the Community Migration `php artisan module:migrate community`
+* Run the VisitTransfer Migration `php artisan module:migrate visittransfer`
 
 ### 2.3.6 > 2.3.6.1
 * Add relevant BUGSNAP_ config variables from the .env.example file

@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use DB;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -14,6 +13,7 @@ use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
+use App\Modules\Community\Traits\CommunityAccount;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -28,7 +28,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
 /**
  * App\Models\Mship\Account.
  *
- * @property int                                                                         $id
+ * @property int                                                                             $id
  * @property string                                                                          $slack_id
  * @property string                                                                          $name_first
  * @property string                                                                          $name_last
@@ -47,11 +47,11 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  *           $remember_token
  * @property string                                                                          $gender
  * @property string                                                                          $experience
- * @property int                                                                         $age
- * @property int                                                                         $status
+ * @property int                                                                             $age
+ * @property int                                                                             $status
  * @property bool
  *           $is_invisible
- * @property bool                                                                         $debug
+ * @property bool                                                                            $debug
  * @property \Carbon\Carbon                                                                  $joined_at
  * @property \Carbon\Carbon                                                                  $created_at
  * @property \Carbon\Carbon                                                                  $updated_at
@@ -179,11 +179,11 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  */
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
+    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait, CommunityAccount;
 
-    protected $table     = 'mship_account';
-    public $incrementing = false;
-    protected $dates     = [
+    protected $table        = 'mship_account';
+    public $incrementing    = false;
+    protected $dates        = [
         'last_login',
         'joined_at',
         'cert_checked_at',
@@ -193,7 +193,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $fillable = [
+    protected $fillable     = [
         'id',
         'name_first',
         'name_last',
@@ -202,13 +202,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $attributes = [
+    protected $attributes   = [
         'name_first'    => '',
         'name_last'     => '',
         'status'        => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
@@ -704,30 +704,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
-        /*
-         * THIS IS LEGACY FUNCTIONALITY TO CONVERT ALL OLD STATES TO ACTUALLY STORING
-         * REGION AND DIVISION.
-         */
-        $checkLegacy = DB::table('mship_account_state')
-                         ->where('account_id', '=', $this->id)
-                         ->where('state_id', '=', $state->id)
-                         ->whereNull('region')
-                         ->whereNull('division')
-                         ->count() > 0;
-
-        if ($checkLegacy) {
-            $this->fresh()->states()->updateExistingPivot($state->id, [
-                'region'   => $region,
-                'division' => $division,
-            ]);
-
-            return true;
-        }
-
-        /*
-         * END OF LEGACY FUNCTIONALITY.
-         */
-
         if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }

@@ -44,11 +44,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     public function handle()
     {
         self::$connection = $this->establishConnection();
-        self::$connection->notifyRegister('server');
-        TeamSpeak3_Helper_Signal::getInstance()
-            ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
-        TeamSpeak3_Helper_Signal::getInstance()
-            ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
 
         // main loop
         while (true) {
@@ -134,7 +129,17 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
 
         try {
-            return TeamSpeak::run('VATSIM UK Management Daemon', true);
+            // establish connection
+            $connection = TeamSpeak::run('VATSIM UK Management Daemon', true);
+
+            // register for events
+            $connection->notifyRegister('server');
+            TeamSpeak3_Helper_Signal::getInstance()
+                ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
+            TeamSpeak3_Helper_Signal::getInstance()
+                ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
+
+            return $connection;
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
             if ($e->getCode() === TeamSpeak::CLIENT_NICKNAME_INUSE) {
                 $this->log('Nickname in use.');

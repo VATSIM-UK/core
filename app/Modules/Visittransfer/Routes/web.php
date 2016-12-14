@@ -101,7 +101,7 @@ Route::group([
     'as'         => 'visiting.',
     'namespace'  => 'Site',
     'domain'     => 'vt.'.config('app.url'),
-    'middleware' => ['auth.user.full', 'user.must.read.notifications'],
+    'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
 
