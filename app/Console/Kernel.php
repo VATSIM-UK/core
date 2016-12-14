@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
+        
+        /* Third Party */
+        \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class
     ];
 
     /**
