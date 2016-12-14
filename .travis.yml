@@ -1,10 +1,18 @@
 language: php
 
 php:
-  - '5.6'
+  - 5.6
+  - 7.0.x
+  - 7.1.x
 
 services:
   - mysql:5.5
+  
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 7.1.x
+    - php: 7.0.x
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
