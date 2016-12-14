@@ -3,6 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <title>VATSIM UK :: Administration Panel</title>
+
+        <!--BugSnagScript-->
+        <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
+                data-apikey="0a68d43bf9507933029382958633c9d9"
+                data-releasestage="{{ env('APP_ENV') }}">
+            Bugsnag.notifyReleaseStages = ["staging", "production"];
+            Bugsnag.user = {
+                id: {{ Auth::user()->id }},
+                name: "{{ Auth::user()->name }}",
+                email: "{{ Auth::user()->email }}"
+            };
+        </script>
+
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- bootstrap 3.0.2 -->
         {!! HTML::style('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css') !!}
