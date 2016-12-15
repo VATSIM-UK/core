@@ -25,10 +25,6 @@ class MustHaveCommunityGroup
      */
     public function handle($request, Closure $next)
     {
-        if (\Carbon\Carbon::now()->lt(\Carbon\Carbon::parse('15th December 2016 00:00:00'))) {
-            return $next($request);
-        }
-
         if (in_array(\Route::current()->getName(), $this->excludedRoutes)) {
             return $next($request);
         }
