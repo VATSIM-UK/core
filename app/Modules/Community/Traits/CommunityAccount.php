@@ -14,11 +14,11 @@ trait CommunityAccount
      */
     public function communityGroups()
     {
-        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, 'community_membership', 'group_id',
-            'account_id')
-                    ->withTimestamps()
-                    ->withPivot(['created_at', 'updated_at', 'deleted_at'])
-                    ->wherePivot('deleted_at', null);
+        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, 'community_membership',
+            'account_id', 'group_id')
+            ->withTimestamps()
+            ->withPivot(['created_at', 'updated_at', 'deleted_at'])
+            ->wherePivot('deleted_at', null);
     }
 
     /**
@@ -49,7 +49,7 @@ trait CommunityAccount
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (! $this->hasState('DIVISION')) {
+        if (!$this->hasState('DIVISION')) {
             throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
         }
     }
