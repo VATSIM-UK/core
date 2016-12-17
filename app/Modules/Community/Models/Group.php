@@ -32,7 +32,8 @@ class Group extends Model
         return $query->whereDefault(false);
     }
 
-    public static function scopeInTier($query, $tier){
-        return $query->where("tier", "=", $tier);
+    public static function scopeInTier($query, $tier)
+    {
+        return $query->where('tier', '=', $tier);
     }
 }

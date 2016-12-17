@@ -18,9 +18,9 @@ class GroupMembershipTest extends TestCase
 
         $member->fresh()->addCommunityGroup($group);
 
-        $this->seeInDatabase("community_membership", [
-            "account_id" => $member->id,
-            "group_id" => $group->id,
+        $this->seeInDatabase('community_membership', [
+            'account_id' => $member->id,
+            'group_id'   => $group->id,
         ]);
     }
 
