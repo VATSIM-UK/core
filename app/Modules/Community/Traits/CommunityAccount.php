@@ -55,11 +55,11 @@ trait CommunityAccount
 
     private function guestAgainstMultipleMembershipsToSameTier(\App\Modules\Community\Models\Group $group)
     {
-        $sameTier = $this->communityGroups->filter(function($filteredGroup) use($group){
+        $sameTier = $this->communityGroups->filter(function ($filteredGroup) use ($group) {
             return $filteredGroup->tier == $group->tier;
         });
 
-        if($sameTier->count() > 0){
+        if ($sameTier->count() > 0) {
             throw new \App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException($this, $group);
         }
     }

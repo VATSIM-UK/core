@@ -100,7 +100,7 @@ class GroupMembershipTest extends TestCase
 
         $tier2A = \App\Modules\Community\Models\Group::inTier(2)->first();
         $tier2B = \App\Modules\Community\Models\Group::inTier(2)
-                                                    ->where("id", "!=", $tier2A->id)
+                                                    ->where('id', '!=', $tier2A->id)
                                                     ->first();
 
         $member->fresh()->addCommunityGroup($tier2A);
