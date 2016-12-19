@@ -121,8 +121,9 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
-    public function account(){
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
+    public function account()
+    {
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
     }
 
     public function getIsOnlineAttribute()
