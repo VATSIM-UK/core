@@ -15,7 +15,7 @@ class CreateAtcStatisticsTables extends Migration
         // It's now in use on production environments.
         // Old migration updated, so that the modules make sense on their own.
 
-        if(!Schema::hasTable("statistic_atc")){
+        if (! Schema::hasTable('statistic_atc')) {
             Schema::create('networkdata_atc', function ($table) {
                 $table->bigIncrements('id')->unsigned();
                 $table->integer('account_id')->unsigned();
@@ -28,7 +28,7 @@ class CreateAtcStatisticsTables extends Migration
                 $table->softDeletes();
             });
         } else {
-            Schema::rename("statistic_atc", "networkdata_atc");
+            Schema::rename('statistic_atc', 'networkdata_atc');
         }
     }
 
