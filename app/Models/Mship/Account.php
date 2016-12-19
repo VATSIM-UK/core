@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -12,12 +13,13 @@ use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
-use App\Modules\Community\Traits\CommunityAccount;
+use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
+use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\Mship\DuplicateQualificationException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
@@ -178,10 +180,10 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  */
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait, CommunityAccount;
+    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
 
     protected $table        = 'mship_account';
-    public $incrementing    = false;
+    public    $incrementing = false;
     protected $dates        = [
         'last_login',
         'joined_at',
