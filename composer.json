@@ -24,7 +24,7 @@
         "alawrence/laravel-ipboard": "1.0",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "dev-patch-2",
+        "caffeinated/modules": "dev-master",
         "malahierba-lab/public-id": "dev-master",
         "comocode/laravel-ab": "^0.3.0",
         "pusher/pusher-php-server": "~2.0",
