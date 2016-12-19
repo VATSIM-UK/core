@@ -137,17 +137,13 @@
                 </li>
             @endif
 
-            @if($_account->hasChildPermission("adm/visit-transfer"))
-                @if(Module::isEnabled("visittransfer") && View::exists("visittransfer::admin._sidebar"))
-                    @include("visittransfer::admin._sidebar")
+            @foreach(Module::enabled() as $module)
+                @if($_account->hasChildPermission("adm/".$module["slug"]))
+                    @if(View::exists($module["slug"]."::admin._sidebar"))
+                        @include($module["slug"]."::admin._sidebar")
+                    @endif
                 @endif
-            @endif
-
-            @if($_account->hasChildPermission("adm/network-data"))
-                @if(Module::isEnabled("networkdata") && View::exists("networkdata::admin._sidebar"))
-                    @include("networkdata::admin._sidebar")
-                @endif
-            @endif
+            @endforeach
 
             @if($_account->hasChildPermission("adm/system"))
                 <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">

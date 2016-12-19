@@ -17,6 +17,7 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Define your module's route model bindings, pattern filters, etc.
      *
+     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
     public function boot()
@@ -33,11 +34,43 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapWebRoutes();
+
+        $this->mapApiRoutes();
+    }
+
+    /**
+     * Define the "web" routes for the module.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
         Route::group([
+            'middleware' => 'web',
             'namespace'  => $this->namespace,
-            'middleware' => ['web'],
         ], function ($router) {
-            require config('modules.path').'/Ais/Http/routes.php';
+            require module_path('ais', 'Routes/web.php');
+        });
+    }
+
+    /**
+     * Define the "api" routes for the module.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+        Route::group([
+            'middleware' => 'api',
+            'namespace'  => $this->namespace,
+            'prefix'     => 'api',
+        ], function ($router) {
+            require module_path('ais', 'Routes/api.php');
         });
     }
 }

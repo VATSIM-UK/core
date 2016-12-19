@@ -224,6 +224,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     const STATUS_LOCKED   = 8; //b"1000";
     const STATUS_SYSTEM   = 8; //b"1000"; // Alias of LOCKED
 
+    public function __toString(){
+        return $this->name . " (".$this->id.")";
+    }
+
     public static function eventCreated($model, $extra = null, $data = null)
     {
         parent::eventCreated($model, $extra, $data);
@@ -256,7 +260,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
             $account->addState($state);
 
-            \Artisan::queue('Members:CertUpdate', [
+            \Artisan::call('Members:CertUpdate', [
                 '--force' => $accountId,
             ]);
 
@@ -278,12 +282,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function scopeIsSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM . '&`status`'), '=', self::STATUS_SYSTEM);
     }
 
     public static function scopeIsNotSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '!=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM . '&`status`'), '!=', self::STATUS_SYSTEM);
     }
 
     public static function scopeWithIp($query, $ip)
@@ -481,7 +485,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function removeRole(Role $role)
     {
-        if (! $this->hasRole($role)) {
+        if (!$this->hasRole($role)) {
             return true;
         }
 
@@ -648,7 +652,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code.', ';
+            $output .= $p->code . ', ';
         }
         if ($output == '') {
             $output = 'None';
@@ -684,7 +688,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         if (is_string($search)) {
             $search = State::findByCode($search);
-        } elseif (! ($search instanceof State)) {
+        } elseif (!($search instanceof State)) {
             throw new InvalidStateException();
         }
 
@@ -807,14 +811,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         } elseif (is_numeric($parent)) {
             $parent = PermissionData::find($parent);
             $parent = $parent ? $parent->name : 'NOTHING-AT-ALL';
-        } elseif (! is_numeric($parent)) {
+        } elseif (!is_numeric($parent)) {
             $parent = preg_replace('/\d+/', '*', $parent);
         }
 
         // Let's check all roles for this permission!
         $hasPermission = $this->roles->filter(function ($role) use ($parent) {
-            return $role->hasPermission($parent);
-        })->count() > 0;
+                return $role->hasPermission($parent);
+            })->count() > 0;
 
         return $hasPermission;
     }
@@ -864,7 +868,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function hasPasswordExpired()
     {
-        if (! $this->hasPassword()) {
+        if (!$this->hasPassword()) {
             return false;
         }
 
@@ -1024,7 +1028,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
+        $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
         return $this->secondaryEmails()->save($newSecondaryEmail);
@@ -1082,13 +1086,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban                = new Ban();
-        $ban->account_id    = $this->id;
-        $ban->banned_by     = $writerId;
-        $ban->type          = $type;
-        $ban->reason_id     = $banReason->id;
-        $ban->reason_extra  = $banExtraReason;
-        $ban->period_start  = Carbon::now()->second(0);
+        $ban = new Ban();
+        $ban->account_id = $this->id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->id;
+        $ban->reason_extra = $banExtraReason;
+        $ban->period_start = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1114,14 +1118,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $writer = $writer->getKey();
         }
 
-        $note               = new AccountNoteData();
-        $note->account_id   = $this->id;
-        $note->writer_id    = $writer;
+        $note = new AccountNoteData();
+        $note->account_id = $this->id;
+        $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content      = $noteContent;
+        $note->content = $noteContent;
         $note->save();
 
-        if (! is_null($attachment)) {
+        if (!is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -1158,9 +1162,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsInactiveAttribute($value)
     {
-        if ($value && ! $this->is_inactive) {
+        if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
-        } elseif (! $value && $this->is_inactive) {
+        } elseif (!$value && $this->is_inactive) {
             $this->unSetStatusFlag(self::STATUS_INACTIVE);
         }
     }
@@ -1172,9 +1176,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsSystemAttribute($value)
     {
-        if ($value && ! $this->is_system) {
+        if ($value && !$this->is_system) {
             $this->setStatusFlag(self::STATUS_SYSTEM);
-        } elseif (! $value && $this->is_system) {
+        } elseif (!$value && $this->is_system) {
             $this->unSetStatusFlag(self::STATUS_SYSTEM);
         }
     }
@@ -1315,7 +1319,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first.' '.$this->name_last;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     /**
@@ -1328,7 +1332,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname.' '.$this->name_last;
+            return $this->nickname . ' ' . $this->name_last;
         }
 
         return $this->real_name;
@@ -1358,17 +1362,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function getDisplayValueAttribute()
     {
-        return $this->name.' ('.$this->getKey().')';
+        return $this->name . ' (' . $this->getKey() . ')';
     }
 
     public function toArray()
     {
-        $array                 = parent::toArray();
-        $array['name']         = $this->name;
-        $array['name_real']    = $this->real_name;
-        $array['email']        = $this->email;
-        $array['atc_rating']   = $this->qualification_atc;
-        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array = parent::toArray();
+        $array['name'] = $this->name;
+        $array['name_real'] = $this->real_name;
+        $array['email'] = $this->email;
+        $array['atc_rating'] = $this->qualification_atc;
+        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;

@@ -1,0 +1,1 @@
+{{ $account->name }} ({!! link_to_route("mship.profile", $account->id, [$account->id]) !!})
