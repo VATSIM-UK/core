@@ -102,7 +102,7 @@ class Atc extends Model
 
     public static function scopeOffline($query)
     {
-        return $query->whereNotNull("disconnected_at");
+        return $query->whereNotNull('disconnected_at');
     }
 
     public static function scopeThisYear($query)
@@ -112,7 +112,8 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
-    public function getIsOnlineAttribute(){
+    public function getIsOnlineAttribute()
+    {
         return $this->attributes['disconnected_at'] === null;
     }
 

@@ -25,8 +25,8 @@ Route::group([
     'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', function () {
-        return redirect()->route("networkdata.online");
-    })->name("landing");
+        return redirect()->route('networkdata.online');
+    })->name('landing');
 
     Route::get('/online', ['as' => 'online', 'uses' => 'Online@getOnline']);
 });
