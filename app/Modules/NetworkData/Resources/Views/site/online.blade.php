@@ -20,7 +20,7 @@
                             @foreach($atcSessions as $atc)
                                 <tr>
                                     <td>{{ $atc->callsign }}</td>
-                                    <td>{{ $atc->facility_type }}</td>
+                                    <td>{{ $atc->type }}</td>
                                     <td>{{ $atc->airport }}</td>
                                     <td>{{ $atc->account ? $atc->account->name : "Unknown User" }}</td>
                                     <td>{{ $atc->online_at }}</td>

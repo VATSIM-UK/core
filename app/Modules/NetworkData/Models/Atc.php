@@ -13,13 +13,13 @@ use App\Modules\NetworkData\Events\AtcSessionUpdated;
 /**
  * App\Modules\NetworkData\Models\Atc.
  *
- * @property int $id
- * @property int $account_id
- * @property string $callsign
- * @property int $qualification_id
- * @property bool $facility_type
+ * @property int            $id
+ * @property int            $account_id
+ * @property string         $callsign
+ * @property int            $qualification_id
+ * @property bool           $facility_type
  * @property \Carbon\Carbon $connected_at
- * @property string $disconnected_at
+ * @property string         $disconnected_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
@@ -56,8 +56,17 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public $timestamps = true;
+    public    $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public    $timestamps = true;
+
+    const TYPE_OBS = 1;
+    const TYPE_DEL = 2;
+    const TYPE_GND = 3;
+    const TYPE_TWR = 4;
+    const TYPE_APP = 5;
+    const TYPE_DEP = 5;
+    const TYPE_CTR = 6;
+    const TYPE_FSS = 7;
 
     public static function boot()
     {
@@ -68,7 +77,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (! $atcSession->disconnected_at) {
+            if (!$atcSession->disconnected_at) {
                 return;
             }
 
@@ -112,8 +121,31 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
-    public function getIsOnlineAttribute(){
+    public function getIsOnlineAttribute()
+    {
         return $this->attributes['disconnected_at'] === null;
+    }
+
+    public function getTypeAttribute()
+    {
+        switch ($this->attributes['facility_type']) {
+            case self::TYPE_OBS:
+                return trans("networkdata::atc.type.obs");
+            case self::TYPE_DEL:
+                return trans("networkdata::atc.type.del");
+            case self::TYPE_GND:
+                return trans("networkdata::atc.type.gnd");
+            case self::TYPE_TWR:
+                return trans("networkdata::atc.type.twr");
+            case self::TYPE_APP:
+                return trans("networkdata::atc.type.app");
+            case self::TYPE_CTR:
+                return trans("networkdata::atc.type.ctr");
+            case self::TYPE_FSS:
+                return trans("networkdata::atc.type.fss");
+            default:
+                return "Unknown";
+        }
     }
 
     public function disconnectAt($timestamp)
@@ -131,7 +163,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (! $this->disconnected_at) {
+        if (!$this->disconnected_at) {
             return;
         }
 
