@@ -2,9 +2,9 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use App\Console\Commands\Command;
 use Cache;
 use App\Models\Statistic;
+use App\Console\Commands\Command;
 use App\Modules\NetworkData\Models\Atc;
 
 class Statistics extends Command
