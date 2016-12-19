@@ -5,7 +5,7 @@ namespace App\Modules\Community\Exceptions\Membership;
 use App\Models\Mship\Account;
 use App\Modules\Community\Models\Group;
 
-class AlreadyAGroupMemberException extends \Exception
+class AlreadyAGroupTierMemberException extends \Exception
 {
     private $account;
     private $group;

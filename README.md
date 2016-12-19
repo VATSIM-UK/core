@@ -17,6 +17,7 @@
 * Restart all queue processes
 
 ### 2.4.1 > NEXT
+* Run the Community Migrat `php artisan module:migrate community`
 
 ### 2.4 > 2.4.1
 * Nothing to do.

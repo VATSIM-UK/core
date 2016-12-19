@@ -17,7 +17,7 @@ class Group extends Model
 
     public function accounts()
     {
-        return $this->belongsToMany(\App\Models\Mship\Account::class, 'community_membership', 'account_id', 'group_id')
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'community_membership', 'group_id', 'account_id')
                     ->withTimestamps()
                     ->wherePivot('deleted_at', null);
     }
@@ -30,5 +30,10 @@ class Group extends Model
     public static function scopeNotDefault($query)
     {
         return $query->whereDefault(false);
+    }
+
+    public static function scopeInTier($query, $tier)
+    {
+        return $query->where('tier', '=', $tier);
     }
 }
