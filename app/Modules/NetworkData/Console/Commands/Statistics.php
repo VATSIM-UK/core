@@ -2,7 +2,7 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use Cache;
+use App\Console\Commands\Command;
 use Cache;
 use App\Models\Statistic;
 use App\Modules\NetworkData\Models\Atc;
