@@ -22,7 +22,11 @@ Route::group([
     'namespace'  => 'Site',
     'domain'     => config('app.url'),
     'prefix'     => 'network-data',
-    'middleware' => ['auth.user.full', 'user.must.read.notifications'],
+    'middleware' => ['auth_full_group'],
 ], function () {
-    Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
+    Route::get('/', function () {
+        return redirect()->route("networkdata.online");
+    })->name("landing");
+
+    Route::get('/online', ['as' => 'online', 'uses' => 'Online@getOnline']);
 });

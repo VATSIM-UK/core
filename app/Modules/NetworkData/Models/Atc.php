@@ -97,12 +97,12 @@ class Atc extends Model
 
     public static function scopeOnline($query)
     {
-        return $query->where('disconnected_at', 'IS', null);
+        return $query->whereNull('disconnected_at');
     }
 
     public static function scopeOffline($query)
     {
-        return $query->where('disconnected_at', 'IS NOT', null);
+        return $query->whereNotNull("disconnected_at");
     }
 
     public static function scopeThisYear($query)
@@ -110,6 +110,10 @@ class Atc extends Model
         $startOfYear = \Carbon\Carbon::parse('first day of year');
 
         return $query->where('connected_at', '>=', $startOfYear);
+    }
+
+    public function getIsOnlineAttribute(){
+        return $this->attributes['disconnected_at'] === null;
     }
 
     public function disconnectAt($timestamp)
