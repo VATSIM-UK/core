@@ -31,6 +31,6 @@ class CreateAtcStatisticsTables extends Migration
      */
     public function down()
     {
-        Schema::drop("networkdata_atc");
+        Schema::drop('networkdata_atc');
     }
 }

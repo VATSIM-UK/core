@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class DeleteStatisticAtcTable extends Migration
@@ -16,7 +15,7 @@ class DeleteStatisticAtcTable extends Migration
         // Legacy migration created this table by mistake.
         // Statistics that were generated were of no use.
         // Removing in place of new module.
-        Schema::dropIfExists("statistic_atc");
+        Schema::dropIfExists('statistic_atc');
     }
 
     /**
