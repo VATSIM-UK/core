@@ -11,17 +11,25 @@ class CreateAtcStatisticsTables extends Migration
      */
     public function up()
     {
-        Schema::create('statistic_atc', function ($table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->integer('account_id')->unsigned();
-            $table->string('callsign', 10);
-            $table->smallInteger('qualification_id')->unsigned();
-            $table->tinyInteger('facility_type')->unsigned();
-            $table->timestamp('connected_at')->nullable();
-            $table->timestamp('disconnected_at')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // This check is required as this table was accidentally added to a very early migration.
+        // It's now in use on production environments.
+        // Old migration updated, so that the modules make sense on their own.
+
+        if(!Schema::hasTable("statistic_atc")){
+            Schema::create('networkdata_atc', function ($table) {
+                $table->bigIncrements('id')->unsigned();
+                $table->integer('account_id')->unsigned();
+                $table->string('callsign', 10);
+                $table->smallInteger('qualification_id')->unsigned();
+                $table->tinyInteger('facility_type')->unsigned();
+                $table->timestamp('connected_at')->nullable();
+                $table->timestamp('disconnected_at')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        } else {
+            Schema::rename("statistic_atc", "networkdata_atc");
+        }
     }
 
     /**
@@ -31,6 +39,6 @@ class CreateAtcStatisticsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('statistic_atc');
+        Schema::dropIfExists('networkdata_atc');
     }
 }
