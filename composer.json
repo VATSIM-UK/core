@@ -38,7 +38,8 @@
         "symfony/dom-crawler": "~3.0",
         "symfony/css-selector": "~3.0",
         "laravel/homestead": "^3.0",
-        "laracasts/generators": "^1.1"
+        "laracasts/generators": "^1.1",
+        "codeclimate/php-test-reporter": "dev-master"
     },
     "autoload": {
         "classmap": [
