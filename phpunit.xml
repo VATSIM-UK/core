@@ -14,16 +14,20 @@
             <directory>./tests/unit/</directory>
         </testsuite>
 
-        <testsuite name="Application Test">
-            <directory>./tests/integration/</directory>
-        </testsuite>
-
         <testsuite name="Modules:Visiting and Transferring Test Suite">
             <directory>./app/Modules/Visittransfer/Tests/</directory>
         </testsuite>
 
         <testsuite name="Modules:Network Data Test Suite">
             <directory>./app/Modules/NetworkData/Tests/</directory>
+        </testsuite>
+
+        <testsuite name="Modules:Community Test Suite">
+            <directory>./app/Modules/Community/Tests/</directory>
+        </testsuite>
+
+        <testsuite name="Application Test">
+            <directory>./tests/integration/</directory>
         </testsuite>
 
         <!--<testsuite name="Modules:Statistics Test Suite">-->

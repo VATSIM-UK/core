@@ -6,6 +6,21 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
     <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
 
+    <!--BugSnagScript-->
+    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
+            data-apikey="0a68d43bf9507933029382958633c9d9"
+            data-releasestage="{{ env('APP_ENV') }}">
+        Bugsnag.notifyReleaseStages = ["staging", "production"];
+
+        @if(Auth::check())
+                Bugsnag.user = {
+                    id: {{ Auth::user()->id }},
+                    name: "{{ Auth::user()->name }}",
+                    email: "{{ Auth::user()->email }}"
+                };
+        @endif
+    </script>
+
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
@@ -202,6 +217,42 @@
 </div>
 
     {!! HTML::script(elixir("js/app-all.js")) !!}
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-13128412-6', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+
+        @if(Auth::check())
+                Tawk_API.visitor = {
+            name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
+            email: "{{ Auth::user()->email }}"
+        };
+        @endif
+
+        Tawk_API.onLoad = function(){
+            Tawk_API.addEvent('visited-page', {
+                'FullURL'    : '{{ Request::fullUrl() }}',
+            }, function(error){});
+        };
+    </script>
 
     @yield('scripts')
 

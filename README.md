@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/VATSIM-UK/core.png?label=ready&title=Ready)](http://waffle.io/VATSIM-UK/core)
 [![Code Climate](https://codeclimate.com/github/VATSIM-UK/core/badges/gpa.svg)](https://codeclimate.com/github/VATSIM-UK/core)
 [![Build Status](https://travis-ci.org/VATSIM-UK/core.svg?branch=production)](https://travis-ci.org/VATSIM-UK/core)
 
@@ -11,12 +12,31 @@
 * Run `npm install --production`
 * Run `gulp --production`
 * **Perform version-specific upgrade steps (below)**
+* Check for any additional BugSnag filter (in version-specific steps below)
 * Enable all cronjobs
 * Restart all queue processes
 
+### 2.4.1 > NEXT
+* Run the Community Migrat `php artisan module:migrate community`
+* Run `php artisan module:migrate networkdata`
+
+### 2.4 > 2.4.1
+* Nothing to do.
+
+### 2.3.6.1 > 2.4
+* Run the Community Migration `php artisan module:migrate community`
+* Run the VisitTransfer Migration `php artisan module:migrate visittransfer`
+
 ### 2.3.6 > 2.3.6.1
 * Add relevant BUGSNAP_ config variables from the .env.example file
-* Run `php artisan module:migrate networkdata`
+* Ensure following filters are set, to avoid reporting them in BugSnag reports:
+ * username - to filter out SSO username
+ * apikey_pub - to filter out public SSO key
+ * secret - to filter out SSO secret
+ * access_token - to filter out SSO access tokens
+ * authid - to filter out auth username
+ * authpassword - to filter out auth password
+ * x-newrelic-id - to filter out newRelic ID
 
 ### 2.3.5 > 2.3.6
 * Run a range of consolidation destroying SQL:
