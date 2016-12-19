@@ -56,8 +56,8 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public    $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public    $timestamps = true;
+    public $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public $timestamps = true;
 
     const TYPE_OBS = 1;
     const TYPE_DEL = 2;
@@ -77,7 +77,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (!$atcSession->disconnected_at) {
+            if (! $atcSession->disconnected_at) {
                 return;
             }
 
@@ -130,21 +130,21 @@ class Atc extends Model
     {
         switch ($this->attributes['facility_type']) {
             case self::TYPE_OBS:
-                return trans("networkdata::atc.type.obs");
+                return trans('networkdata::atc.type.obs');
             case self::TYPE_DEL:
-                return trans("networkdata::atc.type.del");
+                return trans('networkdata::atc.type.del');
             case self::TYPE_GND:
-                return trans("networkdata::atc.type.gnd");
+                return trans('networkdata::atc.type.gnd');
             case self::TYPE_TWR:
-                return trans("networkdata::atc.type.twr");
+                return trans('networkdata::atc.type.twr');
             case self::TYPE_APP:
-                return trans("networkdata::atc.type.app");
+                return trans('networkdata::atc.type.app');
             case self::TYPE_CTR:
-                return trans("networkdata::atc.type.ctr");
+                return trans('networkdata::atc.type.ctr');
             case self::TYPE_FSS:
-                return trans("networkdata::atc.type.fss");
+                return trans('networkdata::atc.type.fss');
             default:
-                return "Unknown";
+                return 'Unknown';
         }
     }
 
@@ -163,7 +163,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (!$this->disconnected_at) {
+        if (! $this->disconnected_at) {
             return;
         }
 

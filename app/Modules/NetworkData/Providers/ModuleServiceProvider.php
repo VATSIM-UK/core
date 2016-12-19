@@ -58,7 +58,7 @@ class ModuleServiceProvider extends AuthServiceProvider
      */
     protected function registerComposers()
     {
-//        View::composer(
+        //        View::composer(
 //            ['networkdata::admin._sidebar'],
 //            \App\Modules\Networkdata\Resources\Viewcomposers\StatisticsComposer::class
 //        );
