@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use DB;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
