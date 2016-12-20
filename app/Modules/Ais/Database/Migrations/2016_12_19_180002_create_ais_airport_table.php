@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateAisAirportTable extends Migration
 {
-
     public function up()
     {
         Schema::create('ais_airport', function (Blueprint $table) {
@@ -16,9 +15,9 @@ class CreateAisAirportTable extends Migration
             $table->string('name', 100);
             $table->decimal('latitude', 8, 6);
             $table->decimal('longitude', 8, 6);
-            $table->integer("elevation");
-            $table->string("continent", 2)->nullable();
-            $table->string("country", 2)->nullable();
+            $table->integer('elevation');
+            $table->string('continent', 2)->nullable();
+            $table->string('country', 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

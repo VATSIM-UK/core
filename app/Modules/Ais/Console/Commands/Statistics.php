@@ -3,9 +3,7 @@
 namespace App\Modules\Ais\Console\Commands;
 
 use Cache;
-use App\Models\Statistic;
 use App\Console\Commands\Command;
-use App\Modules\NetworkData\Models\Atc;
 
 class Statistics extends Command
 {
