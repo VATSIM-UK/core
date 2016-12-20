@@ -14,6 +14,12 @@ class CreateAisFirTable extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 		});
+
+		DB::table("ais_fir")->insert([
+			["icao" => "EGTT", "name" => "London FIR"],
+			["icao" => "EGPX", "name" => "Scottish FIR"],
+			["icao" => "EGGX", "name" => "Shanwick Oceanic FIR"],
+		]);
 	}
 
 	public function down()

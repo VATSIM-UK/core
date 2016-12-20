@@ -20,7 +20,7 @@ class ImportAirports extends \App\Console\Commands\Command
      *
      * @var string
      */
-    protected $name = 'ais:import-airfields';
+    protected $name = 'ais:import-airports';
 
     /**
      * The console command description.
@@ -49,7 +49,7 @@ class ImportAirports extends \App\Console\Commands\Command
 
         $this->insertData();
 
-        $this->info("Inserted all ".$this->totalAirportsInserted." OurAirports Data.", "v");
+        $this->info("Inserted all " . $this->totalAirportsInserted . " OurAirports Data.", "v");
 
         $this->sendSlackSuccess('Completed Successfully', [
             'Airports Inserted' => $this->totalAirportsInserted,
@@ -61,37 +61,52 @@ class ImportAirports extends \App\Console\Commands\Command
         $fileNameRelative = "ourairports" . DIRECTORY_SEPARATOR . "airports.csv";
         $csvTarget = storage_path("app" . DIRECTORY_SEPARATOR . $fileNameRelative);
 
+        $this->info("\tRelative file: " . $fileNameRelative, "vv");
+        $this->info("\tAbsolute file: " . $csvTarget, "vv");
+
         $contents = file_get_contents("http://ourairports.com/data/airports.csv");
         \Storage::put($fileNameRelative, $contents);
+        $this->info("\tData stored in local CSV.", "vv");
 
+        $this->info("\tSetting headings and filtering non ICAO airports.", "vv");
         $this->ourAirportsData = Reader::createFromPath($csvTarget)
                                        ->addFilter(function ($row) {
-                                           return strlen($row[2]) == 4;
+                                           return strlen($row[1]) == 4;
                                        })->fetchAssoc(0);
-
+        $this->info("\tDone.", "vv");
     }
 
     private function insertData()
     {
-        $insertData = [];
+        $insertData = collect();
 
+        $this->info("\tLooping through all available airport data.", "vv");
         foreach ($this->ourAirportsData as $row) {
-            $this->info("\tAdding ".$row['icao']." ".$row['name'], "vvv");
+            $this->info("\t\tAdding " . $row['ident'] . " " . $row['name'], "vvv");
 
-            $insertData[] = [
-                "icao"      => $row['icao'],
-                "iata"      => $row['iata_code'],
+            $insertData->push([
+                "icao"      => $row['ident'],
+                "iata"      => ($row['iata_code'] == '' ? null : $row['iata_code']),
                 "name"      => $row['name'],
-                "latitude"  => $row['latitude'],
-                "longitude" => $row['longitude'],
+                "latitude"  => $row['latitude_deg'],
+                "longitude" => $row['longitude_deg'],
                 "elevation" => $row['elevation_ft'],
                 "continent" => $row['continent'],
                 "country"   => $row['iso_country'],
-            ];
+            ]);
 
             $this->totalAirportsInserted++;
         }
 
-        \DB::table("ais_airport")->insert($insertData);
+        $this->info("\tInserting into ais_airport.", "vv");
+        $insertData->chunk(1000)->each(function($chunk){
+            $this->info("\t\tInserting chunk.", "vvv");
+            $r = \DB::table("ais_airport")->insert($chunk->toArray());
+            $this->info("\t\tInsert completed: " . $r, "vvv");
+        });
+        $this->info("\tInserts completed.", "vv");
+
+
+
     }
 }

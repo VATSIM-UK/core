@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAisFacilityToAirport extends Migration {
+class CreateAisFacilityToAirportTable extends Migration {
 
 	public function up()
 	{
@@ -18,6 +18,6 @@ class CreateAisFacilityToAirport extends Migration {
 
 	public function down()
 	{
-		Schema::drop('ais_airport_to_facility');
+		Schema::drop('ais_facility_to_airport');
 	}
 }

@@ -11,6 +11,7 @@
 * Run `php artisan migrate --step -vvv`
 * Run `npm install --production`
 * Run `gulp --production`
+* Run `php artisan bugsnag:deploy --branch=production --revision=[GIT MD5]`
 * **Perform version-specific upgrade steps (below)**
 * Check for any additional BugSnag filter (in version-specific steps below)
 * Enable all cronjobs
@@ -19,6 +20,8 @@
 ### 2.4.1 > NEXT
 * Run the Community Migrat `php artisan module:migrate community`
 * Run `php artisan module:migrate networkdata`
+* Run `php artisan module:migrate ais`
+* Run `php artisan ais:import-airports -vvv`
 
 ### 2.4 > 2.4.1
 * Nothing to do.

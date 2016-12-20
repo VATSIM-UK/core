@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\NetworkData\Console\Commands;
+namespace App\Modules\Ais\Console\Commands;
 
 use Cache;
 use App\Models\Statistic;
@@ -16,7 +16,7 @@ class Statistics extends Command
      *
      * @var string
      */
-    protected $signature = 'networkdata:statistics
+    protected $signature = 'ais:statistics
                             {startPeriod? : The period to start generating statistics from (inclusive), defaulted to yesterday.}
                             {endPeriod? : The period to stop generating statistics on (inclusive), defaulted to yesterday.}';
 
@@ -25,7 +25,7 @@ class Statistics extends Command
      *
      * @var string
      */
-    protected $description = 'Generate NetworkData statistics for the given time frame.';
+    protected $description = 'Generate AIS statistics for the given time frame.';
 
     /**
      * Execute the console command.
@@ -40,47 +40,17 @@ class Statistics extends Command
         while ($currentPeriod->lte($this->getEndPeriod())) {
             $this->log('=========== START OF CYCLE '.$currentPeriod->toDateString().' ===========');
 
-            $this->addTotalAtcSessionsCount($currentPeriod);
-
             $this->log('============ END OF CYCLE '.$currentPeriod->toDateString().'  ===========');
 
             $currentPeriod = $currentPeriod->addDay();
         }
 
         $this->log('Emptying cache... ');
-        Cache::forget('networkdata::statistics');
-        Cache::forget('networkdata::statistics.graph');
+        Cache::forget('ais::statistics');
+        Cache::forget('ais::statistics.graph');
         $this->log('Done!');
 
         $this->log('Completed');
-    }
-
-    /**
-     * Add statistics for the total number of complete ATC sessions in this period.
-     * This statistic does not specify if the session should be a UK position
-     * nor does it cater for sessions that span the midnight hour.
-     *
-     * @param $currentPeriod
-     */
-    private function addTotalAtcSessionsCount($currentPeriod)
-    {
-        $this->log('Counting total completed ATC sessions for given day');
-
-        try {
-            $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString().' %')
-                                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
-                                ->count();
-
-            Statistic::setStatistic($currentPeriod->toDateString(), 'networkdata::atc.global.total', $count);
-
-            $this->log('Done. '.$count.' total ATC sessions.');
-        } catch (\Exception $e) {
-            $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update TOTAL ATC SESSIONS (NETWORKDATA) statistics.',
-                ['Error Code' => 3]
-            );
-        }
     }
 
     /**

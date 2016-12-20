@@ -10,7 +10,9 @@ class CreateAisFacilityPositionTable extends Migration {
 		Schema::create('ais_facility_position', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('facility_id')->unsigned();
-			$table->string('callsign', 10);
+			$table->string('callsign_primary', 10);
+			$table->string('callsign_secondary', 10);
+			$table->string('callsign_possibilities', 50);
 			$table->decimal('frequency', 6,3);
 			$table->smallInteger('logon_order')->unsigned();
 			$table->timestamps();

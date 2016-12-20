@@ -1,6 +1,6 @@
 <?php
 
 return [
-    \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
-    \App\Modules\NetworkData\Console\Commands\Statistics::class,
+    \App\Modules\Ais\Console\Commands\ImportAirports::class,
+    \App\Modules\Ais\Console\Commands\Statistics::class,
 ];
