@@ -2,6 +2,8 @@
 
 namespace App\Modules\Ais\Models\Facility;
 
+use App\Modules\Ais\Models\Facility;
+use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Database\Eloquent\Model;
 
 class Position extends Model
@@ -18,4 +20,28 @@ class Position extends Model
         "frequency",
         "logon_order"
     ];
+
+    public function facility()
+    {
+        return $this->belongsTo(Facility::class, "facility_id", "id");
+    }
+
+    public function airport()
+    {
+        return $this->facility->airport();
+    }
+
+    public function networkDataAtc()
+    {
+        return $this->hasMany(Atc::class, "id", "facility_position_id");
+    }
+
+    public function getNameAttribute()
+    {
+        if($this->attributes['name'] !== null){
+            return $this->attributes['name'];
+        }
+
+        return $this->facility->name;
+    }
 }

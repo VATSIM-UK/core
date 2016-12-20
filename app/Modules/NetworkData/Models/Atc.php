@@ -2,6 +2,7 @@
 
 namespace App\Modules\NetworkData\Models;
 
+use App\Modules\Ais\Models\Facility;
 use Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,8 +57,8 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public $timestamps = true;
+    public    $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public    $timestamps = true;
 
     const TYPE_OBS = 1;
     const TYPE_DEL = 2;
@@ -77,7 +78,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (! $atcSession->disconnected_at) {
+            if (!$atcSession->disconnected_at) {
                 return;
             }
 
@@ -126,6 +127,38 @@ class Atc extends Model
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
     }
 
+    public function position()
+    {
+        return $this->belongsTo(Facility\Position::class, "facility_position_id", "id");
+    }
+
+    public function getFacilityAttribute()
+    {
+        if ($this->position === null) {
+            return null;
+        }
+
+        return $this->position->facility;
+    }
+
+    public function getAirportsAttribute()
+    {
+        if ($this->facility === null) {
+            return collect();
+        }
+
+        return $this->facility->airports;
+    }
+
+    public function getAirportsStringAttribute()
+    {
+        if($this->airports){
+            return implode(", ", $this->airports->pluck("icao")->toArray());
+        }
+
+        return "";
+    }
+
     public function getIsOnlineAttribute()
     {
         return $this->attributes['disconnected_at'] === null;
@@ -168,7 +201,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (! $this->disconnected_at) {
+        if (!$this->disconnected_at) {
             return;
         }
 

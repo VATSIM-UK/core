@@ -21,4 +21,8 @@ class Airport extends Model
         "continent",
         "country",
     ];
+
+    public function facilities(){
+        return $this->hasManyThrough(Facility::class, "ais_facility_to_airport", "airport_id", "facility_id");
+    }
 }
