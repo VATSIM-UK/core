@@ -3,13 +3,13 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAisAirportToFacilityTable extends Migration {
+class CreateAisFacilityToAirport extends Migration {
 
 	public function up()
 	{
-		Schema::create('ais_airport_to_facility', function(Blueprint $table) {
+		Schema::create('ais_facility_to_airport', function(Blueprint $table) {
 			$table->increments('id');
-			$table->integer('airport_id')->unsigned();
+			$table->bigInteger('airport_id')->unsigned();
 			$table->integer('facility_id')->unsigned();
 			$table->smallInteger('top_down_order')->unsigned();
 			$table->timestamps();
