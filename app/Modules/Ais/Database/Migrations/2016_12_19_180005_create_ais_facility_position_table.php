@@ -12,7 +12,7 @@ class CreateAisFacilityPositionTable extends Migration {
 			$table->integer('facility_id')->unsigned();
 			$table->string('callsign_primary', 10);
 			$table->string('callsign_secondary', 10);
-			$table->string('callsign_possibilities', 50);
+			$table->string('callsign_format', 50);
 			$table->decimal('frequency', 6,3);
 			$table->smallInteger('logon_order')->unsigned();
 			$table->timestamps();

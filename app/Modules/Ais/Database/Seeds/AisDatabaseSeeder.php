@@ -12,13 +12,13 @@ class AisDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $man = DB::table("ais_airport")->where("icao", "=", "EGCC")->get();
+        $man = DB::table("ais_airport")->where("icao", "=", "EGCC")->first();
 
         $manTwr = DB::table("ais_facility")->insertGetId([
             "name" => "Manchester AIR",
         ]);
 
-        DB::table("ais_airport_to_facility")->insert([
+        DB::table("ais_facility_to_airport")->insert([
             "airport_id"     => $man->id,
             "facility_id"    => $manTwr,
             "top_down_order" => 1,
