@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateAisFacilityPositionTable extends Migration
 {
-
     public function up()
     {
         Schema::create('ais_facility_position', function (Blueprint $table) {

@@ -13,7 +13,7 @@ class AddFacilityPositionRelationship extends Migration
     public function up()
     {
         Schema::table('networkdata_atc', function ($table) {
-            $table->integer("facility_position_id")->unsigned()->after("account_id")->nullable();
+            $table->integer('facility_position_id')->unsigned()->after('account_id')->nullable();
         });
     }
 

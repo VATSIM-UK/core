@@ -2,8 +2,8 @@
 
 namespace App\Modules\NetworkData\Models;
 
-use App\Modules\Ais\Models\Facility;
 use Event;
+use App\Modules\Ais\Models\Facility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\NetworkData\Events\AtcSessionEnded;
@@ -57,8 +57,8 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public    $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public    $timestamps = true;
+    public $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public $timestamps = true;
 
     const TYPE_OBS = 1;
     const TYPE_DEL = 2;
@@ -78,7 +78,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (!$atcSession->disconnected_at) {
+            if (! $atcSession->disconnected_at) {
                 return;
             }
 
@@ -129,7 +129,7 @@ class Atc extends Model
 
     public function position()
     {
-        return $this->belongsTo(Facility\Position::class, "facility_position_id", "id");
+        return $this->belongsTo(Facility\Position::class, 'facility_position_id', 'id');
     }
 
     public function getFacilityAttribute()
@@ -152,11 +152,11 @@ class Atc extends Model
 
     public function getAirportsStringAttribute()
     {
-        if($this->airports){
-            return implode(", ", $this->airports->pluck("icao")->toArray());
+        if ($this->airports) {
+            return implode(', ', $this->airports->pluck('icao')->toArray());
         }
 
-        return "";
+        return '';
     }
 
     public function getIsOnlineAttribute()
@@ -201,7 +201,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (!$this->disconnected_at) {
+        if (! $this->disconnected_at) {
             return;
         }
 
