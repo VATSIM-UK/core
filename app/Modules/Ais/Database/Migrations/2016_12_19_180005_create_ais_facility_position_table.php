@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateAisFacilityPositionTable extends Migration {
 
@@ -20,8 +20,8 @@ class CreateAisFacilityPositionTable extends Migration {
 		});
 	}
 
-	public function down()
-	{
-		Schema::drop('ais_facility_position');
-	}
+    public function down()
+    {
+        Schema::drop('ais_facility_position');
+    }
 }

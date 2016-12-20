@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateAisFirTable extends Migration {
 
@@ -22,8 +22,8 @@ class CreateAisFirTable extends Migration {
 		]);
 	}
 
-	public function down()
-	{
-		Schema::drop('ais_fir');
-	}
+    public function down()
+    {
+        Schema::drop('ais_fir');
+    }
 }
