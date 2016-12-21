@@ -42,7 +42,11 @@ use App\Modules\NetworkData\Events\AtcSessionUpdated;
  */
 class Atc extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Rememberable;
+
+    protected static $public_id_salt       = 'vatsim-uk-network-data-atc-sessions';
+    protected static $public_id_min_length = 10;
+    protected static $public_id_alphabet   = 'upper_alphanumeric';
 
     protected $table      = 'networkdata_atc';
     protected $primaryKey = 'id';
@@ -56,8 +60,8 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public $dates      = ['connected_at', 'disocnnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public $timestamps = true;
+    public    $dates      = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public    $timestamps = true;
 
     const TYPE_OBS = 1;
     const TYPE_DEL = 2;
@@ -77,11 +81,9 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (! $atcSession->disconnected_at) {
+            if (!$atcSession->disconnected_at) {
                 return;
             }
-
-            event(new AtcSessionEnded($atcSession));
         });
 
         self::deleted(function ($atcSession) {
@@ -121,7 +123,22 @@ class Atc extends Model
         return $query->where('connected_at', '>=', $startOfYear);
     }
 
-    public function account(){
+    public static function scopeIsUK($query)
+    {
+        return $query->where(function ($subQuery) {
+            return $subQuery->where("callsign", "LIKE", "EG%")
+                ->orWhere("callsign", "LIKE", "SCO\_%")
+                ->orWhere("callsign", "LIKE", "STC\_%")
+                ->orWhere("callsign", "LIKE", "LON\_%")
+                ->orWhere("callsign", "LIKE", "LTC\_%")
+                ->orWhere("callsign", "LIKE", "EGGX%")
+                ->orWhere("callsign", "LIKE", "EGTT%")
+                ->orWhere("callsign", "LIKE", "EGPX%");
+        });
+    }
+
+    public function account()
+    {
         return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
     }
 
@@ -158,6 +175,8 @@ class Atc extends Model
         $this->save();
 
         $this->calculateTimeOnline();
+
+        event(new AtcSessionEnded($this));
     }
 
     /**
@@ -167,7 +186,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (! $this->disconnected_at) {
+        if (!$this->disconnected_at) {
             return;
         }
 

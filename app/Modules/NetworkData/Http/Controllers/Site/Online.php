@@ -9,7 +9,14 @@ class Online extends BaseController
 {
     public function getOnline()
     {
-        $atcSessions = Atc::online()->get();
+        $atcSessions = Atc::remember(2)
+                          ->online()
+                          ->isUK()
+                          ->with([
+                              "account" => function ($q) {
+                                  $q->remember(1);
+                              }
+                          ])->get();
 
         return $this->viewMake('networkdata::site.online')
                     ->with('atcSessions', $atcSessions);

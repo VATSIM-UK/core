@@ -25,6 +25,7 @@ use App\Exceptions\Mship\DuplicateQualificationException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\Mship\Account.
@@ -181,6 +182,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
     use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+    use SoftDeletingTrait, Rememberable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
 
     protected $table        = 'mship_account';
     public    $incrementing = false;
