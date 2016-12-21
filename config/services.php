@@ -36,6 +36,10 @@ return [
     ],
 
     'slack' => [
-            'token' => env('SLACK_SECRET'),
-        ],
+        'token' => env('SLACK_SECRET'),
+    ],
+
+    'botman' => [
+        "slack_token" => env('SLACK_BOT_TOKEN'),
+    ],
 ];

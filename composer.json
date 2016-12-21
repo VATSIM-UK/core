@@ -28,7 +28,9 @@
         "malahierba-lab/public-id": "dev-master",
         "comocode/laravel-ab": "^0.3.0",
         "pusher/pusher-php-server": "~2.0",
-        "bugsnag/bugsnag-laravel": "^2.0"
+        "bugsnag/bugsnag-laravel": "^2.0",
+        "mpociot/botman": "~1.0",
+        "mpociot/slack-client": "^0.2.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

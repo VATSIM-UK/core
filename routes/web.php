@@ -1,5 +1,8 @@
 <?php
 
+// Botman
+Route::match(['get', 'post'], '/botman', 'BotManController@handle');
+
 /*
  * VATS.IM ROUTES
  */
