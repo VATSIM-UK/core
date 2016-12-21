@@ -16,8 +16,10 @@ class AtcSessionRecordedSuccessNotification implements ShouldQueue
 
     public function handle(AtcSessionEnded $event)
     {
-        $user = Account::find(980234);
+        $user = $event->atcSession->account;
 
-        $user->notify(new AtcSessionRecordedConfirmation($event->atcSession));
+        $notification = new AtcSessionRecordedConfirmation($event->atcSession);
+
+        $user->notify($notification);
     }
 }
