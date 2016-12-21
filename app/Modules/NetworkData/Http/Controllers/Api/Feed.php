@@ -11,6 +11,7 @@ class Feed extends BaseController
     {
         $atcSessions = Atc::remember(2)
                           ->online()
+                          ->onFrequency()
                           ->isUK()
                           ->get();
 

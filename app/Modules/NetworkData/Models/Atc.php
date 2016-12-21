@@ -71,6 +71,7 @@ class Atc extends Model
         'account_id',
         'account_name',
         'callsign',
+        "frequency",
         'facility_type',
         'connected_at',
         'updated_at'
@@ -132,6 +133,11 @@ class Atc extends Model
     public static function scopeOffline($query)
     {
         return $query->whereNotNull('disconnected_at');
+    }
+
+    public static function scopeOnFrequency($query)
+    {
+        return $query->whereNotNull("frequency");
     }
 
     public static function scopeThisYear($query)

@@ -70,6 +70,8 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
         $this->endExpiredAtcSessions();
 
+        Atc::flushCache();
+
         $this->sendSlackSuccess('Completed Successfully', [
             'Controllers Total'    => $this->controllerTotalCount,
             'Controllers Accepted' => $this->controllerTotalCount,
@@ -125,6 +127,11 @@ class DownloadAndParse extends \App\Console\Commands\Command
                 continue;
             }
 
+            if($controllerData['frequency'] < 118 || $controllerData["frequency"] > 136){
+                $this->info("\t\tFrequency isn't in range.  Ignoring.", "vvv");
+                continue;
+            }
+
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $this->info("\t\tQualification processed as ".$qualification, 'vvv');
 
@@ -135,6 +142,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
                 [
                     'account_id'       => $account->id,
                     'callsign'         => $controllerData['callsign'],
+                    'frequency'         => $controllerData['frequency'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
                     'facility_type'    => $controllerData['facilitytype'],
                     'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),

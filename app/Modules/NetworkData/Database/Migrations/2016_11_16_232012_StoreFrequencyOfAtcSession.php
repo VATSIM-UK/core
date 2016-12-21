@@ -13,7 +13,7 @@ class StoreFrequencyOfAtcSession extends Migration
     public function up()
     {
         Schema::table('networkdata_atc', function ($table) {
-            $table->double('frequency', 6, 3)->after('callsign')->nullable();
+            $table->double('frequency', 6, 3)->after('callsign')->unsigned()->nullable();
         });
     }
 
