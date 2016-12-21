@@ -16,7 +16,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         AtcSessionEnded::class => [
             AtcSessionRecordedSuccessNotification::class,
-        ]
+        ],
     ];
 
     /**
