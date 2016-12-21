@@ -1,9 +1,10 @@
-<?php  namespace App\Console\Commands;
+<?php
 
-use App\Conversations\ExampleConversation;
+namespace App\Console\Commands;
+
+use React\EventLoop\Factory;
 use Mpociot\BotMan\BotManFactory;
 use Mpociot\BotMan\Cache\LaravelCache;
-use React\EventLoop\Factory;
 
 class BotManListen extends Command
 {
@@ -19,6 +20,7 @@ class BotManListen extends Command
      * @var string
      */
     protected $description = 'Tell BotMan to listen with the Slack RTM API.';
+
     /**
      * Create a new command instance.
      *
@@ -28,6 +30,7 @@ class BotManListen extends Command
     {
         parent::__construct();
     }
+
     /**
      * Execute the console command.
      *
@@ -35,7 +38,7 @@ class BotManListen extends Command
      */
     public function handle()
     {
-        $app = app('app');
+        $app  = app('app');
         $loop = Factory::create();
 
         $app->singleton('botman', function ($app) use ($loop) {
