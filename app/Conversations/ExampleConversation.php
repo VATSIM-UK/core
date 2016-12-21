@@ -1,20 +1,21 @@
 <?php
+
 namespace App\Conversations;
 
-use Illuminate\Foundation\Inspiring;
 use Mpociot\BotMan\Answer;
 use Mpociot\BotMan\Button;
-use Mpociot\BotMan\Conversation;
 use Mpociot\BotMan\Question;
+use Mpociot\BotMan\Conversation;
+use Illuminate\Foundation\Inspiring;
 
 class ExampleConversation extends Conversation
 {
     /**
-     * First question
+     * First question.
      */
     public function askReason()
     {
-        $question = Question::create("Huh - you woke me up. What do you need?")
+        $question = Question::create('Huh - you woke me up. What do you need?')
                             ->fallback('Unable to ask question')
                             ->callbackId('ask_reason')
                             ->addButtons([
@@ -35,7 +36,7 @@ class ExampleConversation extends Conversation
     }
 
     /**
-     * Start the conversation
+     * Start the conversation.
      */
     public function run()
     {
