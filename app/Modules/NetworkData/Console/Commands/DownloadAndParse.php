@@ -127,8 +127,8 @@ class DownloadAndParse extends \App\Console\Commands\Command
                 continue;
             }
 
-            if($controllerData['frequency'] < 118 || $controllerData["frequency"] > 136){
-                $this->info("\t\tFrequency isn't in range.  Ignoring.", "vvv");
+            if ($controllerData['frequency'] < 118 || $controllerData['frequency'] > 136) {
+                $this->info("\t\tFrequency isn't in range.  Ignoring.", 'vvv');
                 continue;
             }
 
@@ -140,14 +140,14 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
             $atcSession = Atc::updateOrCreate(
                 [
-                    'account_id'       => $account->id,
-                    'callsign'         => $controllerData['callsign'],
+                    'account_id'        => $account->id,
+                    'callsign'          => $controllerData['callsign'],
                     'frequency'         => $controllerData['frequency'],
-                    'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type'    => $controllerData['facilitytype'],
-                    'connected_at'     => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at'  => null,
-                    'deleted_at'       => null,
+                    'qualification_id'  => is_null($qualification) ? 0 : $qualification->id,
+                    'facility_type'     => $controllerData['facilitytype'],
+                    'connected_at'      => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at'   => null,
+                    'deleted_at'        => null,
                 ],
                 [
                     'updated_at' => Carbon::now(),

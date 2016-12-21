@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    protected $table = "api_account";
+    protected $table = 'api_account';
     public $fillable = ['name', 'api_token'];
 }
