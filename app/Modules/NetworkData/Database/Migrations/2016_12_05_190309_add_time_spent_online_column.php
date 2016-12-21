@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
 
-class StoreFrequencyOfAtcSession extends Migration
+class AddTimeSpentOnlineColumn extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class StoreFrequencyOfAtcSession extends Migration
     public function up()
     {
         Schema::table('networkdata_atc', function ($table) {
-            $table->double('frequency', 6, 3)->after('callsign')->unsigned()->nullable();
+            $table->integer('minutes_online')->after('disconnected_at')->usigned()->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class StoreFrequencyOfAtcSession extends Migration
     public function down()
     {
         Schema::table('networkdata_atc', function ($table) {
-            $table->dropColumn('frequency');
+            $table->dropColumn('minutes_online');
         });
     }
 }

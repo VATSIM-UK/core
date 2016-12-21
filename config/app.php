@@ -174,7 +174,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Modules\Ais\Providers\AisServiceProvider::class,
-        App\Modules\NetworkData\Providers\NetworkDataServiceProvider::class,
 
         /*
          * Third party

@@ -19,6 +19,7 @@
 
 ### 2.4.1 > NEXT
 * Run the Community Migrat `php artisan module:migrate community`
+* Run `php artisan module:migrate networkdata`
 
 ### 2.4 > 2.4.1
 * Nothing to do.
