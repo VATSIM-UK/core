@@ -198,6 +198,11 @@ class Atc extends Model
         }
     }
 
+    public function getFrequencyAttribute()
+    {
+        return number_format($this->attributes['frequency'], 3);
+    }
+
     public function disconnectAt($timestamp)
     {
         $this->disconnected_at = $timestamp;

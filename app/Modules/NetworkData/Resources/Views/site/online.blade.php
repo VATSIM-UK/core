@@ -11,6 +11,7 @@
                             <tr>
                                 <th>Callsign</th>
                                 <th>Type</th>
+                                <th>Frequency</th>
                                 <th>Name</th>
                                 <th>Online Time</th>
                             </tr>
@@ -20,6 +21,7 @@
                                 <tr>
                                     <td>{{ $atc->callsign }}</td>
                                     <td>{{ $atc->type }}</td>
+                                    <td>{{ $atc->frequency }}</td>
                                     <td>@include("partials._account_link", ["account" => $atc->account])</td>
                                     <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
                                 </tr>
