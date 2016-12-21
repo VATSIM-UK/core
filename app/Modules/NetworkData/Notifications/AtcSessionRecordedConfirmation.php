@@ -2,11 +2,11 @@
 
 namespace App\Modules\NetworkData\Notifications;
 
-use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\SlackMessage;
+use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\SlackMessage;
 
 class AtcSessionRecordedConfirmation extends Notification implements ShouldQueue
 {
@@ -32,19 +32,20 @@ class AtcSessionRecordedConfirmation extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ["slack"];
+        return ['slack'];
     }
 
-    public function toSlack(){
+    public function toSlack()
+    {
         return (new SlackMessage)
             ->success()
-            ->content("Your recent controlling session on ".$this->atcSession->callsign." was recorded! What is this?  Find our more on the forum! https://community.vatsim-uk.co.uk/news/community/home-is-where-the-heart-is-r39/")
+            ->content('Your recent controlling session on '.$this->atcSession->callsign.' was recorded! What is this?  Find our more on the forum! https://community.vatsim-uk.co.uk/news/community/home-is-where-the-heart-is-r39/')
             ->attachment(function ($attachment) {
-                $attachment->title('Session ' . $this->atcSession->public_id . ' - ' . $this->atcSession->callsign)
+                $attachment->title('Session '.$this->atcSession->public_id.' - '.$this->atcSession->callsign)
                            ->fields([
-                               'Connected At' => $this->atcSession->connected_at->toDateTimeString(),
-                               "Disconnected At" => $this->atcSession->disconnected_at->toDateTimeString(),
-                               "Time Recorded (Mins)" => $this->atcSession->minutes_online,
+                               'Connected At'         => $this->atcSession->connected_at->toDateTimeString(),
+                               'Disconnected At'      => $this->atcSession->disconnected_at->toDateTimeString(),
+                               'Time Recorded (Mins)' => $this->atcSession->minutes_online,
                            ]);
             });
     }

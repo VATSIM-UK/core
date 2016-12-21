@@ -3,14 +3,14 @@
 namespace App\Modules\NetworkData\Models;
 
 use Event;
+use Malahierba\PublicId\PublicId;
+use Watson\Rememberable\Rememberable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\NetworkData\Events\AtcSessionEnded;
 use App\Modules\NetworkData\Events\AtcSessionDeleted;
 use App\Modules\NetworkData\Events\AtcSessionStarted;
 use App\Modules\NetworkData\Events\AtcSessionUpdated;
-use Malahierba\PublicId\PublicId;
-use Watson\Rememberable\Rememberable;
 
 /**
  * App\Modules\NetworkData\Models\Atc.
@@ -62,8 +62,8 @@ class Atc extends Model
         'disconnected_at',
         'updated_at',
     ];
-    public    $dates      = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public    $timestamps = true;
+    public $dates      = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public $timestamps = true;
 
     const TYPE_OBS = 1;
     const TYPE_DEL = 2;
@@ -83,7 +83,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (!$atcSession->disconnected_at) {
+            if (! $atcSession->disconnected_at) {
                 return;
             }
         });
@@ -128,20 +128,20 @@ class Atc extends Model
     public static function scopeIsUK($query)
     {
         return $query->where(function ($subQuery) {
-            return $subQuery->where("callsign", "LIKE", "EG%")
-                ->orWhere("callsign", "LIKE", "SCO\_%")
-                ->orWhere("callsign", "LIKE", "STC\_%")
-                ->orWhere("callsign", "LIKE", "LON\_%")
-                ->orWhere("callsign", "LIKE", "LTC\_%")
-                ->orWhere("callsign", "LIKE", "EGGX%")
-                ->orWhere("callsign", "LIKE", "EGTT%")
-                ->orWhere("callsign", "LIKE", "EGPX%");
+            return $subQuery->where('callsign', 'LIKE', 'EG%')
+                ->orWhere('callsign', 'LIKE', "SCO\_%")
+                ->orWhere('callsign', 'LIKE', "STC\_%")
+                ->orWhere('callsign', 'LIKE', "LON\_%")
+                ->orWhere('callsign', 'LIKE', "LTC\_%")
+                ->orWhere('callsign', 'LIKE', 'EGGX%')
+                ->orWhere('callsign', 'LIKE', 'EGTT%')
+                ->orWhere('callsign', 'LIKE', 'EGPX%');
         });
     }
 
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id", "id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
     }
 
     public function getIsOnlineAttribute()
@@ -188,7 +188,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (!$this->disconnected_at) {
+        if (! $this->disconnected_at) {
             return;
         }
 

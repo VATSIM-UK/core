@@ -2,8 +2,8 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
-use App\Models\Mship\Account;
 use Carbon\Carbon;
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Modules\NetworkData\Models\Atc;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -129,7 +129,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
             $this->info("\t\tQualification processed as ".$qualification, 'vvv');
 
             $account = Account::findOrRetrieve($controllerData['cid']);
-            $this->info("\t\tAccount loaded: ".$account->id." - " . $account->name, 'vvv');
+            $this->info("\t\tAccount loaded: ".$account->id.' - '.$account->name, 'vvv');
 
             $atcSession = Atc::updateOrCreate(
                 [

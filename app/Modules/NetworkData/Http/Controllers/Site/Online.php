@@ -13,9 +13,9 @@ class Online extends BaseController
                           ->online()
                           ->isUK()
                           ->with([
-                              "account" => function ($q) {
+                              'account' => function ($q) {
                                   $q->remember(1);
-                              }
+                              },
                           ])->get();
 
         return $this->viewMake('networkdata::site.online')
