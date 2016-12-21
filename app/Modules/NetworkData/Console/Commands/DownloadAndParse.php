@@ -2,6 +2,7 @@
 
 namespace App\Modules\NetworkData\Console\Commands;
 
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use App\Models\Mship\Qualification;
 use App\Modules\NetworkData\Models\Atc;
@@ -127,9 +128,12 @@ class DownloadAndParse extends \App\Console\Commands\Command
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $this->info("\t\tQualification processed as ".$qualification, 'vvv');
 
+            $account = Account::findOrRetrieve($controllerData['cid']);
+            $this->info("\t\tAccount loaded: ".$account->id." - " . $account->name, 'vvv');
+
             $atcSession = Atc::updateOrCreate(
                 [
-                    'account_id'       => $controllerData['cid'],
+                    'account_id'       => $account->id,
                     'callsign'         => $controllerData['callsign'],
                     'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
                     'facility_type'    => $controllerData['facilitytype'],

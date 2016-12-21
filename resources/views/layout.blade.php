@@ -57,13 +57,14 @@
                                         <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
                                     @endif
 
-                                    {{--@if(Module::isEnabled("visittransfer") && true)--}}
-                                        {{--<li class="divider"></li>--}}
-                                    {{--@endif--}}
+                                    @if(Module::isEnabled("visittransfer") && true)
+                                        <li class="divider"></li>
+                                    @endif
 
-                                    {{--<li class="dropdown-header">Disputes</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>--}}
+                                    @if(Module::isEnabled("networkdata"))
+                                        <li class="dropdown-header">Network Data</li>
+                                        <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
+                                    @endif
                                 </ul>
                             </li>
                             <li class="col-sm-6">
@@ -71,6 +72,12 @@
                                     <li class="dropdown-header">Third-Party Services</li>
                                     <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+
+                                    {{--<li class="divider"></li>--}}
+
+                                    {{--<li class="dropdown-header">Disputes</li>--}}
+                                    {{--<li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>--}}
+                                    {{--<li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>--}}
                                 </ul>
                             </li>
                         </ul>

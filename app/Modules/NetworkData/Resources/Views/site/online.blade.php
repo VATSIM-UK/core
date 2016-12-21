@@ -11,7 +11,6 @@
                             <tr>
                                 <th>Callsign</th>
                                 <th>Type</th>
-                                <th>Airport(s)</th>
                                 <th>Name</th>
                                 <th>Online Time</th>
                             </tr>
@@ -21,9 +20,8 @@
                                 <tr>
                                     <td>{{ $atc->callsign }}</td>
                                     <td>{{ $atc->type }}</td>
-                                    <td>{{ $atc->airport }}</td>
-                                    <td>{{ $atc->account ? $atc->account->name : "Unknown User" }}</td>
-                                    <td>{{ $atc->online_at }}</td>
+                                    <td>@include("partials._account_link", ["account" => $atc->account])</td>
+                                    <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
