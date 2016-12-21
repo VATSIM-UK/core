@@ -25,7 +25,8 @@ install:
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
-  - php artisan module:migrate -vvv -n
+  - php artisan module:migrate community -vvv -n
+  - php artisan module:migrate visittransfer -vvv -n
   - gulp --production
 
 before_script:
