@@ -10,10 +10,6 @@ class Membership extends BaseController
 {
     public function getDeploy()
     {
-        if (\Carbon\Carbon::now()->lt(\Carbon\Carbon::parse('15th December 2016 00:00:00 GMT'))) {
-            return redirect()->route('mship.manage.dashboard')->withError('The Community Groups feature is not yet enabled.');
-        }
-
         $this->authorize('deploy', new \App\Modules\Community\Models\Membership());
 
         $defaultGroup = Group::isDefault()->first();
