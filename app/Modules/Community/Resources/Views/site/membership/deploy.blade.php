@@ -39,19 +39,29 @@
 
                     <hr />
 
-                    {!! Form::open(["route" => ["community.membership.deploy.post"], "method" => "POST"]) !!}
-                    {!! Form::hidden("group", $defaultGroup->id) !!}
+
                     <p>
                         {!! trans("community::membership.deploy.uk.info") !!}
                     </p>
 
-                    <div class="text-center" style="padding-top: 27px;">
-                        {!! Button::danger(trans("community::membership.deploy.uk.button"))
-                                  ->withAttributes(["id" => "ukonly"])
-                                  ->submit() !!}
-                    </div>
+                    @if($isDefaultGroupMember)
+                        <div class="text-center" style="padding-top: 27px;">
+                            {!! Button::danger(trans("community::membership.deploy.uk.button"))
+                                      ->withAttributes(["id" => "ukonly"])
+                                      ->asLinkTo(URL::previous(route("mship.dashboard"))) !!}
+                        </div>
+                    @else
+                        {!! Form::open(["route" => ["community.membership.deploy.post"], "method" => "POST"]) !!}
+                        {!! Form::hidden("group", $defaultGroup->id) !!}
 
-                    {!! Form::close() !!}
+                        <div class="text-center" style="padding-top: 27px;">
+                            {!! Button::danger(trans("community::membership.deploy.uk.button"))
+                                      ->withAttributes(["id" => "ukonly"])
+                                      ->submit() !!}
+                        </div>
+
+                        {!! Form::close() !!}
+                    @endif
                 </div>
 
             </div>

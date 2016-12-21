@@ -3,6 +3,7 @@
 namespace App\Modules\Community\Models;
 
 use App\Models\Model;
+use App\Models\Mship\Account;
 
 class Group extends Model
 {
@@ -35,5 +36,9 @@ class Group extends Model
     public static function scopeInTier($query, $tier)
     {
         return $query->where('tier', '=', $tier);
+    }
+
+    public function hasMember(Account $member){
+        return $this->exists && $this->accounts->contains($member->id);
     }
 }
