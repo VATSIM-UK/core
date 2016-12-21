@@ -48,7 +48,7 @@
                         <div class="text-center" style="padding-top: 27px;">
                             {!! Button::danger(trans("community::membership.deploy.uk.button"))
                                       ->withAttributes(["id" => "ukonly"])
-                                      ->asLinkTo(URL::previous(route("mship.dashboard"))) !!}
+                                      ->asLinkTo(URL::previous(route("mship.manage.dashboard"))) !!}
                         </div>
                     @else
                         {!! Form::open(["route" => ["community.membership.deploy.post"], "method" => "POST"]) !!}

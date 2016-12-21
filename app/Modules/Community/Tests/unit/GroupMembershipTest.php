@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class GroupMembershipTest extends TestCase
@@ -10,7 +9,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_possible_to_join_a_community_group()
     {
-        $member   = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $division = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($division);
 
@@ -47,11 +46,31 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
+    public function it_correctly_determines_if_a_member_is_in_a_group()
+    {
+        $memberA = factory(\App\Models\Mship\Account::class)->create();
+        $memberB = factory(\App\Models\Mship\Account::class)->create();
+
+        $division = \App\Models\Mship\State::findByCode('DIVISION');
+
+        $memberA->addState($division);
+        $memberB->addState($division);
+
+        $group = \App\Modules\Community\Models\Group::first();
+
+        $memberA->fresh()->addCommunityGroup($group);
+        $memberB->fresh()->addCommunityGroup($group);
+
+        $this->assertTrue($group->fresh()->hasMember($memberA));
+        $this->assertTrue($group->fresh()->hasMember($memberB));
+    }
+
+    /** @test */
     public function it_is_not_possible_to_join_a_community_group_as_a_non_division_member()
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $international = \App\Models\Mship\State::findByCode('INTERNATIONAL');
         $member->addState($international);
 
@@ -63,7 +82,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_possible_to_join_multiple_groups_across_tiers()
     {
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
@@ -79,7 +98,7 @@ class GroupMembershipTest extends TestCase
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
@@ -94,14 +113,14 @@ class GroupMembershipTest extends TestCase
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
         $tier2A = \App\Modules\Community\Models\Group::inTier(2)->first();
         $tier2B = \App\Modules\Community\Models\Group::inTier(2)
-                                                    ->where('id', '!=', $tier2A->id)
-                                                    ->first();
+                                                     ->where('id', '!=', $tier2A->id)
+                                                     ->first();
 
         $member->fresh()->addCommunityGroup($tier2A);
         $member->fresh()->addCommunityGroup($tier2B);
