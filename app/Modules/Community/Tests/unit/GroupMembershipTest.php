@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class GroupMembershipTest extends TestCase
@@ -44,6 +43,26 @@ class GroupMembershipTest extends TestCase
 
         $this->assertTrue($groupMembers->contains($memberA->id));
         $this->assertTrue($groupMembers->contains($memberB->id));
+    }
+
+    /** @test */
+    public function it_correctly_determines_if_a_member_is_in_a_group()
+    {
+        $memberA = factory(\App\Models\Mship\Account::class)->create();
+        $memberB = factory(\App\Models\Mship\Account::class)->create();
+
+        $division = \App\Models\Mship\State::findByCode('DIVISION');
+
+        $memberA->addState($division);
+        $memberB->addState($division);
+
+        $group = \App\Modules\Community\Models\Group::first();
+
+        $memberA->fresh()->addCommunityGroup($group);
+        $memberB->fresh()->addCommunityGroup($group);
+
+        $this->assertTrue($group->fresh()->hasMember($memberA));
+        $this->assertTrue($group->fresh()->hasMember($memberB));
     }
 
     /** @test */
@@ -100,8 +119,8 @@ class GroupMembershipTest extends TestCase
 
         $tier2A = \App\Modules\Community\Models\Group::inTier(2)->first();
         $tier2B = \App\Modules\Community\Models\Group::inTier(2)
-                                                    ->where('id', '!=', $tier2A->id)
-                                                    ->first();
+                                                     ->where('id', '!=', $tier2A->id)
+                                                     ->first();
 
         $member->fresh()->addCommunityGroup($tier2A);
         $member->fresh()->addCommunityGroup($tier2B);
