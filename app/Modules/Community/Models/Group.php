@@ -38,7 +38,8 @@ class Group extends Model
         return $query->where('tier', '=', $tier);
     }
 
-    public function hasMember(Account $member){
+    public function hasMember(Account $member)
+    {
         return $this->exists && $this->accounts->contains($member->id);
     }
 }
