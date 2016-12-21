@@ -52,8 +52,8 @@ class Atc extends Model
 
     protected $table      = 'networkdata_atc';
     protected $primaryKey = 'id';
-    public    $dates      = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public    $timestamps = true;
+    public $dates         = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public $timestamps    = true;
 
     protected $fillable = [
         'account_id',
@@ -71,15 +71,15 @@ class Atc extends Model
         'account_id',
         'account_name',
         'callsign',
-        "frequency",
+        'frequency',
         'facility_type',
         'connected_at',
-        'updated_at'
+        'updated_at',
     ];
 
     protected $appends = [
-        'publicId'    => "public_id",
-        "accountName" => "account_name"
+        'publicId'    => 'public_id',
+        'accountName' => 'account_name',
     ];
 
     const TYPE_OBS = 1;
@@ -100,7 +100,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (!$atcSession->disconnected_at) {
+            if (! $atcSession->disconnected_at) {
                 return;
             }
         });
@@ -137,7 +137,7 @@ class Atc extends Model
 
     public static function scopeOnFrequency($query)
     {
-        return $query->whereNotNull("frequency");
+        return $query->whereNotNull('frequency');
     }
 
     public static function scopeThisYear($query)
@@ -220,7 +220,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (!$this->disconnected_at) {
+        if (! $this->disconnected_at) {
             return;
         }
 

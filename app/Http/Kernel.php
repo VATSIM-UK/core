@@ -33,8 +33,8 @@ class Kernel extends HttpKernel
         'api'             => [
             'throttle:60,1',
             'bindings',
-            "auth:api",
-            "api.tracking",
+            'auth:api',
+            'api.tracking',
         ],
         'auth_full_group' => [
             'auth.user.full',

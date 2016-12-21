@@ -2,12 +2,7 @@
 
 namespace App\Console\Commands;
 
-use DB;
-use Carbon\Carbon;
-use App\Models\Statistic;
-use App\Models\Mship\State;
 use App\Models\Mship\Account;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class ApiGenerator extends Command
 {
@@ -35,10 +30,10 @@ class ApiGenerator extends Command
     public function handle()
     {
         $account = \App\Models\Api\Account::create([
-            "name"     => $this->argument("name"),
-            "api_token" => strtoupper(md5(microtime())),
+            'name'      => $this->argument('name'),
+            'api_token' => strtoupper(md5(microtime())),
         ]);
 
-        $this->info($account->name . " :: " . $account->api_token);
+        $this->info($account->name.' :: '.$account->api_token);
     }
 }
