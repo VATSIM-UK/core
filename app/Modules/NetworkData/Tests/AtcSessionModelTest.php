@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AtcSessionModelTest extends TestCase
@@ -14,7 +13,8 @@ class AtcSessionModelTest extends TestCase
 
         $atcSession = factory(App\Modules\NetworkData\Models\Atc::class, 'online')->create();
 
-        $this->assertInstanceOf(App\Modules\NetworkData\Models\Atc::class, $atcSession, 'NetworkData::AtcSession not created.');
+        $this->assertInstanceOf(App\Modules\NetworkData\Models\Atc::class, $atcSession,
+            'NetworkData::AtcSession not created.');
         $this->assertAttributeEquals(true, 'exists', $atcSession, "NetworkData::AtcSession doesn't exist.");
     }
 
@@ -30,7 +30,8 @@ class AtcSessionModelTest extends TestCase
         $atcSession->disconnectAt($currentTimestamp);
 
         $this->assertFalse($atcSession->is_online, 'NetworkData::AtcSession not disconnected.');
-        $this->assertTrue(($atcSession->disconnected_at == $currentTimestamp), 'NetworkData::AtcSession not disconnected.');
+        $this->assertTrue(($atcSession->disconnected_at == $currentTimestamp),
+            'NetworkData::AtcSession not disconnected.');
     }
 
     /** @test */
@@ -43,7 +44,8 @@ class AtcSessionModelTest extends TestCase
 
         $atcSession->fresh()->disconnectAt($atcSession->connected_at->addMinutes(2));
 
-        $this->assertEquals(2, $atcSession->fresh()->minutes_online, "NetworkData::AtcSession hasn't calculated minutes online.");
+        $this->assertEquals(2, $atcSession->fresh()->minutes_online,
+            "NetworkData::AtcSession hasn't calculated minutes online.");
     }
 
     /** @test */

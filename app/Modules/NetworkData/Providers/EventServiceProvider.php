@@ -2,6 +2,8 @@
 
 namespace App\Modules\Networkdata\Providers;
 
+use App\Modules\NetworkData\Events\AtcSessionEnded;
+use App\Modules\NetworkData\Listeners\AtcSessionRecordedSuccessNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,6 +14,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        AtcSessionEnded::class => [
+            AtcSessionRecordedSuccessNotification::class,
+        ]
     ];
 
     /**

@@ -9,6 +9,8 @@ use App\Modules\NetworkData\Events\AtcSessionEnded;
 use App\Modules\NetworkData\Events\AtcSessionDeleted;
 use App\Modules\NetworkData\Events\AtcSessionStarted;
 use App\Modules\NetworkData\Events\AtcSessionUpdated;
+use Malahierba\PublicId\PublicId;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Modules\NetworkData\Models\Atc.
@@ -42,7 +44,7 @@ use App\Modules\NetworkData\Events\AtcSessionUpdated;
  */
 class Atc extends Model
 {
-    use SoftDeletes, Rememberable;
+    use PublicId, SoftDeletes, Rememberable;
 
     protected static $public_id_salt       = 'vatsim-uk-network-data-atc-sessions';
     protected static $public_id_min_length = 10;
