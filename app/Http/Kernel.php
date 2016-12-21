@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
-        'web' => [
+        'web'             => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -30,9 +30,11 @@ class Kernel extends HttpKernel
             Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        'api' => [
+        'api'             => [
             'throttle:60,1',
             'bindings',
+            "auth:api",
+            "api.tracking",
         ],
         'auth_full_group' => [
             'auth.user.full',
@@ -47,6 +49,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth'                         => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.user'                    => Middleware\AuthUser::class,
         'auth.user.full'               => Middleware\AuthUserFull::class,
         'auth.admin'                   => Middleware\AuthAdmin::class,
@@ -56,5 +59,6 @@ class Kernel extends HttpKernel
         'guest'                        => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'                     => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'must.have.community.group'    => \App\Modules\Community\Http\Middleware\MustHaveCommunityGroup::class,
+        'api.tracking'                 => \App\Http\Middleware\ApiTracking::class,
     ];
 }
