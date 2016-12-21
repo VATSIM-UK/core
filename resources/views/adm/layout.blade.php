@@ -9,11 +9,14 @@
                 data-apikey="0a68d43bf9507933029382958633c9d9"
                 data-releasestage="{{ env('APP_ENV') }}">
             Bugsnag.notifyReleaseStages = ["staging", "production"];
-            Bugsnag.user = {
+
+            @if(Auth::check())
+                    Bugsnag.user = {
                 id: {{ Auth::user()->id }},
                 name: "{{ Auth::user()->name }}",
                 email: "{{ Auth::user()->email }}"
             };
+            @endif
         </script>
 
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>

@@ -17,6 +17,7 @@ class Membership extends BaseController
 
         return $this->viewMake('community::site.membership.deploy')
                     ->with('defaultGroup', $defaultGroup)
+                    ->with('isDefaultGroupMember', $defaultGroup->hasMember(\Auth::user()))
                     ->with('groups', $groups);
     }
 
