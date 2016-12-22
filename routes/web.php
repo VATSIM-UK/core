@@ -119,7 +119,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
 });
 
 Route::group(['domain' => config('app.url')], function () {
-    Route::any('/botman', ["as" => "botman", "uses" => 'BotManController@handle']);
+    Route::any('/botman', ['as' => 'botman', 'uses' => 'BotManController@handle']);
 
     Route::get('/error/{code?}', ['as' => 'error', 'uses' => 'Error@getDisplay']);
 

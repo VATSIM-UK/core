@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Collection;
 use Mpociot\BotMan\BotMan;
+use Illuminate\Support\Collection;
 use App\Conversations\ExampleConversation;
 
 class BotManController extends BaseController
@@ -13,7 +13,7 @@ class BotManController extends BaseController
      */
     public function handle()
     {
-        $botman = app("botman");
+        $botman = app('botman');
         $botman->verifyServices('secret_slack_verify');
 
         $payload = Collection::make(json_decode(request()->getContent(), true));
