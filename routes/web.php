@@ -1,8 +1,5 @@
 <?php
 
-// Botman
-Route::match(['get', 'post'], '/botman', 'BotManController@handle');
-
 /*
  * VATS.IM ROUTES
  */
@@ -122,6 +119,8 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
 });
 
 Route::group(['domain' => config('app.url')], function () {
+    Route::any('/botman', ["as" => "botman", "uses" => 'BotManController@handle']);
+
     Route::get('/error/{code?}', ['as' => 'error', 'uses' => 'Error@getDisplay']);
 
     Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
