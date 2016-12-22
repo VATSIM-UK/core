@@ -11,7 +11,7 @@ class CreateAtcStatisticsTables extends Migration
      */
     public function up()
     {
-        Schema::create('statistic_atc', function ($table) {
+        Schema::create('networkdata_atc', function ($table) {
             $table->bigIncrements('id')->unsigned();
             $table->integer('account_id')->unsigned();
             $table->string('callsign', 10);
@@ -31,6 +31,6 @@ class CreateAtcStatisticsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('statistic_atc');
+        Schema::drop('networkdata_atc');
     }
 }

@@ -6,6 +6,18 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
     <title>VATSIM UK Core System</title>
 
+    <!--BugSnagScript-->
+    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
+            data-apikey="0a68d43bf9507933029382958633c9d9"
+            data-releasestage="{{ env('APP_ENV') }}">
+        Bugsnag.notifyReleaseStages = ["staging", "production"];
+        Bugsnag.user = {
+            id: {{ Auth::user()->id }},
+            name: "{{ Auth::user()->name }}",
+            email: "{{ Auth::user()->email }}"
+        };
+    </script>
+
     <!-- CSS -->
     @section('styles')
         {!! HTML::style('//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css') !!}

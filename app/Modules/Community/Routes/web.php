@@ -11,10 +11,10 @@ Route::group([
     'domain'     => config('app.url'),
     'middleware' => ['auth.admin'],
 ], function () {
-    Route::get('/', [
-        'as'   => 'dashboard',
-        'uses' => 'Dashboard@getDashboard',
-    ]);
+    //    Route::get('/', [
+//        'as'   => 'dashboard',
+//        'uses' => 'Dashboard@getDashboard',
+//    ]);
 });
 
 Route::group([
