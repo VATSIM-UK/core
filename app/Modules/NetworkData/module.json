@@ -1,9 +1,6 @@
 {
 	"name": "VATSIM Network Data",
 	"slug": "networkdata",
-	"namespace": "NetworkData",
 	"version": "1.0",
-	"author": "VATSIM UK WST",
-	"license": "MIT",
 	"description": "VATSIM Network Data management and storage."
 }

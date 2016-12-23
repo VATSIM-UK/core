@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
 
-class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
+class DeleteStatisticAtcTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,10 @@ class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
      */
     public function up()
     {
-        Schema::rename('statistic_atc', 'networkdata_atc');
+        // Legacy migration created this table by mistake.
+        // Statistics that were generated were of no use.
+        // Removing in place of new module.
+        Schema::dropIfExists('statistic_atc');
     }
 
     /**
@@ -22,6 +25,6 @@ class ConvertTablePrefixFromStatisticToNetworkdata extends Migration
      */
     public function down()
     {
-        Schema::rename('networkdata_atc', 'statistic_atc');
+        // Null.  Nothing here.
     }
 }

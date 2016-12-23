@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            @if(($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING")) && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse("15th December 2016 00:00:00 GMT")))
+            @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
                 <div class="col-md-12">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-cogs"></i>

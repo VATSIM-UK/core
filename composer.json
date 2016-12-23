@@ -24,11 +24,12 @@
         "alawrence/laravel-ipboard": "1.0",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "dev-patch-2",
+        "caffeinated/modules": "dev-master",
         "malahierba-lab/public-id": "dev-master",
         "comocode/laravel-ab": "^0.3.0",
         "pusher/pusher-php-server": "~2.0",
-        "bugsnag/bugsnag-laravel": "^2.0"
+        "bugsnag/bugsnag-laravel": "^2.0",
+        "watson/rememberable": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -38,7 +39,8 @@
         "symfony/dom-crawler": "~3.0",
         "symfony/css-selector": "~3.0",
         "laravel/homestead": "^3.0",
-        "laracasts/generators": "^1.1"
+        "laracasts/generators": "^1.1",
+        "codeclimate/php-test-reporter": "dev-master"
     },
     "autoload": {
         "classmap": [
