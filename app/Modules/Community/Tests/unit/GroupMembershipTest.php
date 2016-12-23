@@ -127,7 +127,8 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_is_not_possible_to_join_the_same_group_twice(){
+    public function it_is_not_possible_to_join_the_same_group_twice()
+    {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupMemberException::class);
 
         $member        = factory(\App\Models\Mship\Account::class)->create();
