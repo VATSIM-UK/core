@@ -272,18 +272,18 @@
 
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
                                                 <em>granted {{ $qual->pivot->created_at->diffForHumans() }}</em>
                                             </a>
                                             <br />
                                         @endforeach
                                         @if(count($_account->qualifications_pilot) < 1)
-                                            You have no ATC ratings.
+                                            You have no Pilot ratings.
                                         @endif
 
                                         @foreach($_account->qualifications_pilot_training as $qual)
                                             {{ $qual }}
-                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->created_at }}">
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
                                                 <em>granted {{ $qual->pivot->created_at }}</em>
                                             </a>
                                             <br />
