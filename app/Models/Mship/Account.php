@@ -298,7 +298,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $query->where('last_login_ip', '=', ip2long($ip));
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return $this->name;
     }
 
