@@ -45,7 +45,7 @@ class SlackManager extends Command
      */
     public function handle()
     {
-        $this->slackUsers = SlackUser::all();
+        $this->slackUsers = SlackUser::lists();
 
         foreach ($this->slackUsers->members as $slackUser) {
             $localUser           = Account::findWithSlackId($slackUser->id);
