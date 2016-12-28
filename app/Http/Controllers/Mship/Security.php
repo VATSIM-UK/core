@@ -21,7 +21,7 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         // Let's check whether we even NEED this.
-        if (Session::has('auth_extra') || ! Auth::user()->hasPassword()) {
+        if (Session::has('auth_extra') || !Auth::user()->hasPassword()) {
             return Redirect::route('mship.auth.redirect');
         }
 
@@ -54,13 +54,13 @@ class Security extends \App\Http\Controllers\BaseController
     {
         if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route('mship.manage.dashboard')->with('error', 'You cannot disable your secondary password.');
-        } elseif ($disable && ! Auth::user()->hasPassword()) {
+        } elseif ($disable && !Auth::user()->hasPassword()) {
             $disable = false;
         } elseif ($disable) {
             $this->setTitle('Disable');
         }
 
-        if (! Auth::user()->hasPassword()) {
+        if (!Auth::user()->hasPassword()) {
             $this->setTitle('Create');
             if (Auth::user()->mandatory_password) {
                 $slsType = 'forced';
@@ -70,7 +70,7 @@ class Security extends \App\Http\Controllers\BaseController
         } else {
             if (Auth::user()->hasPasswordExpired()) {
                 $slsType = 'expired';
-            } elseif (! $disable) {
+            } elseif (!$disable) {
                 $slsType = 'replace';
                 $this->setTitle('Replace');
             } else {
@@ -89,7 +89,7 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         if (Auth::user()->hasPassword()) {
-            if (! Auth::user()->verifyPassword(Input::get('old_password'))) {
+            if (!Auth::user()->verifyPassword(Input::get('old_password'))) {
                 return Redirect::route('mship.security.replace', [(int) $disable])->with('error', 'Your old password is incorrect.  Please try again.');
             }
 
@@ -135,7 +135,7 @@ class Security extends \App\Http\Controllers\BaseController
 
     public function getForgotten()
     {
-        if (! Auth::user()->hasPassword()) {
+        if (!Auth::user()->hasPassword()) {
             return Redirect::route('mship.manage.dashboard');
         }
 
@@ -151,7 +151,7 @@ class Security extends \App\Http\Controllers\BaseController
         $token = SystemToken::where('code', '=', $code)->valid()->first();
 
         // Is it valid? Has it expired? Etc?
-        if (! $token) {
+        if (!$token) {
             return $this->viewMake('mship.security.forgotten')->with('error', 'You have provided an invalid password reset token.');
         }
 
@@ -166,7 +166,7 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         // Is it related and for the right thing?!
-        if (! $token->related or $token->type != 'mship_account_security_reset') {
+        if (!$token->related or $token->type != 'mship_account_security_reset') {
             return $this->viewMake('mship.security.forgotten')->with('error', 'You have provided an invalid password reset token.');
         }
 

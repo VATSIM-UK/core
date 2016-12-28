@@ -22,7 +22,7 @@ class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
 
     public function handle()
     {
-        if (! $this->account->hasState('DIVISION') && ! $this->account->hasState('VISITING') && ! $this->account->hasState('TRANSFERRING')) {
+        if (!$this->account->hasState('DIVISION') && !$this->account->hasState('VISITING') && !$this->account->hasState('TRANSFERRING')) {
             return true;  // They can't have Slack access.  Tut.
         }
 

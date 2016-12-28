@@ -222,7 +222,7 @@ class Reference extends Model
 
     private function guardAgainstReSubmittingReference()
     {
-        if (! $this->is_requested) {
+        if (!$this->is_requested) {
             throw new ReferenceAlreadySubmittedException($this);
         }
     }

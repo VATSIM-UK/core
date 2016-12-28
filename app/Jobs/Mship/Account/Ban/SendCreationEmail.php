@@ -24,7 +24,7 @@ class SendCreationEmail extends Job implements ShouldQueue
 
     public function handle()
     {
-        if (! $this->ban->is_local) {
+        if (!$this->ban->is_local) {
             return true;
         }
 

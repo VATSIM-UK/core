@@ -48,7 +48,7 @@ trait CommunityAccount
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (! $this->hasState('DIVISION')) {
+        if (!$this->hasState('DIVISION')) {
             throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
         }
     }

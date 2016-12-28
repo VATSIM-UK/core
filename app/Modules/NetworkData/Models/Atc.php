@@ -100,7 +100,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (! $atcSession->disconnected_at) {
+            if (!$atcSession->disconnected_at) {
                 return;
             }
         });
@@ -220,7 +220,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (! $this->disconnected_at) {
+        if (!$this->disconnected_at) {
             return;
         }
 

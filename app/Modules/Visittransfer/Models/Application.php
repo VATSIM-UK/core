@@ -311,7 +311,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (! $this->exists) {
+        if (!$this->exists) {
             return 'Unknown';
         }
 
@@ -374,7 +374,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return ! $this->isStatusIn($stati);
+        return !$this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -603,7 +603,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (! $this->submitted_at) {
+        if (!$this->submitted_at) {
             return false;
         }
 

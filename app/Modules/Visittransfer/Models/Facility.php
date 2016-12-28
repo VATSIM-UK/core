@@ -139,7 +139,7 @@ class Facility extends Model
             throw new DuplicateFacilityNameException($proposedName);
         }
 
-        if (! $excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
+        if (!$excludeCurrent && self::where('name', 'LIKE', $proposedName)->count() > 0) {
             throw new DuplicateFacilityNameException($proposedName);
         }
     }

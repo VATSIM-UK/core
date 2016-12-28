@@ -45,7 +45,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
 
     public function getVerify()
     {
-        if (! Session::has('vatsimauth')) {
+        if (!Session::has('vatsimauth')) {
             throw new \Exception('Session does not exist');
         }
 
@@ -56,7 +56,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             throw new \Exception('Returned token does not match');
         }
 
-        if (! Input::has('oauth_verifier')) {
+        if (!Input::has('oauth_verifier')) {
             // TODO: LOG
             throw new \Exception('No verification code provided');
         }
@@ -67,7 +67,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             // At this point WE HAVE data in the form of $user;
             $account = Account::find($user->id);
 
-            if (! $account) {
+            if (!$account) {
                 // TODO: LOG
                 return Response::make('Unauthorised', 401);
             }

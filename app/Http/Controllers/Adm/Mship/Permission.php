@@ -32,7 +32,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
     {
         // Let's create!
         $permission = new PermissionData(Input::all());
-        if (! $permission->save()) {
+        if (!$permission->save()) {
             return Redirect::route('adm.mship.permission.create')->withErrors($permission->errors());
         }
 
@@ -45,7 +45,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
 
     public function getUpdate(PermissionData $permission)
     {
-        if (! $permission or ! $permission->exists) {
+        if (!$permission or !$permission->exists) {
             return Redirect::route('adm.mship.permissions.index')->withError("Permission doesn't exist!");
         }
 
@@ -61,20 +61,20 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
 
     public function postUpdate(PermissionData $permission)
     {
-        if (! $permission or ! $permission->exists) {
+        if (!$permission or !$permission->exists) {
             return Redirect::route('adm.mship.permissions.index')->withError("Permission doesn't exist!");
         }
 
         // Let's create!
         $permission = $permission->fill(Input::all());
-        if (! $permission->save()) {
+        if (!$permission->save()) {
             return Redirect::route('adm.mship.permission.update')->withErrors($permission->errors());
         }
 
         if ($this->account->hasPermission('adm/mship/permission/attach')) {
             // Detatch permissions!
             foreach ($permission->roles as $r) {
-                if (! in_array($r->id, Input::get('roles', []))) {
+                if (!in_array($r->id, Input::get('roles', []))) {
                     $permission->detachRole($r);
                 }
             }
@@ -88,7 +88,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
 
     public function anyDelete(PermissionData $permission)
     {
-        if (! $permission or ! $permission->exists) {
+        if (!$permission or !$permission->exists) {
             return Redirect::route('adm.mship.permissions.index')->withError("Permission doesn't exist!");
         }
 

@@ -39,10 +39,10 @@ class MemberCertUpdate extends Job implements ShouldQueue
         DB::beginTransaction();
 
         $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
-        if (! is_string($this->data->region)) {
+        if (!is_string($this->data->region)) {
             $this->data->region = '';
         }
-        if (! is_string($this->data->division)) {
+        if (!is_string($this->data->division)) {
             $this->data->division = '';
         }
 
@@ -56,11 +56,11 @@ class MemberCertUpdate extends Job implements ShouldQueue
         ) {
             $member->delete();
         } else {
-            if (! empty($this->data->name_first) && is_string($this->data->name_first)) {
+            if (!empty($this->data->name_first) && is_string($this->data->name_first)) {
                 $member->name_first = $this->data->name_first;
             }
 
-            if (! empty($this->data->name_last) && is_string($this->data->name_last)) {
+            if (!empty($this->data->name_last) && is_string($this->data->name_last)) {
                 $member->name_last = $this->data->name_last;
             }
 
@@ -118,7 +118,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
                 $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
                 if (isset($_prevRat->PreviousRatingInt)) {
                     $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                    if (! is_null($prevAtcRating) && ! $member->hasQualification($prevAtcRating)) {
+                    if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
                         $member->addQualification($prevAtcRating);
                     }
                 }
@@ -139,14 +139,14 @@ class MemberCertUpdate extends Job implements ShouldQueue
             if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState('DIVISION')
             ) {
                 $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-                if (! is_null($atcRating) && ! $member->hasQualification($atcRating)) {
+                if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
                     $member->addQualification($atcRating);
                 }
             }
 
             $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
             foreach ($pilotRatings as $pr) {
-                if (! $member->hasQualification($pr)) {
+                if (!$member->hasQualification($pr)) {
                     $member->addQualification($pr);
                 }
             }

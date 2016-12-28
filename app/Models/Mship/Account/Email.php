@@ -107,7 +107,7 @@ class Email extends \Eloquent
     {
         $saveResult = parent::save($options);
 
-        if (! $this->is_verified) {
+        if (!$this->is_verified) {
             dispatch(new TriggerNewEmailVerificationProcess($this));
         }
 

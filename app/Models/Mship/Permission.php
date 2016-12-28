@@ -75,7 +75,7 @@ class Permission extends \App\Models\Model
 
     public function detachRole(RoleData $role)
     {
-        if (! $this->roles->contains($role->getKey())) {
+        if (!$this->roles->contains($role->getKey())) {
             return false;
         }
 
