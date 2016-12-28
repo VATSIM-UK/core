@@ -80,7 +80,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             $client = TeamSpeak::checkClientDescription($client, $member);
             TeamSpeak::checkMemberStanding($client, $member);
 
-            if (! TeamSpeak::clientIsProtected($client)) {
+            if (!TeamSpeak::clientIsProtected($client)) {
                 TeamSpeak::checkMemberMandatoryNotifications($client, $member);
                 TeamSpeak::checkClientNickname($client, $member);
                 TeamSpeak::checkClientServerGroups($client, $member);

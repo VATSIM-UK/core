@@ -133,7 +133,7 @@ class Role extends \App\Models\Model
         }
 
         // It's a string, let's be a bit more creative.
-        return ! $this->permissions->filter(function ($perm) use ($permission) {
+        return !$this->permissions->filter(function ($perm) use ($permission) {
             return strcasecmp($perm->name, $permission) == 0 or $perm->name == '*';
         })->isEmpty();
     }
@@ -160,7 +160,7 @@ class Role extends \App\Models\Model
 
     public function detachPermission(PermissionData $permission)
     {
-        if (! $this->permissions->contains($permission->getKey())) {
+        if (!$this->permissions->contains($permission->getKey())) {
             return false;
         }
 

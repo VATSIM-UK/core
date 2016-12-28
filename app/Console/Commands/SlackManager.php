@@ -55,7 +55,7 @@ class SlackManager extends Command
                 continue;
             }
 
-            if (! $localUser || $localUser->exists == false) {
+            if (!$localUser || $localUser->exists == false) {
                 $this->messageUserAdvisingOfRegistration($slackUser);
                 continue;
             }
@@ -64,7 +64,7 @@ class SlackManager extends Command
                 $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
             }
 
-            if (! $localUser->isValidDisplayName($slackUser->real_name)) {
+            if (!$localUser->isValidDisplayName($slackUser->real_name)) {
                 $this->messageAskingForRealName($localUser, $slackUser);
             }
 

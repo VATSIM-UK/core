@@ -56,11 +56,11 @@ class ApplicationsCleanup extends Command
         $submittedApplications = Application::submitted()
                                             ->get()
                                             ->filter(function ($application) {
-                                                return ! $application->is_pending_references;
+                                                return !$application->is_pending_references;
                                             });
 
         foreach ($submittedApplications as $application) {
-            if (! $application->should_perform_checks) {
+            if (!$application->should_perform_checks) {
                 $application->markAsUnderReview('Automated checks have been disabled for this facility - requires manual checking.');
                 continue;
             }
@@ -86,7 +86,7 @@ class ApplicationsCleanup extends Command
         $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)
                                            ->get()
                                            ->filter(function ($application) {
-                                               return ! $application->training_required;
+                                               return !$application->training_required;
                                            });
 
         foreach ($acceptedApplications as $application) {

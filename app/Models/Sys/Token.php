@@ -118,7 +118,7 @@ class Token extends \App\Models\Model
 
     public function consume()
     {
-        if (! $this or $this->is_used or $this->is_expired) {
+        if (!$this or $this->is_used or $this->is_expired) {
             return false;
         }
 

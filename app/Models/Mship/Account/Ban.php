@@ -140,12 +140,12 @@ class Ban extends \App\Models\Model
         $period_finish = $this->period_finish;
         $now           = \Carbon\Carbon::now();
 
-        return ! $period_finish || ($now->between($period_start, $period_finish) && ! $this->is_repealed);
+        return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }
 
     public function getIsExpiredAttribute()
     {
-        return ! $this->is_active;
+        return !$this->is_active;
     }
 
     public function getTypeStringAttribute()
@@ -165,7 +165,7 @@ class Ban extends \App\Models\Model
 
     public function getPeriodAmountStringAttribute()
     {
-        if (! $this->period_finish) {
+        if (!$this->period_finish) {
             return null;
         }
 
@@ -174,7 +174,7 @@ class Ban extends \App\Models\Model
 
     public function getPeriodLeftAttribute()
     {
-        if (! $this->period_finish) {
+        if (!$this->period_finish) {
             return null;
         }
 

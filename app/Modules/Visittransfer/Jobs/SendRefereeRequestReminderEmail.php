@@ -32,7 +32,7 @@ class SendRefereeRequestReminderEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        if (! $this->reference->is_requested) {
+        if (!$this->reference->is_requested) {
             return true; // Already been completed
         }
 

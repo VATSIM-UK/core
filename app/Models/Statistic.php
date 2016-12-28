@@ -29,7 +29,7 @@ class Statistic extends \App\Models\Model
     public static function setStatistic($period, $key, $value)
     {
         $_s = self::where('period', '=', $period)->where('key', '=', $key)->first();
-        if (! $_s) {
+        if (!$_s) {
             $_s = new self(['period' => $period, 'key' => $key]);
         }
 
@@ -43,7 +43,7 @@ class Statistic extends \App\Models\Model
     {
         $_s = self::where('period', '=', $period)->where('key', '=', $key)->first();
 
-        if (! $_s) {
+        if (!$_s) {
             return 0;
         }
 

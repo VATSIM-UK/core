@@ -144,7 +144,7 @@ class Management extends \App\Http\Controllers\BaseController
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!
-            if (! $userVerifiedEmails->contains($assignedEmailID)) {
+            if (!$userVerifiedEmails->contains($assignedEmailID)) {
                 continue; // This isn't a valid EMAIL ID for this user.
             }
 
@@ -162,7 +162,7 @@ class Management extends \App\Http\Controllers\BaseController
         $token = SystemToken::where('code', '=', $code)->valid()->first();
 
         // Is it valid? Has it expired? Etc?
-        if (! $token) {
+        if (!$token) {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR1)'
@@ -186,7 +186,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         // Is it valid and linked to something?!?!
-        if (! $token->related or $token->type != 'mship_account_email_verify') {
+        if (!$token->related or $token->type != 'mship_account_email_verify') {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR4)'

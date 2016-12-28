@@ -25,7 +25,7 @@ class AutomatedApplicationChecks extends Job implements ShouldQueue
      */
     public function handle()
     {
-        if (! $this->application->is_submitted) {
+        if (!$this->application->is_submitted) {
             return;
         }
 

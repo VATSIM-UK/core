@@ -105,7 +105,7 @@ class BaseController extends \Illuminate\Routing\Controller
 
     protected function setupLayout()
     {
-        if (! is_null($this->layout)) {
+        if (!is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }
@@ -185,7 +185,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $requestClass = explode('\\', get_called_class());
 
         // Return the dirty path.
-        if (! $clean) {
+        if (!$clean) {
             return $requestClass;
         }
 
