@@ -8,7 +8,7 @@
 
     <!--BugSnagScript-->
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
-            data-apikey="0a68d43bf9507933029382958633c9d9"
+            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
             data-releasestage="{{ env('APP_ENV') }}">
         Bugsnag.notifyReleaseStages = ["staging", "production"];
 
