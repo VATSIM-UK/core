@@ -99,8 +99,9 @@ Route::group([
 
 Route::group([
     'as'         => 'visiting.',
+    'prefix'     => 'visit-transfer',
     'namespace'  => 'Site',
-    'domain'     => 'vt.'.config('app.url'),
+    'domain'     => config('app.url'),
     'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);

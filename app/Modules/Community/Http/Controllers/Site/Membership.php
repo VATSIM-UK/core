@@ -27,7 +27,7 @@ class Membership extends BaseController
 
         \Auth::user()->addCommunityGroup($chosenGroup);
 
-        if (! $chosenGroup->default) {
+        if (!$chosenGroup->default) {
             \Auth::user()->syncWithDefaultCommunityGroup();
         }
 

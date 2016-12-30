@@ -30,7 +30,7 @@ class Mailgun extends EmailWebhookController
         // Try and find this queue message based on the ID.
         $this->queueEntry = Queue::whereMessageId($this->messageId)->first();
 
-        if (! $this->queueEntry or ! $this->queueEntry->exists) {
+        if (!$this->queueEntry or !$this->queueEntry->exists) {
             return Response::make("Accepted, but email doesn't exist.", 200);
         }
 

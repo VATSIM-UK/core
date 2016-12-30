@@ -21,6 +21,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Auth\AuthenticationException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Symfony\Component\Console\Exception\CommandNotFoundException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
@@ -35,7 +36,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        if (! $this->shouldntReport($e)) {
+        if (!$this->shouldntReport($e)) {
             if (extension_loaded('newrelic')) {
                 try {
                     newrelic_notice_error(null, $e);
@@ -109,7 +110,7 @@ class Handler extends ExceptionHandler
             ],
         ];
 
-        if (! App::runningInConsole()) {
+        if (!App::runningInConsole()) {
             if (method_exists('Auth', 'check') && Auth::check()) {
                 $attachment['fields'][] = [
                     'title' => 'Member:',

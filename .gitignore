@@ -4,6 +4,8 @@
 /.idea
 Homestead.json
 Homestead.yaml
+Vagrantfile
+/.vagrant
 .env
 
 nbproject*

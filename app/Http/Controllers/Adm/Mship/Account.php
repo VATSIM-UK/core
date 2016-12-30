@@ -115,13 +115,13 @@ class Account extends AdmController
 
     public function getDetail(AccountData $account, $tab = 'basic', $tabId = 0)
     {
-        if (! $account or $account->is_system) {
+        if (!$account or $account->is_system) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && ! $this->account->hasPermission('adm/mship/account/own')) {
+        if ($this->account->id == $account->id && !$this->account->hasPermission('adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                            ->withError('You cannot view or manage your own profile.');
         }
@@ -174,20 +174,20 @@ class Account extends AdmController
 
     public function postRoleAttach(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Let's try and load this RoleData
         $role = RoleData::find(Input::get('role'));
 
-        if (! $role) {
+        if (!$role) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
                            ->withError('The selected role does not exist.');
         }
 
         // Let's add!
-        if (! $account->roles->contains($role->id)) {
+        if (!$account->roles->contains($role->id)) {
             $account->roles()
                     ->attach($role);
         }
@@ -198,16 +198,16 @@ class Account extends AdmController
 
     public function getRoleDetach(AccountData $account, RoleData $role)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
-        if (! $role) {
+        if (!$role) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
                            ->withError('The selected role does not exist.');
         }
 
-        if (! $account->roles->contains($role->id)) {
+        if (!$account->roles->contains($role->id)) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
                            ->withError('This role is not attached to this user.');
         }
@@ -222,7 +222,7 @@ class Account extends AdmController
 
     public function postSecurityEnable(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -238,7 +238,7 @@ class Account extends AdmController
         // Check the selected security ID exists!
         $security = SecurityData::find(Input::get('securityLevel', 0));
 
-        if (! $security) {
+        if (!$security) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                            ->withError('Invalid security ID specified.');
         }
@@ -257,7 +257,7 @@ class Account extends AdmController
 
     public function postSecurityReset(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -265,7 +265,7 @@ class Account extends AdmController
         // We can't reset non-existant security!
         $currentSecurity = $account->current_security;
 
-        if (! $currentSecurity or ! $currentSecurity->exists) {
+        if (!$currentSecurity or !$currentSecurity->exists) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                            ->withError('You cannot reset non-existant security.');
         }
@@ -279,14 +279,14 @@ class Account extends AdmController
 
     public function postSecurityChange(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Check the selected security ID exists!
         $security = SecurityData::find(Input::get('securityLevel', 0));
 
-        if (! $security) {
+        if (!$security) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                            ->withError('Invalid security ID specified.');
         }
@@ -296,7 +296,7 @@ class Account extends AdmController
         $currentSecurity = $account->current_security;
 
         // It's also pointless changing to the same security ID.
-        if (! $currentSecurity or ! $currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
+        if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                            ->withError('You cannot change security on this account.');
         }
@@ -319,7 +319,7 @@ class Account extends AdmController
 
     public function postBanAdd(CreateRequest $request, AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -347,7 +347,7 @@ class Account extends AdmController
 
     public function getBanRepeal(AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -360,7 +360,7 @@ class Account extends AdmController
 
     public function postBanRepeal(RepealRequest $request, AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -379,7 +379,7 @@ class Account extends AdmController
 
     public function getBanComment(AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -392,7 +392,7 @@ class Account extends AdmController
 
     public function postBanComment(CommentRequest $request, AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -411,7 +411,7 @@ class Account extends AdmController
 
     public function getBanModify(AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -424,7 +424,7 @@ class Account extends AdmController
 
     public function postBanModify(ModifyRequest $request, AccountData\Ban $ban)
     {
-        if (! $ban) {
+        if (!$ban) {
             // TODO: Could got to the master ban list?
             return Redirect::route('adm.mship.account.index');
         }
@@ -460,7 +460,7 @@ class Account extends AdmController
 
     public function postNoteCreate(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -472,7 +472,7 @@ class Account extends AdmController
 
         // Check this type exists!
         $noteType = NoteTypeData::find(Input::get('note_type_id'));
-        if (! $noteType or ! $noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
                            ->withError('You selected an invalid note type.');
         }
@@ -486,7 +486,7 @@ class Account extends AdmController
 
     public function postNoteFilter(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -502,7 +502,7 @@ class Account extends AdmController
 
     public function postImpersonate(AccountData $account)
     {
-        if (! $account) {
+        if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 

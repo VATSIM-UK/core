@@ -24,12 +24,12 @@ class Registration extends \App\Http\Controllers\BaseController
                            ->withError("Your Slack account doesn't need registering.");
         }
 
-        if (! $this->account->hasState('DIVISION')) {
+        if (!$this->account->hasState('DIVISION')) {
             return Redirect::route('mship.manage.dashboard')
                            ->withError('You need to be a division member to register for Slack.');
         }
 
-        if (! ($_slackToken = $this->account->tokens()->ofType('slack_registration')->first())) {
+        if (!($_slackToken = $this->account->tokens()->ofType('slack_registration')->first())) {
             $_slackToken = Token::generate('slack_registration', false, $this->account);
 
             $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
@@ -56,7 +56,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function getConfirmed()
     {
-        if (! $this->account->slack_id) {
+        if (!$this->account->slack_id) {
             return Redirect::route('slack.new');
         }
 

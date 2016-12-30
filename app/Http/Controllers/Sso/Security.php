@@ -21,7 +21,7 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         // Return URL must be provided!
-        if (! Input::get('return_url', false)) {
+        if (!Input::get('return_url', false)) {
             return Response::json(['status' => 'error', 'error' => 'NO_RETURN_URL']);
         }
 
@@ -44,7 +44,7 @@ class Security extends \App\Http\Controllers\BaseController
         }
 
         // Did we receive a token?  If we didn't get rid of them!
-        if (! Input::get('access_token', false)) {
+        if (!Input::get('access_token', false)) {
             die('SOME GENERIC ERROR');
         }
 
@@ -62,7 +62,7 @@ class Security extends \App\Http\Controllers\BaseController
         // Create the response...
         $account              = MemberAccount::find($accessToken->account_id);
 
-        if (! $account) {
+        if (!$account) {
             return Response::json(['status' => 'error', 'error' => 'NO_AUTHORISED_ACCOUNT']);
         }
 
@@ -157,11 +157,11 @@ class Security extends \App\Http\Controllers\BaseController
 
     private function security()
     {
-        if (! Input::get('username', false)) {
+        if (!Input::get('username', false)) {
             return Response::json(['status' => 'error', 'error' => 'NO_USERNAME']);
         }
 
-        if (! Input::get('apikey_pub', false)) {
+        if (!Input::get('apikey_pub', false)) {
             return Response::json(['status' => 'error', 'error' => 'NO_APIKEY_PUB']);
         }
 

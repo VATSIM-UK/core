@@ -52,7 +52,7 @@ class SyncCommunity extends Command
 
             $member = $members->current();
 
-            if (empty($member['vatsim_cid']) || ! is_numeric($member['vatsim_cid'])) {
+            if (empty($member['vatsim_cid']) || !is_numeric($member['vatsim_cid'])) {
                 if ($verbose) {
                     $this->output->writeln('<error>FAILURE: '.$member['member_id'].' has no valid CID.</error>');
                 }

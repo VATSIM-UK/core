@@ -82,7 +82,7 @@ class Read extends \App\Models\Model
 
     public function scopeSince($query, $sinceTimestamp)
     {
-        if (! ($sinceTimestamp instanceof \Carbon\Carbon)) {
+        if (!($sinceTimestamp instanceof \Carbon\Carbon)) {
             $sinceTimestamp = \Carbon\Carbon::parse($sinceTimestamp);
         }
 

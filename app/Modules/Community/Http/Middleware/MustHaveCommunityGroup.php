@@ -33,7 +33,7 @@ class MustHaveCommunityGroup
             return Response::make('Unauthorised', 401);
         }
 
-        if (! Auth::user()->hasState('DIVISION')) {
+        if (!Auth::user()->hasState('DIVISION')) {
             return $next($request);
         }
 

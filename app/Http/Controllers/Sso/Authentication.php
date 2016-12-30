@@ -14,7 +14,7 @@ class Authentication extends \App\Http\Controllers\BaseController
     public function getLogin()
     {
         // Did we receive a token?  If we didn't get rid of them!
-        if (! Input::get('token', false)) {
+        if (!Input::get('token', false)) {
             die('SOME GENERIC ERROR');
         }
 
@@ -29,7 +29,7 @@ class Authentication extends \App\Http\Controllers\BaseController
         }
 
         // Got the token, let's do something.
-        if (! Request::query('return')) {
+        if (!Request::query('return')) {
             // Let's extend the expiry of this token for a minute or two....
             $ssoToken->expires_at = \Carbon\Carbon::now('GMT')->addMinutes(60)->toDateTimeString();
             $ssoToken->save();

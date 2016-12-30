@@ -17,7 +17,7 @@ class NotifyAllReferees implements ShouldQueue
     public function handle(ApplicationSubmitted $event)
     {
         $refereesToBeNotified = $event->application->referees->filter(function ($ref) {
-            return ! $ref->is_requested && ! $ref->is_submitted;
+            return !$ref->is_requested && !$ref->is_submitted;
         });
 
         foreach ($refereesToBeNotified as $reference) {

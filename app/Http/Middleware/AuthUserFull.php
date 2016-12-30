@@ -20,7 +20,7 @@ class AuthUserFull
      */
     public function handle($request, Closure $next)
     {
-        if (! Auth::check() || ! Session::has('auth_extra')) {
+        if (!Auth::check() || !Session::has('auth_extra')) {
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {

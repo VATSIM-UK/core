@@ -2586,16 +2586,16 @@
         },
         {
             "name": "pusher/pusher-php-server",
-            "version": "2.6.2",
+            "version": "2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "598d08dfeda85352b0ec684be4b87888ba3727f5"
+                "reference": "7101edc482d1b1de027abadd7a80a0d00222ef08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/598d08dfeda85352b0ec684be4b87888ba3727f5",
-                "reference": "598d08dfeda85352b0ec684be4b87888ba3727f5",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/7101edc482d1b1de027abadd7a80a0d00222ef08",
+                "reference": "7101edc482d1b1de027abadd7a80a0d00222ef08",
                 "shasum": ""
             },
             "require": {
@@ -2626,7 +2626,7 @@
                 "rest",
                 "trigger"
             ],
-            "time": "2016-12-04 18:53:56"
+            "time": "2016-12-22 10:46:28"
         },
         {
             "name": "ramsey/uuid",
@@ -4440,16 +4440,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "0.9.6",
+            "version": "0.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "65d4ca18e15cb02eeb1e5336f884e46b9b905be0"
+                "reference": "4de7969f4664da3cef1ccd83866c9f59378c3371"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/65d4ca18e15cb02eeb1e5336f884e46b9b905be0",
-                "reference": "65d4ca18e15cb02eeb1e5336f884e46b9b905be0",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/4de7969f4664da3cef1ccd83866c9f59378c3371",
+                "reference": "4de7969f4664da3cef1ccd83866c9f59378c3371",
                 "shasum": ""
             },
             "require": {
@@ -4501,7 +4501,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2016-09-30 12:09:40"
+            "time": "2016-12-19 14:50:55"
         },
         {
             "name": "padraic/humbug_get_contents",

@@ -298,6 +298,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $query->where('last_login_ip', '=', ip2long($ip));
     }
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     /**
      * Fetch all related visiting/transfer applications.
      *
@@ -488,7 +493,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function removeRole(Role $role)
     {
-        if (! $this->hasRole($role)) {
+        if (!$this->hasRole($role)) {
             return true;
         }
 
@@ -691,7 +696,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         if (is_string($search)) {
             $search = State::findByCode($search);
-        } elseif (! ($search instanceof State)) {
+        } elseif (!($search instanceof State)) {
             throw new InvalidStateException();
         }
 
@@ -814,7 +819,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         } elseif (is_numeric($parent)) {
             $parent = PermissionData::find($parent);
             $parent = $parent ? $parent->name : 'NOTHING-AT-ALL';
-        } elseif (! is_numeric($parent)) {
+        } elseif (!is_numeric($parent)) {
             $parent = preg_replace('/\d+/', '*', $parent);
         }
 
@@ -871,7 +876,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function hasPasswordExpired()
     {
-        if (! $this->hasPassword()) {
+        if (!$this->hasPassword()) {
             return false;
         }
 
@@ -1128,7 +1133,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note->content      = $noteContent;
         $note->save();
 
-        if (! is_null($attachment)) {
+        if (!is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 
@@ -1165,9 +1170,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsInactiveAttribute($value)
     {
-        if ($value && ! $this->is_inactive) {
+        if ($value && !$this->is_inactive) {
             $this->setStatusFlag(self::STATUS_INACTIVE);
-        } elseif (! $value && $this->is_inactive) {
+        } elseif (!$value && $this->is_inactive) {
             $this->unSetStatusFlag(self::STATUS_INACTIVE);
         }
     }
@@ -1179,9 +1184,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function setIsSystemAttribute($value)
     {
-        if ($value && ! $this->is_system) {
+        if ($value && !$this->is_system) {
             $this->setStatusFlag(self::STATUS_SYSTEM);
-        } elseif (! $value && $this->is_system) {
+        } elseif (!$value && $this->is_system) {
             $this->unSetStatusFlag(self::STATUS_SYSTEM);
         }
     }
