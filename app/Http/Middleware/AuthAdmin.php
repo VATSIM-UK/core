@@ -5,9 +5,9 @@ namespace App\Http\Middleware;
 use Auth;
 use Closure;
 use Request;
+use Session;
 use Redirect;
 use Response;
-use Session;
 
 class AuthAdmin
 {
