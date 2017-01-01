@@ -119,6 +119,8 @@ Laravel makes use of Database migrations for setting up/adding seed data to the 
 
 You'll need to run these with `php artisan migrate --step -vvv`.
 
+>(You might also need to run `php artisan module:migrate visittransfer -vvv` to remove errors about the `vt_application` table not existing on the inital setup of your local installation)
+
 I'd suggest you read about [Laravel migrations](https://www.laravel.com/docs/master/migrations).
 
 #### 4 - Run Gulp
@@ -139,6 +141,24 @@ Open a new command prompt and within your project directory type `php artisan ti
 Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXXX)->setPassword("this_is_my_password");`
 
 Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
+
+#### 6 - (Optional) Enabling admin panel access
+
+If you would like to work on something in the admin panel (which includes some panels for the V/T module), there is a work around to give you access as, for the moment, the admin panel can only use online verification through CERT to allow access.
+
+>The admin panel can be accessed through `vukcore.localhost/adm` (Replace vukcore.localhost with your URL accordingly)
+
+To enable access to the panel:
+* Go to the file `core\app\Http\Controllers\Adm\Authentication.php`, and find the `getLogin()` method (near line 17)
+* Add the following lines above the code inside the method:
+```
+    $account = \App\Models\Mship\Account::findOrRetrieve(YOUR_CID_HERE);
+	   \Auth::loginUsingId($account->id);
+	   return \Redirect::route("adm.dashboard");
+```
+* Save that file
+* Go to your database, and find the `mship_account_role` table. Set the `role_id` to `1` for your CID.
+* You should now be able to log into the admin panel. **Please ensure that you do not accidently commit this code change to Adm/Authentication.php**
 
 #### Relax
 
