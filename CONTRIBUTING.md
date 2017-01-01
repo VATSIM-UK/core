@@ -119,6 +119,8 @@ Laravel makes use of Database migrations for setting up/adding seed data to the 
 
 You'll need to run these with `php artisan migrate --step -vvv`.
 
+>(You might also need to run `php artisan module:migrate -vvv` to remove various errors about the `vt_application` table, or others, not existing on the inital setup of your local installation)
+
 I'd suggest you read about [Laravel migrations](https://www.laravel.com/docs/master/migrations).
 
 #### 4 - Run Gulp
