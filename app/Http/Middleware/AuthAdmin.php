@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Auth;
 use Closure;
 use Request;
+use Session;
 use Redirect;
 use Response;
 
@@ -19,11 +20,13 @@ class AuthAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
+        if (!Auth::check() || !Session::has('auth_extra')) {
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                return Redirect::route('adm.authentication.login');
+                Session::set('auth_return', Request::fullUrl());
+
+                return Redirect::route('mship.auth.redirect');
             }
         } elseif (!Auth::user()->hasPermission(Request::decodedPath())) {
             return Redirect::route('adm.error', [401]);
