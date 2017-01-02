@@ -226,5 +226,3 @@ We are committed to making participation in this project a harassment-free exper
 Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues and other contributions that are not aligned to this Code of Conduct.
 
 This code of conduct applies both within this project space and public spaces when an individual is representing the project or its community.
-
-It is expected that you will **not** disclose the contents of the repository.  Any access requires for the issue tracker or codebase should be sent to the Web Services Director of VATSIM UK.
