@@ -376,7 +376,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $sorted = $filtered->sortBy(function ($ref) {
             return $ref->application->submitted_at;
         });
-        
+
         return $sorted;
     }
 
