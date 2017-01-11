@@ -372,8 +372,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $this->visitTransferReferee->filter(function ($ref) {
             return $ref->is_requested;
         })->sortBy(function ($ref) {
-+            return $ref->application->submitted_at;
-         });
+            return $ref->application->submitted_at;
+        });
     }
 
     /**
