@@ -369,15 +369,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function getVisitTransferRefereePendingAttribute()
     {
-        $filtered = $this->visitTransferReferee->filter(function ($ref) {
+        return $this->visitTransferReferee->filter(function ($ref) {
             return $ref->is_requested;
-        });
-
-        $sorted = $filtered->sortBy(function ($ref) {
+        })->sortBy(function ($ref) {
             return $ref->application->submitted_at;
         });
-
-        return $sorted;
     }
 
     /**
