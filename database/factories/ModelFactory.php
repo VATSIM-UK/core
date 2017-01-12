@@ -4,7 +4,7 @@
  * @var Illuminate\Database\Eloquent\Factory
  */
 foreach (Module::enabled() as $module) {
-    $factory->load('app/Modules/'.$module['basename'].'/Database/Factories');
+    $factory->load('app/Modules/' . $module['basename'] . '/Database/Factories');
 }
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
@@ -62,6 +62,13 @@ $factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker)
         'session_timeout'    => $faker->numberBetween(100, 1000),
         'password_mandatory' => false,
         'password_lifetime'  => 0,
+    ];
+});
+
+$factory->define(App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
+    return [
+        'name'               => $faker->word,
+        'display_name'       => $faker->sentence,
     ];
 });
 

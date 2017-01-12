@@ -134,7 +134,8 @@ class Role extends \App\Models\Model
 
         // It's a string, let's be a bit more creative.
         return !$this->permissions->filter(function ($perm) use ($permission) {
-            return strcasecmp($perm->name, $permission) == 0 or $perm->name == '*';
+            $stripped = preg_replace("/[^A-Za-z0-9\/]/i", "", $perm->name);
+            return strcasecmp($perm->name, $permission) == 0 || strcasecmp($stripped, $permission) == 0 || $perm->name == '*';
         })->isEmpty();
     }
 
