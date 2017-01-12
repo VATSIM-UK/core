@@ -4,7 +4,7 @@
  * @var Illuminate\Database\Eloquent\Factory
  */
 foreach (Module::enabled() as $module) {
-    $factory->load('app/Modules/' . $module['basename'] . '/Database/Factories');
+    $factory->load('app/Modules/'.$module['basename'].'/Database/Factories');
 }
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
