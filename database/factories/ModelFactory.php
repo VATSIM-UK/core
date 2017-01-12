@@ -65,6 +65,13 @@ $factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker)
     ];
 });
 
+$factory->define(App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
+    return [
+        'name'               => $faker->word,
+        'display_name'       => $faker->sentence,
+    ];
+});
+
 $factory->define(App\Models\TeamSpeak\Channel::class, function (Faker\Generator $faker) {
     return [
         'id'   => $faker->numberBetween(1, 65535),
