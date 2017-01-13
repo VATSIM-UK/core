@@ -15,7 +15,7 @@
                         @foreach(Auth::user()->visit_transfer_referee_pending as $ref)
 
                             <li role="presentation" {!! (Route::is("visiting.reference.complete") && $reference->id == $ref->id ? "class='active'" : "") !!}>
-                                {{ link_to_route("visiting.reference.complete", $application->account->name." - ".$application->type_string." ".$application->facility->name, [$ref->token->code], ["class" => (Route::is("visiting.reference.complete")  && $reference->id == $ref->id ? "active" : "")]) }}
+                                {{ link_to_route("visiting.reference.complete", $ref->application->account->name." - ".$ref->application->type_string." ".$ref->application->facility->name, [$ref->token->code], ["class" => (Route::is("visiting.reference.complete")  && $reference->id == $ref->id ? "active" : "")]) }}
                             </li>
 
                         @endforeach
