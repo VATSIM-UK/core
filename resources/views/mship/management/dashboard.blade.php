@@ -140,9 +140,9 @@
                         <div class="panel-body">
                             <div class="row">
 
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <div class="row">
-                                        <div class="col-xs-5">
+                                        <div class="col-xs-5 row-text-contain">
                                             <p align="center">
                                                 <b>CURRENT MEMBERSHIP(S)</b>
                                             </p>
@@ -190,13 +190,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <div class="row">
                                         <div class="col-xs-5">
-                                            <b>TOTAL POINTS</b>
+                                            <p align="center">
+                                              <b>TOTAL POINTS</b>
+                                            </p>
                                         </div>
 
-                                        <div class="col-xs-7">
+                                        <div class="col-xs-7 row-text-contain">
                                             <table class="table">
                                                 <tr>
                                                     <th>Weekly</th>
@@ -229,13 +231,13 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-4">
+                                    <div class="col-xs-5 row-text-contain">
                                         <b>ATC QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
 
-                                    <div class="col-xs-8">
+                                    <div class="col-xs-7">
 
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
@@ -262,13 +264,13 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-4">
+                                    <div class="col-xs-5 row-text-contain">
                                         <b>PILOT QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
 
-                                    <div class="col-xs-8">
+                                    <div class="col-xs-7">
 
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
@@ -396,7 +398,7 @@
                                             No registrations found.
                                         @endif
                                         @foreach ($_account->teamspeakRegistrations as $tsreg)
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-6 row-text-contain">
                                                 [ <strong>Registration #{{ $tsreg->id }}</strong> ]<br />
                                                 <strong>CREATED</strong>:
 
