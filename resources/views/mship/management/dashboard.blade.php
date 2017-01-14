@@ -228,14 +228,12 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-6 row-text-contain">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                         <b>ATC QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
-
-                                    <div class="col-xs-6">
-
+                                    <div class="col-xs-6 col-lg-6 col-md-12 text-center">
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
@@ -261,13 +259,12 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-6 row-text-contain">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                         <b>PILOT QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
-
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 text-center">
 
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
