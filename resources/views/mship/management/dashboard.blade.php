@@ -228,13 +228,13 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-6 row-text-contain">
+                                    <div class="col-xs-6 row-text-contain">
                                         <b>ATC QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-xs-6">
 
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
