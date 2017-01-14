@@ -142,17 +142,14 @@
 
                                 <div class="col-md-7">
                                     <div class="row">
-                                        <div class="col-xs-5 row-text-contain">
+                                        <div class="col-md-12">
                                             <p align="center">
                                                 <b>CURRENT MEMBERSHIP(S)</b>
                                             </p>
                                         </div>
 
-                                        <div class="col-xs-7">
-
-
-
-                                            <table class="table">
+                                        <div class="col-md-12">
+                                          <table class="table">
                                                 @forelse($_account->communityGroups as $cg)
                                                     <tr>
                                                         <th>{{ $cg->name }}</th>
@@ -192,13 +189,13 @@
 
                                 <div class="col-md-5">
                                     <div class="row">
-                                        <div class="col-xs-5">
+                                        <div class="col-md-12">
                                             <p align="center">
                                               <b>TOTAL POINTS</b>
                                             </p>
                                         </div>
 
-                                        <div class="col-xs-7 row-text-contain">
+                                        <div class="col-md-12">
                                             <table class="table">
                                                 <tr>
                                                     <th>Weekly</th>
@@ -231,13 +228,13 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-5 row-text-contain">
+                                    <div class="col-md-6 row-text-contain">
                                         <b>ATC QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
 
-                                    <div class="col-xs-7">
+                                    <div class="col-md-6">
 
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
@@ -264,13 +261,13 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-5 row-text-contain">
+                                    <div class="col-xs-6 row-text-contain">
                                         <b>PILOT QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
 
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
 
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
