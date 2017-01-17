@@ -196,7 +196,7 @@ class Command extends BaseCommand
         }
 
         $this->slack()->attach($attachment)->send();
-     }
+    }
 
     protected function getAuthorLink()
     {
