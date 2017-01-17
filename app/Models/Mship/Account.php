@@ -1369,9 +1369,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $allowedNames->push($this->name);
         $allowedNames->push($this->real_name);
 
-        if($this->networkDataAtcCurrent){
-            $allowedNames->push($this->name . " - " . $this->networkDataAtcCurrent->callsign);
-            $allowedNames->push($this->real_name . " - " . $this->networkDataAtcCurrent->callsign);
+        if ($this->networkDataAtcCurrent) {
+            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
+            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
         }
 
         return $allowedNames->filter(function($item, $key) use ($displayName) {

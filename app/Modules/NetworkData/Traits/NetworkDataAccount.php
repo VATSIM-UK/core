@@ -22,16 +22,17 @@ trait NetworkDataAccount
     public function networkDataAtcCurrent()
     {
         return $this->hasOne(\App\Modules\NetworkData\Models\Atc::class, 'account_id', 'id')
-            ->whereNull("disconnected_at")
+            ->whereNull('disconnected_at')
             ->limit(1);
     }
 
     /**
      * Determine if the user is on the network.
      *
-     * @return boolean
+     * @return bool
      */
-    public function getIsOnNetworkAttribute(){
+    public function getIsOnNetworkAttribute()
+    {
         return $this->networkDataAtcCurrent->exists;
     }
 
