@@ -1374,7 +1374,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
         }
 
-        return $allowedNames->filter(function($item, $key) use ($displayName) {
+        return $allowedNames->filter(function ($item, $key) use ($displayName) {
             return strcasecmp($item, $displayName) == 0;
         })->count() > 0;
     }
