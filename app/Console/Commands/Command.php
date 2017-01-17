@@ -159,45 +159,44 @@ class Command extends BaseCommand
      */
     protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
     {
-  		if($this->getOutput()->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE)
-  		{
-			return false;
-		}
-  		$attachment = [
-  			'fallback'    => $message,
-  			'author_name' => get_class($this),
-  			'color'       => 'good',
-  			'fields'      => [
-  				[
-  					'title' => 'Command name:',
-  					'value' => (new \ReflectionClass($this))->getShortName(),
-  					'short' => true,
-  				],
-  				[
-  					'title' => 'Command description:',
-  					'value' => $this->getDescription(),
-  					'short' => true,
-  				],
-  				[
-  					'title' => 'Message:',
-  					'value' => $message,
-  					'short' => true,
-  				],
-  			],
-  		];
+        if ($this->getOutput()->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
+            return false;
+        }
+        $attachment = [
+            'fallback'    => $message,
+            'author_name' => get_class($this),
+            'color'       => 'good',
+            'fields'      => [
+                [
+                    'title' => 'Command name:',
+                    'value' => (new \ReflectionClass($this))->getShortName(),
+                    'short' => true,
+                ],
+                [
+                    'title' => 'Command description:',
+                    'value' => $this->getDescription(),
+                    'short' => true,
+                ],
+                [
+                    'title' => 'Message:',
+                    'value' => $message,
+                    'short' => true,
+                ],
+            ],
+        ];
 
-  		$attachment['author_link'] = $this->getAuthorLink();
+        $attachment['author_link'] = $this->getAuthorLink();
 
-  		foreach ($fields as $index => $message) {
-  			$attachment['fields'][] = [
-  				'title' => $index,
-  				'value' => $message,
-  				'short' => true,
-  			];
-  		}
+        foreach ($fields as $index => $message) {
+            $attachment['fields'][] = [
+                'title' => $index,
+                'value' => $message,
+                'short' => true,
+            ];
+        }
 
-  		$this->slack()->attach($attachment)->send();
-    }
+        $this->slack()->attach($attachment)->send();
+     }
 
     protected function getAuthorLink()
     {
