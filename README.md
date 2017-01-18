@@ -17,7 +17,10 @@
 * Enable all cronjobs
 * Restart all queue processes
 
-### 2.4.1 > NEXT
+### 2.4.2 > 2.4.4
+* No specific upgrades to run.
+
+### 2.4.1 > 2.4.2
 * Run the Community Migrat `php artisan module:migrate community`
 * Run `php artisan module:migrate networkdata`
 
