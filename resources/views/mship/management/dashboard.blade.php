@@ -140,19 +140,16 @@
                         <div class="panel-body">
                             <div class="row">
 
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <div class="row">
-                                        <div class="col-xs-5">
+                                        <div class="col-md-12">
                                             <p align="center">
                                                 <b>CURRENT MEMBERSHIP(S)</b>
                                             </p>
                                         </div>
 
-                                        <div class="col-xs-7">
-
-
-
-                                            <table class="table">
+                                        <div class="col-md-12">
+                                          <table class="table">
                                                 @forelse($_account->communityGroups as $cg)
                                                     <tr>
                                                         <th>{{ $cg->name }}</th>
@@ -190,13 +187,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <div class="row">
-                                        <div class="col-xs-5">
-                                            <b>TOTAL POINTS</b>
+                                        <div class="col-md-12">
+                                            <p align="center">
+                                              <b>TOTAL POINTS</b>
+                                            </p>
                                         </div>
 
-                                        <div class="col-xs-7">
+                                        <div class="col-md-12">
                                             <table class="table">
                                                 <tr>
                                                     <th>Weekly</th>
@@ -229,14 +228,12 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-4">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                         <b>ATC QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
-
-                                    <div class="col-xs-8">
-
+                                    <div class="col-xs-6 col-lg-6 col-md-12 text-center">
                                         @foreach($_account->qualifications_atc as $qual)
                                             {{ $qual }}
                                             <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $qual->pivot->created_at }}">
@@ -262,13 +259,12 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-xs-4">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 row-text-contain text-center">
                                         <b>PILOT QUALIFICATIONS</b>
                                         <br />
                                         <small>Showing all achieved</small>
                                     </div>
-
-                                    <div class="col-xs-8">
+                                    <div class="col-xs-6 col-lg-6 col-md-12 text-center">
 
                                         @foreach($_account->qualifications_pilot as $qual)
                                             {{ $qual }}
@@ -396,7 +392,7 @@
                                             No registrations found.
                                         @endif
                                         @foreach ($_account->teamspeakRegistrations as $tsreg)
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-6 row-text-contain">
                                                 [ <strong>Registration #{{ $tsreg->id }}</strong> ]<br />
                                                 <strong>CREATED</strong>:
 

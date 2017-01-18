@@ -29,7 +29,7 @@ class Registration extends \App\Http\Controllers\BaseController
                            ->withError('You need to be a division member to register for Slack.');
         }
 
-        if (!($_slackToken = $this->account->tokens()->ofType('slack_registration')->first())) {
+        if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             $_slackToken = Token::generate('slack_registration', false, $this->account);
 
             $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
@@ -43,7 +43,7 @@ class Registration extends \App\Http\Controllers\BaseController
             }*/
         }
 
-        if ($_slackToken->expired) {
+        if ($_slackToken->is_used) {
             return Redirect::route('mship.manage.dashboard')
                            ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact Web Services.");
         }
