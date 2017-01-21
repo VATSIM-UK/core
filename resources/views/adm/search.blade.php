@@ -100,7 +100,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('#mship-accounts').DataTable({
-      paging: false,
+      "paging": false,
       "searching": false,
       "info": false,
       "ordering": true,
