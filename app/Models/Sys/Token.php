@@ -46,7 +46,7 @@ class Token extends \App\Models\Model
 
     protected $table      = 'sys_token';
     protected $primaryKey = 'token_id';
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates      = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
     protected $hidden     = ['token_id'];
 
     public function getRouteKeyName()
@@ -118,22 +118,22 @@ class Token extends \App\Models\Model
 
     public function consume()
     {
-        if (!$this or $this->is_used or $this->is_expired) {
+        if (!$this || $this->is_used || $this->is_expired) {
             return false;
         }
 
-        $this->used_at = \Carbon\Carbon::now()->toDateTimeString();
+        $this->used_at = \Carbon\Carbon::now();
         $this->save();
     }
 
     public function getIsUsedAttribute()
     {
-        return $this->attributes['used_at'] != null && \Carbon\Carbon::parse($this->attributes['used_at'])->isPast();
+        return $this->used_at != null && $this->used_at->isPast();
     }
 
     public function getIsExpiredAttribute()
     {
-        return \Carbon\Carbon::parse($this->attributes['expires_at'])->isPast();
+        return $this->expires_at != null && $this->expires_at->isPast();
     }
 
     public function __toString()
