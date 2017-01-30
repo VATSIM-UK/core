@@ -13,7 +13,7 @@
                                 <th>Type</th>
                                 <th>Frequency</th>
                                 <th>Name</th>
-                                <th>Online Time</th>
+                                <th>Logged On</th>
                             </tr>
                         </thead>
                         <tbody>
