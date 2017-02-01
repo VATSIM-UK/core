@@ -142,6 +142,17 @@ Within the new PHP environment that you're given access to, enter: `\App\Models\
 
 Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
 
+
+#### 6 - (Optional) Admin panel access
+
+If you would like to work on something in the admin panel (which includes some panels for the V/T module), you will need to perform some steps in your database to give your user the correct permissions.
+
+>The admin panel can be accessed through `vukcore.localhost/adm/dashboard` (Replace vukcore.localhost with your URL accordingly)
+
+To enable access to the panel:
+* Go to your database, and find the `mship_account_role` table. Set the `role_id` to `1` for your CID.
+* Navigate to `vukcore.localhost/adm/dashboard`. You should now be able to log into the admin panel. 
+
 #### Relax
 
 After all that setup, relax for 5 minutes!  If you've had any problems, come and find someone in the Slack team.
