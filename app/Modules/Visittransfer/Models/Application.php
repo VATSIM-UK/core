@@ -658,9 +658,10 @@ class Application extends Model
             throw new ApplicationAlreadySubmittedException($this);
         }
     }
-    
-    private function guardAgainstNonRejectableApplication(){
-        if($this->is_under_review || $this->is_submitted){
+
+    private function guardAgainstNonRejectableApplication()
+    {
+        if ($this->is_under_review || $this->is_submitted) {
             return true;
         }
 
