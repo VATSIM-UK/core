@@ -20,6 +20,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateRefereeException;
 use App\Modules\Visittransfer\Exceptions\Application\FacilityHasNoCapacityException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotAcceptedException;
 use App\Modules\Visittransfer\Exceptions\Application\CheckOutcomeAlreadySetException;
+use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotRejectableException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeExpiredException;
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmittedException;
@@ -477,7 +478,7 @@ class Application extends Model
 
     public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
     {
-        $this->guardAgainstNonUnderReviewApplication();
+        $this->guardAgainstNonRejectableApplication();
 
         $this->status      = self::STATUS_REJECTED;
         $this->status_note = $publicReason;
@@ -656,6 +657,14 @@ class Application extends Model
         if ($this->is_submitted) {
             throw new ApplicationAlreadySubmittedException($this);
         }
+    }
+    
+    private function guardAgainstNonRejectableApplication(){
+        if($this->is_under_review || $this->is_submitted){
+            return true;
+        }
+
+        throw new ApplicationNotRejectableException($this);
     }
 
     private function guardAgainstNonUnderReviewApplication()
