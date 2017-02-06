@@ -157,7 +157,7 @@ class Application extends BaseController
         return Redirect::route($redirectRoute, [$application->public_id])->withSuccess('Referee '.Input::get('referee_cid').' added successfully! They will not be contacted until you submit your application.');
     }
 
-    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, Reference $reference, \App\Modules\Visittransfer\Models\Application $application)
+    public function postRefereeDelete(ApplicationRefereeDeleteRequest $request, \App\Modules\Visittransfer\Models\Application $application, Reference $reference)
     {
         $reference->delete();
 
