@@ -211,7 +211,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'status'        => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token', 'password'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
