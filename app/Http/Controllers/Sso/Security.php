@@ -28,6 +28,7 @@ class Security extends \App\Http\Controllers\BaseController
         $token             = new Token();
         $_t                = sha1(uniqid($this->ssoAccount->username, true));
         $token->token      = md5($_t.$this->ssoAccount->api_key_private);
+        $token->request_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
         $token->return_url = Input::get('return_url');
         $token->created_at = \Carbon\Carbon::now()->toDateTimeString();
         $token->expires_at = \Carbon\Carbon::now()->addMinutes(30)->toDateTimeString();
