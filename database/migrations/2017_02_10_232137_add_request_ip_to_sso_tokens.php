@@ -13,9 +13,9 @@ class AddRequestIpToSsoTokens extends Migration
      */
     public function up()
     {
-      Schema::table('sso_token', function (Blueprint $table) {
-          $table->bigInteger('request_ip')->nullable()->after('account_id');
-      });
+        Schema::table('sso_token', function (Blueprint $table) {
+            $table->bigInteger('request_ip')->nullable()->after('account_id');
+        });
     }
 
     /**
@@ -25,8 +25,8 @@ class AddRequestIpToSsoTokens extends Migration
      */
     public function down()
     {
-      Schema::table('sso_token', function (Blueprint $table) {
-          $table->dropColumn('request_ip');
-      });
+        Schema::table('sso_token', function (Blueprint $table) {
+            $table->dropColumn('request_ip');
+        });
     }
 }
