@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRequestIpToSsoTokens extends Migration
+class AddRequestIpAndUsedAtToSsoTokens extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,7 @@ class AddRequestIpToSsoTokens extends Migration
     {
         Schema::table('sso_token', function (Blueprint $table) {
             $table->bigInteger('request_ip')->after('account_id')->nullable()->unsigned();
+            $table->timestamp('used_at')->after('created_at')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AddRequestIpToSsoTokens extends Migration
     {
         Schema::table('sso_token', function (Blueprint $table) {
             $table->dropColumn('request_ip');
+            $table->dropColumn('used_at');
         });
     }
 }
