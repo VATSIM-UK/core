@@ -56,8 +56,8 @@ class Security extends \App\Http\Controllers\BaseController
         } catch (ModelNotFoundException $e) {
             die('TOKEN NOT FOUND');
         }
-        
-        $accessToken->used_at = \Carbon\Carbon::now()->toDateTimeString();
+
+        $accessToken->used_at    = \Carbon\Carbon::now()->toDateTimeString();
         $accessToken->expires_at = \Carbon\Carbon::now()->toDateTimeString();
         $accessToken->save();
 
