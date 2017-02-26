@@ -64,14 +64,14 @@ class Facility extends Model
         unset($attributes['acceptance_emails']);
 
         if (count($input_emails) == 0 && $current_emails->count() > 0) {
-            foreach($current_emails as $email) {
+            foreach ($current_emails as $email) {
                 $email->delete();
             }
             return parent::update($attributes, $options);
         }
 
         foreach ($input_emails as $key=>$email) {
-            if (!$current_emails->contains("email", $email)) {
+            if (!$current_emails->contains('email', $email)) {
                 $new_email = new Email(['email' => $email]);
                 $this->emails()->save($new_email);
             }
@@ -79,7 +79,7 @@ class Facility extends Model
 
         foreach ($current_emails as $email) {
             if (array_search($email->email, $input_emails) === false) {
-              $email->delete();
+                $email->delete();
             }
         }
         return parent::update($attributes, $options);

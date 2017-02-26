@@ -4,7 +4,6 @@ namespace App\Modules\Visittransfer\Models\Facility;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Email extends Model
 {
     protected $table      = 'vt_facility_email';
@@ -25,5 +24,4 @@ class Email extends Model
     {
         $this->belongsTo(\App\Modules\Visittransfer\Models\Facility::class);
     }
-
 }
