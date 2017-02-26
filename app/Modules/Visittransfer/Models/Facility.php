@@ -3,7 +3,6 @@
 namespace App\Modules\Visittransfer\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
@@ -64,22 +63,22 @@ class Facility extends Model
         // We don't want these used down the line
         unset($attributes['acceptance_emails']);
 
-        if(count($input_emails) == 0 && $current_emails->count() > 0){
-            foreach($current_emails as $email){
+        if (count($input_emails) == 0 && $current_emails->count() > 0) {
+            foreach($current_emails as $email) {
                 $email->delete();
             }
             return parent::update($attributes, $options);
         }
 
-        foreach($input_emails as $key=>$email){
-            if(!$current_emails->contains("email", $email)){
+        foreach ($input_emails as $key=>$email) {
+            if (!$current_emails->contains("email", $email)) {
                 $new_email = new Email(['email' => $email]);
                 $this->emails()->save($new_email);
             }
         }
 
-        foreach($current_emails as $email){
-            if(array_search($email->email, $input_emails) === false){
+        foreach ($current_emails as $email) {
+            if (array_search($email->email, $input_emails) === false) {
               $email->delete();
             }
         }
@@ -144,7 +143,8 @@ class Facility extends Model
         return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class);
     }
 
-    public function emails(){
+    public function emails()
+    {
         return $this->hasMany(\App\Modules\Visittransfer\Models\Facility\Email::class);
     }
 
