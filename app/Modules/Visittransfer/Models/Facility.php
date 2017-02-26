@@ -67,6 +67,7 @@ class Facility extends Model
             foreach ($current_emails as $email) {
                 $email->delete();
             }
+
             return parent::update($attributes, $options);
         }
 
@@ -82,6 +83,7 @@ class Facility extends Model
                 $email->delete();
             }
         }
+
         return parent::update($attributes, $options);
     }
 
