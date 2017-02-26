@@ -116,6 +116,10 @@ class Facility extends Model
         return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class);
     }
 
+    public function emails(){
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Facility\Email::class);
+    }
+
     public function addTrainingSpace()
     {
         if ($this->training_required == 1 && $this->training_spaces !== null) {
