@@ -18,8 +18,10 @@ class Facility extends AdmController
 
     public function getCreate()
     {
+        $emails = collect();
         return $this->viewMake('visittransfer::admin.facility.create_or_update')
-                    ->with('facility', new \App\Modules\Visittransfer\Models\Facility);
+                    ->with('facility', new \App\Modules\Visittransfer\Models\Facility)
+                    ->with('emails', $emails);
     }
 
     public function postCreate(FacilityCreateUpdateRequest $request)
@@ -31,8 +33,10 @@ class Facility extends AdmController
 
     public function getUpdate(\App\Modules\Visittransfer\Models\Facility $facility)
     {
+        $emails = $facility->emails()->get();
         return $this->viewMake('visittransfer::admin.facility.create_or_update')
-                    ->with('facility', $facility);
+                    ->with('facility', $facility)
+                    ->with('emails', $emails);
     }
 
     public function postUpdate(FacilityCreateUpdateRequest $request, \App\Modules\Visittransfer\Models\Facility $facility)
@@ -46,7 +50,7 @@ class Facility extends AdmController
     {
         return \Input::only([
             'name', 'description', 'can_visit', 'can_transfer', 'training_required', 'training_team', 'training_spaces', 'stage_statement_enabled',
-            'stage_reference_enabled', 'stage_reference_quantity', 'stage_checks', 'auto_acceptance',
+            'stage_reference_enabled', 'stage_reference_quantity', 'stage_checks', 'auto_acceptance', 'acceptance_emails'
         ]);
     }
 }
