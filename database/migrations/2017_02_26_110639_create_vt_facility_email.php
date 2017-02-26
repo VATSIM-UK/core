@@ -28,6 +28,6 @@ class CreateVtFacilityEmail extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vt_facility_emails');
+        Schema::dropIfExists('vt_facility_email');
     }
 }
