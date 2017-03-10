@@ -122,7 +122,7 @@
     <div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">
       <div class="row" style="background-color: #17375e; border-bottom: 5px solid #00b0f0;">
         <div class="col-xs-8" style="padding:25px;">
-          <img width="200px" style="padding-bottom:5px;" src="http://core.vatsim.uk/assets/images/vatsim_uk_logo.png">
+          <img width="200" style="width:200px;padding-bottom:5px;" src="http://core.vatsim.uk/assets/images/vatsim_uk_logo.png">
           <i style="color:rgb(205, 205, 205);"><small>Welcome to VATSIM UK</small></i>
         </div>
       </div>
