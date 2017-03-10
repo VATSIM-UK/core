@@ -52,6 +52,7 @@ class SendNotificationEmail extends Job implements ShouldQueue
             'recipientName' => $recipientName,
             'sender'        => $sender,
             'body'          => $body,
+            'subject'       => $this->subject,
         ], function ($m) use ($subject, $recipient, $recipientEmail, $sender, $senderEmail, $senderDisplayAs) {
             $m->subject($subject);
             $m->to(($recipientEmail ? $recipientEmail : $recipient->email), $recipient->name);

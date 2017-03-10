@@ -44,7 +44,7 @@ class SendMessageEmail extends Job implements ShouldQueue
                 $recipientAddress = $this->verificationEmail->email;
             }
 
-            $mailer->send('emails.messages.post', ['recipient' => $participant, 'sender' => $post->author, 'body' => $this->post->content], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
+            $mailer->send('emails.messages.post', ['recipient' => $participant, 'sender' => $post->author, 'body' => $this->post->content, 'subject' => $post->thread->subject], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
                 $m->subject(($isNew ? $post->thread->subject : 'RE: '.$post->thread->subject));
                 $m->to($recipientAddress, $participant->name);
 
