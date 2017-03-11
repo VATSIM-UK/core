@@ -14,7 +14,7 @@ class AddRequestIpAndUsedAtToSsoTokens extends Migration
     public function up()
     {
         Schema::table('sso_token', function (Blueprint $table) {
-            $table->bigInteger('request_ip')->after('account_id')->unsigned()->default(0);
+            $table->string('request_ip', 45)->after('account_id')->default("0.0.0.0");
             $table->timestamp('used_at')->after('created_at')->nullable();
         });
     }
