@@ -47,16 +47,6 @@ class Activity extends Model
         return $this->morphTo()->withTrashed();
     }
 
-    public function getIpAttribute()
-    {
-        return long2ip($this->attributes['ip']);
-    }
-
-    public function setIpAttribute($ip)
-    {
-        $this->attributes['ip'] = ip2long($ip);
-    }
-
     public function getTypeAttribute()
     {
         $strippedType = str_replace('\\', '/', $this->attributes['subject_type']);

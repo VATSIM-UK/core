@@ -85,23 +85,4 @@ class Registration extends \App\Models\Model
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    public function setRegistrationIpAttribute($value)
-    {
-        $this->attributes['registration_ip'] = ip2long($value);
-    }
-
-    public function getRegistrationIpAttribute()
-    {
-        return long2ip($this->attributes['registration_ip']);
-    }
-
-    public function setLastIpAttribute($value)
-    {
-        $this->attributes['last_ip'] = ip2long($value);
-    }
-
-    public function getLastIpAttribute()
-    {
-        return long2ip($this->attributes['last_ip']);
-    }
 }
