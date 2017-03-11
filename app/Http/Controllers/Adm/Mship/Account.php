@@ -478,7 +478,7 @@ class Account extends AdmController
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType->id, Input::get('content'), Auth::user());
+        $account->addNote($noteType, Input::get('content'), Auth::user());
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
                        ->withSuccess('The note has been saved successfully!');
