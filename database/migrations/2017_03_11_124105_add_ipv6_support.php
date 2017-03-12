@@ -35,14 +35,14 @@ class AddIpv6Support extends Migration
          */
 
         Schema::table('sys_activity', function (Blueprint $table) {
-           $table->string('ip_new', 45)->after('ip')->default('0.0.0.0');
+            $table->string('ip_new', 45)->after('ip')->default('0.0.0.0');
         });
 
         $this->convertOldIPsToNew('sys_activity', 'ip', 'ip_new');
 
         Schema::table('sys_activity', function (Blueprint $table) {
-           $table->dropColumn('ip');
-           $table->renameColumn('ip_new', 'ip');
+            $table->dropColumn('ip');
+            $table->renameColumn('ip_new', 'ip');
         });
 
          /*
@@ -50,7 +50,7 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('sys_sessions', function (Blueprint $table) {
-           $table->string('ip_address', 45)->nullable(false)->default('0.0.0.0')->change();
+            $table->string('ip_address', 45)->nullable(false)->default('0.0.0.0')->change();
         });
 
         /*
@@ -73,18 +73,18 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
-           $table->string('registration_ip_new', 45)->after('registration_ip')->default('0.0.0.0');
-           $table->string('last_ip_new', 45)->after('last_ip')->default('0.0.0.0');
+            $table->string('registration_ip_new', 45)->after('registration_ip')->default('0.0.0.0');
+            $table->string('last_ip_new', 45)->after('last_ip')->default('0.0.0.0');
         });
 
         $this->convertOldIPsToNew('teamspeak_registration', 'registration_ip', 'registration_ip_new');
         $this->convertOldIPsToNew('teamspeak_registration', 'last_ip', 'last_ip_new');
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
-           $table->dropColumn('registration_ip');
-           $table->dropColumn('last_ip');
-           $table->renameColumn('registration_ip_new', 'registration_ip');
-           $table->renameColumn('last_ip_new', 'last_ip');
+            $table->dropColumn('registration_ip');
+            $table->dropColumn('last_ip');
+            $table->renameColumn('registration_ip_new', 'registration_ip');
+            $table->renameColumn('last_ip_new', 'last_ip');
         });
 
 
@@ -92,11 +92,11 @@ class AddIpv6Support extends Migration
 
     public function convertOldIPsToNew($table, $oldcolumn, $newcolumn)
     {
-        DB::table($table)->update([$newcolumn => DB::raw ('INET_NTOA(`'.$oldcolumn.'`)')]);
+        DB::table($table)->update([$newcolumn => DB::raw('INET_NTOA(`'.$oldcolumn.'`)')]);
     }
     public function convertNewIPsToOld($table, $oldcolumn, $newcolumn)
     {
-        DB::table($table)->update([$oldcolumn => DB::raw ('INET_ATON(`'.$newcolumn.'`)')]);
+        DB::table($table)->update([$oldcolumn => DB::raw('INET_ATON(`'.$newcolumn.'`)')]);
     }
 
     /**
@@ -129,21 +129,21 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('sys_activity', function (Blueprint $table) {
-           $table->bigInteger('ip_old')->after('ip')->unsigned()->default('0');
+            $table->bigInteger('ip_old')->after('ip')->unsigned()->default('0');
         });
 
         $this->convertNewIPsToOld('sys_activity', 'ip_old', 'ip');
 
         Schema::table('sys_activity', function (Blueprint $table) {
-           $table->dropColumn('ip');
-           $table->renameColumn('ip_old', 'ip');
+            $table->dropColumn('ip');
+            $table->renameColumn('ip_old', 'ip');
         });
 
         /*
           SYS_SESSIONS - Not doing too much to this as it is not implemented at the moment
         */
         Schema::table('sys_sessions', function (Blueprint $table) {
-           $table->string('ip_address', 45)->nullable()->default(null)->change();
+            $table->string('ip_address', 45)->nullable()->default(null)->change();
         });
 
         /*
@@ -151,14 +151,14 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
-           $table->bigInteger('ip_old')->after('ip')->unsigned()->default('0');
+            $table->bigInteger('ip_old')->after('ip')->unsigned()->default('0');
         });
 
         $this->convertNewIPsToOld('sys_timeline_entry', 'ip_old', 'ip');
 
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
-           $table->dropColumn('ip');
-           $table->renameColumn('ip_old', 'ip');
+            $table->dropColumn('ip');
+            $table->renameColumn('ip_old', 'ip');
         });
 
         /*
@@ -166,18 +166,18 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
-           $table->bigInteger('registration_ip_old')->after('registration_ip')->unsigned()->default('0');
-           $table->bigInteger('last_ip_old')->after('last_ip')->unsigned()->nullable()->default('0');
+            $table->bigInteger('registration_ip_old')->after('registration_ip')->unsigned()->default('0');
+            $table->bigInteger('last_ip_old')->after('last_ip')->unsigned()->nullable()->default('0');
         });
 
         $this->convertNewIPsToOld('teamspeak_registration', 'registration_ip_old', 'registration_ip');
         $this->convertNewIPsToOld('teamspeak_registration', 'last_ip_old', 'last_ip');
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
-           $table->dropColumn('registration_ip');
-           $table->dropColumn('last_ip');
-           $table->renameColumn('registration_ip_old', 'registration_ip');
-           $table->renameColumn('last_ip_old', 'last_ip');
+            $table->dropColumn('registration_ip');
+            $table->dropColumn('last_ip');
+            $table->renameColumn('registration_ip_old', 'registration_ip');
+            $table->renameColumn('last_ip_old', 'last_ip');
         });
     }
 }
