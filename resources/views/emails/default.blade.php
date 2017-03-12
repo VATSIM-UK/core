@@ -6,10 +6,10 @@
     <title></title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <style>
-    @import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
-    [style*="Roboto"] {
-        font-family: 'Roboto', Arial, sans-serif !important
-    }
+      @import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
+      [style*="Roboto"] {
+          font-family: 'Roboto', Arial, sans-serif !important
+      }
     </style>
 </head>
 
@@ -155,7 +155,7 @@
             <td></td>
             <td class="container" bgcolor="#FFFFFF">
                 <div class="content">
-                    <table class="deviceWidth" style="background-color: rgb(23, 55, 94);" align="center" bgcolor="#17375e" border="0" cellpadding="0" cellspacing="0" width="600">
+                    <table class="deviceWidth" style="background-color: rgb(23, 55, 94); width:100%" align="center" bgcolor="#17375e" border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
                                 <td style="padding: 20px 15px 0 15px; background-color: rgb(23, 55, 94);" bgcolor="#17375e">
@@ -212,11 +212,11 @@
                             </td>
                         </tr>
                     </table>
-                    <table class="deviceWidth" align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                    <table class="deviceWidth" style="width:100%" align="center" border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
                                 <td style="padding: 5px 10px;" bgcolor="#363636">
-                                    <table class="deviceWidth" align="center" border="0" cellpadding="0" cellspacing="0" width="580">
+                                    <table class="deviceWidth" align="center" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                             <tr>
                                                 <td>
