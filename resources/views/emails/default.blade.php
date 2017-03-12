@@ -216,11 +216,11 @@
                         <tbody>
                             <tr>
                                 <td style="padding: 5px 10px;" bgcolor="#363636">
-                                    <table class="deviceWidth" align="center" border="0" cellpadding="0" cellspacing="0">
+                                    <table class="deviceWidth" width="100%" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <table class="deviceWidth" align="left" border="0" cellpadding="10" cellspacing="0" width="40%">
+                                                    <table class="deviceWidth" width="100%" border="0" cellpadding="10" cellspacing="0">
                                                         <tbody>
                                                             <tr>
                                                                 <td class="center" style="text-align: left; color: rgb(241, 241, 241); line-height: 22px; padding-top: 5px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-size: 11px; font-weight: normal; vertical-align: top;" valign="top">
