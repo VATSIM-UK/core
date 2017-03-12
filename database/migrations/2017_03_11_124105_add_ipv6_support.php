@@ -86,14 +86,13 @@ class AddIpv6Support extends Migration
             $table->renameColumn('registration_ip_new', 'registration_ip');
             $table->renameColumn('last_ip_new', 'last_ip');
         });
-
-
     }
 
     public function convertOldIPsToNew($table, $oldcolumn, $newcolumn)
     {
         DB::table($table)->update([$newcolumn => DB::raw('INET_NTOA(`'.$oldcolumn.'`)')]);
     }
+
     public function convertNewIPsToOld($table, $oldcolumn, $newcolumn)
     {
         DB::table($table)->update([$oldcolumn => DB::raw('INET_ATON(`'.$newcolumn.'`)')]);
