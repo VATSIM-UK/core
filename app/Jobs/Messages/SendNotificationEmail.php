@@ -47,7 +47,7 @@ class SendNotificationEmail extends Job implements ShouldQueue
         $recipientEmail  = $this->recipientEmail;
         $recipientName   = $this->recipientName;
 
-        $mailer->send('emails.messages.post', [
+        $mailer->send(['emails.messages.post', 'emails.messages.plain_text'], [
             'recipient'     => $recipient,
             'recipientName' => $recipientName,
             'sender'        => $sender,
