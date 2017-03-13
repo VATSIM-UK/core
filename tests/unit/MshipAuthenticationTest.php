@@ -53,7 +53,7 @@ class MshipAuthenticationTest extends TestCase
         $expectedRedirectRegExp = '#\h*<title>Redirecting to http:\/\/.*?\/mship\/auth\/login<\/title>\h*#';
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
         Auth::shouldReceive('check')->once()->andReturn(false);
-        
+
         $result = $this->authenticationInstance->getRedirect();
 
         $this->assertInstanceOf($expectedObjectType, $result);
@@ -73,7 +73,7 @@ class MshipAuthenticationTest extends TestCase
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
-        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save]');
+        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save]');
         $account->shouldReceive('hasPassword')->once()->andReturn(true);
         $account->shouldReceive('load')->once()->andReturnNull();
         $account->shouldReceive('save')->once()->andReturnNull();
@@ -101,7 +101,7 @@ class MshipAuthenticationTest extends TestCase
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
-        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute]');
+        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute]');
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
         $account->shouldReceive('save')->once()->andReturnNull();
@@ -130,7 +130,7 @@ class MshipAuthenticationTest extends TestCase
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
-        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute]');
+        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute]');
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
         $account->shouldReceive('save')->once()->andReturnNull();
@@ -160,7 +160,7 @@ class MshipAuthenticationTest extends TestCase
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
-            'App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
+            'App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
         );
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
@@ -193,7 +193,7 @@ class MshipAuthenticationTest extends TestCase
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
-            'App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
+            'App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
         );
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
@@ -221,7 +221,7 @@ class MshipAuthenticationTest extends TestCase
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
-            'App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
+            'App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
         );
         $account->shouldReceive('hasPassword')->once()->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
@@ -253,7 +253,7 @@ class MshipAuthenticationTest extends TestCase
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
-            'App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
+            'App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
         );
         $account->shouldReceive('hasPassword')->never();
         $account->shouldReceive('load')->once()->andReturnNull();
@@ -285,7 +285,7 @@ class MshipAuthenticationTest extends TestCase
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
         $account = Mockery::mock(
-            'App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
+            'App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]'
         );
         $account->shouldReceive('hasPassword')->never();
         $account->shouldReceive('load')->once()->andReturnNull();
@@ -310,7 +310,7 @@ class MshipAuthenticationTest extends TestCase
     public function it_forgets_duplicate_ip_when_going_to_dashboard()
     {
         // Set up the account mock and predict how many times each of the mocked methods will be called
-        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, getLastLoginIpAttribute, load, save, getMandatoryPasswordAttribute]');
+        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute]');
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
         $account->shouldReceive('save')->once()->andReturnNull();
