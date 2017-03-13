@@ -158,8 +158,8 @@ Route::group(['domain' => config('app.url')], function () {
                     Route::get('/add', ['as' => 'mship.manage.email.add', 'uses' => 'Management@getEmailAdd']);
                     Route::post('/add', ['as' => 'mship.manage.email.add.post', 'uses' => 'Management@postEmailAdd']);
 
-                    Route::get('/delete', ['as' => 'mship.manage.email.delete', 'uses' => 'Management@getEmailDelete']);
-                    Route::post('/delete', ['as' => 'mship.manage.email.delete.post', 'uses' => 'Management@postEmailDelete']);
+                    Route::get('/delete/{email}', ['as' => 'mship.manage.email.delete', 'uses' => 'Management@getEmailDelete']);
+                    Route::post('/delete/{email}', ['as' => 'mship.manage.email.delete.post', 'uses' => 'Management@postEmailDelete']);
 
                     Route::get('/assignments', ['as' => 'mship.manage.email.assignments', 'uses' => 'Management@getEmailAssignments']);
                     Route::post('/assignments', ['as' => 'mship.manage.email.assignments.post', 'uses' => 'Management@postEmailAssignments']);

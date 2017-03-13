@@ -73,6 +73,32 @@ class Management extends \App\Http\Controllers\BaseController
                        ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
     }
 
+    public function getEmailDelete(AccountEmail $email)
+    {
+        // Is this the user's email?
+        if($email->account->id != $this->account->id){
+            return Redirect::route('mship.manage.dashboard');
+        }
+
+        return $this->viewMake('mship.management.email.delete')
+                    ->with('email', $email)
+                    ->with('assignments', $email->ssoEmails);
+    }
+
+    public function postEmailDelete(AccountEmail $email)
+    {
+        // Is this the user's email?
+        if($email->account->id != $this->account->id){
+            return Redirect::route('mship.manage.dashboard');
+        }
+
+        // Delete the secondary email
+        $email->delete();
+
+        return Redirect::route('mship.manage.dashboard')
+                       ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
+    }
+
     public function getEmailAssignments()
     {
         // Get all SSO systems
