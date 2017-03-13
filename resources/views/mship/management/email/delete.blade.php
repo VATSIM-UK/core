@@ -12,15 +12,11 @@
       @if ($assignments->count() > 0)
         <p>
           Deleteing this email will reset the following SSO assignments to their default value ({{ \Auth::user()->email }})
-          <div class="row">
-            <div class="col-xs-2 col-xs-offset-5">
-              <ul>
+            <div align="center">
                 @foreach ($assignments as $assignment)
-                  <li>{{ $assignment->ssoAccount->name }}</li>
+                  &bull; {{ $assignment->ssoAccount->name }}</br>
                 @endforeach
-              </ul>
             </div>
-          </div>
         </p>
       @endif
       {!! Form::open(["route" => ["mship.manage.email.delete.post", $email->id], "class" => "form-horizontal"]) !!}
