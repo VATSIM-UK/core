@@ -118,8 +118,7 @@ class Email extends \Eloquent
     {
         parent::boot();
 
-        static::deleted(function($email)
-        {
+        static::deleted(function($email) {
             // Cause the delete of a secondary email to cascade to its assignments
             $email->ssoEmails()->delete();
         });
