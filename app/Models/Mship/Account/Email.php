@@ -113,4 +113,15 @@ class Email extends \Eloquent
 
         return $saveResult;
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function($email)
+        {
+            // Cause the delete of a secondary email to cascade to its assignments
+            $email->ssoEmails()->delete();
+        });
+    }
 }
