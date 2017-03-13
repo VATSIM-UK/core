@@ -15,14 +15,11 @@
 
 <body bgcolor="#f5f5f5">
     <style type="text/css">
-        /* -------------------------------------
-        GLOBAL
-        ------------------------------------- */
+        /* GLOBAL */
         * {
             margin:0;
             padding:0;
             font-family: Arial, sans-serif, 'Roboto';
-            /*font-size: 100%;*/
             line-height: 1.6;
         }
 
@@ -47,9 +44,7 @@
         }
 
 
-        /* -------------------------------------
-        BODY
-        ------------------------------------- */
+        /* BODY */
         table.body-wrap {
             width: 100%;
             padding: 20px;
@@ -60,9 +55,7 @@
         }
 
 
-        /* -------------------------------------
-        FOOTER
-        ------------------------------------- */
+        /* FOOTER */
         table.footer-wrap {
             width: 100%;
             clear:both!important;
@@ -79,9 +72,7 @@
         }
 
 
-        /* -------------------------------------
-        TYPOGRAPHY
-        ------------------------------------- */
+        /* TEXT */
         h1,h2,h3{
             font-family: Arial, sans-serif, 'Roboto';
             line-height: 1.1;
@@ -113,15 +104,10 @@
             list-style-position: inside;
         }
 
-        /* ---------------------------------------------------
-        RESPONSIVENESS
-        Nuke it from orbit. It's the only way to be sure.
-        ------------------------------------------------------ */
+        /* RESPONSIVENE STYLING */
 
-        /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
         .container {
             display:block!important;
-            /*max-width:600px!important;*/
             margin:0 auto!important; /* makes it centered */
             clear:both!important;
         }
@@ -131,17 +117,15 @@
             padding:20px;
         }
 
-        /* This should also be a block element, so that it will fill 100% of the .container */
         .content {
-            /*max-width:600px;*/
             margin:0 auto;
             display:block;
         }
 
-        /* Let's make sure tables in the content area are 100% wide */
         .content table {
             width: 100%;
         }
+
         #panels{
             padding-left: 10px;
             padding-right: 10px;
