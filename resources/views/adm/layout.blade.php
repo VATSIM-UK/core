@@ -62,8 +62,12 @@
         @if(!isset($shellOnly) OR !$shellOnly)
             <header class="header">
                 <a href="{{ URL::route("adm.dashboard") }}" class="logo">
-                    <!-- Add the class icon to your logo image or logo icon to add the margining -->
-                    VATSIM UK
+                  <!-- Add the class icon to your logo image or logo icon to add the margining -->
+                  <div class="hidden-md hidden-lg" style="float:left;">
+                    <span data-toggle="offcanvas">
+                      <i class="fa fa-bars" aria-hidden="true"></i>
+                    </span>
+                  </div> VATSIM UK
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
@@ -177,7 +181,7 @@
                 singleton : true,
             });
         </script>
-        
+
         <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

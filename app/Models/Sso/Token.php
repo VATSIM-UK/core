@@ -36,7 +36,7 @@ class Token extends \App\Models\Model
 
     protected $table      = 'sso_token';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
+    protected $dates      = ['created_at', 'updated_at', 'used_at'];
     protected $hidden     = ['token_id'];
 
     public function account()

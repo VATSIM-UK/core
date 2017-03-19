@@ -603,7 +603,7 @@ body > .header .logo .icon {
     float: right;
   }
 }
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 992px) {
   body > .header {
     position: relative;
   }
