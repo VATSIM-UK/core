@@ -159,6 +159,9 @@ class Command extends BaseCommand
      */
     protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
     {
+        if ($this->getOutput()->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
+            return false;
+        }
         $attachment = [
             'fallback'    => $message,
             'author_name' => get_class($this),
