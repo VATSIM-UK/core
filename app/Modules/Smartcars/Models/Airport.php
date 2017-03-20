@@ -6,25 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Airport extends Model
 {
-    protected $table      = "smartcars_airport";
+    protected $table      = 'smartcars_airport';
     protected $fillable   = [
-        "icao",
-        "name",
-        "country",
-        "latitude",
-        "longitude",
+        'icao',
+        'name',
+        'country',
+        'latitude',
+        'longitude',
     ];
-    public $timestamps = true;
+    public $timestamps    = true;
     protected $dates      = [
-        "created_at",
-        "updated_at",
+        'created_at',
+        'updated_at',
     ];
 
-    public static function findByIcao($icao){
-        return Airport::icao($icao)->first();
+    public static function findByIcao($icao)
+    {
+        return self::icao($icao)->first();
     }
 
-    public function scopeIcao($query, $icao){
-        return $query->where("icao", "LIKE", $icao);
+    public function scopeIcao($query, $icao)
+    {
+        return $query->where('icao', 'LIKE', $icao);
     }
 }

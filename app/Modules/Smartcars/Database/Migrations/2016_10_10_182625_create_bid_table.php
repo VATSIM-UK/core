@@ -15,10 +15,10 @@ class CreateBidTable extends Migration
     {
         Schema::create('smartcars_bid', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer("flight_id")->unsigned();
-            $table->integer("account_id")->unsigned();
+            $table->integer('flight_id')->unsigned();
+            $table->integer('account_id')->unsigned();
             $table->timestamps();
-            $table->timestamp("completed_at")->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->softDeletes();
         });
     }

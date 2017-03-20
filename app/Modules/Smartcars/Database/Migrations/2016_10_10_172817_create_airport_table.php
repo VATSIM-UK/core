@@ -15,11 +15,11 @@ class CreateAirportTable extends Migration
     {
         Schema::create('smartcars_airport', function (Blueprint $table) {
             $table->increments('id');
-            $table->string("icao", 4)->unique();
-            $table->text("name");
-            $table->string("country", 50);
-            $table->float("latitude");
-            $table->float("longitude");
+            $table->string('icao', 4)->unique();
+            $table->text('name');
+            $table->string('country', 50);
+            $table->float('latitude');
+            $table->float('longitude');
             $table->timestamps();
         });
     }

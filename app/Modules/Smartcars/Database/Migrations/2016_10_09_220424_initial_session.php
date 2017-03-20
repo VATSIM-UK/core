@@ -15,8 +15,8 @@ class InitialSession extends Migration
     {
         Schema::create('smartcars_session', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string("session_id", 64);
-            $table->integer("account_id")->unsigned();
+            $table->string('session_id', 64);
+            $table->integer('account_id')->unsigned();
             $table->timestamps();
         });
     }

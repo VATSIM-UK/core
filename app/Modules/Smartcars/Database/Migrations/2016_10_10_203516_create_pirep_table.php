@@ -15,15 +15,15 @@ class CreatePirepTable extends Migration
     {
         Schema::create('smartcars_pirep', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer("bid_id")->unsigned();
-            $table->integer("aircraft_id")->unsigned();
-            $table->text("route");
-            $table->time("flight_time");
-            $table->integer("landing_rate");
-            $table->text("comments");
-            $table->float("fuel_used");
-            $table->text("log");
-            $table->tinyInteger("status")->default(2);
+            $table->integer('bid_id')->unsigned();
+            $table->integer('aircraft_id')->unsigned();
+            $table->text('route');
+            $table->time('flight_time');
+            $table->integer('landing_rate');
+            $table->text('comments');
+            $table->float('fuel_used');
+            $table->text('log');
+            $table->tinyInteger('status')->default(2);
             $table->timestamps();
         });
     }

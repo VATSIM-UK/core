@@ -456,8 +456,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
                     ->withTimestamps();
     }
 
-    public function pireps(){
-        return $this->hasManyThrough(\App\Modules\Smartcars\Models\Pirep::class, \App\Modules\Smartcars\Models\Bid::class, "account_id", "bid_id", "id");
+    public function pireps()
+    {
+        return $this->hasManyThrough(\App\Modules\Smartcars\Models\Pirep::class, \App\Modules\Smartcars\Models\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
     /**
