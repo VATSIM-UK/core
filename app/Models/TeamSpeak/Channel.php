@@ -5,14 +5,14 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model as Model;
 
 /**
- * App\Models\TeamSpeak\Channel
+ * App\Models\TeamSpeak\Channel.
  *
  * @property-read \App\Models\TeamSpeak\Channel $parent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
  * @property-read mixed $protected
  * @mixin \Eloquent
- * @property integer $id
- * @property integer $parent_id
+ * @property int $id
+ * @property int $parent_id
  * @property string $name
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
@@ -21,11 +21,11 @@ use App\Models\Model as Model;
  */
 class Channel extends Model
 {
-    public $timestamps = false;
-    public $incrementing = false;
-    protected $table = 'teamspeak_channel';
+    public $timestamps    = false;
+    public $incrementing  = false;
+    protected $table      = 'teamspeak_channel';
     protected $primaryKey = 'id';
-    protected $guarded = [];
+    protected $guarded    = [];
 
     /**
      * The parent of the current channel.

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AllowInfinityTrainingSpaces extends Migration
@@ -12,7 +11,7 @@ class AllowInfinityTrainingSpaces extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE `vt_facility` MODIFY `training_spaces` MEDIUMINT SIGNED NULL;");
+        DB::statement('ALTER TABLE `vt_facility` MODIFY `training_spaces` MEDIUMINT SIGNED NULL;');
     }
 
     /**
@@ -22,7 +21,6 @@ class AllowInfinityTrainingSpaces extends Migration
      */
     public function down()
     {
-
-        DB::statement("ALTER TABLE `vt_facility` MODIFY `training_spaces` MEDIUMINT UNSIGNED NOT NULL;");
+        DB::statement('ALTER TABLE `vt_facility` MODIFY `training_spaces` MEDIUMINT UNSIGNED NOT NULL;');
     }
 }

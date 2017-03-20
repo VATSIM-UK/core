@@ -6,9 +6,8 @@ use Cache;
 use stdClass;
 
 /**
- * Class Dropbox
+ * Class Dropbox.
  *
- * @package App\Libraries
  * @todo add error handling for API requests
  * @todo add error handling for API responses
  */
@@ -25,11 +24,11 @@ class Dropbox
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($parameters));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . env('DROPBOX_ACCESS_TOKEN'),
+            'Authorization: Bearer '.env('DROPBOX_ACCESS_TOKEN'),
             'Content-Type: application/json',
         ]);
 
-        $response = new stdClass();
+        $response       = new stdClass();
         $response->data = json_decode(curl_exec($ch));
         $response->code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
@@ -41,10 +40,10 @@ class Dropbox
     public static function getLatestCursor()
     {
         $fields = [
-            'path' => '',
-            'recursive' => true,
+            'path'               => '',
+            'recursive'          => true,
             'include_media_info' => false,
-            'include_deleted' => false,
+            'include_deleted'    => false,
         ];
 
         $response = self::apiRequest('/files/list_folder/get_latest_cursor', $fields);

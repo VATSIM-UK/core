@@ -66,7 +66,7 @@ _We'll warn you now, NPM can be a bit of a pain._
 
 ### Pulling the Code
 
-TL;DR: Fork our [GitLab Repository](https://gitlab.com/vatsim-uk/core), and pull the code to your `C:\wamp\www\vukcore` directory.
+TL;DR: Fork our [GitHub Repository](https://github.com/vatsim-uk/core), and pull the code to your `C:\wamp\www\vukcore` directory.
 
 Some good tutorials on _how to use Git_:
 * [CodeAcademy](https://www.codecademy.com/learn/learn-git)
@@ -74,7 +74,7 @@ Some good tutorials on _how to use Git_:
 * [Try.GitHub.Io](https://try.github.io/levels/1/challenges/1)
 * [Laracasts](https://laracasts.com/series/git-me-some-version-control) - premium, but the best $9 you'll spend a month.
 
-If you're going to be contributing code to the repository then you'll need to visit [our repository](https://gitlab.com/vatsim-uk/core) and click the button that says `Fork`.  This will create a personal copy of the repository (one that you can write to), since you won't have write permissions on our repository.
+If you're going to be contributing code to the repository then you'll need to visit [our repository](https://github.com/vatsim-uk/core) and click the button that says `Fork`.  This will create a personal copy of the repository (one that you can write to), since you won't have write permissions on our repository.
 
 With that done, open up your chosen Git tool and checkout **your** repository into `C:\wamp\www` (or wherver you installed WampServer).
 
@@ -119,6 +119,8 @@ Laravel makes use of Database migrations for setting up/adding seed data to the 
 
 You'll need to run these with `php artisan migrate --step -vvv`.
 
+>(You might also need to run `php artisan module:migrate -vvv` to remove various errors about the `vt_application` table, or others, not existing on the inital setup of your local installation)
+
 I'd suggest you read about [Laravel migrations](https://www.laravel.com/docs/master/migrations).
 
 #### 4 - Run Gulp
@@ -140,15 +142,26 @@ Within the new PHP environment that you're given access to, enter: `\App\Models\
 
 Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
 
+
+#### 6 - (Optional) Admin panel access
+
+If you would like to work on something in the admin panel (which includes some panels for the V/T module), you will need to perform some steps in your database to give your user the correct permissions.
+
+>The admin panel can be accessed through `vukcore.localhost/adm/dashboard` (Replace vukcore.localhost with your URL accordingly)
+
+To enable access to the panel:
+* Go to your database, and find the `mship_account_role` table. Set the `role_id` to `1` for your CID.
+* Navigate to `vukcore.localhost/adm/dashboard`. You should now be able to log into the admin panel. 
+
 #### Relax
 
 After all that setup, relax for 5 minutes!  If you've had any problems, come and find someone in the Slack team.
 
 ## Contributing to the code
 
-If you're just getting started with GitLab (and project contributions) then we suggest you take a look at issues marked with the "up-for-grabs" label.  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Ken C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
+If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues marked with the "up-for-grabs" label.  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Ken C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
 
-If you're comfortable with contributing to Open Source projects on GitLab **please ensure you read our workflow**.
+If you're comfortable with contributing to Open Source projects on GitHub **please ensure you read our workflow**.
 
 It is expected that you will follow the GitFlow Workflow for managing the repository, but here's some important points:
 
@@ -195,11 +208,11 @@ There may be times that a test is already written - in these circumstances it is
 
 We welcome merge requests with fixes and improvements to the project.  The features we really would like public support on are marked with "up-for-grabs" but other improvements are also welcome - please ensure you read over the merge work-flow below.
 
-If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core Web Services Repository](https://gitlab.com/vatsim-uk/core/issues).
+If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core Web Services Repository](https://github.com/vatsim-uk/core/issues).
 
 The work-flow for submitting a new merge request is designed to be simple, but also ensure consistency from **all** contributors:
 
-* Fork the project into your personal space on GitLab.com
+* Fork the project into your personal space on GitHub.com
 * Create a new branch (with the name `<issue_number>-<name>`, replacing issue_number with the issue number you're resolving)
  * The exception to this is where an entire feature is being tackled, spanning multiple issues.  In this case you can create a `feature/<name>` branch.
 * Commit your changes
@@ -224,5 +237,3 @@ We are committed to making participation in this project a harassment-free exper
 Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues and other contributions that are not aligned to this Code of Conduct.
 
 This code of conduct applies both within this project space and public spaces when an individual is representing the project or its community.
-
-It is expected that you will **not** disclose the contents of the repository.  Any access requires for the issue tracker or codebase should be sent to the Web Services Director of VATSIM UK.

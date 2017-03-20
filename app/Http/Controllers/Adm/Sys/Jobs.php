@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Sys;
 
-use App\Http\Controllers\Adm\AdmController;
-use Artisan;
 use DB;
+use Artisan;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Adm\AdmController;
 
 class Jobs extends AdmController
 {
@@ -14,7 +14,7 @@ class Jobs extends AdmController
         parent::__construct();
 
         if (config('queue.default') !== 'database') {
-            abort(500, 'Unable to manage jobs using ' . config('queue.default') . ' queue driver.');
+            abort(500, 'Unable to manage jobs using '.config('queue.default').' queue driver.');
         }
     }
 
@@ -27,15 +27,15 @@ class Jobs extends AdmController
         $jobs = $jobs->paginate(20);
 
         foreach ($jobs as $job) {
-            $payload = json_decode($job->payload, true);
-            $job->job = $payload['job'];
+            $payload   = json_decode($job->payload, true);
+            $job->job  = $payload['job'];
             $job->data = $payload['data'];
         }
 
         foreach ($jobs as $job) {
             foreach ($job->data as $key => &$data) {
-                $data = str_replace(['{', '}', ';'], ['{<br>', '}<br>', ';<br>'], $data);
-                $data = explode("<br>", $data);
+                $data  = str_replace(['{', '}', ';'], ['{<br>', '}<br>', ';<br>'], $data);
+                $data  = explode('<br>', $data);
                 $count = 0;
                 foreach ($data as &$line) {
                     $startObject = false;
@@ -48,22 +48,22 @@ class Jobs extends AdmController
                         }
                     }
 
-                    $line = str_repeat('&nbsp;', $count) . $line;
+                    $line = str_repeat('&nbsp;', $count).$line;
 
                     $count += $startObject ? 4 : 0;
                 }
 
-                $data = implode("<br>", $data);
+                $data = implode('<br>', $data);
             }
         }
-        
+
         return $this->viewMake('adm.sys.jobs.failed')->with('jobs', $jobs);
     }
 
     public function postFailed(Request $request, $id)
     {
         if ($request->has('filter_query')) {
-            $ids = DB::table('jobs_failed')->where('payload', 'LIKE', '%'.$request->input('filter_query').'%')->pluck('id');
+            $ids      = DB::table('jobs_failed')->where('payload', 'LIKE', '%'.$request->input('filter_query').'%')->pluck('id');
             $exitCode = Artisan::call('queue:retry', ['id' => $ids]);
         } elseif ($id == 'all') {
             $exitCode = Artisan::call('queue:retry', ['id' => ['all']]);

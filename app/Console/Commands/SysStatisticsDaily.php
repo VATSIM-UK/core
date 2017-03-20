@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\State;
-use App\Models\Statistic;
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
+use App\Models\Statistic;
+use App\Models\Mship\State;
+use App\Models\Mship\Account;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends Command
@@ -18,7 +18,7 @@ class SysStatisticsDaily extends Command
      * 3 - Unable to update NEW MEMBER STATISTICS
      * 4 - Unable to update CURRENT MEMBER STATISTICS
      * 5 - Unable to update NEW DIVISION MEMBER STATISTICS
-     * 6 - Unable to update CURRENT DIVISION MEMBER STATISTICS
+     * 6 - Unable to update CURRENT DIVISION MEMBER STATISTICS.
      */
 
     /**
@@ -49,7 +49,7 @@ class SysStatisticsDaily extends Command
      */
     public function handle()
     {
-        $daysOfStatistics = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
+        $daysOfStatistics  = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
         $this->progressBar = $this->output->createProgressBar($daysOfStatistics);
         $this->progressBar->start();
 
@@ -69,8 +69,8 @@ class SysStatisticsDaily extends Command
         }
 
         $startTimestamp = $this->getStartPeriod()->toDateString();
-        $endTimestamp = $this->getEndPeriod()->toDateString();
-        $this->sendSlackSuccess("System Statistics for " . $startTimestamp . " to " . $endTimestamp . " have been updated.");
+        $endTimestamp   = $this->getEndPeriod()->toDateString();
+        $this->sendSlackSuccess('System Statistics for '.$startTimestamp.' to '.$endTimestamp.' have been updated.');
 
         $this->progressBar->finish();
     }
@@ -83,10 +83,10 @@ class SysStatisticsDaily extends Command
     private function addNewMembersStatistic($currentPeriod)
     {
         try {
-            $membersNew = Account::where("created_at", "LIKE", $currentPeriod->toDateString() . "%")->count();
-            Statistic::setStatistic($currentPeriod->toDateString(), "members.new", $membersNew);
+            $membersNew = Account::where('created_at', 'LIKE', $currentPeriod->toDateString().'%')->count();
+            Statistic::setStatistic($currentPeriod->toDateString(), 'members.new', $membersNew);
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update NEW MEMBER statistics.", ['Error Code' => 3]);
+            $this->sendSlackError('Unable to update NEW MEMBER statistics.', ['Error Code' => 3]);
         }
     }
 
@@ -98,11 +98,11 @@ class SysStatisticsDaily extends Command
     private function addCurrentMembersStatistic($currentPeriod)
     {
         try {
-            $membersCurrent = Account::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $membersCurrent = Account::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
                                      ->count();
-            Statistic::setStatistic($currentPeriod->toDateString(), "members.current", $membersCurrent);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'members.current', $membersCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update CURRENT MEMBER statistics.", ['Error Code' => 3]);
+            $this->sendSlackError('Unable to update CURRENT MEMBER statistics.', ['Error Code' => 3]);
         }
     }
 
@@ -114,13 +114,13 @@ class SysStatisticsDaily extends Command
     private function addNewDivisionMembersStatistic($currentPeriod)
     {
         try {
-            $divisionCreated = DB::table("mship_account_state")
-                                 ->where("state_id", "=", State::findByCode("DIVISION")->id)
-                                 ->where("start_at", "LIKE", $currentPeriod->toDateString() . "%")
+            $divisionCreated = DB::table('mship_account_state')
+                                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
+                                 ->where('start_at', 'LIKE', $currentPeriod->toDateString().'%')
                                  ->count();
-            Statistic::setStatistic($currentPeriod->toDateString(), "members.division.new", $divisionCreated);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.new', $divisionCreated);
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update NEW DIVISION MEMBER statistics.", ['Error Code' => 3]);
+            $this->sendSlackError('Unable to update NEW DIVISION MEMBER statistics.', ['Error Code' => 3]);
         }
     }
 
@@ -132,13 +132,13 @@ class SysStatisticsDaily extends Command
     private function addCurrentDivisionMembersStatistic($currentPeriod)
     {
         try {
-            $divisionCurrent = DB::table("mship_account_state")
-                                 ->where("state_id", "=", State::findByCode("DIVISION")->id)
-                                 ->where("start_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $divisionCurrent = DB::table('mship_account_state')
+                                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
+                                 ->where('start_at', '<=', $currentPeriod->toDateString().' 23:59:59')
                                  ->count();
-            Statistic::setStatistic($currentPeriod->toDateString(), "members.division.current", $divisionCurrent);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.current', $divisionCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError("Unable to update CURRENT DIVISION MEMBER statistics.", ['Error Code' => 3]);
+            $this->sendSlackError('Unable to update CURRENT DIVISION MEMBER statistics.', ['Error Code' => 3]);
         }
     }
 
@@ -146,12 +146,12 @@ class SysStatisticsDaily extends Command
     {
         foreach (\Module::enabled() as $module) {
             try {
-                \Artisan::call($module['slug'] . ":statistics:daily", [
-                    "startPeriod" => $currentPeriod,
-                    "endPeriod"   => $currentPeriod,
+                \Artisan::call($module['slug'].':statistics:daily', [
+                    'startPeriod' => $currentPeriod,
+                    'endPeriod'   => $currentPeriod,
                 ]);
             } catch (CommandNotFoundException $ex) {
-                $this->error($module['name'] . " doesn't have a daily statistics command.");
+                $this->error($module['name']." doesn't have a daily statistics command.");
             }
         }
     }
@@ -166,16 +166,16 @@ class SysStatisticsDaily extends Command
     private function getStartPeriod()
     {
         try {
-            $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
+            $startPeriod = \Carbon\Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->sendSlackError(
-                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.",
+                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
                 ['Error Code' => 1]
             );
         }
 
         if ($startPeriod->isFuture()) {
-            $startPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+            $startPeriod = \Carbon\Carbon::parse('yesterday', 'UTC');
         }
 
         return $startPeriod;
@@ -191,16 +191,16 @@ class SysStatisticsDaily extends Command
     private function getEndPeriod()
     {
         try {
-            $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
+            $endPeriod = \Carbon\Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->sendSlackError(
-                "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
                 ['Error Code' => 2]
             );
         }
 
         if ($endPeriod->isFuture()) {
-            $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+            $endPeriod = \Carbon\Carbon::parse('yesterday', 'UTC');
         }
 
         if ($endPeriod->lt($this->getStartPeriod())) {

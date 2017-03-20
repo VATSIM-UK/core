@@ -2,15 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Libraries\TeamSpeak;
-use App\Models\Mship\Account;
-use App\Models\TeamSpeak\Registration;
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
+use App\Libraries\TeamSpeak;
+use App\Models\TeamSpeak\Registration;
 
 class TeamSpeakCleanup extends Command
 {
-
     /**
      * The console command name.
      *
@@ -26,12 +24,12 @@ class TeamSpeakCleanup extends Command
     protected $description = 'Clean up the Core and TeamSpeak database.';
 
     protected $tscon;
-    
+
     protected function initialise()
     {
         $this->tscon = TeamSpeak::run('VATSIM UK Cleanup Bot');
     }
-    
+
     /**
      * Execute the console command.
      *
@@ -43,7 +41,7 @@ class TeamSpeakCleanup extends Command
 
         // check TS database for clients without registrations
         $total_clients = $this->tscon->clientCountDb();
-        $offset = 0;
+        $offset        = 0;
         while ($offset < $total_clients) {
             $clients = $this->tscon->clientListDb($offset);
             foreach ($clients as $client) {
@@ -79,7 +77,7 @@ class TeamSpeakCleanup extends Command
         $isRegistered = Registration::where('uid', $client['client_unique_identifier'])
             ->where('dbid', $client['cldbid'])
             ->exists();
-        
+
         if (!$isRegistered) {
             try {
                 $this->tscon->clientDeleteDb($client['cldbid']);

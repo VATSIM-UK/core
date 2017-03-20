@@ -1,12 +1,11 @@
-<?php namespace App\Http\Controllers\Slack;
+<?php
 
-use App\Models\Sys\Token;
+namespace App\Http\Controllers\Slack;
+
 use Redirect;
 use Response;
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
-use App\Models\TeamSpeak\Registration as RegistrationModel;
-use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
-use App\Libraries\TeamSpeak;
 use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
@@ -20,22 +19,22 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if ($this->account->slack_id != "") {
-            return Redirect::route("mship.manage.dashboard")
+        if ($this->account->slack_id != '') {
+            return Redirect::route('mship.manage.dashboard')
                            ->withError("Your Slack account doesn't need registering.");
         }
 
-        if (!$this->account->hasState("DIVISION")) {
-            return Redirect::route("mship.manage.dashboard")
-                           ->withError("You need to be a division member to register for Slack.");
+        if (!$this->account->hasState('DIVISION')) {
+            return Redirect::route('mship.manage.dashboard')
+                           ->withError('You need to be a division member to register for Slack.');
         }
 
-        if (!($_slackToken = $this->account->tokens()->ofType("slack_registration")->first())) {
-            $_slackToken = Token::generate("slack_registration", false, $this->account);
+        if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
+            $_slackToken = Token::generate('slack_registration', false, $this->account);
 
             $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
-                "first_name" => $this->account->name_first,
-                "last_name"  => $this->account->name_last
+                'first_name' => $this->account->name_first,
+                'last_name'  => $this->account->name_last,
             ]);
 
             /*if($slackUserAdmin->ok != "true"){
@@ -44,45 +43,45 @@ class Registration extends \App\Http\Controllers\BaseController
             }*/
         }
 
-        if ($_slackToken->expired) {
-            return Redirect::route("mship.manage.dashboard")
+        if ($_slackToken->is_used) {
+            return Redirect::route('mship.manage.dashboard')
                            ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact Web Services.");
         }
 
-        $this->pageTitle = "New Slack Registration";
+        $this->pageTitle = 'New Slack Registration';
 
-        return $this->viewMake("slack.new")
-                    ->with("slackToken", $_slackToken);
+        return $this->viewMake('slack.new')
+                    ->with('slackToken', $_slackToken);
     }
 
     public function getConfirmed()
     {
         if (!$this->account->slack_id) {
-            return Redirect::route("slack.new");
+            return Redirect::route('slack.new');
         }
 
-        return $this->viewMake("slack.success");
+        return $this->viewMake('slack.success');
     }
 
     // get status of registration
     public function postStatus(Token $slackToken)
     {
-        if ($slackToken->type != "slack_registration") {
-            return Response::make("invalid");
+        if ($slackToken->type != 'slack_registration') {
+            return Response::make('invalid');
         }
 
         if ($slackToken->related_id != $this->account->id) {
-            return Response::make("auth.error");
+            return Response::make('auth.error');
         }
 
         if ($slackToken->expired) {
-            return Response::make("expired");
+            return Response::make('expired');
         }
 
         if ($this->account->slack_id) {
-            return Response::make("active");
+            return Response::make('active');
         }
 
-        return Response::make("pending");
+        return Response::make('pending');
     }
 }

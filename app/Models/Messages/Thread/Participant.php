@@ -2,16 +2,14 @@
 
 namespace App\Models\Messages\Thread;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
- * App\Models\Messages\Thread\Participant
+ * App\Models\Messages\Thread\Participant.
  *
- * @property integer $id
- * @property integer $thread_id
- * @property integer $account_id
+ * @property int $id
+ * @property int $thread_id
+ * @property int $account_id
  * @property string $display_as
- * @property integer $status
+ * @property int $status
  * @property \Carbon\Carbon $read_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -32,14 +30,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Participant extends \App\Models\Model
 {
-
     protected $table      = 'messages_thread_participant';
-    protected $primaryKey = "id";
-    protected $fillable   = ["display_as"];
-    public $dates      = ["read_at", 'created_at', 'updated_at'];
-    public $timestamps = true;
+    protected $primaryKey = 'id';
+    protected $fillable   = ['display_as'];
+    public $dates         = ['read_at', 'created_at', 'updated_at'];
+    public $timestamps    = true;
 
-    const STATUS_OWNER = 90;
+    const STATUS_OWNER  = 90;
     const STATUS_VIEWER = 10;
 
     public static function scopeIsOwner($query)
@@ -54,16 +51,16 @@ class Participant extends \App\Models\Model
 
     public static function scopeIsStatus($query, $status)
     {
-        return $query->where("status", "=", $status);
+        return $query->where('status', '=', $status);
     }
 
     public function thread()
     {
-        return $this->belongsTo(\App\Models\Messages\Thread::class, "thread_id", "id");
+        return $this->belongsTo(\App\Models\Messages\Thread::class, 'thread_id', 'id');
     }
 
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class, "account_id");
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 }

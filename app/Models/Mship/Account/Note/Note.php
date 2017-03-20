@@ -6,13 +6,13 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Account\Note\Note
+ * App\Models\Mship\Account\Note\Note.
  *
- * @property integer $id
- * @property integer $note_type_id
- * @property integer $account_id
- * @property integer $writer_id
- * @property integer $attachment_id
+ * @property int $id
+ * @property int $note_type_id
+ * @property int $account_id
+ * @property int $writer_id
+ * @property int $attachment_id
  * @property string $attachment_type
  * @property string $content
  * @property \Carbon\Carbon $created_at
@@ -37,29 +37,29 @@ class Note extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
 
-    protected $table = "mship_account_note";
-    protected $primaryKey = "id";
-    protected $dates = ['created_at', 'deleted_at'];
-    protected $hidden = ['id'];
+    protected $table      = 'mship_account_note';
+    protected $primaryKey = 'id';
+    protected $dates      = ['created_at', 'deleted_at'];
+    protected $hidden     = ['id'];
 
     public function user()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
     }
 
     public function actioner()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "actioner_id");
+        return $this->belongsTo("\App\Models\Mship\Account", 'actioner_id');
     }
 
     public function flag()
     {
-        return $this->hasOne("\App\Models\Mship\Account\Note\Flag", "account_note_id", "id");
+        return $this->hasOne("\App\Models\Mship\Account\Note\Flag", 'account_note_id', 'id');
     }
 
     public function format()
     {
-        return $this->hasOne("\App\Models\Mship\Account\Note\Format", "account_note_id", "id");
+        return $this->hasOne("\App\Models\Mship\Account\Note\Format", 'account_note_id', 'id');
     }
 
     public function setDataAttribute($value)

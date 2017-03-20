@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
-use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use Exception;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
-use Exception;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
+use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 
 abstract class TeamSpeakCommand extends Command
 {
@@ -23,7 +23,7 @@ abstract class TeamSpeakCommand extends Command
      * @var int The TeamSpeak DBID of the current member being processed.
      */
     protected $currentMember;
-    
+
     /**
      * Run the console command.
      *
@@ -40,7 +40,7 @@ abstract class TeamSpeakCommand extends Command
 
         return parent::run($input, $output);
     }
-    
+
     /**
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      *
@@ -67,13 +67,15 @@ abstract class TeamSpeakCommand extends Command
     {
         if (get_class($e) === ClientKickedFromServerException::class) {
             self::$command->log('Kicked from server.');
+
             return;
         } elseif (get_class($e) === RegistrationNotFoundException::class) {
             self::$command->log('Registration not found.');
+
             return;
         }
-        
-        self::$command->log('Caught: ' . get_class($e));
+
+        self::$command->log('Caught: '.get_class($e));
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
@@ -84,17 +86,17 @@ abstract class TeamSpeakCommand extends Command
         }
 
         // TODO: improve old error handling
-        $description = $member->name_first ." "
-            . $member->name_last ." ("
-            . $member->id .")";
-        $subject = "TeaMan has failed you. Hire a new butler.";
-        $message = "TeaMan has encountered a previously unhandled error:" . PHP_EOL . PHP_EOL
-            . "Client: " . $description . PHP_EOL . PHP_EOL
-            . "Stack trace:" . PHP_EOL . PHP_EOL
-            . $e->getTraceAsString()
-            . PHP_EOL . "Error message: " . $e->getMessage() . PHP_EOL;
+        $description = $member->name_first.' '
+            .$member->name_last.' ('
+            .$member->id.')';
+        $subject = 'TeaMan has failed you. Hire a new butler.';
+        $message = 'TeaMan has encountered a previously unhandled error:'.PHP_EOL.PHP_EOL
+            .'Client: '.$description.PHP_EOL.PHP_EOL
+            .'Stack trace:'.PHP_EOL.PHP_EOL
+            .$e->getTraceAsString()
+            .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
-        mail("neil.farrington@vatsim-uk.co.uk", $subject, $message);
+        mail('neil.farrington@vatsim-uk.co.uk', $subject, $message);
 
         self::$command->sendSlackError('Exception processing client.', [
             'name' => $description,

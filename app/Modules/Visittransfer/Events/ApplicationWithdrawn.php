@@ -1,9 +1,9 @@
-<?php namespace App\Modules\Visittransfer\Events;
+<?php
 
-use App\Events\Event;
+namespace App\Modules\Visittransfer\Events;
 
-use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Queue\SerializesModels;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationWithdrawn extends ApplicationStatusChanged
 {
@@ -15,6 +15,6 @@ class ApplicationWithdrawn extends ApplicationStatusChanged
     {
         $this->application = $application;
 
-        $this->application->load("referees.account")->load("facility");
+        $this->application->load('referees.account')->load('facility');
     }
 }

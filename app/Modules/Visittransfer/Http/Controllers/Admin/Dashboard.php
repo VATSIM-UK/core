@@ -1,19 +1,18 @@
-<?php namespace App\Modules\Visittransfer\Http\Controllers\Admin;
+<?php
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account;
-use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
-use Auth;
+namespace App\Modules\Visittransfer\Http\Controllers\Admin;
+
 use Cache;
+use App\Models\Statistic;
+use App\Http\Controllers\Adm\AdmController;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
 
 class Dashboard extends AdmController
 {
-
     public function getDashboard()
     {
-        $statisticsRaw = Cache::remember("visittransfer::statistics", 60, function () {
+        $statisticsRaw = Cache::remember('visittransfer::statistics', 60, function () {
             $statistics = [];
 
             $statistics['applications_total'] = Application::all()->count();
@@ -36,16 +35,16 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        $statisticsGraph = Cache::remember("visittransfer::statistics.graph", 60 * 24, function () {
+        $statisticsGraph = Cache::remember('visittransfer::statistics.graph', 60 * 24, function () {
             $statistics = [];
-            $statisticKeys = ["applications.total", "applications.open", "applications.closed", "applications.new" ];
+            $statisticKeys = ['applications.total', 'applications.open', 'applications.closed', 'applications.new'];
 
-            $date = \Carbon\Carbon::parse("180 days ago");
-            while ($date->lt(\Carbon\Carbon::parse("today midnight"))) {
+            $date = \Carbon\Carbon::parse('180 days ago');
+            while ($date->lt(\Carbon\Carbon::parse('today midnight'))) {
                 $counts = [];
 
                 foreach ($statisticKeys as $key) {
-                    $counts[$key] = Statistic::getStatistic($date->toDateString(), "visittransfer::" . $key);
+                    $counts[$key] = Statistic::getStatistic($date->toDateString(), 'visittransfer::'.$key);
                 }
 
                 $statistics[$date->toDateString()] = $counts;
@@ -55,8 +54,8 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        return $this->viewMake("visittransfer::admin.dashboard")
-                    ->with("statisticsRaw", $statisticsRaw)
-                    ->with("statisticsGraph", $statisticsGraph);
+        return $this->viewMake('visittransfer::admin.dashboard')
+                    ->with('statisticsRaw', $statisticsRaw)
+                    ->with('statisticsGraph', $statisticsGraph);
     }
 }

@@ -8,17 +8,17 @@ class SiteTest extends TestCase
     use DatabaseTransactions;
 
     /** Unit Testing */
-    
+
     /** @test */
     public function it_can_create_a_new_application_for_a_user()
     {
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->addState(\App\Models\Mship\State::findByCode("INTERNATIONAL"));
+        $account->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
         $this->assertCount(0, $account->visitTransferApplications);
 
         $account->createVisitingTransferApplication([
-            "type" => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+            'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         ]);
 
         $this->assertCount(1, $account->fresh()->visitTransferApplications);
@@ -31,16 +31,16 @@ class SiteTest extends TestCase
         $this->setExpectedException(\App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->addState(\App\Models\Mship\State::findByCode("INTERNATIONAL"));
+        $account->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
 
         $this->assertCount(0, $account->visitTransferApplications);
 
         $account->fresh()->createVisitingTransferApplication([
-            "type" => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+            'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         ]);
 
         $account->fresh()->createVisitingTransferApplication([
-            "type" => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+            'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         ]);
     }
 
@@ -50,12 +50,12 @@ class SiteTest extends TestCase
         $this->setExpectedException(\App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
-        $account->addState(\App\Models\Mship\State::findByCode("DIVISION"));
+        $account->addState(\App\Models\Mship\State::findByCode('DIVISION'));
 
         $this->assertCount(0, $account->visitTransferApplications);
 
         $account->fresh()->createVisitingTransferApplication([
-            "type" => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+            'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         ]);
     }
 }

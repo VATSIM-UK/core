@@ -12,7 +12,7 @@ class ChangeAccountIdToJustId extends Migration
      */
     public function up()
     {
-//        Schema::table('teamspeak_ban', function(Blueprint $table) {
+        //        Schema::table('teamspeak_ban', function(Blueprint $table) {
 //            $table->dropForeign("teamspeak_ban_account_id_foreign");
 //            $table->dropForeign("teamspeak_ban_authorised_by_foreign");
 //        });
@@ -48,7 +48,7 @@ class ChangeAccountIdToJustId extends Migration
      */
     public function down()
     {
-//        Schema::table('teamspeak_ban', function(Blueprint $table) {
+        //        Schema::table('teamspeak_ban', function(Blueprint $table) {
 //            $table->dropForeign("teamspeak_ban_account_id_foreign");
 //            $table->dropForeign("teamspeak_ban_authorised_by_foreign");
 //        });

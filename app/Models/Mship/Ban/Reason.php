@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Ban\Reason
+ * App\Models\Mship\Ban\Reason.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $reason_text
- * @property integer $period_amount
+ * @property int $period_amount
  * @property string $period_unit
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -31,12 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Reason extends Model
 {
-
-    use SoftDeletes, RecordsActivity
-        ;
-    protected $primaryKey = "id";
-    protected $table = 'mship_ban_reason';
-    public $timestamps = true;
+    use SoftDeletes, RecordsActivity;
+    protected $primaryKey = 'id';
+    protected $table      = 'mship_ban_reason';
+    public $timestamps    = true;
 
     protected $dates = ['deleted_at'];
 
@@ -47,21 +45,21 @@ class Reason extends Model
 
     public function getPeriodHoursAttribute()
     {
-        if ($this->attributes['period_unit'] == "H") {
+        if ($this->attributes['period_unit'] == 'H') {
             return $this->attributes['period_amount'];
         }
 
-        if ($this->attributes['period_unit'] == "D") {
+        if ($this->attributes['period_unit'] == 'D') {
             return $this->attributes['period_amount'] * 24;
         }
 
-        if ($this->attributes['period_unit'] == "M") {
+        if ($this->attributes['period_unit'] == 'M') {
             return $this->attributes['period_amount'] * 730.001;
         }
     }
 
     public function __toString()
     {
-        return $this->name . " (Duration ".$this->period_amount.$this->period_unit.")";
+        return $this->name.' (Duration '.$this->period_amount.$this->period_unit.')';
     }
 }

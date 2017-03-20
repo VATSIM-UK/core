@@ -2,24 +2,23 @@
 
 namespace App\Models\TeamSpeak;
 
+use TeamSpeak3;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
 use App\Traits\RecordsActivity;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use TeamSpeak3;
 
 /**
- * App\Models\TeamSpeak\Registration
+ * App\Models\TeamSpeak\Registration.
  *
- * @property integer $id
- * @property integer $account_id
- * @property integer $registration_ip
- * @property integer $last_ip
+ * @property int $id
+ * @property int $account_id
+ * @property int $registration_ip
+ * @property int $last_ip
  * @property string $last_login
  * @property string $last_os
  * @property string $uid
- * @property integer $dbid
+ * @property int $dbid
  * @property string $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at

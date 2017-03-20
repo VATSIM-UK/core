@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Libraries\TeamSpeak;
-use App\Models\Mship\Account;
 use Exception;
+use App\Libraries\TeamSpeak;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 class TeamSpeakManager extends TeamSpeakCommand
@@ -30,31 +29,37 @@ class TeamSpeakManager extends TeamSpeakCommand
      */
     public function handle()
     {
-        $tscon = TeamSpeak::run('VATSIM UK Management Bot');
+        try {
+            $tscon = TeamSpeak::run('VATSIM UK Management Bot');
 
-        // get all clients and initiate loop
-        $clients = $tscon->clientList();
-        foreach ($clients as $client) {
-            try {
-                $this->currentMember = $client['client_database_id'];
-                
-                // perform the necessary checks on the client
-                $member = TeamSpeak::checkClientRegistration($client);
-                $client = TeamSpeak::checkClientDescription($client, $member);
-                TeamSpeak::checkMemberStanding($client, $member);
+            // get all clients and initiate loop
+            $clients = $tscon->clientList();
+            foreach ($clients as $client) {
+                try {
+                    $this->currentMember = $client['client_database_id'];
 
-                if (!TeamSpeak::clientIsProtected($client)) {
-                    TeamSpeak::checkMemberMandatoryNotifications($client, $member);
-                    TeamSpeak::checkClientNickname($client, $member);
-                    TeamSpeak::checkClientServerGroups($client, $member);
-                    TeamSpeak::checkClientChannelGroups($client, $member);
-                    TeamSpeak::checkClientIdleTime($client, $member);
+                    // perform the necessary checks on the client
+                    $member = TeamSpeak::checkClientRegistration($client);
+                    $client = TeamSpeak::checkClientDescription($client, $member);
+                    TeamSpeak::checkMemberStanding($client, $member);
+
+                    if (!TeamSpeak::clientIsProtected($client)) {
+                        TeamSpeak::checkMemberMandatoryNotifications($client, $member);
+                        TeamSpeak::checkClientNickname($client, $member);
+                        TeamSpeak::checkClientServerGroups($client, $member);
+                        TeamSpeak::checkClientChannelGroups($client, $member);
+                        TeamSpeak::checkClientIdleTime($client, $member);
+                    }
+                } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                    self::handleServerQueryException($e);
+                } catch (Exception $e) {
+                    self::handleException($e);
                 }
-            } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
-                self::handleServerQueryException($e);
-            } catch (Exception $e) {
-                self::handleException($e);
             }
+        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+            self::handleServerQueryException($e);
+        } catch (Exception $e) {
+            self::handleException($e);
         }
     }
 }

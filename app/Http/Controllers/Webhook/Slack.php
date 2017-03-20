@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Http\Requests;
-use App\Libraries\Dropbox as DropboxLibrary;
-use App\Libraries\Slack as SlackLibrary;
+use Response;
 use App\Models\Sys\Token;
-use Cache;
 use Illuminate\Http\Request;
-use \Response;
 
 class Slack extends WebhookController
 {
-    private $slackPayload = [];
+    private $slackPayload  = [];
     private $commandRoutes = [
-        "/register" => [
-            "token" => "",
-            "method" => "getRegister",
+        '/register' => [
+            'token'  => '',
+            'method' => 'getRegister',
         ],
     ];
 
     public function __construct()
     {
-        $this->commandRoutes['/register']['token'] = env("SLACK_TOKEN_REGISTER", null);
+        $this->commandRoutes['/register']['token'] = env('SLACK_TOKEN_REGISTER', null);
     }
 
     /**
@@ -36,41 +32,41 @@ class Slack extends WebhookController
     {
         $this->slackPayload = $request->all();
 
-        if (!($route = $this->route($this->payload("command")))) {
-            return Response::make("Invalid command routing.  Please seek support (web-support@vatsim-uk.co.uk).");
+        if (!($route = $this->route($this->payload('command')))) {
+            return Response::make('Invalid command routing.  Please seek support (web-support@vatsim-uk.co.uk).');
         }
 
-        if ($route['token'] != $this->payload("token")) {
-            return Response::make("Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).");
+        if ($route['token'] != $this->payload('token')) {
+            return Response::make('Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).');
         }
 
-        return Response::make(call_user_func([ $this, $route['method']]));
+        return Response::make(call_user_func([$this, $route['method']]));
     }
 
     private function getRegister()
     {
-        $slackToken = Token::ofType("slack_registration")->hasCode($this->payload("text"))->first();
+        $slackToken = Token::ofType('slack_registration')->hasCode($this->payload('text'))->first();
 
         if (!$slackToken || !$slackToken->exists) {
-            return "Invalid registration token provided.";
+            return 'Invalid registration token provided.';
         }
 
         $account = $slackToken->related;
 
         if (!$account || !$account->exists) {
-            return "Invalid user associated with token.";
+            return 'Invalid user associated with token.';
         }
 
-        if ($account->slack_id || $account->slack_id != "") {
+        if ($account->slack_id || $account->slack_id != '') {
             return "You've already registered - not further registrations are permitted.";
         }
 
-        $account->slack_id = $this->payload("user_id");
+        $account->slack_id = $this->payload('user_id');
         $account->save();
 
         $slackToken->consume();
 
-        return "Registration completed successfully, ".$account->name." (".$account->id.").";
+        return 'Registration completed successfully, '.$account->name.' ('.$account->id.').';
     }
 
     private function payload($key)
@@ -83,7 +79,5 @@ class Slack extends WebhookController
         if (array_key_exists($command, $this->commandRoutes)) {
             return $this->commandRoutes[$command];
         }
-
-        return null;
     }
 }

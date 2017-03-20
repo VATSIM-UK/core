@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ReferenceAcceptRequest extends FormRequest
 {
@@ -36,8 +36,8 @@ class ReferenceAcceptRequest extends FormRequest
      */
     public function authorize()
     {
-        $reference = $this->route("reference");
+        $reference = $this->route('reference');
 
-        return Gate::allows("accept", $reference);
+        return Gate::allows('accept', $reference);
     }
 }

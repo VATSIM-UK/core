@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationSettingToggleRequest extends FormRequest
 {
@@ -15,7 +16,7 @@ class ApplicationSettingToggleRequest extends FormRequest
     public function rules()
     {
         return [
-            "setting" => "required|in:training_required,statement_required,references_required,should_perform_checks,will_auto_accept",
+            'setting' => 'required|in:training_required,statement_required,references_required,should_perform_checks,will_auto_accept',
         ];
     }
 
@@ -27,8 +28,8 @@ class ApplicationSettingToggleRequest extends FormRequest
     public function messages()
     {
         return [
-            "setting.required" => "You must specify which setting you wish to toggle.",
-            "setting.in" => "The setting you specified does not exist.",
+            'setting.required' => 'You must specify which setting you wish to toggle.',
+            'setting.in'       => 'The setting you specified does not exist.',
         ];
     }
 
@@ -39,8 +40,8 @@ class ApplicationSettingToggleRequest extends FormRequest
      */
     public function authorize()
     {
-        $application = $this->route("application");
+        $application = $this->route('application');
 
-        return Gate::allows("setting-toggle", $application);
+        return Gate::allows('setting-toggle', $application);
     }
 }

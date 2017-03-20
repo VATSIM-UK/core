@@ -1,7 +1,9 @@
-<?php namespace App\Modules\Visittransfer\Providers;
+<?php
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+namespace App\Modules\Visittransfer\Providers;
+
 use Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {

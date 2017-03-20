@@ -2,40 +2,36 @@
 
 namespace App\Models\Mship;
 
-use App\Exceptions\Mship\DuplicateEmailException;
-use App\Exceptions\Mship\DuplicateQualificationException;
-use App\Exceptions\Mship\InvalidStateException;
-use App\Http\Controllers\Mship\Security;
-use App\Jobs\Mship\Email\SendNewEmailVerificationEmail;
-use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
-use App\Models\Mship\Account\Ban;
-use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Mship\Account\Email;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Account\Qualification as AccountQualification;
-use App\Models\Mship\State;
-use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Note\Type;
-use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Qualification;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Sys\Notification as SysNotification;
-use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
-use App\Modules\Visittransfer\Models\Application;
-use App\Traits\RecordsActivity as RecordsActivityTrait;
-use Bus;
 use Carbon\Carbon;
-use DB;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Account\Ban;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Watson\Rememberable\Rememberable;
+use App\Models\Mship\Role as RoleData;
+use Illuminate\Notifications\Notifiable;
+use App\Exceptions\Mship\InvalidStateException;
+use App\Exceptions\Mship\DuplicateEmailException;
+use App\Modules\Visittransfer\Models\Application;
+use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Sys\Notification as SysNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Traits\RecordsActivity as RecordsActivityTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
+use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
+use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
 
 /**
- * App\Models\Mship\Account
+ * App\Models\Mship\Account.
  *
- * @property integer                                                                         $id
+ * @property int                                                                             $id
  * @property string                                                                          $slack_id
  * @property string                                                                          $name_first
  * @property string                                                                          $name_last
@@ -48,17 +44,17 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  *           $password_expires_at
  * @property string                                                                          $session_id
  * @property \Carbon\Carbon                                                                  $last_login
- * @property integer
+ * @property int
  *           $last_login_ip
  * @property string
  *           $remember_token
  * @property string                                                                          $gender
  * @property string                                                                          $experience
- * @property integer                                                                         $age
- * @property integer                                                                         $status
- * @property boolean
+ * @property int                                                                             $age
+ * @property int                                                                             $status
+ * @property bool
  *           $is_invisible
- * @property boolean                                                                         $debug
+ * @property bool                                                                            $debug
  * @property \Carbon\Carbon                                                                  $joined_at
  * @property \Carbon\Carbon                                                                  $created_at
  * @property \Carbon\Carbon                                                                  $updated_at
@@ -186,10 +182,10 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  */
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
-    use SoftDeletingTrait, Authenticatable, Authorizable, RecordsActivityTrait;
+    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
 
     protected $table        = 'mship_account';
-    public $incrementing = false;
+    public $incrementing    = false;
     protected $dates        = [
         'last_login',
         'joined_at',
@@ -197,17 +193,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'created_at',
         'updated_at',
         'deleted_at',
-        "password_set_at",
-        "password_expires_at",
+        'password_set_at',
+        'password_expires_at',
     ];
     protected $fillable     = [
         'id',
         'name_first',
         'name_last',
         'email',
-        "password",
-        "password_set_at",
-        "password_expires_at",
+        'password',
+        'password_set_at',
+        'password_expires_at',
     ];
     protected $attributes   = [
         'name_first'    => '',
@@ -229,6 +225,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     const STATUS_INACTIVE = 4; //b"0100";
     const STATUS_LOCKED   = 8; //b"1000";
     const STATUS_SYSTEM   = 8; //b"1000"; // Alias of LOCKED
+
+    public function routeNotificationForSlack()
+    {
+        return $this->slack_id;
+    }
 
     public static function eventCreated($model, $extra = null, $data = null)
     {
@@ -253,17 +254,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         } catch (ModelNotFoundException $e) {
             $retrievedData = \VatsimXML::getData($accountId);
 
-            $account = Account::create([
-                "id"         => $retrievedData->cid,
-                "name_first" => $retrievedData->name_first,
-                "name_last"  => $retrievedData->name_last,
+            $account = self::create([
+                'id'         => $retrievedData->cid,
+                'name_first' => $retrievedData->name_first,
+                'name_last'  => $retrievedData->name_last,
             ]);
 
             $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
             $account->addState($state);
 
-            \Artisan::queue("Members:CertUpdate", [
-                "--force" => $accountId,
+            \Artisan::queue('Members:CertUpdate', [
+                '--force' => $accountId,
             ]);
 
             return $account;
@@ -279,17 +280,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public static function findWithSlackId($slackId)
     {
-        return Account::where("slack_id", "=", $slackId)->first();
+        return self::where('slack_id', '=', $slackId)->first();
     }
 
     public static function scopeIsSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM . "&`status`"), '=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '=', self::STATUS_SYSTEM);
     }
 
     public static function scopeIsNotSystem($query)
     {
-        return $query->where(\DB::raw(self::STATUS_SYSTEM . "&`status`"), '!=', self::STATUS_SYSTEM);
+        return $query->where(\DB::raw(self::STATUS_SYSTEM.'&`status`'), '!=', self::STATUS_SYSTEM);
     }
 
     public static function scopeWithIp($query, $ip)
@@ -297,24 +298,29 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $query->where('last_login_ip', '=', ip2long($ip));
     }
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     /**
-     * Fetch all related visiting/transfer applications
+     * Fetch all related visiting/transfer applications.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function visitTransferApplications()
     {
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy("created_at", "DESC");
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy('created_at', 'DESC');
     }
 
     public function visitApplications()
     {
-        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_VISIT);
+        return $this->visitTransferApplications()->where('type', '=', Application::TYPE_VISIT);
     }
 
     public function transferApplications()
     {
-        return $this->visitTransferApplications()->where("type", "=", Application::TYPE_TRANSFER);
+        return $this->visitTransferApplications()->where('type', '=', Application::TYPE_TRANSFER);
     }
 
     public function getVisitTransferCurrentAttribute()
@@ -334,7 +340,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     private function guardAgainstDivisionMemberVisitingTransferApplication()
     {
-        if ($this->hasState("DIVISION")) {
+        if ($this->hasState('DIVISION')) {
             throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
         }
     }
@@ -365,8 +371,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         return $this->visitTransferReferee->filter(function ($ref) {
             return $ref->is_requested;
-        })->sort(function ($ref1, $ref2) {
-            return $ref1->application->submitted_at->lt($ref2->application->submitted_at);
+        })->sortBy(function ($ref) {
+            return $ref->application->submitted_at;
         });
     }
 
@@ -429,16 +435,16 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function activityRecent()
     {
-        return $this->hasMany(\App\Models\Sys\Activity::class, "actor_id");
+        return $this->hasMany(\App\Models\Sys\Activity::class, 'actor_id');
     }
 
     public function qualifications()
     {
         return $this->belongsToMany(
             Qualification::class,
-            "mship_account_qualification",
-            "account_id",
-            "qualification_id"
+            'mship_account_qualification',
+            'account_id',
+            'qualification_id'
         )
                     ->withTimestamps();
     }
@@ -505,9 +511,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function states()
     {
-        return $this->belongsToMany(State::class, "mship_account_state", "account_id", "state_id")
-                    ->withPivot(["region", "division", "start_at", "end_at"])
-                    ->wherePivot("end_at", null);
+        return $this->belongsToMany(State::class, 'mship_account_state', 'account_id', 'state_id')
+                    ->withPivot(['region', 'division', 'start_at', 'end_at'])
+                    ->wherePivot('end_at', null);
     }
 
     /**
@@ -517,9 +523,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function statesHistory()
     {
-        return $this->belongsToMany(State::class, "mship_account_state", "account_id", "state_id")
-                    ->withPivot(["region", "division", "start_at", "end_at"])
-                    ->orderBy("pivot_start_at", "DESC");
+        return $this->belongsToMany(State::class, 'mship_account_state', 'account_id', 'state_id')
+                    ->withPivot(['region', 'division', 'start_at', 'end_at'])
+                    ->orderBy('pivot_start_at', 'DESC');
     }
 
     public function ssoEmails()
@@ -658,7 +664,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         $output = '';
         foreach ($this->qualifications_pilot as $p) {
-            $output .= $p->code . ', ';
+            $output .= $p->code.', ';
         }
         if ($output == '') {
             $output = 'None';
@@ -699,7 +705,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         return $this->states
-            ->contains("id", $search->id);
+            ->contains('id', $search->id);
     }
 
     /**
@@ -715,30 +721,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
-        /**
-         * THIS IS LEGACY FUNCTIONALITY TO CONVERT ALL OLD STATES TO ACTUALLY STORING
-         * REGION AND DIVISION.
-         */
-        $checkLegacy = DB::table("mship_account_state")
-                         ->where("account_id", "=", $this->id)
-                         ->where("state_id", "=", $state->id)
-                         ->whereNull("region")
-                         ->whereNull("division")
-                         ->count() > 0;
-
-        if ($checkLegacy) {
-            $this->fresh()->states()->updateExistingPivot($state->id, [
-                "region"   => $region,
-                "division" => $division,
-            ]);
-
-            return true;
-        }
-
-        /**
-         * END OF LEGACY FUNCTIONALITY.
-         */
-
         if ($this->hasState($state)) {
             throw new \App\Exceptions\Mship\DuplicateStateException($state);
         }
@@ -753,11 +735,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             });
         }
 
-
         $state = $this->states()->attach($state, [
-            "start_at" => \Carbon\Carbon::now(),
-            "region"   => $region,
-            "division" => $division,
+            'start_at' => \Carbon\Carbon::now(),
+            'region'   => $region,
+            'division' => $division,
         ]);
 
         $this->touch();
@@ -768,18 +749,18 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function removeState(\App\Models\Mship\State $state)
     {
         return $this->states()->updateExistingPivot($state->id, [
-            "end_at" => \Carbon\Carbon::now(),
+            'end_at' => \Carbon\Carbon::now(),
         ]);
     }
 
     /**
-     * Laravel magic-getter - return the primary state;
+     * Laravel magic-getter - return the primary state;.
      *
      * @return mixed
      */
     public function getPrimaryStateAttribute()
     {
-        return $this->states->sortBy("priority")->first();
+        return $this->states->sortBy('priority')->first();
     }
 
     /**
@@ -789,7 +770,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function getPrimaryPermanentStateAttribute()
     {
-        return $this->states->where("type", "perm")->sortBy("priority")->first();
+        return $this->states->where('type', 'perm')->sortBy('priority')->first();
     }
 
     /**
@@ -848,7 +829,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
         // Let's check all roles for this permission!
         $hasPermission = $this->roles->filter(function ($role) use ($parent) {
-                return $role->hasPermission($parent);
+            return $role->hasPermission($parent);
         })->count() > 0;
 
         return $hasPermission;
@@ -885,7 +866,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Determine whether the current account has a password set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPassword()
     {
@@ -895,7 +876,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Determine whether the current password has expired.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPasswordExpired()
     {
@@ -913,13 +894,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Get password lifetime attribute from the member's roles.
      *
-     * @return integer
+     * @return int
      */
     public function getPasswordLifetimeAttribute()
     {
         return $this->roles->filter(function ($role) {
             return $role->hasPasswordLifetime();
-        })->pluck("password_lifetime")
+        })->pluck('password_lifetime')
                            ->min();
     }
 
@@ -951,8 +932,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         if ($this->password_lifetime > 0) {
             return Carbon::now()->addDays($this->password_lifetime);
         }
-
-        return null;
     }
 
     /**
@@ -968,9 +947,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         return $this->fill([
-            "password"            => $password,
-            "password_set_at"     => Carbon::now(),
-            "password_expires_at" => $this->calculatePasswordExpiry($temporary),
+            'password'            => $password,
+            'password_set_at'     => Carbon::now(),
+            'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
     }
 
@@ -982,9 +961,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function removePassword()
     {
         $this->fill([
-            "password"            => null,
-            "password_set_at"     => null,
-            "password_expires_at" => null,
+            'password'            => null,
+            'password_set_at'     => null,
+            'password_expires_at' => null,
         ])->save();
     }
 
@@ -1016,7 +995,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      *
      * @param string $primaryEmail The new primary email for the account.
      *
-     * @return boolean
+     * @return bool
      */
     public function setEmail($primaryEmail)
     {
@@ -1039,7 +1018,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      *
      * @param string $email
      *
-     * @return boolean
+     * @return bool
      */
     public function setEmailAttribute($email)
     {
@@ -1049,7 +1028,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Attach a new secondary email to this user account.
      *
-     * @param String $newEmail The new email address to add to this account.
+     * @param string $newEmail The new email address to add to this account.
      * @param bool   $verified Set to TRUE if the email should be automatically verified.
      *
      * @return \Illuminate\Database\Eloquent\Model|int
@@ -1061,7 +1040,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail = new AccountEmail(["email" => $newEmail]);
+        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
         return $this->secondaryEmails()->save($newSecondaryEmail);
@@ -1119,13 +1098,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban = new Ban();
-        $ban->account_id = $this->id;
-        $ban->banned_by = $writerId;
-        $ban->type = $type;
-        $ban->reason_id = $banReason->id;
-        $ban->reason_extra = $banExtraReason;
-        $ban->period_start = Carbon::now()->second(0);
+        $ban                = new Ban();
+        $ban->account_id    = $this->id;
+        $ban->banned_by     = $writerId;
+        $ban->type          = $type;
+        $ban->reason_id     = $banReason->id;
+        $ban->reason_extra  = $banExtraReason;
+        $ban->period_start  = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1151,11 +1130,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $writer = $writer->getKey();
         }
 
-        $note = new AccountNoteData();
-        $note->account_id = $this->id;
-        $note->writer_id = $writer;
+        $note               = new AccountNoteData();
+        $note->account_id   = $this->id;
+        $note->writer_id    = $writer;
         $note->note_type_id = $noteType;
-        $note->content = $noteContent;
+        $note->content      = $noteContent;
         $note->save();
 
         if (!is_null($attachment)) {
@@ -1185,7 +1164,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function hasStatusFlag($flag)
     {
-        return ($flag & $this->attributes["status"]) == $flag; // AND
+        return ($flag & $this->attributes['status']) == $flag; // AND
     }
 
     public function getIsInactiveAttribute()
@@ -1222,7 +1201,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             return $ban->is_active && $ban->is_local;
         });
 
-        return ($bans->count() > 0);
+        return $bans->count() > 0;
     }
 
     public function getSystemBanAttribute()
@@ -1240,7 +1219,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             return $ban->is_active && $ban->is_network;
         });
 
-        return ($bans->count() > 0);
+        return $bans->count() > 0;
     }
 
     public function getNetworkBanAttribute()
@@ -1254,7 +1233,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function getIsBannedAttribute()
     {
-        return ($this->is_system_banned || $this->is_network_banned);
+        return $this->is_system_banned || $this->is_network_banned;
     }
 
     public function getStatusStringAttribute()
@@ -1352,7 +1331,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function getRealNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        return $this->name_first.' '.$this->name_last;
     }
 
     /**
@@ -1365,7 +1344,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function getNameAttribute()
     {
         if ($this->nickname != null) {
-            return $this->nickname . ' ' . $this->name_last;
+            return $this->nickname.' '.$this->name_last;
         }
 
         return $this->real_name;
@@ -1390,22 +1369,22 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function isValidDisplayName($displayName)
     {
-        return (strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0);
+        return strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0;
     }
 
     public function getDisplayValueAttribute()
     {
-        return $this->name . ' (' . $this->getKey() . ')';
+        return $this->name.' ('.$this->getKey().')';
     }
 
     public function toArray()
     {
-        $array = parent::toArray();
-        $array['name'] = $this->name;
-        $array['name_real'] = $this->real_name;
-        $array['email'] = $this->email;
-        $array['atc_rating'] = $this->qualification_atc;
-        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array                 = parent::toArray();
+        $array['name']         = $this->name;
+        $array['name_real']    = $this->real_name;
+        $array['email']        = $this->email;
+        $array['atc_rating']   = $this->qualification_atc;
+        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;
@@ -1431,8 +1410,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         $timeout = $this->roles->filter(function ($role) {
             return $role->hasSessionTimeout();
-        })->pluck("session_timeout")->min();
+        })->pluck('session_timeout')->min();
 
-        return ($timeout === null ? 0 : $timeout);
+        return $timeout === null ? 0 : $timeout;
     }
 }

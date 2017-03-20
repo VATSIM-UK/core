@@ -1,11 +1,13 @@
-<?php namespace App\Models\Short;
+<?php
+
+namespace App\Models\Short;
 
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Short\ShortURL
+ * App\Models\Short\ShortURL.
  *
- * @property integer $id
+ * @property int $id
  * @property string $url
  * @property string $forward_url
  * @property \Carbon\Carbon $created_at
@@ -23,6 +25,6 @@ class ShortURL extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table = 'short_url';
+    protected $table      = 'short_url';
     protected $primaryKey = 'id';
 }

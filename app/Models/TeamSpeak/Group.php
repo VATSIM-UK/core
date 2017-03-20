@@ -7,19 +7,19 @@ use App\Models\Mship\Permission;
 use App\Models\Mship\Qualification;
 
 /**
- * App\Models\TeamSpeak\Group
+ * App\Models\TeamSpeak\Group.
  *
  * @property-read \App\Models\Mship\Permission $permission
  * @property-read \App\Models\Mship\Qualification $qualification
  * @mixin \Eloquent
- * @property integer $id
- * @property integer $dbid
+ * @property int $id
+ * @property int $dbid
  * @property string $name
  * @property string $type
- * @property boolean $default
- * @property boolean $protected
- * @property integer $permission_id
- * @property integer $qualification_id
+ * @property bool $default
+ * @property bool $protected
+ * @property int $permission_id
+ * @property int $qualification_id
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereDbid($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Group whereName($value)
@@ -31,8 +31,8 @@ use App\Models\Mship\Qualification;
  */
 class Group extends Model
 {
-    public $timestamps = false;
-    protected $table = 'teamspeak_group';
+    public $timestamps    = false;
+    protected $table      = 'teamspeak_group';
     protected $primaryKey = 'id';
 
     /**

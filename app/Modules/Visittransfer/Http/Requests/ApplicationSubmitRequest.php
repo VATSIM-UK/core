@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationSubmitRequest extends FormRequest
 {
@@ -16,7 +17,7 @@ class ApplicationSubmitRequest extends FormRequest
     public function rules()
     {
         return [
-            "submission_terms" => "required",
+            'submission_terms' => 'required',
         ];
     }
 
@@ -28,7 +29,7 @@ class ApplicationSubmitRequest extends FormRequest
     public function messages()
     {
         return [
-            "submission_terms.required" => "You must agree to the terms of submission.",
+            'submission_terms.required' => 'You must agree to the terms of submission.',
         ];
     }
 
@@ -39,6 +40,6 @@ class ApplicationSubmitRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("submit-application", Auth::user()->visit_transfer_current);
+        return Gate::allows('submit-application', Auth::user()->visit_transfer_current);
     }
 }

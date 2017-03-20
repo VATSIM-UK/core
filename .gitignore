@@ -1,10 +1,14 @@
 /node_modules
 /public/storage
 /vendor
+/build
 /.idea
 Homestead.json
 Homestead.yaml
+Vagrantfile
+/.vagrant
 .env
+build/
 
 nbproject*
 _ide_helper.php

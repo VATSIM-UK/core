@@ -1,34 +1,34 @@
-<?php namespace App\Modules\Visittransfer\Models;
+<?php
 
+namespace App\Modules\Visittransfer\Models;
+
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
-use App\Models\Sys\Token;
-use App\Modules\Visittransfer\Events\ReferenceAccepted;
+use Illuminate\Database\Eloquent\Model;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
+use App\Modules\Visittransfer\Events\ReferenceAccepted;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
-use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewException;
-use Illuminate\Database\Eloquent\Model;
+use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
 
 /**
- * App\Modules\Visittransfer\Models\Reference
- *
+ * App\Modules\Visittransfer\Models\Reference.
  */
 class Reference extends Model
 {
-
-    protected $table      = "vt_reference";
-    protected $primaryKey = "id";
+    protected $table      = 'vt_reference';
+    protected $primaryKey = 'id';
     protected $fillable   = [
-        "application_id",
-        "account_id",
-        "email",
-        "relationship",
-        "status",
-        "status_note",
+        'application_id',
+        'account_id',
+        'email',
+        'relationship',
+        'status',
+        'status_note',
     ];
-    protected $touches    = ["application"];
+    protected $touches = ['application'];
     public $timestamps = false;
 
     const STATUS_DRAFT        = 10;
@@ -37,7 +37,7 @@ class Reference extends Model
     const STATUS_ACCEPTED     = 90;
     const STATUS_REJECTED     = 95;
 
-    static public $REFERENCE_IS_SUBMITTED = [
+    public static $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
         self::STATUS_REJECTED,
@@ -45,17 +45,17 @@ class Reference extends Model
 
     public static function scopePending($query)
     {
-        return $query->whereNull("submitted_at");
+        return $query->whereNull('submitted_at');
     }
 
     public static function scopeStatus($query, $status)
     {
-        return $query->where("status", "=", $status);
+        return $query->where('status', '=', $status);
     }
 
     public static function scopeStatusIn($query, array $stati)
     {
-        return $query->whereIn("status", $stati);
+        return $query->whereIn('status', $stati);
     }
 
     public static function scopeDraft($query)
@@ -112,7 +112,7 @@ class Reference extends Model
 
     public function notes()
     {
-        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
     }
 
     public function getTokenAttribute()
@@ -149,15 +149,15 @@ class Reference extends Model
     {
         switch ($this->attributes['status']) {
             case self::STATUS_DRAFT:
-                return "Draft";
+                return 'Draft';
             case self::STATUS_REQUESTED:
-                return "Requested";
+                return 'Requested';
             case self::STATUS_UNDER_REVIEW:
-                return "Under Review";
+                return 'Under Review';
             case self::STATUS_ACCEPTED:
-                return "Accepted";
+                return 'Accepted';
             case self::STATUS_REJECTED:
-                return "Rejected";
+                return 'Rejected';
         }
     }
 
@@ -165,32 +165,32 @@ class Reference extends Model
     {
         $expiryTimeInMinutes = 1440 * 14; // 14 days
 
-        return Token::generate("visittransfer_reference_request", false, $this, $expiryTimeInMinutes);
+        return Token::generate('visittransfer_reference_request', false, $this, $expiryTimeInMinutes);
     }
 
     public function submit($referenceContent)
     {
         $this->guardAgainstReSubmittingReference();
 
-        $this->reference = $referenceContent;
-        $this->status = self::STATUS_UNDER_REVIEW;
+        $this->reference    = $referenceContent;
+        $this->status       = self::STATUS_UNDER_REVIEW;
         $this->submitted_at = \Carbon\Carbon::now();
         $this->save();
 
         event(new ReferenceUnderReview($this));
     }
 
-    public function reject($publicReason = "No reason was provided.", $staffReason = null, Account $actor = null)
+    public function reject($publicReason = 'No reason was provided.', $staffReason = null, Account $actor = null)
     {
         $this->guardAgainstNonUnderReviewReference();
 
-        $this->status = self::STATUS_REJECTED;
+        $this->status      = self::STATUS_REJECTED;
         $this->status_note = $publicReason;
         $this->save();
 
         if ($staffReason) {
-            $noteContent = "VT Reference from " . $this->account->name . " was rejected.\n" . $staffReason;
-            $note = $this->application->account->addNote(
+            $noteContent = 'VT Reference from '.$this->account->name." was rejected.\n".$staffReason;
+            $note        = $this->application->account->addNote(
                 Type::isShortCode('visittransfer')->first(),
                 $noteContent,
                 $actor,
@@ -211,8 +211,8 @@ class Reference extends Model
         $this->save();
 
         if ($staffComment) {
-            $noteContent = "VT Reference from " . $this->account->name . " was accepted.\n" . $staffComment;
-            $note = $this->application->account->addNote("visittransfer", $noteContent, $actor, $this);
+            $noteContent = 'VT Reference from '.$this->account->name." was accepted.\n".$staffComment;
+            $note        = $this->application->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }

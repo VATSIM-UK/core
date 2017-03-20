@@ -38,7 +38,7 @@ return [
   |
   */
 
-  'username' => 'VATUK-Bot',
+  'username' => 'VATSIM UK Bot',
 
   /*
   |-------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
   |
   */
 
-  'icon' => ":vuktrail:",
+  'icon' => ':vuktrail:',
 
   /*
   |-------------------------------------------------------------
@@ -107,7 +107,7 @@ return [
   |
   | Which attachment fields should be interpreted in Slack's Markdown-like
   | language. By default, Slack assumes that no fields in an attachment
-  | should be formatted as Markdown. 
+  | should be formatted as Markdown.
   |
   */
 

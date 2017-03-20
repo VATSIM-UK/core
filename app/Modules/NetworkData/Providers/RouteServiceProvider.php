@@ -2,8 +2,8 @@
 
 namespace App\Modules\NetworkData\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -30,16 +30,47 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Define the routes for the module.
      *
-     * @param  \Illuminate\Routing\Router $router
      * @return void
      */
     public function map()
     {
+        $this->mapWebRoutes();
+
+        $this->mapApiRoutes();
+    }
+
+    /**
+     * Define the "web" routes for the module.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
         Route::group([
+            'middleware' => 'web',
             'namespace'  => $this->namespace,
-            'middleware' => ['web']
         ], function ($router) {
-            require(config('modules.path').'/NetworkData/Http/routes.php');
+            require module_path('networkdata', 'Routes/web.php');
+        });
+    }
+
+    /**
+     * Define the "api" routes for the module.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+        Route::group([
+            'middleware' => 'api',
+            'namespace'  => $this->namespace,
+            'prefix'     => 'api',
+        ], function ($router) {
+            require module_path('networkdata', 'Routes/api.php');
         });
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
-use Session;
 use Request;
+use Session;
 use Redirect;
 
 class UserMustReadNotifications
@@ -26,10 +26,10 @@ class UserMustReadNotifications
             )
         ) {
             Session::set('force_notification_read_return_url', Request::fullUrl());
-            
+
             return Redirect::route('mship.notification.list');
         }
-        
+
         return $next($request);
     }
 }

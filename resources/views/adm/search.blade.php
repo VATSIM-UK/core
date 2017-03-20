@@ -88,7 +88,23 @@
 </div>
 @stop
 
+@section('styles')
+@parent
+{!! HTML::style('/assets/css/datatables/jquery.dataTables.modified.css') !!}
+@stop
+
 @section('scripts')
 @parent
+{!! HTML::script('/assets/js/plugins/datatables/jquery.dataTables.min.js') !!}
 {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#mship-accounts').DataTable({
+      "paging": false,
+      "searching": false,
+      "info": false,
+      "ordering": true,
+    });
+  });
+</script>
 @stop

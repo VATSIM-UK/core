@@ -4,10 +4,10 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
-use Redirect;
 use Request;
-use Response;
 use Session;
+use Redirect;
+use Response;
 
 class AuthUser
 {
@@ -24,7 +24,8 @@ class AuthUser
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                Session::set("auth_return", Request::fullUrl());
+                Session::set('auth_return', Request::fullUrl());
+
                 return Redirect::to('/');
             }
         }

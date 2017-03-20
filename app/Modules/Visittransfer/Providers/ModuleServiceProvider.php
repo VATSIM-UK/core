@@ -1,18 +1,20 @@
-<?php namespace App\Modules\Visittransfer\Providers;
+<?php
 
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Policies\ApplicationPolicy;
-use App\Modules\Visittransfer\Policies\ReferencePolicy;
-use Caffeinated\Modules\Support\AuthServiceProvider;
+namespace App\Modules\Visittransfer\Providers;
+
 use Lang;
 use View;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
+use Caffeinated\Modules\Support\AuthServiceProvider;
+use App\Modules\Visittransfer\Policies\ReferencePolicy;
+use App\Modules\Visittransfer\Policies\ApplicationPolicy;
 
 class ModuleServiceProvider extends AuthServiceProvider
 {
     protected $policies = [
         Application::class => ApplicationPolicy::class,
-        Reference::class => ReferencePolicy::class,
+        Reference::class   => ReferencePolicy::class,
     ];
 
     /**
@@ -39,7 +41,6 @@ class ModuleServiceProvider extends AuthServiceProvider
 
         $this->registerNamespaces();
         $this->registerComposers();
-        $this->registerCommands();
         $this->registerComposers();
     }
 
@@ -50,10 +51,10 @@ class ModuleServiceProvider extends AuthServiceProvider
      */
     protected function registerNamespaces()
     {
-        Lang::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Lang'));
+        Lang::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Lang'));
 
         View::addNamespace('visittransfer', base_path('resources/views/vendor/visittransfer'));
-        View::addNamespace('visittransfer', realpath(__DIR__ . '/../Resources/Views'));
+        View::addNamespace('visittransfer', realpath(__DIR__.'/../Resources/Views'));
     }
 
     /**
@@ -64,23 +65,8 @@ class ModuleServiceProvider extends AuthServiceProvider
     protected function registerComposers()
     {
         View::composer(
-            ["visittransfer::admin._sidebar"],
+            ['visittransfer::admin._sidebar'],
             \App\Modules\Visittransfer\Resources\Viewcomposers\StatisticsComposer::class
         );
-    }
-
-    protected function registerCommands()
-    {
-        // Commands.statistics.daily
-        $this->app->singleton("visittransfer::commands.statistics.daily", function ($app) {
-            return $app['\App\Modules\Visittransfer\Console\Commands\StatisticsDaily'];
-        });
-        $this->commands("visittransfer::commands.statistics.daily");
-
-        // commands.applications.cleanup
-        $this->app->singleton("visittransfer::commands.applications.cleanup", function ($app) {
-            return $app['\App\Modules\Visittransfer\Console\Commands\ApplicationsCleanup'];
-        });
-        $this->commands("visittransfer::commands.applications.cleanup");
     }
 }

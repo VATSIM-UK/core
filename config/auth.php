@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard'     => 'web',
         'passwords' => 'users',
     ],
 
@@ -37,13 +37,13 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+            'driver'   => 'session',
+            'provider' => 'accounts',
         ],
 
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
+            'driver'   => 'token',
+            'provider' => 'api_accounts',
         ],
     ],
 
@@ -65,9 +65,13 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'accounts' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Mship\Account::class,
+            'model'  => App\Models\Mship\Account::class,
+        ],
+        'api_accounts' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Api\Account::class,
         ],
 
         // 'users' => [
@@ -95,13 +99,13 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'email' => 'auth.emails.password',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-    ],
+//    'passwords' => [
+//        'users' => [
+//            'provider' => 'users',
+//            'email'    => 'auth.emails.password',
+//            'table'    => 'password_resets',
+//            'expire'   => 60,
+//        ],
+//    ],
 
 ];

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class InitialTeamspeak extends Migration
@@ -12,7 +11,7 @@ class InitialTeamspeak extends Migration
      */
     public function up()
     {
-        Schema::create('teamspeak_alias', function($table) {
+        Schema::create('teamspeak_alias', function ($table) {
             $table->increments('id')->unsigned();
             $table->integer('account_id')->unique()->unsigned();
             $table->string('display_name', 30);
@@ -20,7 +19,7 @@ class InitialTeamspeak extends Migration
             $table->timestamps();
         });
 
-        Schema::create('teamspeak_ban', function($table) {
+        Schema::create('teamspeak_ban', function ($table) {
             $table->increments('id')->unsigned();
             $table->integer('account_id')->unsigned()->index();
             $table->string('reason', 255);
@@ -30,20 +29,20 @@ class InitialTeamspeak extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('teamspeak_confirmation', function($table) {
+        Schema::create('teamspeak_confirmation', function ($table) {
             $table->integer('registration_id')->primary()->unsigned();
             $table->string('privilege_key', 50);
             $table->timestamps();
         });
 
-        Schema::create('teamspeak_log', function($table) {
+        Schema::create('teamspeak_log', function ($table) {
             $table->increments('id')->unsigned();
             $table->integer('registration_id')->unsigned()->nullable();
-            $table->string("type", 75);
+            $table->string('type', 75);
             $table->timestamps();
         });
 
-        Schema::create('teamspeak_registration', function($table) {
+        Schema::create('teamspeak_registration', function ($table) {
             $table->increments('id')->unsigned();
             $table->integer('account_id')->unsigned()->index();
             $table->bigInteger('registration_ip');

@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationWithdrawRequest extends FormRequest
 {
@@ -37,6 +38,6 @@ class ApplicationWithdrawRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows("withdraw-application", Auth::user()->visit_transfer_current);
+        return Gate::allows('withdraw-application', Auth::user()->visit_transfer_current);
     }
 }

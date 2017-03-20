@@ -3,16 +3,15 @@
 namespace App\Models\Sso;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sso\Token
+ * App\Models\Sso\Token.
  *
- * @property integer $id
+ * @property int $id
  * @property string $token
- * @property integer $sso_account_id
+ * @property int $sso_account_id
  * @property string $return_url
- * @property integer $account_id
+ * @property int $account_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $expires_at
@@ -33,22 +32,21 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Token extends \App\Models\Model
 {
-
     use RecordsActivity;
 
-    protected $table = "sso_token";
-    protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at'];
-    protected $hidden = ['token_id'];
+    protected $table      = 'sso_token';
+    protected $primaryKey = 'id';
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $hidden     = ['token_id'];
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", "account_id");
+        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
     }
 
     public function getIsExpiredAttribute()
     {
-        return \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $this->expires)->diffInSeconds() > 0;
+        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $this->expires)->diffInSeconds() > 0;
     }
 
     public function scopeTokenValue($query, $tokenValue)
@@ -58,11 +56,11 @@ class Token extends \App\Models\Model
 
     public function scopeValid($query)
     {
-        return $query->where("expires_at", ">=", \Carbon\Carbon::now()->toDateTimeString());
+        return $query->where('expires_at', '>=', \Carbon\Carbon::now()->toDateTimeString());
     }
 
     public function getDisplayValueAttribute()
     {
-        return "NOT YET DEFINED IN __TOKEN__ MODEL";
+        return 'NOT YET DEFINED IN __TOKEN__ MODEL';
     }
 }

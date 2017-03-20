@@ -1,9 +1,10 @@
-<?php namespace App\Modules\Visittransfer\Listeners;
+<?php
 
+namespace App\Modules\Visittransfer\Listeners;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Jobs\SendApplicantReferenceSubmissionEmail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyApplicantOfReferenceCompletion implements ShouldQueue
 {
@@ -16,6 +17,6 @@ class NotifyApplicantOfReferenceCompletion implements ShouldQueue
     {
         $confirmationEmailJob = new SendApplicantReferenceSubmissionEmail($event->reference);
 
-        dispatch($confirmationEmailJob->onQueue("low"));
+        dispatch($confirmationEmailJob->onQueue('low'));
     }
 }

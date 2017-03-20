@@ -47,8 +47,8 @@ class RouteServiceProvider extends ServiceProvider
             Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
         });
 
-        Route::model("mshipNoteType", \App\Models\Mship\Note\Type::class, function () {
-            Redirect::route("adm.mship.note.type.index")->withError("Note type doesn't exist.");
+        Route::model('mshipNoteType', \App\Models\Mship\Note\Type::class, function () {
+            Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist.");
         });
     }
 
@@ -74,7 +74,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group([
             'middleware' => 'web',
-            'namespace' => $this->namespace,
+            'namespace'  => $this->namespace,
         ], function ($router) {
             require base_path('routes/web.php');
         });
@@ -91,8 +91,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group([
             'middleware' => 'api',
-            'namespace' => $this->namespace,
-            'prefix' => 'api',
+            'namespace'  => $this->namespace,
+            'prefix'     => 'api',
         ], function ($router) {
             require base_path('routes/api.php');
         });

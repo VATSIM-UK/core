@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Adm;
 
 use Auth;
-use Session;
-use Route;
 use View;
 use App\Models\Mship\Account;
-use Request;
 
 class AdmController extends \App\Http\Controllers\BaseController
 {
-
     /**
      * Setup the layout used by the controller.
      *
@@ -33,14 +29,14 @@ class AdmController extends \App\Http\Controllers\BaseController
     {
         $view = View::make($view);
 
-        $view->with("_account", $this->account);
+        $view->with('_account', $this->account);
 
-        $this->buildBreadcrumb("Administration Control Panel", "/adm/dashboard");
+        $this->buildBreadcrumb('Administration Control Panel', '/adm/dashboard');
 
-        $view->with("_breadcrumb", $this->breadcrumb);
+        $view->with('_breadcrumb', $this->breadcrumb);
 
-        $view->with("_pageTitle", $this->getTitle());
-        $view->with("_pageSubTitle", $this->getSubTitle());
+        $view->with('_pageTitle', $this->getTitle());
+        $view->with('_pageSubTitle', $this->getSubTitle());
 
         return $view;
     }
@@ -50,7 +46,7 @@ class AdmController extends \App\Http\Controllers\BaseController
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
                 $this->account = Auth::user();
-                $this->account->load("roles", "roles.permissions");
+                $this->account->load('roles', 'roles.permissions');
             } else {
                 $this->account = new Account();
             }

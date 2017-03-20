@@ -37,7 +37,7 @@ Route::group(['domain' => 'vats.im'], function () {
 });
 
 /*** WEBHOOKS ***/
-Route::group(['domain' => config("app.url"), 'prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
+Route::group(['domain' => config('app.url'), 'prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
     Route::get('dropbox', ['as' => 'webhook.dropbox', 'uses' => 'Dropbox@getDropbox']);
     Route::post('dropbox', ['as' => 'webhook.dropbox.post', 'uses' => 'Dropbox@postDropbox']);
     Route::any('slack', ['as' => 'webhook.slack', 'uses' => 'Slack@anyRouter']);
@@ -48,38 +48,38 @@ Route::group(['domain' => config("app.url"), 'prefix' => 'webhook', 'namespace' 
 });
 
 /* * ** ADM *** */
-Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), function () {
-    Route::group(array('prefix' => 'adm'), function () {
+Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () {
+    Route::group(['prefix' => 'adm'], function () {
 
         // Login is the only unauthenticated page.
-        Route::get('/', array('uses' => 'Authentication@getLogin'));
-        Route::group(array('prefix' => 'authentication'), function () {
-            Route::get('/login', array('as' => 'adm.authentication.login', 'uses' => 'Authentication@getLogin'));
-            Route::post('/login', array('as' => 'adm.authentication.login.post', 'uses' => 'Authentication@postLogin'));
-            Route::get('/logout', array('as' => 'adm.authentication.logout', 'uses' => 'Authentication@getLogout'));
-            Route::get('/verify', array('as' => 'adm.authentication.verify', 'uses' => 'Authentication@getVerify'));
+        Route::get('/', ['middleware' => 'auth.admin', 'uses' => 'Authentication@getLogin']);
+        Route::group(['prefix' => 'authentication'], function () {
+            Route::get('/login', ['as' => 'adm.authentication.login', 'uses' => 'Authentication@getLogin']);
+            Route::post('/login', ['as' => 'adm.authentication.login.post', 'uses' => 'Authentication@postLogin']);
+            Route::get('/logout', ['as' => 'adm.authentication.logout', 'uses' => 'Authentication@getLogout']);
+            Route::get('/verify', ['as' => 'adm.authentication.verify', 'uses' => 'Authentication@getVerify']);
         });
 
         Route::get('/error/{code?}', ['as' => 'adm.error', 'uses' => 'Error@getDisplay']);
 
         // Auth required
-        Route::group(array('middleware' => 'auth.admin'), function () {
-            Route::get('/dashboard', array('as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex'));
-            Route::any('/search/{q?}', array('as' => 'adm.search', 'uses' => 'Dashboard@anySearch'));
+        Route::group(['middleware' => 'auth.admin'], function () {
+            Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
+            Route::any('/search/{q?}', ['as' => 'adm.search', 'uses' => 'Dashboard@anySearch']);
 
-            Route::group(array('prefix' => 'system', 'namespace' => 'Sys'), function () {
-                Route::get('/activity', array('as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex'));
+            Route::group(['prefix' => 'system', 'namespace' => 'Sys'], function () {
+                Route::get('/activity', ['as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex']);
 
-                Route::get('/module', array('as' => 'adm.sys.module.list', 'uses' => 'Module@getIndex'));
-                Route::get('/module/{slug}/enable', array('as' => 'adm.sys.module.enable', 'uses' => 'Module@getEnable'));
-                Route::get('/module/{slug}/disable', array('as' => 'adm.sys.module.disable', 'uses' => 'Module@getDisable'));
+                Route::get('/module', ['as' => 'adm.sys.module.list', 'uses' => 'Module@getIndex']);
+                Route::get('/module/{slug}/enable', ['as' => 'adm.sys.module.enable', 'uses' => 'Module@getEnable']);
+                Route::get('/module/{slug}/disable', ['as' => 'adm.sys.module.disable', 'uses' => 'Module@getDisable']);
 
                 Route::get('/jobs/failed', ['as' => 'adm.sys.jobs.failed', 'uses' => 'Jobs@getFailed']);
                 Route::post('/jobs/failed/{id}/retry', ['as' => 'adm.sys.jobs.failed.retry', 'uses' => 'Jobs@postFailed']);
                 Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
             });
 
-            Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
+            Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
                 /* Route::get('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d'));
                   Route::post('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d')); */
                 Route::get('/account/{mshipAccount}/{tab?}/{tabid?}', ['as' => 'adm.mship.account.details', 'uses' => 'Account@getDetail'])->where(['mshipAccount' => '\d+']);
@@ -118,7 +118,7 @@ Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), functio
                 Route::any('/permission/{mshipPermission}/delete', ['as' => 'adm.mship.permission.delete', 'uses' => 'Permission@anyDelete']);
                 Route::get('/permission/', ['as' => 'adm.mship.permission.index', 'uses' => 'Permission@getIndex']);
 
-                Route::group(["as" => "adm.mship.note."], function(){
+                Route::group(['as' => 'adm.mship.note.'], function () {
                     Route::get('/note/type/create', ['as' => 'type.create', 'uses' => 'Note@getTypeCreate']);
                     Route::post('/note/type/create', ['as' => 'type.create.post', 'uses' => 'Note@postTypeCreate']);
                     Route::get('/note/type/{mshipNoteType}/update', ['as' => 'type.update', 'uses' => 'Note@getTypeUpdate']);
@@ -128,7 +128,6 @@ Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), functio
                 });
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
-
             });
         });
     });
@@ -137,9 +136,9 @@ Route::group(array('namespace' => 'Adm', 'domain' => config("app.url")), functio
 Route::group(['domain' => config('app.url')], function () {
     Route::get('/error/{code?}', ['as' => 'error', 'uses' => 'Error@getDisplay']);
 
-    Route::group(array('prefix' => 'mship', 'namespace' => 'Mship'), function () {
+    Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
         // Guest access
-        Route::group(array('prefix' => 'auth'), function () {
+        Route::group(['prefix' => 'auth'], function () {
             Route::get('/redirect', ['as' => 'mship.auth.redirect', 'uses' => 'Authentication@getRedirect']);
             Route::get('/login-alternative', ['as' => 'mship.auth.loginAlternative', 'uses' => 'Authentication@getLoginAlternative']);
             Route::post('/login-alternative', ['as' => 'mship.auth.loginAlternative.post', 'uses' => 'Authentication@postLoginAlternative']);
@@ -149,12 +148,12 @@ Route::group(['domain' => config('app.url')], function () {
             Route::post('/logout/{force?}', ['as' => 'mship.auth.logout.post', 'uses' => 'Authentication@postLogout']);
 
             // /mship/auth - fully authenticated.
-            Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+            Route::group(['middleware' => ['auth_full_group']], function () {
                 Route::get('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Authentication@getInvisibility']);
             });
         });
 
-        Route::group(['middleware' => 'auth.user.full', 'prefix' => 'notification'], function(){
+        Route::group(['middleware' => 'auth.user.full', 'prefix' => 'notification'], function () {
             Route::get('/list', ['as' => 'mship.notification.list', 'uses' => 'Notification@getList']);
             Route::post('/acknowledge/{sysNotification}', ['as' => 'mship.notification.acknowledge', 'uses' => 'Notification@postAcknowledge']);
         });
@@ -162,16 +161,15 @@ Route::group(['domain' => config('app.url')], function () {
         Route::group(['prefix' => 'manage'], function () {
             Route::get('/landing', ['as' => 'mship.manage.landing', 'uses' => 'Management@getLanding']);
             Route::get('/dashboard', [
-                'as' => 'mship.manage.dashboard',
-                'uses' => 'Management@getDashboard',
-                'middleware' => ['auth.user.full', 'user.must.read.notifications'],
+                'as'         => 'mship.manage.dashboard',
+                'uses'       => 'Management@getDashboard',
+                'middleware' => ['auth_full_group'],
             ]);
 
-            Route::group(['prefix' => 'email'], function(){
-
+            Route::group(['prefix' => 'email'], function () {
                 Route::get('/verify/{code}', ['as' => 'mship.manage.email.verify', 'uses' => 'Management@getVerifyEmail']);
 
-                Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function(){
+                Route::group(['middleware' => ['auth_full_group']], function () {
                     Route::get('/add', ['as' => 'mship.manage.email.add', 'uses' => 'Management@getEmailAdd']);
                     Route::post('/add', ['as' => 'mship.manage.email.add.post', 'uses' => 'Management@postEmailAdd']);
 
@@ -185,23 +183,23 @@ Route::group(['domain' => config('app.url')], function () {
         });
 
         Route::group(['prefix' => 'security'], function () {
-            Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(array('code' => '\w+'));
+            Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
 
-            Route::group(['middleware' => 'auth.user'], function(){
+            Route::group(['middleware' => 'auth.user'], function () {
                 Route::get('/forgotten', ['as' => 'mship.security.forgotten', 'uses' => 'Security@getForgotten']);
                 Route::get('/auth', ['as' => 'mship.security.auth', 'uses' => 'Security@getAuth']);
                 Route::post('/auth', ['as' => 'mship.security.auth.post', 'uses' => 'Security@postAuth']);
-                Route::get('/replace/{delete?}', ['as' => 'mship.security.replace', 'uses' => 'Security@getReplace'])->where(array('delete' => '[1|0]'));
-                Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(array('delete' => '[1|0]'));
+                Route::get('/replace/{delete?}', ['as' => 'mship.security.replace', 'uses' => 'Security@getReplace'])->where(['delete' => '[1|0]']);
+                Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(['delete' => '[1|0]']);
             });
 
-            Route::group(['middleware' => ['auth.user.full', 'user.must.read.notifications']], function(){
+            Route::group(['middleware' => ['auth_full_group']], function () {
                 Route::get('/enable', ['as' => 'mship.security.enable', 'uses' => 'Security@getEnable']);
             });
         });
     });
 
-    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+    Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth_full_group']], function () {
         Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
         Route::get('/new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
@@ -209,20 +207,20 @@ Route::group(['domain' => config('app.url')], function () {
         Route::post('/{tsreg}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
     });
 
-    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth.user.full', 'user.must.read.notifications']], function () {
+    Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {
         Route::model('slackToken', App\Models\Sys\Token::class);
         Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
         Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
     });
 
-    Route::group(array('prefix' => 'sso', 'namespace' => 'Sso'), function () {
+    Route::group(['prefix' => 'sso', 'namespace' => 'Sso'], function () {
         Route::get('auth/login', ['middleware' => 'user.must.read.notifications', 'as' => 'sso.auth.login', 'uses' => 'Authentication@getLogin']);
         Route::post('security/generate', ['as' => 'sso.security.generate', 'uses' => 'Security@postGenerate']);
         Route::post('security/details', ['as' => 'sso.security.details', 'uses' => 'Security@postDetails']);
     });
 });
 
-Route::get('/', ["domain" => config("app.url"), 'as' => 'default', function () {
+Route::get('/', ['domain' => config('app.url'), 'as' => 'default', function () {
     return Redirect::route('mship.manage.landing');
 }]);

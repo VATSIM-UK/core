@@ -2,11 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\TestCommand;
-use Caffeinated\Modules\Facades\Module;
 use File;
+use Caffeinated\Modules\Facades\Module;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -30,7 +28,10 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
-        \App\Modules\NetworkData\Console\Commands\DownloadAndParse::class,
+        Commands\ApiGenerator::class,
+
+        /* Third Party */
+        \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
     ];
 
     /**
@@ -60,10 +61,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
+        //        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
 
         // Work the queue - the last thing that should be processed!
-        $schedule->command("queue:work")->everyMinute()->withoutOverlapping();
+        $schedule->command('queue:work')->everyMinute()->withoutOverlapping();
         //-- end
     }
 

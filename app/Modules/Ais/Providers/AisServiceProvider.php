@@ -3,7 +3,6 @@
 namespace App\Modules\Ais\Providers;
 
 use App;
-use Config;
 use Lang;
 use View;
 use Illuminate\Support\ServiceProvider;
@@ -45,7 +44,7 @@ class AisServiceProvider extends ServiceProvider
      */
     protected function registerNamespaces()
     {
-//		Lang::addNamespace('ais', realpath(__DIR__.'/../Resources/Lang'));
+        //		Lang::addNamespace('ais', realpath(__DIR__.'/../Resources/Lang'));
 
         View::addNamespace('ais', base_path('resources/views/vendor/ais'));
         View::addNamespace('ais', realpath(__DIR__.'/../Resources/Views'));

@@ -6,6 +6,18 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
     <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
 
+    <!--BugSnagScript-->
+    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
+            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
+            data-releasestage="{{ env('APP_ENV') }}">
+        Bugsnag.notifyReleaseStages = ["staging", "production"];
+        Bugsnag.user = {
+            id: {{ Auth::user()->id }},
+            name: "{{ Auth::user()->name }}",
+            email: "{{ Auth::user()->email }}"
+        };
+    </script>
+
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}

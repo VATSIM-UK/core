@@ -1,9 +1,10 @@
-<?php namespace App\Modules\Visittransfer\Listeners;
+<?php
 
+namespace App\Modules\Visittransfer\Listeners;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Jobs\SendRefereeConfirmationEmail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyRefereeOnReferenceCompletion implements ShouldQueue
 {
@@ -16,6 +17,6 @@ class NotifyRefereeOnReferenceCompletion implements ShouldQueue
     {
         $confirmationEmailJob = new SendRefereeConfirmationEmail($event->reference);
 
-        dispatch($confirmationEmailJob->onQueue("low"));
+        dispatch($confirmationEmailJob->onQueue('low'));
     }
 }

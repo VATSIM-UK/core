@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Modules\Visittransfer\Http\Requests;
 
-use App\Modules\Visittransfer\Models\Application;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationAcceptRequest extends FormRequest
 {
@@ -15,7 +16,7 @@ class ApplicationAcceptRequest extends FormRequest
     public function rules()
     {
         return [
-            "accept_staff_note" => "string",
+            'accept_staff_note' => 'string',
         ];
     }
 
@@ -27,7 +28,7 @@ class ApplicationAcceptRequest extends FormRequest
     public function messages()
     {
         return [
-            "accept_staff_note.string" => "You must only provide alphanumeric text in your staff note.",
+            'accept_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
         ];
     }
 
@@ -38,8 +39,8 @@ class ApplicationAcceptRequest extends FormRequest
      */
     public function authorize()
     {
-        $application = $this->route("application");
+        $application = $this->route('application');
 
-        return Gate::allows("accept", $application);
+        return Gate::allows('accept', $application);
     }
 }

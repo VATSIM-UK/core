@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use DB;
-use Symfony\Component\Console\Input\InputOption;
 use App\Models\Mship\Account;
 
 class SyncRTS extends Command
@@ -37,7 +36,7 @@ class SyncRTS extends Command
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 
         $members = DB::table('prod_rts.members');
-        if ($this->option("force")) {
+        if ($this->option('force')) {
             $members->where('cid', '=', $this->option('force'))
                     ->where('deleted', '=', '0');
         } else {
@@ -47,17 +46,17 @@ class SyncRTS extends Command
 
         $members = $members->get();
 
-        $output = "Querying members...";
+        $output     = 'Querying members...';
         $numupdated = 0;
 
-        $this->log($output . "OK.\n");
+        $this->log($output."OK.\n");
 
         foreach ($members as $mem) {
             $output = "Updating {$mem->cid} ";
             if ($this->pullCoreData($mem->cid, $mem->visiting)) {
-                $this->log($output . "...... Successful");
+                $this->log($output.'...... Successful');
             } else {
-                $this->log("...... FAILED");
+                $this->log('...... FAILED');
             }
             $numupdated++;
         }
@@ -71,13 +70,14 @@ class SyncRTS extends Command
         try {
             $member = Account::findOrFail($cid);
         } catch (\Exception $e) {
-            $this->log("\tError: cannot retrieve member " . $cid . " from Core - " . $e->getMessage());
+            $this->log("\tError: cannot retrieve member ".$cid.' from Core - '.$e->getMessage());
+
             return false;
         }
 
         // calculate pilot rating
         $pRating = 0;
-        $pQuals = $member->qualifications_pilot;
+        $pQuals  = $member->qualifications_pilot;
         if (count($pQuals) > 0) {
             foreach ($pQuals as $qual) {
                 $pRating += $qual->vatsim;
@@ -85,8 +85,8 @@ class SyncRTS extends Command
         }
 
         // set and process data
-        $email = $member->email;
-        $sso_account_id = $this->sso_account_id;
+        $email            = $member->email;
+        $sso_account_id   = $this->sso_account_id;
         $ssoEmailAssigned = $member->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
             return $ssoemail->sso_account_id == $sso_account_id;
         })->values();
@@ -95,13 +95,13 @@ class SyncRTS extends Command
             $email = $ssoEmailAssigned[0]->email->email;
         }
 
-        $updateData = array(
-            'name' => $member->name_first . ' ' . $member->name_last,
-            'email' => $email,
-            'rating' => $member->qualification_atc->vatsim,
-            'prating' => $pRating,
-            'last_cert_check' => $member->cert_checked_at
-        );
+        $updateData = [
+            'name'            => $member->name_first.' '.$member->name_last,
+            'email'           => $email,
+            'rating'          => $member->qualification_atc->vatsim,
+            'prating'         => $pRating,
+            'last_cert_check' => $member->cert_checked_at,
+        ];
 
         if ($member->network_banned || $member->inactive) {
             $updateData['rating'] = 0;

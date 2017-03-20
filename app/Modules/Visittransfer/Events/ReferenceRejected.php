@@ -3,9 +3,8 @@
 namespace App\Modules\Visittransfer\Events;
 
 use App\Events\Event;
-
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Queue\SerializesModels;
+use App\Modules\Visittransfer\Models\Reference;
 
 class ReferenceRejected extends Event
 {

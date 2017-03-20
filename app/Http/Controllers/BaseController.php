@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Models\Mship\Account;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Request;
-use Session;
 use View;
+use Request;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BaseController extends \Illuminate\Routing\Controller
 {
-
     use DispatchesJobs, ValidatesRequests, AuthorizesRequests;
 
     protected $account;
@@ -26,7 +24,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
                 $this->account = Auth::user();
-                $this->account->load("roles", "roles.permissions");
+                $this->account->load('roles', 'roles.permissions');
 
                 // Do we need to do some debugging on this user?
                 if ($this->account->debug) {
@@ -57,14 +55,14 @@ class BaseController extends \Illuminate\Routing\Controller
     {
         $view = View::make($view);
 
-        $view->with("_account", $this->account);
+        $view->with('_account', $this->account);
 
-        $this->buildBreadcrumb("Home", "/");
+        $this->buildBreadcrumb('Home', '/');
 
-        $view->with("_breadcrumb", $this->breadcrumb);
+        $view->with('_breadcrumb', $this->breadcrumb);
 
-        $view->with("_pageTitle", $this->getTitle());
-        $view->with("_pageSubTitle", $this->getSubTitle());
+        $view->with('_pageTitle', $this->getTitle());
+        $view->with('_pageSubTitle', $this->getSubTitle());
 
         return $view;
     }
@@ -78,10 +76,10 @@ class BaseController extends \Illuminate\Routing\Controller
     {
         if ($this->pageTitle == null) {
             if ($this->isModuleRequest()) {
-                return $this->getModuleRequest()->get("name");
+                return $this->getModuleRequest()->get('name');
             }
 
-            return $this->breadcrumb->first()->get("name");
+            return $this->breadcrumb->first()->get('name');
         }
 
         return $this->pageTitle;
@@ -99,7 +97,7 @@ class BaseController extends \Illuminate\Routing\Controller
                 return $this->getControllerRequest();
             }
 
-            return null;
+            return;
         }
 
         return $this->pageSubTitle;
@@ -126,10 +124,10 @@ class BaseController extends \Illuminate\Routing\Controller
         }
 
         if ($linkToPrevious) {
-            $uri = $this->breadcrumb->last()->get("uri") . "/" . $uri;
+            $uri = $this->breadcrumb->last()->get('uri').'/'.$uri;
         }
 
-        $element = collect(["name" => $name, "uri" => $uri]);
+        $element = collect(['name' => $name, 'uri' => $uri]);
 
         $this->breadcrumb->push($element);
     }
@@ -144,7 +142,7 @@ class BaseController extends \Illuminate\Routing\Controller
     protected function addModuleBreadcrumb()
     {
         if ($this->isModuleRequest()) {
-            $this->addBreadcrumb($this->getModuleRequest()->get("name"), $this->getModuleRequest()->get("slug"), true);
+            $this->addBreadcrumb($this->getModuleRequest()->get('name'), $this->getModuleRequest()->get('slug'), true);
         }
     }
 
@@ -160,7 +158,7 @@ class BaseController extends \Illuminate\Routing\Controller
      */
     protected function isModuleRequest()
     {
-        return strcasecmp($this->getRequestClassAsArray(false)[1], "modules") == 0;
+        return strcasecmp($this->getRequestClassAsArray(false)[1], 'modules') == 0;
     }
 
     /**
@@ -172,7 +170,7 @@ class BaseController extends \Illuminate\Routing\Controller
     {
         $requestClass = $this->getRequestClassAsArray(false);
 
-        return \Module::where("slug", strtolower($requestClass[2]));
+        return \Module::where('slug', strtolower($requestClass[2]));
     }
 
     protected function getControllerRequest()
@@ -184,7 +182,7 @@ class BaseController extends \Illuminate\Routing\Controller
 
     protected function getRequestClassAsArray($clean = true)
     {
-        $requestClass = explode("\\", get_called_class());
+        $requestClass = explode('\\', get_called_class());
 
         // Return the dirty path.
         if (!$clean) {

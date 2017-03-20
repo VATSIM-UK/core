@@ -2,39 +2,38 @@
 
 namespace App\Http\Controllers\Adm;
 
+use URL;
 use Auth;
-use Exception;
 use Input;
 use Session;
-use Response;
-use URL;
-use View;
-use VatsimSSO;
-use Config;
 use Redirect;
+use Response;
+use Exception;
+use VatsimSSO;
 use App\Models\Mship\Account;
 
 class Authentication extends \App\Http\Controllers\Adm\AdmController
 {
-
     public function getLogin()
     {
-        return $this->viewMake("adm.authentication.login");
+        return $this->viewMake('adm.authentication.login');
     }
 
     public function getLogout()
     {
         Auth::logout();
-        return Redirect::route("adm.authentication.login");
+
+        return Redirect::route('adm.authentication.login');
     }
 
     public function postLogin()
     {
         // Just, native VATSIM.net SSO login.
         return VatsimSSO::login(
-            [URL::route("adm.authentication.verify")],
+            [URL::route('adm.authentication.verify')],
             function ($key, $secret, $url) {
                 Session::put('vatsimauth', compact('key', 'secret'));
+
                 return Redirect::to($url);
             },
             function ($error) {
@@ -70,13 +69,13 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
 
             if (!$account) {
                 // TODO: LOG
-                return Response::make("Unauthorised", 401);
+                return Response::make('Unauthorised', 401);
             }
 
             Auth::login($account);
 
             // Let's send them over to the authentication redirect now.
-            return Redirect::route("adm.dashboard");
+            return Redirect::route('adm.dashboard');
         }, function ($error) {
             // TODO: LOG
             throw new \Exception($error['message']);

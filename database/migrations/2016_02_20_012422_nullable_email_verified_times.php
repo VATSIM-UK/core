@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class NullableEmailVerifiedTimes extends Migration
@@ -12,7 +11,7 @@ class NullableEmailVerifiedTimes extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE `mship_account_email` MODIFY `verified_at` TIMESTAMP NULL DEFAULT NULL;");
+        DB::statement('ALTER TABLE `mship_account_email` MODIFY `verified_at` TIMESTAMP NULL DEFAULT NULL;');
         DB::update("UPDATE `mship_account_email`
                     SET `verified_at` = NULL
                     WHERE `verified_at` = '0000-00-00 00:00:00'");

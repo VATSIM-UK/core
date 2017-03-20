@@ -3,12 +3,11 @@
 namespace App\Models\Sso;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sso\Account
+ * App\Models\Sso\Account.
  *
- * @property integer $id
+ * @property int $id
  * @property string $username
  * @property string $name
  * @property string $api_key_public
@@ -30,21 +29,20 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Account extends \App\Models\Model
 {
-
     use RecordsActivity;
 
-    protected $table = "sso_account";
-    protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at'];
-    protected $hidden = ['account_id'];
+    protected $table      = 'sso_account';
+    protected $primaryKey = 'id';
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $hidden     = ['account_id'];
 
     public function tokens()
     {
-        return $this->hasMany(\App\Models\Sso\Token::class, "sso_account_id", "id");
+        return $this->hasMany(\App\Models\Sso\Token::class, 'sso_account_id', 'id');
     }
 
     public function getDisplayValueAttribute()
     {
-        return "NOT YET DEFINED IN __ACCOUNT__ MODELS";
+        return 'NOT YET DEFINED IN __ACCOUNT__ MODELS';
     }
 }

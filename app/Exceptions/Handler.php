@@ -3,12 +3,12 @@
 namespace App\Exceptions;
 
 use App;
+use Log;
 use Auth;
+use Slack;
+use Request;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
-use Request;
-use Slack;
 
 class Handler extends ExceptionHandler
 {
@@ -21,6 +21,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Auth\AuthenticationException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Symfony\Component\Console\Exception\CommandNotFoundException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
@@ -76,11 +77,11 @@ class Handler extends ExceptionHandler
         }
 
         $attachment = [
-            'fallback' => 'Exception thrown: ' . get_class($e),
-            'text' => $e->getTraceAsString(),
+            'fallback'    => 'Exception thrown: '.get_class($e),
+            'text'        => $e->getTraceAsString(),
             'author_name' => get_class($e),
-            'color' => 'danger',
-            'fields' => [
+            'color'       => 'danger',
+            'fields'      => [
                 [
                     'title' => 'Exception:',
                     'value' => (new \ReflectionClass($e))->getShortName(),

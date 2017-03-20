@@ -2,11 +2,10 @@
 
 namespace App\Modules\Visittransfer\Console\Commands;
 
-use App\Console\Commands\Command;
-use App\Models\Mship\Account;
-use App\Models\Statistic;
-use App\Modules\Visittransfer\Models\Application;
 use Cache;
+use App\Models\Statistic;
+use App\Console\Commands\Command;
+use App\Modules\Visittransfer\Models\Application;
 
 class StatisticsDaily extends Command
 {
@@ -36,10 +35,10 @@ class StatisticsDaily extends Command
     public function handle()
     {
         $currentPeriod = $this->getStartPeriod();
-        $this->log("Start Period: " . $currentPeriod->toDateString());
+        $this->log('Start Period: '.$currentPeriod->toDateString());
 
         while ($currentPeriod->lte($this->getEndPeriod())) {
-            $this->log("=========== START OF CYCLE " . $currentPeriod->toDateString() . " ===========");
+            $this->log('=========== START OF CYCLE '.$currentPeriod->toDateString().' ===========');
 
             $this->addTotalApplicationCount($currentPeriod);
 
@@ -49,17 +48,17 @@ class StatisticsDaily extends Command
 
             $this->addNewApplicationCount($currentPeriod);
 
-            $this->log("============ END OF CYCLE " . $currentPeriod->toDateString() . "  ===========");
+            $this->log('============ END OF CYCLE '.$currentPeriod->toDateString().'  ===========');
 
             $currentPeriod = $currentPeriod->addDay();
         }
 
-        $this->log("Emptying cache... ");
-        Cache::forget("visittransfer::statistics");
-        Cache::forget("visittransfer::statistics.graph");
-        $this->log("Done!");
+        $this->log('Emptying cache... ');
+        Cache::forget('visittransfer::statistics');
+        Cache::forget('visittransfer::statistics.graph');
+        $this->log('Done!');
 
-        $this->log("Completed");
+        $this->log('Completed');
     }
 
     /**
@@ -69,19 +68,19 @@ class StatisticsDaily extends Command
      */
     private function addTotalApplicationCount($currentPeriod)
     {
-        $this->log("Counting total applications");
+        $this->log('Counting total applications');
 
         try {
-            $count = Application::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
                                             ->count();
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.total", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.total', $count);
 
-            $this->log("Done.  " . $count . " total applications");
+            $this->log('Done.  '.$count.' total applications');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.",
+                'Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.',
                 ['Error Code' => 3]
             );
         }
@@ -94,19 +93,19 @@ class StatisticsDaily extends Command
      */
     private function addOpenApplicationsCount($currentPeriod)
     {
-        $this->log("Counting open applications");
+        $this->log('Counting open applications');
 
         try {
-            $count = Application::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
                                 ->statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.open", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.open', $count);
 
-            $this->log("Done.  " . $count . " open applications");
+            $this->log('Done.  '.$count.' open applications');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.",
+                'Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.',
                 ['Error Code' => 3]
             );
         }
@@ -119,19 +118,19 @@ class StatisticsDaily extends Command
      */
     private function addRejectedApplicationCount($currentPeriod)
     {
-        $this->log("Counting rejected applications");
+        $this->log('Counting rejected applications');
 
         try {
-            $count = Application::where("created_at", "<=", $currentPeriod->toDateString() . " 23:59:59")
+            $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
                                 ->statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.closed", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.closed', $count);
 
-            $this->log("Done. " . $count . " rejected applications");
+            $this->log('Done. '.$count.' rejected applications');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.",
+                'Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.',
                 ['Error Code' => 3]
             );
         }
@@ -144,18 +143,18 @@ class StatisticsDaily extends Command
      */
     private function addNewApplicationCount($currentPeriod)
     {
-        $this->log("Counting new applications for given day");
+        $this->log('Counting new applications for given day');
 
         try {
-            $count = Application::where("created_at", "LIKE", $currentPeriod->toDateString() . " %")->count();
+            $count = Application::where('created_at', 'LIKE', $currentPeriod->toDateString().' %')->count();
 
-            Statistic::setStatistic($currentPeriod->toDateString(), "visittransfer::applications.new", $count);
+            Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.new', $count);
 
-            $this->log("Done. " . $count . " new applications");
+            $this->log('Done. '.$count.' new applications');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.",
+                'Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.',
                 ['Error Code' => 3]
             );
         }
@@ -171,17 +170,17 @@ class StatisticsDaily extends Command
     private function getStartPeriod()
     {
         try {
-            $startPeriod = \Carbon\Carbon::parse($this->argument("startPeriod"), "UTC");
+            $startPeriod = \Carbon\Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Invalid startPeriod specified.  " . $this->argument("startPeriod") . " is invalid.",
+                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
                 ['Error Code' => 1]
             );
         }
 
         if ($startPeriod->isFuture()) {
-            $startPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+            $startPeriod = \Carbon\Carbon::parse('yesterday', 'UTC');
         }
 
         return $startPeriod;
@@ -197,17 +196,17 @@ class StatisticsDaily extends Command
     private function getEndPeriod()
     {
         try {
-            $endPeriod = \Carbon\Carbon::parse($this->argument("endPeriod"), "UTC");
+            $endPeriod = \Carbon\Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->log("Error: ".$e->getMessage());
+            $this->log('Error: '.$e->getMessage());
             $this->sendSlackError(
-                "Invalid endPeriod specified.  " . $this->argument("endPeriod") . " is invalid.",
+                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
                 ['Error Code' => 2]
             );
         }
 
         if ($endPeriod->isFuture()) {
-            $endPeriod = \Carbon\Carbon::parse("yesterday", "UTC");
+            $endPeriod = \Carbon\Carbon::parse('yesterday', 'UTC');
         }
 
         if ($endPeriod->lt($this->getStartPeriod())) {

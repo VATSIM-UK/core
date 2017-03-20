@@ -32,7 +32,7 @@ class CreateSessionsTable extends Migration
     public function down()
     {
         Schema::drop('sys_sessions');
-        Schema::create('sys_sessions', function($table) {
+        Schema::create('sys_sessions', function ($table) {
             $table->string('id')->unique();
             $table->text('payload');
             $table->integer('last_activity');

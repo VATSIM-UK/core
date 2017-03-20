@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Tag;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 use stdClass;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionException;
+use phpDocumentor\Reflection\DocBlock;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use phpDocumentor\Reflection\DocBlock\Tag;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {
@@ -27,11 +27,11 @@ class GenerateEloquentMethodPHPDoc extends Command
      */
     protected $description = 'Generate autocompletion for models extending an abstract model';
 
-    protected $abstract_model = Command::class;
-    protected $eloquent_model = Model::class;
+    protected $abstract_model   = Command::class;
+    protected $eloquent_model   = Model::class;
     protected $eloquent_methods = [];
-    protected $scraped_class = Builder::class;
-    protected $scraped_methods = [];
+    protected $scraped_class    = Builder::class;
+    protected $scraped_methods  = [];
 
     /**
      * Execute the console command.
@@ -66,7 +66,7 @@ class GenerateEloquentMethodPHPDoc extends Command
      */
     protected function getEloquentMethods()
     {
-        $eloquentInfo = new ReflectionClass($this->eloquent_model);
+        $eloquentInfo    = new ReflectionClass($this->eloquent_model);
         $eloquentMethods = $eloquentInfo->getMethods();
         foreach ($eloquentMethods as $method) {
             $this->eloquent_methods[] = $method->getName();
@@ -104,7 +104,7 @@ class GenerateEloquentMethodPHPDoc extends Command
      */
     protected function getMethodDefinition($method, $tags)
     {
-        $definition = new stdClass();
+        $definition         = new stdClass();
         $definition->params = [];
         $definition->return = '';
 
@@ -128,15 +128,15 @@ class GenerateEloquentMethodPHPDoc extends Command
      */
     protected function getParameterDefinition($method, $tag)
     {
-        $defaultValue = $this->getParameterDefault($method, $tag);
-        $returnType = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
+        $defaultValue  = $this->getParameterDefault($method, $tag);
+        $returnType    = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
         $parameterName = $tag->getVariableName();
 
         return "$returnType $parameterName$defaultValue";
     }
 
     /**
-     * Get the default value of a parameter;
+     * Get the default value of a parameter;.
      *
      * @param ReflectionMethod $method
      * @param Tag\ParamTag $tag
@@ -149,7 +149,7 @@ class GenerateEloquentMethodPHPDoc extends Command
             if (sprintf('$%s', $parameter->getName()) === $tag->getVariableName()) {
                 try {
                     $rawValue = var_export($parameter->getDefaultValue(), true);
-                    $value = preg_replace('/\n+|\s+/', '', $rawValue);
+                    $value    = preg_replace('/\n+|\s+/', '', $rawValue);
 
                     return " = $value";
                 } catch (ReflectionException $e) {
@@ -169,7 +169,7 @@ class GenerateEloquentMethodPHPDoc extends Command
     protected function getReturnDefinition($tag)
     {
         if ($tag->getType() === '$this' || $tag->getType() === 'self') {
-            return '\\' . $this->scraped_class;
+            return '\\'.$this->scraped_class;
         } else {
             return $tag->getType();
         }

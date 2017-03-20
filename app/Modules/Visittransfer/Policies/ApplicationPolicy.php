@@ -1,11 +1,11 @@
-<?php namespace App\Modules\Visittransfer\Policies;
+<?php
+
+namespace App\Modules\Visittransfer\Policies;
 
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
-use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Gate;
+use App\Modules\Visittransfer\Models\Application;
 
 class ApplicationPolicy
 {
@@ -13,9 +13,9 @@ class ApplicationPolicy
 
     public function before(Account $user, $ability)
     {
-        $application = \Request::route("applicationByPublicId");
+        $application = \Request::route('applicationByPublicId');
 
-        if($application && $user->id != $application->account_id){
+        if ($application && $user->id != $application->account_id) {
             return false;
         }
     }
@@ -23,7 +23,7 @@ class ApplicationPolicy
     public function create(Account $user, Application $application)
     {
         // If they are currently a division member, they are not authorised.
-        if ($user->hasState("DIVISION")) {
+        if ($user->hasState('DIVISION')) {
             return false;
         }
 
@@ -89,7 +89,7 @@ class ApplicationPolicy
 
     public function deleteReferee(Account $user, Application $application)
     {
-        $reference = \Request::route("reference");
+        $reference = \Request::route('reference');
 
         if (!$application->facility || !$application->is_editable) {
             return false;

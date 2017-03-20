@@ -2,15 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-
 use DB;
 use App\Models\Mship\Account;
 
 class SyncCommunity extends Command
 {
-
     /**
      * The console command name.
      *
@@ -39,14 +35,14 @@ class SyncCommunity extends Command
             $verbose = false;
         }
 
-        require_once('/var/www/community/init.php');
-        require_once(\IPS\ROOT_PATH . '/system/Member/Member.php');
-        require_once(\IPS\ROOT_PATH . '/system/Db/Db.php');
+        require_once '/var/www/community/init.php';
+        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select('m.member_id, m.vatsim_cid, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14', ['core_members', 'm'])
                                ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
 
-        $countTotal = $members->count();
+        $countTotal   = $members->count();
         $countSuccess = 0;
         $countFailure = 0;
 
@@ -58,26 +54,26 @@ class SyncCommunity extends Command
 
             if (empty($member['vatsim_cid']) || !is_numeric($member['vatsim_cid'])) {
                 if ($verbose) {
-                    $this->output->writeln('<error>FAILURE: ' . $member['member_id'] . ' has no valid CID.</error>');
+                    $this->output->writeln('<error>FAILURE: '.$member['member_id'].' has no valid CID.</error>');
                 }
                 $countFailure++;
                 continue;
             }
 
             if ($verbose) {
-                $this->output->write($member['member_id'] . ' // ' . $member['vatsim_cid']);
+                $this->output->write($member['member_id'].' // '.$member['vatsim_cid']);
             }
 
             $member_core = Account::where('id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
             if ($member_core === null) {
                 if ($verbose) {
-                    $this->output->writeln(' // <error>FAILURE: cannot retrieve member ' . $member['member_id'] . ' from Core.</error>');
+                    $this->output->writeln(' // <error>FAILURE: cannot retrieve member '.$member['member_id'].' from Core.</error>');
                 }
                 $countFailure++;
                 continue;
             }
 
-            $email = $member_core->email;
+            $email            = $member_core->email;
             $ssoEmailAssigned = $member_core->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
                 return $ssoemail->sso_account_id == $sso_account_id;
             })->values();
@@ -88,39 +84,39 @@ class SyncCommunity extends Command
 
             $emailLocal = false;
             if (empty($email)) {
-                $email = $member['email'];
+                $email      = $member['email'];
                 $emailLocal = true;
             }
 
-            $state = $member_core->primary_state->name;
+            $state         = $member_core->primary_state->name;
             $aRatingString = $member_core->qualification_atc->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
 
             // Check for changes
-            $changeEmail = strcasecmp($member['email'], $email);
-            $changeName = strcmp($member['name'], $member_core->name_first . ' ' . $member_core->name_last);
-            $changeState = strcasecmp($member['member_title'], $state);
-            $changeCID = strcmp($member['field_12'], $member_core->id);
-            $changeARating = strcmp($member['field_13'], $aRatingString);
-            $changePRating = strcmp($member['field_14'], $pRatingString);
+            $changeEmail    = strcasecmp($member['email'], $email);
+            $changeName     = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
+            $changeState    = strcasecmp($member['member_title'], $state);
+            $changeCID      = strcmp($member['field_12'], $member_core->id);
+            $changeARating  = strcmp($member['field_13'], $aRatingString);
+            $changePRating  = strcmp($member['field_14'], $pRatingString);
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
                               || $changeARating || $changePRating;
 
             if ($verbose) {
-                $this->output->write(' // ID: ' . $member_core->id);
-                $this->output->write(' // Email (' . ($emailLocal ? 'local' : "latest") . "):" . $email . ($changeEmail ? "(changed)" : ""));
-                $this->output->write(' // Display: ' . $member_core->name_first . " " . $member_core->name_last . ($changeName ? "(changed)" : ""));
-                $this->output->write(' // State: ' . $state . ($changeState ? "(changed)" : ""));
-                $this->output->write(' // ATC rating: ' . $aRatingString);
-                $this->output->write(' // Pilot ratings: ' . $pRatingString);
+                $this->output->write(' // ID: '.$member_core->id);
+                $this->output->write(' // Email ('.($emailLocal ? 'local' : 'latest').'):'.$email.($changeEmail ? '(changed)' : ''));
+                $this->output->write(' // Display: '.$member_core->name_first.' '.$member_core->name_last.($changeName ? '(changed)' : ''));
+                $this->output->write(' // State: '.$state.($changeState ? '(changed)' : ''));
+                $this->output->write(' // ATC rating: '.$aRatingString);
+                $this->output->write(' // Pilot ratings: '.$pRatingString);
             }
 
             if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
-                    $ips_member = \IPS\Member::load($member['member_id']);
-                    $ips_member->name = $member_core->name_first . ' ' . $member_core->name_last;
-                    $ips_member->email = $email;
+                    $ips_member               = \IPS\Member::load($member['member_id']);
+                    $ips_member->name         = $member_core->name_first.' '.$member_core->name_last;
+                    $ips_member->email        = $email;
                     $ips_member->member_title = $state;
                     $ips_member->save();
 
@@ -138,7 +134,7 @@ class SyncCommunity extends Command
                     $countSuccess++;
                 } catch (Exception $e) {
                     $countFailure++;
-                    $this->output->writeln(' // <error>FAILURE: Error saving ' . $member_core->id . ' details to forum.</error>' . $e->getMessage());
+                    $this->output->writeln(' // <error>FAILURE: Error saving '.$member_core->id.' details to forum.</error>'.$e->getMessage());
                 }
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');

@@ -2,8 +2,8 @@
 
 namespace App\Modules\Ais\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -35,9 +35,9 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group([
             'namespace'  => $this->namespace,
-            'middleware' => ['web']
+            'middleware' => ['web'],
         ], function ($router) {
-            require(config('modules.path').'/Ais/Http/routes.php');
+            require config('modules.path').'/Ais/Http/routes.php';
         });
     }
 }

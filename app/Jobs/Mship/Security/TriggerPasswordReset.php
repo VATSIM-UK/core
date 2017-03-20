@@ -3,10 +3,8 @@
 namespace App\Jobs\Mship\Security;
 
 use App\Jobs\Job;
-use App\Models\Mship\Account;
-use App\Models\Mship\Account\Security;
 use App\Models\Sys\Token;
-use Bus;
+use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,12 +13,12 @@ class TriggerPasswordReset extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    private $token = null;
+    private $token   = null;
     private $account = null;
 
     public function __construct(Token $token)
     {
-        $this->token = $token;
+        $this->token   = $token;
         $this->account = $token->related;
     }
 
@@ -37,6 +35,6 @@ class TriggerPasswordReset extends Job implements ShouldQueue
         $this->account->setPassword($temporaryPassword, true);
 
         $sendSecurityTemporaryPasswordEmail = new SendSecurityTemporaryPasswordEmail($this->account, $temporaryPassword);
-        dispatch($sendSecurityTemporaryPasswordEmail->onQueue("emails"));
+        dispatch($sendSecurityTemporaryPasswordEmail->onQueue('emails'));
     }
 }

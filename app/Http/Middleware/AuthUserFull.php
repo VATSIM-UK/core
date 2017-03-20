@@ -4,10 +4,10 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
-use Response;
 use Request;
-use Redirect;
 use Session;
+use Redirect;
+use Response;
 
 class AuthUserFull
 {
@@ -24,11 +24,12 @@ class AuthUserFull
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                Session::set("auth_return", Request::fullUrl());
-                return Redirect::route("mship.auth.redirect");
+                Session::set('auth_return', Request::fullUrl());
+
+                return Redirect::route('mship.auth.redirect');
             }
         }
-        
+
         return $next($request);
     }
 }

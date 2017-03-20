@@ -1,13 +1,13 @@
-<?php namespace App\Modules\Visittransfer\Http\Controllers\Site;
+<?php
 
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Application;
+namespace App\Modules\Visittransfer\Http\Controllers\Site;
+
 use Auth;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
 
 class Dashboard extends BaseController
 {
-
     public function getDashboard()
     {
         $allApplications = Auth::user()->visitTransferApplications;
@@ -20,10 +20,10 @@ class Dashboard extends BaseController
             return $ref->is_requested;
         });
 
-        return $this->viewMake("visittransfer::site.dashboard")
-                    ->with("allApplications", $allApplications)
-                    ->with("currentVisitApplication", $currentVisitApplication)
-                    ->with("currentTransferApplication", $currentTransferApplication)
-                    ->with("pendingReferences", $pendingReferences);
+        return $this->viewMake('visittransfer::site.dashboard')
+                    ->with('allApplications', $allApplications)
+                    ->with('currentVisitApplication', $currentVisitApplication)
+                    ->with('currentTransferApplication', $currentTransferApplication)
+                    ->with('pendingReferences', $pendingReferences);
     }
 }

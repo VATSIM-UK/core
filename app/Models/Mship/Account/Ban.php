@@ -2,19 +2,17 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Traits\RecordsActivity;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Mship\Account\Ban
+ * App\Models\Mship\Account\Ban.
  *
- * @property integer $id
- * @property integer $account_id
- * @property integer $banned_by
- * @property integer $type
- * @property integer $reason_id
+ * @property int $id
+ * @property int $account_id
+ * @property int $banned_by
+ * @property int $type
+ * @property int $reason_id
  * @property string $reason_extra
  * @property \Carbon\Carbon $period_start
  * @property \Carbon\Carbon $period_finish
@@ -55,11 +53,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Ban extends \App\Models\Model
 {
-
     use RecordsActivity;
 
     protected $table      = 'mship_account_ban';
-    protected $primaryKey = "id";
+    protected $primaryKey = 'id';
     protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
     protected $touches    = ['account'];
 
@@ -68,32 +65,32 @@ class Ban extends \App\Models\Model
 
     public static function scopeIsNetwork($query)
     {
-        return $query->where("type", "=", self::TYPE_NETWORK);
+        return $query->where('type', '=', self::TYPE_NETWORK);
     }
 
     public static function scopeIsLocal($query)
     {
-        return $query->where("type", "=", self::TYPE_LOCAL);
+        return $query->where('type', '=', self::TYPE_LOCAL);
     }
 
     public static function scopeIsActive($query)
     {
-        return $query->isNotRepealed()->where("period_finish", ">=", \Carbon\Carbon::now())->orWhereNull("period_finish");
+        return $query->isNotRepealed()->where('period_finish', '>=', \Carbon\Carbon::now())->orWhereNull('period_finish');
     }
 
     public static function scopeIsHistoric($query)
     {
-        return $query->isNotRepealed()->where("period_finish", "<", \Carbon\Carbon::now());
+        return $query->isNotRepealed()->where('period_finish', '<', \Carbon\Carbon::now());
     }
 
     public static function scopeIsRepealed($query)
     {
-        return $query->whereNotNull("repealed_at");
+        return $query->whereNotNull('repealed_at');
     }
 
     public static function scopeIsNotRepealed($query)
     {
-        return $query->whereNull("repealed_at");
+        return $query->whereNull('repealed_at');
     }
 
     public function account()
@@ -113,7 +110,7 @@ class Ban extends \App\Models\Model
 
     public function notes()
     {
-        return $this->morphMany(\App\Models\Mship\Account\Note::class, "attachment");
+        return $this->morphMany(\App\Models\Mship\Account\Note::class, 'attachment');
     }
 
     public function repeal()
@@ -139,9 +136,9 @@ class Ban extends \App\Models\Model
 
     public function getIsActiveAttribute()
     {
-        $period_start = $this->period_start;
+        $period_start  = $this->period_start;
         $period_finish = $this->period_finish;
-        $now = \Carbon\Carbon::now();
+        $now           = \Carbon\Carbon::now();
 
         return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }
@@ -155,24 +152,32 @@ class Ban extends \App\Models\Model
     {
         switch ($this->attributes['type']) {
             case self::TYPE_LOCAL:
-                return trans("mship.ban.type.local");
+                return trans('mship.ban.type.local');
                 break;
             case self::TYPE_NETWORK:
-                return trans("mship.ban.type.network");
+                return trans('mship.ban.type.network');
                 break;
             default:
-                return trans("mship.ban.type.unknown");
+                return trans('mship.ban.type.unknown');
                 break;
         }
     }
 
     public function getPeriodAmountStringAttribute()
     {
+        if (!$this->period_finish) {
+            return null;
+        }
+
         return human_diff_string($this->period_start, $this->period_finish);
     }
-    
+
     public function getPeriodLeftAttribute()
     {
+        if (!$this->period_finish) {
+            return null;
+        }
+
         return Carbon::now()->diffInSeconds($this->period_finish, true);
     }
 

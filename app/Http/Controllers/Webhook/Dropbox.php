@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Http\Requests;
-use App\Libraries\Dropbox as DropboxLibrary;
-use App\Libraries\Slack as SlackLibrary;
 use Cache;
 use Illuminate\Http\Request;
+use App\Libraries\Slack as SlackLibrary;
+use App\Libraries\Dropbox as DropboxLibrary;
 
 class Dropbox extends WebhookController
 {
@@ -32,20 +31,20 @@ class Dropbox extends WebhookController
         // get the changed entries
         $entries = DropboxLibrary::getUpdates($cursor);
 
-        $tags = '';
+        $tags  = '';
         $names = '';
         $paths = '';
 
         // process them
         foreach ($entries as $entry) {
-            $tags .= $entry->{'.tag'} . "\n";
-            $names .= $entry->name . "\n";
-            $paths .= $entry->path_lower . "\n";
+            $tags .= $entry->{'.tag'}."\n";
+            $names .= $entry->name."\n";
+            $paths .= $entry->path_lower."\n";
         }
 
         $fields = [
-            'Path:' => trim($paths, "\n"),
-            'Tag:' => trim($tags, "\n"),
+            'Path:'      => trim($paths, "\n"),
+            'Tag:'       => trim($tags, "\n"),
             'File name:' => trim($names, "\n"),
         ];
 

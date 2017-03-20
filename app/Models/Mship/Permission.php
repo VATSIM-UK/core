@@ -3,13 +3,12 @@
 namespace App\Models\Mship;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use App\Models\Mship\Role as RoleData;
 
 /**
- * App\Models\Mship\Permission
+ * App\Models\Mship\Permission.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $display_name
  * @property \Carbon\Carbon $created_at
@@ -27,12 +26,12 @@ class Permission extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table = "mship_permission";
-    protected $primaryKey = "id";
-    protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = ['name', 'display_name'];
-    protected $rules = [
-        'name' => 'required',
+    protected $table      = 'mship_permission';
+    protected $primaryKey = 'id';
+    protected $dates      = ['created_at', 'updated_at'];
+    protected $fillable   = ['name', 'display_name'];
+    protected $rules      = [
+        'name'         => 'required',
         'display_name' => 'required|between:3,50',
     ];
 
@@ -51,7 +50,7 @@ class Permission extends \App\Models\Model
 
     public function roles()
     {
-        return $this->belongsToMany("\App\Models\Mship\Role", "mship_permission_role")->withTimestamps();
+        return $this->belongsToMany("\App\Models\Mship\Role", 'mship_permission_role')->withTimestamps();
     }
 
     public function attachRole(RoleData $role)
