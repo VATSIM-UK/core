@@ -1,4 +1,4 @@
-Dear {!! isset($recipientName) ? $recipientName : $recipient->name !!},
+Dear {{ isset($recipientName) ? $recipientName : $recipient->name }},
 
 {{  strip_tags($body) }}
 
