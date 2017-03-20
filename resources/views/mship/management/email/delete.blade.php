@@ -11,7 +11,7 @@
 
       @if ($assignments->count() > 0)
         <p>
-          Deleteing this email will reset the following SSO assignments to their default value ({{ \Auth::user()->email }})
+          Deleting this email will reset the following SSO assignments to their default value ({{ \Auth::user()->email }})
             <div align="center">
                 @foreach ($assignments as $assignment)
                   &bull; {{ $assignment->ssoAccount->name }}</br>

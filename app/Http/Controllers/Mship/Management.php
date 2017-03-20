@@ -76,7 +76,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function getEmailDelete(AccountEmail $email)
     {
         // Is this the user's email?
-        if ($email->account->id != $this->account->id) {
+        if ($email->account->id !== $this->account->id) {
             return Redirect::route('mship.manage.dashboard');
         }
 
@@ -88,7 +88,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function postEmailDelete(AccountEmail $email)
     {
         // Is this the user's email?
-        if ($email->account->id != $this->account->id) {
+        if ($email->account->id !== $this->account->id) {
             return Redirect::route('mship.manage.dashboard');
         }
 
