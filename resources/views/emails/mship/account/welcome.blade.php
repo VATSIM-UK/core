@@ -46,26 +46,28 @@
 
 <p>
     If you're interested in flying, there are a number of 'How to....' guides and training available:
-    {!! link_to("http://www.vatsim-uk.co.uk/pilot-info/", "http://www.vatsim-uk.co.uk/pilot-info/") !!}
+    {!! link_to("https://www.vatsim.uk/pilot-info/", "https://www.vatsim.uk/pilot-info/") !!}
 </p>
 <p>
     Pilot Training
-    {!! link_to("http://www.vatsim-uk.co.uk/pilot-training/", "http://www.vatsim-uk.co.uk/pilot-training/") !!}
+    {!! link_to("https://www.vatsim.uk/pilot-training/", "https://www.vatsim.uk/pilot-training/") !!}
 </p>
 
 <p>
     If you're interested in providing ATC:
-    {!! link_to("http://www.vatsim-uk.co.uk/becoming-a-controller/", "http://www.vatsim-uk.co.uk/becoming-a-controller/") !!}
+    {!! link_to("https://www.vatsim.uk/becoming-a-controller/", "https://www.vatsim.uk/becoming-a-controller/") !!}
 </p>
 
 <p>
     For both Pilot and ATC training our online system will allow you to book mentoring (once you are enrolled as per the above links):
-    {!! link_to("http://rts.vatsim-uk.co.uk/", "http://rts.vatsim-uk.co.uk/") !!}
+    {!! link_to("https://cts.vatsim.uk/", "https://cts.vatsim.uk/") !!}
 </p>
 
 <p>
-    The UK TeamSpeak Server and Forum - used for voice and written communications for the entire UK community:
-    {!! link_to("http://www.vatsim-uk.co.uk/tsreg/", "http://www.vatsim-uk.co.uk/tsreg/") !!}
+    The UK TeamSpeak Server, Slack and Forum - these are used for voice and written communications for the entire UK community. Feel free to join the community and ask questions and meet others:
+    <li> TeamSpeak &amp; Slack - {!! link_to("https://www.vatsim.uk/tsreg/", "https://www.vatsim.uk/tsreg/") !!}</li>
+    <li> Forum - {!! link_to("https://community.vatsim.uk/", "https://community.vatsim.uk/") !!}</li>
 </p>
+
 
 On behalf of the entire team, welcome to the United Kingdom.
