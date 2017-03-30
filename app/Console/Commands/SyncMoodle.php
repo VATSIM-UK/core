@@ -2,16 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Mship\Account;
 use DB;
+use App\Models\Mship\Account;
 
 /**
  * Runs nightly to sync Core users to Moodle.
  *
  * This script was moved into Core without improvements, and is therefore rather database-intensive. Future work may
  * need doing after Moodle starts utilising Core SSO.
- *
- * @package App\Console\Commands
  */
 class SyncMoodle extends Command
 {
@@ -57,7 +55,7 @@ class SyncMoodle extends Command
 
         Account::whereNotNull('last_login')->with('states', 'qualifications', 'bans')->chunk(500, function ($members) use ($members_moodle) {
             foreach ($members as $member) {
-                $this->log('Processing ' . $member->id . ': ', null, false);
+                $this->log('Processing '.$member->id.': ', null, false);
 
                 $ssoEmail = $member->ssoEmails->filter(function ($ssoemail) {
                     return $ssoemail->sso_account_id === $this->sso_account_id;
@@ -75,34 +73,34 @@ class SyncMoodle extends Command
                 if ($inGoodStanding && $moodleUser === false) {
                     $this->log('User does not exist, creating', 'comment');
                     DB::table('vatuk_moodle.mdl_user')->insert([
-                        'auth' => 'vatsim',
-                        'deleted' => 0,
-                        'confirmed' => 1,
+                        'auth'         => 'vatsim',
+                        'deleted'      => 0,
+                        'confirmed'    => 1,
                         'policyagreed' => 1,
-                        'mnethostid' => 1,
-                        'username' => $member->id,
-                        'password' => md5(str_random(60)),
-                        'firstname' => $member->name_first,
-                        'lastname' => $member->name_last,
-                        'email' => $email,
-                        'vatuk_cron' => 1,
+                        'mnethostid'   => 1,
+                        'username'     => $member->id,
+                        'password'     => md5(str_random(60)),
+                        'firstname'    => $member->name_first,
+                        'lastname'     => $member->name_last,
+                        'email'        => $email,
+                        'vatuk_cron'   => 1,
                     ]);
                 } elseif ($moodleUser) {
                     $old = [
-                        'auth' => $members_moodle[$moodleUser]->auth,
-                        'deleted' => $members_moodle[$moodleUser]->deleted,
-                        'firstname' => $members_moodle[$moodleUser]->firstname,
-                        'lastname' => $members_moodle[$moodleUser]->lastname,
-                        'email' => $members_moodle[$moodleUser]->email,
+                        'auth'       => $members_moodle[$moodleUser]->auth,
+                        'deleted'    => $members_moodle[$moodleUser]->deleted,
+                        'firstname'  => $members_moodle[$moodleUser]->firstname,
+                        'lastname'   => $members_moodle[$moodleUser]->lastname,
+                        'email'      => $members_moodle[$moodleUser]->email,
                         'vatuk_cron' => 1,
                     ];
 
                     $new = [
-                        'auth' => $inGoodStanding ? 'vatsim' : 'nologin',
-                        'deleted' => $inGoodStanding ? 0 : 1,
-                        'firstname' => $member->name_first,
-                        'lastname' => $member->name_last,
-                        'email' => $email,
+                        'auth'       => $inGoodStanding ? 'vatsim' : 'nologin',
+                        'deleted'    => $inGoodStanding ? 0 : 1,
+                        'firstname'  => $member->name_first,
+                        'lastname'   => $member->name_last,
+                        'email'      => $email,
                         'vatuk_cron' => 1,
                     ];
 
