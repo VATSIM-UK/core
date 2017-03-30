@@ -30,24 +30,14 @@ class SyncMoodle extends Command
     protected $sso_account_id;
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.moodle')->first()->id;
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
+        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.moodle')->first()->id;
+
         DB::table('vatuk_moodle.mdl_user')->update(['vatuk_cron' => 0]);
 
         $members_moodle = DB::table('vatuk_moodle.mdl_user')
