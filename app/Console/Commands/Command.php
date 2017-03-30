@@ -28,9 +28,6 @@ class Command extends BaseCommand
             }
         }
 
-        // Add artisan command name to output
-        $message = $newline ? $this->getName().' - '.$message : $message;
-
         // add style tags to the output string
         $styled = $style ? "<$style>$message</$style>" : $message;
 
