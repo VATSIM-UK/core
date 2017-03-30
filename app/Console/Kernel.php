@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
         Commands\SyncMentors::class,
+        Commands\SyncMoodle::class,
         Commands\TeamSpeakManager::class,
         Commands\TeamSpeakCleanup::class,
         Commands\TeamSpeakDaemon::class,
