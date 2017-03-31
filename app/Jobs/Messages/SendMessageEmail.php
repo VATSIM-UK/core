@@ -4,11 +4,13 @@ namespace App\Jobs\Messages;
 
 use App\Jobs\Job;
 use App\Models\Messages\Thread\Post;
+use Config;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Mship\Account\Email as Email;
+use URL;
 
 class SendMessageEmail extends Job implements ShouldQueue
 {
@@ -27,6 +29,8 @@ class SendMessageEmail extends Job implements ShouldQueue
 
     public function handle(Mailer $mailer)
     {
+        URL::forceRootUrl('https://' . Config::get('app.url'));
+
         $post  = $this->post;
         $isNew = $this->isNew;
 
