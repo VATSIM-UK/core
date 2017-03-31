@@ -75,8 +75,6 @@ class Registration extends \App\Http\Controllers\BaseController
     // create a new registration model
     protected function createRegistration($accountID, $registrationIP)
     {
-        \Log::info($accountID);
-        \Log::info(\Auth::user());
         $_registration                  = new RegistrationModel();
         $_registration->account_id      = $accountID;
         $_registration->registration_ip = $registrationIP;

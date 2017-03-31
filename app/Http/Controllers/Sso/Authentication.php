@@ -23,8 +23,6 @@ class Authentication extends \App\Http\Controllers\BaseController
         try {
             $ssoToken = Token::where('token', '=', $ssoToken)->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            \Log::info('Token not found 1');
-
             die('TOKEN NOT FOUND');
         }
 
