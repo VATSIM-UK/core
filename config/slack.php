@@ -13,7 +13,7 @@ return [
   |
   */
 
-  'endpoint' => 'https://hooks.slack.com/services/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',
+  'endpoint' => sprintf("https://hooks.slack.com/services/%s", env("SLACK_ENDPOINT")),
 
   /*
   |-------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
   |
   */
 
-  'channel' => null,
+  'channel' => env("SLACK_CHANNEL", null),
 
   /*
   |-------------------------------------------------------------
@@ -38,7 +38,7 @@ return [
   |
   */
 
-  'username' => 'VATSIM UK Bot',
+  'username' => env("SLACK_USERNAME", "SLACK DEFAULT USERNAME"),
 
   /*
   |-------------------------------------------------------------
