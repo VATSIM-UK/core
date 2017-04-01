@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -42,6 +43,8 @@ class CreateFeedbackTables extends Migration
               'required'  => true,
               'sequence'  => 1,
               'permanent' => true,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
             ],
             [
               'type_id'   => '4',
@@ -54,6 +57,8 @@ class CreateFeedbackTables extends Migration
               'required'  => true,
               'sequence'  => 2,
               'permanent' => true,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
             ],
         ]);
 
