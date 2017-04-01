@@ -31,21 +31,23 @@
         {!! Form::open(["route" => ["mship.feedback.new.post"]]) !!}
 				@foreach ($questions as $question)
           <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
-            {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }}
-            @if ($question->type == "text")
-              {{ Form::text($question->slug) }}
-            @elseif ($question->type == "radio" && isset($question->options['values']))
-              </br>
-              @foreach ($question->options['values'] as $key => $value)
-                {{ Form::radio($question->slug, $value) }} {{$key}}
-              @endforeach
-            @elseif ($question->type == "textarea")
-              {{ Form::textarea($question->slug) }}
-            @elseif ($question->type == "datetime")
-              {{ Form::text($question->slug, "03/09/2017", ['class' => "datetimepickercustom"]) }}
-            @elseif ($question->type == "userlookup")
-              {{ Form::text($question->slug, "", ['placeholder' => "Enter the Users CID e.g 1234567"]) }}
-            @endif
+            {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
+            @php
+                if($question->type->requires_value == true){
+                  if(isset($question->options['values'])){
+                    foreach($question->options['values'] as $key => $value){
+                      printf($question->type->code, $question->slug, old($question->slug), $key, $value);
+                    }
+                    echo "</div>";
+                    continue;
+                  }
+                  // No values, so we cant use it :/
+                  echo "</div>";
+                  continue;
+                }
+
+                printf($question->type->code, $question->slug, old($question->slug));
+            @endphp
           </div>
 				@endforeach
         <div class="form-group">

@@ -30,24 +30,39 @@ class Feedback extends \App\Http\Controllers\BaseController
 
       foreach ($questions as $question) {
         $rules = [];
+
+        if ($question->type->name == "userlookup") {
+          $cidfield = $question->slug;
+        }
+
+
+        // Proccess rules
+
+        if(count($rules > 0)) {
+          $ruleset[$question->slug] = join($rules, "|");
+        }
+        $rules = [];
+        if($question->type->rules != null){
+          $rules = explode("|", $question->type->rules);
+        }
+
         if($question->required){
           $rules[] = "required";
-          $errormessages[$question->slug . '.required'] = "Looks like you have not supplied an answer for '" . $question->question . "'.";
-        }
-        if($question->type == "datetime"){
-          $rules[] = "date";
-          $errormessages[$question->slug . '.date'] = "Looks like your answer to '" . $question->question . "' wasn't answered correctly. Please try again.";
-        }
-        if($question->type == "userlookup"){
-          $rules[] = "exists:mship_account,id";
-          $rules[] = "integer";
-          $cidfield = $question->slug;
-          $errormessages[$question->slug . '.exists'] = "This user was not found. Please ensure that you have entered the CID correctly.";
-          $errormessages[$question->slug . '.integer'] = "You have not entered in a valid CID.";
         }
         if(count($rules > 0)) {
           $ruleset[$question->slug] = join($rules, "|");
         }
+
+        // Process errors
+        foreach($rules as $rule){
+          $automaticRuleErrors = ['required','exists', 'integer'];
+          if(!array_search($rule, $automaticRuleErrors)){
+              $errormessages[$question->slug . '.' . $rule] = "Looks like you answered '" . $question->question . "' incorrectly. Please try again.";
+          }
+        }
+        $errormessages[$question->slug . '.required'] = "You have not supplied an answer for '" . $question->question . "'.";
+        $errormessages[$question->slug . '.exists'] = "This user was not found. Please ensure that you have entered the CID correctly.";
+        $errormessages[$question->slug . '.integer'] = "You have not entered in a valid integer.";
 
         // Add the answer to the array, ready for inserting
         $answerdata[] = new Answer(['question_id' => $question->id, 'response' => $request->input($question->slug)]);
@@ -59,6 +74,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                          ->withInput();
 
       }
+
 
       if(!$cidfield){
         // No one specified a user lookup field!

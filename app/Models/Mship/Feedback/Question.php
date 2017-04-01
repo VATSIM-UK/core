@@ -3,29 +3,37 @@
 namespace App\Models\Mship\Feedback;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-  protected $table        = 'mship_feedback_questions';
-  protected $dates        = [
-      'created_at',
-      'updated_at',
-  ];
-  protected $fillable     = [
-      'slug',
-      'question',
-      'type',
-      'options',
-      'required',
-  ];
-  protected $casts = [
-   'required' => 'boolean',
-   'options' => 'array'
-];
+    use SoftDeletes;
 
-  public function answers()
-  {
-      return $this->hasMany('App\Models\Mship\Feedback\Answer');
-  }
+    protected $table        = 'mship_feedback_questions';
+    protected $dates        = [
+        'created_at',
+        'updated_at',
+    ];
+    protected $fillable     = [
+        'type_id',
+        'slug',
+        'question',
+        'options',
+        'required',
+    ];
+    protected $casts = [
+     'required' => 'boolean',
+     'options' => 'array'
+    ];
+
+    public function answers()
+    {
+        return $this->hasMany('App\Models\Mship\Feedback\Answer');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo('App\Models\Mship\Feedback\Question\Type');
+    }
 
 }
