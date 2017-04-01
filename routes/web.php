@@ -64,6 +64,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                 Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
             });
 
+
             Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
                 /* Route::get('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d'));
                   Route::post('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d')); */
@@ -111,6 +112,14 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                     Route::any('/note/type/{mshipNoteType}/delete', ['as' => 'type.delete', 'uses' => 'Note@anyTypeDelete']);
                     Route::get('/note/type/', ['as' => 'type.index', 'uses' => 'Note@getTypeIndex']);
                 });
+
+                Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
+                    Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
+                    Route::get('list/atc', ['as' => 'atc', 'uses' => 'Feedback@getATCFeedback']);
+                    Route::get('list/pilot', ['as' => 'pilot', 'uses' => 'Feedback@getPilotFeedback']);
+                    Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
+                });
+
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
             });
