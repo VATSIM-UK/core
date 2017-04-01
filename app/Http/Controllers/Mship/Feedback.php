@@ -34,7 +34,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             $rules = [];
 
             if ($question->type->name == 'userlookup') {
-              $cidfield = $question->slug;
+                $cidfield = $question->slug;
             }
 
             // Proccess rules
@@ -51,15 +51,15 @@ class Feedback extends \App\Http\Controllers\BaseController
             }
 
             // Process errors
-            foreach ($rules as $rule){
-                $automaticRuleErrors = ['required','exists', 'integer'];
+            foreach ($rules as $rule) {
+                $automaticRuleErrors = ['required', 'exists', 'integer'];
                 if (!array_search($rule, $automaticRuleErrors)) {
                     $errormessages[$question->slug.'.'.$rule] = "Looks like you answered '".$question->question."' incorrectly. Please try again.";
                 }
             }
-            $errormessages[$question->slug . '.required'] = "You have not supplied an answer for '".$question->question."'.";
-            $errormessages[$question->slug . '.exists'] = "This user was not found. Please ensure that you have entered the CID correctly.";
-            $errormessages[$question->slug . '.integer'] = "You have not entered in a valid integer.";
+            $errormessages[$question->slug.'.required'] = "You have not supplied an answer for '".$question->question."'.";
+            $errormessages[$question->slug.'.exists'] = "This user was not found. Please ensure that you have entered the CID correctly.";
+            $errormessages[$question->slug.'.integer'] = "You have not entered in a valid integer.";
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([

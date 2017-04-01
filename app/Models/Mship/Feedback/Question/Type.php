@@ -21,7 +21,6 @@ class Type extends Model
      'requires_value' => 'boolean',
     ];
 
-
     public function questions()
     {
         $this->hasMany('App\Models\Mship\Feedback\Question');

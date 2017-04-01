@@ -56,7 +56,7 @@ class Feedback extends Model
         // Find the type determining quesiton
         $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
         $answer     = $this->answers()->where('question_id', $questionId)->first();
-        if ($answer->response == "atc") {
+        if ($answer->response == 'atc') {
             return true;
         }
 

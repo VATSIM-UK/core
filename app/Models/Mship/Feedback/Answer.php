@@ -35,5 +35,4 @@ class Answer extends Model
     {
         return $this->belongsTo('App\Models\Mship\Feedback\Question');
     }
-
 }
