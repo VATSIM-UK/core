@@ -18,6 +18,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard');
         }
+
         return view('mship.feedback.form', ['questions' => $questions]);
     }
 
@@ -58,8 +59,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                 }
             }
             $errormessages[$question->slug.'.required'] = "You have not supplied an answer for '".$question->question."'.";
-            $errormessages[$question->slug.'.exists'] = "This user was not found. Please ensure that you have entered the CID correctly.";
-            $errormessages[$question->slug.'.integer'] = "You have not entered in a valid integer.";
+            $errormessages[$question->slug.'.exists']   = "This user was not found. Please ensure that you have entered the CID correctly.";
+            $errormessages[$question->slug.'.integer']  = "You have not entered in a valid integer.";
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([
