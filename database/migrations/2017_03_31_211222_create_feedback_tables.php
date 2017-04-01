@@ -28,14 +28,40 @@ class CreateFeedbackTables extends Migration
             $table->text('options')->nullable();
             $table->boolean('required');
             $table->unsignedInteger('sequence');
+            $table->boolean('permanent');
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::table('mship_feedback_questions')->insert([
+            [
+              'type_id'   => '1',
+              'slug'      => 'usercid',
+              'question'  => 'Please enter the CID of the user you are providing feedback for:',
+              'options'   => null,
+              'required'  => true,
+              'sequence'  => 1,
+              'permanent' => true,
+            ],
+            [
+              'type_id'   => '4',
+              'slug'      => 'facilitytype',
+              'question'  => 'What kind of activity are you prodiving feedback on?',
+              'options'   => json_encode (['values' => [
+                  'ATC' => 'atc',
+                  'Pilot' => 'pilot',
+                ]]),
+              'required'  => true,
+              'sequence'   => 2,
+              'permanent' => true,
+            ],
+        ]);
 
         Schema::create('mship_feedback_question_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->text('code');
+            $table->string('rules')->nullable();
             $table->unsignedInteger('max_uses')->default(0);
             $table->boolean('requires_value')->default(false);
         });
@@ -44,24 +70,37 @@ class CreateFeedbackTables extends Migration
             [
               'name' => 'userlookup',
               'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
-               'max_uses' => 1
+              'rules' => 'integer|exists:mship_account,id',
+              'requires_value' => false,
+              'max_uses' => 1
             ],
             [
               'name' => 'text',
               'code' => '<input class="form-control" name="%1$s" type="text" value="%2$s" id="%1$s">',
+              'rules' => null,
+              'requires_value' => false,
+              'max_uses' => 0,
             ],
             [
               'name' => 'textarea',
               'code' => '<textarea class="form-control" name="%1$s" cols="50" rows="10" id="%1$s">%2$s</textarea>',
+              'rules' => null,
+              'requires_value' => false,
+              'max_uses' => 0,
             ],
             [
               'name' => 'radio',
               'code' => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s"> %3$s',
-               'requires_value' => true
+              'rules' => null,
+              'requires_value' => true,
+              'max_uses' => 0,
             ],
             [
               'name' => 'datetime',
-              'code' => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">'
+              'code' => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">',
+              'rules' => 'date',
+              'requires_value' => false,
+              'max_uses' => 0,
             ],
         ]);
 

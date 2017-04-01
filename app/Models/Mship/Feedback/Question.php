@@ -23,7 +23,8 @@ class Question extends Model
     ];
     protected $casts = [
      'required' => 'boolean',
-     'options' => 'array'
+     'options' => 'array',
+     'permanent' => 'boolean',
     ];
 
     public function answers()

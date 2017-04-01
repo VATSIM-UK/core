@@ -19,6 +19,13 @@ class Answer extends Model
 
   public $timestamps = false;
 
+  public function scopeNotPermanent($query)
+  {
+    return $query->whereHas('question', function ($q) {
+        $q->where('permanent', false);
+    });
+  }
+
   public function feedback()
   {
       return $this->belongsTo('App\Models\Mship\Feedback\Feedback');
