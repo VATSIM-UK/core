@@ -167,6 +167,11 @@ Route::group(['domain' => config('app.url')], function () {
             });
         });
 
+        Route::group(['middleware' => ['auth_full_group'], 'prefix' => 'feedback'], function () {
+            Route::get('/new', ['as' => 'mship.feedback.new', 'uses' => 'Feedback@getFeedback']);
+            Route::post('/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedback']);
+        });
+
         Route::group(['prefix' => 'security'], function () {
             Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
 

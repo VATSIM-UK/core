@@ -25,6 +25,7 @@
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
     {!! HTML::style(elixir("css/app-all.css")) !!}
+    @yield('styles')
 </head>
 <body>
 <div class="container-fluid">
