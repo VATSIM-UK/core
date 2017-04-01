@@ -47,12 +47,12 @@ class CreateFeedbackTables extends Migration
               'type_id'   => '4',
               'slug'      => 'facilitytype',
               'question'  => 'What kind of activity are you prodiving feedback on?',
-              'options'   => json_encode (['values' => [
-                  'ATC' => 'atc',
-                  'Pilot' => 'pilot',
-                ]]),
+              'options'   => json_encode(['values' => [
+                    'ATC'   => 'atc',
+                    'Pilot' => 'pilot',
+                  ]]),
               'required'  => true,
-              'sequence'   => 2,
+              'sequence'  => 2,
               'permanent' => true,
             ],
         ]);
@@ -68,39 +68,39 @@ class CreateFeedbackTables extends Migration
 
         DB::table('mship_feedback_question_types')->insert([
             [
-              'name' => 'userlookup',
-              'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
-              'rules' => 'integer|exists:mship_account,id',
+              'name'           => 'userlookup',
+              'code'           => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
+              'rules'          => 'integer|exists:mship_account,id',
               'requires_value' => false,
-              'max_uses' => 1
+              'max_uses'       => 1
             ],
             [
-              'name' => 'text',
-              'code' => '<input class="form-control" name="%1$s" type="text" value="%2$s" id="%1$s">',
-              'rules' => null,
+              'name'           => 'text',
+              'code'           => '<input class="form-control" name="%1$s" type="text" value="%2$s" id="%1$s">',
+              'rules'          => null,
               'requires_value' => false,
-              'max_uses' => 0,
+              'max_uses'       => 0,
             ],
             [
-              'name' => 'textarea',
-              'code' => '<textarea class="form-control" name="%1$s" cols="50" rows="10" id="%1$s">%2$s</textarea>',
-              'rules' => null,
+              'name'           => 'textarea',
+              'code'           => '<textarea class="form-control" name="%1$s" cols="50" rows="10" id="%1$s">%2$s</textarea>',
+              'rules'          => null,
               'requires_value' => false,
-              'max_uses' => 0,
+              'max_uses'       => 0,
             ],
             [
-              'name' => 'radio',
-              'code' => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s"> %3$s',
-              'rules' => null,
+              'name'           => 'radio',
+              'code'           => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s"> %3$s',
+              'rules'          => null,
               'requires_value' => true,
-              'max_uses' => 0,
+              'max_uses'       => 0,
             ],
             [
-              'name' => 'datetime',
-              'code' => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">',
-              'rules' => 'date',
+              'name'           => 'datetime',
+              'code'           => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">',
+              'rules'          => 'date',
               'requires_value' => false,
-              'max_uses' => 0,
+              'max_uses'       => 0,
             ],
         ]);
 

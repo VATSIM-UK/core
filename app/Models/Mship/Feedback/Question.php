@@ -22,8 +22,8 @@ class Question extends Model
         'required',
     ];
     protected $casts = [
-     'required' => 'boolean',
-     'options' => 'array',
+     'required'  => 'boolean',
+     'options'   => 'array',
      'permanent' => 'boolean',
     ];
 

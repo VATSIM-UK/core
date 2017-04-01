@@ -64,7 +64,6 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                 Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
             });
 
-
             Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
                 /* Route::get('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d'));
                   Route::post('/airport/{navdataAirport}', 'Airport@getDetail')->where(array('navdataAirport' => '\d')); */
@@ -119,7 +118,6 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                     Route::get('list/pilot', ['as' => 'pilot', 'uses' => 'Feedback@getPilotFeedback']);
                     Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
                 });
-
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
             });

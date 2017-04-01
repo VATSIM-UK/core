@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Illuminate\Http\Request;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
-use App\Http\Controllers\Controller;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
@@ -22,7 +20,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getATCFeedback()
     {
-        if (!$this->account->hasChildPermission("adm/mship/feedback/list/atc")) {
+        if (!$this->account->hasChildPermission('adm/mship/feedback/list/atc')) {
             abort(404, 'Unauthorized action.');
         }
 
@@ -46,21 +44,19 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getViewFeedback(FeedbackModel $feedback)
     {
-      if($this->account->hasChildPermission('adm/mship/feedback/list')){
-        return $this->viewMake('adm.mship.feedback.view')
-                  ->with('feedback', $feedback);
-      }
-      if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
-          return $this->viewMake('adm.mship.feedback.view')
+        if ($this->account->hasChildPermission('adm/mship/feedback/list')) {
+            return $this->viewMake('adm.mship.feedback.view')
                     ->with('feedback', $feedback);
-      }
-      if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
-          return $this->viewMake('adm.mship.feedback.view')
-                  ->with('feedback', $feedback);
-      }
-      abort(401, 'Unauthorized action.');
-
-
+        }
+        if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
+            return $this->viewMake('adm.mship.feedback.view')
+                      ->with('feedback', $feedback);
+        }
+        if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
+            return $this->viewMake('adm.mship.feedback.view')
+                    ->with('feedback', $feedback);
+        }
+        abort(401, 'Unauthorized action.');
     }
 
 }

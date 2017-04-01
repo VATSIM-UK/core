@@ -18,7 +18,7 @@ class Type extends Model
         'requires_value',
     ];
     protected $casts = [
-     'requires_value' => 'boolean'
+     'requires_value' => 'boolean',
     ];
 
 
@@ -29,7 +29,7 @@ class Type extends Model
 
     public function hasUnlimitedUses()
     {
-        if($this->max_uses == 0){
+        if ($this->max_uses == 0) {
           return true;
         }
 

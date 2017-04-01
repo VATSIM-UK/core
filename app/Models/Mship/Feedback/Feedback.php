@@ -18,15 +18,17 @@ class Feedback extends Model
         'submitter_account_id',
     ];
 
-    public function scopeATC($query){
-      return $query->whereHas('answers', function ($q) {
-          $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'atc']);
-      });
+    public function scopeATC($query)
+    {
+        return $query->whereHas('answers', function ($q) {
+            $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'atc']);
+        });
     }
-    public function scopePilot($query){
-      return $query->whereHas('answers', function ($q) {
-          $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'pilot']);
-      });
+    public function scopePilot($query)
+    {
+        return $query->whereHas('answers', function ($q) {
+            $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'pilot']);
+        });
     }
 
     public function questions()
@@ -36,7 +38,7 @@ class Feedback extends Model
 
     public function answers()
     {
-        return $this->hasMany('App\Models\Mship\Feedback\Answer');;
+        return $this->hasMany('App\Models\Mship\Feedback\Answer');
     }
 
     public function account()
@@ -50,12 +52,12 @@ class Feedback extends Model
     }
 
     public function isATC(){
-      // Find the type determining quesiton
-      $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
-      $answer = $this->answers()->where('question_id', $questionId)->first();
-      if($answer->response == "atc"){
-        return true;
+        // Find the type determining quesiton
+        $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
+        $answer = $this->answers()->where('question_id', $questionId)->first();
+        if($answer->response == "atc"){
+          return true;
+        }
+        return false;
       }
-      return false;
-    }
 }
