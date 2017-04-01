@@ -21,9 +21,9 @@ class Answer extends Model
 
     public function scopeNotPermanent($query)
     {
-      return $query->whereHas('question', function ($q) {
-          $q->where('permanent', false);
-      });
+        return $query->whereHas('question', function ($q) {
+            $q->where('permanent', false);
+        });
     }
 
     public function feedback()

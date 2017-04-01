@@ -58,5 +58,4 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
         abort(401, 'Unauthorized action.');
     }
-
 }

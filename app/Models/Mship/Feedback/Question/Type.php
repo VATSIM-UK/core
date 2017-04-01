@@ -30,7 +30,7 @@ class Type extends Model
     public function hasUnlimitedUses()
     {
         if ($this->max_uses == 0) {
-          return true;
+            return true;
         }
 
         return false;
