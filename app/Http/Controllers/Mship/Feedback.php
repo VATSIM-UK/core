@@ -93,5 +93,4 @@ class Feedback extends \App\Http\Controllers\BaseController
         return Redirect::route('mship.manage.dashboard')
                 ->withSuccess('Your feedback has been recorded. Thank you!');
     }
-
 }
