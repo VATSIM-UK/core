@@ -15,6 +15,7 @@ use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Mship\Feedback\Feedback;
 use App\Models\Sys\Notification as SysNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Mship\Account\Note as AccountNoteData;
@@ -537,6 +538,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function teamspeakRegistrations()
     {
         return $this->hasMany(\App\Models\TeamSpeak\Registration::class, 'account_id');
+    }
+
+    public function feedback()
+    {
+        return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
     }
 
     public function readNotifications()
