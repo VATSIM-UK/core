@@ -11,6 +11,7 @@ class Feedback extends Model
     protected $dates        = [
         'created_at',
         'updated_at',
+        'actioned_at',
     ];
     protected $fillable     = [
         'account_id',
