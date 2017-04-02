@@ -73,7 +73,9 @@
                                     <li class="dropdown-header">Third-Party Services</li>
                                     <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
-
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Community Features</li>
+                                    <li>{!! link_to_route("mship.feedback.new", "Member Feedback") !!}</li>
                                     {{--<li class="divider"></li>--}}
 
                                     {{--<li class="dropdown-header">Disputes</li>--}}
