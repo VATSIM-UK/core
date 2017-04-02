@@ -13,6 +13,7 @@ class Question extends Model
     protected $dates        = [
         'created_at',
         'updated_at',
+        'actioned_at',
     ];
     protected $fillable     = [
         'type_id',
@@ -29,6 +30,10 @@ class Question extends Model
 
     public function scopeNotPermanent($query){
         return $query->where('permanent', false);
+    }
+
+    public function scopeNotActioned($query){
+        return $query->where('actioned_at', null);
     }
 
     public function answers()
