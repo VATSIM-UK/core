@@ -14,12 +14,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
     public function getConfigure()
     {
-        if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {
-            abort(401, 'Unauthorized action.');
-        }
-
-
-
         $question_types = Type::all();
         $current_questions = Question::orderBy("sequence")->notPermanent()->get();
         $new_question = new Question();
@@ -38,15 +32,24 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postConfigure(UpdateFeedbackFormRequest $request)
     {
+        $in_use_question_ids = [];
+
 
         $all_current_questions = Question::all();
-        $sequence_start_number = $all_current_questions->filter(function ($question, $key) {
+        $permanent_questions = $all_current_questions->filter(function ($question, $key) {
             if($question->permanent){
               return true;
             }
             return false;
-        })->count() + 1;
+        });
+        foreach ($permanent_questions as $question) {
+          $in_use_question_ids[] = ['id', '!=', $question->id];
+        }
+
+        $sequence_start_number = $permanent_questions->count() + 1;
         $i = $sequence_start_number;
+
+
         foreach($request->input('question') as $question){
           if(isset($question['exists'])){
             // The question exisits already. Lets see if it is appropriate to create a new question, or update.
@@ -54,7 +57,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             if($exisiting_question->question != $question['name']){
                 // Make a new question
                 $exisiting_question->delete();
-                $this->makeNewQuestion($question, $i);
+                $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
                 $i++;
                 continue;
             }
@@ -66,18 +69,28 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             if(isset($question['options']['values'])){
               $question['options']['values'] = explode(",", $question['options']['values']);
             }
-            $exisiting_question->options = $question['options'];
+            if(isset($question['options'])){
+              $exisiting_question->options = $question['options'];
+            }else{
+              $exisiting_question->options = array();
+            }
+
             $exisiting_question->required = $question['required'];
             $exisiting_question->save();
+            $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
             $i++;
             continue;
           }else{
             // Make a new question
-            $this->makeNewQuestion($question, $i);
+            $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
             $i++;
             continue;
           }
         }
+
+        //Check if we have lost any questions along the way, and delete them
+        Question::where($in_use_question_ids)->delete();
+
         return Redirect::back()
                       ->withSuccess("Updated!");
     }
@@ -88,14 +101,18 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
       $new_question->question = $question['name'];
       $new_question->slug = $question['slug'] . $sequence;
       $new_question->type_id  = $type->id;
-      if(isset($question['options']['values'])){
+      if(isset($question['options']['values']) && $question['options']['values'] != ""){
         $question['options']['values'] = explode(",", $question['options']['values']);
       }
-      $new_question->options = $question['options'];
+      if(isset($question['options'])){
+        $new_question->options = $question['options'];
+      }else{
+        $new_question->options = array();
+      }
       $new_question->required = $question['required'];
       $new_question->sequence = $sequence;
       $new_question->save();
-      return $new_question;
+      return $new_question->id;
     }
 
     public function getAllFeedback()
