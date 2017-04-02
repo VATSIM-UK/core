@@ -146,7 +146,7 @@
                     </a>
                     <ul class="treeview-menu">
                         @if($_account->hasPermission("adm/mship/feedback/list"))
-                          <li {!! (\Request::is('adm/mship/feedback/list*') ? ' class="active"' : '') !!}>
+                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
                               <a href="{{ URL::route("adm.mship.feedback.all") }}">
                                 <i class="fa fa-bars"></i>
                                 <span>All Feedback</span>
