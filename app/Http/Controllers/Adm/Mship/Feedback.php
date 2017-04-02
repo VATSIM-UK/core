@@ -167,4 +167,21 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
         abort(401, 'Unauthorized action.');
     }
+
+    public function getActioned(FeedbackModel $feedback)
+    {
+        $conditions = [];
+        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
+        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
+        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
+
+        foreach($conditions as $condition){
+          if($condition){
+              $feedback->markActioned(\Auth::user());
+              return Redirect::back()
+                              ->withSuccess("Feedback marked as Actioned!");
+          }
+        }
+        abort(401, 'Unauthorized action.');
+    }
 }

@@ -28,6 +28,41 @@
           </div>
       </div>
     </div>
+    <div class="col-md-6">
+      <div class="box box-primary">
+          <div class="box-header">
+              <h3 class="box-title ">
+                  Action
+              </h3>
+          </div><!-- /.box-header -->
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-3">
+                <b> Status:</b></br>
+                @if ($feedback->actioned_at)
+                  {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
+                @else
+                  {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
+                @endif
+              </div>
+                @if ($feedback->actioned_at)
+                    <div class="col-md-3">
+                      <b> Actioned at:</b></br>
+                      {{ $feedback->actioned_at->format("d-m-Y H:i A") }}
+                    </div>
+                    <div class="col-md-3">
+                      <b> Actioned by:</b></br>
+                      {{ $feedback->actioner->real_name }}
+                    </div>
+                @else
+                    <div class="col-md-3">
+                      <a href="{{route('adm.mship.feedback.action', [$feedback->id])}}">{{ Form::button('Mark Actioned', ['class' => 'btn btn-danger']) }}</a>
+                    </div>
+                @endif
+            </div>
+          </div>
+      </div>
+    </div>
 </div>
 
 <!-- Main row -->
