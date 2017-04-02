@@ -47,7 +47,7 @@
                     <div class="box box-warning">
                         <div class="box-header">
                             <h4 class="box-title ">
-                                {{ $answer->question->question }}
+                                {{ $answer->question()->withTrashed()->first()->question }}
                             </h4>
                         </div><!-- /.box-header -->
                         <div class="box-body">
