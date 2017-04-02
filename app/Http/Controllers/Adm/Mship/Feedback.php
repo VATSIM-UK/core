@@ -123,7 +123,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->get();
 
-        return $this->viewMake('adm.mship.feedback.all')
+        return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
     }
 
@@ -135,7 +135,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->atc()->get();
 
-        return $this->viewMake('adm.mship.feedback.all')
+        return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
     }
 
@@ -147,7 +147,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->pilot()->get();
 
-        return $this->viewMake('adm.mship.feedback.all')
+        return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
     }
 
