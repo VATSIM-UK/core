@@ -75,4 +75,10 @@ class Feedback extends Model
         $this->actioned_by_id = $actioner->id;
         $this->save();
     }
+
+    public function markUnActioned(){
+        $this->actioned_at = null;
+        $this->actioned_by_id = null;
+        $this->save();
+    }
 }

@@ -121,6 +121,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                     Route::get('list/pilot', ['as' => 'pilot', 'uses' => 'Feedback@getPilotFeedback']);
                     Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
                     Route::get('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@getActioned']);
+                    Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);
                 });
 
                 Route::get('/staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
