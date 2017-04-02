@@ -23,7 +23,17 @@ class Type extends Model
 
     public function questions()
     {
-        $this->hasMany('App\Models\Mship\Feedback\Question');
+        return $this->hasMany('App\Models\Mship\Feedback\Question');
+    }
+
+    public function canBeUsedAgain(){
+        if($this->hasUnlimitedUses()){
+          return true;
+        }
+
+        if($this->questions->count() == $this->max_uses){
+          return false;
+        }
     }
 
     public function hasUnlimitedUses()

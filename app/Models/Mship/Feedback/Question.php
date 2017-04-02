@@ -27,6 +27,10 @@ class Question extends Model
      'permanent' => 'boolean',
     ];
 
+    public function scopeNotPermanent($query){
+        return $query->where('permanent', false);
+    }
+
     public function answers()
     {
         return $this->hasMany('App\Models\Mship\Feedback\Answer');
@@ -35,5 +39,12 @@ class Question extends Model
     public function type()
     {
         return $this->belongsTo('App\Models\Mship\Feedback\Question\Type');
+    }
+
+    public function optionValues(){
+      if(isset($this->options['values'])){
+        return $this->options['values'];
+      }
+      return false;
     }
 }
