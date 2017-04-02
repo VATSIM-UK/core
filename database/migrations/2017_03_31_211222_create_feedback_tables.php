@@ -19,6 +19,7 @@ class CreateFeedbackTables extends Migration
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('submitter_account_id');
             $table->timestamp('actioned_at')->nullable();
+            $table->unsignedInteger('actioned_by_id')->nullable();
             $table->timestamps();
         });
 

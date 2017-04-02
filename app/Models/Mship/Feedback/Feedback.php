@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Feedback;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Mship\Feedback\Question\Type;
 
@@ -52,6 +53,11 @@ class Feedback extends Model
         return $this->hasOne('App\Models\Mship\Account', 'id', 'submitter_account_id');
     }
 
+    public function actioner()
+    {
+        return $this->hasOne('App\Models\Mship\Account', 'id', 'actioned_by_id');
+    }
+
     public function isATC()
     {
         // Find the type determining quesiton
@@ -62,5 +68,11 @@ class Feedback extends Model
         }
 
         return false;
+    }
+
+    public function markActioned($actioner){
+        $this->actioned_at = Carbon::now();
+        $this->actioner_id = $actioner->id;
+        $this->save();
     }
 }
