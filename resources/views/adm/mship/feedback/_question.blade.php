@@ -1,4 +1,4 @@
-<li {{ isset($hideme) ? "style=display:none id=question_template" : "" }}>
+<li class="question-item" {{ isset($hideme) ? "style=display:none id=question_template" : "" }}>
   <div class="col-md-12 permanent">
       <div class="box box-warning" style="border: 1px solid">
           <div class="box-header">
@@ -22,9 +22,13 @@
               </p>
               <div class="form-group">
                 {{ Form::label('question['.$num.'][required]', "Required") }}
-                {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No')) }}
+                @if ((isset($question->required) && $question->required == false))
+                  {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No'), 0) }}
+                @else
+                  {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No')) }}
+                @endif
               </div>
-              @if (isset($question->type->requires_value) || isset($hideme))
+              @if ((isset($question->type->requires_value) && $question->type->requires_value == true) || isset($hideme))
                 <div class="form-group question_valueinput">
                   {{ Form::label('question['.$num.'][options][values]', "Values") }}
                   <small>Please enter in values, seperated by a comma, for the options</small>
@@ -50,6 +54,8 @@
                   Preview for this question will be unavalible until you save and reload this page
                 @endif
               </p>
+              <hr>
+              <button type=button class="question-delete-button btn btn-danger">Delete</button>
           </div>
       </div>
   </div>
