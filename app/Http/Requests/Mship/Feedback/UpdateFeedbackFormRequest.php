@@ -44,8 +44,16 @@ class UpdateFeedbackFormRequest extends Request
             'question.*.name.required'      => 'Your question needs a question!',
             'question.*.name.min'           => 'Your question must be more than 5 charecters long.',
 
+            'question.*.slug.required'      => 'Please enter a short name for your question',
+            'question.*.slug.alpha_num'     => "A question's short name can only be alphanumeric. (A-z0-9)",
+
             'question.*.type.required'      => 'Your question needs a type!',
             'question.*.type.exists'        => "Your question type doesn't seem to exist. Please try again.",
+
+            'question.*.exists.exists'      => "This exisiting answer doesn't seem to exist. Please try again.",
+
+            'question.*.required.required'  => 'Please mark if this question is required or not.',
+            'question.*.required.boolean'   => 'There was an error with your question. Please try again.',
         ];
     }
 
