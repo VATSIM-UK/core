@@ -42,9 +42,13 @@ class Question extends Model
     }
 
     public function optionValues(){
-      if(isset($this->options['values'])){
-        return $this->options['values'];
-      }
-      return false;
+        if(isset($this->options['values'])){
+          return $this->options['values'];
+        }
+        return false;
+    }
+
+    public function getSlugAttribute($value){
+        return substr($value, 0, -1);
     }
 }
