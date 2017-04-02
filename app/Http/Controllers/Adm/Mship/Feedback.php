@@ -2,10 +2,102 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Models\Mship\Feedback\Question;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\Mship\Feedback\Question\Type;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
+use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
+    public function getConfigure()
+    {
+        if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {
+            abort(401, 'Unauthorized action.');
+        }
+
+
+
+        $question_types = Type::all();
+        $current_questions = Question::orderBy("sequence")->notPermanent()->get();
+        $new_question = new Question();
+
+        foreach ($question_types as $key => $type) {
+          if(!$type->canBeUsedAgain()){
+            $question_types->pull($key);
+          }
+        }
+
+        return $this->viewMake('adm.mship.feedback.settings')
+                    ->with('question_types', $question_types)
+                    ->with('current_questions', $current_questions)
+                    ->with('new_question', $new_question);
+    }
+
+    public function postConfigure(UpdateFeedbackFormRequest $request)
+    {
+
+        $all_current_questions = Question::all();
+        $sequence_start_number = $all_current_questions->filter(function ($question, $key) {
+            if($question->permanent){
+              return true;
+            }
+            return false;
+        })->count() + 1;
+        $i = $sequence_start_number;
+        foreach($request->input('question') as $question){
+          if(isset($question['exists'])){
+            // The question exisits already. Lets see if it is appropriate to create a new question, or update.
+            $exisiting_question = Question::find($question['exists']);
+            if($exisiting_question->question != $question['name']){
+                // Make a new question
+                $exisiting_question->delete();
+                $this->makeNewQuestion($question, $i);
+                $i++;
+                continue;
+            }
+
+            // We will update it instead
+            $exisiting_question->required = $question['required'];
+            $exisiting_question->slug = $question['slug'] . $i;
+            $exisiting_question->sequence = $i;
+            if(isset($question['options']['values'])){
+              $question['options']['values'] = explode(",", $question['options']['values']);
+            }
+            $exisiting_question->options = $question['options'];
+            $exisiting_question->required = $question['required'];
+            $exisiting_question->save();
+            $i++;
+            continue;
+          }else{
+            // Make a new question
+            $this->makeNewQuestion($question, $i);
+            $i++;
+            continue;
+          }
+        }
+        return Redirect::back()
+                      ->withSuccess("Updated!");
+    }
+
+    function makeNewQuestion($question, $sequence){
+      $type = Type::where('name', $question['type'])->first();
+      $new_question = new Question();
+      $new_question->question = $question['name'];
+      $new_question->slug = $question['slug'] . $sequence;
+      $new_question->type_id  = $type->id;
+      if(isset($question['options']['values'])){
+        $question['options']['values'] = explode(",", $question['options']['values']);
+      }
+      $new_question->options = $question['options'];
+      $new_question->required = $question['required'];
+      $new_question->sequence = $sequence;
+      $new_question->save();
+      return $new_question;
+    }
+
     public function getAllFeedback()
     {
         if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {

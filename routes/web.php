@@ -113,6 +113,9 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                 });
 
                 Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
+                    Route::get('configure', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
+                    Route::post('configure', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
+
                     Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
                     Route::get('list/atc', ['as' => 'atc', 'uses' => 'Feedback@getATCFeedback']);
                     Route::get('list/pilot', ['as' => 'pilot', 'uses' => 'Feedback@getPilotFeedback']);
