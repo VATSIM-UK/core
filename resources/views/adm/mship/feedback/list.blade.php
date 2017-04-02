@@ -21,6 +21,7 @@
                         </th>
                         <th>Facility</th>
                         <th>Date Submitted</th>
+                        <th>Action Taken</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,13 @@
                         <td>{{ $f->account->real_name }}</td>
                         <td>{{ $f->isATC() ? "ATC" : "Pilot"  }}</td>
                         <td>{{ $f->created_at->format("d-m-Y H:i A") }}</td>
+                        <td>
+                          @if ($f->actioned_at)
+                              {!! HTML::img("tick_mark_circle", "png", 35, 47) !!}
+                          @else
+                              {!! HTML::img("cross_mark_circle", "png", 35, 47) !!}
+                          @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
