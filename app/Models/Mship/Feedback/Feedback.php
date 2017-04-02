@@ -72,7 +72,7 @@ class Feedback extends Model
 
     public function markActioned($actioner){
         $this->actioned_at = Carbon::now();
-        $this->actioner_id = $actioner->id;
+        $this->actioned_by_id = $actioner->id;
         $this->save();
     }
 }
