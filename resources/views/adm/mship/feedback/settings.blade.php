@@ -7,6 +7,7 @@
       var count = $("#feedback-form-questions li").length - 1;
       $("ol#feedback-form-questions").sortable({
         group: 'no-simple_connected_list',
+        handle: '.box-header',
         onDragStart: function ($item, container, _super) {
           // Duplicate items of the no drop area
           if(!container.options.drop)
@@ -53,6 +54,9 @@
       }
 
     });
+    $('.question-delete-button').click(function (){
+      $(this).closest('.question-item').remove();
+    })
   </script>
 @endsection
 @section('styles')
