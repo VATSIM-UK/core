@@ -19,7 +19,10 @@
 	<div class="panel-body">
 		<!-- Content Of Panel [START] -->
 		<p>
-			Here you can submit feedback about a UK division member. Please try to explain your answers fully. Abuse of this system will not be tolerated.
+			Here you can submit anonymous feedback about a <b>UK</b> division member. Please try to explain your answers fully. Your identity is kept anonymous to staff &amp; the subject of the feedback. However, senior staff will be able to discover your identity in the case of abuse of this system.
+		</p>
+    <p>
+			The contents of your responses will be sent to the relevant  training team(s). It will not necessarily be sent directly to the subject of your feedback.
 		</p>
     <p>
       All questions are required unless an <i>(optional)</i> is displayed beside it.
