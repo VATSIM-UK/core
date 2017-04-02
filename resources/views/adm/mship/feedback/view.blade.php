@@ -47,11 +47,11 @@
               </div>
                 @if ($feedback->actioned_at)
                     <div class="col-md-3">
-                      <b> Actioned at:</b></br>
+                      <b>Marked actioned at:</b></br>
                       {{ $feedback->actioned_at->format("d-m-Y H:i A") }}
                     </div>
                     <div class="col-md-3">
-                      <b> Actioned by:</b></br>
+                      <b>Marked actioned by:</b></br>
                       {{ $feedback->actioner->real_name }}
                     </div>
                     @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
