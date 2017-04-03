@@ -1,6 +1,39 @@
 @extends('adm.layout')
 
+@section('styles')
+{!! HTML::style(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.min.css")) !!}
+<style type="text/css">
+    body.dragging, body.dragging * {
+      cursor: move !important;
+    }
+
+    .dragged {
+      position: absolute;
+      opacity: 0.5;
+      z-index: 2000;
+    }
+
+    ol.example li.placeholder {
+      position: relative;
+      /** More li styles **/
+    }
+    ol.example li.placeholder:before {
+      position: absolute;
+      /** Define arrowhead **/
+    }
+
+    ol.simple_connected_list{
+      display: inline;
+    }
+
+    ol.simple_connected_list li {
+      list-style: none;
+    }
+</style>
+@endsection
+
 @section('scripts')
+  {!! HTML::script(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.full.min.js")) !!}
   {!! HTML::script('/assets/js/plugins/jquerysortable/jquery-sortable.js') !!}
   <script type="text/javascript">
     $(function  () {
@@ -8,6 +41,7 @@
       $("ol#feedback-form-questions").sortable({
         group: 'no-simple_connected_list',
         handle: '.box-header',
+        drag: false,
         onDragStart: function ($item, container, _super) {
           // Duplicate items of the no drop area
           if(!container.options.drop)
@@ -52,43 +86,25 @@
       }else{
         $(this).children().eq(1).removeAttr('selected')
       }
-
     });
+
+
+    $('.questionButtonUp').click(function(){
+      $(this).parents(".question-item").insertBefore($(this).parents(".question-item").prev());
+    });
+    $('.questionButtonDown').click(function(){
+      $(this).parents(".question-item").insertAfter($(this).parents(".question-item").next());
+    });
+
     $('.question-delete-button').click(function (){
       $(this).closest('.question-item').remove();
     })
+    $(document).ready(function(){
+      $('.datetimepickercustom').datetimepicker();
+    });
   </script>
 @endsection
-@section('styles')
-  <style type="text/css">
-  body.dragging, body.dragging * {
-    cursor: move !important;
-  }
 
-  .dragged {
-    position: absolute;
-    opacity: 0.5;
-    z-index: 2000;
-  }
-
-  ol.example li.placeholder {
-    position: relative;
-    /** More li styles **/
-  }
-  ol.example li.placeholder:before {
-    position: absolute;
-    /** Define arrowhead **/
-  }
-
-  ol.simple_connected_list{
-    display: inline;
-  }
-
-  ol.simple_connected_list li {
-    list-style: none;
-  }
-  </style>
-@endsection
 @section('content')
 <!-- Main row -->
 <div class="row">
