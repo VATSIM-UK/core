@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use Illuminate\Http\Request;
 use App\Models\Mship\Feedback\Question;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Mship\Feedback\Question\Type;
@@ -163,7 +164,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         abort(401, 'Unauthorized action.');
     }
 
-    public function getActioned(FeedbackModel $feedback)
+    public function postActioned(FeedbackModel $feedback, Request $request)
     {
         $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
@@ -172,7 +173,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         foreach($conditions as $condition){
           if($condition){
-              $feedback->markActioned(\Auth::user());
+              $feedback->markActioned(\Auth::user(), $request->input('comment'));
               return Redirect::back()
                               ->withSuccess("Feedback marked as actioned!");
           }

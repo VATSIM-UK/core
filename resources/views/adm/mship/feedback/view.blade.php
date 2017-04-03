@@ -34,8 +34,6 @@
                     <div id="hidden-submitter" style="display:none">
                       {{ $feedback->submitter->real_name }} ({{ $feedback->submitter->id }})
                     </div>
-
-
                   </div>
                 @endif
             </div>
@@ -68,15 +66,22 @@
                       <b>Marked actioned by:</b></br>
                       {{ $feedback->actioner->real_name }}
                     </div>
+                    <div class="col-md-3">
+                      <b>Actioned Comment:</b></br>
+                      {{ $feedback->actioned_comment }}
+                    </div>
                     @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
-                      <div class="col-md-3">
+                      <div class="col-md-12">
                         <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-danger']) }}</a>
                       </div>
                     @endif
                 @else
                     @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
-                      <div class="col-md-3">
-                        <a href="{{route('adm.mship.feedback.action', [$feedback->id])}}">{{ Form::button('Mark Actioned', ['class' => 'btn btn-warning']) }}</a>
+                      {{ Form::open(['route' => ['adm.mship.feedback.action', $feedback->id]]) }}
+                      <div class="col-md-9">
+                        {{ Form::label('Action Comment')}}
+                        {{ Form::textarea('comment', null, ['rows' => 1, "cols"=> 10]) }}
+                        {{ Form::submit('Mark Actioned', ['class' => 'btn btn-warning']) }}
                       </div>
                     @endif
                 @endif

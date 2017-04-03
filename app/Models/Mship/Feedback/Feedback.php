@@ -78,14 +78,16 @@ class Feedback extends Model
         return $this->answers()->where('question_id', $questionId)->first()->response;
     }
 
-    public function markActioned($actioner){
+    public function markActioned($actioner, $comment = null){
         $this->actioned_at = Carbon::now();
+        $this->actioned_comment = $comment;
         $this->actioned_by_id = $actioner->id;
         $this->save();
     }
 
     public function markUnActioned(){
         $this->actioned_at = null;
+        $this->actioned_comment = null;
         $this->actioned_by_id = null;
         $this->save();
     }
