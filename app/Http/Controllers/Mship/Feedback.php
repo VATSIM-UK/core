@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Question;
+use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class Feedback extends \App\Http\Controllers\BaseController
 {
@@ -89,7 +90,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
         // Add in the answers
         $feedback->answers()->saveMany($answerdata);
-
+        event(new NewFeedbackEvent($feedback));
         return Redirect::route('mship.manage.dashboard')
                 ->withSuccess('Your feedback has been recorded. Thank you!');
     }

@@ -4,10 +4,13 @@ namespace App\Models\Mship\Feedback;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use App\Models\Mship\Feedback\Question\Type;
 
 class Feedback extends Model
 {
+    use Notifiable;
+
     protected $table        = 'mship_feedback';
     protected $dates        = [
         'created_at',
@@ -68,6 +71,12 @@ class Feedback extends Model
         }
 
         return false;
+    }
+
+    public function facilityName(){
+        // Find the type determining quesiton
+        $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
+        return $this->answers()->where('question_id', $questionId)->first()->response;
     }
 
     public function markActioned($actioner){
