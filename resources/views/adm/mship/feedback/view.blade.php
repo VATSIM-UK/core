@@ -66,15 +66,16 @@
                       <b>Marked actioned by:</b></br>
                       {{ $feedback->actioner->real_name }}
                     </div>
-                    <div class="col-md-3">
-                      <b>Actioned Comment:</b></br>
-                      {{ $feedback->actioned_comment }}
-                    </div>
                     @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
-                      <div class="col-md-12">
+                      <div class="col-md-3">
                         <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-danger']) }}</a>
                       </div>
                     @endif
+
+                    <div class="col-md-12">
+                      <b>Actioned Comment:</b></br>
+                      {{ $feedback->actioned_comment }}
+                    </div>
                 @else
                     @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
                       {{ Form::open(['route' => ['adm.mship.feedback.action', $feedback->id]]) }}
