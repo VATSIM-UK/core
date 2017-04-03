@@ -102,7 +102,7 @@
                         @if($_account->hasChildPermission("adm/mship/permission") || $_account->hasChildPermission("adm/mship/role"))
                             <li class="treeview {{ ((\Request::is('adm/mship/permission*') || \Request::is('adm/mship/role*')) ? 'active' : '') }}">
                                 <a href="#">
-                                    <i class="ion ion-email"></i> <span>Roles & Permissions</span>
+                                    <i class="ion ion-email"></i> <span>Roles &amp; Permissions</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
