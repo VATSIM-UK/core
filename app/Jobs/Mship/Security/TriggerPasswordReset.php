@@ -4,7 +4,6 @@ namespace App\Jobs\Mship\Security;
 
 use App\Jobs\Job;
 use App\Models\Sys\Token;
-use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

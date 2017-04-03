@@ -3,7 +3,6 @@
 namespace App\Modules\Visittransfer\Http\Controllers\Site;
 
 use Auth;
-use App\Models\Mship\Account;
 use App\Http\Controllers\BaseController;
 
 class Dashboard extends BaseController

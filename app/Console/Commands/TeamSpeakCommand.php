@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Exception;
 use App\Libraries\TeamSpeak;
-use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use Symfony\Component\Console\Input\InputInterface;

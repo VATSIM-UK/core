@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Mship;
 use Auth;
 use Session;
 use Redirect;
-use App\Models\Mship\Account;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
