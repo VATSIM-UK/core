@@ -72,7 +72,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             if(isset($question['options'])){
               $exisiting_question->options = $question['options'];
             }else{
-              $exisiting_question->options = array();
+              $exisiting_question->options = null;
             }
 
             $exisiting_question->required = $question['required'];
@@ -106,8 +106,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
       }
       if(isset($question['options'])){
         $new_question->options = $question['options'];
-      }else{
-        $new_question->options = array();
       }
       $new_question->required = $question['required'];
       $new_question->sequence = $sequence;
