@@ -36,13 +36,13 @@ class CreateFeedbackTables extends Migration
         DB::table('mship_feedback_forms')->insert([
             [
               'name'      => 'ATC Feedback',
-              'name'      => 'atc',
+              'slug'      => 'atc',
               'created_at' => Carbon::now(),
               'updated_at' => Carbon::now(),
             ],
             [
               'name'      => 'Pilot Feedback',
-              'name'      => 'pilot',
+              'slug'      => 'pilot',
               'created_at' => Carbon::now(),
               'updated_at' => Carbon::now(),
             ]
