@@ -22,8 +22,22 @@
                 </div>
                 <div class="col-md-3">
                   <b> Target Memeber:</b></br>
-                  {{ $feedback->account->name_first }} {{ $feedback->account->name_last }} ({{ $feedback->account->id }})
+                  {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
                 </div>
+                @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/reporter'))
+                  <div class="col-md-12">
+                    <b>Submitter:</b></br>
+                    <span id="hidden-submitter-preamble">
+                      <small>View who submitted this feedback. This should <b>only</b> be used when the system has been abused to preserve the submitter's anonymity.</small></br>
+                      {{ Form::button('Reveal', ['class' => 'btn btn-danger', 'onclick' => '$("#hidden-submitter").show();$("#hidden-submitter-preamble").hide();']) }}
+                    </span>
+                    <div id="hidden-submitter" style="display:none">
+                      {{ $feedback->submitter->real_name }} ({{ $feedback->submitter->id }})
+                    </div>
+
+
+                  </div>
+                @endif
             </div>
           </div>
       </div>

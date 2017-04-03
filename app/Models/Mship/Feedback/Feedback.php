@@ -67,9 +67,8 @@ class Feedback extends Model
         $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
         $answer     = $this->answers()->where('question_id', $questionId)->first();
         if ($answer->response == 'atc') {
-            return true;
+             return true;
         }
-
         return false;
     }
 
