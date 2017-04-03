@@ -31,14 +31,13 @@ class NotifyOfNewFeedback
       $feedback = $event->feedback;
       $displayFrom = 'VATSIM UK - Community Department';
       $subject     = 'New member feedback received';
-      \Log::info($feedback->account);
       $body        = \View::make('emails.mship.feedback.new_feedback')
                    ->with('feedback', $feedback)
                    ->render();
 
       if($feedback->isATC()){
           $recipient = 'atc-team@vatsim.uk';
-      }else{
+      }else if($feedback->isPilot()){
           $recipient = 'pilot-team@vatsim.uk';
       }
 
