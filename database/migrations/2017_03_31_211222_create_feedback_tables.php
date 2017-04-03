@@ -97,7 +97,7 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'name'           => 'radio',
-              'code'           => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s"> %3$s',
+              'code'           => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s" %5$s> %3$s',
               'rules'          => null,
               'requires_value' => true,
               'max_uses'       => 0,

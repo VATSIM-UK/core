@@ -39,7 +39,11 @@
                 if($question->type->requires_value == true){
                   if(isset($question->options['values'])){
                     foreach($question->options['values'] as $key => $value){
-                      printf($question->type->code, $question->slug, old($question->slug), $value, $value);
+                      $selected = "";
+                      if(old($question->slug) == $value){
+                          $selected = "checked";
+                      }
+                      printf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
                     }
                     echo "</div>";
                     continue;
