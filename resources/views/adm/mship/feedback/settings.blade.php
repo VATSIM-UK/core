@@ -38,70 +38,72 @@
   <script type="text/javascript">
     $(function  () {
       var count = $("#feedback-form-questions li").length - 1;
-      $("ol#feedback-form-questions").sortable({
-        group: 'no-simple_connected_list',
-        handle: '.box-header',
-        drag: false,
-        onDragStart: function ($item, container, _super) {
-          // Duplicate items of the no drop area
-          if(!container.options.drop)
-            $item.clone().insertAfter($item);
-          _super($item, container);
-        },
-        onDrop: function ($item, container, _super, event){
-            if(!$item.find("div").first().hasClass('permanent')){
-              count = count + 1;
-              var itemtype = $item.find(".type_name").first().text();
-              var needsvalue = $item.find("div").first().hasClass("needs-values");
-              // Duplicate the question template
-              $item.html($("#question_template").html());
-              $item.find(".question_type").first().text(itemtype);
-              $item.find(".question_type_field").first().val(itemtype);
-              if(!needsvalue){
-                $item.find(".question_valueinput").first().hide();
-              }
-              $item.html($item.html().replace(/template/g, count));
-            }
-            $item.removeClass(container.group.options.draggedClass).removeAttr("style")
-            $item.addClass("question-item")
-            $("body").removeClass(container.group.options.bodyClass)
 
-        }
+      // Make the question list sortable & droppable
+      $("ol#feedback-form-questions").sortable({
+          group: 'no-simple_connected_list',
+          handle: '.box-header',
+          drag: false,
+          onDragStart: function ($item, container, _super) {
+            // Duplicate items of the no drop area
+            if(!container.options.drop)
+              $item.clone().insertAfter($item);
+            _super($item, container);
+          },
+          onDrop: function ($item, container, _super, event){
+              if(!$item.find("div").first().hasClass('permanent')){
+                count = count + 1;
+                var itemtype = $item.find(".type_name").first().text();
+                var needsvalue = $item.find("div").first().hasClass("needs-values");
+                // Duplicate the question template
+                $item.html($("#question_template").html());
+                $item.find(".question_type").first().text(itemtype);
+                $item.find(".question_type_field").first().val(itemtype);
+                if(!needsvalue){
+                  $item.find(".question_valueinput").first().hide();
+                }
+                $item.html($item.html().replace(/template/g, count));
+              }
+              $item.removeClass(container.group.options.draggedClass).removeAttr("style")
+              $item.addClass("question-item")
+              $("body").removeClass(container.group.options.bodyClass)
+          }
       });
+
+      // Make the question types dragable
       $("ol#question-types-box").sortable({
         drop: false,
         group: 'no-simple_connected_list'
       });
+
+      // Send the old question layout with form submittion, so that it is easier if something goes wrong
       $("#form-questions-form").submit(function (event){
           $('#old_data_input').val($('#feedback-form-questions').html())
       });
-    });
-    $("#feedback-form-questions").on("change keyup paste", "input", function() {
-      $(this).attr('value', $(this).val());
-    });
-    $("#feedback-form-questions").on("change keyup paste", "select", function() {
 
-      $(this).children().attr('selected', "");
-      if($(this).val() == "0"){
-        $(this).children().first().removeAttr('selected')
-      }else{
-        $(this).children().eq(1).removeAttr('selected')
-      }
-    });
+      // Detect change in input values so that they are preserved if form submission fails
+      $("#feedback-form-questions").on("change keyup paste", "input", function() {
+        $(this).attr('value', $(this).val());
+      });
+      $("#feedback-form-questions").on("change keyup paste", "select", function() {
+        $(this).children().attr('selected', "");
+        if($(this).val() == "0"){
+          $(this).children().first().removeAttr('selected')
+        }else{
+          $(this).children().eq(1).removeAttr('selected')
+        }
+      });
 
-    $("#feedback-form-questions").on("click", ".questionButtonUp", function() {
-        $(this).parents(".question-item").insertBefore($(this).parents(".question-item").prev());
-
-    });
-
-    $("#feedback-form-questions").on("click", ".questionButtonDown", function() {
-        $(this).parents(".question-item").insertAfter($(this).parents(".question-item").next());
-
-    });
-
-    $("#feedback-form-questions").on("click", ".question-delete-button", function() {
-        $(this).closest('.question-item').remove();
-
+      // Add in javascript question controls
+      $("#feedback-form-questions").on("click", ".questionButtonUp", function() {
+          $(this).parents(".question-item").insertBefore($(this).parents(".question-item").prev());
+      });
+      $("#feedback-form-questions").on("click", ".questionButtonDown", function() {
+          $(this).parents(".question-item").insertAfter($(this).parents(".question-item").next());
+      });
+      $("#feedback-form-questions").on("click", ".question-delete-button", function() {
+          $(this).closest('.question-item').remove();
+      });
     });
   </script>
 @endsection

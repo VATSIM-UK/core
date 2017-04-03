@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\Mship\Feedback\Question;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Mship\Feedback\Question\Type;
@@ -14,14 +12,14 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
     public function getConfigure()
     {
-        $question_types = Type::all();
-        $current_questions = Question::orderBy("sequence")->notPermanent()->get();
-        $new_question = new Question();
+        $question_types    = Type::all();
+        $current_questions = Question::orderBy('sequence')->notPermanent()->get();
+        $new_question      = new Question();
 
         foreach ($question_types as $key => $type) {
-          if(!$type->canBeUsedAgain()){
-            $question_types->pull($key);
-          }
+            if (!$type->canBeUsedAgain()) {
+                $question_types->pull($key);
+            }
         }
 
         return $this->viewMake('adm.mship.feedback.settings')
@@ -36,56 +34,55 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
 
         $all_current_questions = Question::all();
-        $permanent_questions = $all_current_questions->filter(function ($question, $key) {
-            if($question->permanent){
-              return true;
+        $permanent_questions   = $all_current_questions->filter(function ($question, $key) {
+            if ($question->permanent) {
+                return true;
             }
+
             return false;
         });
         foreach ($permanent_questions as $question) {
-          $in_use_question_ids[] = ['id', '!=', $question->id];
+            $in_use_question_ids[] = ['id', '!=', $question->id];
         }
 
-        $sequence_start_number = $permanent_questions->count() + 1;
-        $i = $sequence_start_number;
-
+        $i = $permanent_questions->count() + 1;
 
         foreach($request->input('question') as $question){
-          if(isset($question['exists'])){
-            // The question exisits already. Lets see if it is appropriate to create a new question, or update.
-            $exisiting_question = Question::find($question['exists']);
-            if($exisiting_question->question != $question['name']){
+            if (isset($question['exists'])) {
+                // The question exisits already. Lets see if it is appropriate to create a new question, or update.
+                $exisiting_question = Question::find($question['exists']);
+                if($exisiting_question->question != $question['name']){
+                    // Make a new question
+                    $exisiting_question->delete();
+                    $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
+                    $i++;
+                    continue;
+                }
+
+                // We will update it instead
+                $exisiting_question->required = $question['required'];
+                $exisiting_question->slug = $question['slug'] . $i;
+                $exisiting_question->sequence = $i;
+                if(isset($question['options']['values'])){
+                    $question['options']['values'] = explode(",", $question['options']['values']);
+                }
+                if(isset($question['options'])){
+                    $exisiting_question->options = $question['options'];
+                }else{
+                    $exisiting_question->options = null;
+                }
+
+                $exisiting_question->required = $question['required'];
+                $exisiting_question->save();
+                $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
+                $i++;
+                continue;
+            }else{
                 // Make a new question
-                $exisiting_question->delete();
                 $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
                 $i++;
                 continue;
             }
-
-            // We will update it instead
-            $exisiting_question->required = $question['required'];
-            $exisiting_question->slug = $question['slug'] . $i;
-            $exisiting_question->sequence = $i;
-            if(isset($question['options']['values'])){
-              $question['options']['values'] = explode(",", $question['options']['values']);
-            }
-            if(isset($question['options'])){
-              $exisiting_question->options = $question['options'];
-            }else{
-              $exisiting_question->options = null;
-            }
-
-            $exisiting_question->required = $question['required'];
-            $exisiting_question->save();
-            $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
-            $i++;
-            continue;
-          }else{
-            // Make a new question
-            $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
-            $i++;
-            continue;
-          }
         }
 
         //Check if we have lost any questions along the way, and delete them
