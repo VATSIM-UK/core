@@ -114,6 +114,9 @@
           $(this).closest('.question-item').remove();
       });
     });
+    $(document).ready(function(){
+      $('.datetimepickercustom').datetimepicker();
+    });
   </script>
 @endsection
 
