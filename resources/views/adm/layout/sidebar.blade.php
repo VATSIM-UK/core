@@ -169,7 +169,7 @@
                               </a>
                           </li>
                         @endif
-                        @if($_account->hasPermission("adm/mship/feedback/configure"))
+                        @if($_account->hasPermission("adm/mship/feedback/configure/*"))
                           <li {!! (\Request::is('adm/mship/feedback/configure/1') ? ' class="active"' : '') !!}>
                               <a href="{{ URL::route("adm.mship.feedback.config", [1]) }}">
                                 <i class="fa fa-cog"></i>
