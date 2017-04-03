@@ -22,6 +22,11 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                 $question_types->pull($key);
             }
         }
+        // foreach ($question_types as $key => $type) {
+        //     if (!$type->canBeUsedAgain()) {
+        //         $question_types->pull($key);
+        //     }
+        // }
 
         return $this->viewMake('adm.mship.feedback.settings')
                     ->with('question_types', $question_types)
