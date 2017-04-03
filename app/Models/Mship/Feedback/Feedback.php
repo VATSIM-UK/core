@@ -90,4 +90,8 @@ class Feedback extends Model
         $this->actioned_by_id = null;
         $this->save();
     }
+
+    public function getOptions($options){
+      return json_decode($options);
+    }
 }

@@ -8,7 +8,7 @@
           </div>
           <div class="box-body">
               Makes this input:</br>
-              {!! sprintf($type->code, "example", "", "example", "example") !!}
+              {!! sprintf($type->code, "example", "", "example", "example", "") !!}
           </div>
       </div>
   </div>

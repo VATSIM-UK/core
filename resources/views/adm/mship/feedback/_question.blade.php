@@ -2,16 +2,23 @@
   <div class="col-md-12 permanent">
       <div class="box box-warning" style="border: 1px solid">
           <div class="box-header">
-              <h4 class="box-title" style="font-size:1.2em;width:100%">
-                Question:
-                {{ Form::text('question['.$num.'][name]', $question->question) }}
-                Short Name: <small> A one-word identifier for this question. (Please ensure it is unique!) </small>
-                {{ Form::text('question['.$num.'][slug]', $question->slug) }}
-                @if (!isset($hideme) && isset($question->id))
-                  {{ Form::hidden('question['.$num.'][exists]', $question->id) }}
-                @endif
-
-              </h4>
+              <div class="row">
+                  <div class="col-md-10">
+                      <h4 class="box-title" style="font-size:1.2em;width:100%">
+                        Question:
+                        {{ Form::text('question['.$num.'][name]', $question->question) }}
+                        Short Name: <small> A one-word identifier for this question. (Please ensure it is unique!) </small>
+                        {{ Form::text('question['.$num.'][slug]', $question->slug) }}
+                        @if (!isset($hideme) && isset($question->id))
+                          {{ Form::hidden('question['.$num.'][exists]', $question->id) }}
+                        @endif
+                      </h4>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-xs questionButtonUp">Up</button>
+                    <button type="button" class="btn btn-xs questionButtonDown">Down</button>
+                  </div>
+              </div>
           </div>
           <div class="box-body">
               Question Type: <span class="question_type">{{ isset($question->type->name) ? $question->type->name : "" }}</span>
@@ -42,9 +49,9 @@
               <p>
                 @if (!isset($hideme))
                   {{ Form::label($question->question) }}</br>
-                  @if (isset($question->options['values']))
+                  @if (isset($question->options['values']) && $question->options['values'] != "")
                       @foreach ($question->options['values'] as $value)
-                          {!! sprintf($question->type->code, "", "", $value, $value) !!}
+                          {!! sprintf($question->type->code, "", "", $value, $value, "") !!}
                       @endforeach
                   @else
                       {!! sprintf($question->type->code, "", "", "example", "example") !!}
