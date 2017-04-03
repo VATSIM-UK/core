@@ -6,7 +6,6 @@ use Auth;
 use Input;
 use Redirect;
 use Validator;
-use App\Models\Mship\Account;
 use App\Models\Sso\Account as SSOSystem;
 use App\Models\Sys\Token as SystemToken;
 use App\Exceptions\Mship\DuplicateEmailException;

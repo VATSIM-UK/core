@@ -6,7 +6,6 @@ use Input;
 use Redirect;
 use Exception;
 use App\Models\Sys\Token;
-use App\Models\Mship\Account;
 use App\Http\Controllers\BaseController;
 use App\Modules\Visittransfer\Http\Requests\ReferenceSubmitRequest;
 
