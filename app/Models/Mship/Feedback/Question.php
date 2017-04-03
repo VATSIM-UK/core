@@ -35,6 +35,11 @@ class Question extends Model
         return $query->where('actioned_at', null);
     }
 
+    public function form()
+    {
+        return $this->belongsTo('App\Models\Mship\Feedback\Form');
+    }
+
     public function answers()
     {
         return $this->hasMany('App\Models\Mship\Feedback\Answer');

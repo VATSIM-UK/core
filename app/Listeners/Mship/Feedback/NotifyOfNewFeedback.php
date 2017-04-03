@@ -44,7 +44,7 @@ class NotifyOfNewFeedback
 
       $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
-      $recipientName = strtoupper($feedback->facilityName()).' Training Team';
+      $recipientName = strtoupper($feedback->formSlug()).' Training Team';
 
       $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
         'sender_display_as' => $displayFrom,

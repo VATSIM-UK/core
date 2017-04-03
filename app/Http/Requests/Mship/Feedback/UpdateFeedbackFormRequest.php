@@ -60,7 +60,6 @@ class UpdateFeedbackFormRequest extends Request
     protected function getValidatorInstance()
     {
         $data = $this->all();
-
         // Remove the template
         unset($data['question']['template']);
 

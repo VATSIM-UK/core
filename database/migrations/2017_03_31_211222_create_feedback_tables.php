@@ -16,6 +16,7 @@ class CreateFeedbackTables extends Migration
     {
         Schema::create('mship_feedback', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('form_id');
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('submitter_account_id');
             $table->timestamp('actioned_at')->nullable();
@@ -24,9 +25,33 @@ class CreateFeedbackTables extends Migration
             $table->timestamps();
         });
 
+        Schema::create('mship_feedback_forms', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('slug');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        DB::table('mship_feedback_forms')->insert([
+            [
+              'name'      => 'ATC Feedback',
+              'name'      => 'atc',
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'name'      => 'Pilot Feedback',
+              'name'      => 'pilot',
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ]
+        ]);
+
         Schema::create('mship_feedback_questions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('type_id');
+            $table->unsignedInteger('form_id');
             $table->string('slug', 20);
             $table->text('question');
             $table->text('options')->nullable();
@@ -40,6 +65,7 @@ class CreateFeedbackTables extends Migration
         DB::table('mship_feedback_questions')->insert([
             [
               'type_id'   => '1',
+              'form_id'   => '1',
               'slug'      => 'usercid',
               'question'  => 'Please enter the CID of the user you are providing feedback for:',
               'options'   => null,
@@ -50,21 +76,56 @@ class CreateFeedbackTables extends Migration
               'updated_at' => Carbon::now(),
             ],
             [
-              'type_id'   => '4',
-              'slug'      => 'facilitytype',
-              'question'  => 'What kind of activity are you prodiving feedback on?',
-              'options'   => json_encode(['values' => [
-                    'ATC'   => 'atc',
-                    'Pilot' => 'pilot',
-                  ]]),
+              'type_id'   => '1',
+              'form_id'   => '2',
+              'slug'      => 'usercid',
+              'question'  => 'Please enter the CID of the user you are providing feedback for:',
+              'options'   => null,
               'required'  => true,
-              'sequence'  => 2,
+              'sequence'  => 1,
               'permanent' => true,
               'created_at' => Carbon::now(),
               'updated_at' => Carbon::now(),
             ],
             [
+              'type_id'   => '5',
+              'form_id'   => '1',
+              'slug'      => 'datetime2',
+              'question'  => 'Please enter the date & time of the event',
+              'options'   => null,
+              'required'  => true,
+              'sequence'  => 2,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '5',
+              'form_id'   => '2',
+              'slug'      => 'datetime2',
+              'question'  => 'Please enter the date & time of the event',
+              'options'   => null,
+              'required'  => true,
+              'sequence'  => 2,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
               'type_id'   => '2',
+              'form_id'   => '1',
+              'slug'      => 'callsign3',
+              'question'  => 'What was their callsign?',
+              'options'   => null,
+              'required'  => true,
+              'sequence'  => 3,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '2',
+              'form_id'   => '2',
               'slug'      => 'callsign3',
               'question'  => 'What was their callsign?',
               'options'   => null,
@@ -76,6 +137,7 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '4',
+              'form_id'   => '1',
               'slug'      => 'professional4',
               'question'  => 'They were professional and well delivered',
               'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
@@ -87,6 +149,19 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '4',
+              'form_id'   => '2',
+              'slug'      => 'professional4',
+              'question'  => 'They were professional and well delivered',
+              'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
+              'required'  => true,
+              'sequence'  => 4,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '4',
+              'form_id'   => '1',
               'slug'      => 'competent5',
               'question'  => 'They were competent',
               'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
@@ -98,6 +173,19 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '4',
+              'form_id'   => '2',
+              'slug'      => 'competent5',
+              'question'  => 'They were competent',
+              'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
+              'required'  => true,
+              'sequence'  => 5,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '4',
+              'form_id'   => '1',
               'slug'      => 'helpful6',
               'question'  => 'They were helpful and provided all of the information required',
               'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
@@ -109,6 +197,19 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '4',
+              'form_id'   => '2',
+              'slug'      => 'helpful6',
+              'question'  => 'They were helpful and provided all of the information required',
+              'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
+              'required'  => true,
+              'sequence'  => 6,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '4',
+              'form_id'   => '1',
               'slug'      => 'enjoyed7',
               'question'  => 'I enjoyed flying/controlling',
               'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
@@ -120,6 +221,31 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '4',
+              'form_id'   => '2',
+              'slug'      => 'enjoyed7',
+              'question'  => 'I enjoyed flying/controlling',
+              'options'   => json_encode(['values' => ["Strongly disagree","Disagree","Neither Agree nor Disagree","Agree","Strongly Agree"]]),
+              'required'  => true,
+              'sequence'  => 7,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '4',
+              'form_id'   => '1',
+              'slug'      => 'overallopinion8',
+              'question'  => 'Overall Opinion',
+              'options'   => json_encode(['values' => ["Terrible"," Poor"," Neither Poor nor Good","Good","Excellent"]]),
+              'required'  => true,
+              'sequence'  => 8,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '4',
+              'form_id'   => '2',
               'slug'      => 'overallopinion8',
               'question'  => 'Overall Opinion',
               'options'   => json_encode(['values' => ["Terrible"," Poor"," Neither Poor nor Good","Good","Excellent"]]),
@@ -131,6 +257,19 @@ class CreateFeedbackTables extends Migration
             ],
             [
               'type_id'   => '3',
+              'form_id'   => '1',
+              'slug'      => 'report9',
+              'question'  => 'Your report (Significant events? What was good? What could be improved?)',
+              'options'   => null,
+              'required'  => true,
+              'sequence'  => 9,
+              'permanent' => false,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now(),
+            ],
+            [
+              'type_id'   => '3',
+              'form_id'   => '2',
               'slug'      => 'report9',
               'question'  => 'Your report (Significant events? What was good? What could be improved?)',
               'options'   => null,
@@ -205,6 +344,7 @@ class CreateFeedbackTables extends Migration
     public function down()
     {
         Schema::dropIfExists('mship_feedback');
+        Schema::dropIfExists('mship_feedback_forms');
         Schema::dropIfExists('mship_feedback_questions');
         Schema::dropIfExists('mship_feedback_question_types');
         Schema::dropIfExists('mship_feedback_answers');

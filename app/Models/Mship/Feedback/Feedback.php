@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Feedback;
 
 use Carbon\Carbon;
+use App\Models\Mship\Feedback\Form;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Mship\Feedback\Question\Type;
@@ -20,20 +21,26 @@ class Feedback extends Model
     protected $fillable     = [
         'account_id',
         'submitter_account_id',
+        'form_id',
     ];
 
     public function scopeATC($query)
     {
-        return $query->whereHas('answers', function ($q) {
-            $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'atc']);
-        });
+        // Find ATC form model
+        $form = Form::where('slug','atc')->first();
+        return $query->where('form_id', $form->id);
     }
 
     public function scopePilot($query)
     {
-        return $query->whereHas('answers', function ($q) {
-            $q->where(['question_id' => Question::where(['slug' => 'facilitytype'])->first()->id, 'response' => 'pilot']);
-        });
+      // Find ATC form model
+      $form = Form::where('slug','pilot')->first();
+      return $query->where('form_id', $form->id);
+    }
+
+    public function form()
+    {
+        return $this->belongsTo('App\Models\Mship\Feedback\Form');
     }
 
     public function questions()
@@ -63,19 +70,22 @@ class Feedback extends Model
 
     public function isATC()
     {
-        // Find the type determining quesiton
-        $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
-        $answer     = $this->answers()->where('question_id', $questionId)->first();
-        if ($answer->response == 'atc') {
+        if ($this->formSlug() == 'atc') {
              return true;
         }
         return false;
     }
 
-    public function facilityName(){
-        // Find the type determining quesiton
-        $questionId = Question::where(['slug' => 'facilitytype'])->first()->id;
-        return $this->answers()->where('question_id', $questionId)->first()->response;
+    public function isPilot()
+    {
+        if ($this->formSlug() == 'pilot') {
+             return true;
+        }
+        return false;
+    }
+
+    public function formSlug(){
+        return $this->form->slug;
     }
 
     public function markActioned($actioner, $comment = null){
