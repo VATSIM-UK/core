@@ -35,15 +35,20 @@ class NotifyOfNewFeedback
                    ->with('feedback', $feedback)
                    ->render();
 
-      if($feedback->isATC()){
-          $recipient = 'atc-team@vatsim.uk';
-      }else if($feedback->isPilot()){
-          $recipient = 'pilot-team@vatsim.uk';
-      }
+
 
       $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
 
       $recipientName = strtoupper($feedback->formSlug()).' Training Team';
+
+      if($feedback->isATC()){
+          $recipient = 'atc-team@vatsim.uk';
+      }else if($feedback->isPilot()){
+          $recipient = 'pilot-team@vatsim.uk';
+      }else{
+        // Not an ATC or Pilot form!
+        return;
+      }
 
       $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
         'sender_display_as' => $displayFrom,
