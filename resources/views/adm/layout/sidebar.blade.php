@@ -170,10 +170,16 @@
                           </li>
                         @endif
                         @if($_account->hasPermission("adm/mship/feedback/configure"))
-                          <li {!! (\Request::is('adm/mship/feedback/configure') ? ' class="active"' : '') !!}>
-                              <a href="{{ URL::route("adm.mship.feedback.config") }}">
+                          <li {!! (\Request::is('adm/mship/feedback/configure/1') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.config", [1]) }}">
                                 <i class="fa fa-cog"></i>
-                                <span>Settings</span>
+                                <span>ATC Settings</span>
+                              </a>
+                          </li>
+                          <li {!! (\Request::is('adm/mship/feedback/configure/2') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.config", [2]) }}">
+                                <i class="fa fa-cog"></i>
+                                <span>Pilot Settings</span>
                               </a>
                           </li>
                         @endif

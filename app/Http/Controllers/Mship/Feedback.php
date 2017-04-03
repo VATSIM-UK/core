@@ -6,26 +6,47 @@ use Redirect;
 use Validator;
 use Illuminate\Http\Request;
 use App\Models\Mship\Account;
+use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Question;
 use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class Feedback extends \App\Http\Controllers\BaseController
 {
-    public function getFeedback()
+    public function getFeedbackFormSelect()
     {
-        $questions = Question::orderBy('sequence')->get();
+        return view('mship.feedback.form');
+    }
+
+
+    public function postFeedbackFormSelect(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'feedback_type' => 'required|exists:mship_feedback_forms,id',
+        ]);
+        if ($validator->fails()) {
+            return Redirect::back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        return Redirect::route('mship.feedback.new.form', [$request->input('feedback_type')]);
+    }
+
+    public function getFeedback(Form $form)
+    {
+        $questions = $form->questions()->orderBy('sequence')->get();
         if (!$questions) {
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard');
         }
 
-        return view('mship.feedback.form', ['questions' => $questions]);
+        return view('mship.feedback.form', ['form' => $form, 'questions' => $questions]);
     }
 
-    public function postFeedback(Request $request)
+    public function postFeedback(Form $form, Request $request)
     {
-        $questions = Question::all();
+        $questions = $form->questions;
         $cidfield  = null;
         // Make the validation rules
         $ruleset       = [];
@@ -86,6 +107,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         $account  = Account::find($request->input($cidfield));
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
+            'form_id' => $form->id,
         ]);
 
         // Add in the answers

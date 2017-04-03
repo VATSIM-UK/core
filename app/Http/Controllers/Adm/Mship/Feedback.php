@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adm\Mship;
 
 use Illuminate\Http\Request;
 use App\Models\Mship\Feedback\Question;
+use App\Models\Mship\Feedback\Form;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Mship\Feedback\Question\Type;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
@@ -11,17 +12,12 @@ use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
-    public function getConfigure()
+    public function getConfigure(Form $form)
     {
         $question_types    = Type::all();
-        $current_questions = Question::orderBy('sequence')->notPermanent()->get();
+        $current_questions = $form->questions()->orderBy('sequence')->notPermanent()->get();
         $new_question      = new Question();
 
-        foreach ($question_types as $key => $type) {
-            if (!$type->canBeUsedAgain()) {
-                $question_types->pull($key);
-            }
-        }
         // foreach ($question_types as $key => $type) {
         //     if (!$type->canBeUsedAgain()) {
         //         $question_types->pull($key);
@@ -31,15 +27,16 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         return $this->viewMake('adm.mship.feedback.settings')
                     ->with('question_types', $question_types)
                     ->with('current_questions', $current_questions)
-                    ->with('new_question', $new_question);
+                    ->with('new_question', $new_question)
+                    ->with('form', $form);
     }
 
-    public function postConfigure(UpdateFeedbackFormRequest $request)
+    public function postConfigure(Form $form, UpdateFeedbackFormRequest $request)
     {
         $in_use_question_ids = [];
 
 
-        $all_current_questions = Question::all();
+        $all_current_questions = $form->questions;
         $permanent_questions   = $all_current_questions->filter(function ($question, $key) {
             if ($question->permanent) {
                 return true;
@@ -52,15 +49,14 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
 
         $i = $permanent_questions->count() + 1;
-
-        foreach($request->input('question') as $question){
+        foreach(array_values($request->input('question')) as $question){
             if (isset($question['exists'])) {
                 // The question exisits already. Lets see if it is appropriate to create a new question, or update.
                 $exisiting_question = Question::find($question['exists']);
                 if($exisiting_question->question != $question['name']){
                     // Make a new question
                     $exisiting_question->delete();
-                    $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
+                    $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
                     $i++;
                     continue;
                 }
@@ -85,25 +81,26 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                 continue;
             }else{
                 // Make a new question
-                $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($question, $i)];
+                $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
                 $i++;
                 continue;
             }
         }
 
         //Check if we have lost any questions along the way, and delete them
-        Question::where($in_use_question_ids)->delete();
+        $form->questions()->where($in_use_question_ids)->delete();
 
         return Redirect::back()
                       ->withSuccess("Updated!");
     }
 
-    function makeNewQuestion($question, $sequence){
+    function makeNewQuestion($form, $question, $sequence){
       $type = Type::where('name', $question['type'])->first();
       $new_question = new Question();
       $new_question->question = $question['name'];
       $new_question->slug = $question['slug'] . $sequence;
       $new_question->type_id  = $type->id;
+      $new_question->form_id  = $form->id;
       if(isset($question['options']['values']) && $question['options']['values'] != ""){
         $question['options']['values'] = explode(",", $question['options']['values']);
       }

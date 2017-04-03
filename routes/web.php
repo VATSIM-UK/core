@@ -113,8 +113,8 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
                 });
 
                 Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
-                    Route::get('configure', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
-                    Route::post('configure', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
+                    Route::get('configure/{form}', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
+                    Route::post('configure/{form}', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
 
                     Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
                     Route::get('list/atc', ['as' => 'atc', 'uses' => 'Feedback@getATCFeedback']);
@@ -180,8 +180,10 @@ Route::group(['domain' => config('app.url')], function () {
         });
 
         Route::group(['middleware' => ['auth_full_group'], 'prefix' => 'feedback'], function () {
-            Route::get('/new', ['as' => 'mship.feedback.new', 'uses' => 'Feedback@getFeedback']);
-            Route::post('/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedback']);
+            Route::get('/new', ['as' => 'mship.feedback.new', 'uses' => 'Feedback@getFeedbackFormSelect']);
+            Route::post('/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedbackFormSelect']);
+            Route::get('/new/{form}', ['as' => 'mship.feedback.new.form', 'uses' => 'Feedback@getFeedback']);
+            Route::post('/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
         });
 
         Route::group(['prefix' => 'security'], function () {

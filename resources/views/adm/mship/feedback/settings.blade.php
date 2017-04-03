@@ -37,7 +37,7 @@
   {!! HTML::script('/assets/js/plugins/jquerysortable/jquery-sortable.js') !!}
   <script type="text/javascript">
     $(function  () {
-      var count = $("#feedback-form-questions li").length - 1;
+      var count = $("#feedback-form-questions li").length;
 
       // Make the question list sortable & droppable
       $("ol#feedback-form-questions").sortable({
@@ -62,7 +62,7 @@
                 if(!needsvalue){
                   $item.find(".question_valueinput").first().hide();
                 }
-                $item.html($item.html().replace(/template/g, count));
+                //$item.html($item.html().replace(/template/g, count));
               }
               $item.removeClass(container.group.options.draggedClass).removeAttr("style")
               $item.addClass("question-item")
@@ -78,7 +78,16 @@
 
       // Send the old question layout with form submittion, so that it is easier if something goes wrong
       $("#form-questions-form").submit(function (event){
+          // Quickly number the arrays
+          var count = 1;
+          $("#feedback-form-questions").children(".question-item").each(function (){
+            console.log(count)
+            console.log(this)
+            $(this).html($(this).html().replace(/template/g, count))
+            count = count + 1;
+          })
           $('#old_data_input').val($('#feedback-form-questions').html())
+          //event.preventDefault()
       });
 
       // Detect change in input values so that they are preserved if form submission fails
@@ -120,7 +129,7 @@
             </div><!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save"]]) !!}
+                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->id]]) !!}
                     {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
                     <div class="col-md-9">
                       <div class="box box-primary">
@@ -139,7 +148,7 @@
                                       $i = 1;
                                     @endphp
                                       @foreach ($current_questions as $question)
-                                        @include('adm.mship.feedback._question', ['question' => $question, 'num' => $i])
+                                        @include('adm.mship.feedback._question', ['question' => $question, 'num' => 'template'])
                                         @php
                                           $i++;
                                         @endphp

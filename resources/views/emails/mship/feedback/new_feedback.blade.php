@@ -1,5 +1,5 @@
 <p>
-    A new item of {{strtoupper($feedback->facilityName())}} feedback as been submitted for {{ $feedback->account->real_name }}
+    A new item of {{strtoupper($feedback->formSlug())}} feedback as been submitted for {{ $feedback->account->real_name }}
 </p>
 
 <p>

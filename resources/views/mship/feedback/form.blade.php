@@ -31,36 +31,44 @@
 		<div class="row">
 
 			<div class="col-md-7 col-md-offset-2">
-        {!! Form::open(["route" => ["mship.feedback.new.post"]]) !!}
-				@foreach ($questions as $question)
-          <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
-            {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
-            @php
-                if($question->type->requires_value == true){
-                  if(isset($question->options['values'])){
-                    foreach($question->options['values'] as $key => $value){
-                      $selected = "";
-                      if(old($question->slug) == $value){
-                          $selected = "checked";
+        @if (!isset($form))
+          {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
+            {{Form::label('feedback_type', 'What kind of facility was the person operating?')}}
+            {{Form::select('feedback_type', ['1' => 'ATC', '2' => 'Pilot'])}}
+            {{Form::submit("Next")}}
+          {!! Form::close() !!}
+        @else
+          {!! Form::open(["route" => ["mship.feedback.new.form.post", $form->id]]) !!}
+  				@foreach ($questions as $question)
+            <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
+              {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
+              @php
+                  if($question->type->requires_value == true){
+                    if(isset($question->options['values'])){
+                      foreach($question->options['values'] as $key => $value){
+                        $selected = "";
+                        if(old($question->slug) == $value){
+                            $selected = "checked";
+                        }
+                        printf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
                       }
-                      printf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
+                      echo "</div>";
+                      continue;
                     }
+                    // No values, so we cant use it :/
                     echo "</div>";
                     continue;
                   }
-                  // No values, so we cant use it :/
-                  echo "</div>";
-                  continue;
-                }
 
-                printf($question->type->code, $question->slug, old($question->slug));
-            @endphp
+                  printf($question->type->code, $question->slug, old($question->slug));
+              @endphp
+            </div>
+  				@endforeach
+          <div class="form-group">
+            {{ Form::submit() }}
           </div>
-				@endforeach
-        <div class="form-group">
-          {{ Form::submit() }}
-        </div>
-        {!! Form::close() !!}
+          {!! Form::close() !!}
+        @endif
 			</div>
 		</div>
 		<!-- Second Row [END] -->
