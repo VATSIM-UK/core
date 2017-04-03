@@ -63,6 +63,7 @@
               $item.html($item.html().replace(/template/g, count));
             }
             $item.removeClass(container.group.options.draggedClass).removeAttr("style")
+            $item.addClass("question-item")
             $("body").removeClass(container.group.options.bodyClass)
 
         }
@@ -88,19 +89,19 @@
       }
     });
 
+    $("#feedback-form-questions").on("click", ".questionButtonUp", function() {
+        $(this).parents(".question-item").insertBefore($(this).parents(".question-item").prev());
 
-    $('.questionButtonUp').click(function(){
-      $(this).parents(".question-item").insertBefore($(this).parents(".question-item").prev());
-    });
-    $('.questionButtonDown').click(function(){
-      $(this).parents(".question-item").insertAfter($(this).parents(".question-item").next());
     });
 
-    $('.question-delete-button').click(function (){
-      $(this).closest('.question-item').remove();
-    })
-    $(document).ready(function(){
-      $('.datetimepickercustom').datetimepicker();
+    $("#feedback-form-questions").on("click", ".questionButtonDown", function() {
+        $(this).parents(".question-item").insertAfter($(this).parents(".question-item").next());
+
+    });
+
+    $("#feedback-form-questions").on("click", ".question-delete-button", function() {
+        $(this).closest('.question-item').remove();
+
     });
   </script>
 @endsection
