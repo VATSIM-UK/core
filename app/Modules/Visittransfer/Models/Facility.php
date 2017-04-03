@@ -3,6 +3,7 @@
 namespace App\Modules\Visittransfer\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 class Facility extends Model
@@ -53,6 +54,34 @@ class Facility extends Model
 
         if (strcasecmp(array_get($attributes, 'training_spaces', null), 'null') == 0) {
             $attributes['training_spaces'] = null;
+        }
+
+        $input_emails = array_filter($attributes['acceptance_emails']);
+        shuffle($input_emails);
+        $current_emails = $this->emails()->get();
+
+        // We don't want these used down the line
+        unset($attributes['acceptance_emails']);
+
+        if (count($input_emails) == 0 && $current_emails->count() > 0) {
+            foreach ($current_emails as $email) {
+                $email->delete();
+            }
+
+            return parent::update($attributes, $options);
+        }
+
+        foreach ($input_emails as $key=>$email) {
+            if (!$current_emails->contains('email', $email)) {
+                $new_email = new Email(['email' => $email]);
+                $this->emails()->save($new_email);
+            }
+        }
+
+        foreach ($current_emails as $email) {
+            if (array_search($email->email, $input_emails) === false) {
+                $email->delete();
+            }
         }
 
         return parent::update($attributes, $options);
@@ -114,6 +143,11 @@ class Facility extends Model
     public function applications()
     {
         return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class);
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(\App\Modules\Visittransfer\Models\Facility\Email::class);
     }
 
     public function addTrainingSpace()

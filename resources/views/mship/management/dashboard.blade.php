@@ -339,7 +339,7 @@
                                 {{ $email->email }}
                             </div>
 
-                            <div class="col-xs-4">
+                            <div class="col-xs-2">
                                 <b>STATUS:</b>
                                 <br />
                                 @if($email->verified_at == null)
@@ -354,6 +354,11 @@
                                 <br />
                                 <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $email->created_at }}">
                                     <em>on {{ $email->created_at }}</em>
+                                </a>
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}">
+                                    <button type="button" class="btn btn-xs btn-danger">Delete</button>
                                 </a>
                             </div>
 

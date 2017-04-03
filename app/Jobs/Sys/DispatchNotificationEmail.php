@@ -32,7 +32,7 @@ class DispatchNotificationEmail extends Job implements ShouldQueue
 
     public function handle(Mailer $mailer)
     {
-        $mailer->send('emails.messages.post', ['recipient' => $this->recipient, 'body' => $this->body], function ($m) {
+        $mailer->send('emails.messages.post', ['recipient' => $this->recipient, 'body' => $this->body, 'subject' => $this->subject], function ($m) {
             $m->subject($this->subject);
             $m->to($this->recipientEmail->email, $this->recipient->name);
         });

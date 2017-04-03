@@ -211,7 +211,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'status'        => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token', 'password'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
@@ -295,7 +295,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function scopeWithIp($query, $ip)
     {
-        return $query->where('last_login_ip', '=', ip2long($ip));
+        return $query->where('last_login_ip', '=', $ip);
     }
 
     public function __toString()
@@ -1272,16 +1272,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         return $stati;
-    }
-
-    public function getLastLoginIpAttribute()
-    {
-        return long2ip($this->attributes['last_login_ip']);
-    }
-
-    public function setLastLoginIpAttribute($value)
-    {
-        $this->attributes['last_login_ip'] = ip2long($value);
     }
 
     /**

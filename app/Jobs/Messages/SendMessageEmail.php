@@ -2,6 +2,8 @@
 
 namespace App\Jobs\Messages;
 
+use URL;
+use Config;
 use App\Jobs\Job;
 use App\Models\Messages\Thread\Post;
 use Illuminate\Contracts\Mail\Mailer;
@@ -27,6 +29,8 @@ class SendMessageEmail extends Job implements ShouldQueue
 
     public function handle(Mailer $mailer)
     {
+        URL::forceRootUrl('https://'.Config::get('app.url'));
+
         $post  = $this->post;
         $isNew = $this->isNew;
 
@@ -44,7 +48,7 @@ class SendMessageEmail extends Job implements ShouldQueue
                 $recipientAddress = $this->verificationEmail->email;
             }
 
-            $mailer->send('emails.messages.post', ['recipient' => $participant, 'sender' => $post->author, 'body' => $this->post->content], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
+            $mailer->send(['emails.messages.post', 'emails.messages.plain_text'], ['recipient' => $participant, 'sender' => $post->author, 'body' => $this->post->content, 'subject' => $post->thread->subject], function ($m) use ($participant, $post, $isNew, $recipientAddress) {
                 $m->subject(($isNew ? $post->thread->subject : 'RE: '.$post->thread->subject));
                 $m->to($recipientAddress, $participant->name);
 

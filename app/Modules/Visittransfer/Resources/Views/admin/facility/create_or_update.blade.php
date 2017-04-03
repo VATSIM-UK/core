@@ -80,6 +80,35 @@
                             ) !!}
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                          <h3> Notification Emails </h3>
+                          <small> These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered (i.e all inputs left blank), this will default to {{ $facility->training_team }}-team@vatsim-uk.co.uk </small>
+                            <div class="row" id="notification-emails">
+                                @for ($i = 0; $i < (($emails->count() < 3) ? 3 : $emails->count() ); $i++)
+                                  <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="acceptance_emails[]" class="control-label">Email:</label>
+                                            <input class="form-control" name="acceptance_emails[]" type="text" id="acceptance_emails[]" value="{{ ($emails->count() - 1 < $i) ? old("acceptance_emails." . $i) : old("acceptance_emails." . $i, $emails[$i]->email) }}">
+                                        </div>
+                                  </div>
+                                @endfor
+                                <div style="display:none" id="acceptance-email-copy">
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                              <label for="acceptance_emails[]" class="control-label">Email:</label>
+                                              <input class="form-control" name="acceptance_emails[]" type="text" id="acceptance_emails[]">
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-offset-4 text-center">
+                                    <span class="btn btn-default" onclick="addNotificationEmailInput(); return false"><i class="ion ion-plus-round"></i> Add another email</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-right">
@@ -96,5 +125,12 @@
 
 @section('scripts')
     @parent
-    {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
+    <script type="text/javascript">
+      function addNotificationEmailInput(){
+
+        var newinput = $("#acceptance-email-copy").html()
+        $("#notification-emails").html($("#notification-emails").html() + newinput);
+
+      }
+    </script>
 @stop
