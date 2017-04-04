@@ -11,7 +11,7 @@ class TeamSpeakTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $channel, $channelGroups, $serverGroups;
+    protected $channel, $channelGroups, $serverGroups, $account;
 
     public function setUp()
     {
@@ -97,6 +97,33 @@ class TeamSpeakTest extends TestCase
         $group->qualification()->associate($qualification)->save();
         $group = $group->fresh(['qualification']);
         $this->assertEquals($group->qualification->id, $qualification->id);
+    }
+
+    public function testValidDisplayName()
+    {
+        $account = $this->account;
+        $validDisplayName = "John Doe";
+        $this->assertEquals(true, $account->isValidDisplayName($validDisplayName));
+    }
+    public function testInvalidDisplayName()
+    {
+        $account = $this->account;
+        $invalidDisplayName = "John Do";
+        $this->assertEquals(false, $account->isValidDisplayName($invalidDisplayName));
+    }
+
+    public function testPartiallyValidDisplayName()
+    {
+        $account = $this->account;
+        $validDisplayName = "John Doe - EGKK_TWR";
+        $this->assertEquals(true, $account->isPartiallyValidDisplayName($validDisplayName));
+    }
+
+    public function testNotPartiallyValidDisplayName()
+    {
+        $account = $this->account;
+        $validDisplayName = "John Do - EGKK_TWR";
+        $this->assertEquals(false, $account->isPartiallyValidDisplayName($validDisplayName));
     }
 
     // TODO: registration tests
