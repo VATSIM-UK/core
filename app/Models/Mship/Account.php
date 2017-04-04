@@ -1364,7 +1364,18 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function isValidDisplayName($displayName)
     {
-        return strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0;
+        $allowedNames = collect();
+        $allowedNames->push($this->name);
+        $allowedNames->push($this->real_name);
+
+        if ($this->networkDataAtcCurrent) {
+            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
+            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
+        }
+
+        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+            return strcasecmp($item, $displayName) == 0;
+        })->count() > 0;
     }
 
     public function getDisplayValueAttribute()
