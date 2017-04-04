@@ -27,6 +27,13 @@ class TeamSpeakTest extends TestCase
 
         $this->serverGroups = factory(\App\Models\TeamSpeak\ServerGroup::class, 5)->create();
         $this->channelGroups = factory(\App\Models\TeamSpeak\ChannelGroup::class, 5)->create();
+
+        $this->account = factory(App\Models\Mship\Account::class)->create([
+            "id" => 1234567,
+            "name_first" => "John",
+            "name_last" => "Doe",
+            "email" => "i_sleep@gmail.com",
+        ]);
     }
 
     public function testChannelParent()
