@@ -257,7 +257,7 @@ class TeamSpeak
         if (!$member->isValidDisplayName($client['client_nickname'])) {
             $recentlyTold   = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-
+            // If their nickname doesn't even contain their name, or their grace period has ended
             if(!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)){
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
