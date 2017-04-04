@@ -11,13 +11,16 @@ class MshipStateTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->account = App\Models\Mship\Account::find(123456);
+        if(!$account){
+            $this->account = factory(App\Models\Mship\Account::class)->create([
+                "id" => 123456,
+                "name_first" => "John",
+                "name_last" => "Doe",
+                "email" => "i_sleep@gmail.com",
+            ]);
+        }
 
-        $this->account = factory(App\Models\Mship\Account::class)->create([
-            "id" => 123456,
-            "name_first" => "John",
-            "name_last" => "Doe",
-            "email" => "i_sleep@gmail.com",
-        ]);
     }
 
     /** @test */
