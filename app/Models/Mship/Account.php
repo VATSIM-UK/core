@@ -1378,6 +1378,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         })->count() > 0;
     }
 
+    public function isPartiallyValidDisplayName($displayName)
+    {
+        $allowedNames = collect();
+        $allowedNames->push($this->name);
+        $allowedNames->push($this->real_name);
+
+        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+            return strstr(strtolower($displayName), strtolower($item)) != false;
+        })->count() > 0;
+    }
+
     public function getDisplayValueAttribute()
     {
         return $this->name.' ('.$this->getKey().')';
