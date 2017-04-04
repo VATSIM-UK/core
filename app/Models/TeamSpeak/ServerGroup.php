@@ -24,6 +24,8 @@ use App\Scopes\TeamSpeak\GroupScope;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup whereProtected($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup wherePermissionId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ServerGroup whereQualificationId($value)
+ * @property-read \App\Models\Mship\Permission $permission
+ * @property-read \App\Models\Mship\Qualification $qualification
  */
 class ServerGroup extends Group
 {

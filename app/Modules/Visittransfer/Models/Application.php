@@ -27,6 +27,55 @@ use App\Modules\Visittransfer\Exceptions\Application\ApplicationAlreadySubmitted
 use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdrawnException;
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 
+/**
+ * App\Modules\Visittransfer\Models\Application
+ *
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Modules\Visittransfer\Models\Facility $facility
+ * @property-read mixed $facility_name
+ * @property-read mixed $is_accepted
+ * @property-read mixed $is_atc
+ * @property-read mixed $is_closed
+ * @property-read mixed $is_completed
+ * @property-read mixed $is_editable
+ * @property-read mixed $is_in_progress
+ * @property-read mixed $is_lapsed
+ * @property-read mixed $is_not_editable
+ * @property-read mixed $is_open
+ * @property-read mixed $is_pending_references
+ * @property-read mixed $is_pilot
+ * @property-read mixed $is_rejected
+ * @property-read mixed $is_submitted
+ * @property-read mixed $is_transfer
+ * @property-read mixed $is_under_review
+ * @property-read mixed $is_visit
+ * @property-read mixed $number_references_required_relative
+ * @property-read mixed $potential_facilities
+ * @property-read string $public_id
+ * @property-read mixed $references_accepted
+ * @property-read mixed $references_not_written
+ * @property-read mixed $references_rejected
+ * @property-read mixed $references_under_review
+ * @property-read mixed $requires_action
+ * @property-read mixed $status_string
+ * @property-read mixed $training_team
+ * @property-read mixed $type_string
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[] $referees
+ * @property-write mixed $statement
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application closed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application notStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application open()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application status($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application statusIn($stati)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application statusNotIn($stati)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application submitted()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application transfer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application underReview()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application visit()
+ * @mixin \Eloquent
+ */
 class Application extends Model
 {
     use PublicId, SoftDeletes;

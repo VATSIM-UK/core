@@ -4,6 +4,20 @@ namespace App\Models\Mship;
 
 use App\Traits\RecordsActivity;
 
+/**
+ * App\Models\Mship\State
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property mixed $division
+ * @property-read mixed $is_permanent
+ * @property-read mixed $is_temporary
+ * @property mixed $region
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State hasCode($code)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State permanent()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State temporary()
+ * @mixin \Eloquent
+ */
 class State extends \Eloquent
 {
     use RecordsActivity;

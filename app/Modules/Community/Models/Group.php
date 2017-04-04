@@ -5,6 +5,15 @@ namespace App\Modules\Community\Models;
 use App\Models\Model;
 use App\Models\Mship\Account;
 
+/**
+ * App\Modules\Community\Models\Group
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group inTier($tier)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group notDefault()
+ * @mixin \Eloquent
+ */
 class Group extends Model
 {
     protected $table      = 'community_group';

@@ -6,6 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
+/**
+ * App\Modules\Visittransfer\Models\Facility
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $applications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Facility\Email[] $emails
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility atc()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canTransfer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canVisit()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility hasTrainingSpace()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isClosed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isOpen()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyTransfer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyVisit()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility pilot()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility trainingRequired()
+ * @mixin \Eloquent
+ */
 class Facility extends Model
 {
     protected $table      = 'vt_facility';

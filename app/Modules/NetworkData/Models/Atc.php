@@ -41,6 +41,15 @@ use App\Modules\NetworkData\Events\AtcSessionUpdated;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc online()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc offline()
  * @mixin \Eloquent
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read mixed $account_name
+ * @property-read mixed $frequency
+ * @property-read mixed $is_online
+ * @property-read string $public_id
+ * @property-read mixed $type
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc isUK()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc onFrequency()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc thisYear()
  */
 class Atc extends Model
 {

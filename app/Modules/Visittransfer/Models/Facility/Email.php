@@ -4,6 +4,11 @@ namespace App\Modules\Visittransfer\Models\Facility;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Modules\Visittransfer\Models\Facility\Email
+ *
+ * @mixin \Eloquent
+ */
 class Email extends Model
 {
     protected $table      = 'vt_facility_email';

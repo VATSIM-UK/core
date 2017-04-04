@@ -4,6 +4,11 @@ namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Api\Request
+ *
+ * @mixin \Eloquent
+ */
 class Request extends Model
 {
     protected $table = 'api_request';

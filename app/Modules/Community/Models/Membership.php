@@ -4,6 +4,11 @@ namespace App\Modules\Community\Models;
 
 use App\Models\Model;
 
+/**
+ * App\Modules\Community\Models\Membership
+ *
+ * @mixin \Eloquent
+ */
 class Membership extends Model
 {
     protected $table      = 'community_membership';

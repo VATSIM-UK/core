@@ -179,6 +179,15 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  *                $visit_transfer_referee_pending
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[]
  *                $messageThreads
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Community\Models\Group[] $communityGroups
+ * @property-read \Illuminate\Support\Collection $permanent_states
+ * @property-read mixed $primary_permanent_state
+ * @property-read mixed $primary_state
+ * @property-read \Illuminate\Support\Collection $temporary_states
+ * @property-read mixed $visit_transfer_current
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\NetworkData\Models\Atc[] $networkDataAtc
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
  */
 class Account extends \App\Models\Model implements AuthenticatableContract
 {
