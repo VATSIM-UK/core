@@ -37,17 +37,17 @@ class Question extends Model
 
     public function form()
     {
-        return $this->belongsTo('App\Models\Mship\Feedback\Form');
+        return $this->belongsTo(App\Models\Mship\Feedback\Form::class);
     }
 
     public function answers()
     {
-        return $this->hasMany('App\Models\Mship\Feedback\Answer');
+        return $this->hasMany(App\Models\Mship\Feedback\Answer::class);
     }
 
     public function type()
     {
-        return $this->belongsTo('App\Models\Mship\Feedback\Question\Type');
+        return $this->belongsTo(App\Models\Mship\Feedback\Question\Type::class);
     }
 
     public function optionValues(){
