@@ -18,12 +18,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $current_questions = $form->questions()->orderBy('sequence')->notPermanent()->get();
         $new_question      = new Question();
 
-        // foreach ($question_types as $key => $type) {
-        //     if (!$type->canBeUsedAgain()) {
-        //         $question_types->pull($key);
-        //     }
-        // }
-
         return $this->viewMake('adm.mship.feedback.settings')
                     ->with('question_types', $question_types)
                     ->with('current_questions', $current_questions)
