@@ -41,6 +41,27 @@ class Feedback extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard');
         }
 
+        // Lets parse the questions ready for inserting
+        foreach ($questions as $question) {
+          $question->form_html = "";
+          if($question->type->requires_value == true){
+            if(isset($question->options['values'])){
+              foreach($question->options['values'] as $key => $value){
+                $selected = "";
+                if(old($question->slug) == $value){
+                    $selected = "checked";
+                }
+                $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
+              }
+              continue;
+            }
+            // No values, so we cant use it :/
+            continue;
+          }
+
+          $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
+        }
+
         return view('mship.feedback.form', ['form' => $form, 'questions' => $questions]);
     }
 

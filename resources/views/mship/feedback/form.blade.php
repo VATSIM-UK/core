@@ -42,26 +42,7 @@
   				@foreach ($questions as $question)
             <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
               {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
-              @php
-                  if($question->type->requires_value == true){
-                    if(isset($question->options['values'])){
-                      foreach($question->options['values'] as $key => $value){
-                        $selected = "";
-                        if(old($question->slug) == $value){
-                            $selected = "checked";
-                        }
-                        printf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
-                      }
-                      echo "</div>";
-                      continue;
-                    }
-                    // No values, so we cant use it :/
-                    echo "</div>";
-                    continue;
-                  }
-
-                  printf($question->type->code, $question->slug, old($question->slug));
-              @endphp
+              {!! $question->form_html !!}
             </div>
   				@endforeach
           <div class="form-group">
