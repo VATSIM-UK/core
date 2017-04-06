@@ -1,9 +1,5 @@
 @extends('layout')
 
-@section('styles')
-{!! HTML::style(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.min.css")) !!}
-@endsection
-
 @section('scripts')
 {!! HTML::script(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.full.min.js")) !!}
 <script type="text/javascript">
