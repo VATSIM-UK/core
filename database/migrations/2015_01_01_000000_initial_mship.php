@@ -196,7 +196,7 @@ class InitialMship extends Migration
         Schema::create('mship_permission', function ($table) {
             $table->increments('permission_id')->unsigned();
             $table->string('name');
-            $table->string('display_name', 50);
+            $table->string('display_name', 100);
             $table->timestamps();
             $table->softDeletes();
         });
