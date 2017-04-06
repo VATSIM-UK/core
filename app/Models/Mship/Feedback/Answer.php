@@ -28,11 +28,11 @@ class Answer extends Model
 
     public function feedback()
     {
-        return $this->belongsTo(App\Models\Mship\Feedback\Feedback::class);
+        return $this->belongsTo(\App\Models\Mship\Feedback\Feedback::class);
     }
 
     public function question()
     {
-        return $this->belongsTo(App\Models\Mship\Feedback\Question::class);
+        return $this->belongsTo(\App\Models\Mship\Feedback\Question::class);
     }
 }

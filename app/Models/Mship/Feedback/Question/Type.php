@@ -23,7 +23,7 @@ class Type extends Model
 
     public function questions()
     {
-        return $this->hasMany(App\Models\Mship\Feedback\Question::class);
+        return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
     }
 
     // public function canBeUsedAgain(){
