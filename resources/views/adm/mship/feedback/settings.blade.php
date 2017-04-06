@@ -1,9 +1,5 @@
 @extends('adm.layout')
 
-@section('styles')
-{!! HTML::style(asset("assets/css/datetimepickerxdan/jquery.datetimepicker.min.css")) !!}
-@endsection
-
 @section('scripts')
   {!! HTML::script(asset("assets/js/plugins/datetimepickerxdan/jquery.datetimepicker.full.min.js")) !!}
   {!! HTML::script(asset('assets/js/plugins/jquerysortable/jquery-sortable.js')) !!}
