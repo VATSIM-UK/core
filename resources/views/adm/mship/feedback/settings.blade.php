@@ -1,40 +1,12 @@
 @extends('adm.layout')
 
 @section('styles')
-{!! HTML::style(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.min.css")) !!}
-<style type="text/css">
-    body.dragging, body.dragging * {
-      cursor: move !important;
-    }
-
-    .dragged {
-      position: absolute;
-      opacity: 0.5;
-      z-index: 2000;
-    }
-
-    ol.example li.placeholder {
-      position: relative;
-      /** More li styles **/
-    }
-    ol.example li.placeholder:before {
-      position: absolute;
-      /** Define arrowhead **/
-    }
-
-    ol.simple_connected_list{
-      display: inline;
-    }
-
-    ol.simple_connected_list li {
-      list-style: none;
-    }
-</style>
+{!! HTML::style(asset("assets/js/plugins/datetimepickerxdan/jquery.datetimepicker.min.css")) !!}
 @endsection
 
 @section('scripts')
-  {!! HTML::script(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.full.min.js")) !!}
-  {!! HTML::script('/assets/js/plugins/jquerysortable/jquery-sortable.js') !!}
+  {!! HTML::script(asset("assets/js/plugins/datetimepickerxdan/jquery.datetimepicker.full.min.js")) !!}
+  {!! HTML::script(asset('assets/js/plugins/jquerysortable/jquery-sortable.js')) !!}
   <script type="text/javascript">
     $(function  () {
       var count = $("#feedback-form-questions li").length;
