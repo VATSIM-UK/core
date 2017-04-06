@@ -12,7 +12,6 @@ use TeamSpeak3_Helper_Signal;
 use TeamSpeak3_Transport_Exception;
 use TeamSpeak3_Adapter_ServerQuery_Event;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
-use App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
