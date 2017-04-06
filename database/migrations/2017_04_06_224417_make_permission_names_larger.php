@@ -13,9 +13,9 @@ class MakePermissionNamesLarger extends Migration
      */
     public function up()
     {
-      Schema::table('mship_permission', function (Blueprint $table) {
-          $table->string('display_name', 100)->change();
-      });
+        Schema::table('mship_permission', function (Blueprint $table) {
+            $table->string('display_name', 100)->change();
+        });
     }
 
     /**
