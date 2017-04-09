@@ -6,7 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Jobs\SendRefereeNoLongerRequiredEmail;
 
-class NotifyRefereeOfReferenceDeletion implements ShouldQueue
+class NotifyRefereeOfReferenceCompletion implements ShouldQueue
 {
     public function __construct()
     {
