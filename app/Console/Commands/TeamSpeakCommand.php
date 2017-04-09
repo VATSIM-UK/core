@@ -21,7 +21,7 @@ abstract class TeamSpeakCommand extends Command
     /**
      * @var int The TeamSpeak DBID of the current member being processed.
      */
-    protected $currentMember;
+    protected $currentMember = null;
 
     /**
      * Run the console command.
@@ -78,24 +78,21 @@ abstract class TeamSpeakCommand extends Command
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
-        if (!is_null($member)) {
+        if (!is_null(self::$command->currentMember) && !is_null($member)) {
             $member = $member->account;
         } else {
             return;
         }
 
-        // TODO: improve old error handling
         $description = $member->name_first.' '
             .$member->name_last.' ('
             .$member->id.')';
-        $subject = 'TeaMan has failed you. Hire a new butler.';
         $message = 'TeaMan has encountered a previously unhandled error:'.PHP_EOL.PHP_EOL
             .'Client: '.$description.PHP_EOL.PHP_EOL
             .'Stack trace:'.PHP_EOL.PHP_EOL
             .$e->getTraceAsString()
             .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
-        mail('neil.farrington@vatsim-uk.co.uk', $subject, $message);
 
         self::$command->sendSlackError('Exception processing client.', [
             'name' => $description,
