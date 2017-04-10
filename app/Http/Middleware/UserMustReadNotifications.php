@@ -25,7 +25,7 @@ class UserMustReadNotifications
                 || Auth::user()->has_unread_must_acknowledge_notifications
             )
         ) {
-            Session::set('force_notification_read_return_url', Request::fullUrl());
+            Session::put('force_notification_read_return_url', Request::fullUrl());
 
             return Redirect::route('mship.notification.list');
         }

@@ -62,7 +62,7 @@ class Facility extends Model
     {
         (new self)->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''));
 
-        return parent::create($attributes);
+        return static::query()->create($attributes);
     }
 
     public function update(array $attributes = [], array $options = [])

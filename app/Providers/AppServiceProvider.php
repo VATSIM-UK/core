@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use HTML;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

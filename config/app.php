@@ -190,6 +190,7 @@ return [
         Bootstrapper\BootstrapperL5ServiceProvider::class,
         Caffeinated\Modules\ModulesServiceProvider::class,
         ComoCode\LaravelAb\LaravelAbServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
     ],
     /*
     |--------------------------------------------------------------------------

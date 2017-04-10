@@ -17,6 +17,9 @@
 * Enable all cronjobs
 * Restart all queue processes
 
+### Laravel 5.4 Upgrade
+* Run `php artisan view:clear`
+
 ### 2.4.2 > 2.4.4
 * No specific upgrades to run.
 

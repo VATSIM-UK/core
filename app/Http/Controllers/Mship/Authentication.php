@@ -34,7 +34,7 @@ class Authentication extends BaseController
 
         if ($check > 0 && !Session::get('auth_duplicate_ip', false)) {
             Session::forget('auth_extra');
-            Session::set('auth_duplicate_ip', true);
+            Session::put('auth_duplicate_ip', true);
         }
 
         // If there's NO secondary, but it's needed, send to secondary.
@@ -59,7 +59,7 @@ class Authentication extends BaseController
         }
 
         if (!$this->account->hasPassword()) {
-            Session::set('auth_extra', false);
+            Session::put('auth_extra', false);
         }
 
         // Send them home!
@@ -126,7 +126,7 @@ class Authentication extends BaseController
     public function getLogin()
     {
         if (!Session::has('auth_return')) {
-            Session::set('auth_return', Input::get('returnURL', URL::route('mship.manage.dashboard')));
+            Session::put('auth_return', Input::get('returnURL', URL::route('mship.manage.dashboard')));
         }
 
         // Do we already have some kind of CID? If so, we can skip this bit and go to the redirect!
@@ -148,7 +148,7 @@ class Authentication extends BaseController
                 return Redirect::to($url);
             },
             function ($error) {
-                Session::set('cert_offline', true);
+                Session::put('cert_offline', true);
 
                 return Redirect::route('mship.auth.loginAlternative');
             }
@@ -275,7 +275,7 @@ class Authentication extends BaseController
 
     public function getLogout($force = false)
     {
-        Session::set('logout_return', Input::get('returnURL', '/mship/manage/dashboard'));
+        Session::put('logout_return', Input::get('returnURL', '/mship/manage/dashboard'));
 
         if ($force) {
             return $this->postLogout($force);
