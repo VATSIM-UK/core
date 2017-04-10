@@ -132,11 +132,14 @@
                         <div class="panel-heading"><i class="fa fa-cogs"></i>
                             &thinsp;
                             Community Groups
+                            @if($_account->can('deploy', new \App\Modules\Community\Models\Membership()))
                             <div class="pull-right">
                                     <a href="{{ route("community.membership.deploy") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
-                            </div></div>
+                            </div>
+                            @endif
+                        </div>
                         <div class="panel-body">
                             <div class="row">
 
