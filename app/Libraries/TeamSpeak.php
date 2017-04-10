@@ -19,7 +19,7 @@ use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 class TeamSpeak
 {
     const CONNECTION_TIMED_OUT                     = 110;
-	const CONNECTION_REFUSED              		   = 111;
+    const CONNECTION_REFUSED                       = 111;
     const CLIENT_INVALID_ID                        = 512;
     const CLIENT_NICKNAME_INUSE                    = 513;
     const DATABASE_EMPTY_RESULT_SET                = 1281;
