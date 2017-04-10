@@ -7,7 +7,7 @@ use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 /**
- * App\Modules\Visittransfer\Models\Facility
+ * App\Modules\Visittransfer\Models\Facility.
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Facility\Email[] $emails

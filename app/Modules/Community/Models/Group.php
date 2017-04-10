@@ -6,7 +6,7 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
- * App\Modules\Community\Models\Group
+ * App\Modules\Community\Models\Group.
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group inTier($tier)

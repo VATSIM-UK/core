@@ -5,7 +5,7 @@ namespace App\Models\Api;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Api\Request
+ * App\Models\Api\Request.
  *
  * @mixin \Eloquent
  * @property int $id
