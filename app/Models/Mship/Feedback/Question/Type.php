@@ -26,7 +26,6 @@ class Type extends Model
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
     }
 
-
     public function hasUnlimitedUses()
     {
         if ($this->max_uses == 0) {

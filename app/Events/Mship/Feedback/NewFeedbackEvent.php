@@ -16,5 +16,4 @@ class NewFeedbackEvent
     {
         $this->feedback = $feedback;
     }
-
 }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use Illuminate\Http\Request;
-use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Question;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Mship\Feedback\Question\Type;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
@@ -29,7 +29,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $in_use_question_ids = [];
 
-
         $all_current_questions = $form->questions;
         $permanent_questions   = $all_current_questions->filter(function ($question, $key) {
             if ($question->permanent) {
@@ -43,11 +42,11 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
 
         $i = $permanent_questions->count() + 1;
-        foreach(array_values($request->input('question')) as $question){
+        foreach (array_values($request->input('question')) as $question) {
             if (isset($question['exists'])) {
                 // The question exisits already. Lets see if it is appropriate to create a new question, or update.
                 $exisiting_question = Question::find($question['exists']);
-                if($exisiting_question->question != $question['name']){
+                if ($exisiting_question->question != $question['name']) {
                     // Make a new question
                     $exisiting_question->delete();
                     $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
@@ -57,14 +56,14 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
                 // We will update it instead
                 $exisiting_question->required = $question['required'];
-                $exisiting_question->slug = $question['slug'] . $i;
+                $exisiting_question->slug     = $question['slug'].$i;
                 $exisiting_question->sequence = $i;
-                if(isset($question['options']['values'])){
-                    $question['options']['values'] = explode(",", $question['options']['values']);
+                if (isset($question['options']['values'])) {
+                    $question['options']['values'] = explode(',', $question['options']['values']);
                 }
-                if(isset($question['options'])){
+                if (isset($question['options'])) {
                     $exisiting_question->options = $question['options'];
-                }else{
+                } else {
                     $exisiting_question->options = null;
                 }
 
@@ -73,7 +72,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                 $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
                 $i++;
                 continue;
-            }else{
+            } else {
                 // Make a new question
                 $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
                 $i++;
@@ -85,26 +84,28 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $form->questions()->where($in_use_question_ids)->delete();
 
         return Redirect::back()
-                      ->withSuccess("Updated!");
+                      ->withSuccess('Updated!');
     }
 
-    function makeNewQuestion($form, $question, $sequence){
-      $type = Type::where('name', $question['type'])->first();
-      $new_question = new Question();
-      $new_question->question = $question['name'];
-      $new_question->slug = $question['slug'] . $sequence;
-      $new_question->type_id  = $type->id;
-      $new_question->form_id  = $form->id;
-      if(isset($question['options']['values']) && $question['options']['values'] != ""){
-        $question['options']['values'] = explode(",", $question['options']['values']);
-      }
-      if(isset($question['options'])){
-        $new_question->options = $question['options'];
-      }
-      $new_question->required = $question['required'];
-      $new_question->sequence = $sequence;
-      $new_question->save();
-      return $new_question->id;
+    public function makeNewQuestion($form, $question, $sequence)
+    {
+        $type                   = Type::where('name', $question['type'])->first();
+        $new_question           = new Question();
+        $new_question->question = $question['name'];
+        $new_question->slug     = $question['slug'].$sequence;
+        $new_question->type_id  = $type->id;
+        $new_question->form_id  = $form->id;
+        if (isset($question['options']['values']) && $question['options']['values'] != '') {
+            $question['options']['values'] = explode(',', $question['options']['values']);
+        }
+        if (isset($question['options'])) {
+            $new_question->options = $question['options'];
+        }
+        $new_question->required = $question['required'];
+        $new_question->sequence = $sequence;
+        $new_question->save();
+
+        return $new_question->id;
     }
 
     public function getAllFeedback()
@@ -162,34 +163,36 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
-        $conditions = [];
+        $conditions   = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
 
-        foreach($conditions as $condition){
-          if($condition){
-              $feedback->markActioned(\Auth::user(), $request->input('comment'));
-              return Redirect::back()
-                              ->withSuccess("Feedback marked as actioned!");
-          }
+        foreach ($conditions as $condition) {
+            if ($condition) {
+                $feedback->markActioned(\Auth::user(), $request->input('comment'));
+
+                return Redirect::back()
+                              ->withSuccess('Feedback marked as actioned!');
+            }
         }
         abort(401, 'Unauthorized action.');
     }
 
     public function getUnActioned(FeedbackModel $feedback)
     {
-        $conditions = [];
+        $conditions   = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
 
-        foreach($conditions as $condition){
-          if($condition){
-              $feedback->markUnActioned();
-              return Redirect::back()
-                              ->withSuccess("Feedback unmarked as actioned!");
-          }
+        foreach ($conditions as $condition) {
+            if ($condition) {
+                $feedback->markUnActioned();
+
+                return Redirect::back()
+                              ->withSuccess('Feedback unmarked as actioned!');
+            }
         }
         abort(401, 'Unauthorized action.');
     }

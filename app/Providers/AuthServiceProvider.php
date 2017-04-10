@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Mship\Account;
 use Gate;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

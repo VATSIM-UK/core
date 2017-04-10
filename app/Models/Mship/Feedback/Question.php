@@ -27,11 +27,13 @@ class Question extends Model
      'permanent' => 'boolean',
     ];
 
-    public function scopeNotPermanent($query){
+    public function scopeNotPermanent($query)
+    {
         return $query->where('permanent', false);
     }
 
-    public function scopeNotActioned($query){
+    public function scopeNotActioned($query)
+    {
         return $query->where('actioned_at', null);
     }
 
@@ -50,14 +52,17 @@ class Question extends Model
         return $this->belongsTo(\App\Models\Mship\Feedback\Question\Type::class);
     }
 
-    public function optionValues(){
-        if(isset($this->options['values'])){
-          return $this->options['values'];
+    public function optionValues()
+    {
+        if (isset($this->options['values'])) {
+            return $this->options['values'];
         }
+
         return false;
     }
 
-    public function getSlugAttribute($value){
+    public function getSlugAttribute($value)
+    {
         return substr($value, 0, -1);
     }
 }
