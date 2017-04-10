@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Model;
  * App\Modules\Visittransfer\Models\Facility\Email
  *
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $facility_id
+ * @property string $email
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereFacilityId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereUpdatedAt($value)
  */
 class Email extends Model
 {

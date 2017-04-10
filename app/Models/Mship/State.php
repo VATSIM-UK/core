@@ -17,6 +17,24 @@ use App\Traits\RecordsActivity;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State permanent()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State temporary()
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $code
+ * @property string $type
+ * @property string $name
+ * @property bool $delete_all_temps
+ * @property int $priority
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereDeleteAllTemps($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereDivision($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State wherePriority($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereRegion($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereUpdatedAt($value)
  */
 class State extends \Eloquent
 {

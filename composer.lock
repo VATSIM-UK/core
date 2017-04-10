@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a294397d23d86e5f6b6642a876122926",
+    "content-hash": "99d4ee97f6174d6fef983b0c98a456b8",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -485,47 +485,6 @@
                 "modules"
             ],
             "time": "2017-03-28T15:54:24+00:00"
-        },
-        {
-            "name": "comocode/laravel-ab",
-            "version": "0.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/comocode/laravel-ab.git",
-                "reference": "69649f5b083fce2678c09c7f8aaaa4b6a5b8397e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/comocode/laravel-ab/zipball/69649f5b083fce2678c09c7f8aaaa4b6a5b8397e",
-                "reference": "69649f5b083fce2678c09c7f8aaaa4b6a5b8397e",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "tests"
-                ],
-                "psr-4": {
-                    "ComoCode\\LaravelAb\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rulian Estivalletti",
-                    "email": "rulian.estivalletti@gmail.com"
-                }
-            ],
-            "description": "Blade level AB tests for Laravel 5",
-            "keywords": [
-                "AB",
-                "ab tests",
-                "laravel"
-            ],
-            "time": "2016-07-18T21:33:54+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -1132,102 +1091,6 @@
             "time": "2017-03-29T16:04:15+00:00"
         },
         {
-            "name": "facebook/webdriver",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "3ea034c056189e11c0ce7985332a9f4b5b2b5db2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/3ea034c056189e11c0ce7985332a9f4b5b2b5db2",
-                "reference": "3ea034c056189e11c0ce7985332a9f4b5b2b5db2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-zip": "*",
-                "php": "^5.5 || ~7.0",
-                "symfony/process": "^2.8 || ^3.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0",
-                "php-mock/php-mock-phpunit": "^1.1",
-                "phpunit/phpunit": "4.6.* || ~5.0",
-                "satooshi/php-coveralls": "^1.0",
-                "squizlabs/php_codesniffer": "^2.6"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-community": "1.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Facebook\\WebDriver\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "A PHP client for Selenium WebDriver",
-            "homepage": "https://github.com/facebook/php-webdriver",
-            "keywords": [
-                "facebook",
-                "php",
-                "selenium",
-                "webdriver"
-            ],
-            "time": "2017-03-22T10:56:03+00:00"
-        },
-        {
-            "name": "flynsarmy/db-blade-compiler",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Flynsarmy/laravel-db-blade-compiler.git",
-                "reference": "d8d2f0da1e9fc0ee317d4e64807a61127ffbcc97"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Flynsarmy/laravel-db-blade-compiler/zipball/d8d2f0da1e9fc0ee317d4e64807a61127ffbcc97",
-                "reference": "d8d2f0da1e9fc0ee317d4e64807a61127ffbcc97",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Flynsarmy\\DbBladeCompiler\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Flyn San",
-                    "email": "flynsarmy@gmail.com",
-                    "homepage": "http://www.flynsarmy.com/"
-                }
-            ],
-            "description": "Render Blade templates from Eloquent Model Fields",
-            "keywords": [
-                "blade",
-                "compiler",
-                "eloquent",
-                "laravel",
-                "model"
-            ],
-            "time": "2014-07-16T06:28:13+00:00"
-        },
-        {
             "name": "guzzlehttp/guzzle",
             "version": "6.2.3",
             "source": {
@@ -1595,61 +1458,6 @@
                 "testing"
             ],
             "time": "2017-02-08T22:32:37+00:00"
-        },
-        {
-            "name": "laravel/dusk",
-            "version": "v1.0.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/dusk.git",
-                "reference": "fc079ddbe34fd7f227f80b5b125abebb51f98c43"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/fc079ddbe34fd7f227f80b5b125abebb51f98c43",
-                "reference": "fc079ddbe34fd7f227f80b5b125abebb51f98c43",
-                "shasum": ""
-            },
-            "require": {
-                "facebook/webdriver": "~1.0",
-                "illuminate/support": "~5.3",
-                "nesbot/carbon": "~1.20",
-                "php": ">=5.6.4",
-                "symfony/console": "~3.2",
-                "symfony/process": "~3.2"
-            },
-            "require-dev": {
-                "mockery/mockery": "^0.9.6",
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Dusk\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Laravel Dusk provides simple end-to-end testing and browser automation.",
-            "keywords": [
-                "laravel",
-                "testing",
-                "webdriver"
-            ],
-            "time": "2017-03-20T20:56:17+00:00"
         },
         {
             "name": "laravel/framework",
@@ -4160,102 +3968,6 @@
                 "remember"
             ],
             "time": "2016-08-23T11:22:20+00:00"
-        },
-        {
-            "name": "watson/validating",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dwightwatson/validating.git",
-                "reference": "e6c5dcbe670967297b35760788ac0df84a5502b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/validating/zipball/e6c5dcbe670967297b35760788ac0df84a5502b7",
-                "reference": "e6c5dcbe670967297b35760788ac0df84a5502b7",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "~5.0",
-                "illuminate/database": "~5.0",
-                "illuminate/events": "~5.0",
-                "illuminate/support": "~5.0",
-                "illuminate/validation": "~5.0",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "4.2.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Watson\\Validating\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dwight Watson",
-                    "email": "dwight@studiousapp.com"
-                }
-            ],
-            "description": "Eloquent model validating trait.",
-            "keywords": [
-                "eloquent",
-                "laravel",
-                "validation"
-            ],
-            "time": "2015-05-14T01:10:48+00:00"
-        },
-        {
-            "name": "wpb/string-blade-compiler",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TerrePorter/StringBladeCompiler.git",
-                "reference": "f53480df078bf08b34887ce6b275f4e802387a2d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TerrePorter/StringBladeCompiler/zipball/f53480df078bf08b34887ce6b275f4e802387a2d",
-                "reference": "f53480df078bf08b34887ce6b275f4e802387a2d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Wpb\\StringBladeCompiler\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Terre Porter",
-                    "email": "tporter@webpage-builders.com"
-                }
-            ],
-            "description": "Render Blade templates from string",
-            "keywords": [
-                "blade",
-                "compiler",
-                "laravel"
-            ],
-            "time": "2015-06-24T14:23:03+00:00"
         }
     ],
     "packages-dev": [

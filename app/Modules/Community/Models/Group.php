@@ -13,6 +13,22 @@ use App\Models\Mship\Account;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group isDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group notDefault()
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property int $tier
+ * @property string $coordinate_boundaries
+ * @property bool $default
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCoordinateBoundaries($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereTier($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereUpdatedAt($value)
  */
 class Group extends Model
 {
