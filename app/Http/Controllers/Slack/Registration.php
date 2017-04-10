@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Slack;
 
+use DB;
 use Redirect;
 use Response;
 use App\Models\Sys\Token;
-use App\Models\Mship\Account;
-use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
+use SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -19,33 +19,29 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if ($this->account->slack_id != '') {
-            return Redirect::route('mship.manage.dashboard')
-                           ->withError("Your Slack account doesn't need registering.");
-        }
-
-        if (!$this->account->hasState('DIVISION')) {
-            return Redirect::route('mship.manage.dashboard')
-                           ->withError('You need to be a division member to register for Slack.');
-        }
+        $this->authorize('register-slack');
 
         if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
+            DB::beginTransaction();
             $_slackToken = Token::generate('slack_registration', false, $this->account);
 
-            $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
+            $result = SlackUserAdmin::invite($this->account->email, [
                 'first_name' => $this->account->name_first,
                 'last_name'  => $this->account->name_last,
             ]);
 
-            /*if($slackUserAdmin->ok != "true"){
-                return Redirect::route("mship.manage.dashboard")
-                               ->withError("There was an error with your slack registration: ".$slackUserAdmin->error);
-            }*/
+            if ($result->ok !== true) {
+                DB::rollBack();
+                return Redirect::route('mship.manage.dashboard')
+                    ->withError('There was an error inviting you to join Slack. Please contact the Web Services Department.');
+            }
+
+            DB::commit();
         }
 
         if ($_slackToken->is_used) {
             return Redirect::route('mship.manage.dashboard')
-                           ->withError("Your Slack registration seems to be complete, but your account isn't linked.  Please contact Web Services.");
+                ->withError('Your Slack registration seems to be complete, but your account isn\'t linked.  Please contact Web Services.');
         }
 
         $this->pageTitle = 'New Slack Registration';

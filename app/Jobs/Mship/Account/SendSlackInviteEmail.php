@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Mship\Account;
 
+use Gate;
 use View;
 use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
@@ -22,8 +23,8 @@ class SendSlackInviteEmail extends \App\Jobs\Job implements ShouldQueue
 
     public function handle()
     {
-        if (!$this->account->hasState('DIVISION') && !$this->account->hasState('VISITING') && !$this->account->hasState('TRANSFERRING')) {
-            return true;  // They can't have Slack access.  Tut.
+        if (Gate::forUser($this->account)->denies('register-slack')) {
+            return true;
         }
 
         $displayFrom = 'VATSIM UK Community Department';
