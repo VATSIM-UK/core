@@ -55,7 +55,11 @@
                 {{ $ban->period_finish->diffForHumans() }}
                 , {{ $ban->period_finish->toDateTimeString() }}
             @else
-                Forever
+                @if($ban->is_local)
+                    Forever
+                @elseif($ban->is_network)
+                    Unknown
+                @endif
             @endif
         </p>
 
