@@ -145,7 +145,7 @@ class Application extends Model
     {
         $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
 
-        return parent::create($attributes); //
+        return static::query()->create($attributes);
     }
 
     /** All Laravel scopes **/
