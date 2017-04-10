@@ -1,7 +1,10 @@
 <?php
 
+namespace Tests\Unit;
+
 use App\Models\Sys\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MshipTest extends TestCase
 {

@@ -1,6 +1,7 @@
 <?php
 
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ApplicationTest extends TestCase

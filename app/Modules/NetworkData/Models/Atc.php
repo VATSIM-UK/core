@@ -50,6 +50,9 @@ use App\Modules\NetworkData\Events\AtcSessionUpdated;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc isUK()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc onFrequency()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc thisYear()
+ * @property int $minutes_online
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereFrequency($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereMinutesOnline($value)
  */
 class Atc extends Model
 {

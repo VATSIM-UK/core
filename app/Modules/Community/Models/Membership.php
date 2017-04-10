@@ -5,9 +5,21 @@ namespace App\Modules\Community\Models;
 use App\Models\Model;
 
 /**
- * App\Modules\Community\Models\Membership
+ * App\Modules\Community\Models\Membership.
  *
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $group_id
+ * @property int $account_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereGroupId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereUpdatedAt($value)
  */
 class Membership extends Model
 {

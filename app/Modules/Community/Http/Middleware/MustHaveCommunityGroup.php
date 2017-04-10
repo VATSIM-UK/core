@@ -41,7 +41,7 @@ class MustHaveCommunityGroup
             return $next($request);
         }
 
-        Session::set('community_group_return', Request::fullUrl());
+        Session::put('community_group_return', Request::fullUrl());
 
         return Redirect::route('community.membership.deploy');
     }

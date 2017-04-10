@@ -181,7 +181,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Vatsim\OAuth\OAuthServiceProvider::class,
         Vatsim\Xml\XmlServiceProvider::class,
-        Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
@@ -189,7 +188,7 @@ return [
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
         Bootstrapper\BootstrapperL5ServiceProvider::class,
         Caffeinated\Modules\ModulesServiceProvider::class,
-        ComoCode\LaravelAb\LaravelAbServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
     ],
     /*
     |--------------------------------------------------------------------------

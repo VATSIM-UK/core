@@ -8,9 +8,9 @@ use Input;
 use Session;
 use Redirect;
 use Response;
-use Exception;
 use VatsimSSO;
 use App\Models\Mship\Account;
+use Illuminate\Auth\AuthenticationException;
 
 class Authentication extends \App\Http\Controllers\Adm\AdmController
 {
@@ -38,7 +38,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             },
             function ($error) {
                 // TODO: LOG
-                throw new Exception($error['message']);
+                throw new AuthenticationException($error['message']);
             }
         );
     }
@@ -46,19 +46,19 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
     public function getVerify()
     {
         if (!Session::has('vatsimauth')) {
-            throw new \Exception('Session does not exist');
+            throw new AuthenticationException('Session does not exist');
         }
 
         $session = Session::get('vatsimauth');
 
         if (Input::get('oauth_token') !== $session['key']) {
             // TODO: LOG
-            throw new \Exception('Returned token does not match');
+            throw new AuthenticationException('Returned token does not match');
         }
 
         if (!Input::has('oauth_verifier')) {
             // TODO: LOG
-            throw new \Exception('No verification code provided');
+            throw new AuthenticationException('No verification code provided');
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function ($user, $request) {
@@ -78,7 +78,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.dashboard');
         }, function ($error) {
             // TODO: LOG
-            throw new \Exception($error['message']);
+            throw new AuthenticationException($error['message']);
         });
     }
 }

@@ -7,7 +7,7 @@ use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 /**
- * App\Modules\Visittransfer\Models\Facility
+ * App\Modules\Visittransfer\Models\Facility.
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Facility\Email[] $emails
@@ -22,6 +22,36 @@ use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility pilot()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility trainingRequired()
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property bool $can_transfer
+ * @property bool $can_visit
+ * @property bool $training_required
+ * @property string $training_team
+ * @property int $training_spaces
+ * @property bool $stage_statement_enabled
+ * @property bool $stage_reference_enabled
+ * @property int $stage_reference_quantity
+ * @property bool $stage_checks
+ * @property bool $auto_acceptance
+ * @property bool $open
+ * @property string $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereAutoAcceptance($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereCanTransfer($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereCanVisit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereOpen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereStageChecks($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereStageReferenceEnabled($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereStageReferenceQuantity($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereStageStatementEnabled($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingRequired($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingSpaces($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingTeam($value)
  */
 class Facility extends Model
 {
@@ -62,7 +92,7 @@ class Facility extends Model
     {
         (new self)->guardAgainstDuplicateFacilityName(array_get($attributes, 'name', ''));
 
-        return parent::create($attributes);
+        return static::query()->create($attributes);
     }
 
     public function update(array $attributes = [], array $options = [])

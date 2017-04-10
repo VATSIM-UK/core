@@ -510,7 +510,7 @@ class Account extends AdmController
 
         // Let's do the login!
         Auth::loginUsingId($account->id, false);
-        Session::set('auth_override', true);
+        Session::put('auth_override', true);
 
         return Redirect::to(URL::route('mship.manage.dashboard'))
                        ->withSuccess('You are now impersonating this user - your reason has been logged. Be good!');
