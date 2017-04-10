@@ -9,6 +9,7 @@ use App\Models\Mship\Account\Ban;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Notifications\Notifiable;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
@@ -546,6 +547,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function teamspeakRegistrations()
     {
         return $this->hasMany(\App\Models\TeamSpeak\Registration::class, 'account_id');
+    }
+
+    public function feedback()
+    {
+        return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
     }
 
     public function readNotifications()

@@ -142,7 +142,8 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails'
+            'secondaryEmails',
+            'feedback'
         );
 
         // Get all possible roles!
@@ -169,7 +170,8 @@ class Account extends AdmController
                     ->with('availableRoles', $availableRoles)
                     ->with('banReasons', $banReasons)
                     ->with('noteTypes', $noteTypes)
-                    ->with('noteTypesAll', $noteTypesAll);
+                    ->with('noteTypesAll', $noteTypesAll)
+                    ->with('feedback', $account->feedback()->orderBy('created_at', 'desc')->get());
     }
 
     public function postRoleAttach(AccountData $account)
