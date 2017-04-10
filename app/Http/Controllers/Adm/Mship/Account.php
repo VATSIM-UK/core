@@ -142,7 +142,8 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails'
+            'secondaryEmails',
+            'feedback'
         );
 
         // Get all possible roles!
@@ -169,7 +170,8 @@ class Account extends AdmController
                     ->with('availableRoles', $availableRoles)
                     ->with('banReasons', $banReasons)
                     ->with('noteTypes', $noteTypes)
-                    ->with('noteTypesAll', $noteTypesAll);
+                    ->with('noteTypesAll', $noteTypesAll)
+                    ->with('feedback', $account->feedback()->orderBy('created_at', 'desc')->get());
     }
 
     public function postRoleAttach(AccountData $account)
@@ -510,7 +512,7 @@ class Account extends AdmController
 
         // Let's do the login!
         Auth::loginUsingId($account->id, false);
-        Session::set('auth_override', true);
+        Session::put('auth_override', true);
 
         return Redirect::to(URL::route('mship.manage.dashboard'))
                        ->withSuccess('You are now impersonating this user - your reason has been logged. Be good!');

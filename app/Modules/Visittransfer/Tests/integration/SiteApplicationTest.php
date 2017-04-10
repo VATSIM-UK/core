@@ -1,5 +1,6 @@
 <?php
 
+use Tests\TestCase;
 
 class SiteApplicationTest extends TestCase
 {

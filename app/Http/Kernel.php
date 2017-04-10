@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
             'auth.user.full',
             'user.must.read.notifications',
             'must.have.community.group',
+            'denyifbanned',
         ],
     ];
 
@@ -60,5 +61,6 @@ class Kernel extends HttpKernel
         'throttle'                     => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'must.have.community.group'    => \App\Modules\Community\Http\Middleware\MustHaveCommunityGroup::class,
         'api.tracking'                 => \App\Http\Middleware\ApiTracking::class,
+        'denyifbanned'                 => Middleware\DenyIfBanned::class,
     ];
 }

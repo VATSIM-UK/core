@@ -37,6 +37,30 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedExce
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference submitted()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference underReview()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $application_id
+ * @property int $account_id
+ * @property string $email
+ * @property string $relationship
+ * @property string $reference
+ * @property int $status
+ * @property string $status_note
+ * @property string $contacted_at
+ * @property string $reminded_at
+ * @property string $submitted_at
+ * @property string $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereApplicationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereContactedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereReference($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereRelationship($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereRemindedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereStatusNote($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereSubmittedAt($value)
  */
 class Reference extends Model
 {

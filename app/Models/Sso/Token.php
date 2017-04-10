@@ -29,6 +29,10 @@ use App\Traits\RecordsActivity;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token tokenValue($tokenValue)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
  * @mixin \Eloquent
+ * @property string $request_ip
+ * @property \Carbon\Carbon $used_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereRequestIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereUsedAt($value)
  */
 class Token extends \App\Models\Model
 {

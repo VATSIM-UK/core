@@ -45,6 +45,8 @@
         {!! HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/css/bootstrap3/bootstrap-switch.min.css') !!}
         <!-- bootstrapSelect -->
         {!! HTML::style('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css') !!}
+        <!-- DatetimePicker -->
+        {!! HTML::style(asset("assets/css/datetimepickerxdan/jquery.datetimepicker.min.css")) !!}
         <!-- Theme style -->
         {!! HTML::style('/assets/css/AdminLTE.css') !!}
 

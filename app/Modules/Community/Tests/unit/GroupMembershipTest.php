@@ -1,5 +1,6 @@
 <?php
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class GroupMembershipTest extends TestCase

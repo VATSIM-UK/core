@@ -132,11 +132,14 @@
                         <div class="panel-heading"><i class="fa fa-cogs"></i>
                             &thinsp;
                             Community Groups
+                            @if($_account->can('deploy', new \App\Modules\Community\Models\Membership()))
                             <div class="pull-right">
                                     <a href="{{ route("community.membership.deploy") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
-                            </div></div>
+                            </div>
+                            @endif
+                        </div>
                         <div class="panel-body">
                             <div class="row">
 
@@ -432,7 +435,7 @@
                             &thinsp;
                             Slack Registration
                             <div class="pull-right">
-                                @if($_account->hasState("DIVISION"))
+                                @if(Gate::allows('register-slack'))
                                     <a href="{{ route("slack.new") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
@@ -442,14 +445,12 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    @if($_account->hasState("DIVISION"))
-                                        @if($_account->slack_id)
-                                            Currently registered with Slack ID {{ $_account->slack_id }}.
-                                        @else
-                                            You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
-                                        @endif
+                                    @if($_account->slack_id)
+                                        Currently registered with Slack ID {{ $_account->slack_id }}.
+                                    @elseif(Gate::allows('register-slack'))
+                                        You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
                                     @else
-                                        You are not elegible for Slack registration as you are not a UK member.
+                                        You are not eligible for Slack registration.
                                     @endif
                                 </div>
                             </div>

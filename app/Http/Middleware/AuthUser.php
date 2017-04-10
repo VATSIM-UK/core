@@ -24,7 +24,7 @@ class AuthUser
             if (Request::ajax()) {
                 return Response::make('Unauthorised', 401);
             } else {
-                Session::set('auth_return', Request::fullUrl());
+                Session::put('auth_return', Request::fullUrl());
 
                 return Redirect::to('/');
             }

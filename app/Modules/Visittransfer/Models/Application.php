@@ -28,7 +28,7 @@ use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdraw
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 
 /**
- * App\Modules\Visittransfer\Models\Application
+ * App\Modules\Visittransfer\Models\Application.
  *
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Modules\Visittransfer\Models\Facility $facility
@@ -75,6 +75,44 @@ use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTr
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application underReview()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application visit()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $type
+ * @property int $account_id
+ * @property int $facility_id
+ * @property bool $training_required
+ * @property bool $statement_required
+ * @property int $references_required
+ * @property bool $should_perform_checks
+ * @property bool $check_outcome_90_day
+ * @property bool $check_outcome_50_hours
+ * @property bool $will_auto_accept
+ * @property int $status
+ * @property string $status_note
+ * @property \Carbon\Carbon $expires_at
+ * @property \Carbon\Carbon $submitted_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereCheckOutcome50Hours($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereCheckOutcome90Day($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereFacilityId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereReferencesRequired($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereShouldPerformChecks($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereStatement($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereStatementRequired($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereStatusNote($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereSubmittedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereTrainingRequired($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereTrainingTeam($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereWillAutoAccept($value)
  */
 class Application extends Model
 {
@@ -145,7 +183,7 @@ class Application extends Model
     {
         $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
 
-        return parent::create($attributes); //
+        return static::query()->create($attributes);
     }
 
     /** All Laravel scopes **/

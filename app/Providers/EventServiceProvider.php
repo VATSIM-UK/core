@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Sync\PushToPts',
             'App\Listeners\Sync\PushToTeamSpeak',
         ],
+        \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
+            \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+        ],
     ];
 
     /**
@@ -29,7 +32,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

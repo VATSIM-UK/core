@@ -170,6 +170,7 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
@@ -181,7 +182,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Vatsim\OAuth\OAuthServiceProvider::class,
         Vatsim\Xml\XmlServiceProvider::class,
-        Wpb\StringBladeCompiler\StringBladeCompilerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
@@ -189,7 +189,7 @@ return [
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
         Bootstrapper\BootstrapperL5ServiceProvider::class,
         Caffeinated\Modules\ModulesServiceProvider::class,
-        ComoCode\LaravelAb\LaravelAbServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
     ],
     /*
     |--------------------------------------------------------------------------
@@ -204,10 +204,14 @@ return [
 
     'aliases' => [
 
+        /*
+         * Laravel Native Aliases
+         */
         'App'          => Illuminate\Support\Facades\App::class,
         'Artisan'      => Illuminate\Support\Facades\Artisan::class,
         'Auth'         => Illuminate\Support\Facades\Auth::class,
         'Blade'        => Illuminate\Support\Facades\Blade::class,
+        'Broadcast'    => Illuminate\Support\Facades\Broadcast::class,
         'Bus'          => Illuminate\Support\Facades\Bus::class,
         'Cache'        => Illuminate\Support\Facades\Cache::class,
         'Config'       => Illuminate\Support\Facades\Config::class,
@@ -217,9 +221,8 @@ return [
         'Eloquent'     => Illuminate\Database\Eloquent\Model::class,
         'Event'        => Illuminate\Support\Facades\Event::class,
         'File'         => Illuminate\Support\Facades\File::class,
+        'Gate'         => Illuminate\Support\Facades\Gate::class,
         'Hash'         => Illuminate\Support\Facades\Hash::class,
-        'Input'        => Illuminate\Support\Facades\Input::class,
-        'Inspiring'    => Illuminate\Foundation\Inspiring::class,
         'Lang'         => Illuminate\Support\Facades\Lang::class,
         'Log'          => Illuminate\Support\Facades\Log::class,
         'Mail'         => Illuminate\Support\Facades\Mail::class,
@@ -239,11 +242,13 @@ return [
         'View'         => Illuminate\Support\Facades\View::class,
 
         /*
-         * App
+         * Laravel Native Aliases (Deprecated)
          */
+        'Input'        => Illuminate\Support\Facades\Input::class,
+        'Inspiring'    => Illuminate\Foundation\Inspiring::class,
 
         /*
-         * Third Party
+         * Third Party Aliases
          */
         'Bugsnag'              => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'SlackApi'             => Vluzrmos\SlackApi\Facades\SlackApi::class,
@@ -259,7 +264,6 @@ return [
         'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
         'SlackTeam'            => Vluzrmos\SlackApi\Facades\SlackTeam::class,
 
-//        'Form'                 => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
