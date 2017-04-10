@@ -1,6 +1,9 @@
 <?php
 
+namespace Tests\Unit;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MshipAccountTest extends TestCase
 {
@@ -12,7 +15,7 @@ class MshipAccountTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = factory(App\Models\Mship\Account::class)->create([
+        $this->account = factory(\App\Models\Mship\Account::class)->create([
             "name_first" => "John",
             "name_last" => "Doe",
             "email" => "i_sleep@gmail.com",
@@ -138,14 +141,14 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_doesnt_permit_storing_of_primary_email_as_secondary()
     {
-        $this->setExpectedException(App\Exceptions\Mship\DuplicateEmailException::class);
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateEmailException::class);
 
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
-        $this->notSeeInDatabase("mship_account_email", [
+        $this->notseeInDatabase("mship_account_email", [
             "account_id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
@@ -154,7 +157,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_doesnt_permit_duplicate_secondary_emails_on_same_model()
     {
-        $this->setExpectedException(App\Exceptions\Mship\DuplicateEmailException::class);
+        $this->setExpectedException(\App\Exceptions\Mship\DuplicateEmailException::class);
 
         $verified = true;
         $this->account->addSecondaryEmail("test_email@gmail.com", $verified);
@@ -325,7 +328,7 @@ class MshipAccountTest extends TestCase
             "password" => $this->account->password,
         ]);
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->notseeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -346,7 +349,7 @@ class MshipAccountTest extends TestCase
             "password" => $this->account->password,
         ]);
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->notseeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -395,7 +398,7 @@ class MshipAccountTest extends TestCase
 
         $this->account->setPassword("testing456");
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->notseeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password" => $oldPassword,
             "password_set_at" => $oldPasswordSetAt,
@@ -455,7 +458,7 @@ class MshipAccountTest extends TestCase
         $this->account->fresh()->removeRole($role);
 
         $this->assertFalse($this->account->fresh()->roles->contains($role->id));
-        $this->notSeeInDatabase("mship_account_role", [
+        $this->notseeInDatabase("mship_account_role", [
             "account_id" => $this->account->id,
             "role_id" => $role->id,
         ]);

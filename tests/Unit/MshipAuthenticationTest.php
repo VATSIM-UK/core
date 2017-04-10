@@ -1,8 +1,14 @@
 <?php
 
+namespace Tests\Unit;
+
 use App\Models\Mship\Account;
+use Auth;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Mockery;
+use Tests\TestCase;
+
 class MshipAuthenticationTest extends TestCase
 {
     /**
@@ -234,7 +240,7 @@ class MshipAuthenticationTest extends TestCase
         // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
-        Session::set('auth_extra', Carbon::now());
+        Session::put('auth_extra', Carbon::now());
 
         // We need to call the middleware callback so set $this->_account in $authenticationInstance
         $callback = $this->authenticationInstance->getMiddleware()[0]['middleware'];
@@ -263,7 +269,7 @@ class MshipAuthenticationTest extends TestCase
         // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
-        Session::set('auth_extra', Carbon::now()->subHours(5));
+        Session::put('auth_extra', Carbon::now()->subHours(5));
 
         // We need to call the middleware callback so set $this->_account in $authenticationInstance
         $callback = $this->authenticationInstance->getMiddleware()[0]['middleware'];
@@ -295,7 +301,7 @@ class MshipAuthenticationTest extends TestCase
         // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
-        Session::set('auth_extra', Carbon::now()->subHours(5));
+        Session::put('auth_extra', Carbon::now()->subHours(5));
 
         // We need to call the middleware callback (function in constructor of BaseController) to set $this->_account in $authenticationInstance
         $callback = $this->authenticationInstance->getMiddleware()[0]['middleware'];
@@ -320,7 +326,7 @@ class MshipAuthenticationTest extends TestCase
         // Facades are already setup to be mocks, so just tell it what to expect, set the Session data
         Auth::shouldReceive('check')->times(2)->andReturn(true);
         Auth::shouldReceive('user')->once()->andReturn($account);
-        Session::set('auth_duplicate_ip', true);
+        Session::put('auth_duplicate_ip', true);
 
         // We need to call the middleware callback so set $this->_account in $authenticationInstance
         $callback = $this->authenticationInstance->getMiddleware()[0]['middleware'];

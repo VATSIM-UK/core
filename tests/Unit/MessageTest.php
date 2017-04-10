@@ -1,9 +1,12 @@
 <?php
 
+namespace Tests\Unit;
+
 use App\Models\Messages\Thread\Participant;
 use App\Models\Messages\Thread\Post;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MessageTest extends TestCase
 {

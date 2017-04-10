@@ -2,6 +2,7 @@
 
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class SiteTest extends TestCase
 {

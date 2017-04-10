@@ -1,6 +1,9 @@
 <?php
 
+namespace Tests\Unit;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MshipStateTest extends TestCase
 {
@@ -12,7 +15,7 @@ class MshipStateTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = factory(App\Models\Mship\Account::class)->create([
+        $this->account = factory(\App\Models\Mship\Account::class)->create([
             "id" => 123456,
             "name_first" => "John",
             "name_last" => "Doe",
@@ -64,7 +67,7 @@ class MshipStateTest extends TestCase
             "end_at" => null,
         ]);
 
-        $this->notSeeInDatabase("mship_account_state", [
+        $this->notseeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $regionState->id,
             "end_at" => null,
@@ -127,7 +130,7 @@ class MshipStateTest extends TestCase
             "end_at" => null,
         ]);
 
-        $this->notSeeInDatabase("mship_account_state", [
+        $this->notseeInDatabase("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,

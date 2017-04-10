@@ -48,7 +48,8 @@
         "comocode/laravel-ab": "^0.3.0",
         "pusher/pusher-php-server": "~2.0",
         "bugsnag/bugsnag-laravel": "^2.0",
-        "watson/rememberable": "^2.0"
+        "watson/rememberable": "^2.0",
+        "laravel/browser-kit-testing": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -72,9 +73,9 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/TestCase.php"
-        ]
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "scripts": {
         "post-install-cmd": [

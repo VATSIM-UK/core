@@ -1,7 +1,12 @@
 <?php
 
+namespace Tests\Unit;
+
 use Illuminate\Support\Facades\Auth;
 use App\Models\Mship\Account;
+use Mockery;
+use Tests\TestCase;
+
 class MshipSecurityTest extends TestCase
 {
     /**

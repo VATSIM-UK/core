@@ -1,6 +1,9 @@
 <?php
 
+namespace Tests\Unit;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class MshipRoleTest extends TestCase
 {
@@ -99,7 +102,7 @@ class MshipRoleTest extends TestCase
             "permission_id" => $permissionA->id,
         ]);
 
-        $this->notSeeInDatabase("mship_permission_role", [
+        $this->notseeInDatabase("mship_permission_role", [
             "role_id"       => $role->id,
             "permission_id" => $permissionB->id,
         ]);
