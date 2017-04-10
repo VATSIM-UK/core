@@ -12,7 +12,6 @@ use TeamSpeak3_Helper_Signal;
 use TeamSpeak3_Transport_Exception;
 use TeamSpeak3_Adapter_ServerQuery_Event;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
-use App\Exceptions\TeamSpeak\MaxConnectionAttemptsExceededException;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
@@ -121,13 +120,6 @@ class TeamSpeakDaemon extends TeamSpeakCommand
      */
     protected function establishConnection($attempt = 1)
     {
-        $max_attempts = 5;
-        $sleep_factor = 5; // $max_attempts * sleep_factor = delay between attempts
-
-        if ($attempt > $max_attempts) {
-            throw new MaxConnectionAttemptsExceededException($max_attempts);
-        }
-
         try {
             // establish connection
             $connection = TeamSpeak::run('VATSIM UK Management Daemon', true);
@@ -142,19 +134,20 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             return $connection;
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
             if ($e->getCode() === TeamSpeak::CLIENT_NICKNAME_INUSE) {
-                $this->log('Nickname in use.');
-                sleep($attempt * $sleep_factor);
+                $this->log("Nickname in use, attempt $attempt");
+                sleep(15);
 
-                return $this->establishConnection($attempt + 1);
+                return $this->establishConnection(++$attempt);
             } else {
                 throw $e;
             }
         } catch (TeamSpeak3_Transport_Exception $e) {
-            if ($e->getCode() === TeamSpeak::CONNECTION_TIMED_OUT) {
-                $this->log('Connection timed out.');
-                sleep($attempt * $sleep_factor);
+            $exceptionCode = $e->getCode();
+            if ($exceptionCode === TeamSpeak::CONNECTION_TIMED_OUT || $exceptionCode === TeamSpeak::CONNECTION_REFUSED) {
+                $this->log("Connection timed out/refused, attempt $attempt");
+                sleep(15);
 
-                return $this->establishConnection($attempt + 1);
+                return $this->establishConnection(++$attempt);
             } else {
                 throw $e;
             }

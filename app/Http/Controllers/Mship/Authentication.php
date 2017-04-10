@@ -168,11 +168,11 @@ class Authentication extends BaseController
         $session = Session::get('vatsimauth');
 
         if (Input::get('oauth_token') !== $session['key']) {
-            throw new \Exception('Returned token does not match');
+            throw new \Illuminate\Auth\AuthenticationException('Returned token does not match');
         }
 
         if (!Input::has('oauth_verifier')) {
-            throw new \Exception('No verification code provided');
+            throw new \Illuminate\Auth\AuthenticationException('No verification code provided');
         }
 
         return VatsimSSO::validate($session['key'], $session['secret'], Input::get('oauth_verifier'), function ($user, $request) {
@@ -269,7 +269,7 @@ class Authentication extends BaseController
             // Let's send them over to the authentication redirect now.
             return Redirect::route('mship.auth.redirect');
         }, function ($error) {
-            throw new \Exception($error['message']);
+            throw new \Illuminate\Auth\AuthenticationException($error['message']);
         });
     }
 
