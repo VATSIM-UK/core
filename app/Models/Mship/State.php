@@ -5,7 +5,7 @@ namespace App\Models\Mship;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Mship\State
+ * App\Models\Mship\State.
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
  * @property mixed $division

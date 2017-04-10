@@ -5,7 +5,7 @@ namespace App\Modules\Visittransfer\Models\Facility;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Modules\Visittransfer\Models\Facility\Email
+ * App\Modules\Visittransfer\Models\Facility\Email.
  *
  * @mixin \Eloquent
  * @property int $id

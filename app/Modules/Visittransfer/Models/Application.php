@@ -28,7 +28,7 @@ use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdraw
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 
 /**
- * App\Modules\Visittransfer\Models\Application
+ * App\Modules\Visittransfer\Models\Application.
  *
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Modules\Visittransfer\Models\Facility $facility
