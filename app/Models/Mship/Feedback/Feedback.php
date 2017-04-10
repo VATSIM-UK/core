@@ -3,10 +3,8 @@
 namespace App\Models\Mship\Feedback;
 
 use Carbon\Carbon;
-use App\Models\Mship\Feedback\Form;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Mship\Feedback\Question\Type;
 
 class Feedback extends Model
 {
@@ -27,15 +25,17 @@ class Feedback extends Model
     public function scopeATC($query)
     {
         // Find ATC form model
-        $form = Form::where('slug','atc')->first();
+        $form = Form::where('slug', 'atc')->first();
+
         return $query->where('form_id', $form->id);
     }
 
     public function scopePilot($query)
     {
-      // Find ATC form model
-      $form = Form::where('slug','pilot')->first();
-      return $query->where('form_id', $form->id);
+        // Find ATC form model
+      $form = Form::where('slug', 'pilot')->first();
+
+        return $query->where('form_id', $form->id);
     }
 
     public function form()
@@ -71,38 +71,44 @@ class Feedback extends Model
     public function isATC()
     {
         if ($this->formSlug() == 'atc') {
-             return true;
+            return true;
         }
+
         return false;
     }
 
     public function isPilot()
     {
         if ($this->formSlug() == 'pilot') {
-             return true;
+            return true;
         }
+
         return false;
     }
 
-    public function formSlug(){
+    public function formSlug()
+    {
         return $this->form->slug;
     }
 
-    public function markActioned($actioner, $comment = null){
-        $this->actioned_at = Carbon::now();
+    public function markActioned($actioner, $comment = null)
+    {
+        $this->actioned_at      = Carbon::now();
         $this->actioned_comment = $comment;
-        $this->actioned_by_id = $actioner->id;
+        $this->actioned_by_id   = $actioner->id;
         $this->save();
     }
 
-    public function markUnActioned(){
-        $this->actioned_at = null;
+    public function markUnActioned()
+    {
+        $this->actioned_at      = null;
         $this->actioned_comment = null;
-        $this->actioned_by_id = null;
+        $this->actioned_by_id   = null;
         $this->save();
     }
 
-    public function getOptions($options){
-      return json_decode($options);
+    public function getOptions($options)
+    {
+        return json_decode($options);
     }
 }

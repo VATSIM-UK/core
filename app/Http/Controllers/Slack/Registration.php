@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Slack;
 use DB;
 use Redirect;
 use Response;
-use App\Models\Sys\Token;
 use SlackUserAdmin;
+use App\Models\Sys\Token;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -32,6 +32,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
             if ($result->ok !== true) {
                 DB::rollBack();
+
                 return Redirect::route('mship.manage.dashboard')
                     ->withError('There was an error inviting you to join Slack. Please contact the Web Services Department.');
             }

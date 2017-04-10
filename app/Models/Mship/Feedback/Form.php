@@ -24,5 +24,4 @@ class Form extends Model
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
     }
-
 }

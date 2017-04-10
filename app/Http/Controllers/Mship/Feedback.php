@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Answer;
-use App\Models\Mship\Feedback\Question;
 use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class Feedback extends \App\Http\Controllers\BaseController
@@ -17,7 +16,6 @@ class Feedback extends \App\Http\Controllers\BaseController
     {
         return view('mship.feedback.form');
     }
-
 
     public function postFeedbackFormSelect(Request $request)
     {
@@ -43,23 +41,23 @@ class Feedback extends \App\Http\Controllers\BaseController
 
         // Lets parse the questions ready for inserting
         foreach ($questions as $question) {
-          $question->form_html = "";
-          if($question->type->requires_value == true){
-            if(isset($question->options['values'])){
-              foreach($question->options['values'] as $key => $value){
-                $selected = "";
-                if(old($question->slug) == $value){
-                    $selected = "checked";
+            $question->form_html = '';
+            if ($question->type->requires_value == true) {
+                if (isset($question->options['values'])) {
+                    foreach ($question->options['values'] as $key => $value) {
+                        $selected = '';
+                        if (old($question->slug) == $value) {
+                            $selected = 'checked';
+                        }
+                        $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
+                    }
+                    continue;
                 }
-                $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug) , $value, $value, $selected);
-              }
-              continue;
-            }
             // No values, so we cant use it :/
             continue;
-          }
+            }
 
-          $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
+            $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
         }
 
         return view('mship.feedback.form', ['form' => $form, 'questions' => $questions]);
@@ -128,12 +126,13 @@ class Feedback extends \App\Http\Controllers\BaseController
         $account  = Account::find($request->input($cidfield));
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
-            'form_id' => $form->id,
+            'form_id'              => $form->id,
         ]);
 
         // Add in the answers
         $feedback->answers()->saveMany($answerdata);
         event(new NewFeedbackEvent($feedback));
+
         return Redirect::route('mship.manage.dashboard')
                 ->withSuccess('Your feedback has been recorded. Thank you!');
     }
