@@ -23,7 +23,6 @@ use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 
 class Account extends AdmController
 {
@@ -270,9 +269,6 @@ class Account extends AdmController
             return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                            ->withError('You cannot reset non-existant security.');
         }
-
-        $job = (new TriggerPasswordResetConfirmation($account, true))->onQueue('high');
-        dispatch($job);
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                        ->withSuccess('Security reset requested - user will receive an email.');

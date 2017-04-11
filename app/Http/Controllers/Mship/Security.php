@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Models\Sys\Token;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Notifications\Mship\Security\TemporaryPassword;
 use Auth;
 use Input;
 use Session;
 use Redirect;
 use Carbon\Carbon;
 use App\Models\Sys\Token as SystemToken;
-use App\Jobs\Mship\Security\TriggerPasswordReset;
 use App\Exceptions\Mship\DuplicatePasswordException;
 use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 
@@ -139,7 +141,9 @@ class Security extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard');
         }
 
-        dispatch(new TriggerPasswordResetConfirmation(Auth::user(), false));
+        $generatedToken  = Token::generate('mship_account_security_reset', false, $this->account);
+        $this->account->notify(new ForgottenPasswordLink($generatedToken));
+
         Auth::logout();
 
         return $this->viewMake('mship.security.forgotten')->with('success', trans('mship.security.forgotten.success').'<br />'.trans('general.dialog.youcanclose'));
@@ -173,12 +177,14 @@ class Security extends \App\Http\Controllers\BaseController
         // Let's now consume this token.
         $token->consume();
 
-        dispatch(new TriggerPasswordReset($token));
+        $temporaryPassword = str_random(12);
+        $this->account->setPassword($temporaryPassword, true);
+        $this->account->notify(new TemporaryPassword($temporaryPassword));
 
         Auth::logout();
 
-        return $this->viewMake('mship.security.forgotten')->with('success', 'A new password has been generated
-            for you and emailed to your <strong>primary</strong> VATSIM email.<br />
-                You can now close this window.');
+        return $this->viewMake('mship.security.forgotten')
+            ->with('success', 'A new password has been generated for you and emailed to your <strong>primary</strong> '
+                . 'VATSIM email.<br /> You can now close this window.');
     }
 }

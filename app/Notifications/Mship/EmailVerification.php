@@ -93,8 +93,8 @@ class EmailVerification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'email' => $this->email,
-            'token' => $this->token,
+            'email' => $this->email->email,
+            'token_id' => $this->token->token_id,
         ];
     }
 }
