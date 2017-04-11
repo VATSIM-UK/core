@@ -2,9 +2,10 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use App\Models\Mship\Account;
+use App\Modules\Visittransfer\Notifications\ApplicationReview;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ApplicationUnderReview;
-use App\Modules\Visittransfer\Jobs\SendCommunityApplicationReviewEmail;
 
 class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 {
@@ -15,8 +16,8 @@ class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 
     public function handle(ApplicationUnderReview $event)
     {
-        $confirmationEmailJob = new SendCommunityApplicationReviewEmail($event->application);
-
-        dispatch($confirmationEmailJob->onQueue('low'));
+        // TODO: Use the staff services feature to choose recipient
+        $account = Account::find(1002707);
+        $account->notify(new ApplicationReview($event->application));
     }
 }
