@@ -18,7 +18,6 @@ use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 
 class TeamSpeak
 {
-
     const CONNECTION_TIMED_OUT                     = 110;
     const CONNECTION_REFUSED                       = 111;
     const CLIENT_INVALID_ID                        = 512;
@@ -260,7 +259,7 @@ class TeamSpeak
             $recentlyTold   = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
             // If their nickname doesn't even contain their name, or their grace period has ended
-            if(!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)){
+            if (!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)) {
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
                 self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
@@ -268,11 +267,11 @@ class TeamSpeak
                 throw new ClientKickedFromServerException;
             }
             // If they are still in their grace period, lets not disturb.
-            if(!$hasGracePeriod){
+            if (!$hasGracePeriod) {
                 // We have a partially valid name. Could be incorrect callsgin? Lets give them a grace period
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
-                self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name . " - EGLL_N_TWR"]));
+                self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
                 Cache::put(
                     self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'],
@@ -285,8 +284,8 @@ class TeamSpeak
                     3
                 );
             }
-        }else{
-          Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+        } else {
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
         }
     }
 
