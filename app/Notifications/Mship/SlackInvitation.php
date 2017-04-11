@@ -1,29 +1,25 @@
 <?php
 
-namespace App\Notifications\Mship\Account;
+namespace App\Notifications\Mship;
 
-use App\Models\Mship\Account\Ban;
+use Gate;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BanRepealed extends Notification implements ShouldQueue
+class SlackInvitation extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    private $ban;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Ban $ban)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->ban = $ban;
     }
 
     /**
@@ -34,7 +30,7 @@ class BanRepealed extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if ($this->ban->is_local) {
+        if (Gate::forUser($notifiable)->allows('register-slack')) {
             return ['mail', 'database'];
         } else {
             return [];
@@ -51,8 +47,8 @@ class BanRepealed extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
-            ->subject('Account Ban Repealed')
-            ->view('emails.mship.account.ban.repealed', ['account' => $this->ban->account, 'ban' => $this->ban]);
+            ->subject('Why not join us on Slack?')
+            ->view('emails.mship.account.slack_invite', ['account' => $notifiable]);
     }
 
     /**
@@ -63,8 +59,6 @@ class BanRepealed extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [
-            'ban_id' => $this->ban->id,
-        ];
+        return [];
     }
 }

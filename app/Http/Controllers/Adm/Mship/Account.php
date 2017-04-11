@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Notifications\Mship\Account\BanCreated;
-use App\Notifications\Mship\Account\BanModified;
-use App\Notifications\Mship\Account\BanRepealed;
+use App\Notifications\Mship\BanCreated;
+use App\Notifications\Mship\BanModified;
+use App\Notifications\Mship\BanRepealed;
 use DB;
 use URL;
 use Auth;

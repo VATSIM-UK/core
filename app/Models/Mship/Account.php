@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship;
 
-use App\Notifications\Mship\Account\SlackInvitation;
+use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;

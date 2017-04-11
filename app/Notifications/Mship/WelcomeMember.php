@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Mship\Account;
+namespace App\Notifications\Mship;
 
 use App\Models\Mship\Account\Ban;
 use Illuminate\Bus\Queueable;
@@ -8,22 +8,18 @@ use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BanCreated extends Notification implements ShouldQueue
+class WelcomeMember extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    private $ban;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Ban $ban)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->ban = $ban;
     }
 
     /**
@@ -34,11 +30,7 @@ class BanCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if ($this->ban->is_local) {
-            return ['mail', 'database'];
-        } else {
-            return [];
-        }
+        return ['mail', 'database'];
     }
 
     /**
@@ -51,8 +43,8 @@ class BanCreated extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
-            ->subject('New Account Ban')
-            ->view('emails.mship.account.ban.created', ['recipient' => $this->ban->account, 'ban' => $this->ban]);
+            ->subject('Welcome to VATSIM UK')
+            ->view('emails.mship.account.welcome', ['account' => $notifiable]);
     }
 
     /**
@@ -63,8 +55,6 @@ class BanCreated extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [
-            'ban_id' => $this->ban->id,
-        ];
+        return [];
     }
 }

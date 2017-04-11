@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Mship\Account;
+namespace App\Notifications\Mship;
 
 use App\Models\Mship\Account\Ban;
 use Illuminate\Bus\Queueable;
@@ -8,7 +8,7 @@ use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BanModified extends Notification implements ShouldQueue
+class BanRepealed extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -51,12 +51,8 @@ class BanModified extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
-            ->subject('Account Ban Modified')
-            ->view('emails.mship.account.ban.modified', [
-                'account' => $this->ban->account,
-                'ban' => $this->ban,
-                'ban_total_length' => human_diff_string($this->ban->period_start, $this->ban->period_finish)
-            ]);
+            ->subject('Account Ban Repealed')
+            ->view('emails.mship.account.ban.repealed', ['account' => $this->ban->account, 'ban' => $this->ban]);
     }
 
     /**

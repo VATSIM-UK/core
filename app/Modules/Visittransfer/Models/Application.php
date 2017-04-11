@@ -2,7 +2,7 @@
 
 namespace App\Modules\Visittransfer\Models;
 
-use App\Notifications\Mship\Account\SlackInvitation;
+use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use App\Models\Mship\State;
 use App\Models\Mship\Account;
