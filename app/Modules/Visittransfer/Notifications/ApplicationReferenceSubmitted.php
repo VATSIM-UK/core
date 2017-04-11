@@ -2,6 +2,7 @@
 
 namespace App\Modules\Visittransfer\Notifications;
 
+use App\Models\Mship\Account;
 use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
@@ -46,12 +47,22 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Submitted";
+        if ($notifiable instanceof Account) {
+            $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Submitted";
 
-        return (new MailMessage)
-            ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
-            ->subject($subject)
-            ->view('visittransfer::emails.applicant.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
+            return (new MailMessage)
+                ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
+                ->subject($subject)
+                ->view('visittransfer::emails.applicant.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
+        } else if ($notifiable instanceof Reference) {
+            $subject = "[{$this->application->public_id}] Thank You for Your Reference";
+
+            return (new MailMessage)
+                ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
+                ->subject($subject)
+                ->view('visittransfer::emails.reference.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
+        }
+
     }
 
     /**
