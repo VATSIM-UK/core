@@ -14,10 +14,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!defined('VATUK_ACCOUNT_SYSTEM')) {
-            define('VATUK_ACCOUNT_SYSTEM', '707070');
-        }
-
         HTML::component('icon', 'components.html.icon', ['type', 'key']);
         HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);
         HTML::component('panelOpen', 'components.html.panel_open', ['title', 'icon' => [], 'attr' => []]);

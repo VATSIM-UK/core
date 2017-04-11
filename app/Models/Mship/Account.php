@@ -1107,7 +1107,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $type = Ban::TYPE_LOCAL
     ) {
         if ($writerId == null) {
-            $writerId = VATUK_ACCOUNT_SYSTEM;
+            $writerId = 0;
         } elseif (is_object($writerId)) {
             $writerId = $writerId->getKey();
         }
@@ -1143,7 +1143,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         if ($writer == null) {
-            $writer = VATUK_ACCOUNT_SYSTEM;
+            $writer = 0;
         } elseif (is_object($writer)) {
             $writer = $writer->getKey();
         }

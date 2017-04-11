@@ -35,7 +35,7 @@ trait RecordsActivity
     public function addActivity($event)
     {
         Activity::create([
-            'actor_id'     => (Auth::check() ? Auth::id() : VATUK_ACCOUNT_SYSTEM),
+            'actor_id'     => (Auth::check() ? Auth::id() : 0),
             'subject_id'   => $this->getKey(),
             'subject_type' => get_class($this),
             'action'       => $event,
