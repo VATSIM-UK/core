@@ -8,7 +8,7 @@ use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApplicantReferenceAccepted extends Notification implements ShouldQueue
+class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -46,12 +46,12 @@ class ApplicantReferenceAccepted extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Accepted";
+        $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Submitted";
 
         return (new MailMessage)
             ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visittransfer::emails.applicant.reference_accepted', ['reference' => $this->reference, 'application' => $this->application]);
+            ->view('visittransfer::emails.applicant.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
     }
 
     /**

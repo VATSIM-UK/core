@@ -2,29 +2,29 @@
 
 namespace App\Modules\Visittransfer\Notifications;
 
+use App\Modules\Visittransfer\Models\Application;
 use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApplicantReferenceRejected extends Notification implements ShouldQueue
+class ApplicationStatusChanged extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $reference, $application;
+    private $application;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Reference $reference)
+    public function __construct(Application $application)
     {
         parent::__construct();
 
-        $this->reference = $reference;
-        $this->application = $reference->application;
+        $this->application = $application;
     }
 
     /**
@@ -46,12 +46,12 @@ class ApplicantReferenceRejected extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Rejected";
+        $subject = "[{$this->application->public_id}] {$this->application->type_string} Application {$this->application->status_string}";
 
         return (new MailMessage)
             ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visittransfer::emails.applicant.reference_rejected', ['reference' => $this->reference, 'application' => $this->application]);
+            ->view('visittransfer::emails.applicant.status_changed', ['application' => $this->application]);
     }
 
     /**
