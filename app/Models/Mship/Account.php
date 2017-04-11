@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Notifications\Mship\Account\SlackInvitation;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -9,7 +10,6 @@ use App\Models\Mship\Account\Ban;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
-use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Notifications\Notifiable;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
@@ -39,12 +39,12 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property string                                                                          $nickname
  * @property string                                                                          $email
  * @property string                                                                          $password
- * @property \Carbon\Carbon
+ * @property Carbon
  *           $password_set_at
- * @property \Carbon\Carbon
+ * @property Carbon
  *           $password_expires_at
  * @property string                                                                          $session_id
- * @property \Carbon\Carbon                                                                  $last_login
+ * @property Carbon $last_login
  * @property int
  *           $last_login_ip
  * @property string
@@ -56,12 +56,12 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property bool
  *           $is_invisible
  * @property bool                                                                            $debug
- * @property \Carbon\Carbon                                                                  $joined_at
- * @property \Carbon\Carbon                                                                  $created_at
- * @property \Carbon\Carbon                                                                  $updated_at
- * @property \Carbon\Carbon
+ * @property Carbon $joined_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon
  *           $cert_checked_at
- * @property \Carbon\Carbon                                                                  $deleted_at
+ * @property Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[]
  *                $secondaryEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[]     $dataChanges
@@ -241,6 +241,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $this->slack_id;
     }
 
+    /**
+     * @param Account $model
+     * @param null $extra
+     * @param null $data
+     */
     public static function eventCreated($model, $extra = null, $data = null)
     {
         parent::eventCreated($model, $extra, $data);
@@ -253,8 +258,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         // Queue the slack email
-        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
-        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($model))->delay($delayOffset));
+        $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
 
     public static function findOrRetrieve($accountId)
@@ -459,6 +463,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
                     ->withTimestamps();
     }
 
+    /**
+     * @return mixed
+     */
     public function roles()
     {
         return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
@@ -747,7 +754,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         $state = $this->states()->attach($state, [
-            'start_at' => \Carbon\Carbon::now(),
+            'start_at' => Carbon::now(),
             'region'   => $region,
             'division' => $division,
         ]);
@@ -760,7 +767,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function removeState(\App\Models\Mship\State $state)
     {
         return $this->states()->updateExistingPivot($state->id, [
-            'end_at' => \Carbon\Carbon::now(),
+            'end_at' => Carbon::now(),
         ]);
     }
 
@@ -932,7 +939,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      *
      * @param bool|false $temporary Should we treat the password as temporary?
      *
-     * @return null|\Carbon\Carbon
+     * @return null|Carbon
      */
     public function calculatePasswordExpiry($temporary = false)
     {
