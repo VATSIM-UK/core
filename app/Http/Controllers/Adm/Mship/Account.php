@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Notifications\Mship\Account\BanCreated;
+use App\Notifications\Mship\Account\BanModified;
+use App\Notifications\Mship\Account\BanRepealed;
 use DB;
 use URL;
 use Auth;
@@ -11,15 +14,11 @@ use Redirect;
 use App\Models\Mship\State;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Account\Note;
 use Illuminate\Support\Collection;
 use App\Models\Mship\Role as RoleData;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Jobs\Mship\Account\Ban\SendCreationEmail;
-use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
-use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
@@ -340,8 +339,7 @@ class Account extends AdmController
             $this->account->id
         );
 
-        $job = (new SendCreationEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanCreated($ban));
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
                        ->withSuccess('You have successfully banned this member.');
@@ -372,8 +370,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
         $ban->repeal();
 
-        $job = (new SendRepealedEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanRepealed($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
                        ->withSuccess('Ban has been repealed.');
@@ -453,8 +450,7 @@ class Account extends AdmController
         $ban->period_finish = $period_finish;
         $ban->save();
 
-        $job = (new SendModifiedEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanModified($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
                        ->withSuccess('Your comment for this ban has been noted.');
