@@ -1,30 +1,31 @@
 <?php
 
-namespace App\Notifications\Mship;
+namespace App\Modules\Visittransfer\Notifications;
 
+use App\Modules\Visittransfer\Models\Reference;
 use Gate;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
-use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class FeedbackReceived extends Notification implements ShouldQueue
+class ApplicantReferenceAccepted extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $feedback;
+    private $reference, $application;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Feedback $feedback)
+    public function __construct(Reference $reference)
     {
         parent::__construct();
 
-        $this->feedback = $feedback;
+        $this->reference = $reference;
+        $this->application = $reference->application;
     }
 
     /**
@@ -46,10 +47,12 @@ class FeedbackReceived extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = "[{$this->application->public_id}] Reference from '{$this->reference->account->name}' Accepted";
+
         return (new MailMessage)
-            ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
-            ->subject('New Member Feedback Received')
-            ->view('emails.mship.feedback.new_feedback', ['feedback' => $this->feedback]);
+            ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
+            ->subject($subject)
+            ->view('visittransfer::emails.applicant.reference_accepted', ['reference' => $this->reference, 'application' => $this->application]);
     }
 
     /**
@@ -60,6 +63,6 @@ class FeedbackReceived extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return ['feedback_id' => $this->feedback->id];
+        return [];
     }
 }
