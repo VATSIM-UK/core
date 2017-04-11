@@ -22,18 +22,19 @@ class NotifyAllReferees implements ShouldQueue
             return !$ref->is_requested && !$ref->is_submitted;
         });
 
+        $contactAt = \Carbon\Carbon::now();
+        $remindAt = \Carbon\Carbon::now()->addDays(7);
+
         foreach ($refereesToBeNotified as $reference) {
             $reference->generateToken();
 
-            $reference->notify(new ApplicationReferenceRequest($reference));
-
             $reference->status = Reference::STATUS_REQUESTED;
-            $reference->contacted_at = \Carbon\Carbon::now();
+            $reference->contacted_at = $contactAt;
+            $reference->reminded_at = $remindAt;
             $reference->save();
 
-            $referenceRequestReminderEmailJob = new SendRefereeRequestReminderEmail($reference);
-            $delayPeriod                      = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
-            dispatch($referenceRequestReminderEmailJob->delay($delayPeriod)->onQueue('low'));
+            $reference->notify(new ApplicationReferenceRequest($reference));
+            $reference->notify((new ApplicationReferenceRequest($reference))->delay($remindAt));
         }
     }
 }
