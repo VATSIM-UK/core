@@ -4,18 +4,19 @@ namespace App\Modules\Visittransfer\Listeners;
 
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Notifications\ApplicationReferenceCancelled;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Jobs\SendRefereeNoLongerRequiredEmail;
 
-class NotifyRefereeOfReferenceDeletion implements ShouldQueue
+class NotifyRefereeOfReferenceCompletion implements ShouldQueue
 {
     public function __construct()
     {
         //
     }
 
-    public function handle(ReferenceDeleted $event)
+    public function handle(ReferenceUnderReview $event)
     {
         $reference = $event->reference;
 
@@ -23,6 +24,6 @@ class NotifyRefereeOfReferenceDeletion implements ShouldQueue
             return;
         }
 
-        $reference->notify(new ApplicationReferenceCancelled($reference));
+        $reference->notify(new ApplicationReferenceSubmitted($reference));
     }
 }
