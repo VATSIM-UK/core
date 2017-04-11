@@ -2,6 +2,8 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use App\Modules\Visittransfer\Events\ReferenceDeleted;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceCancelled;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Jobs\SendRefereeNoLongerRequiredEmail;
@@ -13,14 +15,14 @@ class NotifyRefereeOfReferenceDeletion implements ShouldQueue
         //
     }
 
-    public function handle(ReferenceUnderReview $event)
+    public function handle(ReferenceDeleted $event)
     {
-        if (!$event->reference->is_requested) {
+        $reference = $event->reference;
+
+        if (!$reference->is_requested) {
             return;
         }
 
-        $confirmationEmailJob = new SendRefereeNoLongerRequiredEmail($event->reference);
-
-        dispatch($confirmationEmailJob->onQueue('low'));
+        $reference->notify(new ApplicationReferenceCancelled($reference));
     }
 }

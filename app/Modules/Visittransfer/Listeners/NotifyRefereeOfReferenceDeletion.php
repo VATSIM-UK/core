@@ -2,6 +2,7 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
 use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +16,7 @@ class NotifyRefereeOnReferenceCompletion implements ShouldQueue
         //
     }
 
-    public function handle(ReferenceDeleted $event)
+    public function handle(ReferenceUnderReview $event)
     {
         $event->reference->notify(new ApplicationReferenceSubmitted($event->reference));
     }
