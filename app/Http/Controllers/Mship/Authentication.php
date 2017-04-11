@@ -245,7 +245,6 @@ class Authentication extends BaseController
                 $newBan->save();
 
                 $account->bans()->save($newBan);
-                Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
             }
 
                     // Are they banned in our system (for a network ban) but unbanned on the network?

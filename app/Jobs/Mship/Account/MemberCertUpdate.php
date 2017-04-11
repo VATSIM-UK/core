@@ -97,7 +97,6 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $newBan->save();
 
             $member->bans()->save($newBan);
-            Account::find(VATSIM_ACCOUNT_SYSTEM)->bansAsInstigator($newBan);
         }
 
         // if their network ban has expired
