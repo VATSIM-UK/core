@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
+use App\Modules\Visittransfer\Notifications\ApplicantReferenceRejected;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
-use App\Modules\Visittransfer\Jobs\SendApplicantReferenceRejectionEmail;
 
 class NotifyApplicantOfReferenceRejection implements ShouldQueue
 {
@@ -15,8 +15,7 @@ class NotifyApplicantOfReferenceRejection implements ShouldQueue
 
     public function handle(ReferenceRejected $event)
     {
-        $confirmationEmailJob = new SendApplicantReferenceRejectionEmail($event->reference);
-
-        dispatch($confirmationEmailJob->onQueue('low'));
+        $reference = $event->reference;
+        $reference->application->account->notify(new ApplicantReferenceRejected($reference));
     }
 }
