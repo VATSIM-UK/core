@@ -2,9 +2,11 @@
 
 namespace App\Modules\Visittransfer\Models;
 
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Modules\Visittransfer\Models\Facility.
@@ -55,6 +57,8 @@ use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException
  */
 class Facility extends Model
 {
+    use Notifiable;
+
     protected $table      = 'vt_facility';
     protected $primaryKey = 'id';
     public $timestamps    = false;
@@ -72,6 +76,17 @@ class Facility extends Model
         'stage_checks',
         'auto_acceptance',
     ];
+
+    public function routeNotificationForMail()
+    {
+        if ($this->emails->count() === 0) {
+            $contactKey = sprintf('%s_TRAINING', strtoupper($this->training_team));
+
+            return Contact::where('key', $contactKey)->first()->email;
+        } else {
+            return $this->emails->pluck('email');
+        }
+    }
 
     public static function isPossibleToVisitAtc()
     {

@@ -15,8 +15,7 @@ class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
 
     public function handle(ApplicationAccepted $event)
     {
-        $confirmationEmailJob = new SendTrainingTeamNewAcceptedApplicationEmail($event->application);
-
-        dispatch($confirmationEmailJob->onQueue('low'));
+        $application = $event->application;
+        $application->facility->notify(new ApplicationAccepted($application));
     }
 }
