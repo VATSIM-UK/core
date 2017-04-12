@@ -6,10 +6,10 @@ use stdClass;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {
