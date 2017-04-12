@@ -12,12 +12,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Mship\AccountTouched' => [
-            'App\Listeners\Sync\PushToForum',
-            'App\Listeners\Sync\PushToMoodle',
-            'App\Listeners\Sync\PushToRts',
-            'App\Listeners\Sync\PushToPts',
-            'App\Listeners\Sync\PushToTeamSpeak',
+        \App\Events\Mship\AccountTouched::class => [
+            \App\Listeners\Sync\PushToForum::class,
+            \App\Listeners\Sync\PushToMoodle::class,
+            \App\Listeners\Sync\PushToRts::class,
+            \App\Listeners\Sync\PushToPts::class,
+            \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,

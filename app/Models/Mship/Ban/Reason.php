@@ -40,7 +40,7 @@ class Reason extends Model
 
     public function bans()
     {
-        return $this->hasMany('\App\Models\Mship\Account\Ban', 'reason_id', 'id');
+        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'reason_id', 'id');
     }
 
     public function getPeriodHoursAttribute()

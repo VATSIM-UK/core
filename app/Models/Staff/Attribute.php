@@ -25,6 +25,6 @@ class Attribute extends \App\Models\Model
 
     public function positions()
     {
-        return $this->belongsToMany('\App\Models\Staff\Position', 'staff_attribute_position');
+        return $this->belongsToMany(\App\Models\Staff\Position::class, 'staff_attribute_position');
     }
 }

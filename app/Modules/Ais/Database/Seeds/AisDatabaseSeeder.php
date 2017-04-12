@@ -15,7 +15,5 @@ class AisDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-        // $this->call('App\Modules\Ais\Database\Seeds\FoobarTableSeeder');
     }
 }

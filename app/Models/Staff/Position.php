@@ -42,22 +42,22 @@ class Position extends \App\Models\Model
 
     public function parent()
     {
-        return $this->belongsTo('\App\Models\Staff\Position');
+        return $this->belongsTo(\App\Models\Staff\Position::class);
     }
 
     public function children()
     {
-        return $this->hasMany('\App\Models\Staff\Position', 'parent_id', 'id');
+        return $this->hasMany(\App\Models\Staff\Position::class, 'parent_id', 'id');
     }
 
     public function attributes()
     {
-        return $this->belongsToMany('\App\Models\Staff\Attribute', 'staff_attribute_position');
+        return $this->belongsToMany(\App\Models\Staff\Attribute::class, 'staff_attribute_position');
     }
 
     public function filledBy()
     {
-        return $this->belongsToMany('\App\Models\Mship\Account', 'staff_account_position');
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'staff_account_position');
     }
 
     /**

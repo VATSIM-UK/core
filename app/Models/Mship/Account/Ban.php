@@ -95,17 +95,17 @@ class Ban extends \App\Models\Model
 
     public function account()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'account_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
     public function banner()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'banned_by');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'banned_by');
     }
 
     public function reason()
     {
-        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'id');
+        return $this->belongsTo(\App\Models\Mship\Ban\Reason::class, 'reason_id', 'id');
     }
 
     public function notes()

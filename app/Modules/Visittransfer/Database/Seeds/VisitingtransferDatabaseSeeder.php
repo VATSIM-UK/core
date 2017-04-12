@@ -15,7 +15,5 @@ class VisittransferDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-        // $this->call('App\Modules\Visittransfer\Database\Seeds\FoobarTableSeeder');
     }
 }
