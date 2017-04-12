@@ -45,10 +45,12 @@ class ForgottenPasswordLink extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = 'SSO Password Reset';
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK Web Services')
-            ->subject('SSO Password Reset')
-            ->view('emails.mship.security.reset_confirmation', ['account' => $notifiable, 'token' => $this->token]);
+            ->subject($subject)
+            ->view('emails.mship.security.reset_confirmation', ['subject' => $subject, 'recipient' => $notifiable, 'account' => $notifiable, 'token' => $this->token]);
     }
 
     /**

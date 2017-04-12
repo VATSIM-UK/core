@@ -41,10 +41,12 @@ class WelcomeMember extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = 'Welcome to VATSIM UK';
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
-            ->subject('Welcome to VATSIM UK')
-            ->view('emails.mship.account.welcome', ['account' => $notifiable]);
+            ->subject($subject)
+            ->view('emails.mship.account.welcome', ['account' => $notifiable, 'subject' => $subject, 'recipient' => $notifiable]);
     }
 
     /**

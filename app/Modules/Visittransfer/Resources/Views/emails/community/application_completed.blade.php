@@ -1,3 +1,7 @@
+@extends('emails.messages.post')
+
+@section('body')
+
 <p>
     A new {{ $application->type_string }} application has been completed.  Please perform the necessary steps on CERT:
 </p>
@@ -30,3 +34,4 @@
 <p>
     Please login to the administrative panel to review this application, along with many others.
 </p>
+@stop

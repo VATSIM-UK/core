@@ -51,7 +51,12 @@ class ApplicationReferenceCancelled extends Notification implements ShouldQueue
         return (new MailMessage)
             ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visittransfer::emails.reference.reference_not_required', ['reference' => $this->reference, 'application' => $this->application]);
+            ->view('visittransfer::emails.reference.reference_not_required', [
+                'recipient' => $this->reference->account,
+                'subject' => $subject,
+                'reference' => $this->reference,
+                'application' => $this->application,
+            ]);
     }
 
     /**

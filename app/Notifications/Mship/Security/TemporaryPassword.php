@@ -44,10 +44,11 @@ class TemporaryPassword extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = 'SSO Password Reset - New Password';
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK Web Services')
-            ->subject('SSO Password Reset - New Password')
-            ->view('emails.mship.security.reset_password', ['account' => $notifiable, 'password' => $this->password]);
+            ->subject($subject)
+            ->view('emails.mship.security.reset_password', ['subject' => $subject, 'recipient' => $notifiable, 'account' => $notifiable, 'password' => $this->password]);
     }
 
     /**

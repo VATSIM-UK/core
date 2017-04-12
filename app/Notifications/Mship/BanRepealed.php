@@ -49,10 +49,12 @@ class BanRepealed extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = 'Account Ban Repealed';
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
-            ->subject('Account Ban Repealed')
-            ->view('emails.mship.account.ban.repealed', ['account' => $this->ban->account, 'ban' => $this->ban]);
+            ->subject($subject)
+            ->view('emails.mship.account.ban.repealed', ['account' => $this->ban->account, 'ban' => $this->ban, 'recipient' => $notifiable, 'subject' => $subject]);
     }
 
     /**

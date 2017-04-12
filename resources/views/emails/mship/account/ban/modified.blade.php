@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     Your current suspension of access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS system) has been changed to a total length of {{ $ban_total_length }} (including time served).
 </p>
@@ -21,3 +24,4 @@
         <strong>This ban only applies to VATSIM UK services.  You will be notified separately if you are also banned from network services.</strong>
     </p>
 @endif
+@stop

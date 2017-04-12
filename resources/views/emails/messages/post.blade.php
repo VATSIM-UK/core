@@ -5,5 +5,5 @@
         Dear {!! isset($recipientName) ? $recipientName : $recipient->name !!},
     </p>
 
-    {!! $body !!}
+    @yield('body')
 @stop

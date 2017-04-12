@@ -53,14 +53,24 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
             return (new MailMessage)
                 ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
                 ->subject($subject)
-                ->view('visittransfer::emails.applicant.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
+                ->view('visittransfer::emails.applicant.reference_submitted', [
+                    'reference' => $this->reference,
+                    'application' => $this->application,
+                    'recipient' => $notifiable,
+                    'subject' => $subject,
+                ]);
         } else if ($notifiable instanceof Reference) {
             $subject = "[{$this->application->public_id}] Thank You for Your Reference";
 
             return (new MailMessage)
                 ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
                 ->subject($subject)
-                ->view('visittransfer::emails.reference.reference_submitted', ['reference' => $this->reference, 'application' => $this->application]);
+                ->view('visittransfer::emails.reference.reference_submitted', [
+                    'reference' => $this->reference,
+                    'application' => $this->application,
+                    'recipient' => $this->reference->account,
+                    'subject' => $subject,
+                ]);
         }
 
     }

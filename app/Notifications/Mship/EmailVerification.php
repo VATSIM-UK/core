@@ -75,9 +75,16 @@ class EmailVerification extends Notification implements ShouldQueue
              */
             public function build()
             {
+                $subject = 'New Email Verification';
+
                 return $this->from(config('mail.from.address'), 'VATSIM UK Web Services')
-                    ->subject('New Email Verification')
-                    ->view('emails.mship.account.email_add', ['account' => $this->account, 'token' => $this->token]);
+                    ->subject($subject)
+                    ->view('emails.mship.account.email_add', [
+                        'account' => $this->account,
+                        'token' => $this->token,
+                        'subject' => $subject,
+                        'recipient' => $this->account,
+                    ]);
             }
         };
 

@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     An administrator has requested that a new secondary password is generated for your account.
 </p>
@@ -11,3 +14,4 @@
 <p>
     {{{ url("/mship/security/forgotten-link", ["code" => $token->code]) }}}
 </p>
+@stop

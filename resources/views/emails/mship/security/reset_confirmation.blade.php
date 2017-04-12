@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     You, or somebody posing as you, has advised us that a new secondary password should be generated for your account.
 </p>
@@ -11,3 +14,4 @@
 <p>
     {{ route("mship.security.forgotten.link", ["code" => $token->code]) }}
 </p>
+@stop

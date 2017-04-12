@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS System) has been revoked for {{ $ban->period_amount_string }}.  This is due to the following reason:
 </p>
@@ -21,3 +24,4 @@
         <strong>This ban only applies to VATSIM UK services.  You will be notified separately if you are also banned from network services.</strong>
     </p>
 @endif
+@stop

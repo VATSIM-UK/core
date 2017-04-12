@@ -51,7 +51,11 @@ class ApplicationReview extends Notification implements ShouldQueue
         return (new MailMessage)
             ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visittransfer::emails.community.new_application', ['application' => $this->application]);
+            ->view('visittransfer::emails.community.new_application', [
+                'application' => $this->application,
+                'recipient' => $notifiable,
+                'subject' => $subject,
+            ]);
     }
 
     /**
