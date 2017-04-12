@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class SiteApplicationTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private $account;
 
     public function setUp()

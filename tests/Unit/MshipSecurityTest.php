@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Mship\Account;
 use Mockery;
@@ -9,6 +10,8 @@ use Tests\TestCase;
 
 class MshipSecurityTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * Instance used for the testsl
      *
