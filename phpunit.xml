@@ -11,7 +11,7 @@
          syntaxCheck="true">
     <testsuites>
         <testsuite name="Unit Tests">
-            <directory>./tests/unit/</directory>
+            <directory>./tests/Unit/</directory>
         </testsuite>
 
         <testsuite name="Modules:Visiting and Transferring Test Suite">
@@ -27,7 +27,7 @@
         </testsuite>
 
         <testsuite name="Application Test">
-            <directory>./tests/integration/</directory>
+            <directory>./tests/Integration/</directory>
         </testsuite>
 
         <!--<testsuite name="Modules:Statistics Test Suite">-->
