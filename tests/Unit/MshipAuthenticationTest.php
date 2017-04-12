@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Mship\Account;
 use Auth;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Mockery;
@@ -11,6 +12,8 @@ use Tests\TestCase;
 
 class MshipAuthenticationTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * Instance used for the tests
      *
