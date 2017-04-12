@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
         Commands\ApiGenerator::class,
+        Commands\TestEmails::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
