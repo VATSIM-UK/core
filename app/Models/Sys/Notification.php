@@ -91,6 +91,6 @@ class Notification extends \App\Models\Model
 
     public function readBy()
     {
-        return $this->belongsToMany("\App\Models\Mship\Account", 'sys_notification_read', 'notification_id')->with('created_at', 'updated_at');
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'sys_notification_read', 'notification_id')->with('created_at', 'updated_at');
     }
 }

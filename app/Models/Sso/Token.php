@@ -45,7 +45,7 @@ class Token extends \App\Models\Model
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
     public function getIsExpiredAttribute()

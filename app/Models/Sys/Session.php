@@ -28,6 +28,6 @@ class Session extends \App\Models\Model
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'session_id', 'id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'session_id', 'id');
     }
 }

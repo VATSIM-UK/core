@@ -22,6 +22,6 @@ class Format extends \Eloquent
 
     public function note()
     {
-        return $this->belongsTo("App\Models\Mship\Account\Note", 'format_id', 'account_note_format_id');
+        return $this->belongsTo(\App\Models\Mship\Account\Note::class, 'format_id', 'account_note_format_id');
     }
 }

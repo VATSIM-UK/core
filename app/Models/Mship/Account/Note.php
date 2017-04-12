@@ -42,17 +42,17 @@ class Note extends \App\Models\Model
 
     public function account()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
     public function writer()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'writer_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'writer_id');
     }
 
     public function type()
     {
-        return $this->belongsTo("\App\Models\Mship\Note\Type", 'note_type_id', 'id');
+        return $this->belongsTo(\App\Models\Mship\Note\Type::class, 'note_type_id', 'id');
     }
 
     public function attachment()

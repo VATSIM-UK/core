@@ -89,7 +89,7 @@ class Type extends \Eloquent
 
     public function notes()
     {
-        return $this->hasMany("\App\Models\Mship\Account\Note", 'note_type_id', 'id');
+        return $this->hasMany(\App\Models\Mship\Account\Note::class, 'note_type_id', 'id');
     }
 
     public function save(array $options = [])

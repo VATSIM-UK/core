@@ -44,22 +44,22 @@ class Note extends \Eloquent
 
     public function user()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'account_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
     public function actioner()
     {
-        return $this->belongsTo("\App\Models\Mship\Account", 'actioner_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'actioner_id');
     }
 
     public function flag()
     {
-        return $this->hasOne("\App\Models\Mship\Account\Note\Flag", 'account_note_id', 'id');
+        return $this->hasOne(\App\Models\Mship\Account\Note\Flag::class, 'account_note_id', 'id');
     }
 
     public function format()
     {
-        return $this->hasOne("\App\Models\Mship\Account\Note\Format", 'account_note_id', 'id');
+        return $this->hasOne(\App\Models\Mship\Account\Note\Format::class, 'account_note_id', 'id');
     }
 
     public function setDataAttribute($value)

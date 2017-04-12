@@ -24,16 +24,16 @@ class Flag extends \Eloquent
 
     public function flagger()
     {
-        return $this->belongsTo("App\Models\Mship\Account", 'flag_by');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'flag_by');
     }
 
     public function resolver()
     {
-        return $this->belongsTo("App\Models\Mship\Account", 'resolve_by');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'resolve_by');
     }
 
     public function note()
     {
-        return $this->belongsTo("App\Models\Mship\Account\Note", 'flag_id', 'account_note_flag_id');
+        return $this->belongsTo(\App\Models\Mship\Account\Note::class, 'flag_id', 'account_note_flag_id');
     }
 }
