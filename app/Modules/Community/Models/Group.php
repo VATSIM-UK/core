@@ -32,11 +32,11 @@ use App\Models\Mship\Account;
  */
 class Group extends Model
 {
-    protected $table      = 'community_group';
+    protected $table = 'community_group';
     protected $primaryKey = 'id';
-    public $timestamps    = true;
-    public $dates         = ['created_at', 'updated_at', 'deleted_at'];
-    public $fillable      = [
+    public $timestamps = true;
+    public $dates = ['created_at', 'updated_at', 'deleted_at'];
+    public $fillable = [
         'name',
         'coordinate_boundaries',
     ];

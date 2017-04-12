@@ -21,16 +21,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Email extends Model
 {
-    protected $table      = 'vt_facility_email';
+    protected $table = 'vt_facility_email';
     protected $primaryKey = 'id';
 
-    public $timestamps    = true;
-    public $fillable      = [
+    public $timestamps = true;
+    public $fillable = [
         'facility_id',
         'email',
     ];
 
-    protected $dates      = [
+    protected $dates = [
         'created_at',
         'updated_at',
     ];

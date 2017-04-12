@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {
-    protected $table        = 'mship_feedback_question_types';
-    protected $dates        = [
+    protected $table = 'mship_feedback_question_types';
+    protected $dates = [
         'created_at',
         'updated_at',
     ];
-    protected $fillable     = [
+    protected $fillable = [
         'name',
         'code',
         'max_uses',

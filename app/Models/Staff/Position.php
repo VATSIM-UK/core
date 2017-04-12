@@ -27,7 +27,7 @@ namespace App\Models\Staff;
  */
 class Position extends \App\Models\Model
 {
-    protected $table      = 'staff_positions';
+    protected $table = 'staff_positions';
     protected $primaryKey = 'id';
 
     public function scopeDepartments($query)

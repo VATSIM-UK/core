@@ -2,9 +2,9 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceAccepted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\Visittransfer\Events\ReferenceAccepted;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceAccepted;
 
 class NotifyApplicantOfReferenceAcceptance implements ShouldQueue
 {

@@ -11,8 +11,8 @@ class Mailgun extends EmailWebhookController
     {
         // Verify that this is a valid request!
         $timestamp = Input::get('timestamp');
-        $token     = Input::get('token');
-        $ts_token  = $timestamp.$token;
+        $token = Input::get('token');
+        $ts_token = $timestamp.$token;
 
         $encHmac = hash_hmac('sha256', $ts_token, env('MAILGUN_SECRET'));
 

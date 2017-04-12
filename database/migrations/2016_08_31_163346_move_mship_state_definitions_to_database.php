@@ -48,65 +48,65 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
     {
         DB::table('mship_state')->insert([
             [
-                'code'             => 'TRANSFERRING',
-                'type'             => 'temp',
-                'name'             => 'Transferring',
-                'division'         => '[]',
-                'region'           => '[]',
+                'code' => 'TRANSFERRING',
+                'type' => 'temp',
+                'name' => 'Transferring',
+                'division' => '[]',
+                'region' => '[]',
                 'delete_all_temps' => 0,
-                'priority'         => 20,
+                'priority' => 20,
             ],
 
             [
-                'code'             => 'VISITING',
-                'type'             => 'temp',
-                'name'             => 'Visiting',
-                'division'         => '[]',
-                'region'           => '[]',
+                'code' => 'VISITING',
+                'type' => 'temp',
+                'name' => 'Visiting',
+                'division' => '[]',
+                'region' => '[]',
                 'delete_all_temps' => 0,
-                'priority'         => 30,
+                'priority' => 30,
             ],
 
             [
-                'code'             => 'DIVISION',
-                'type'             => 'perm',
-                'name'             => 'Division',
-                'division'         => json_encode(['GBR']),
-                'region'           => json_encode(['EUR']),
+                'code' => 'DIVISION',
+                'type' => 'perm',
+                'name' => 'Division',
+                'division' => json_encode(['GBR']),
+                'region' => json_encode(['EUR']),
                 'delete_all_temps' => 1,
-                'priority'         => 0,
+                'priority' => 0,
             ],
 
             // Visiting and transferring.
 
             [
-                'code'             => 'REGION',
-                'type'             => 'perm',
-                'name'             => 'Region',
-                'division'         => json_encode(['*']),
-                'region'           => json_encode(['EUR']),
+                'code' => 'REGION',
+                'type' => 'perm',
+                'name' => 'Region',
+                'division' => json_encode(['*']),
+                'region' => json_encode(['EUR']),
                 'delete_all_temps' => 0,
-                'priority'         => 40,
+                'priority' => 40,
             ],
 
             [
-                'code'             => 'INTERNATIONAL',
-                'type'             => 'perm',
-                'name'             => 'International',
-                'division'         => json_encode(['*']),
-                'region'           => json_encode(['*']),
+                'code' => 'INTERNATIONAL',
+                'type' => 'perm',
+                'name' => 'International',
+                'division' => json_encode(['*']),
+                'region' => json_encode(['*']),
                 'delete_all_temps' => 0,
-                'priority'         => 70,
+                'priority' => 70,
             ],
 
             [
-                'code'             => 'UNKNOWN',
-                'type'             => 'perm',
-                'name'             => 'Unknown',
-                'division'         => json_encode(['*']),
-                'region'           => json_encode(['*']),
+                'code' => 'UNKNOWN',
+                'type' => 'perm',
+                'name' => 'Unknown',
+                'division' => json_encode(['*']),
+                'region' => json_encode(['*']),
                 'delete_all_temps' => 0,
-                'priority'         => 99,
+                'priority' => 99,
             ],
         ]);
     }
@@ -126,7 +126,7 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
               ->update([
                   'state_id' => $newId,
                   'start_at' => DB::raw('`created_at`'),
-                  'end_at'   => DB::raw('`deleted_at`'),
+                  'end_at' => DB::raw('`deleted_at`'),
               ]);
         }
     }
@@ -144,7 +144,7 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
             DB::table('mship_account_state')
               ->where('state_id', '=', $oldId)
               ->update([
-                  'state'      => $newId,
+                  'state' => $newId,
                   'created_at' => DB::raw('`start_at`'),
                   'updated_at' => DB::raw('`start_at`'),
                   'deleted_at' => DB::raw('`end_at`'),

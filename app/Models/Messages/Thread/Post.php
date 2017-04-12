@@ -23,11 +23,11 @@ namespace App\Models\Messages\Thread;
  */
 class Post extends \App\Models\Model
 {
-    protected $table      = 'messages_thread_post';
+    protected $table = 'messages_thread_post';
     protected $primaryKey = 'id';
-    protected $fillable   = ['content'];
-    public $dates         = ['created_at', 'updated_at'];
-    public $timestamps    = true;
+    protected $fillable = ['content'];
+    public $dates = ['created_at', 'updated_at'];
+    public $timestamps = true;
 
     public function thread()
     {

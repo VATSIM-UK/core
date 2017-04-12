@@ -6,13 +6,13 @@ use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Events\ReferenceAccepted;
 use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
-use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Modules\Visittransfer\Models\Reference.
@@ -67,9 +67,9 @@ class Reference extends Model
 {
     use Notifiable;
 
-    protected $table      = 'vt_reference';
+    protected $table = 'vt_reference';
     protected $primaryKey = 'id';
-    protected $fillable   = [
+    protected $fillable = [
         'application_id',
         'account_id',
         'email',
@@ -80,11 +80,11 @@ class Reference extends Model
     protected $touches = ['application'];
     public $timestamps = false;
 
-    const STATUS_DRAFT        = 10;
-    const STATUS_REQUESTED    = 30;
+    const STATUS_DRAFT = 10;
+    const STATUS_REQUESTED = 30;
     const STATUS_UNDER_REVIEW = 50;
-    const STATUS_ACCEPTED     = 90;
-    const STATUS_REJECTED     = 95;
+    const STATUS_ACCEPTED = 90;
+    const STATUS_REJECTED = 95;
 
     public static $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
@@ -221,8 +221,8 @@ class Reference extends Model
     {
         $this->guardAgainstReSubmittingReference();
 
-        $this->reference    = $referenceContent;
-        $this->status       = self::STATUS_UNDER_REVIEW;
+        $this->reference = $referenceContent;
+        $this->status = self::STATUS_UNDER_REVIEW;
         $this->submitted_at = \Carbon\Carbon::now();
         $this->save();
 
@@ -233,13 +233,13 @@ class Reference extends Model
     {
         $this->guardAgainstNonUnderReviewReference();
 
-        $this->status      = self::STATUS_REJECTED;
+        $this->status = self::STATUS_REJECTED;
         $this->status_note = $publicReason;
         $this->save();
 
         if ($staffReason) {
             $noteContent = 'VT Reference from '.$this->account->name." was rejected.\n".$staffReason;
-            $note        = $this->application->account->addNote(
+            $note = $this->application->account->addNote(
                 Type::isShortCode('visittransfer')->first(),
                 $noteContent,
                 $actor,
@@ -261,7 +261,7 @@ class Reference extends Model
 
         if ($staffComment) {
             $noteContent = 'VT Reference from '.$this->account->name." was accepted.\n".$staffComment;
-            $note        = $this->application->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->application->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }

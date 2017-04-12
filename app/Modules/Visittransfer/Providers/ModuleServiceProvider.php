@@ -14,7 +14,7 @@ class ModuleServiceProvider extends AuthServiceProvider
 {
     protected $policies = [
         Application::class => ApplicationPolicy::class,
-        Reference::class   => ReferencePolicy::class,
+        Reference::class => ReferencePolicy::class,
     ];
 
     /**

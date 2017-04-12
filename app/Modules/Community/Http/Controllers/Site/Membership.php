@@ -13,7 +13,7 @@ class Membership extends BaseController
         $this->authorize('deploy', new \App\Modules\Community\Models\Membership());
 
         $defaultGroup = Group::isDefault()->first();
-        $groups       = Group::notDefault()->inRandomOrder()->get();
+        $groups = Group::notDefault()->inRandomOrder()->get();
 
         return $this->viewMake('community::site.membership.deploy')
                     ->with('defaultGroup', $defaultGroup)

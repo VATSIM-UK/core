@@ -23,11 +23,11 @@ use App\Models\Mship\Account;
  */
 class Thread extends \App\Models\Model
 {
-    protected $table      = 'messages_thread';
+    protected $table = 'messages_thread';
     protected $primaryKey = 'id';
-    protected $fillable   = ['subject', 'read_only'];
-    public $dates         = ['created_at', 'updated_at'];
-    public $timestamps    = true;
+    protected $fillable = ['subject', 'read_only'];
+    public $dates = ['created_at', 'updated_at'];
+    public $timestamps = true;
 
     public function participants()
     {

@@ -22,10 +22,10 @@ class ResolveMissingVtPermissions extends Migration
             DB::table('mship_permission')
               ->insert([
                   [
-                      'name'         => 'adm/visit-trasnfer/facility/*/update',
+                      'name' => 'adm/visit-trasnfer/facility/*/update',
                       'display_name' => 'Admin / Visit &amp; Transfer / Facility / Update',
-                      'created_at'   => \Carbon\Carbon::now(),
-                      'updated_at'   => \Carbon\Carbon::now(),
+                      'created_at' => \Carbon\Carbon::now(),
+                      'updated_at' => \Carbon\Carbon::now(),
                   ],
               ]);
         }
@@ -37,10 +37,10 @@ class ResolveMissingVtPermissions extends Migration
             DB::table('mship_permission')
               ->insert([
                   [
-                      'name'         => 'adm/visit-trasnfer/facility/*/check/met',
+                      'name' => 'adm/visit-trasnfer/facility/*/check/met',
                       'display_name' => 'Admin / Visit &amp; Transfer / Facility / Check / Met',
-                      'created_at'   => \Carbon\Carbon::now(),
-                      'updated_at'   => \Carbon\Carbon::now(),
+                      'created_at' => \Carbon\Carbon::now(),
+                      'updated_at' => \Carbon\Carbon::now(),
                   ],
               ]);
         }

@@ -110,7 +110,7 @@ class Authentication extends BaseController
 
         // We're in!
         // Let's do lots of logins....
-        $account->last_login    = Carbon::now();
+        $account->last_login = Carbon::now();
         $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
         Session::put('auth_extra', Carbon::now());
         $account->save();

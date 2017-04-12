@@ -25,7 +25,7 @@ class AutoTools
             env('VATSIM_CERT_AT_DIV')
         );
 
-        $cacheName   = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';
+        $cacheName = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';
         $cacheLength = $withTimestamp ? 60 * 118 : 60 * 12;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {

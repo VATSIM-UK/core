@@ -2,8 +2,8 @@
 
 namespace App\Notifications\Mship;
 
-use App\Models\Mship\Account\Ban;
 use Illuminate\Bus\Queueable;
+use App\Models\Mship\Account\Ban;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -50,6 +50,7 @@ class BanModified extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $subject = 'Account Ban Modified';
+
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Community Department')
             ->subject($subject)

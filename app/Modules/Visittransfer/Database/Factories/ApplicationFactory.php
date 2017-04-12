@@ -10,7 +10,7 @@ $factory->defineAs(App\Modules\Visittransfer\Models\Application::class, 'atc_vis
     $application = $factory->raw(App\Modules\Visittransfer\Models\Application::class);
 
     return array_merge($application, [
-        'type'          => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+        'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         'training_team' => 'atc',
     ]);
 });
@@ -19,7 +19,7 @@ $factory->defineAs(App\Modules\Visittransfer\Models\Application::class, 'atc_tra
     $application = $factory->raw(App\Modules\Visittransfer\Models\Application::class);
 
     return array_merge($application, [
-        'type'          => \App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER,
+        'type' => \App\Modules\Visittransfer\Models\Application::TYPE_TRANSFER,
         'training_team' => 'atc',
     ]);
 });
@@ -28,7 +28,7 @@ $factory->defineAs(App\Modules\Visittransfer\Models\Application::class, 'pilot_v
     $application = $factory->raw(App\Modules\Visittransfer\Models\Application::class);
 
     return array_merge($application, [
-        'type'          => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
+        'type' => \App\Modules\Visittransfer\Models\Application::TYPE_VISIT,
         'training_team' => 'pilot',
     ]);
 });

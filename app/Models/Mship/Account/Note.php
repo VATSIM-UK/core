@@ -35,10 +35,10 @@ class Note extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'mship_account_note';
+    protected $table = 'mship_account_note';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $touches    = ['account'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $touches = ['account'];
 
     public function account()
     {

@@ -10,13 +10,13 @@ class Feedback extends Model
 {
     use Notifiable;
 
-    protected $table        = 'mship_feedback';
-    protected $dates        = [
+    protected $table = 'mship_feedback';
+    protected $dates = [
         'created_at',
         'updated_at',
         'actioned_at',
     ];
-    protected $fillable     = [
+    protected $fillable = [
         'account_id',
         'submitter_account_id',
         'form_id',
@@ -93,17 +93,17 @@ class Feedback extends Model
 
     public function markActioned($actioner, $comment = null)
     {
-        $this->actioned_at      = Carbon::now();
+        $this->actioned_at = Carbon::now();
         $this->actioned_comment = $comment;
-        $this->actioned_by_id   = $actioner->id;
+        $this->actioned_by_id = $actioner->id;
         $this->save();
     }
 
     public function markUnActioned()
     {
-        $this->actioned_at      = null;
+        $this->actioned_at = null;
         $this->actioned_comment = null;
-        $this->actioned_by_id   = null;
+        $this->actioned_by_id = null;
         $this->save();
     }
 

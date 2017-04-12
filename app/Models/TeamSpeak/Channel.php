@@ -21,11 +21,11 @@ use App\Models\Model as Model;
  */
 class Channel extends Model
 {
-    public $timestamps    = false;
-    public $incrementing  = false;
-    protected $table      = 'teamspeak_channel';
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $table = 'teamspeak_channel';
     protected $primaryKey = 'id';
-    protected $guarded    = [];
+    protected $guarded = [];
 
     /**
      * The parent of the current channel.

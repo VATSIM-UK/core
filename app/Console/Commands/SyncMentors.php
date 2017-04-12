@@ -45,7 +45,7 @@ class SyncMentors extends Command
     public function initialise()
     {
         // set the cutoff date
-        $this->atcCutoffDate   = Carbon::now()->subMonths(6);
+        $this->atcCutoffDate = Carbon::now()->subMonths(6);
         $this->pilotCutoffDate = Carbon::now()->subYears(5);
 
         // intialise scripts for interfacing with the forums
@@ -58,11 +58,11 @@ class SyncMentors extends Command
             $this->rtsIDs[snake_case($rts->name)] = $rts->id;
         }
         $this->memberForumIDs = DB::table('prod_community.ibf_core_members')->pluck('member_id', 'vatsim_cid');
-        $this->forumGroupIDs  = DB::table('prod_community.ibf_core_groups AS g')
+        $this->forumGroupIDs = DB::table('prod_community.ibf_core_groups AS g')
             ->join('prod_community.ibf_core_sys_lang_words AS w', DB::raw('CONCAT("core_group_", g.g_id)'), '=', 'w.word_key')
             ->pluck('word_default', 'g_id');
         $this->pilotGroupID = array_search('Pilot Mentors', $this->forumGroupIDs);
-        $this->atcGroupID   = array_search('ATC Mentors', $this->forumGroupIDs);
+        $this->atcGroupID = array_search('ATC Mentors', $this->forumGroupIDs);
 
         $this->log('Command initialised.');
     }
@@ -100,13 +100,13 @@ class SyncMentors extends Command
             ->orHaving('pilot_cutoff', '=', 0)
             ->get();
 
-        $currentMentor      = null;
+        $currentMentor = null;
         $currentForumMember = null;
         for ($i = 0; $i < count($positions); $i++) {
             // if we've started processing a new mentor
             if (!array_key_exists($i - 1, $positions) || $positions[$i]->id !== $positions[$i - 1]->id) {
                 $this->log("Processing {$positions[$i]->id} - {$positions[$i]->name}");
-                $currentMentor      = $positions[$i];
+                $currentMentor = $positions[$i];
                 $currentForumMember = \IPS\Member::load($this->memberForumIDs[$currentMentor->id]);
                 $this->log("ATC cutoff: {$currentMentor->atc_cutoff}");
                 $this->log("Pilot cutoff: {$currentMentor->pilot_cutoff}");
@@ -148,7 +148,7 @@ class SyncMentors extends Command
 
         // add the group
         $addGroup = $this->calculateGroupID($position);
-        $groups   = explode(',', $forumMember->mgroup_others);
+        $groups = explode(',', $forumMember->mgroup_others);
         if ($addGroup && array_search($addGroup, $groups) === false) {
             $this->log("Adding group: {$addGroup}");
             array_push($groups, $addGroup);

@@ -10,7 +10,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_possible_to_join_a_community_group()
     {
-        $member   = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $division = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($division);
 
@@ -20,7 +20,7 @@ class GroupMembershipTest extends TestCase
 
         $this->seeInDatabase('community_membership', [
             'account_id' => $member->id,
-            'group_id'   => $group->id,
+            'group_id' => $group->id,
         ]);
     }
 
@@ -71,7 +71,7 @@ class GroupMembershipTest extends TestCase
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $international = \App\Models\Mship\State::findByCode('INTERNATIONAL');
         $member->addState($international);
 
@@ -83,7 +83,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_possible_to_join_multiple_groups_across_tiers()
     {
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
@@ -99,7 +99,7 @@ class GroupMembershipTest extends TestCase
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
@@ -114,7 +114,7 @@ class GroupMembershipTest extends TestCase
     {
         $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
 
-        $member        = factory(\App\Models\Mship\Account::class)->create();
+        $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 

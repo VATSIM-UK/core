@@ -14,9 +14,9 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
     public function getConfigure(Form $form)
     {
-        $question_types    = Type::all();
+        $question_types = Type::all();
         $current_questions = $form->questions()->orderBy('sequence')->notPermanent()->get();
-        $new_question      = new Question();
+        $new_question = new Question();
 
         return $this->viewMake('adm.mship.feedback.settings')
                     ->with('question_types', $question_types)
@@ -30,7 +30,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $in_use_question_ids = [];
 
         $all_current_questions = $form->questions;
-        $permanent_questions   = $all_current_questions->filter(function ($question, $key) {
+        $permanent_questions = $all_current_questions->filter(function ($question, $key) {
             if ($question->permanent) {
                 return true;
             }
@@ -56,7 +56,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
                 // We will update it instead
                 $exisiting_question->required = $question['required'];
-                $exisiting_question->slug     = $question['slug'].$i;
+                $exisiting_question->slug = $question['slug'].$i;
                 $exisiting_question->sequence = $i;
                 if (isset($question['options']['values'])) {
                     $question['options']['values'] = explode(',', $question['options']['values']);
@@ -89,12 +89,12 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function makeNewQuestion($form, $question, $sequence)
     {
-        $type                   = Type::where('name', $question['type'])->first();
-        $new_question           = new Question();
+        $type = Type::where('name', $question['type'])->first();
+        $new_question = new Question();
         $new_question->question = $question['name'];
-        $new_question->slug     = $question['slug'].$sequence;
-        $new_question->type_id  = $type->id;
-        $new_question->form_id  = $form->id;
+        $new_question->slug = $question['slug'].$sequence;
+        $new_question->type_id = $type->id;
+        $new_question->form_id = $form->id;
         if (isset($question['options']['values']) && $question['options']['values'] != '') {
             $question['options']['values'] = explode(',', $question['options']['values']);
         }
@@ -163,7 +163,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
-        $conditions   = [];
+        $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
@@ -181,7 +181,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getUnActioned(FeedbackModel $feedback)
     {
-        $conditions   = [];
+        $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);

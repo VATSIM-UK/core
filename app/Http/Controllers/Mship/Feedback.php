@@ -66,11 +66,11 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function postFeedback(Form $form, Request $request)
     {
         $questions = $form->questions;
-        $cidfield  = null;
+        $cidfield = null;
         // Make the validation rules
-        $ruleset       = [];
+        $ruleset = [];
         $errormessages = [];
-        $answerdata    = [];
+        $answerdata = [];
 
         foreach ($questions as $question) {
             $rules = [];
@@ -100,13 +100,13 @@ class Feedback extends \App\Http\Controllers\BaseController
                 }
             }
             $errormessages[$question->slug.'.required'] = "You have not supplied an answer for '".$question->question."'.";
-            $errormessages[$question->slug.'.exists']   = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK memeber';
-            $errormessages[$question->slug.'.integer']  = 'You have not entered in a valid integer.';
+            $errormessages[$question->slug.'.exists'] = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK memeber';
+            $errormessages[$question->slug.'.integer'] = 'You have not entered in a valid integer.';
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([
               'question_id' => $question->id,
-              'response'    => $request->input($question->slug),
+              'response' => $request->input($question->slug),
             ]);
         }
 
@@ -123,10 +123,10 @@ class Feedback extends \App\Http\Controllers\BaseController
         }
 
         // Make new feedback
-        $account  = Account::find($request->input($cidfield));
+        $account = Account::find($request->input($cidfield));
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
-            'form_id'              => $form->id,
+            'form_id' => $form->id,
         ]);
 
         // Add in the answers

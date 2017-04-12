@@ -48,7 +48,7 @@ class SlackManager extends Command
         $this->slackUsers = SlackUser::lists();
 
         foreach ($this->slackUsers->members as $slackUser) {
-            $localUser           = Account::findWithSlackId($slackUser->id);
+            $localUser = Account::findWithSlackId($slackUser->id);
             $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
             if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {

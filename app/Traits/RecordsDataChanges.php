@@ -23,11 +23,11 @@ trait RecordsDataChanges
             $original = $model->getOriginal($attribute);
 
             Change::create([
-                'model_id'   => $model->getKey(),
+                'model_id' => $model->getKey(),
                 'model_type' => get_class($model),
-                'data_key'   => $attribute,
-                'data_old'   => $original,
-                'data_new'   => $value,
+                'data_key' => $attribute,
+                'data_old' => $original,
+                'data_new' => $value,
             ]);
         }
 

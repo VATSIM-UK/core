@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Notifications\Mship\BanCreated;
-use App\Notifications\Mship\BanModified;
-use App\Notifications\Mship\BanRepealed;
 use DB;
 use URL;
 use Auth;
@@ -16,6 +13,9 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use Illuminate\Support\Collection;
 use App\Models\Mship\Role as RoleData;
+use App\Notifications\Mship\BanCreated;
+use App\Notifications\Mship\BanModified;
+use App\Notifications\Mship\BanRepealed;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
@@ -442,7 +442,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra  = $ban->reason_extra."\n".Input::get('reason_extra');
+        $ban->reason_extra = $ban->reason_extra."\n".Input::get('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
@@ -486,7 +486,7 @@ class Account extends AdmController
 
         // Get all filters
         $filters = Input::get('filter', []);
-        $qs      = '';
+        $qs = '';
         foreach ($filters as $f) {
             $qs .= 'filter['.$f.']=1&';
         }

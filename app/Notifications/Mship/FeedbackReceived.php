@@ -2,7 +2,6 @@
 
 namespace App\Notifications\Mship;
 
-use Gate;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use App\Models\Mship\Feedback\Feedback;

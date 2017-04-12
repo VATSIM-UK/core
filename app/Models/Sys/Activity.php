@@ -32,10 +32,10 @@ use App\Models\Model;
  */
 class Activity extends Model
 {
-    protected $table      = 'sys_activity';
+    protected $table = 'sys_activity';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable   = ['actor_id', 'subject_id', 'subject_type', 'action'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()
     {
@@ -57,7 +57,7 @@ class Activity extends Model
 
     public function getExtraDataAttribute()
     {
-        $extraData                               = [];
+        $extraData = [];
         $extraData[$this->subject->getKeyName()] = $this->subject->getKey();
 
         return $extraData;
