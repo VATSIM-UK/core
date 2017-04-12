@@ -6,10 +6,10 @@ use stdClass;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
-use phpDocumentor\Reflection\DocBlock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use phpDocumentor\Reflection\DocBlock\Tag;
+use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Tag;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {
