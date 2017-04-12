@@ -23,6 +23,9 @@ The following are the upgrade notes for deploying in production.
 1. Run `php artisan view:clear`
 2. Run `php artisan route:clear`
 
+### Mail Refactoring
+1. Add `notification` queue to queue processor
+
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.

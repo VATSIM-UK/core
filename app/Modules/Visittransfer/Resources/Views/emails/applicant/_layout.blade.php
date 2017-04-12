@@ -1,3 +1,7 @@
+@extends('emails.messages.post')
+
+@section('body')
+
 @yield("email-content")
 
 <p>
@@ -8,3 +12,5 @@
 <p>
     {!! route("visiting.application.view", [$application->public_id]) !!}
 </p>
+
+@stop

@@ -1,3 +1,7 @@
+@extends('emails.messages.post')
+
+@section('body')
+
 <p>
     This email serves as confirmation that your central account with VATSIM UK has been created. We have received the
     following details about you:
@@ -71,3 +75,4 @@
 
 
 On behalf of the entire team, welcome to the United Kingdom.
+@stop

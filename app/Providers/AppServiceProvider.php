@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Config;
 use HTML;
 use Illuminate\Support\ServiceProvider;
+use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,8 +16,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!defined('VATUK_ACCOUNT_SYSTEM')) {
-            define('VATUK_ACCOUNT_SYSTEM', '707070');
+        if ($this->app->runningInConsole()) {
+            URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
 
         HTML::component('icon', 'components.html.icon', ['type', 'key']);
@@ -32,10 +34,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //        if ($this->app->environment() == 'development') {
-//            $this->app->register('Laracasts\Generators\GeneratorsServiceProvider');
-//        }
-
         $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
     }

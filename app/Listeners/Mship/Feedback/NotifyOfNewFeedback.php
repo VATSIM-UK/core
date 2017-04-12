@@ -2,9 +2,9 @@
 
 namespace App\Listeners\Mship\Feedback;
 
-use App\Models\Mship\Account;
-use App\Jobs\Messages\SendNotificationEmail;
+use App\Models\Contact;
 use App\Events\Mship\Feedback\NewFeedbackEvent;
+use App\Notifications\Mship\FeedbackReceived;
 
 class NotifyOfNewFeedback
 {
@@ -26,32 +26,16 @@ class NotifyOfNewFeedback
      */
     public function handle(NewFeedbackEvent $event)
     {
-        $feedback    = $event->feedback;
-        $displayFrom = 'VATSIM UK - Community Department';
-        $subject     = 'New member feedback received';
-        $body        = \View::make('emails.mship.feedback.new_feedback')
-                   ->with('feedback', $feedback)
-                   ->render();
-
-        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
-
-        $recipientName = strtoupper($feedback->formSlug()).' Training Team';
+        $feedback = $event->feedback;
 
         if ($feedback->isATC()) {
-            $recipient = 'atc-team@vatsim.uk';
+            $recipient = Contact::where('key', 'ATC_TRAINING')->first();
         } elseif ($feedback->isPilot()) {
-            $recipient = 'pilot-team@vatsim.uk';
+            $recipient = Contact::where('key', 'PILOT_TRAINING')->first();
         } else {
-            // Not an ATC or Pilot form!
-        return;
+            return;
         }
 
-        $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
-        'sender_display_as' => $displayFrom,
-        'sender_email'      => 'community@vatsim-uk.co.uk',
-        'recipient_email'   => $recipient,
-        'recipient_name'    => $recipientName,
-      ]);
-        dispatch($createNewMessage->onQueue('emails'));
+        $recipient->notify(new FeedbackReceived($feedback));
     }
 }

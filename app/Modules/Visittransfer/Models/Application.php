@@ -2,6 +2,7 @@
 
 namespace App\Modules\Visittransfer\Models;
 
+use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use App\Models\Mship\State;
 use App\Models\Mship\Account;
@@ -607,8 +608,7 @@ class Application extends Model
             $this->account->addState(State::findByCode('TRANSFERRING'));
         }
 
-        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(3));
-        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($this->account))->delay($delayOffset));
+        $this->account->notify((new SlackInvitation())->delay(Carbon::now()->addDays(3)));
 
         event(new ApplicationAccepted($this));
     }

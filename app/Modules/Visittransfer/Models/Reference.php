@@ -12,6 +12,7 @@ use App\Modules\Visittransfer\Events\ReferenceRejected;
 use App\Modules\Visittransfer\Events\ReferenceUnderReview;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewException;
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Modules\Visittransfer\Models\Reference.
@@ -64,6 +65,8 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedExce
  */
 class Reference extends Model
 {
+    use Notifiable;
+
     protected $table      = 'vt_reference';
     protected $primaryKey = 'id';
     protected $fillable   = [

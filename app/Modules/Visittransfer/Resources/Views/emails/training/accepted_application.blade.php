@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     A new {{ $application->type_string }} application for {{ $application->facility->name }} has been accepted by the Community Department.
 </p>
@@ -30,3 +33,4 @@
 <p>
     Please login to the administrative panel to review this application, along with any additional notes/comments.
 </p>
+@stop

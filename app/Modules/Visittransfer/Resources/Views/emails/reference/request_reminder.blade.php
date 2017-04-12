@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     {{ $application->account->name }} has named you as one of their referees for their {{ $application->type_string }} application to VATSIM United Kingdom.
 </p>
@@ -14,3 +17,4 @@
 <p>
     {!! route("visiting.reference.complete", ["token" => $token->code]) !!}
 </p>
+@stop

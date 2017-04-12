@@ -4,6 +4,8 @@ namespace App\Models\Mship\Account;
 
 use App\Models\Sso\Email as SSOEmail;
 use App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess;
+use App\Models\Sys\Token;
+use App\Notifications\Mship\EmailVerification;
 
 /**
  * App\Models\Mship\Account\Email.
@@ -87,7 +89,7 @@ class Email extends \Eloquent
 
     public function getIsVerifiedAttribute()
     {
-        return $this->attributes['verified_at'] != null;
+        return $this->verified_at != null;
     }
 
     public function __toString()
@@ -108,7 +110,9 @@ class Email extends \Eloquent
         $saveResult = parent::save($options);
 
         if (!$this->is_verified) {
-            dispatch(new TriggerNewEmailVerificationProcess($this));
+            $generatedToken = Token::generate('mship_account_email_verify', false, $this);
+
+            $this->account->notify(new EmailVerification($this, $generatedToken));
         }
 
         return $saveResult;

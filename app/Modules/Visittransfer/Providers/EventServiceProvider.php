@@ -40,7 +40,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Modules\Visittransfer\Events\ReferenceUnderReview::class => [
-            \App\Modules\Visittransfer\Listeners\NotifyRefereeOnReferenceCompletion::class,
+            \App\Modules\Visittransfer\Listeners\NotifyRefereeOfReferenceCompletion::class,
             \App\Modules\Visittransfer\Listeners\NotifyApplicantOfReferenceCompletion::class,
         ],
 

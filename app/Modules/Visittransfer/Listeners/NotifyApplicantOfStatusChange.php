@@ -15,8 +15,7 @@ class NotifyApplicantOfStatusChange implements ShouldQueue
 
     public function handle(ApplicationStatusChanged $event)
     {
-        $confirmationEmailJob = new SendApplicantStatusChangeEmail($event->application);
-
-        dispatch($confirmationEmailJob->onQueue('low'));
+        $application = $event->application;
+        $application->account->notify(new ApplicationStatusChanged($application));
     }
 }
