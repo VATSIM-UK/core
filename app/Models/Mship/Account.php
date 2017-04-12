@@ -2,11 +2,11 @@
 
 namespace App\Models\Mship;
 
-use App\Models\Mship\Account\Email;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
