@@ -139,11 +139,13 @@ class MshipAuthenticationTest extends TestCase
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         // Set up the account mock and predict how many times each of the mocked methods will be called
-        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute]');
+        $account = Mockery::mock('App\Models\Mship\Account[hasPassword, load, save, getMandatoryPasswordAttribute, getHasUnreadImportantNotificationsAttribute, getHasUnreadMustAcknowledgeNotificationsAttribute]');
         $account->shouldReceive('hasPassword')->times(2)->andReturn(false);
         $account->shouldReceive('load')->once()->andReturnNull();
         $account->shouldReceive('save')->once()->andReturnNull();
         $account->shouldReceive('getMandatoryPasswordAttribute')->once()->andReturn(false);
+        $account->shouldReceive('getHasUnreadImportantNotificationsAttribute')->once()->andReturn(false);
+        $account->shouldReceive('getHasUnreadMustAcknowledgeNotificationsAttribute')->once()->andReturn(false);
         $account->makePartial();
 
         // Facades are already setup to be mocks, so just tell it what to expect
