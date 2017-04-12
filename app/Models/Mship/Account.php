@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Models\Mship\Account\Email;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -896,7 +897,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Calculate the password expiry for this account.
      *
-     * @param bool|false $temporary Should we treat the password as temporary?
+     * @param bool $temporary Should we treat the password as temporary?
      *
      * @return null|Carbon
      */
@@ -914,8 +915,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Set the user's password.
      *
-     * @param            $password  The password string.
-     * @param bool|false $temporary Will only be a temporary password
+     * @param string $password The password string.
+     * @param bool $temporary Will only be a temporary password
+     * @return bool
+     * @throws \App\Exceptions\Mship\DuplicatePasswordException
      */
     public function setPassword($password, $temporary = false)
     {
@@ -1008,7 +1011,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      * @param string $newEmail The new email address to add to this account.
      * @param bool   $verified Set to TRUE if the email should be automatically verified.
      *
-     * @return \Illuminate\Database\Eloquent\Model|int
+     * @return \Illuminate\Database\Eloquent\Model|Email|false
      * @throws \App\Exceptions\Mship\DuplicateEmailException
      */
     public function addSecondaryEmail($newEmail, $verified = false)

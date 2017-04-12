@@ -2,20 +2,33 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\Mship\DuplicateEmailException;
+use App\Exceptions\Mship\DuplicatePasswordException;
+use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Exceptions\Mship\DuplicateRoleException;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Mship\Role;
+use App\Notifications\Mship\EmailVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
+/**
+ * Class MshipAccountTest
+ * @package Tests\Unit
+ */
 class MshipAccountTest extends TestCase
 {
     use DatabaseTransactions;
 
+    /** @var Account $account */
     private $account;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->account = factory(\App\Models\Mship\Account::class)->create([
+        $this->account = factory(Account::class)->create([
             "name_first" => "John",
             "name_last" => "Doe",
             "email" => "i_sleep@gmail.com",
@@ -37,7 +50,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_correctly_formats_names()
     {
-        $member = factory(\App\Models\Mship\Account::class)->create([
+        $member = factory(Account::class)->create([
             "name_first" => "mary",
             "name_last" => "JANE",
         ]);
@@ -141,14 +154,14 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_doesnt_permit_storing_of_primary_email_as_secondary()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicateEmailException::class);
+        $this->expectException(DuplicateEmailException::class);
 
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
         $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
-        $this->notseeInDatabase("mship_account_email", [
+        $this->notSeeInDatabase("mship_account_email", [
             "account_id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
@@ -157,7 +170,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_doesnt_permit_duplicate_secondary_emails_on_same_model()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicateEmailException::class);
+        $this->expectException(DuplicateEmailException::class);
 
         $verified = true;
         $this->account->addSecondaryEmail("test_email@gmail.com", $verified);
@@ -167,7 +180,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_allows_secondary_emails_to_be_stored()
     {
-        $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
+        $this->expectsNotification($this->account, EmailVerification::class);
 
         $verified = false;
         $email = $this->account->addSecondaryEmail("i_also_sleep@hotmail.com", $verified);
@@ -184,7 +197,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_doesnt_list_new_secondary_emails_as_verified()
     {
-        $this->expectsJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
+        $this->expectsNotification($this->account, EmailVerification::class);
 
         $verified = false;
         $email = $this->account->addSecondaryEmail("i_too_sleep@hotmail.com", $verified);
@@ -196,8 +209,6 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_lists_secondary_emails_as_verified()
     {
-        $this->doesntExpectJobs(\App\Jobs\Mship\Email\TriggerNewEmailVerificationProcess::class);
-
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
 
@@ -250,7 +261,7 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_stores_qualifications()
     {
-        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
+        $qualification = factory(Qualification::class)->create();
 
         $this->account->addQualification($qualification);
 
@@ -266,9 +277,9 @@ class MshipAccountTest extends TestCase
     /** @test */
     public function it_returns_duplicate_qualification_error_when_adding_qualification()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicateQualificationException::class);
+        $this->expectException(DuplicateQualificationException::class);
 
-        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
+        $qualification = factory(Qualification::class)->create();
 
         $this->account->addQualification($qualification);
         $this->account->fresh()->addQualification($qualification);
@@ -281,7 +292,7 @@ class MshipAccountTest extends TestCase
 
         sleep(1);
 
-        $qualification = factory(\App\Models\Mship\Qualification::class)->create();
+        $qualification = factory(Qualification::class)->create();
         $this->account->fresh()->addQualification($qualification);
 
         $this->assertNotEquals($originalUpdatedAt, $this->account->fresh()->updated_at);
@@ -296,7 +307,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
 
-        $slackAccount = \App\Models\Mship\Account::findWithSlackId($slackID);
+        $slackAccount = Account::findWithSlackId($slackID);
 
         $this->assertEquals($slackAccount->id, $this->account->fresh()->id);
     }
@@ -328,7 +339,7 @@ class MshipAccountTest extends TestCase
             "password" => $this->account->password,
         ]);
 
-        $this->notseeInDatabase("mship_account", [
+        $this->notSeeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -349,7 +360,7 @@ class MshipAccountTest extends TestCase
             "password" => $this->account->password,
         ]);
 
-        $this->notseeInDatabase("mship_account", [
+        $this->notSeeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -372,7 +383,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_throws_an_exception_when_the_same_password_is_set()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicatePasswordException::class);
+        $this->expectException(DuplicatePasswordException::class);
 
         $this->account->setPassword("testing123");
         $this->account->setPassword("testing123");
@@ -398,7 +409,7 @@ class MshipAccountTest extends TestCase
 
         $this->account->setPassword("testing456");
 
-        $this->notseeInDatabase("mship_account", [
+        $this->notSeeInDatabase("mship_account", [
             "id" => $this->account->id,
             "password" => $oldPassword,
             "password_set_at" => $oldPasswordSetAt,
@@ -409,7 +420,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_adds_role_to_account()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create();
+        $role = factory(Role::class)->create();
 
         $this->account->fresh()->addRole($role);
 
@@ -424,7 +435,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_determines_if_the_account_has_a_given_role()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create();
+        $role = factory(Role::class)->create();
 
         $this->account->fresh()->addRole($role);
 
@@ -434,9 +445,9 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_throws_duplicate_role_exception_when_adding_duplicate_role()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicateRoleException::class);
+        $this->expectException(DuplicateRoleException::class);
 
-        $role = factory(\App\Models\Mship\Role::class)->create();
+        $role = factory(Role::class)->create();
 
         $this->account->fresh()->addRole($role);
         $this->account->fresh()->addRole($role);
@@ -445,7 +456,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_removes_role_from_account()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create();
+        $role = factory(Role::class)->create();
 
         $this->account->fresh()->addRole($role);
 
@@ -458,7 +469,7 @@ class MshipAccountTest extends TestCase
         $this->account->fresh()->removeRole($role);
 
         $this->assertFalse($this->account->fresh()->roles->contains($role->id));
-        $this->notseeInDatabase("mship_account_role", [
+        $this->notSeeInDatabase("mship_account_role", [
             "account_id" => $this->account->id,
             "role_id" => $role->id,
         ]);
@@ -473,7 +484,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_determines_that_password_is_mandatory()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
+        $role = factory(Role::class)->create(["password_mandatory" => true]);
 
         $this->account->addRole($role);
 
@@ -485,11 +496,8 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_returns_an_infinite_session_timeout()
     {
-        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+        $roleWithInfiniteTimeout = factory(Role::class)->create([
             "session_timeout" => 0
-        ]);
-        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
-            "session_timeout" => 10
         ]);
 
         $this->account->addRole($roleWithInfiniteTimeout);
@@ -500,11 +508,11 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_returns_a_non_infinite_session_timeout()
     {
-        $roleWithInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+        $roleWithInfiniteTimeout = factory(Role::class)->create([
             "session_timeout" => 0
         ]);
 
-        $roleWithNonInfiniteTimeout = factory(\App\Models\Mship\Role::class)->create([
+        $roleWithNonInfiniteTimeout = factory(Role::class)->create([
             "session_timeout" => 10
         ]);
 
