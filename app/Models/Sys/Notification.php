@@ -3,7 +3,7 @@
 namespace App\Models\Sys;
 
 /**
- * App\Models\Sys\Notification.
+ * App\Models\Sys\Notification
  *
  * @property int $id
  * @property string $title
@@ -13,21 +13,21 @@ namespace App\Models\Sys;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $effective_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $readBy
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereContent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereEffectiveAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification published()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification withStatus($status)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification mustAcknowledge()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification important()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification operational()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification general()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification user()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification important()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification mustAcknowledge()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification operational()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification published()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification since($sinceTimestamp)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification user()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereEffectiveAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Notification withStatus($status)
  * @mixin \Eloquent
  */
 class Notification extends \App\Models\Model

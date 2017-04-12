@@ -6,13 +6,8 @@ use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
- * App\Modules\Community\Models\Group.
+ * App\Modules\Community\Models\Group
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group inTier($tier)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group notDefault()
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property int $tier
@@ -21,6 +16,10 @@ use App\Models\Mship\Account;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group inTier($tier)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group notDefault()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCoordinateBoundaries($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereDefault($value)
@@ -29,6 +28,7 @@ use App\Models\Mship\Account;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereTier($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Group extends Model
 {

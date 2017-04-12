@@ -6,6 +6,37 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * App\Models\Mship\Feedback\Feedback
+ *
+ * @property int $id
+ * @property int $form_id
+ * @property int $account_id
+ * @property int $submitter_account_id
+ * @property \Carbon\Carbon $actioned_at
+ * @property string $actioned_comment
+ * @property int $actioned_by_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Models\Mship\Account $actioner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
+ * @property-read \App\Models\Mship\Feedback\Form $form
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \App\Models\Mship\Account $submitter
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback aTC()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback pilot()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedComment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereFormId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereSubmitterAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Feedback extends Model
 {
     use Notifiable;

@@ -6,7 +6,7 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Qualification.
+ * App\Models\Mship\Qualification
  *
  * @property int $id
  * @property string $code
@@ -19,18 +19,18 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameSmall($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameLong($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameGrp($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereVatsim($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameGrp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameLong($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereNameSmall($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Qualification whereVatsim($value)
  * @mixin \Eloquent
  */
 class Qualification extends \Eloquent

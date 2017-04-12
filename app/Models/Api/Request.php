@@ -5,9 +5,8 @@ namespace App\Models\Api;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Api\Request.
+ * App\Models\Api\Request
  *
- * @mixin \Eloquent
  * @property int $id
  * @property int $api_account_id
  * @property string $method
@@ -26,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUrlFull($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUrlName($value)
+ * @mixin \Eloquent
  */
 class Request extends Model
 {

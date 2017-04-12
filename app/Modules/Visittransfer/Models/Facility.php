@@ -9,21 +9,8 @@ use App\Modules\Visittransfer\Models\Facility\Email;
 use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException;
 
 /**
- * App\Modules\Visittransfer\Models\Facility.
+ * App\Modules\Visittransfer\Models\Facility
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $applications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Facility\Email[] $emails
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility atc()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canTransfer()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canVisit()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility hasTrainingSpace()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isClosed()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isOpen()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyTransfer()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyVisit()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility pilot()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility trainingRequired()
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $description
@@ -39,6 +26,19 @@ use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException
  * @property bool $auto_acceptance
  * @property bool $open
  * @property string $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $applications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Facility\Email[] $emails
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility atc()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canTransfer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility canVisit()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility hasTrainingSpace()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isClosed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility isOpen()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyTransfer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility onlyVisit()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility pilot()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility trainingRequired()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereAutoAcceptance($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereCanTransfer($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereCanVisit($value)
@@ -54,6 +54,7 @@ use App\Modules\Visittransfer\Exceptions\Facility\DuplicateFacilityNameException
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingRequired($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingSpaces($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility whereTrainingTeam($value)
+ * @mixin \Eloquent
  */
 class Facility extends Model
 {

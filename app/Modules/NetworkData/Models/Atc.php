@@ -13,46 +13,46 @@ use App\Modules\NetworkData\Events\AtcSessionStarted;
 use App\Modules\NetworkData\Events\AtcSessionUpdated;
 
 /**
- * App\Modules\NetworkData\Models\Atc.
+ * App\Modules\NetworkData\Models\Atc
  *
- * @property int            $id
- * @property int            $account_id
- * @property string         $callsign
- * @property int            $qualification_id
- * @property bool           $facility_type
+ * @property int $id
+ * @property int $account_id
+ * @property string $callsign
+ * @property float $frequency
+ * @property int $qualification_id
+ * @property bool $facility_type
  * @property \Carbon\Carbon $connected_at
- * @property string         $disconnected_at
+ * @property \Carbon\Carbon $disconnected_at
+ * @property int $minutes_online
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereCallsign($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereQualificationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereFacilityType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereConnectedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereDisconnectedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc forAccountId($id)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc forQualificationId($id)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc withCallsign($callsign)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc online()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc offline()
- * @mixin \Eloquent
  * @property-read \App\Models\Mship\Account $account
  * @property-read mixed $account_name
- * @property-read mixed $frequency
  * @property-read mixed $is_online
  * @property-read string $public_id
  * @property-read mixed $type
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc forAccountId($id)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc forQualificationId($id)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc isUK()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc offline()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc onFrequency()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc online()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc thisYear()
- * @property int $minutes_online
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereCallsign($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereConnectedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereDisconnectedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereFacilityType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereFrequency($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereMinutesOnline($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereQualificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\NetworkData\Models\Atc withCallsign($callsign)
+ * @mixin \Eloquent
  */
 class Atc extends Model
 {

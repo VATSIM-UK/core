@@ -7,7 +7,7 @@ use App\Models\Sso\Email as SSOEmail;
 use App\Notifications\Mship\EmailVerification;
 
 /**
- * App\Models\Mship\Account\Email.
+ * App\Models\Mship\Account\Email
  *
  * @property int $id
  * @property string $email
@@ -16,17 +16,17 @@ use App\Notifications\Mship\EmailVerification;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $account
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read mixed $is_verified
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email emailMatches($email)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email verified()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
  * @mixin \Eloquent
  */
 class Email extends \Eloquent

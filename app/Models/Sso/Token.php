@@ -5,34 +5,34 @@ namespace App\Models\Sso;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Sso\Token.
+ * App\Models\Sso\Token
  *
  * @property int $id
  * @property string $token
  * @property int $sso_account_id
  * @property string $return_url
  * @property int $account_id
+ * @property string $request_ip
  * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $used_at
  * @property \Carbon\Carbon $updated_at
  * @property string $expires_at
  * @property-read \App\Models\Mship\Account $account
- * @property-read mixed $is_expired
  * @property-read mixed $display_value
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereSsoAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereReturnUrl($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereExpiresAt($value)
+ * @property-read mixed $is_expired
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token tokenValue($tokenValue)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token valid()
- * @mixin \Eloquent
- * @property string $request_ip
- * @property \Carbon\Carbon $used_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereRequestIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereReturnUrl($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Token whereUsedAt($value)
+ * @mixin \Eloquent
  */
 class Token extends \App\Models\Model
 {

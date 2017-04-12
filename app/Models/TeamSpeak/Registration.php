@@ -9,34 +9,32 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\TeamSpeak\Registration.
+ * App\Models\TeamSpeak\Registration
  *
  * @property int $id
  * @property int $account_id
- * @property int $registration_ip
- * @property int $last_ip
+ * @property string $registration_ip
+ * @property string $last_ip
  * @property string $last_login
  * @property string $last_os
  * @property string $uid
  * @property int $dbid
- * @property string $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
  * @property-read \App\Models\Mship\Account $account
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereId($value)
+ * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereRegistrationIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDbid($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereLastIp($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereLastLogin($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereLastOs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereRegistrationIp($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereUid($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDbid($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration whereDeletedAt($value)
  * @mixin \Eloquent
  */
 class Registration extends \App\Models\Model

@@ -3,7 +3,7 @@
 namespace App\Models\Messages\Thread;
 
 /**
- * App\Models\Messages\Thread\Participant.
+ * App\Models\Messages\Thread\Participant
  *
  * @property int $id
  * @property int $thread_id
@@ -13,19 +13,19 @@ namespace App\Models\Messages\Thread;
  * @property \Carbon\Carbon $read_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $account
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
+ * @property-read \App\Models\Messages\Thread $thread
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Participant extends \App\Models\Model

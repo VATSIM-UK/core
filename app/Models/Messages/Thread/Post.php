@@ -3,7 +3,7 @@
 namespace App\Models\Messages\Thread;
 
 /**
- * App\Models\Messages\Thread\Post.
+ * App\Models\Messages\Thread\Post
  *
  * @property int $id
  * @property int $thread_id
@@ -11,13 +11,13 @@ namespace App\Models\Messages\Thread;
  * @property string $content
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Messages\Thread $thread
  * @property-read \App\Models\Mship\Account $author
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
+ * @property-read \App\Models\Messages\Thread $thread
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereContent($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
  * @mixin \Eloquent
  */

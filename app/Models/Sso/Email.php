@@ -5,7 +5,7 @@ namespace App\Models\Sso;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Sso\Email.
+ * App\Models\Sso\Email
  *
  * @property int $id
  * @property int $account_id
@@ -15,11 +15,11 @@ use App\Traits\RecordsActivity;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account\Email $email
  * @property-read \App\Models\Sso\Account $ssoAccount
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
  * @mixin \Eloquent
  */

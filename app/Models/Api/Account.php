@@ -5,9 +5,8 @@ namespace App\Models\Api;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Api\Account.
+ * App\Models\Api\Account
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $api_token
@@ -20,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Account whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Account whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Account whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Account extends Model
 {

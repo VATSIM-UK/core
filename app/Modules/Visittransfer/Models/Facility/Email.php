@@ -5,9 +5,8 @@ namespace App\Modules\Visittransfer\Models\Facility;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Modules\Visittransfer\Models\Facility\Email.
+ * App\Modules\Visittransfer\Models\Facility\Email
  *
- * @mixin \Eloquent
  * @property int $id
  * @property int $facility_id
  * @property string $email
@@ -18,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereFacilityId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Facility\Email whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Email extends Model
 {

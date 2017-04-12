@@ -6,27 +6,27 @@ use Request;
 use App\Models\Model;
 
 /**
- * App\Models\Sys\Activity.
+ * App\Models\Sys\Activity
  *
  * @property int $id
  * @property int $actor_id
  * @property int $subject_id
  * @property string $subject_type
  * @property string $action
- * @property int $ip
+ * @property string $ip
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $actor
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
- * @property-read mixed $type
  * @property-read mixed $extra_data
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)
+ * @property-read mixed $type
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereAction($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereActorId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereIp($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereAction($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereIp($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
  */

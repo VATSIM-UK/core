@@ -5,9 +5,8 @@ namespace App\Modules\Community\Models;
 use App\Models\Model;
 
 /**
- * App\Modules\Community\Models\Membership.
+ * App\Modules\Community\Models\Membership
  *
- * @mixin \Eloquent
  * @property int $id
  * @property int $group_id
  * @property int $account_id
@@ -20,6 +19,7 @@ use App\Models\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereGroupId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Membership whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Membership extends Model
 {

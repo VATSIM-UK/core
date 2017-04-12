@@ -6,7 +6,7 @@ use App\Traits\RecordsActivity;
 use App\Models\Mship\Role as RoleData;
 
 /**
- * App\Models\Mship\Permission.
+ * App\Models\Mship\Permission
  *
  * @property int $id
  * @property string $name
@@ -14,12 +14,12 @@ use App\Models\Mship\Role as RoleData;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereDisplayName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereDisplayName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Permission isName($name)
  * @mixin \Eloquent
  */
 class Permission extends \App\Models\Model

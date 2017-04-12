@@ -6,7 +6,7 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Account\Note\Note.
+ * App\Models\Mship\Account\Note\Note
  *
  * @property int $id
  * @property int $note_type_id
@@ -17,20 +17,20 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $content
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Mship\Account $user
  * @property-read \App\Models\Mship\Account $actioner
  * @property-read \App\Models\Mship\Account\Note\Flag $flag
  * @property-read \App\Models\Mship\Account\Note\Format $format
  * @property-write mixed $data
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereNoteTypeId($value)
+ * @property-read \App\Models\Mship\Account $user
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereWriterId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereContent($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereNoteTypeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereWriterId($value)
  * @mixin \Eloquent
  */
 class Note extends \Eloquent

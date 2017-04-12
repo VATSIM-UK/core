@@ -15,29 +15,8 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceNotUnderReviewExcept
 use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedException;
 
 /**
- * App\Modules\Visittransfer\Models\Reference.
+ * App\Modules\Visittransfer\Models\Reference
  *
- * @property-read \App\Models\Mship\Account $account
- * @property-read \App\Modules\Visittransfer\Models\Application $application
- * @property-read mixed $is_accepted
- * @property-read mixed $is_rejected
- * @property-read mixed $is_requested
- * @property-read mixed $is_submitted
- * @property-read mixed $is_under_review
- * @property-read mixed $status_string
- * @property-read mixed $token
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \App\Models\Sys\Token $tokens
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference accepted()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference draft()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference pending()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference rejected()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference requested()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference status($status)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference statusIn($stati)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference submitted()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference underReview()
- * @mixin \Eloquent
  * @property int $id
  * @property int $application_id
  * @property int $account_id
@@ -50,6 +29,27 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedExce
  * @property string $reminded_at
  * @property string $submitted_at
  * @property string $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Modules\Visittransfer\Models\Application $application
+ * @property-read mixed $is_accepted
+ * @property-read mixed $is_rejected
+ * @property-read mixed $is_requested
+ * @property-read mixed $is_submitted
+ * @property-read mixed $is_under_review
+ * @property-read mixed $status_string
+ * @property-read mixed $token
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \App\Models\Sys\Token $tokens
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference accepted()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference draft()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference pending()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference rejected()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference requested()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference status($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference statusIn($stati)
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference submitted()
+ * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference underReview()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereApplicationId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereContactedAt($value)
@@ -62,6 +62,7 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedExce
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereStatusNote($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Reference whereSubmittedAt($value)
+ * @mixin \Eloquent
  */
 class Reference extends Model
 {

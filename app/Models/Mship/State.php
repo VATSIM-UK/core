@@ -5,26 +5,25 @@ namespace App\Models\Mship;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Mship\State.
+ * App\Models\Mship\State
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
- * @property mixed $division
- * @property-read mixed $is_permanent
- * @property-read mixed $is_temporary
- * @property mixed $region
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State hasCode($code)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State permanent()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State temporary()
- * @mixin \Eloquent
  * @property int $id
  * @property string $code
  * @property string $type
  * @property string $name
+ * @property string $division
+ * @property string $region
  * @property bool $delete_all_temps
  * @property int $priority
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property-read mixed $is_permanent
+ * @property-read mixed $is_temporary
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State hasCode($code)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State permanent()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State temporary()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereCode($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereDeleteAllTemps($value)
@@ -35,6 +34,7 @@ use App\Traits\RecordsActivity;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereRegion($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\State whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class State extends \Eloquent
 {

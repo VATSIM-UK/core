@@ -5,7 +5,7 @@ namespace App\Models\Sso;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Sso\Account.
+ * App\Models\Sso\Account
  *
  * @property int $id
  * @property string $username
@@ -15,16 +15,16 @@ use App\Traits\RecordsActivity;
  * @property string $salt
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[] $tokens
  * @property-read mixed $display_value
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUsername($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereApiKeyPublic($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[] $tokens
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereApiKeyPrivate($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereSalt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereApiKeyPublic($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereSalt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Account whereUsername($value)
  * @mixin \Eloquent
  */
 class Account extends \App\Models\Model

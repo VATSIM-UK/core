@@ -5,19 +5,19 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model as Model;
 
 /**
- * App\Models\TeamSpeak\Channel.
+ * App\Models\TeamSpeak\Channel
  *
- * @property-read \App\Models\TeamSpeak\Channel $parent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
- * @property-read mixed $protected
- * @mixin \Eloquent
  * @property int $id
  * @property int $parent_id
  * @property string $name
+ * @property bool $protected
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
+ * @property-read \App\Models\TeamSpeak\Channel $parent
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereParentId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Channel whereProtected($value)
+ * @mixin \Eloquent
  */
 class Channel extends Model
 {

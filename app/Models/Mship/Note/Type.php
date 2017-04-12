@@ -6,7 +6,7 @@ use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Note\Type.
+ * App\Models\Mship\Note\Type
  *
  * @property int $id
  * @property string $name
@@ -19,21 +19,21 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereColourCode($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Type extends \Eloquent

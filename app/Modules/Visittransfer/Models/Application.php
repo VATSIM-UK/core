@@ -29,8 +29,28 @@ use App\Modules\Visittransfer\Exceptions\Application\ApplicationCannotBeWithdraw
 use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTrainingFacilityException;
 
 /**
- * App\Modules\Visittransfer\Models\Application.
+ * App\Modules\Visittransfer\Models\Application
  *
+ * @property int $id
+ * @property int $type
+ * @property string $training_team
+ * @property int $account_id
+ * @property int $facility_id
+ * @property bool $training_required
+ * @property bool $statement_required
+ * @property int $references_required
+ * @property bool $should_perform_checks
+ * @property bool $check_outcome_90_day
+ * @property bool $check_outcome_50_hours
+ * @property bool $will_auto_accept
+ * @property string $statement
+ * @property int $status
+ * @property string $status_note
+ * @property \Carbon\Carbon $expires_at
+ * @property \Carbon\Carbon $submitted_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Modules\Visittransfer\Models\Facility $facility
  * @property-read mixed $facility_name
@@ -59,11 +79,9 @@ use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTr
  * @property-read mixed $references_under_review
  * @property-read mixed $requires_action
  * @property-read mixed $status_string
- * @property-read mixed $training_team
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[] $referees
- * @property-write mixed $statement
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application closed()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application notStatus($status)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application ofType($type)
@@ -75,25 +93,6 @@ use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTr
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application transfer()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application underReview()
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application visit()
- * @mixin \Eloquent
- * @property int $id
- * @property int $type
- * @property int $account_id
- * @property int $facility_id
- * @property bool $training_required
- * @property bool $statement_required
- * @property int $references_required
- * @property bool $should_perform_checks
- * @property bool $check_outcome_90_day
- * @property bool $check_outcome_50_hours
- * @property bool $will_auto_accept
- * @property int $status
- * @property string $status_note
- * @property \Carbon\Carbon $expires_at
- * @property \Carbon\Carbon $submitted_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $deleted_at
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereCheckOutcome50Hours($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereCheckOutcome90Day($value)
@@ -114,6 +113,7 @@ use App\Modules\Visittransfer\Exceptions\Application\AttemptingToTransferToNonTr
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Modules\Visittransfer\Models\Application whereWillAutoAccept($value)
+ * @mixin \Eloquent
  */
 class Application extends Model
 {

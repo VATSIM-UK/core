@@ -3,7 +3,7 @@
 namespace App\Models\Sys\Data;
 
 /**
- * App\Models\Sys\Data\Change.
+ * App\Models\Sys\Data\Change
  *
  * @property int $data_change_id
  * @property int $model_id
@@ -15,14 +15,14 @@ namespace App\Models\Sys\Data;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataChangeId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataKey($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataOld($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataNew($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereAutomatic($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataChangeId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataKey($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataNew($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereDataOld($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereModelType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Data\Change whereUpdatedAt($value)
  * @mixin \Eloquent
  */
