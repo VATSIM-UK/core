@@ -32,7 +32,6 @@ class TeamSpeakTest extends TestCase
         $this->channelGroups = factory(\App\Models\TeamSpeak\ChannelGroup::class, 5)->create();
 
         $this->account = factory(\App\Models\Mship\Account::class)->create([
-            "id" => 1234567,
             "name_first" => "John",
             "name_last" => "Doe",
             "email" => "i_sleep@gmail.com",

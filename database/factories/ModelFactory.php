@@ -9,7 +9,7 @@ foreach (Module::enabled() as $module) {
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
     return [
-        'id' => rand(900000, 1300000),
+        'id' => rand(10000000, 99999999),
         'name_first' => $faker->name,
         'name_last' => $faker->name,
         'email' => $faker->email,
