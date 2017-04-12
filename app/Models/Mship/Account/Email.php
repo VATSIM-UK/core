@@ -89,7 +89,7 @@ class Email extends \Eloquent
 
     public function getIsVerifiedAttribute()
     {
-        return $this->attributes['verified_at'] != null;
+        return $this->verified_at != null;
     }
 
     public function __toString()
@@ -110,7 +110,7 @@ class Email extends \Eloquent
         $saveResult = parent::save($options);
 
         if (!$this->is_verified) {
-            $generatedToken  = Token::generate('mship_account_email_verify', false, $this);
+            $generatedToken = Token::generate('mship_account_email_verify', false, $this);
 
             $this->account->notify(new EmailVerification($this, $generatedToken));
         }
