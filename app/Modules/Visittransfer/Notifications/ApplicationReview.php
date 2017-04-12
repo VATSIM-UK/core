@@ -2,11 +2,10 @@
 
 namespace App\Modules\Visittransfer\Notifications;
 
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Application;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReview extends Notification implements ShouldQueue

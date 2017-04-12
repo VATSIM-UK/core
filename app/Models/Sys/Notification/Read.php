@@ -33,17 +33,17 @@ class Read extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'sys_notification_read';
+    protected $table = 'sys_notification_read';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden     = ['id'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['id'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
-    const STATUS_IMPORTANT        = 70; // Will interrupt login process.
-    const STATUS_OPERATIONAL      = 50; // Web services
-    const STATUS_GENERAL          = 30; // General messages, to be read at some point.
-    const STATUS_USER             = 10; // User specific
-    const STATUS_UNPUBLISHED      = 0; // Drafts.
+    const STATUS_IMPORTANT = 70; // Will interrupt login process.
+    const STATUS_OPERATIONAL = 50; // Web services
+    const STATUS_GENERAL = 30; // General messages, to be read at some point.
+    const STATUS_USER = 10; // User specific
+    const STATUS_UNPUBLISHED = 0; // Drafts.
 
     public function scopeActive($query)
     {

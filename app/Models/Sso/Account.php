@@ -31,10 +31,10 @@ class Account extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'sso_account';
+    protected $table = 'sso_account';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $hidden     = ['account_id'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $hidden = ['account_id'];
 
     public function tokens()
     {

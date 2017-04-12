@@ -2,12 +2,10 @@
 
 namespace App\Modules\Visittransfer\Listeners;
 
-use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Reference;
 use App\Modules\Visittransfer\Events\ApplicationSubmitted;
-use App\Modules\Visittransfer\Jobs\SendInitialRefereeRequestEmail;
-use App\Modules\Visittransfer\Jobs\SendRefereeRequestReminderEmail;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
 
 class NotifyAllReferees implements ShouldQueue
 {

@@ -36,10 +36,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class Qualification extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
-    protected $table      = 'mship_qualification';
+    protected $table = 'mship_qualification';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'deleted_at'];
-    protected $hidden     = ['id'];
+    protected $dates = ['created_at', 'deleted_at'];
+    protected $hidden = ['id'];
 
     public function scopeOfType($query, $type)
     {

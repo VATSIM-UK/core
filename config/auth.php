@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard'     => 'web',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -37,12 +37,12 @@ return [
 
     'guards' => [
         'web' => [
-            'driver'   => 'session',
+            'driver' => 'session',
             'provider' => 'accounts',
         ],
 
         'api' => [
-            'driver'   => 'token',
+            'driver' => 'token',
             'provider' => 'api_accounts',
         ],
     ],
@@ -67,11 +67,11 @@ return [
     'providers' => [
         'accounts' => [
             'driver' => 'eloquent',
-            'model'  => App\Models\Mship\Account::class,
+            'model' => App\Models\Mship\Account::class,
         ],
         'api_accounts' => [
             'driver' => 'eloquent',
-            'model'  => App\Models\Api\Account::class,
+            'model' => App\Models\Api\Account::class,
         ],
 
         // 'users' => [

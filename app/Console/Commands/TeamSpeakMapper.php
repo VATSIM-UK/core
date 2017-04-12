@@ -49,10 +49,10 @@ class TeamSpeakMapper extends Command
 
     protected function importGroups(TeamSpeak3_Node_Server $tscon)
     {
-        $newGroupModels      = [];
-        $defaultServerGroup  = $tscon['virtualserver_default_server_group'];
+        $newGroupModels = [];
+        $defaultServerGroup = $tscon['virtualserver_default_server_group'];
         $defaultChannelGroup = $tscon['virtualserver_default_channel_group'];
-        $qualifications      = Qualification::all();
+        $qualifications = Qualification::all();
 
         $serverGroups = $tscon->serverGroupList(['type' => 1]);
         foreach ($serverGroups as $group) {
@@ -67,24 +67,24 @@ class TeamSpeakMapper extends Command
             $permissionId = $this->getServerGroupPermission($group);
 
             $newGroupModels[] = [
-                'dbid'             => $group['sgid'],
-                'name'             => $group['name'],
-                'type'             => 's',
-                'default'          => $defaultServerGroup == $group['sgid'] ? 1 : 0,
+                'dbid' => $group['sgid'],
+                'name' => $group['name'],
+                'type' => 's',
+                'default' => $defaultServerGroup == $group['sgid'] ? 1 : 0,
                 'qualification_id' => $qualificationId,
-                'permission_id'    => $permissionId,
+                'permission_id' => $permissionId,
             ];
         }
 
         $channelGroups = $tscon->channelGroupList(['type' => 1]);
         foreach ($channelGroups as $group) {
             $newGroupModels[] = [
-                'dbid'             => $group['cgid'],
-                'name'             => $group['name'],
-                'type'             => 'c',
-                'default'          => $defaultChannelGroup == $group['cgid'] ? 1 : 0,
+                'dbid' => $group['cgid'],
+                'name' => $group['name'],
+                'type' => 'c',
+                'default' => $defaultChannelGroup == $group['cgid'] ? 1 : 0,
                 'qualification_id' => null,
-                'permission_id'    => null,
+                'permission_id' => null,
             ];
         }
 
@@ -119,24 +119,24 @@ class TeamSpeakMapper extends Command
 
     protected function mapChannelGroups()
     {
-        $rtsGroup     = ChannelGroup::where('name', 'RTS Staff')->first();
-        $pilotGroup   = ChannelGroup::where('name', 'Pilot Staff')->first();
-        $rtsChannels  = Channel::where('name', 'Controller RTSs')->first()->children;
+        $rtsGroup = ChannelGroup::where('name', 'RTS Staff')->first();
+        $pilotGroup = ChannelGroup::where('name', 'Pilot Staff')->first();
+        $rtsChannels = Channel::where('name', 'Controller RTSs')->first()->children;
         $pilotChannel = Channel::where('name', 'Pilot Training')->first();
 
         $newModels = [];
         foreach ($rtsChannels as $channel) {
             $newModels[] = [
-                'channel_id'      => $channel->id,
+                'channel_id' => $channel->id,
                 'channelgroup_id' => $rtsGroup->dbid,
-                'permission_id'   => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / '.explode(' ', $channel->name)[0].'%')->first()->id,
+                'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / '.explode(' ', $channel->name)[0].'%')->first()->id,
             ];
         }
 
         $newModels[] = [
-            'channel_id'      => $pilotChannel->id,
+            'channel_id' => $pilotChannel->id,
             'channelgroup_id' => $pilotGroup->dbid,
-            'permission_id'   => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / Pilot Training')->first()->id,
+            'permission_id' => Permission::where('display_name', 'LIKE', 'TeamSpeak / Channel / Pilot Training')->first()->id,
         ];
 
         DB::table('teamspeak_channel_group_permission')->truncate();
@@ -150,9 +150,9 @@ class TeamSpeakMapper extends Command
         $channels = $tscon->channelList();
         foreach ($channels as $channel) {
             $newChannelModels[] = [
-                'id'        => $channel['cid'],
+                'id' => $channel['cid'],
                 'parent_id' => $channel['pid'],
-                'name'      => $channel['channel_name'],
+                'name' => $channel['channel_name'],
             ];
         }
 

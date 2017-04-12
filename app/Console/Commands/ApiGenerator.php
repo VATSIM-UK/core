@@ -30,7 +30,7 @@ class ApiGenerator extends Command
     public function handle()
     {
         $account = \App\Models\Api\Account::create([
-            'name'      => $this->argument('name'),
+            'name' => $this->argument('name'),
             'api_token' => strtoupper(md5(microtime())),
         ]);
 

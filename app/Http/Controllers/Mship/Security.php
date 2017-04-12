@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Models\Sys\Token;
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
-use App\Notifications\Mship\Security\TemporaryPassword;
 use Auth;
 use Input;
 use Session;
 use Redirect;
 use Carbon\Carbon;
+use App\Models\Sys\Token;
 use App\Models\Sys\Token as SystemToken;
 use App\Exceptions\Mship\DuplicatePasswordException;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
+use App\Notifications\Mship\Security\TemporaryPassword;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
 
 class Security extends \App\Http\Controllers\BaseController
 {
@@ -141,7 +140,7 @@ class Security extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.manage.dashboard');
         }
 
-        $generatedToken  = Token::generate('mship_account_security_reset', false, $this->account);
+        $generatedToken = Token::generate('mship_account_security_reset', false, $this->account);
         $this->account->notify(new ForgottenPasswordLink($generatedToken));
 
         Auth::logout();
@@ -185,6 +184,6 @@ class Security extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('mship.security.forgotten')
             ->with('success', 'A new password has been generated for you and emailed to your <strong>primary</strong> '
-                . 'VATSIM email.<br /> You can now close this window.');
+                .'VATSIM email.<br /> You can now close this window.');
     }
 }

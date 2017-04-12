@@ -1,13 +1,13 @@
 <?php
 
 Route::group([
-    'as'        => 'networkdata.api.',
+    'as' => 'networkdata.api.',
     'namespace' => 'Api',
-    'domain'    => config('app.url'),
-    'prefix'    => 'network-data',
+    'domain' => config('app.url'),
+    'prefix' => 'network-data',
 ], function () {
     Route::get('/online', [
-        'as'   => 'online',
+        'as' => 'online',
         'uses' => 'Feed@getOnline',
     ]);
 });

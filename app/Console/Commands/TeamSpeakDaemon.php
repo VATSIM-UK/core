@@ -68,7 +68,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
         }
 
         try {
-            $client                       = $host->serverGetSelected()->clientGetById($event->clid);
+            $client = $host->serverGetSelected()->clientGetById($event->clid);
             self::$command->currentMember = $client['client_database_id'];
 
             // log the client's clid and dbid in a data structure

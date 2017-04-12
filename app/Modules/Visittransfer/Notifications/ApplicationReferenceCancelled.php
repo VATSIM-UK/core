@@ -2,17 +2,18 @@
 
 namespace App\Modules\Visittransfer\Notifications;
 
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReferenceCancelled extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $reference, $application;
+    private $reference;
+    private $application;
 
     /**
      * Create a new notification instance.

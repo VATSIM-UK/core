@@ -58,14 +58,14 @@ class Atc extends Model
 {
     use PublicId, SoftDeletes, Rememberable;
 
-    protected static $public_id_salt       = 'vatsim-uk-network-data-atc-sessions';
+    protected static $public_id_salt = 'vatsim-uk-network-data-atc-sessions';
     protected static $public_id_min_length = 10;
-    protected static $public_id_alphabet   = 'upper_alphanumeric';
+    protected static $public_id_alphabet = 'upper_alphanumeric';
 
-    protected $table      = 'networkdata_atc';
+    protected $table = 'networkdata_atc';
     protected $primaryKey = 'id';
-    public $dates         = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
-    public $timestamps    = true;
+    public $dates = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
+    public $timestamps = true;
 
     protected $fillable = [
         'account_id',
@@ -90,7 +90,7 @@ class Atc extends Model
     ];
 
     protected $appends = [
-        'publicId'    => 'public_id',
+        'publicId' => 'public_id',
         'accountName' => 'account_name',
     ];
 

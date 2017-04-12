@@ -19,7 +19,7 @@ class Application extends AdmController
     public function getList($scope = 'all')
     {
         $permittedScope = ['all', 'open', 'closed', 'review', 'accepted'];
-        $scope          = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
+        $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         // Sorting and searching!
         $sortBy = in_array(

@@ -44,10 +44,10 @@ class Token extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'sys_token';
+    protected $table = 'sys_token';
     protected $primaryKey = 'token_id';
-    protected $dates      = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
-    protected $hidden     = ['token_id'];
+    protected $dates = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
+    protected $hidden = ['token_id'];
 
     public function getRouteKeyName()
     {
@@ -102,10 +102,10 @@ class Token extends \App\Models\Model
             }
         }
 
-        $token             = new self;
-        $token->type       = $type;
+        $token = new self;
+        $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
-        $token->code       = uniqid(uniqid());
+        $token->code = uniqid(uniqid());
 
         if ($relation != null) {
             $relation->tokens()->save($token);

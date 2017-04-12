@@ -2,8 +2,8 @@
 
 namespace App\Notifications\Mship;
 
-use App\Models\Mship\Account\Ban;
 use Illuminate\Bus\Queueable;
+use App\Models\Mship\Account\Ban;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

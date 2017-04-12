@@ -49,7 +49,7 @@ class SysStatisticsDaily extends Command
      */
     public function handle()
     {
-        $daysOfStatistics  = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
+        $daysOfStatistics = $this->getEndPeriod()->diffInDays($this->getStartPeriod()) + 1;
         $this->progressBar = $this->output->createProgressBar($daysOfStatistics);
         $this->progressBar->start();
 
@@ -69,7 +69,7 @@ class SysStatisticsDaily extends Command
         }
 
         $startTimestamp = $this->getStartPeriod()->toDateString();
-        $endTimestamp   = $this->getEndPeriod()->toDateString();
+        $endTimestamp = $this->getEndPeriod()->toDateString();
         $this->sendSlackSuccess('System Statistics for '.$startTimestamp.' to '.$endTimestamp.' have been updated.');
 
         $this->progressBar->finish();
@@ -148,7 +148,7 @@ class SysStatisticsDaily extends Command
             try {
                 \Artisan::call($module['slug'].':statistics:daily', [
                     'startPeriod' => $currentPeriod,
-                    'endPeriod'   => $currentPeriod,
+                    'endPeriod' => $currentPeriod,
                 ]);
             } catch (CommandNotFoundException $ex) {
                 $this->error($module['name']." doesn't have a daily statistics command.");

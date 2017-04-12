@@ -3,17 +3,18 @@
 namespace App\Modules\Visittransfer\Notifications;
 
 use App\Models\Mship\Account;
-use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Visittransfer\Models\Reference;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $reference, $application;
+    private $reference;
+    private $application;
 
     /**
      * Create a new notification instance.
@@ -59,7 +60,7 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
                     'recipient' => $notifiable,
                     'subject' => $subject,
                 ]);
-        } else if ($notifiable instanceof Reference) {
+        } elseif ($notifiable instanceof Reference) {
             $subject = "[{$this->application->public_id}] Thank You for Your Reference";
 
             return (new MailMessage)
@@ -72,7 +73,6 @@ class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
                     'subject' => $subject,
                 ]);
         }
-
     }
 
     /**

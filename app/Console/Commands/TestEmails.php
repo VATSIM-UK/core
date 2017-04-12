@@ -2,35 +2,33 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;
-use App\Models\Sys\Token;
-use App\Modules\Visittransfer\Models\Application;
-use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Notifications\ApplicationAccepted;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceAccepted;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceCancelled;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceRejected;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
-use App\Modules\Visittransfer\Notifications\ApplicationReview;
-use App\Modules\Visittransfer\Notifications\ApplicationStatusChanged;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
-use App\Notifications\Mship\EmailVerification;
-use App\Notifications\Mship\FeedbackReceived;
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
-use App\Notifications\Mship\Security\TemporaryPassword;
-use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\WelcomeMember;
+use App\Notifications\Mship\SlackInvitation;
+use App\Notifications\Mship\FeedbackReceived;
+use App\Notifications\Mship\EmailVerification;
+use App\Modules\Visittransfer\Models\Reference;
+use App\Modules\Visittransfer\Models\Application;
+use App\Notifications\Mship\Security\TemporaryPassword;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Modules\Visittransfer\Notifications\ApplicationReview;
+use App\Modules\Visittransfer\Notifications\ApplicationAccepted;
+use App\Modules\Visittransfer\Notifications\ApplicationStatusChanged;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceAccepted;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceRejected;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceCancelled;
+use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
 
 /**
  * Experimental class used for generating emails to mailtrap.io
  * in order to visually test them and verify the end result.
- *
- * @package App\Console\Commands
  */
 class TestEmails extends Command
 {
@@ -67,11 +65,13 @@ class TestEmails extends Command
     {
         if (\App::environment('production')) {
             $this->log('ERROR: this command cannot be run in production!', 'error');
+
             return;
-        } else if (env('MAIL_HOST') !== 'mailtrap.io') {
+        } elseif (env('MAIL_HOST') !== 'mailtrap.io') {
             $this->log('ERROR: you should be using mailtrap.io before running this command!', 'error');
+
             return;
-        } else if (!$this->confirm(
+        } elseif (!$this->confirm(
             'This command will make changes to the database that must be manually reversed.'.PHP_EOL
             .' Do you wish to continue?'
         )) {

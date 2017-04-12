@@ -29,9 +29,9 @@ class ApplicationStatementSubmitRequest extends FormRequest
     {
         return [
             'statement.required' => 'You must write a supporting statement.',
-            'statement.string'   => 'You must only provide text in your supporting statement.',
-            'statement.min'      => 'The minimum length statement is 50 characters.',
-            'statement.max'      => 'The maximum length statement is 1000 characters.',
+            'statement.string' => 'You must only provide text in your supporting statement.',
+            'statement.min' => 'The minimum length statement is 50 characters.',
+            'statement.max' => 'The maximum length statement is 1000 characters.',
         ];
     }
 

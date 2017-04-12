@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -11,6 +10,7 @@ use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
@@ -194,9 +194,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
 
-    protected $table        = 'mship_account';
-    public $incrementing    = false;
-    protected $dates        = [
+    protected $table = 'mship_account';
+    public $incrementing = false;
+    protected $dates = [
         'last_login',
         'joined_at',
         'cert_checked_at',
@@ -206,7 +206,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $fillable     = [
+    protected $fillable = [
         'id',
         'name_first',
         'name_last',
@@ -215,13 +215,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $attributes   = [
-        'name_first'    => '',
-        'name_last'     => '',
-        'status'        => self::STATUS_ACTIVE,
+    protected $attributes = [
+        'name_first' => '',
+        'name_last' => '',
+        'status' => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token', 'password'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
@@ -233,8 +233,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2
     //const STATUS_NETWORK_SUSPENDED = 2; //b"0010"; @deprecated in version 2.2
     const STATUS_INACTIVE = 4; //b"0100";
-    const STATUS_LOCKED   = 8; //b"1000";
-    const STATUS_SYSTEM   = 8; //b"1000"; // Alias of LOCKED
+    const STATUS_LOCKED = 8; //b"1000";
+    const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
 
     public function routeNotificationForSlack()
     {
@@ -269,9 +269,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $retrievedData = \VatsimXML::getData($accountId);
 
             $account = self::create([
-                'id'         => $retrievedData->cid,
+                'id' => $retrievedData->cid,
                 'name_first' => $retrievedData->name_first,
-                'name_last'  => $retrievedData->name_last,
+                'name_last' => $retrievedData->name_last,
             ]);
 
             $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
@@ -755,7 +755,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
         $state = $this->states()->attach($state, [
             'start_at' => Carbon::now(),
-            'region'   => $region,
+            'region' => $region,
             'division' => $division,
         ]);
 
@@ -965,8 +965,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         return $this->fill([
-            'password'            => $password,
-            'password_set_at'     => Carbon::now(),
+            'password' => $password,
+            'password_set_at' => Carbon::now(),
             'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
     }
@@ -979,8 +979,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function removePassword()
     {
         $this->fill([
-            'password'            => null,
-            'password_set_at'     => null,
+            'password' => null,
+            'password_set_at' => null,
             'password_expires_at' => null,
         ])->save();
     }
@@ -1058,7 +1058,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new DuplicateEmailException($newEmail);
         }
 
-        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
+        $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
         $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
         return $this->secondaryEmails()->save($newSecondaryEmail);
@@ -1116,13 +1116,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban                = new Ban();
-        $ban->account_id    = $this->id;
-        $ban->banned_by     = $writerId;
-        $ban->type          = $type;
-        $ban->reason_id     = $banReason->id;
-        $ban->reason_extra  = $banExtraReason;
-        $ban->period_start  = Carbon::now()->second(0);
+        $ban = new Ban();
+        $ban->account_id = $this->id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->id;
+        $ban->reason_extra = $banExtraReason;
+        $ban->period_start = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1148,11 +1148,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             $writer = $writer->getKey();
         }
 
-        $note               = new AccountNoteData();
-        $note->account_id   = $this->id;
-        $note->writer_id    = $writer;
+        $note = new AccountNoteData();
+        $note->account_id = $this->id;
+        $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content      = $noteContent;
+        $note->content = $noteContent;
         $note->save();
 
         if (!is_null($attachment)) {
@@ -1409,12 +1409,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function toArray()
     {
-        $array                 = parent::toArray();
-        $array['name']         = $this->name;
-        $array['name_real']    = $this->real_name;
-        $array['email']        = $this->email;
-        $array['atc_rating']   = $this->qualification_atc;
-        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array = parent::toArray();
+        $array['name'] = $this->name;
+        $array['name_real'] = $this->real_name;
+        $array['email'] = $this->email;
+        $array['atc_rating'] = $this->qualification_atc;
+        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;

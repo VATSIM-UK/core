@@ -29,7 +29,7 @@ class ApplicationCheckOutcomeRequest extends FormRequest
     {
         return [
             'check.required' => 'You must specify which check you wish to set the outcome for.',
-            'check.in'       => 'The check you specified does not exist.',
+            'check.in' => 'The check you specified does not exist.',
         ];
     }
 

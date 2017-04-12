@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Webhook\Email;
 
 class EmailWebhookController extends \App\Http\Controllers\Webhook\WebhookController
 {
-    protected $messageId  = null;
+    protected $messageId = null;
     protected $queueEntry = null;
 
     protected function runDelivered($data = [])
