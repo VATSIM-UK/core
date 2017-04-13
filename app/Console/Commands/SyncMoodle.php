@@ -41,7 +41,7 @@ class SyncMoodle extends Command
         DB::table('vatuk_moodle.mdl_user')->update(['vatuk_cron' => 0]);
 
         $members_moodle = DB::table('vatuk_moodle.mdl_user')
-            ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email']);
+            ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber']);
 
         Account::whereNotNull('last_login')->with('states', 'qualifications', 'bans')->chunk(500, function ($members) use ($members_moodle) {
             foreach ($members as $member) {
@@ -82,6 +82,7 @@ class SyncMoodle extends Command
                         'firstname' => $members_moodle[$moodleUser]->firstname,
                         'lastname' => $members_moodle[$moodleUser]->lastname,
                         'email' => $members_moodle[$moodleUser]->email,
+                        'idnumber' => $members_moodle[$moodleUser]->idnumber,
                         'vatuk_cron' => 1,
                     ];
 
@@ -91,6 +92,7 @@ class SyncMoodle extends Command
                         'firstname' => $member->name_first,
                         'lastname' => $member->name_last,
                         'email' => $email,
+                        'idnumber' => $member->id,
                         'vatuk_cron' => 1,
                     ];
 
