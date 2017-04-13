@@ -81,6 +81,7 @@ class SyncMoodle extends Command
                         'deleted'    => $members_moodle[$moodleUser]->deleted,
                         'firstname'  => $members_moodle[$moodleUser]->firstname,
                         'lastname'   => $members_moodle[$moodleUser]->lastname,
+                        'idnumber'   => $members_moodle[$moodleUser]->idnumber,
                         'email'      => $members_moodle[$moodleUser]->email,
                         'vatuk_cron' => 1,
                     ];
@@ -90,6 +91,7 @@ class SyncMoodle extends Command
                         'deleted'    => $inGoodStanding ? 0 : 1,
                         'firstname'  => $member->name_first,
                         'lastname'   => $member->name_last,
+                        'idnumber'   => $member->id,
                         'email'      => $email,
                         'vatuk_cron' => 1,
                     ];
