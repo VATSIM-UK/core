@@ -26,7 +26,7 @@ class AutoTools
         );
 
         $cacheName = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';
-        $cacheLength = $withTimestamp ? 60 * 118 : 60 * 12;
+        $cacheLength = $withTimestamp ? 118 : 60 * 12;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {
             \Storage::put('autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv', file_get_contents($url));
