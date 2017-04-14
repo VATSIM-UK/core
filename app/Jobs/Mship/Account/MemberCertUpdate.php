@@ -46,7 +46,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $this->data->division = '';
         }
 
-        $member = Account::find($this->accountID);
+        $member = Account::firstOrNew([(new Account)->getKeyName() => $this->accountID]);
 
         // if member no longer exists, delete
         // else process update

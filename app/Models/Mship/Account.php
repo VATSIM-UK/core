@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Jobs\Mship\Account\MemberCertUpdate;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -226,20 +227,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         try {
             return self::findOrFail($accountId);
         } catch (ModelNotFoundException $e) {
-            $retrievedData = \VatsimXML::getData($accountId);
+            dispatch((new MemberCertUpdate($accountId))->onConnection('sync'));
 
-            $account = self::create([
-                'id' => $retrievedData->cid,
-                'name_first' => $retrievedData->name_first,
-                'name_last' => $retrievedData->name_last,
-            ]);
-
-            $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
-            $account->addState($state);
-
-            \Artisan::queue('Members:CertUpdate', [
-                '--force' => $accountId,
-            ]);
+            $account = Account::find($accountId);
 
             return $account;
         }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "99d4ee97f6174d6fef983b0c98a456b8",
+    "content-hash": "b5f4fb6d48397a16263fbdacd84c3bb7",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -54,7 +54,7 @@
             "support": {
                 "source": "https://github.com/VATSIM-UK/laravel-ipboard/tree/master"
             },
-            "time": "2017-04-10 01:33:35"
+            "time": "2017-04-10T01:33:35+00:00"
         },
         {
             "name": "barryvdh/laravel-debugbar",
@@ -438,12 +438,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/caffeinated/modules.git",
-                "reference": "e58a340cc2dcc93f35ab73e1a8a0f23a079eaa3e"
+                "reference": "9f67d471cc0df57be555631a4eae26306e21ed09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/caffeinated/modules/zipball/e58a340cc2dcc93f35ab73e1a8a0f23a079eaa3e",
-                "reference": "e58a340cc2dcc93f35ab73e1a8a0f23a079eaa3e",
+                "url": "https://api.github.com/repos/caffeinated/modules/zipball/9f67d471cc0df57be555631a4eae26306e21ed09",
+                "reference": "9f67d471cc0df57be555631a4eae26306e21ed09",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +484,7 @@
                 "laravel",
                 "modules"
             ],
-            "time": "2017-03-28T15:54:24+00:00"
+            "time": "2017-04-11T15:45:25+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -1461,16 +1461,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.17",
+            "version": "v5.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f7675d59e3863a58ecdff1a5ee1dcd0cff788f4b"
+                "reference": "d15ded55b5e690199393ea93a57edcbae20d1ffc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f7675d59e3863a58ecdff1a5ee1dcd0cff788f4b",
-                "reference": "f7675d59e3863a58ecdff1a5ee1dcd0cff788f4b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/d15ded55b5e690199393ea93a57edcbae20d1ffc",
+                "reference": "d15ded55b5e690199393ea93a57edcbae20d1ffc",
                 "shasum": ""
             },
             "require": {
@@ -1586,7 +1586,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-04-03T13:07:39+00:00"
+            "time": "2017-04-10T19:27:41+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -3775,7 +3775,7 @@
                 "wiki": "https://github.com/KHardern/VatsimSSO/wiki",
                 "source": "https://github.com/VATSIM-UK/VatsimSSO/tree/develop"
             },
-            "time": "2017-04-10 01:02:52"
+            "time": "2017-04-10T01:02:52+00:00"
         },
         {
             "name": "vatsim/xml",
@@ -3783,12 +3783,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/VatsimXML.git",
-                "reference": "f5b6c0a494b906724109a099e02d8ed78e976574"
+                "reference": "8526d681d8a219b38b2681117c0923eae5d6c9f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/VatsimXML/zipball/f5b6c0a494b906724109a099e02d8ed78e976574",
-                "reference": "f5b6c0a494b906724109a099e02d8ed78e976574",
+                "url": "https://api.github.com/repos/VATSIM-UK/VatsimXML/zipball/8526d681d8a219b38b2681117c0923eae5d6c9f3",
+                "reference": "8526d681d8a219b38b2681117c0923eae5d6c9f3",
                 "shasum": ""
             },
             "require": {
@@ -3822,7 +3822,7 @@
                 "wiki": "https://github.com/A-Lawrence/VatsimXML/wiki",
                 "source": "https://github.com/VATSIM-UK/VatsimXML/tree/master"
             },
-            "time": "2017-04-10 01:22:48"
+            "time": "2017-04-10T13:11:06+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -3977,12 +3977,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codeclimate/php-test-reporter.git",
-                "reference": "8d60fccff8475b1f95e80c6d49166ac038366675"
+                "reference": "3cea87608673a5e4fab212da8d9e8ba1d377d946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeclimate/php-test-reporter/zipball/8d60fccff8475b1f95e80c6d49166ac038366675",
-                "reference": "8d60fccff8475b1f95e80c6d49166ac038366675",
+                "url": "https://api.github.com/repos/codeclimate/php-test-reporter/zipball/3cea87608673a5e4fab212da8d9e8ba1d377d946",
+                "reference": "3cea87608673a5e4fab212da8d9e8ba1d377d946",
                 "shasum": ""
             },
             "require": {
@@ -4028,7 +4028,7 @@
                 "codeclimate",
                 "coverage"
             ],
-            "time": "2017-03-28T15:33:00+00:00"
+            "time": "2017-04-10T16:12:53+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -4427,16 +4427,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "5a5a9fc8025a08d8919be87d6884d5a92520cefe"
+                "reference": "8e6e04167378abf1ddb4d3522d8755c5fd90d102"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/5a5a9fc8025a08d8919be87d6884d5a92520cefe",
-                "reference": "5a5a9fc8025a08d8919be87d6884d5a92520cefe",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/8e6e04167378abf1ddb4d3522d8755c5fd90d102",
+                "reference": "8e6e04167378abf1ddb4d3522d8755c5fd90d102",
                 "shasum": ""
             },
             "require": {
@@ -4465,7 +4465,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2017-01-26T22:05:40+00:00"
+            "time": "2017-04-12T18:52:22+00:00"
         },
         {
             "name": "padraic/humbug_get_contents",
@@ -6022,7 +6022,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.4"
+        "php": ">=7.0"
     },
     "platform-dev": []
 }
