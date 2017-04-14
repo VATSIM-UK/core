@@ -65,7 +65,7 @@ class InitialSystem extends Migration
             $table->string('type');
             $table->string('code', 31);
             $table->timestamps();
-            $table->timestamp('expires_at')->nullable;
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('used_at')->nullable();
             $table->softDeletes();
             $table->unique('code');
