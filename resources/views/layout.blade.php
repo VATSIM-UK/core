@@ -75,7 +75,7 @@
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Community Features</li>
-                                    <li>{!! link_to_route("mship.feedback.new", "Member Feedback") !!}</li>
+                                    <li>{!! link_to_route("mship.feedback.new", "Controller/Pilot Feedback") !!}</li>
                                     {{--<li class="divider"></li>--}}
 
                                     {{--<li class="dropdown-header">Disputes</li>--}}
