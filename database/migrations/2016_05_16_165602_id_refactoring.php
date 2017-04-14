@@ -42,21 +42,7 @@ class IdRefactoring extends Migration
 
         DB::statement('ALTER TABLE mship_note_type CHANGE note_type_id id INTEGER UNSIGNED AUTO_INCREMENT');
 
-        try {
-            Schema::table('mship_account_ban', function (Blueprint $table) {
-                $table->dropForeign('mship_account_ban_reason_id_foreign');
-            });
-        } catch (Exception $e) {
-            // Do nothing with the lack of a foreign key.
-        }
-
         DB::statement('ALTER TABLE mship_ban_reason CHANGE ban_reason_id id INTEGER UNSIGNED AUTO_INCREMENT');
-//        Schema::table('mship_account_ban', function(Blueprint $table) {
-//            $table->foreign('reason_id')->references('id')->on('mship_ban_reason')
-//                ->onDelete('restrict')
-//                ->onUpdate('restrict');
-//        });
-        // No more foreign keys. They break everything.
 
         Schema::table('mship_account_state', function ($table) {
             $table->renameColumn('account_state_id', 'id');
@@ -136,15 +122,7 @@ class IdRefactoring extends Migration
 
         DB::statement('ALTER TABLE mship_note_type CHANGE id note_type_id INTEGER UNSIGNED AUTO_INCREMENT');
 
-//        Schema::table('mship_account_ban', function(Blueprint $table) {
-//            $table->dropForeign('mship_account_ban_reason_id_foreign');
-//        });
         DB::statement('ALTER TABLE mship_ban_reason CHANGE id ban_reason_id INTEGER UNSIGNED AUTO_INCREMENT');
-//        Schema::table('mship_account_ban', function(Blueprint $table) {
-//            $table->foreign('reason_id')->references('ban_reason_id')->on('mship_ban_reason')
-//                ->onDelete('restrict')
-//                ->onUpdate('restrict');
-//        });
 
         Schema::table('mship_account_state', function ($table) {
             $table->renameColumn('id', 'account_state_id');

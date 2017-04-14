@@ -138,10 +138,8 @@ class StaffManagementData extends Migration
      */
     public function down()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         DB::table('staff_positions')->truncate();
         DB::table('staff_services')->truncate();
         DB::table('staff_attributes')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

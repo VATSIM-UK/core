@@ -288,12 +288,6 @@ class InitialMship extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-//
-//        Schema::table('mship_account_ban', function(Blueprint $table) {
-//            $table->foreign('reason_id')->references('ban_reason_id')->on('mship_ban_reason')
-//                  ->onDelete('restrict')
-//                  ->onUpdate('restrict');
-//        });
     }
 
     /**
