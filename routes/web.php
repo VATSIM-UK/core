@@ -186,6 +186,11 @@ Route::group(['domain' => config('app.url')], function () {
             Route::post('/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
         });
 
+        Route::group(['middleware' => ['auth_full_group']], function () {
+            Route::get('/email', ['as' => 'mship.email', 'uses' => 'Email@getEmail']);
+            Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
+        });
+
         Route::group(['prefix' => 'security'], function () {
             Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
 
