@@ -4,8 +4,6 @@ namespace App\Exceptions\Mship;
 
 class InvalidCIDException extends \Exception
 {
-    private $state;
-
     public function __construct()
     {
         //
