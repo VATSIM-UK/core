@@ -138,9 +138,10 @@ class DownloadAndParse extends \App\Console\Commands\Command
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
             } catch (Exception $e) {
-                $this->info("\t\tAn invalid CID was found, or an account could not be made: " . $controllerData['cid'] , 'vvv');
+                $this->info("\t\tAn invalid CID was found, or an account could not be made: ".$controllerData['cid'], 'vvv');
                 continue;
             }
+
             $this->info("\t\tAccount loaded: ".$account->id.' - '.$account->name, 'vvv');
 
             $atcSession = Atc::updateOrCreate(

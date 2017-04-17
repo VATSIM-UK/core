@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Jobs\Mship\Account\MemberCertUpdate;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
@@ -12,6 +11,7 @@ use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
+use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
@@ -224,7 +224,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function findOrRetrieve($accountId)
     {
-        if(!is_numeric($accountId)){
+        if (!is_numeric($accountId)) {
             // Lets not process non-numeric CID's...
             return false;
         }
@@ -233,7 +233,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         } catch (ModelNotFoundException $e) {
             dispatch((new MemberCertUpdate($accountId))->onConnection('sync'));
 
-            $account = Account::find($accountId);
+            $account = self::find($accountId);
 
             return $account;
         }

@@ -3,8 +3,6 @@
 namespace App\Modules\Visittransfer\Http\Requests;
 
 use Auth;
-use ErrorException;
-use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -57,8 +55,8 @@ class ApplicationRefereeAddRequest extends FormRequest
 
     protected function getValidatorInstance()
     {
-        $data                        = $this->all();
-        $data['no_self_reference']   = true;
+        $data = $this->all();
+        $data['no_self_reference'] = true;
 
         if (Auth::user()->id == array_get($data, 'referee_cid', null)) {
             $data['no_self_reference'] = false;
