@@ -22,7 +22,6 @@ class ApplicationRefereeAddRequest extends FormRequest
             'referee_email' => 'required|email',
             'referee_relationship' => 'required|string',
             'no_self_reference' => 'accepted',
-            'must_be_home_region' => 'accepted',
         ];
     }
 
@@ -43,7 +42,6 @@ class ApplicationRefereeAddRequest extends FormRequest
             'referee_relationship.required' => "You must provide your referee's staff position.",
             'referee_relationship.string' => 'You have provided an invalid staff title.',
             'no_self_reference.accepted' => 'You cannot be your own referee.',
-            'must_be_home_region.accepted' => 'Your referee must be in your home region.',
         ];
     }
 
@@ -59,22 +57,11 @@ class ApplicationRefereeAddRequest extends FormRequest
 
     protected function getValidatorInstance()
     {
-        $data = $this->all();
-        $data['no_self_reference'] = true;
-        $data['must_be_home_region'] = false;
+        $data                        = $this->all();
+        $data['no_self_reference']   = true;
 
         if (Auth::user()->id == array_get($data, 'referee_cid', null)) {
             $data['no_self_reference'] = false;
-        }
-
-        $referee = Account::findOrRetrieve(array_get($data, 'referee_cid', null));
-
-        try {
-            if ($referee->primary_permanent_state->pivot->region == \Auth::user()->primary_permanent_state->pivot->region) {
-                $data['must_be_home_region'] = true;
-            }
-        } catch (ErrorException $e) { // If we don't have this data, we shouldn't penalise the applicant _at this point_.
-            $data['must_be_home_region'] = true;
         }
 
         $this->getInputSource()->replace($data);
