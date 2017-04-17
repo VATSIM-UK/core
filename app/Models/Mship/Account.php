@@ -224,6 +224,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function findOrRetrieve($accountId)
     {
+        if(!is_numeric($accountId)){
+            // Lets not process non-numeric CID's...
+            return false;
+        }
         try {
             return self::findOrFail($accountId);
         } catch (ModelNotFoundException $e) {
