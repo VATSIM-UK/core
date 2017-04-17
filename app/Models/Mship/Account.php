@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidStateException;
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
@@ -226,7 +227,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     {
         if (!is_numeric($accountId)) {
             // Lets not process non-numeric CID's...
-            return false;
+            throw new InvalidCIDException();
         }
         try {
             return self::findOrFail($accountId);

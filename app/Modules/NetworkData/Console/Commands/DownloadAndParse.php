@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Modules\NetworkData\Models\Atc;
+use App\Exceptions\Mship\InvalidCIDException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Modules\NetworkData\Events\NetworkDataParsed;
 use App\Modules\NetworkData\Events\NetworkDataDownloaded;
@@ -137,7 +138,7 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
-            } catch (Exception $e) {
+            } catch (InvalidCIDException $e) {
                 $this->info("\t\tAn invalid CID was found, or an account could not be made: ".$controllerData['cid'], 'vvv');
                 continue;
             }
