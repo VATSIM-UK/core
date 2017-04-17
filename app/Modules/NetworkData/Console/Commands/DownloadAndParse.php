@@ -135,7 +135,12 @@ class DownloadAndParse extends \App\Console\Commands\Command
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $this->info("\t\tQualification processed as ".$qualification, 'vvv');
 
-            $account = Account::findOrRetrieve($controllerData['cid']);
+            try {
+                $account = Account::findOrRetrieve($controllerData['cid']);
+            } catch (Exception $e) {
+                $this->info("\t\tAn invalid CID was found, or an account could not be made: " . $controllerData['cid'] , 'vvv');
+                continue;
+            }
             $this->info("\t\tAccount loaded: ".$account->id.' - '.$account->name, 'vvv');
 
             $atcSession = Atc::updateOrCreate(
