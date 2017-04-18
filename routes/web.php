@@ -189,6 +189,7 @@ Route::group(['domain' => config('app.url')], function () {
         Route::group(['middleware' => ['auth_full_group']], function () {
             Route::get('/email', ['as' => 'mship.email', 'uses' => 'Email@getEmail']);
             Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
+            Route::get('/email/recipient-search', ['as' => 'mship.email.recipient-search', 'uses' => 'Email@getRecipientSearch']);
         });
 
         Route::group(['prefix' => 'security'], function () {
