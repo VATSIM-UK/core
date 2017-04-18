@@ -13,6 +13,7 @@ use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Modules\Visittransfer\Models\Application;
@@ -224,6 +225,10 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function findOrRetrieve($accountId)
     {
+        if (!is_numeric($accountId)) {
+            // Lets not process non-numeric CID's...
+            throw new InvalidCIDException();
+        }
         try {
             return self::findOrFail($accountId);
         } catch (ModelNotFoundException $e) {

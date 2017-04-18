@@ -138,9 +138,22 @@ class Application extends BaseController
 
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Modules\Visittransfer\Models\Application $application)
     {
+        // Check if the CID is in the home region
+        $referee = Account::findOrRetrieve(Input::get('referee_cid'));
+
+        try {
+            if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
+                return Redirect::back()
+                                ->withError('Your referee must be in your home region.')
+                                ->withInput();
+            }
+        } catch (ErrorException $e) {
+            // If we don't have this data, we shouldn't penalise the applicant at this point.
+        }
+
         try {
             $application->addReferee(
-                Account::findOrRetrieve(Input::get('referee_cid')),
+                $referee,
                 Input::get('referee_email'),
                 Input::get('referee_relationship')
             );
