@@ -177,7 +177,7 @@ class ApplicationPolicy
 
     public function checkOutcome(Account $user, Application $application)
     {
-        return $application->is_under_review;
+        return $application->is_open;
     }
 
     public function settingToggle(Account $user, Application $application)
