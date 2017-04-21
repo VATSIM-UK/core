@@ -50,7 +50,7 @@ class Atc extends Model
     protected static $public_id_min_length = 10;
     protected static $public_id_alphabet   = 'upper_alphanumeric';
 
-    protected $table      = 'networkdata_atc';
+    protected $table      = 'statistic_atc';
     protected $primaryKey = 'id';
     public $dates         = ['connected_at', 'disconnected_at', 'created_at', 'updated_at', 'deleted_at'];
     public $timestamps    = true;
