@@ -311,7 +311,7 @@
                                             Qualification awarded <strong class="text-danger">in excess</strong> of 90
                                             days prior to application submission.
                                         @elseif($application->check_outcome_90_day === null)
-                                            <strong class="text-danger">Data unvailable</strong> - manual check required.<br />
+                                            <strong class="text-danger">Data unavailable</strong> - manual check required.<br />
 
                                             @can("check-outcome", $application)
                                                 {!!
@@ -358,7 +358,7 @@
                                             Applicant has <strong class="text-danger">in excess</strong> of 50 hours at their
                                             present qualified level and has ratified their rating.
                                         @elseif($application->check_outcome_50_hours === null)
-                                            <strong class="text-danger">Data unvailable</strong> - manual check required.<br />
+                                            <strong class="text-danger">Data unavailable</strong> - manual check required.<br />
 
                                                 {!!
                                                 Modal::named("outcome_50_hour_not_met")
