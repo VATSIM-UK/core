@@ -15,6 +15,19 @@ class Email extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.email');
     }
 
+    public function postEmail(Request $request)
+    {
+        $this->validate($request, [
+            'recipient' => 'required|integer|min:800000',
+            'subject' => 'required|string',
+            'message' => 'required|string'
+        ]);
+
+        if ($request->has('hide-email')) {
+            //
+        }
+    }
+
     public function getRecipientSearch(Request $request)
     {
         $this->validate($request, [

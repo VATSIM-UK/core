@@ -1,31 +1,44 @@
 @extends('layout')
 
 @section('content')
-
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-ukblue">
             <div class="panel-heading">Email a Member</div>
             <div class="panel-body">
-                <p>You may use this to email division, visiting and transferring members. You may not use this form to email other regional or international members, or inactive members.</p>
+                <p>You may use this to email division, visiting and transferring members. You may not use this form to
+                    email other regional or international members, or inactive members.</p>
                 {!! Form::open(['route' => ['mship.email.post'], 'class' => 'form-horizontal']) !!}
+                <input name="recipient" id="recipient" type="hidden">
                 <div class="form-group">
-                    <label for="recipient" class="col-sm-4 control-label">Recipient</label>
+                    <label class="col-sm-4 control-label">Recipient</label>
                     <div class="col-sm-4">
-                    <button type="button" class="btn btn-primary" id="recipient-button" data-toggle="modal" data-target="#recipientModal">
-                        Choose Recipient
-                    </button>
+                        <p id="recipient-display" style="display: none; cursor: pointer; text-decoration: underline;" class="form-control-static" data-toggle="modal" data-target="#recipientModal"></p>
+                        <button type="button" class="btn btn-primary" id="recipient-button" data-toggle="modal" data-target="#recipientModal">
+                            Choose Recipient
+                        </button>
+
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="subject" class="col-sm-4 control-label">Subject</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="subject" placeholder="Subject">
+                        <input type="text" class="form-control" name="subject" placeholder="Subject">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="message" class="col-sm-4 control-label">Message</label>
                     <div class="col-sm-4">
-                        <textarea class="form-control" rows="3" id="message" placeholder="Enter your message here"></textarea>
+                            <textarea class="form-control" rows="10" name="message"
+                                      placeholder="Enter your message here"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="hide-email"> Hide my email address<br><span style="overflow-wrap: break-word; hyphens: auto;">({{$_account->email}})</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -60,18 +73,26 @@
                         <div id="recipient-search-fg" class="form-group">
                             <label for="recipient-search" class="col-sm-4 control-label">CID</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" id="recipient-search" placeholder="Enter CID">
+                                <input type="text" class="form-control" id="recipient-search"
+                                       placeholder="Enter CID">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-4">
-                                <button type="button" class="btn btn-default" id="recipient-submit" onclick="recipientSearch()">Search</button>
+                                <button type="button" class="btn btn-default" id="recipient-submit"
+                                        onclick="recipientSearch()">Search
+                                </button>
                             </div>
                         </div>
                     </div>
                     <div id="results" style="display: none;">
                         <table class="table table-striped">
-                            <tr><th>CID</th><th>Name</th><th>Status</th><th></th></tr>
+                            <tr>
+                                <th>CID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -86,8 +107,7 @@
 
 @section('scripts')
     <script type="text/javascript">
-        function recipientSearch()
-        {
+        function recipientSearch() {
             var data = {
                 query: $('#recipient-search').val(),
                 type: $('#search-type').val()
@@ -123,7 +143,7 @@
 
                 // display error
                 var errorsHtml = '<div class="alert alert-danger"><ul>';
-                $.each(res.responseJSON, function(key, value) {
+                $.each(res.responseJSON, function (key, value) {
                     errorsHtml += '<li>' + value[0] + '</li>';
                 });
                 errorsHtml += '</ul></di>';
@@ -132,24 +152,30 @@
             });
         }
 
-        function makeRecipientRow(id, name, status, button)
-        {
-            return '<tr><td>'+id+'</td><td>'+name+'</td><td>'+status+'</td><td>'+button+'</td></tr>';
+        function makeRecipientRow(id, name, status, button) {
+            return '<tr><td>' + id + '</td><td>' + name + '</td><td>' + status + '</td><td>' + button + '</td></tr>';
         }
 
-        function getChooseButton(id, name)
-        {
+        function getChooseButton(id, name) {
             var button = '<button type="button" class="btn btn-xs btn-primary" ';
-            button += 'onclick="chooseRecipient('+id+', \''+name+'\')">Choose</button>';
+            button += 'onclick="chooseRecipient(' + id + ', \'' + name + '\')">Choose</button>';
 
             return button;
         }
 
-        function searchBy()
-        {
+        function searchBy() {
             var type = $('#search-type :selected').text();
             $('#recipient-search-fg > label').html(type);
             $('#recipient-search-fg input').attr('placeholder', 'Enter ' + type);
+            $('#recipient-search-fg input').val('');
+        }
+
+        function chooseRecipient(id, name) {
+            $('#recipientModal').modal('hide');
+            $('#recipient-display').show();
+            $('#recipient').val(id);
+            $('#recipient-display').html(id + ' - ' + name);
+            $('#recipient-button').hide();
         }
     </script>
 @stop
