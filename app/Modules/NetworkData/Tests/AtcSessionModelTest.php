@@ -29,9 +29,9 @@ class AtcSessionModelTest extends TestCase
 
         $atcSession->disconnectAt($currentTimestamp);
 
-        $this->assertFalse($atcSession->is_online, 'NetworkData::AtcSession not disconnected.');
-        $this->assertTrue(($atcSession->disconnected_at == $currentTimestamp),
-            'NetworkData::AtcSession not disconnected.');
+        $this->assertFalse($atcSession->is_online, 'NetworkData::AtcSession is still online.');
+        $this->assertTrue($atcSession->disconnected_at->toDateTimeString() === $currentTimestamp->toDateTimeString(),
+            'NetworkData::AtcSession not disconnected at current time.');
     }
 
     /** @test */
