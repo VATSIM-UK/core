@@ -29,10 +29,6 @@ class MustHaveCommunityGroup
             return $next($request);
         }
 
-        if (Request::ajax()) {
-            return Response::make('Unauthorised', 401);
-        }
-
         if (!Auth::user()->hasState('DIVISION')) {
             return $next($request);
         }
