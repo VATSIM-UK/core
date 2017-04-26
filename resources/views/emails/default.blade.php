@@ -104,6 +104,20 @@
             list-style-position: inside;
         }
 
+        pre {
+            display: block;
+            padding: 9.5px;
+            margin: 0 0 10px;
+            font-size: 13px;
+            line-height: 1.42857143;
+            color: #333;
+            word-break: break-all;
+            word-wrap: break-word;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
         /* RESPONSIVENE STYLING */
 
         .container {
@@ -186,7 +200,7 @@
                                         <tr>
                                             <td  style="border: none !important;padding: 10px 20px;background-color: white;font-family: Arial, sans-serif, 'Roboto';color: black;">
                                                 <p>
-                                                    This email was automatically sent from our system at <?= gmdate("H:i:s D jS M Y") ?> GMT. Do not reply directly to this email, as the address is not monitored.<br>
+                                                    This email was automatically sent from our system at <?= gmdate("H:i:s D jS M Y") ?> GMT. @if ($replyAllowed !== true)Do not reply directly to this email, as the address is not monitored.@endif<br>
                                                     Please <a href="mailto:web-support@vatsim-uk.co.uk?subject=Erroneous automatic email" data-toggle="tooltip" title="Report Error" style="color: #00b0f0;">let us know</a> if it's not been sent to the correct person, or displays incorrectly.
                                                 </p>
                                             </td>

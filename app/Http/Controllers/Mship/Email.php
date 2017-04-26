@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Models\Messages\Thread;
+use App\Models\Messages\Thread\Participant;
+use App\Models\Messages\Thread\Post;
 use App\Models\Mship\Account;
+use App\Notifications\Mship\MemberEmail;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -15,17 +20,57 @@ class Email extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.email');
     }
 
+    protected function recipientErrors(Account $member)
+    {
+        $hasDivision = $member->hasState('DIVISION');
+        $isActive = !$member->is_inactive;
+
+        $errors = [];
+        if (!$hasDivision) {
+            $errors[] = 'Recipient is not a member of the division.';
+        }
+
+        if (!$isActive) {
+            $errors[] = 'Recipient is not an active member.';
+        }
+
+        return $errors;
+    }
+
     public function postEmail(Request $request)
     {
         $this->validate($request, [
-            'recipient' => 'required|integer|min:800000',
-            'subject' => 'required|string',
-            'message' => 'required|string'
+            'recipient' => 'required|integer|min:800000|not_in:'.$this->account->id,
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:65535'
         ]);
 
-        if ($request->has('hide-email')) {
-            //
+        $recipient = Account::find($request->input('recipient'));
+        if (!$recipient) {
+            return back()->withErrors('Unknown recipient.');
         }
+
+        $recipientErrors = $this->recipientErrors($recipient);
+        if (!empty($recipientErrors)) {
+            return back()->withErrors($recipientErrors);
+        }
+
+        $thread = Thread::create(['subject' => $request->input('subject')]);
+        $thread->participants()->save($this->account, ['status' => Participant::STATUS_OWNER, 'read_at' => Carbon::now()]);
+        $thread->participants()->save($recipient, ['status' => Participant::STATUS_VIEWER]);
+
+        $post = new Post(['content' => $request->input('message')]);
+        $thread->posts()->save($post);
+        $this->account->messagePosts()->save($post);
+
+        $allowReply = true;
+        if ($request->has('hide-email')) {
+            $allowReply = false;
+        }
+
+        $recipient->notify(new MemberEmail($post, $allowReply));
+
+        return back()->with('success', 'Message has been successfully added to the mail queue.');
     }
 
     public function getRecipientSearch(Request $request)
@@ -39,50 +84,54 @@ class Email extends \App\Http\Controllers\BaseController
         $searchType = $request->input('type');
 
         if ($searchType === 'cid') {
-            try {
-                $member = Account::findOrFail($searchQuery);
-                $hasDivision = $member->hasState('DIVISION');
-                $isActive = !$member->is_inactive;
-                if ($hasDivision && $isActive) {
-                    return JsonResponse::create(
-                        ['match' => 'exact', 'data' => ['id' => $member->id, 'name' => $member->name]]
-                    );
-                } else if (!$hasDivision) {
-                    return JsonResponse::create(['error' => ['Recipient is not a member of the division.']], 422);
-                } else if (!$isActive) {
-                    return JsonResponse::create(['error' => ['Recipient is not an active member.']], 422);
-                }
-            } catch (ModelNotFoundException $e) {
-                return JsonResponse::create(['error' => ['Unknown recipient.']], 422);
-            }
+            return $this->cidSearch($searchQuery);
         } else if ($searchType === 'name') {
-            $results = [];
-            Account::where(function ($query) use ($searchQuery) {
-                $query->where(DB::raw('CONCAT(name_first, \' \', name_last)'), $searchQuery)
-                    ->orWhere(DB::raw('CONCAT(nickname, \' \', name_last)'), $searchQuery);
-            })->orderBy('last_login', 'desc')
-                ->get()
-                ->each(function ($member) use (&$results) {
-                    $hasDivision = $member->hasState('DIVISION');
-                    $isActive = !$member->is_inactive;
-
-                    if ($hasDivision && $isActive) {
-                        $results[] = ['valid' => true, 'id' => $member->id, 'name' => $member->name];
-                    } else if (!$hasDivision) {
-                        $results[] = ['valid' => false, 'error' => 'Non-division member.', 'id' => $member->id, 'name' => $member->name];
-                    } else if (!$isActive) {
-                        $results[] = ['valid' => false, 'error' => 'Inactive member.', 'id' => $member->id, 'name' => $member->name];
-                    }
-                });
-
-            $total = count($results);
-            if ($total > 0) {
-                return JsonResponse::create(['match' => 'partial', 'data' => $results]);
-            } else {
-                return JsonResponse::create(['error' => ['No matches found.']], 422);
-            }
+            return $this->nameSearch($searchQuery);
         } else {
             return JsonResponse::create(['error' => ['Unknown search type.']], 422);
+        }
+    }
+
+    protected function cidSearch($searchQuery)
+    {
+        try {
+            $member = Account::findOrFail($searchQuery);
+
+            $recipientErrors = $this->recipientErrors($member);
+            if (empty($recipientErrors)) {
+                return JsonResponse::create(
+                    ['match' => 'exact', 'data' => ['id' => $member->id, 'name' => $member->name]]
+                );
+            } else {
+                return JsonResponse::create(['error' => $recipientErrors], 422);
+            }
+        } catch (ModelNotFoundException $e) {
+            return JsonResponse::create(['error' => ['Unknown recipient.']], 422);
+        }
+    }
+
+    protected function nameSearch($searchQuery)
+    {
+        $results = [];
+        Account::where(function ($query) use ($searchQuery) {
+            $query->where(DB::raw('CONCAT(name_first, \' \', name_last)'), $searchQuery)
+                ->orWhere(DB::raw('CONCAT(nickname, \' \', name_last)'), $searchQuery);
+        })->orderBy('last_login', 'desc')
+            ->get()
+            ->each(function ($member) use (&$results) {
+                $recipientErrors = $this->recipientErrors($member);
+                if (empty($recipientErrors)) {
+                    $results[] = ['valid' => true, 'id' => $member->id, 'name' => $member->name];
+                } else {
+                    $results[] = ['valid' => false, 'error' => $recipientErrors[0], 'id' => $member->id, 'name' => $member->name];
+                }
+            });
+
+        $total = count($results);
+        if ($total > 0) {
+            return JsonResponse::create(['match' => 'partial', 'data' => $results]);
+        } else {
+            return JsonResponse::create(['error' => ['No matches found.']], 422);
         }
     }
 }
