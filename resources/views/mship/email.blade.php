@@ -60,7 +60,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="form-errors"></div>
-                    <div class="form-horizontal">
+                    <form id="search-form" class="form-horizontal">
                         <div class="form-group">
                             <label for="search-type" class="col-sm-4 control-label">Search by</label>
                             <div class="col-sm-4">
@@ -79,12 +79,10 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-4">
-                                <button type="button" class="btn btn-default" id="recipient-submit"
-                                        onclick="recipientSearch()">Search
-                                </button>
+                                <button type="submit" class="btn btn-default" id="recipient-submit">Search</button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                     <div id="results" style="display: none;">
                         <table class="table table-striped">
                             <tr>
@@ -107,7 +105,9 @@
 
 @section('scripts')
     <script type="text/javascript">
-        function recipientSearch() {
+        $('#search-form').submit(function(event) {
+            event.preventDefault();
+
             var data = {
                 query: $('#recipient-search').val(),
                 type: $('#search-type').val()
@@ -150,7 +150,7 @@
 
                 $('#form-errors').html(errorsHtml);
             });
-        }
+        });
 
         function makeRecipientRow(id, name, status, button) {
             return '<tr><td>' + id + '</td><td>' + name + '</td><td>' + status + '</td><td>' + button + '</td></tr>';
