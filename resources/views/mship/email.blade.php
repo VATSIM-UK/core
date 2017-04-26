@@ -152,6 +152,10 @@
             });
         });
 
+        $('#recipientModal').on('shown.bs.modal', function () {
+            $('#recipient-search').select();
+        });
+
         function makeRecipientRow(id, name, status, button) {
             return '<tr><td>' + id + '</td><td>' + name + '</td><td>' + status + '</td><td>' + button + '</td></tr>';
         }
