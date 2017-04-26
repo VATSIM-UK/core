@@ -534,6 +534,10 @@ class Application extends Model
         if ($this->is_transfer) {
             $this->account->removeState(State::findByCode('TRANSFERRING'));
         }
+
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
     }
 
     public function submit()

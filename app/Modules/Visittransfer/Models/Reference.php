@@ -6,6 +6,7 @@ use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use App\Modules\Visittransfer\Events\ReferenceDeleted;
 use App\Modules\Visittransfer\Events\ReferenceAccepted;
@@ -66,7 +67,7 @@ use App\Modules\Visittransfer\Exceptions\Reference\ReferenceAlreadySubmittedExce
  */
 class Reference extends Model
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     protected $table = 'vt_reference';
     protected $primaryKey = 'id';
@@ -140,9 +141,11 @@ class Reference extends Model
 
     public function delete()
     {
-        event(new ReferenceDeleted($this));
+        $deleted = parent::delete();
 
-        parent::delete();
+        if ($deleted === true) {
+            event(new ReferenceDeleted($this));
+        }
     }
 
     public function account()
