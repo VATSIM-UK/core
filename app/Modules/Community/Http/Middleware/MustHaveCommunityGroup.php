@@ -7,7 +7,6 @@ use Closure;
 use Request;
 use Session;
 use Redirect;
-use Response;
 
 class MustHaveCommunityGroup
 {
@@ -27,10 +26,6 @@ class MustHaveCommunityGroup
     {
         if (in_array(\Route::current()->getName(), $this->excludedRoutes)) {
             return $next($request);
-        }
-
-        if (Request::ajax()) {
-            return Response::make('Unauthorised', 401);
         }
 
         if (!Auth::user()->hasState('DIVISION')) {
