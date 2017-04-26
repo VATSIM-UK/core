@@ -38,7 +38,7 @@ class BaseController extends \Illuminate\Routing\Controller
                 ) {
                     $this->account->last_login = \Carbon\Carbon::now();
                     // if the ip has changed, record this too
-                    $ip = $request->ip();
+                    $ip = Request::ip();
                     if ($this->account->last_login_ip != $ip) {
                         $this->account->last_login_ip = $ip;
                     }
