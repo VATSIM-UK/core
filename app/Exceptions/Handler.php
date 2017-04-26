@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
                 }
             }
 
-            if (class_exists(App::class) && App::isBooted()) {
+            if (class_exists(App::class) && App::isBooted() && App::environment('production')) {
                 $this->reportSlackError($e);
             }
 
@@ -71,11 +71,7 @@ class Handler extends ExceptionHandler
 
     protected function reportSlackError(Exception $e)
     {
-        if (App::environment('production')) {
-            $channel = 'wslogging';
-        } else {
-            $channel = 'wslogging_dev';
-        }
+        $channel = 'wslogging';
 
         $attachment = [
             'fallback' => 'Exception thrown: '.get_class($e),
