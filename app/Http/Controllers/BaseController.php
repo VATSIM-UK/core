@@ -38,8 +38,9 @@ class BaseController extends \Illuminate\Routing\Controller
                 ) {
                     $this->account->last_login = \Carbon\Carbon::now();
                     // if the ip has changed, record this too
-                    if ($this->account->last_login_ip != array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1')) {
-                        $this->account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+                    $ip = $request->ip();
+                    if ($this->account->last_login_ip != $ip) {
+                        $this->account->last_login_ip = $ip;
                     }
                     $this->account->save();
                 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\TeamSpeak;
 
 use Redirect;
+use Request;
 use Response;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
@@ -18,7 +19,7 @@ class Registration extends \App\Http\Controllers\BaseController
         }
 
         if (!$this->account->new_ts_registration) {
-            $registration_ip = $_SERVER['REMOTE_ADDR'];
+            $registration_ip = Request::ip();
             $registration = $this->createRegistration($this->account->id, $registration_ip);
         } else {
             $registration = $this->account->new_ts_registration->load('confirmation');

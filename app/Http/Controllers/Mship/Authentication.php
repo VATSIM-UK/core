@@ -86,7 +86,7 @@ class Authentication extends BaseController
         return $this->viewMake('mship.authentication.login_alternative');
     }
 
-    public function postLoginAlternative()
+    public function postLoginAlternative(\Illuminate\Http\Request $request)
     {
         if (!Session::has('cert_offline')) {
             return Redirect::route('mship.auth.login');
@@ -111,7 +111,7 @@ class Authentication extends BaseController
         // We're in!
         // Let's do lots of logins....
         $account->last_login = Carbon::now();
-        $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+        $account->last_login_ip = $request->ip();
         Session::put('auth_extra', Carbon::now());
         $account->save();
 
@@ -227,7 +227,7 @@ class Authentication extends BaseController
             }
 
             $account->last_login = Carbon::now();
-            $account->last_login_ip = array_get($_SERVER, 'REMOTE_ADDR', '127.0.0.1');
+            $account->last_login_ip = Request::ip();
             if ($user->rating->id == -1) {
                 $account->is_inactive = 1;
             } else {
