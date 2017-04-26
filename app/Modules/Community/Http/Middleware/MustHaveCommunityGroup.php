@@ -7,7 +7,6 @@ use Closure;
 use Request;
 use Session;
 use Redirect;
-use Response;
 
 class MustHaveCommunityGroup
 {
