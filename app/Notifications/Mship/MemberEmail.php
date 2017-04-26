@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Mship;
 
-use App\Models\Messages\Thread\Post;
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
+use App\Models\Messages\Thread\Post;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -12,7 +12,8 @@ class MemberEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $post, $allowReply;
+    protected $post;
+    protected $allowReply;
 
     /**
      * Create a new notification instance.

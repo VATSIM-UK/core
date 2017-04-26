@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Models\Messages\Thread;
-use App\Models\Messages\Thread\Participant;
-use App\Models\Messages\Thread\Post;
-use App\Models\Mship\Account;
-use App\Notifications\Mship\MemberEmail;
-use Carbon\Carbon;
 use DB;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Mship\Account;
+use App\Models\Messages\Thread;
+use Illuminate\Http\JsonResponse;
+use App\Models\Messages\Thread\Post;
+use App\Notifications\Mship\MemberEmail;
+use App\Models\Messages\Thread\Participant;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Email extends \App\Http\Controllers\BaseController
 {
@@ -42,7 +42,7 @@ class Email extends \App\Http\Controllers\BaseController
         $this->validate($request, [
             'recipient' => 'required|integer|min:800000|not_in:'.$this->account->id,
             'subject' => 'required|string|max:255',
-            'message' => 'required|string|max:65535'
+            'message' => 'required|string|max:65535',
         ]);
 
         $recipient = Account::find($request->input('recipient'));
@@ -85,7 +85,7 @@ class Email extends \App\Http\Controllers\BaseController
 
         if ($searchType === 'cid') {
             return $this->cidSearch($searchQuery);
-        } else if ($searchType === 'name') {
+        } elseif ($searchType === 'name') {
             return $this->nameSearch($searchQuery);
         } else {
             return JsonResponse::create(['error' => ['Unknown search type.']], 422);
