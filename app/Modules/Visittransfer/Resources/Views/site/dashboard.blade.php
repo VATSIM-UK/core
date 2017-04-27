@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 hidden-xs" id="visitingBoxes">
+        <div class="col-md-8 hidden-xs visiting-boxes" id="visitingBoxes">
             <div class="col-md-6 hidden-xs">
             {!! HTML::panelOpen("Visiting ATC", ["type" => "vuk", "key" => "letter-v"]) !!}
             <!-- Content Of Panel [START] -->

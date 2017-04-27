@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <div class="row">
+    <div class="row no-edge-gutters">
         <div class="col-md-6">
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
