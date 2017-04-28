@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\TeamSpeak;
 
-use Redirect;
 use Request;
+use Redirect;
 use Response;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
