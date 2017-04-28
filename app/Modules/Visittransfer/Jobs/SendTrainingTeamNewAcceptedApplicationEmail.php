@@ -52,9 +52,9 @@ class SendTrainingTeamNewAcceptedApplicationEmail extends Job implements ShouldQ
         foreach ($recipients as $recipient) {
             $createNewMessage = new SendNotificationEmail($subject, $body, Account::find(VATUK_ACCOUNT_SYSTEM), $sender, [
               'sender_display_as' => $displayFrom,
-              'sender_email'      => 'community@vatsim-uk.co.uk',
-              'recipient_email'   => $recipient,
-              'recipient_name'    => $recipientName,
+              'sender_email' => 'community@vatsim-uk.co.uk',
+              'recipient_email' => $recipient,
+              'recipient_name' => $recipientName,
           ]);
             dispatch($createNewMessage->onQueue('emails'));
         }

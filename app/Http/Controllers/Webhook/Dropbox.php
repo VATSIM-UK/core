@@ -31,7 +31,7 @@ class Dropbox extends WebhookController
         // get the changed entries
         $entries = DropboxLibrary::getUpdates($cursor);
 
-        $tags  = '';
+        $tags = '';
         $names = '';
         $paths = '';
 
@@ -43,8 +43,8 @@ class Dropbox extends WebhookController
         }
 
         $fields = [
-            'Path:'      => trim($paths, "\n"),
-            'Tag:'       => trim($tags, "\n"),
+            'Path:' => trim($paths, "\n"),
+            'Tag:' => trim($tags, "\n"),
             'File name:' => trim($names, "\n"),
         ];
 

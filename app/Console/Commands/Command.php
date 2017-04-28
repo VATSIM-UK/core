@@ -77,10 +77,10 @@ class Command extends BaseCommand
     protected function sendSlackMessageFormatted($to, $pretext, $message, $colour = 'danger', $fields = [], $from = null)
     {
         $attachment = [
-            'pretext'     => '@here: '.$pretext,
-            'fallback'    => $message,
+            'pretext' => '@here: '.$pretext,
+            'fallback' => $message,
             'author_name' => 'VATSIM UK Slack Bot',
-            'color'       => $colour,
+            'color' => $colour,
         ];
 
         $attachment['author_link'] = $this->getAuthorLink();
@@ -112,11 +112,11 @@ class Command extends BaseCommand
     {
         // define the message/attachment to send
         $attachment = [
-            'pretext'     => '@here: An error has occurred:',
-            'fallback'    => $message,
+            'pretext' => '@here: An error has occurred:',
+            'fallback' => $message,
             'author_name' => get_class($this),
-            'color'       => 'danger',
-            'fields'      => [
+            'color' => 'danger',
+            'fields' => [
                 [
                     'title' => 'Command name:',
                     'value' => (new \ReflectionClass($this))->getShortName(),
@@ -160,10 +160,10 @@ class Command extends BaseCommand
             return false;
         }
         $attachment = [
-            'fallback'    => $message,
+            'fallback' => $message,
             'author_name' => get_class($this),
-            'color'       => 'good',
-            'fields'      => [
+            'color' => 'good',
+            'fields' => [
                 [
                     'title' => 'Command name:',
                     'value' => (new \ReflectionClass($this))->getShortName(),

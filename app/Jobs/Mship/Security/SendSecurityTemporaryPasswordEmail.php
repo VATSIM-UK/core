@@ -16,12 +16,12 @@ class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
-    private $password  = null;
+    private $password = null;
 
     public function __construct(Account $recipient, $password)
     {
         $this->recipient = $recipient;
-        $this->password  = $password;
+        $this->password = $password;
     }
 
     /**
@@ -33,15 +33,15 @@ class SendSecurityTemporaryPasswordEmail extends Job implements ShouldQueue
     public function handle(Mailer $mailer)
     {
         $displayFrom = 'VATSIM UK - Community Department';
-        $subject     = 'SSO Security - New Password';
-        $body        = View::make('emails.mship.security.reset_password')
+        $subject = 'SSO Security - New Password';
+        $body = View::make('emails.mship.security.reset_password')
                      ->with('account', $this->recipient)
                      ->with('password', $this->password)
                      ->render();
 
-        $sender           = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml           = true;
-        $systemGenerated  = true;
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
         dispatch($createNewMessage->onQueue('emails'));
     }

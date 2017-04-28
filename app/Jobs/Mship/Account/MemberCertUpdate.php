@@ -65,8 +65,8 @@ class MemberCertUpdate extends Job implements ShouldQueue
             }
 
             $member->cert_checked_at = Carbon::now();
-            $member->is_inactive     = (bool) ($this->data->rating < 0);
-            $member->joined_at       = $this->data->regdate;
+            $member->is_inactive = (bool) ($this->data->rating < 0);
+            $member->joined_at = $this->data->regdate;
             $member->save();
 
             try {
@@ -90,8 +90,8 @@ class MemberCertUpdate extends Job implements ShouldQueue
         // if their network ban needs adding
         if ($this->data->rating == 0 && $member->is_network_banned === false) {
             // Add a ban.
-            $newBan               = new Account\Ban();
-            $newBan->type         = Account\Ban::TYPE_NETWORK;
+            $newBan = new Account\Ban();
+            $newBan->type = Account\Ban::TYPE_NETWORK;
             $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
             $newBan->period_start = Carbon::now();
             $newBan->save();
@@ -102,7 +102,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
 
         // if their network ban has expired
         if ($member->is_network_banned === true && $this->data->rating != 0) {
-            $ban                = $member->network_ban;
+            $ban = $member->network_ban;
             $ban->period_finish = Carbon::now();
             $ban->save();
         }

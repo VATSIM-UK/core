@@ -55,12 +55,12 @@ class Ban extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'mship_account_ban';
+    protected $table = 'mship_account_ban';
     protected $primaryKey = 'id';
-    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
-    protected $touches    = ['account'];
+    protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
+    protected $touches = ['account'];
 
-    const TYPE_LOCAL   = 80;
+    const TYPE_LOCAL = 80;
     const TYPE_NETWORK = 90;
 
     public static function scopeIsNetwork($query)
@@ -136,9 +136,9 @@ class Ban extends \App\Models\Model
 
     public function getIsActiveAttribute()
     {
-        $period_start  = $this->period_start;
+        $period_start = $this->period_start;
         $period_finish = $this->period_finish;
-        $now           = \Carbon\Carbon::now();
+        $now = \Carbon\Carbon::now();
 
         return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }

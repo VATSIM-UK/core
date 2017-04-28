@@ -17,13 +17,13 @@ class SendMessageEmail extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     private $post;
-    private $isNew             = true;
+    private $isNew = true;
     private $verificationEmail = null;
 
     public function __construct(Post $post, $isNew = true, Email $verificationEmail = null)
     {
-        $this->post              = $post;
-        $this->isNew             = (bool) $isNew;
+        $this->post = $post;
+        $this->isNew = (bool) $isNew;
         $this->verificationEmail = $verificationEmail;
     }
 
@@ -31,7 +31,7 @@ class SendMessageEmail extends Job implements ShouldQueue
     {
         URL::forceRootUrl('https://'.Config::get('app.url'));
 
-        $post  = $this->post;
+        $post = $this->post;
         $isNew = $this->isNew;
 
         // Let's get all participants of the post.

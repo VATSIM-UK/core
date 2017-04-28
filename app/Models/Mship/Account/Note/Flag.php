@@ -17,10 +17,10 @@ class Flag extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
 
-    protected $table      = 'mship_account_note_flag';
+    protected $table = 'mship_account_note_flag';
     protected $primaryKey = 'account_note_flag_id';
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden     = ['account_note_flag_id'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['account_note_flag_id'];
 
     public function flagger()
     {

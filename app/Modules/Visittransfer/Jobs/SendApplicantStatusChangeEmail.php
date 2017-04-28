@@ -41,7 +41,7 @@ class SendApplicantStatusChangeEmail extends Job implements ShouldQueue
 
         $createNewMessage = new SendNotificationEmail($subject, $body, $this->application->account, $sender, [
             'sender_display_as' => $displayFrom,
-            'sender_email'      => 'community@vatsim-uk.co.uk',
+            'sender_email' => 'community@vatsim-uk.co.uk',
         ]);
 
         dispatch($createNewMessage->onQueue('emails'));

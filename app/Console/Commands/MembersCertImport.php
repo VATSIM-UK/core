@@ -30,9 +30,9 @@ class MembersCertImport extends Command
      */
     protected $description = 'Import/update member emails from CERT AutoTools';
 
-    protected $count_new    = 0;
+    protected $count_new = 0;
     protected $count_emails = 0;
-    protected $count_none   = 0;
+    protected $count_none = 0;
     protected $member_list;
     protected $member_email_list;
 
@@ -58,9 +58,9 @@ class MembersCertImport extends Command
         }
 
         $this->sendSlackSuccess('Members imported.', [
-            'New Members:'           => $this->count_new,
+            'New Members:' => $this->count_new,
             'Member Emails Updated:' => $this->count_emails,
-            'Unchanged Members:'     => $this->count_none,
+            'Unchanged Members:' => $this->count_none,
         ]);
     }
 
@@ -89,11 +89,11 @@ class MembersCertImport extends Command
     protected function createNewMember($member_data)
     {
         $member = new Account([
-            'id'         => $member_data['cid'],
+            'id' => $member_data['cid'],
             'name_first' => $member_data['name_first'],
-            'name_last'  => $member_data['name_last'],
-            'email'      => $member_data['email'],
-            'joined_at'  => $member_data['reg_date'],
+            'name_last' => $member_data['name_last'],
+            'email' => $member_data['email'],
+            'joined_at' => $member_data['reg_date'],
         ]);
         $member->is_inactive = (bool) ($member_data['rating_atc'] < 0);
         $member->save();
@@ -146,10 +146,10 @@ class MembersCertImport extends Command
 
     protected function updateMember($member_data)
     {
-        $member             = Account::find($member_data['cid']);
+        $member = Account::find($member_data['cid']);
         $member->name_first = $member_data['name_first'];
-        $member->name_last  = $member_data['name_last'];
-        $member->email      = $member_data['email'];
+        $member->name_last = $member_data['name_last'];
+        $member->email = $member_data['email'];
         $member->save();
 
         try {

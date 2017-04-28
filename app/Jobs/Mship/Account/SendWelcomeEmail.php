@@ -24,12 +24,12 @@ class SendWelcomeEmail extends \App\Jobs\Job implements ShouldQueue
     public function handle(Mailer $mailer)
     {
         $displayFrom = 'VATSIM UK Community Department';
-        $subject     = 'Welcome to VATSIM UK';
-        $body        = View::make('emails.mship.account.welcome')->with('account', $this->account)->render();
+        $subject = 'Welcome to VATSIM UK';
+        $body = View::make('emails.mship.account.welcome')->with('account', $this->account)->render();
 
-        $sender              = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml              = true;
-        $systemGenerated     = true;
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
         $createNewMessageJob = new CreateNewMessage($sender, $this->account, $subject, $body, $displayFrom, $isHtml, $systemGenerated);
         dispatch($createNewMessageJob->onQueue('med'));
     }

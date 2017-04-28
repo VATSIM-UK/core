@@ -18,9 +18,9 @@ class ApiTracking
     {
         $apiRequest = \App\Models\Api\Request::create([
             'api_account_id' => \Auth::guard('api')->user()->id,
-            'method'         => $request->method(),
-            'url_name'       => $request->route()->getName(),
-            'url_full'       => $request->url(),
+            'method' => $request->method(),
+            'url_name' => $request->route()->getName(),
+            'url_full' => $request->url(),
         ]);
 
         return $next($request);

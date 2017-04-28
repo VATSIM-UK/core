@@ -25,6 +25,6 @@ class ShortURL extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'short_url';
+    protected $table = 'short_url';
     protected $primaryKey = 'id';
 }

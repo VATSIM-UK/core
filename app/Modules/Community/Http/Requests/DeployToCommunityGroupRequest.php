@@ -38,8 +38,8 @@ class DeployToCommunityGroupRequest extends FormRequest
     {
         return [
             'check.required' => 'You must specify a group to join.',
-            'check.numeric'  => 'You have selected an invalid group.',
-            'check.min'      => 'You have selected an invalid group.',
+            'check.numeric' => 'You have selected an invalid group.',
+            'check.min' => 'You have selected an invalid group.',
         ];
     }
 

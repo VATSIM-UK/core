@@ -19,7 +19,7 @@ class AddMemberNicknameToAccount extends Migration
         $existingAliases = DB::table('teamspeak_alias')->select('*')->get();
 
         foreach ($existingAliases as $alias) {
-            $account           = \App\Models\Mship\Account::find($alias->account_id);
+            $account = \App\Models\Mship\Account::find($alias->account_id);
             $account->nickname = $alias->display_name;
             $account->save();
         }
@@ -47,7 +47,7 @@ class AddMemberNicknameToAccount extends Migration
         foreach ($nicknames as $nick) {
             if (!is_null($nick->nickname)) {
                 DB::table('teamspeak_alias')->insert([
-                    'account_id'   => $nick->id,
+                    'account_id' => $nick->id,
                     'display_name' => $nick->nickname,
                 ]);
             }

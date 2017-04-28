@@ -17,42 +17,42 @@ class SendNotificationEmail extends Job implements ShouldQueue
     private $subject;
     private $body;
     private $sender;
-    private $senderEmail     = null;
+    private $senderEmail = null;
     private $senderDisplayAs = null;
     private $recipient;
     private $recipientEmail = null;
-    private $recipientName  = null;
+    private $recipientName = null;
 
     public function __construct($subject, $body, Account $recipient, Account $sender, array $overrides = [])
     {
-        $this->subject         = $subject;
-        $this->body            = $body;
-        $this->sender          = $sender;
+        $this->subject = $subject;
+        $this->body = $body;
+        $this->sender = $sender;
         $this->senderDisplayAs = array_get($overrides, 'sender_display_as');
-        $this->senderEmail     = array_get($overrides, 'sender_email');
-        $this->recipient       = $recipient;
-        $this->recipientEmail  = array_get($overrides, 'recipient_email');
-        $this->recipientName   = array_get($overrides, 'recipient_name');
+        $this->senderEmail = array_get($overrides, 'sender_email');
+        $this->recipient = $recipient;
+        $this->recipientEmail = array_get($overrides, 'recipient_email');
+        $this->recipientName = array_get($overrides, 'recipient_name');
     }
 
     public function handle(Mailer $mailer)
     {
-        $sender    = $this->sender;
+        $sender = $this->sender;
         $recipient = $this->recipient;
-        $subject   = $this->subject;
-        $body      = $this->body;
+        $subject = $this->subject;
+        $body = $this->body;
 
         $senderDisplayAs = $this->senderDisplayAs;
-        $senderEmail     = $this->senderEmail;
-        $recipientEmail  = $this->recipientEmail;
-        $recipientName   = $this->recipientName;
+        $senderEmail = $this->senderEmail;
+        $recipientEmail = $this->recipientEmail;
+        $recipientName = $this->recipientName;
 
         $mailer->send(['emails.messages.post', 'emails.messages.plain_text'], [
-            'recipient'     => $recipient,
+            'recipient' => $recipient,
             'recipientName' => $recipientName,
-            'sender'        => $sender,
-            'body'          => $body,
-            'subject'       => $this->subject,
+            'sender' => $sender,
+            'body' => $body,
+            'subject' => $this->subject,
         ], function ($m) use ($subject, $recipient, $recipientEmail, $sender, $senderEmail, $senderDisplayAs) {
             $m->subject($subject);
             $m->to(($recipientEmail ? $recipientEmail : $recipient->email), $recipient->name);

@@ -28,11 +28,11 @@ class DownloadAndParse extends \App\Console\Commands\Command
      */
     protected $description = 'Download and parse the VATSIM data feed file.';
 
-    private $vatsimPHP               = null;
-    private $lastUpdatedAt           = null;
-    private $controllerTotalCount    = 0;
+    private $vatsimPHP = null;
+    private $lastUpdatedAt = null;
+    private $controllerTotalCount = 0;
     private $controllerAcceptedCount = 0;
-    private $controllerExpiredCount  = 0;
+    private $controllerExpiredCount = 0;
 
     /**
      * Create a new command instance.
@@ -73,9 +73,9 @@ class DownloadAndParse extends \App\Console\Commands\Command
         Atc::flushCache();
 
         $this->sendSlackSuccess('Completed Successfully', [
-            'Controllers Total'    => $this->controllerTotalCount,
+            'Controllers Total' => $this->controllerTotalCount,
             'Controllers Accepted' => $this->controllerTotalCount,
-            'Controllers Expired'  => $this->controllerAcceptedCount,
+            'Controllers Expired' => $this->controllerAcceptedCount,
         ]);
     }
 
@@ -140,14 +140,14 @@ class DownloadAndParse extends \App\Console\Commands\Command
 
             $atcSession = Atc::updateOrCreate(
                 [
-                    'account_id'        => $account->id,
-                    'callsign'          => $controllerData['callsign'],
-                    'frequency'         => $controllerData['frequency'],
-                    'qualification_id'  => is_null($qualification) ? 0 : $qualification->id,
-                    'facility_type'     => $controllerData['facilitytype'],
-                    'connected_at'      => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
-                    'disconnected_at'   => null,
-                    'deleted_at'        => null,
+                    'account_id' => $account->id,
+                    'callsign' => $controllerData['callsign'],
+                    'frequency' => $controllerData['frequency'],
+                    'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
+                    'facility_type' => $controllerData['facilitytype'],
+                    'connected_at' => Carbon::createFromFormat('YmdHis', $controllerData['time_logon']),
+                    'disconnected_at' => null,
+                    'deleted_at' => null,
                 ],
                 [
                     'updated_at' => Carbon::now(),

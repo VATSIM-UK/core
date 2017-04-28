@@ -43,8 +43,8 @@ class AtcSessionRecordedConfirmation extends Notification implements ShouldQueue
             ->attachment(function ($attachment) {
                 $attachment->title('Session '.$this->atcSession->public_id.' - '.$this->atcSession->callsign)
                            ->fields([
-                               'Connected At'         => $this->atcSession->connected_at->toDateTimeString(),
-                               'Disconnected At'      => $this->atcSession->disconnected_at->toDateTimeString(),
+                               'Connected At' => $this->atcSession->connected_at->toDateTimeString(),
+                               'Disconnected At' => $this->atcSession->disconnected_at->toDateTimeString(),
                                'Time Recorded (Mins)' => $this->atcSession->minutes_online,
                            ]);
             });
