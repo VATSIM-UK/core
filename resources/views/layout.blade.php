@@ -38,7 +38,14 @@
                     {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo", ["align" => "left", "height" => "70%"]) !!}
                 </a>
             </div>
-            <div class="collapse navbar-collapse js-navbar-collapse">
+
+            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav">
+                <span class="nav-collapsed-icon"></span>
+                <span class="nav-collapsed-icon"></span>
+                <span class="nav-collapsed-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse js-navbar-collapse" id="nav">
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                         {!! link_to_route("default", "Home") !!}
@@ -188,7 +195,7 @@
     </div>
 
     <div class="page_content">
-        <div class="row">
+        <div class="container-fluid">
             @if(Session::has('error') OR isset($error))
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
@@ -219,7 +226,7 @@
             @endif
         </div>
 
-        <div class="row">
+        <div class="container-fluid">
             @yield('content', "No content to display")
         </div>
 
