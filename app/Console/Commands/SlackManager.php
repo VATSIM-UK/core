@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use GuzzleHttp\Exception\ServerException;
 use SlackUser;
 use App\Models\Mship\Account;
 
@@ -48,29 +49,38 @@ class SlackManager extends Command
         $this->slackUsers = SlackUser::lists();
 
         foreach ($this->slackUsers->members as $slackUser) {
-            $localUser = Account::findWithSlackId($slackUser->id);
-            $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
+            try {
+                $localUser = Account::findWithSlackId($slackUser->id);
+                $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
-            if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
-                continue;
-            }
+                if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
+                    continue;
+                }
 
-            if (!$localUser || $localUser->exists == false) {
-                $this->messageUserAdvisingOfRegistration($slackUser);
-                continue;
-            }
+                if (!$localUser || $localUser->exists == false) {
+                    $this->messageUserAdvisingOfRegistration($slackUser);
+                    continue;
+                }
 
-            if ($slackUser->presence == 'active' && $localUser->is_banned) {
-                $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
-            }
+                if ($slackUser->presence == 'active' && $localUser->is_banned) {
+                    $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
+                }
 
-            if (!$localUser->isValidDisplayName($slackUser->real_name)) {
-                $this->messageAskingForRealName($localUser, $slackUser);
-            }
+                if (!$localUser->isValidDisplayName($slackUser->real_name)) {
+                    $this->messageAskingForRealName($localUser, $slackUser);
+                }
 
 //            if(strcasecmp($localUser->email, $slackUser->profile->email) != 0){
 //                $this->messageAskingForRealEmail($localUser, $slackUser);
 //            }
+            } catch (ServerException $e) {
+                $this->log('Caught: '.get_class($e));
+                $this->log($e->getTraceAsString());
+
+                $this->sendSlackError('Exception processing client.', [
+                    'id' => $slackUser->id,
+                ]);
+            }
         }
     }
 
