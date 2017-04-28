@@ -1,9 +1,9 @@
 @extends('layout')
 
 @section('content')
-    <div class="row no-edge-gutters">
+    <div class="row">
         <div class="col-md-6">
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Personal Details</div>
                     <div class="panel-body">
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-lock"></i> &thinsp; Secondary Password</div>
                     <div class="panel-body">
@@ -127,7 +127,7 @@
             </div>
 
             @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-cogs"></i>
                             &thinsp;
@@ -223,7 +223,7 @@
                 </div>
             @endif
 
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications</div>
                     <div class="panel-body">
@@ -299,7 +299,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="col-md-12">
+            <div class="">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
                     <i class="fa fa-envelope"></i>&thinsp;
@@ -377,7 +377,7 @@
         </div>
 
             @if(!$_account->is_banned)
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
                             &thinsp;
@@ -429,7 +429,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-slack"></i>
                             &thinsp;
