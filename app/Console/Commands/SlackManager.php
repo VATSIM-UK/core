@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use ErrorException;
+use Exception;
 use GuzzleHttp\Exception\ServerException;
 use SlackUser;
 use App\Models\Mship\Account;
@@ -73,11 +75,11 @@ class SlackManager extends Command
 //            if(strcasecmp($localUser->email, $slackUser->profile->email) != 0){
 //                $this->messageAskingForRealEmail($localUser, $slackUser);
 //            }
-            } catch (ServerException $e) {
+            } catch (Exception $e) {
                 $this->log('Caught: '.get_class($e));
                 $this->log($e->getTraceAsString());
 
-                $this->sendSlackError('Exception processing client.', [
+                $this->sendSlackError('ServerException processing client.', [
                     'id' => $slackUser->id,
                 ]);
             }
