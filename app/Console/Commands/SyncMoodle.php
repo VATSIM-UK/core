@@ -63,36 +63,36 @@ class SyncMoodle extends Command
                 if ($inGoodStanding && $moodleUser === false) {
                     $this->log('User does not exist, creating', 'comment');
                     DB::table('vatuk_moodle.mdl_user')->insert([
-                        'auth'         => 'vatsim',
-                        'deleted'      => 0,
-                        'confirmed'    => 1,
+                        'auth' => 'vatsim',
+                        'deleted' => 0,
+                        'confirmed' => 1,
                         'policyagreed' => 1,
-                        'mnethostid'   => 1,
-                        'username'     => $member->id,
-                        'password'     => md5(str_random(60)),
-                        'firstname'    => $member->name_first,
-                        'lastname'     => $member->name_last,
-                        'email'        => $email,
-                        'vatuk_cron'   => 1,
+                        'mnethostid' => 1,
+                        'username' => $member->id,
+                        'password' => md5(str_random(60)),
+                        'firstname' => $member->name_first,
+                        'lastname' => $member->name_last,
+                        'email' => $email,
+                        'vatuk_cron' => 1,
                     ]);
                 } elseif ($moodleUser) {
                     $old = [
-                        'auth'       => $members_moodle[$moodleUser]->auth,
-                        'deleted'    => $members_moodle[$moodleUser]->deleted,
-                        'firstname'  => $members_moodle[$moodleUser]->firstname,
-                        'lastname'   => $members_moodle[$moodleUser]->lastname,
-                        'idnumber'   => $members_moodle[$moodleUser]->idnumber,
-                        'email'      => $members_moodle[$moodleUser]->email,
+                        'auth' => $members_moodle[$moodleUser]->auth,
+                        'deleted' => $members_moodle[$moodleUser]->deleted,
+                        'firstname' => $members_moodle[$moodleUser]->firstname,
+                        'lastname' => $members_moodle[$moodleUser]->lastname,
+                        'idnumber' => $members_moodle[$moodleUser]->idnumber,
+                        'email' => $members_moodle[$moodleUser]->email,
                         'vatuk_cron' => 1,
                     ];
 
                     $new = [
-                        'auth'       => $inGoodStanding ? 'vatsim' : 'nologin',
-                        'deleted'    => $inGoodStanding ? 0 : 1,
-                        'firstname'  => $member->name_first,
-                        'lastname'   => $member->name_last,
-                        'idnumber'   => $member->id,
-                        'email'      => $email,
+                        'auth' => $inGoodStanding ? 'vatsim' : 'nologin',
+                        'deleted' => $inGoodStanding ? 0 : 1,
+                        'firstname' => $member->name_first,
+                        'lastname' => $member->name_last,
+                        'idnumber' => $member->id,
+                        'email' => $email,
                         'vatuk_cron' => 1,
                     ];
 

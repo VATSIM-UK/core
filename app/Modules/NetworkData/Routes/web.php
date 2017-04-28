@@ -5,23 +5,23 @@ Route::get('/network-data', function () {
 });
 
 Route::group([
-    'as'         => 'networkdata.admin.',
-    'namespace'  => 'Admin',
-    'domain'     => config('app.url'),
-    'prefix'     => 'adm/network-data',
+    'as' => 'networkdata.admin.',
+    'namespace' => 'Admin',
+    'domain' => config('app.url'),
+    'prefix' => 'adm/network-data',
     'middleware' => ['auth.admin'],
 ], function () {
     Route::get('/', [
-        'as'   => 'dashboard',
+        'as' => 'dashboard',
         'uses' => 'Dashboard@getDashboard',
     ]);
 });
 
 Route::group([
-    'as'         => 'networkdata.',
-    'namespace'  => 'Site',
-    'domain'     => config('app.url'),
-    'prefix'     => 'network-data',
+    'as' => 'networkdata.',
+    'namespace' => 'Site',
+    'domain' => config('app.url'),
+    'prefix' => 'network-data',
     'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', function () {

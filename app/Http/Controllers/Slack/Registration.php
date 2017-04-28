@@ -34,7 +34,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
             $slackUserAdmin = SlackUserAdmin::invite($this->account->email, [
                 'first_name' => $this->account->name_first,
-                'last_name'  => $this->account->name_last,
+                'last_name' => $this->account->name_last,
             ]);
 
             /*if($slackUserAdmin->ok != "true"){

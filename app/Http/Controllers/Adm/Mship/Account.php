@@ -447,7 +447,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra  = $ban->reason_extra."\n".Input::get('reason_extra');
+        $ban->reason_extra = $ban->reason_extra."\n".Input::get('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
@@ -492,7 +492,7 @@ class Account extends AdmController
 
         // Get all filters
         $filters = Input::get('filter', []);
-        $qs      = '';
+        $qs = '';
         foreach ($filters as $f) {
             $qs .= 'filter['.$f.']=1&';
         }

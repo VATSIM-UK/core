@@ -22,9 +22,9 @@ namespace App\Models\Sys;
  */
 class Session extends \App\Models\Model
 {
-    protected $table      = 'sys_sessions';
+    protected $table = 'sys_sessions';
     protected $primaryKey = 'id';
-    protected $hidden     = ['session_id'];
+    protected $hidden = ['session_id'];
 
     public function account()
     {

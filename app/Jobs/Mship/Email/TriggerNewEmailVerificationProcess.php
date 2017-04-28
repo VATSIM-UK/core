@@ -14,12 +14,12 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    private $email   = null;
+    private $email = null;
     private $account = null;
 
     public function __construct(Account\Email $email)
     {
-        $this->email   = $email;
+        $this->email = $email;
         $this->account = $email->account;
     }
 
@@ -34,9 +34,9 @@ class TriggerNewEmailVerificationProcess extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $tokenType       = 'mship_account_email_verify';
+        $tokenType = 'mship_account_email_verify';
         $allowDuplicates = false;
-        $generatedToken  = Token::generate($tokenType, $allowDuplicates, $this->email);
+        $generatedToken = Token::generate($tokenType, $allowDuplicates, $this->email);
 
         $sendNewEmailVerificationEmail = new SendNewEmailVerificationEmail($this->email, $generatedToken);
         dispatch($sendNewEmailVerificationEmail->onQueue('med'));

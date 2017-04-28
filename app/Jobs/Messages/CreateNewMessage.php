@@ -12,31 +12,31 @@ use App\Models\Messages\Thread\Participant;
 
 class CreateNewMessage extends Job
 {
-    private $sender            = null;
-    private $displaySenderAs   = null;
-    private $recipient         = null;
-    private $subject           = null;
-    private $body              = null;
-    private $systemGenerated   = false;
+    private $sender = null;
+    private $displaySenderAs = null;
+    private $recipient = null;
+    private $subject = null;
+    private $body = null;
+    private $systemGenerated = false;
     private $verificationEmail = null;
 
     // TODO: Find a nice way of overriding the email we're sending to.
     public function __construct(Account $sender, Account $recipient, $subject, $body, $displaySenderAs = null, $isHtml = true, $systemGenerated = false, Account\Email $email = null)
     {
-        $this->sender            = $sender;
-        $this->displaySenderAs   = $displaySenderAs;
-        $this->recipient         = $recipient;
-        $this->subject           = $subject;
-        $this->body              = $body;
-        $this->systemGenerated   = $systemGenerated;
+        $this->sender = $sender;
+        $this->displaySenderAs = $displaySenderAs;
+        $this->recipient = $recipient;
+        $this->subject = $subject;
+        $this->body = $body;
+        $this->systemGenerated = $systemGenerated;
         $this->verificationEmail = $email;
     }
 
     public function handle(Mailer $mailer)
     {
         // Let's build the thread
-        $thread            = new Thread();
-        $thread->subject   = $this->subject;
+        $thread = new Thread();
+        $thread->subject = $this->subject;
         $thread->read_only = (bool) $this->systemGenerated;
         $thread->save();
 
@@ -46,7 +46,7 @@ class CreateNewMessage extends Job
         $thread->participants()->save($this->recipient, ['status' => Participant::STATUS_VIEWER]);
 
         // Now the post.
-        $post          = new Post();
+        $post = new Post();
         $post->content = $this->body;
         $thread->posts()->save($post);
         $this->sender->messagePosts()->save($post);

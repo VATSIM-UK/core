@@ -38,10 +38,10 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class Security extends \Eloquent
 {
     use SoftDeletingTrait, RecordsActivity;
-    protected $table      = 'mship_security';
+    protected $table = 'mship_security';
     protected $primaryKey = 'security_id';
-    protected $dates      = ['created_at', 'deleted_at'];
-    protected $hidden     = ['security_id'];
+    protected $dates = ['created_at', 'deleted_at'];
+    protected $hidden = ['security_id'];
 
     public function accountSecurity()
     {

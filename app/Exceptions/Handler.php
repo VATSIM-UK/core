@@ -74,11 +74,11 @@ class Handler extends ExceptionHandler
         $channel = 'wslogging';
 
         $attachment = [
-            'fallback'    => 'Exception thrown: '.get_class($e),
-            'text'        => $e->getTraceAsString(),
+            'fallback' => 'Exception thrown: '.get_class($e),
+            'text' => $e->getTraceAsString(),
             'author_name' => get_class($e),
-            'color'       => 'danger',
-            'fields'      => [
+            'color' => 'danger',
+            'fields' => [
                 [
                     'title' => 'Exception:',
                     'value' => (new \ReflectionClass($e))->getShortName(),

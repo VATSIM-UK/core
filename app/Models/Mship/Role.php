@@ -35,13 +35,13 @@ class Role extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'mship_role';
+    protected $table = 'mship_role';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable   = ['name', 'default'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
-    protected $rules      = [
-        'name'    => 'required|between:4,40',
+    protected $rules = [
+        'name' => 'required|between:4,40',
         'default' => 'required|boolean',
     ];
 

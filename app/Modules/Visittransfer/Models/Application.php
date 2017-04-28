@@ -31,11 +31,11 @@ class Application extends Model
 {
     use PublicId, SoftDeletes;
 
-    protected static $public_id_salt       = 'vatsim-uk-visiting-transfer-applications';
+    protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
     protected static $public_id_min_length = 8;
-    protected static $public_id_alphabet   = 'upper_alphanumeric';
+    protected static $public_id_alphabet = 'upper_alphanumeric';
 
-    protected $table    = 'vt_application';
+    protected $table = 'vt_application';
     protected $fillable = [
         'type',
         'training_team',
@@ -46,27 +46,27 @@ class Application extends Model
         'expires_at',
     ];
     public $timestamps = true;
-    protected $dates   = [
+    protected $dates = [
         'expires_at',
         'submitted_at',
         'created_at',
         'updated_at',
     ];
 
-    const TYPE_VISIT    = 10;
+    const TYPE_VISIT = 10;
     const TYPE_TRANSFER = 40;
 
-    const STATUS_IN_PROGRESS  = 10; // Member hasn't yet submitted application formally.
-    const STATUS_WITHDRAWN    = 15; // Application has been withdrawn.
-    const STATUS_EXPIRED      = 16; // Application expired after 1 hour.
-    const STATUS_SUBMITTED    = 30; // Member has formally submitted application.
+    const STATUS_IN_PROGRESS = 10; // Member hasn't yet submitted application formally.
+    const STATUS_WITHDRAWN = 15; // Application has been withdrawn.
+    const STATUS_EXPIRED = 16; // Application expired after 1 hour.
+    const STATUS_SUBMITTED = 30; // Member has formally submitted application.
     const STATUS_UNDER_REVIEW = 50; // References and checks have been completed.
-    const STATUS_ACCEPTED     = 60; // Application has been accepted by staff
+    const STATUS_ACCEPTED = 60; // Application has been accepted by staff
     const STATUS_PENDING_CERT = 70; // Application has been completed, but is pending a cert update to be formally complete.
-    const STATUS_COMPLETED    = 90; // Application has been formally completed, visit/transfer complete.
-    const STATUS_LAPSED       = 93; // Application has lapsed.
-    const STATUS_CANCELLED    = 96; // Application has been cancelled
-    const STATUS_REJECTED     = 99; // Application has been rejected by staff
+    const STATUS_COMPLETED = 90; // Application has been formally completed, visit/transfer complete.
+    const STATUS_LAPSED = 93; // Application has lapsed.
+    const STATUS_CANCELLED = 96; // Application has been cancelled
+    const STATUS_REJECTED = 99; // Application has been rejected by staff
 
     public static $APPLICATION_IS_CONSIDERED_EDITABLE = [
         self::STATUS_IN_PROGRESS,
@@ -384,11 +384,11 @@ class Application extends Model
 
         $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        $this->training_required     = $facility->training_required;
-        $this->statement_required    = $facility->stage_statement_enabled;
-        $this->references_required   = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
+        $this->training_required = $facility->training_required;
+        $this->statement_required = $facility->stage_statement_enabled;
+        $this->references_required = $facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0;
         $this->should_perform_checks = $facility->stage_checks;
-        $this->will_auto_accept      = $facility->auto_acceptance;
+        $this->will_auto_accept = $facility->auto_acceptance;
 
         $facility->applications()->save($this);
     }
@@ -400,7 +400,7 @@ class Application extends Model
         $this->guardAgainstTooManyReferees();
 
         $referee = new Reference([
-            'email'        => $email,
+            'email' => $email,
             'relationship' => $relationship,
         ]);
 
@@ -453,7 +453,7 @@ class Application extends Model
         $this->guardAgainstInvalidSubmission();
 
         $this->attributes['submitted_at'] = Carbon::now();
-        $this->attributes['status']       = self::STATUS_SUBMITTED;
+        $this->attributes['status'] = self::STATUS_SUBMITTED;
         $this->save();
 
         event(new ApplicationSubmitted($this));
@@ -468,7 +468,7 @@ class Application extends Model
 
         if ($staffReason) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was progressed to 'Under Review'.\n".$staffReason;
-            $note        = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -480,13 +480,13 @@ class Application extends Model
     {
         $this->guardAgainstNonRejectableApplication();
 
-        $this->status      = self::STATUS_REJECTED;
+        $this->status = self::STATUS_REJECTED;
         $this->status_note = $publicReason;
         $this->save();
 
         if ($staffReason) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was rejected.\n".$staffReason;
-            $note        = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -507,7 +507,7 @@ class Application extends Model
 
         if ($staffComment) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was accepted.\n".$staffComment;
-            $note        = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -536,7 +536,7 @@ class Application extends Model
 
         if ($staffComment) {
             $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n".$staffComment;
-            $note        = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
             $this->notes()->save($note);
             // TODO: Investigate why this is required!!!!
         }
@@ -609,7 +609,7 @@ class Application extends Model
         }
 
         $currentATCQualification = $this->account->qualification_atc;
-        $application90DayCutOff  = $this->submitted_at->subDays(90);
+        $application90DayCutOff = $this->submitted_at->subDays(90);
 
         return $currentATCQualification->pivot->created_at->lt($application90DayCutOff);
     }

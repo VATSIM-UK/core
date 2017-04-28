@@ -17,28 +17,28 @@ class SendNewEmailVerificationEmail extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     private $recipient = null;
-    private $token     = null;
-    private $email     = null;
+    private $token = null;
+    private $email = null;
 
     public function __construct(Account\Email $recipientEmail, Token $token)
     {
         $this->recipient = $recipientEmail->account;
-        $this->token     = $token;
-        $this->email     = $recipientEmail;
+        $this->token = $token;
+        $this->email = $recipientEmail;
     }
 
     public function handle(Mailer $mailer)
     {
         $displayFrom = 'VATSIM UK - Community Department';
-        $subject     = 'New Email Added - Verification Required';
-        $body        = \View::make('emails.mship.account.email_add')
+        $subject = 'New Email Added - Verification Required';
+        $body = \View::make('emails.mship.account.email_add')
                      ->with('account', $this->recipient)
                      ->with('token', $this->token)
                      ->render();
 
-        $sender           = Account::find(VATUK_ACCOUNT_SYSTEM);
-        $isHtml           = true;
-        $systemGenerated  = true;
+        $sender = Account::find(VATUK_ACCOUNT_SYSTEM);
+        $isHtml = true;
+        $systemGenerated = true;
         $createNewMessage = new CreateNewMessage($sender, $this->recipient, $subject, $body, $displayFrom, $isHtml, $systemGenerated, $this->email);
         dispatch($createNewMessage->onQueue('emails'));
     }

@@ -27,8 +27,8 @@ class MigrateSecurityPasswordsToMshipAccount extends Migration
             DB::table('mship_account')
               ->where('id', '=', $password->account_id)
               ->update([
-                  'password'            => $password->value,
-                  'password_set_at'     => $password->created_at,
+                  'password' => $password->value,
+                  'password_set_at' => $password->created_at,
                   'password_expires_at' => $password->expires_at,
               ]);
         }
@@ -90,13 +90,13 @@ class MigrateSecurityPasswordsToMshipAccount extends Migration
 
         foreach ($passwords as $password) {
             DB::table('mship_account_security')->insert([
-                'account_id'  => $password->id,
+                'account_id' => $password->id,
                 'security_id' => $defaultId,
-                'value'       => $password->password,
-                'expires_at'  => $password->password_expires_at,
-                'created_at'  => $password->password_set_at,
-                'updated_at'  => $password->password_set_at,
-                'deleted_at'  => null,
+                'value' => $password->password,
+                'expires_at' => $password->password_expires_at,
+                'created_at' => $password->password_set_at,
+                'updated_at' => $password->password_set_at,
+                'deleted_at' => null,
             ]);
         }
 

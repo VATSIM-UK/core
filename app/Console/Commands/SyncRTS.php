@@ -46,7 +46,7 @@ class SyncRTS extends Command
 
         $members = $members->get();
 
-        $output     = 'Querying members...';
+        $output = 'Querying members...';
         $numupdated = 0;
 
         $this->log($output."OK.\n");
@@ -77,7 +77,7 @@ class SyncRTS extends Command
 
         // calculate pilot rating
         $pRating = 0;
-        $pQuals  = $member->qualifications_pilot;
+        $pQuals = $member->qualifications_pilot;
         if (count($pQuals) > 0) {
             foreach ($pQuals as $qual) {
                 $pRating += $qual->vatsim;
@@ -85,8 +85,8 @@ class SyncRTS extends Command
         }
 
         // set and process data
-        $email            = $member->email;
-        $sso_account_id   = $this->sso_account_id;
+        $email = $member->email;
+        $sso_account_id = $this->sso_account_id;
         $ssoEmailAssigned = $member->ssoEmails->filter(function ($ssoemail) use ($sso_account_id) {
             return $ssoemail->sso_account_id == $sso_account_id;
         })->values();
@@ -96,10 +96,10 @@ class SyncRTS extends Command
         }
 
         $updateData = [
-            'name'            => $member->name_first.' '.$member->name_last,
-            'email'           => $email,
-            'rating'          => $member->qualification_atc->vatsim,
-            'prating'         => $pRating,
+            'name' => $member->name_first.' '.$member->name_last,
+            'email' => $email,
+            'rating' => $member->qualification_atc->vatsim,
+            'prating' => $pRating,
             'last_cert_check' => $member->cert_checked_at,
         ];
 

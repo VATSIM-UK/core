@@ -9,32 +9,32 @@ foreach (Module::enabled() as $module) {
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
     return [
-        'id'           => rand(900000, 1300000),
-        'name_first'   => $faker->name,
-        'name_last'    => $faker->name,
-        'email'        => $faker->email,
+        'id' => rand(900000, 1300000),
+        'name_first' => $faker->name,
+        'name_last' => $faker->name,
+        'email' => $faker->email,
         'is_invisible' => 0,
     ];
 });
 
 $factory->define(App\Models\Mship\Account\Email::class, function (Faker\Generator $faker) {
     return [
-        'id'          => $faker->numberBetween(1, 100000),
-        'account_id'  => factory(\App\Models\Mship\Account::class)->create()->id,
-        'email'       => $faker->email,
+        'id' => $faker->numberBetween(1, 100000),
+        'account_id' => factory(\App\Models\Mship\Account::class)->create()->id,
+        'email' => $faker->email,
         'verified_at' => $faker->dateTime(),
-        'created_at'  => $faker->dateTime(),
-        'updated_at'  => $faker->dateTime(),
+        'created_at' => $faker->dateTime(),
+        'updated_at' => $faker->dateTime(),
     ];
 });
 
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
-        'code'       => $faker->bothify('?##'),
+        'code' => $faker->bothify('?##'),
         'name_small' => $faker->word,
-        'name_long'  => $faker->word,
-        'name_grp'   => $faker->word,
-        'vatsim'     => $faker->randomDigit,
+        'name_long' => $faker->word,
+        'name_grp' => $faker->word,
+        'vatsim' => $faker->randomDigit,
     ];
 });
 
@@ -58,23 +58,23 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Fak
 
 $factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker) {
     return [
-        'name'               => $faker->word,
-        'session_timeout'    => $faker->numberBetween(100, 1000),
+        'name' => $faker->word,
+        'session_timeout' => $faker->numberBetween(100, 1000),
         'password_mandatory' => false,
-        'password_lifetime'  => 0,
+        'password_lifetime' => 0,
     ];
 });
 
 $factory->define(App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
     return [
-        'name'               => $faker->word,
-        'display_name'       => $faker->sentence,
+        'name' => $faker->word,
+        'display_name' => $faker->sentence,
     ];
 });
 
 $factory->define(App\Models\TeamSpeak\Channel::class, function (Faker\Generator $faker) {
     return [
-        'id'   => $faker->numberBetween(1, 65535),
+        'id' => $faker->numberBetween(1, 65535),
         'name' => $faker->text($maxNbChars = 30),
     ];
 });
@@ -97,7 +97,7 @@ $factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function (Faker\Gene
 
 $factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
     return [
-        'name'         => $faker->regexify('([A-Z0-9._ ]{1,10}\/){2}testpermission'),
+        'name' => $faker->regexify('([A-Z0-9._ ]{1,10}\/){2}testpermission'),
         'display_name' => $faker->text($maxNbChars = 30),
     ];
 });
@@ -111,6 +111,6 @@ $factory->define(App\Models\Messages\Thread::class, function (Faker\Generator $f
 $factory->define(App\Models\Messages\Thread\Post::class, function (Faker\Generator $faker) {
     return [
         'account_id' => factory(App\Models\Mship\Account::class)->create()->id,
-        'content'    => $faker->text($maxNbChars = 255),
+        'content' => $faker->text($maxNbChars = 255),
     ];
 });
