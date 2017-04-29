@@ -17,8 +17,8 @@ class AtcSessionRecordedSuccessNotification implements ShouldQueue
     {
         $user = $event->atcSession->account;
 
-        $notification = new AtcSessionRecordedConfirmation($event->atcSession);
-
-        $user->notify($notification);
+        if (!empty($user->slack_id)) {
+            $user->notify(new AtcSessionRecordedConfirmation($event->atcSession));
+        }
     }
 }
