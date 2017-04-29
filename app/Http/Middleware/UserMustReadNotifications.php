@@ -13,21 +13,20 @@ class UserMustReadNotifications
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()
-            && Session::has('auth_extra')
-            && (Auth::user()->has_unread_important_notifications
-                || Auth::user()->has_unread_must_acknowledge_notifications
-            )
+        if (Auth::check() && Session::has('auth_extra') &&
+            (Auth::user()->has_unread_important_notifications || Auth::user()->has_unread_must_acknowledge_notifications)
         ) {
             Session::put('force_notification_read_return_url', Request::fullUrl());
 
             return Redirect::route('mship.notification.list');
+        } else if (Session::has('force_notification_read_return_url')) {
+            Session::remove('force_notification_read_return_url');
         }
 
         return $next($request);

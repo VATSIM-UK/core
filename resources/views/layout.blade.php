@@ -82,13 +82,9 @@
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Community Features</li>
+                                    <li>{!! link_to_route("mship.notification.list", "View Notifications") !!}</li>
                                     <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
                                     <li>{!! link_to_route("mship.feedback.new", "Controller/Pilot Feedback") !!}</li>
-                                    {{--<li class="divider"></li>--}}
-
-                                    {{--<li class="dropdown-header">Disputes</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>--}}
                                 </ul>
                             </li>
                         </ul>
@@ -126,52 +122,6 @@
                         </li>
                     </ul>
                 @endif
-                <!--<ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">RTS <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">Sessions</li>
-                                    <li><a href="#">Management</a></li>
-                                    <li><a href="#">History</a></li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Exams</li>
-                                    <li><a href="#">Theory Exams</a></li>
-                                    <li><a href="#">Theory Results</a></li>
-                                    <li><a href="#">Practical Exam</a></li>
-                                    <li><a href="#">Practical Exam History</a></li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">Self</li>
-                                    <li><a href="#">Signature</a></li>
-                                    <li><a href="#">Email Settings</a></li>
-                                    <li><a href="#">Display Settings</a></li>
-                                    <li><a href="#">Default Booking Times</a></li>
-                                    <li><a href="#">My Details</a></li>
-                                    <li><a href="#">Email Member</a></li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">RTS</li>
-                                    <li><a href="#">Transfer</a></li>
-                                    <li><a href="#">Visit</a></li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">System</li>
-                                    <li><a href="#">Bookings Calendar</a></li>
-                                    <li><a href="#">Solo Endorsements</a></li>
-                                    <li><a href="#">Special Endorsements</a></li>
-                                    <li><a href="#">Visiting Controllers</a></li>
-                                    <li><a href="#">System Updates</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-
-                    </li>
-                </ul>-->
                 @if(Auth::check())
                     <ul class="nav navbar-nav navcustom navbar-right">
                         <li><a href="{{ route('mship.auth.logout', ['Core']) }}">LOG OUT</a></li>
