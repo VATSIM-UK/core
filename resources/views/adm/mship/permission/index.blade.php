@@ -52,7 +52,7 @@
                             <td>{!! link_to_route('adm.mship.permission.update', $p->id, [$p->id]) !!}</td>
                             <td>{{ $p->display_name }}</td>
                             <td>{{ $p->name }}</td>
-                            <td>{{ $p->roles->count() }}</td>
+                            <td><span class="{{ $p->roles->isEmpty() ?: 'btn-link' }}" data-toggle="popover" data-trigger="hover" data-html="true" data-content="@foreach($p->roles as $role){{$role->name}}<br> @endforeach">{{ $p->roles->count() }}</span></td>
                             <td>{{ $p->updated_at->toDateTimeString() }}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/permission/*/update"))
@@ -83,4 +83,7 @@
 @section('scripts')
 @parent
 {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
+    <script type="text/javascript">
+        $('[data-toggle="popover"]').popover();
+    </script>
 @stop
