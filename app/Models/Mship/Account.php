@@ -200,7 +200,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function routeNotificationForSlack()
     {
-        return $this->slack_id;
+        return env('SLACK_ENDPOINT');
     }
 
     /**
