@@ -64,8 +64,8 @@ class Management extends \App\Http\Controllers\BaseController
         try {
             $this->account->addSecondaryEmail($email);
         } catch (DuplicateEmailException $e) {
-            return Redirect::route('mship.manage.email.add')
-                           ->withError($e);
+            return Redirect::route('mship.manage.dashboard')
+                           ->withError('This email has already been added to your account.');
         }
 
         return Redirect::route('mship.manage.dashboard')
