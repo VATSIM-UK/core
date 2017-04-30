@@ -414,8 +414,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             'mship_account_qualification',
             'account_id',
             'qualification_id'
-        )
-                    ->withTimestamps();
+        )->using(AccountQualification::class)
+            ->wherePivot('deleted_at', '!=', 'NULL')
+            ->withTimestamps();
     }
 
     /**
