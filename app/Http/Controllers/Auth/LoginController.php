@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Middleware\RedirectToIntended;
 use App\Models\Mship\Account;
 use Auth;
 use Carbon\Carbon;
@@ -42,6 +43,17 @@ class LoginController extends BaseController
         $this->middleware('guest')->except('logout');
     }
 
+    public function getLogin()
+    {
+        if (!$this->hasVatsimAuth()) {
+            return redirect()->route('default');
+        } elseif (!$this->hasSecondaryAuth()) {
+            return $this->attemptSecondaryAuth();
+        } else {
+            throw new \Exception('Already logged in.');
+        }
+    }
+
     /**
      * Handle a login request to the application.
      *
@@ -51,42 +63,67 @@ class LoginController extends BaseController
     public function loginMain(Request $request)
     {
         // user has not been authenticated with VATSIM SSO
-        if (!Session::has('auth.vatsim-sso')) {
-            $allowSuspended = true;
-            $allowInactive = true;
-
-            $token = VatsimSSO::requestToken(route('vatsim-sso'), $allowSuspended, $allowInactive);
-            if ($token) {
-                $key = $token->token->oauth_token;
-                $secret = $token->token->oauth_token_secret;
-                Session::put('credentials.vatsim-sso', compact('key', 'secret'));
-
-                return redirect()->to(VatsimSSO::sendToVatsim());
-            } else {
-                Session::put('cert_offline', true);
-
-                return redirect()->route('mship.auth.loginAlternative')->withError(VatsimSSO::error()['message']);
-            }
+        if (!$this->hasVatsimAuth()) {
+            return $this->attemptVatsimAuth();
         }
 
-        $member = Account::find($request->session()->get('auth.vatsim-sso'));
-        if (!Session::has('auth.secondary')) {
-            if ($member->hasPassword()) {
-                return redirect()->route('auth-secondary');
-            } else {
-                $this->setSecondaryAuth();
-            }
+        if (!$this->hasSecondaryAuth()) {
+            $this->attemptSecondaryAuth();
         }
 
-        return redirect()->route('mship.manage.dashboard');
+        return redirect()->intended(route('mship.manage.dashboard'));
     }
 
-    public function setVatsimAuth($userId)
+    protected function hasVatsimAuth()
+    {
+        return Session::has('auth.vatsim-sso');
+    }
+
+    protected function getVatsimAuth()
+    {
+        return Session::get('auth.vatsim-sso');
+    }
+
+    protected function attemptVatsimAuth()
+    {
+        $allowSuspended = true;
+        $allowInactive = true;
+
+        $token = VatsimSSO::requestToken(route('auth-vatsim-sso'), $allowSuspended, $allowInactive);
+        if ($token) {
+            $key = $token->token->oauth_token;
+            $secret = $token->token->oauth_token_secret;
+            Session::put('credentials.vatsim-sso', compact('key', 'secret'));
+
+            return redirect()->to(VatsimSSO::sendToVatsim());
+        } else {
+            Session::put('cert_offline', true);
+
+            return redirect()->route('mship.auth.loginAlternative')->withError(VatsimSSO::error()['message']);
+        }
+    }
+
+    protected function setVatsimAuth($userId)
     {
         Session::put('auth.vatsim-sso', $userId);
     }
 
-    public function setSecondaryAuth()
+    protected function hasSecondaryAuth()
+    {
+        return Session::has('auth.secondary');
+    }
+
+    protected function attemptSecondaryAuth()
+    {
+        $member = Account::find($this->getVatsimAuth());
+        if ($member->hasPassword()) {
+            return redirect()->route('auth-secondary');
+        } else {
+            $this->setSecondaryAuth();
+        }
+    }
+
+    protected function setSecondaryAuth()
     {
         Session::put('auth.secondary', Carbon::now());
     }
@@ -98,6 +135,7 @@ class LoginController extends BaseController
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
+
         $response = $this->login($request);
 
         if (Auth::check()) {
@@ -107,9 +145,15 @@ class LoginController extends BaseController
         return $response;
     }
 
-    public function username()
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
     {
-        return Session::get('auth.vatsim-sso');
+        return ['id' => $request->session()->get('auth.vatsim-sso'), 'password' => $request->input('password')];
     }
 
     /**
@@ -222,11 +266,9 @@ class LoginController extends BaseController
         $account->joined_at = $user->reg_date;
         $account->save();
 
-        Session::forget('auth_extra');
         $this->setVatsimAuth($user->id);
-
-        // Let's send them over to the authentication redirect now.
-        return redirect()->route('login');
+        Session::forget('auth.secondary');
+        return $this->attemptSecondaryAuth();
     }
 
     public function vSsoValidationFailure($error) {

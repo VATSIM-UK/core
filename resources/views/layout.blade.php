@@ -123,9 +123,11 @@
                     </ul>
                 @endif
                 @if(Auth::check())
+                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
-                        <li><a href="{{ route('mship.auth.logout', ['Core']) }}">LOG OUT</a></li>
+                        <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a></li>
                     </ul>
+                    {!! Form::close() !!}
                 @endif
 
             </div>

@@ -15,37 +15,6 @@ use App\Notifications\Mship\Security\ForgottenPasswordLink;
 
 class Security extends \App\Http\Controllers\BaseController
 {
-    public function getAuth()
-    {
-        if (Session::has('auth_override')) {
-            return Redirect::route('mship.auth.redirect');
-        }
-
-        // Let's check whether we even NEED this.
-        if (Session::has('auth_extra') || !Auth::user()->hasPassword()) {
-            return Redirect::route('mship.auth.redirect');
-        }
-
-        // Next, do we need to replace/reset?
-        if (Auth::user()->hasPasswordExpired()) {
-            return Redirect::route('mship.security.replace');
-        }
-
-        // So we need it.  Let's go!
-        return $this->viewMake('mship.security.auth');
-    }
-
-    public function postAuth()
-    {
-        if (Auth::user()->verifyPassword(Input::get('password'))) {
-            Session::put('auth_extra', Carbon::now());
-
-            return Redirect::route('mship.auth.redirect');
-        }
-
-        return Redirect::route('mship.security.auth')->with('error', 'Invalid password entered - please try again.');
-    }
-
     public function getEnable()
     {
         return Redirect::route('mship.security.replace');

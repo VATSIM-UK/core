@@ -2,14 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Auth;
 use Closure;
-use Request;
 use Session;
-use Redirect;
-use Response;
 
-class AuthUser
+class RedirectToIntended
 {
     /**
      * Handle an incoming request.
@@ -20,14 +16,8 @@ class AuthUser
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
-            if (Request::ajax()) {
-                return Response::make('Unauthorised', 401);
-            } else {
-                Session::put('auth_return', Request::fullUrl());
-
-                return Redirect::to('/');
-            }
+        if (Session::has('url.intended')) {
+            return redirect()->intended();
         }
 
         return $next($request);

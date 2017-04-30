@@ -16,7 +16,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function getLanding()
     {
         if (Auth::check()) {
-            return Redirect::route('mship.auth.redirect');
+            return redirect()->intended(route('mship.manage.dashboard'));
         }
 
         return $this->viewMake('mship.management.landing');
