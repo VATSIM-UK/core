@@ -143,7 +143,7 @@ Route::group(['domain' => config('app.url')], function () {
 
             // /mship/auth - fully authenticated.
             Route::group(['middleware' => ['auth_full_group']], function () {
-                Route::get('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Authentication@getInvisibility']);
+                Route::post('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Management@postInvisibility']);
             });
         });
 

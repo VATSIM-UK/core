@@ -52,15 +52,10 @@
                             </div>
 
                             <div class="col-xs-4">
-                                <strong>
-                                    INVISIBILITY:
-                                </strong>
-
-                                @if($_account->is_invisible)
-                                    {!! HTML::link("mship/auth/invisibility", "Disable") !!}
-                                @else
-                                    {!! HTML::link("mship/auth/invisibility", "Enable")  !!}
-                                @endif
+                                {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
+                                <strong>INVISIBILITY:</strong>
+                                <a href="{{ route('mship.auth.invisibility') }}" onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
+                                {!! Form::close() !!}
                             </div>
                         </div>
                         <!-- Second Row [END] -->

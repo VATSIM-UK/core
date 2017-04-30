@@ -35,6 +35,18 @@ class Management extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.management.dashboard');
     }
 
+    public function postInvisibility()
+    {
+        // Toggle
+        if (Auth::user()->is_invisible) {
+            Auth::user()->is_invisible = 0;
+        } else {
+            Auth::user()->is_invisible = 1;
+        }
+        Auth::user()->save();
+        return Redirect::route('mship.manage.landing');
+    }
+
     public function getEmailAdd()
     {
         return $this->viewMake('mship.management.email.add');
