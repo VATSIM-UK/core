@@ -231,6 +231,19 @@ Route::group(['domain' => config('app.url')], function () {
     });
 });
 
-Route::get('/', ['domain' => config('app.url'), 'as' => 'default', function () {
-    return Redirect::route('mship.manage.landing');
-}]);
+Route::get('/', ['domain' => config('app.url'), 'uses' => 'Mship\Management@getLanding', 'as' => 'default']);
+
+// Authentication Routes...
+Route::post('login', 'Auth\LoginController@login')->name('login');
+Route::post('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('vatsim-sso');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+// Registration Routes...
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
+
+// Password Reset Routes...
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
