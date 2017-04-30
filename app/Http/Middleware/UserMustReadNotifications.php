@@ -25,7 +25,7 @@ class UserMustReadNotifications
             Session::put('force_notification_read_return_url', Request::fullUrl());
 
             return Redirect::route('mship.notification.list');
-        } else if (Session::has('force_notification_read_return_url')) {
+        } elseif (Session::has('force_notification_read_return_url')) {
             Session::remove('force_notification_read_return_url');
         }
 
