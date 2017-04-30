@@ -55,7 +55,7 @@ class Qualification extends \Eloquent
     {
         return $this->belongsToMany(Account::class, 'mship_account_qualification', 'qualification_id', 'account_id')
             ->using(AccountQualification::class)
-            ->wherePivot('deleted_at', '!=', 'NULL')
+            ->wherePivot('deleted_at', '=', null)
             ->withTimestamps();
     }
 
