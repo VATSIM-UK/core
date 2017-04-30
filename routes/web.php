@@ -37,7 +37,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
     Route::group(['prefix' => 'adm'], function () {
 
         // Login is the only unauthenticated page.
-        Route::get('/', ['middleware' => 'auth.admin', 'uses' => 'Authentication@getLogin']);
+        Route::get('/', ['middleware' => ['auth_full_group'], 'uses' => 'Authentication@getLogin']);
         Route::group(['prefix' => 'authentication'], function () {
             Route::get('/login', ['as' => 'adm.authentication.login', 'uses' => 'Authentication@getLogin']);
             Route::post('/login', ['as' => 'adm.authentication.login.post', 'uses' => 'Authentication@postLogin']);
@@ -48,7 +48,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
         Route::get('/error/{code?}', ['as' => 'adm.error', 'uses' => 'Error@getDisplay']);
 
         // Auth required
-        Route::group(['middleware' => 'auth.admin'], function () {
+        Route::group(['middleware' => ['auth_full_group']], function () {
             Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
             Route::any('/search/{q?}', ['as' => 'adm.search', 'uses' => 'Dashboard@anySearch']);
 

@@ -45,12 +45,10 @@ class LoginController extends BaseController
 
     public function getLogin()
     {
-        if (!$this->hasVatsimAuth()) {
-            return redirect()->route('default');
-        } elseif (!$this->hasSecondaryAuth()) {
+        if ($this->hasVatsimAuth() && !$this->hasSecondaryAuth()) {
             return $this->attemptSecondaryAuth();
         } else {
-            throw new \Exception('Already logged in.');
+            return redirect()->route('default');
         }
     }
 
@@ -120,6 +118,9 @@ class LoginController extends BaseController
             return redirect()->route('auth-secondary');
         } else {
             $this->setSecondaryAuth();
+            Auth::login(Account::find($this->getVatsimAuth()), true);
+
+            return redirect('/');
         }
     }
 
@@ -268,6 +269,7 @@ class LoginController extends BaseController
 
         $this->setVatsimAuth($user->id);
         Session::forget('auth.secondary');
+
         return $this->attemptSecondaryAuth();
     }
 

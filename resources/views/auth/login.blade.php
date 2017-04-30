@@ -22,6 +22,7 @@
 
                 <div class="col-md-8 col-md-offset-2">
                     {!! Form::horizontal(["route" => 'auth-secondary.post', "method" => "POST"]) !!}
+                    <input name="remember" type="hidden" value="true">
 
                     <div class='form-group'>
                         <label for="password" class="control-label">Secondary Password</label>

@@ -122,7 +122,7 @@
                         </li>
                     </ul>
                 @endif
-                @if(Auth::check())
+                @if(Auth::check() || Session::has('auth.vatsim-sso'))
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
                         <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a></li>
