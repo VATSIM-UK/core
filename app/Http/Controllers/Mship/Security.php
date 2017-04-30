@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
+use Illuminate\Http\Request;
 use Input;
 use Session;
 use Redirect;
@@ -52,7 +53,7 @@ class Security extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.security.replace')->with('sls_type', $slsType)->with('disable', $disable);
     }
 
-    public function postReplace($disable = false)
+    public function postReplace(Request $request, $disable = false)
     {
         if ($disable && Auth::user()->mandatory_password) {
             return Redirect::route('mship.manage.dashboard')->with('error', 'You cannot disable your secondary password.');
@@ -98,8 +99,11 @@ class Security extends \App\Http\Controllers\BaseController
             return Redirect::route('mship.security.replace')->with('error', 'Your new password cannot be the same as your old password.');
         }
 
-        Session::put('auth_extra', Carbon::now());
+        Session::put('auth.secondary', Carbon::now());
+        $request->session()->put([
+            'password_hash' => $request->user()->getAuthPassword(),
+        ]);
 
-        return Redirect::route('mship.security.auth');
+        return redirect()->route('default')->withSuccess('Password reset successfully.');
     }
 }

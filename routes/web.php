@@ -192,10 +192,7 @@ Route::group(['domain' => config('app.url')], function () {
         Route::group(['prefix' => 'security'], function () {
             Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
 
-            Route::group(['middleware' => 'auth.user'], function () {
-                Route::get('/forgotten', ['as' => 'mship.security.forgotten', 'uses' => 'Security@getForgotten']);
-                Route::get('/auth', ['as' => 'mship.security.auth', 'uses' => 'Security@getAuth']);
-                Route::post('/auth', ['as' => 'mship.security.auth.post', 'uses' => 'Security@postAuth']);
+            Route::group(['middleware' => ['auth_full_group']], function () {
                 Route::get('/replace/{delete?}', ['as' => 'mship.security.replace', 'uses' => 'Security@getReplace'])->where(['delete' => '[1|0]']);
                 Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(['delete' => '[1|0]']);
             });
