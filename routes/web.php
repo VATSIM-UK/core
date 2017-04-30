@@ -136,11 +136,8 @@ Route::group(['domain' => config('app.url')], function () {
     Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
         // Guest access
         Route::group(['prefix' => 'auth'], function () {
-            Route::get('/redirect', ['as' => 'mship.auth.redirect', 'uses' => 'Authentication@getRedirect']);
             Route::get('/login-alternative', ['as' => 'mship.auth.loginAlternative', 'uses' => 'Authentication@getLoginAlternative']);
             Route::post('/login-alternative', ['as' => 'mship.auth.loginAlternative.post', 'uses' => 'Authentication@postLoginAlternative']);
-            Route::get('/login', ['as' => 'mship.auth.login', 'uses' => 'Authentication@getLogin']);
-            Route::get('/verify', ['as' => 'mship.auth.verify', 'uses' => 'Authentication@getVerify']);
             Route::get('/logout/{force?}', ['as' => 'mship.auth.logout', 'uses' => 'Authentication@getLogout']);
             Route::post('/logout/{force?}', ['as' => 'mship.auth.logout.post', 'uses' => 'Authentication@postLogout']);
 
@@ -234,13 +231,11 @@ Route::group(['domain' => config('app.url')], function () {
 Route::get('/', ['domain' => config('app.url'), 'uses' => 'Mship\Management@getLanding', 'as' => 'default']);
 
 // Authentication Routes...
-Route::post('login', 'Auth\LoginController@login')->name('login');
-Route::post('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('vatsim-sso');
+Route::post('login', 'Auth\LoginController@loginMain')->name('login');
+Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary');
+Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('auth-secondary.post');
+Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('vatsim-sso');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-
-// Registration Routes...
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');

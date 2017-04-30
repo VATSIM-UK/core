@@ -6,27 +6,23 @@ use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Redirect;
 use Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use VatsimSSO;
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Models\Mship\Qualification as QualificationType;
+use App\Exceptions\Mship\DuplicateQualificationException;
 
+/**
+ * This controller handles authenticating users for the application and
+ * redirecting them to your home screen. The controller uses a trait
+ * to conveniently provide its functionality to your applications.
+ *
+ * @package App\Http\Controllers\Auth
+ */
 class LoginController extends BaseController
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
     /**
@@ -52,7 +48,7 @@ class LoginController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function loginMain(Request $request)
     {
         // user has not been authenticated with VATSIM SSO
         if (!Session::has('auth.vatsim-sso')) {
@@ -61,45 +57,72 @@ class LoginController extends BaseController
 
             $token = VatsimSSO::requestToken(route('vatsim-sso'), $allowSuspended, $allowInactive);
             if ($token) {
+                $key = $token->token->oauth_token;
+                $secret = $token->token->oauth_token_secret;
                 Session::put('credentials.vatsim-sso', compact('key', 'secret'));
 
                 return redirect()->to(VatsimSSO::sendToVatsim());
             } else {
                 Session::put('cert_offline', true);
 
-                return redirect()->route('mship.auth.loginAlternative');
+                return redirect()->route('mship.auth.loginAlternative')->withError(VatsimSSO::error()['message']);
             }
         }
 
-
-
-
-
-
-
-        // default laravel stuff:
-
-        $this->validateLogin($request);
-
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
+        $member = Account::find($request->session()->get('auth.vatsim-sso'));
+        if (!Session::has('auth.secondary')) {
+            if ($member->hasPassword()) {
+                return redirect()->route('auth-secondary');
+            } else {
+                $this->setSecondaryAuth();
+            }
         }
 
-        if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
+        return redirect()->route('mship.manage.dashboard');
+    }
+
+    public function setVatsimAuth($userId)
+    {
+        Session::put('auth.vatsim-sso', $userId);
+    }
+
+    public function setSecondaryAuth()
+    {
+        Session::put('auth.secondary', Carbon::now());
+    }
+
+    public function loginSecondary(Request $request)
+    {
+        if (!Session::has('auth.vatsim-sso')) {
+            return redirect()->route('default')
+                ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+        $response = $this->login($request);
 
-        return $this->sendFailedLoginResponse($request);
+        if (Auth::check()) {
+            $this->setSecondaryAuth();
+        }
+
+        return $response;
+    }
+
+    public function username()
+    {
+        return Session::get('auth.vatsim-sso');
+    }
+
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function validateLogin(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|string',
+        ]);
     }
 
     public function vatsimSsoReturn(Request $request)
@@ -116,8 +139,6 @@ class LoginController extends BaseController
 
     public function vSsoValidationSuccess($user, $request)
     {
-        Session::put('auth.vatsim-sso', true);
-
         // At this point WE HAVE data in the form of $user;
         $account = Account::find($user->id);
         if (is_null($account)) {
@@ -202,8 +223,7 @@ class LoginController extends BaseController
         $account->save();
 
         Session::forget('auth_extra');
-
-        Auth::login($account, true);
+        $this->setVatsimAuth($user->id);
 
         // Let's send them over to the authentication redirect now.
         return redirect()->route('login');
