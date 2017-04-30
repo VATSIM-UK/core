@@ -50,7 +50,7 @@ class MemberCertUpdate extends Job implements ShouldQueue
 
         // if member no longer exists, delete
         // else process update
-        if ($this->data->name_first == new \stdClass()
+        if ($member && $this->data->name_first == new \stdClass()
             && $this->data->name_last == new \stdClass()
             && $this->data->email == '[hidden]'
         ) {
