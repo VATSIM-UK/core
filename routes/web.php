@@ -230,7 +230,7 @@ Route::group(['domain' => config('app.url')], function () {
 
 Route::get('/', ['domain' => config('app.url'), 'uses' => 'Mship\Management@getLanding', 'as' => 'default']);
 
-// Authentication Routes...
+// Authentication Routes
 Route::get('login', 'Auth\LoginController@getLogin');
 Route::post('login', 'Auth\LoginController@loginMain')->name('login');
 Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary');
@@ -238,7 +238,7 @@ Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('aut
 Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-// Password Reset Routes...
+// Password Reset Routes
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');

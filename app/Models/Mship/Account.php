@@ -2,12 +2,14 @@
 
 namespace App\Models\Mship;
 
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
@@ -28,6 +30,8 @@ use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
@@ -152,7 +156,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
  */
-class Account extends \App\Models\Model implements AuthenticatableContract
+class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
 
@@ -270,6 +274,27 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Get the e-mail address where password reset links are sent.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ForgottenPasswordLink($token));
     }
 
     /**

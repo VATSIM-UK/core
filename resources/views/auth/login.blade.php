@@ -23,11 +23,13 @@
                 <div class="col-md-8 col-md-offset-2">
                     {!! Form::horizontal(["route" => 'auth-secondary.post', "method" => "POST"]) !!}
 
-                    {!! ControlGroup::generate(
-                        Form::label("password", "Secondary Password"),
-                        Form::password("password"),
-                        Form::help("<a href='#' onclick='javascript: checkResetPassword();'>Forgotten Password?</a>")
-                    ) !!}
+                    <div class='form-group'>
+                        <label for="password" class="control-label">Secondary Password</label>
+                        <input class="form-control" name="password" type="password" value="" id="password">
+                        <span class='help-block'>
+                            <a href='#' data-toggle="modal" data-target="#resetConfirmModal">Forgotten Password?</a>
+                        </span>
+                    </div>
 
                     {!! ControlGroup::withContents(
                         Form::submit("Login")
@@ -51,17 +53,13 @@
                     <p>Once you click this button, your old secondary password will be gone forever.  We'll then start the password recovery process for you - are you sure you wish to continue?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirm" onclick="javascript: window.location.href ='{{ URL::route("mship.security.forgotten") }}';">Confirm</button>
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
+                        {{ csrf_field() }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger" id="confirm">Confirm</button>
+                    </form>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
-    <!-- Dialog show event handler -->
-    <script type="text/javascript">
-        function checkResetPassword(){
-            $('#resetConfirmModal').modal()
-        }
-    </script>
 @stop

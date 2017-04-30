@@ -154,6 +154,12 @@
                 </div>
             @endif
 
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @endif
+
             @if(isset($errors) && $errors->any())
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> There is something wrong with your request:
