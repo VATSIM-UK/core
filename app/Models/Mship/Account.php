@@ -947,11 +947,21 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
             throw new \App\Exceptions\Mship\DuplicatePasswordException;
         }
 
-        return $this->fill([
+        $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
             'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
+
+        // if the password is being reset by its owner...
+        if ($save && \Auth::user()->id === $this->id) {
+            \Session::put([
+                'password_hash' => \Auth::user()->getAuthPassword(),
+            ]);
+            \Session::put('auth.secondary', Carbon::now());
+        }
+
+        return $save;
     }
 
     /**
@@ -961,7 +971,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public function removePassword()
     {
-        $this->fill([
+        return $this->fill([
             'password' => null,
             'password_set_at' => null,
             'password_expires_at' => null,

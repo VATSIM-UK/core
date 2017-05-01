@@ -6,16 +6,16 @@ use App\Exceptions\Mship\DuplicatePasswordException;
 use App\Http\Controllers\BaseController;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Input;
 use Redirect;
 use Session;
 
 /**
- * This controller is responsible for handling password reset requests
- * and uses a simple trait to include this behavior. You're free to
- * explore this trait and override any methods you wish to tweak.
+ * This controller is responsible for handling password creation,
+ * modification and deletion requests for authenticated users.
+ *
  * @package App\Http\Controllers\Auth
  */
 class ChangePasswordController extends BaseController
@@ -39,146 +39,69 @@ class ChangePasswordController extends BaseController
         $this->middleware('auth_full_group');
     }
 
-    /**
-     * Get the password reset validation rules.
-     *
-     * @return array
-     */
-    protected function rules()
+    protected function validateOldPassword(Request $request)
     {
-        return [
-            'password' => 'required|confirmed|min:6',
-        ];
+        $this->validate($request, [
+            'old_password' => 'required|string|password',
+        ]);
     }
 
-    /**
-     * Get the password reset credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    protected function credentials(Request $request)
+    protected function validateNewPassword(Request $request)
     {
-        return array_merge(['id' => Session::get('auth.vatsim-sso')], $request->only(
-            'password', 'password_confirmation', 'token'
-        ));
+        $this->validate($request, [
+            'new_password' => 'required|string|confirmed|min:8|upperchars:1|lowerchars:1|numbers:1|different:old_password',
+        ]);
     }
 
     public function showCreateForm()
     {
-        if ($this->account->hasPassword()) {
-            return redirect($this->redirectPath())->withError('You already have a password set.');
-        }
+        $this->authorize('create', 'password');
 
         return $this->viewMake('auth.passwords.create');
     }
 
     public function create(Request $request)
     {
-        if (Auth::user()->hasPassword()) {
-            if (!Auth::user()->verifyPassword(Input::get('old_password'))) {
-                return back()->with('error', 'Your old password is incorrect.  Please try again.');
-            }
-        }
+        $this->authorize('create', 'password');
+        $this->validateNewPassword($request);
 
-        $this->validate($request, [
-            'new_password' => 'required|confirmed|min:6',
-        ]);
+        Auth::user()->setPassword($request->input('new_password'));
 
-        $newPassword = Input::get('new_password');
-
-        // Check the number of alphabetical characters.
-        if (preg_match_all('/[a-zA-Z]/', $newPassword) < 3) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your password does not meet the requirements (password must have at least 3 alphabetical characters)');
-        }
-
-        // Check the number of numeric characters.
-        if (preg_match_all('/[0-9]/', $newPassword) < 1) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your password does not meet the requirements (password must have at least one number)');
-        }
-
-        // All requirements met, set the password!
-        try {
-            Auth::user()->setPassword($newPassword);
-        } catch (DuplicatePasswordException $e) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your new password cannot be the same as your old password.');
-        }
-
-        Session::put('auth.secondary', Carbon::now());
-        $request->session()->put([
-            'password_hash' => $request->user()->getAuthPassword(),
-        ]);
-
-        return redirect()->route('default')->withSuccess('Password set successfully.');
+        return redirect($this->redirectPath())->withSuccess('Password set successfully.');
     }
 
     public function showChangeForm()
     {
+        $this->authorize('change', 'password');
+
         return $this->viewMake('auth.passwords.change');
     }
 
     public function change(Request $request)
     {
-        if (Auth::user()->hasPassword()) {
-            if (!Auth::user()->verifyPassword(Input::get('old_password'))) {
-                return back()->with('error', 'Your old password is incorrect.  Please try again.');
-            }
-        }
+        $this->authorize('change', 'password');
+        $this->validateOldPassword($request);
+        $this->validateNewPassword($request);
 
-        $this->validate($request, [
-            'new_password' => 'required|confirmed|min:6',
-        ]);
+        Auth::user()->setPassword($request->input('new_password'));
 
-        $newPassword = Input::get('new_password');
-
-        // Check the number of alphabetical characters.
-        if (preg_match_all('/[a-zA-Z]/', $newPassword) < 3) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your password does not meet the requirements (password must have at least 3 alphabetical characters)');
-        }
-
-        // Check the number of numeric characters.
-        if (preg_match_all('/[0-9]/', $newPassword) < 1) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your password does not meet the requirements (password must have at least one number)');
-        }
-
-        // All requirements met, set the password!
-        try {
-            Auth::user()->setPassword($newPassword);
-        } catch (DuplicatePasswordException $e) {
-            return Redirect::route('mship.security.replace')->with('error', 'Your new password cannot be the same as your old password.');
-        }
-
-        Session::put('auth.secondary', Carbon::now());
-        $request->session()->put([
-            'password_hash' => $request->user()->getAuthPassword(),
-        ]);
-
-        return redirect()->route('default')->withSuccess('Password reset successfully.');
+        return redirect($this->redirectPath())->withSuccess('Password reset successfully.');
     }
 
     public function showDeleteForm()
     {
-        if ($this->account->mandatory_password) {
-            return redirect()->route('mship.manage.dashboard')->withError('You cannot disable your secondary password.');
-        } elseif (!$this->account->hasPassword()) {
-            return redirect()->route('mship.manage.dashboard')->withError('You do not have a secondary password to disable.');
-        }
+        $this->authorize('delete', 'password');
 
         return $this->viewMake('auth.passwords.delete');
     }
 
     public function delete(Request $request)
     {
-        if ($this->account->mandatory_password) {
-            return redirect()->route('mship.manage.dashboard')->withError('You cannot disable your secondary password.');
-        } elseif (!$this->account->hasPassword()) {
-            return redirect()->route('mship.manage.dashboard')->withError('You do not have a secondary password to disable.');
-        } elseif (!$this->account->verifyPassword($request->input('old_password'))) {
-            return back()->with('error', 'Your old password is incorrect.  Please try again.');
-        }
+        $this->authorize('delete', 'password');
+        $this->validateOldPassword($request);
 
         $this->account->removePassword();
 
-        return redirect()->route('mship.manage.dashboard')->withSuccess('Your secondary password has been deleted successfully.');
+        return redirect($this->redirectPath())->withSuccess('Password deleted successfully.');
     }
 }
