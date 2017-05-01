@@ -8,6 +8,8 @@ use App\Modules\Community\Http\Requests\DeployToCommunityGroupRequest;
 
 class Membership extends BaseController
 {
+    protected $redirectTo = 'mship/manage/dashboard';
+
     public function getDeploy()
     {
         $this->authorize('deploy', new \App\Modules\Community\Models\Membership());
@@ -31,6 +33,6 @@ class Membership extends BaseController
             \Auth::user()->syncWithDefaultCommunityGroup();
         }
 
-        return redirect()->route('mship.manage.dashboard')->withSuccess("You have successfully been deployed to this '".$chosenGroup->name."' Group!");
+        return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to this '".$chosenGroup->name."' Group!");
     }
 }
