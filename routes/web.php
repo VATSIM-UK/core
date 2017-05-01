@@ -138,8 +138,6 @@ Route::group(['domain' => config('app.url')], function () {
         Route::group(['prefix' => 'auth'], function () {
             Route::get('/login-alternative', ['as' => 'mship.auth.loginAlternative', 'uses' => 'Authentication@getLoginAlternative']);
             Route::post('/login-alternative', ['as' => 'mship.auth.loginAlternative.post', 'uses' => 'Authentication@postLoginAlternative']);
-            Route::get('/logout/{force?}', ['as' => 'mship.auth.logout', 'uses' => 'Authentication@getLogout']);
-            Route::post('/logout/{force?}', ['as' => 'mship.auth.logout.post', 'uses' => 'Authentication@postLogout']);
 
             // /mship/auth - fully authenticated.
             Route::group(['middleware' => ['auth_full_group']], function () {
@@ -147,7 +145,7 @@ Route::group(['domain' => config('app.url')], function () {
             });
         });
 
-        Route::group(['middleware' => 'auth.user.full', 'prefix' => 'notification'], function () {
+        Route::group(['middleware' => 'auth', 'prefix' => 'notification'], function () {
             Route::get('/list', ['as' => 'mship.notification.list', 'uses' => 'Notification@getList']);
             Route::post('/acknowledge/{sysNotification}', ['as' => 'mship.notification.acknowledge', 'uses' => 'Notification@postAcknowledge']);
         });

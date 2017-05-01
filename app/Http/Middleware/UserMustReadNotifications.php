@@ -19,14 +19,10 @@ class UserMustReadNotifications
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Session::has('auth_extra') &&
+        if (Auth::check() &&
             (Auth::user()->has_unread_important_notifications || Auth::user()->has_unread_must_acknowledge_notifications)
         ) {
-            Session::put('force_notification_read_return_url', Request::fullUrl());
-
-            return Redirect::route('mship.notification.list');
-        } elseif (Session::has('force_notification_read_return_url')) {
-            Session::remove('force_notification_read_return_url');
+            return redirect()->guest(route('mship.notification.list'));
         }
 
         return $next($request);
