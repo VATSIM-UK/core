@@ -27,12 +27,18 @@ class AppServiceProvider extends ServiceProvider
         HTML::component('panelClose', 'components.html.panel_close', []);
         HTML::component('fuzzyDate', 'components.html.fuzzy_date', ['timestamp']);
 
+        // if necessary, these can extend the Laravel validator, see:
+        // https://www.sitepoint.com/data-validation-laravel-right-way-custom-validators/
         Validator::extend('upperchars', function ($attribute, $value, $parameters, $validator) {
             if (isset($parameters[0])) {
                 return str_has_upper($value, $parameters[0]);
             } else {
                 return str_has_upper($value);
             }
+        });
+
+        Validator::replacer('upperchars', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':min', $parameters[0], $message);
         });
 
         Validator::extend('lowerchars', function ($attribute, $value, $parameters, $validator) {
@@ -43,12 +49,20 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        Validator::replacer('lowerchars', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':min', $parameters[0], $message);
+        });
+
         Validator::extend('numbers', function ($attribute, $value, $parameters, $validator) {
             if (isset($parameters[0])) {
                 return str_has_lower($value, $parameters[0]);
             } else {
                 return str_has_lower($value);
             }
+        });
+
+        Validator::replacer('numbers', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':min', $parameters[0], $message);
         });
 
         Validator::extend('password', function ($attribute, $value, $parameters, $validator) {

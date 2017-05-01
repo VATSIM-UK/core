@@ -75,6 +75,12 @@ return [
     'unique' => 'The :attribute has already been taken.',
     'url' => 'The :attribute format is invalid.',
 
+    // custom
+    'upperchars' => 'The :attribute must contain at least :min uppercase characters.',
+    'lowerchars' => 'The :attribute must contain at least :min lowercase characters.',
+    'numbers' => 'The :attribute must contain at least :min numbers.',
+    'password' => 'Your :attribute does not match your current password.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

@@ -25,7 +25,7 @@ class ChangePasswordController extends BaseController
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/mship/manage/dashboard';
 
     /**
      * Create a new controller instance.
@@ -39,17 +39,27 @@ class ChangePasswordController extends BaseController
         $this->middleware('auth_full_group');
     }
 
-    protected function validateOldPassword(Request $request)
+    protected function validateOld(Request $request)
     {
         $this->validate($request, [
             'old_password' => 'required|string|password',
         ]);
     }
 
-    protected function validateNewPassword(Request $request)
+    protected function validateNew(Request $request)
     {
         $this->validate($request, [
-            'new_password' => 'required|string|confirmed|min:8|upperchars:1|lowerchars:1|numbers:1|different:old_password',
+            'new_password' => 'required|string|confirmed|min:8|upperchars:1|lowerchars:1|numbers:1',
+        ]);
+    }
+
+    protected function validateBoth(Request $request)
+    {
+        $this->validateOld($request);
+        $this->validateNew($request);
+
+        $this->validate($request, [
+            'new_password' => 'different:old_password',
         ]);
     }
 
@@ -63,7 +73,7 @@ class ChangePasswordController extends BaseController
     public function create(Request $request)
     {
         $this->authorize('create', 'password');
-        $this->validateNewPassword($request);
+        $this->validateNew($request);
 
         Auth::user()->setPassword($request->input('new_password'));
 
@@ -80,8 +90,7 @@ class ChangePasswordController extends BaseController
     public function change(Request $request)
     {
         $this->authorize('change', 'password');
-        $this->validateOldPassword($request);
-        $this->validateNewPassword($request);
+        $this->validateBoth($request);
 
         Auth::user()->setPassword($request->input('new_password'));
 
@@ -98,7 +107,7 @@ class ChangePasswordController extends BaseController
     public function delete(Request $request)
     {
         $this->authorize('delete', 'password');
-        $this->validateOldPassword($request);
+        $this->validateOld($request);
 
         $this->account->removePassword();
 

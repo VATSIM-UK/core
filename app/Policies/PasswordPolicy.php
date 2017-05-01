@@ -27,7 +27,7 @@ class PasswordPolicy extends Policy
      * @param Account $user
      * @return mixed
      */
-    public function update(Account $user)
+    public function change(Account $user)
     {
         if (!$user->hasPassword()) {
             return $this->deny('You do not have a password set.');
