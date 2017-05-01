@@ -188,16 +188,7 @@ Route::group(['domain' => config('app.url')], function () {
         });
 
         Route::group(['prefix' => 'security'], function () {
-            Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
 
-            Route::group(['middleware' => ['auth_full_group']], function () {
-                Route::get('/replace/{delete?}', ['as' => 'mship.security.replace', 'uses' => 'Security@getReplace'])->where(['delete' => '[1|0]']);
-                Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(['delete' => '[1|0]']);
-            });
-
-            Route::group(['middleware' => ['auth_full_group']], function () {
-                Route::get('/enable', ['as' => 'mship.security.enable', 'uses' => 'Security@getEnable']);
-            });
         });
     });
 
@@ -238,3 +229,13 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm'
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+// Password Change routes
+Route::group(['middleware' => ['auth_full_group']], function () {
+    Route::get('password/create', 'Auth\ChangePasswordController@showCreateForm')->name('password.create');
+    Route::post('password/create', 'Auth\ChangePasswordController@create');
+    Route::get('password/change', 'Auth\ChangePasswordController@showChangeForm')->name('password.change');
+    Route::post('password/change', 'Auth\ChangePasswordController@change');
+    Route::get('password/delete', 'Auth\ChangePasswordController@showDeleteForm')->name('password.delete');
+    Route::post('password/delete', 'Auth\ChangePasswordController@delete');
+});

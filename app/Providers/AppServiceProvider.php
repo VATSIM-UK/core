@@ -6,6 +6,7 @@ use URL;
 use HTML;
 use Config;
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
         HTML::component('panelOpen', 'components.html.panel_open', ['title', 'icon' => [], 'attr' => []]);
         HTML::component('panelClose', 'components.html.panel_close', []);
         HTML::component('fuzzyDate', 'components.html.fuzzy_date', ['timestamp']);
+
+//        Validator::extend('has', function ($attribute, $value, $parameters, $validator) {
+//            //upper
+//            //lower
+//            //numeric
+//            return $value == 'foo';
+//        });
     }
 
     /**

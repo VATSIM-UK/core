@@ -100,9 +100,9 @@
                                 <li class="col-sm-6">
                                     <ul>
                                         <li class="dropdown-header">Password</li>
-                                        <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
+                                        <li>{!! link_to_route('password.change', "Modify") !!}</li>
                                         @if(!Auth::user()->mandatory_password)
-                                            <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                            <li>{!! link_to_route("password.delete", "Disable") !!}</li>
                                         @endif
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Email Address</li>

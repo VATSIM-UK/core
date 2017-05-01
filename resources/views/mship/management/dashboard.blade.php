@@ -98,19 +98,19 @@
 
                             @if($_account->password)
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/replace/0", "Click to Modify") !!}
+                                    {!! HTML::link(route('password.change'), "Click to Modify") !!}
                                 </div>
 
                                 <div class="col-xs-4">
                                         @if(!$_account->mandatory_password)
-                                            {!! HTML::link("mship/security/replace/1", "Click to Disable") !!}
+                                            {!! HTML::link(route('password.delete'), "Click to Disable") !!}
                                         @else
                                             Cannot be disabled.
                                         @endif
                                 </div>
                             @else
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/enable", "Click to Enable") !!}
+                                    {!! HTML::link(route('password.create'), "Click to Enable") !!}
                                 </div>
                             @endif
                         </div>
