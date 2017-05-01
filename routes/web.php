@@ -145,7 +145,7 @@ Route::group(['domain' => config('app.url')], function () {
             });
         });
 
-        Route::group(['middleware' => 'auth', 'prefix' => 'notification'], function () {
+        Route::group(['middleware' => 'auth_full_group', 'prefix' => 'notification'], function () {
             Route::get('/list', ['as' => 'mship.notification.list', 'uses' => 'Notification@getList']);
             Route::post('/acknowledge/{sysNotification}', ['as' => 'mship.notification.acknowledge', 'uses' => 'Notification@postAcknowledge']);
         });

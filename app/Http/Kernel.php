@@ -48,10 +48,10 @@ class Kernel extends HttpKernel
         ],
         'auth_full_group' => [
             'auth',
+            'mandatorypasswords',
+            'denyifbanned',
             'user.must.read.notifications',
             'must.have.community.group',
-            'denyifbanned',
-            'mandatorypasswords',
             'redirecttointended',
         ],
     ];

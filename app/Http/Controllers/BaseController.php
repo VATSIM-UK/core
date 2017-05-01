@@ -24,6 +24,7 @@ class BaseController extends \Illuminate\Routing\Controller
     protected $pageTitle;
     protected $pageSubTitle;
     protected $breadcrumb;
+    protected $redirectTo = '/';
 
     public function __construct()
     {
@@ -56,6 +57,15 @@ class BaseController extends \Illuminate\Routing\Controller
 
             return $next($request);
         });
+    }
+
+    function redirectTo()
+    {
+        if (Session::has('url.intended')) {
+            return Session::pull('url.intended');
+        };
+
+        return $this->redirectTo;
     }
 
     /**
