@@ -27,12 +27,33 @@ class AppServiceProvider extends ServiceProvider
         HTML::component('panelClose', 'components.html.panel_close', []);
         HTML::component('fuzzyDate', 'components.html.fuzzy_date', ['timestamp']);
 
-//        Validator::extend('has', function ($attribute, $value, $parameters, $validator) {
-//            //upper
-//            //lower
-//            //numeric
-//            return $value == 'foo';
-//        });
+        Validator::extend('upperchars', function ($attribute, $value, $parameters, $validator) {
+            if (isset($parameters[0])) {
+                return str_has_upper($value, $parameters[0]);
+            } else {
+                return str_has_upper($value);
+            }
+        });
+
+        Validator::extend('lowerchars', function ($attribute, $value, $parameters, $validator) {
+            if (isset($parameters[0])) {
+                return str_has_lower($value, $parameters[0]);
+            } else {
+                return str_has_lower($value);
+            }
+        });
+
+        Validator::extend('numbers', function ($attribute, $value, $parameters, $validator) {
+            if (isset($parameters[0])) {
+                return str_has_lower($value, $parameters[0]);
+            } else {
+                return str_has_lower($value);
+            }
+        });
+
+        Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
+            return \Auth::user()->verifyPassword($value);
+        });
     }
 
     /**
