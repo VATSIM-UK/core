@@ -16,9 +16,9 @@ class RedirectToIntended
      */
     public function handle($request, Closure $next)
     {
-//        if (empty(Session::get('middleware.failed')) && Session::has('url.intended')) {
-//            return redirect()->intended();
-//        }
+        if (empty(Session::get('middleware.failed')) && Session::has('url.intended')) {
+            return redirect()->intended();
+        }
 
         return $next($request);
     }
