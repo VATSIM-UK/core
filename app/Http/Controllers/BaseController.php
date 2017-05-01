@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Session;
 use View;
 use Request;
 use App\Models\Mship\Account;
@@ -13,7 +15,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BaseController extends \Illuminate\Routing\Controller
 {
-    use DispatchesJobs, ValidatesRequests, AuthorizesRequests, RedirectsUsers;
+    use DispatchesJobs, ValidatesRequests, RedirectsUsers;
+    use AuthorizesRequests {
+        authorize as protected doAuthorize;
+    }
 
     protected $account;
     protected $pageTitle;
@@ -51,6 +56,31 @@ class BaseController extends \Illuminate\Routing\Controller
 
             return $next($request);
         });
+    }
+
+    /**
+     * Authorize a given action for the current user.
+     *
+     * @param  mixed  $ability
+     * @param  mixed|array  $arguments
+     * @return \Illuminate\Auth\Access\Response
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function authorize($ability, $arguments = [])
+    {
+        try {
+            return $this->doAuthorize($ability, $arguments);
+        } catch (AuthorizationException $e) {
+            if (Session::has('authorization.error')) {
+                $class = get_class($e);
+
+                // throw the same exception with the reason for authorization failure
+                throw new $class(Session::get('authorization.error'), $e->getCode(), $e->getPrevious());
+            } else {
+                throw $e;
+            }
+        }
     }
 
     protected function viewMake($view)
