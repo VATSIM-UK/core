@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\PasswordPolicy;
 use Gate;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -14,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        //
+        'password' => PasswordPolicy::class,
     ];
 
     /**
