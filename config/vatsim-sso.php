@@ -19,7 +19,7 @@ return [
     /*
      * The location of the VATSIM OAuth interface
      */
-    'base' => 'https://cert.vatsim.net/sso/',
+    'base' => env('SSO_BASE', 'https://cert.vatsim.net/sso/'),
 
     /*
      * The consumer key for your organisation (provided by VATSIM)
