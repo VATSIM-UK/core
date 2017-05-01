@@ -12,8 +12,9 @@ use Illuminate\Http\Request;
 use Session;
 use VatsimSSO;
 use App\Exceptions\Mship\DuplicateStateException;
-use App\Models\Mship\Qualification as QualificationType;
+use App\Models\Mship\Qualification;
 use App\Exceptions\Mship\DuplicateQualificationException;
+use VatsimXML;
 
 /**
  * This controller handles authenticating users for the application and
@@ -136,7 +137,6 @@ class LoginController extends BaseController
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
-
         $response = $this->login($request);
 
         if (Auth::check()) {
@@ -185,45 +185,33 @@ class LoginController extends BaseController
     public function vSsoValidationSuccess($user, $request)
     {
         // At this point WE HAVE data in the form of $user;
-        $account = Account::find($user->id);
-        if (is_null($account)) {
-            $account = new Account();
-            $account->id = $user->id;
-        }
+        /**
+         * @var $account Account
+         */
+        $account = Account::firstOrNew(['id' => $user->id]);
         $account->name_first = $user->name_first;
         $account->name_last = $user->name_last;
         $account->email = $user->email;
 
-        try {
-            // Sort the ATC Rating out.
-            $atcRating = $user->rating->id;
-            if ($atcRating > 7) {
-                // Store the admin/ins rating.
-                $qualification = QualificationType::parseVatsimATCQualification($atcRating);
-                if (!is_null($qualification)) {
-                    $account->addQualification($qualification);
-                }
+        $qualifications = [];
+        $atcRating = $user->rating->id;
+        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
 
-                $atcRatingInfo = \VatsimXML::getData($user->id, 'idstatusprat');
-                if (isset($atcRatingInfo->PreviousRatingInt)) {
-                    $atcRating = $atcRatingInfo->PreviousRatingInt;
-                }
+        if ($atcRating >= 8) {
+            $info = VatsimXML::getData($user->id, 'idstatusprat');
+            if (isset($info->PreviousRatingInt)) {
+                $qualifications[] = Qualification::parseVatsimATCQualification($oldRating);
             }
-
-            $parsedRating = QualificationType::parseVatsimATCQualification($atcRating);
-
-            if ($parsedRating) {
-                $account->addQualification($parsedRating);
-            }
-
-            for ($i = 1; $i <= 256; $i *= 2) {
-                if ($i & $user->pilot_rating->rating) {
-                    $account->addQualification(QualificationType::ofType('pilot')->networkValue($i)->first());
-                }
-            }
-        } catch (DuplicateQualificationException $e) {
-            // TODO: Something.
         }
+
+        for ($i = 1; $i <= 256; $i *= 2) {
+            if ($i & $user->pilot_rating->rating) {
+                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+            }
+        }
+
+        $ids = collect($qualifications)->pluck('id');
+        $account->qualifications()->syncWithoutDetaching($ids);
 
         try {
             $state = determine_mship_state_from_vatsim($user->region->code, $user->division->code);
