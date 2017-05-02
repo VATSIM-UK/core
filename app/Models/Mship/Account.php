@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Exceptions\Mship\DuplicateStateException;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -10,6 +11,7 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use VatsimXML;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
@@ -618,6 +620,40 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         }
     }
 
+    /**
+     * Add qualifications to the account, calculated from the VATSIM identifiers.
+     *
+     * @param int $atcRating The VATSIM ATC rating
+     * @param int $pilotRating The VATSIM pilot rating
+     */
+    public function updateVatsimRatings(int $atcRating, int $pilotRating)
+    {
+        $qualifications = [];
+        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+
+        if ($atcRating >= 8) {
+            $info = VatsimXML::getData($this->id, 'idstatusprat');
+            if (isset($info->PreviousRatingInt)) {
+                $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+            }
+        }
+
+        for ($i = 1; $i <= 256; $i *= 2) {
+            if ($i & $pilotRating) {
+                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+            }
+        }
+
+        $ids = collect($qualifications)->pluck('id');
+        $this->qualifications()->syncWithoutDetaching($ids);
+
+        if ($atcRating === 0) {
+            $this->addNetworkBan('Network ban discovered via Cert login.');
+        } elseif ($atcRating > 0) {
+            $this->removeNetworkBan();
+        }
+    }
+
     public function getActiveQualificationsAttribute()
     {
         $this->load('qualifications');
@@ -750,6 +786,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         return $this->states()->updateExistingPivot($state->id, [
             'end_at' => Carbon::now(),
         ]);
+    }
+
+    /**
+     * Update the member's region and division.
+     *
+     * @param string $division Division code as reported by VATSIM.
+     * @param string $region Region code as reported by VATSIM.
+     */
+    public function updateDivision($division, $region)
+    {
+        try {
+            $state = determine_mship_state_from_vatsim($region, $division);
+            $this->addState($state, $region, $division);
+        } catch (DuplicateStateException $e) {}
     }
 
     /**
@@ -1240,6 +1290,28 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         });
 
         return $bans->first();
+    }
+
+    public function addNetworkBan($reason = 'Network ban discovered.')
+    {
+        if ($this->is_network_banned === false) {
+            $newBan = new \App\Models\Mship\Account\Ban();
+            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $newBan->reason_extra = $reason;
+            $newBan->period_start = Carbon::now();
+            $newBan->save();
+
+            $this->bans()->save($newBan);
+        }
+    }
+
+    public function removeNetworkBan()
+    {
+        if ($this->is_network_banned === true) {
+            $ban = $this->network_ban;
+            $ban->period_finish = Carbon::now();
+            $ban->save();
+        }
     }
 
     public function getIsBannedAttribute()

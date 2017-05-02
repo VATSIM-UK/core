@@ -185,74 +185,18 @@ class LoginController extends BaseController
     public function vSsoValidationSuccess($user, $request)
     {
         // At this point WE HAVE data in the form of $user;
-        /**
-         * @var $account Account
-         */
         $account = Account::firstOrNew(['id' => $user->id]);
         $account->name_first = $user->name_first;
         $account->name_last = $user->name_last;
         $account->email = $user->email;
-
-        $qualifications = [];
-        $atcRating = $user->rating->id;
-        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
-
-        if ($atcRating >= 8) {
-            $info = VatsimXML::getData($user->id, 'idstatusprat');
-            if (isset($info->PreviousRatingInt)) {
-                $qualifications[] = Qualification::parseVatsimATCQualification($oldRating);
-            }
-        }
-
-        for ($i = 1; $i <= 256; $i *= 2) {
-            if ($i & $user->pilot_rating->rating) {
-                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
-            }
-        }
-
-        $ids = collect($qualifications)->pluck('id');
-        $account->qualifications()->syncWithoutDetaching($ids);
-
-        try {
-            $state = determine_mship_state_from_vatsim($user->region->code, $user->division->code);
-            $account->addState($state, $user->region->code, $user->division->code);
-        } catch (DuplicateStateException $e) {
-            // TODO: Something.
-        }
-
-        $account->last_login = Carbon::now();
-        $account->last_login_ip = \Request::ip();
-        if ($user->rating->id == -1) {
-            $account->is_inactive = 1;
-        } else {
-            $account->is_inactive = 0;
-        }
-
-        // Are they network banned, but unbanned in our system?
-        // Add it!
-        if ($user->rating->id == 0 && $account->is_network_banned === false) {
-            // Add a ban.
-            $newBan = new \App\Models\Mship\Account\Ban();
-            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
-            $newBan->reason_extra = 'Network ban discovered via Cert login.';
-            $newBan->period_start = Carbon::now();
-            $newBan->save();
-
-            $account->bans()->save($newBan);
-        }
-
-        // Are they banned in our system (for a network ban) but unbanned on the network?
-        // Then expire the ban.
-        if ($account->is_network_banned === true && $user->rating->id > 0) {
-            $ban = $account->network_ban;
-            $ban->period_finish = Carbon::now();
-            $ban->save();
-        }
-
-        // Session stuff.
         $account->session_id = Session::getId();
         $account->experience = $user->experience;
         $account->joined_at = $user->reg_date;
+        $account->last_login = Carbon::now();
+        $account->last_login_ip = \Request::ip();
+        $account->is_inactive = $user->rating->id == -1 ? true : false;
+        $account->updateVatsimRatings($user->rating->id, $user->pilot_rating->rating);
+        $account->updateDivision($user->division->code, $user->region->code);
         $account->save();
 
         $this->setVatsimAuth($user->id);
