@@ -50,7 +50,7 @@ class GenerateEloquentMethodPHPDoc extends Command
 
                 $definition = $this->getMethodDefinition($method, $docBlockTags);
 
-                $this->log("$definition->return ", null, false);
+                $this->log("$definition->return", null, false);
 
                 $this->log(sprintf(
                     '%s(%s)',
@@ -112,7 +112,7 @@ class GenerateEloquentMethodPHPDoc extends Command
             if ($tag->getName() === 'param') {
                 $definition->params[] = $this->getParameterDefinition($method, $tag);
             } elseif ($tag->getName() === 'return' && $tag->getType() !== 'void') {
-                $definition->return = $this->getReturnDefinition($tag);
+                $definition->return = $this->getReturnDefinition($tag).' ';
             }
         }
 
@@ -129,10 +129,10 @@ class GenerateEloquentMethodPHPDoc extends Command
     protected function getParameterDefinition($method, $tag)
     {
         $defaultValue = $this->getParameterDefault($method, $tag);
-        $returnType = str_contains($tag->getType(), '|') ? 'mixed' : $tag->getType();
+        $returnType = str_contains($tag->getType(), '|') || $tag->getType() === 'mixed' ? '' : $tag->getType().' ';
         $parameterName = $tag->getVariableName();
 
-        return "$returnType $parameterName$defaultValue";
+        return "$returnType$parameterName$defaultValue";
     }
 
     /**
