@@ -25,6 +25,9 @@ The following are the upgrade notes for deploying in production.
 2. Run `php artisan route:clear`
 3. Add `notification` queue to queue processor
 
+### feature/auth and feature/auth-sso
+1. Run `php artisan passport:keys`
+
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.

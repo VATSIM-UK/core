@@ -11,6 +11,7 @@ use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Laravel\Passport\HasApiTokens;
 use VatsimXML;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
@@ -160,7 +161,17 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  */
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
+        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+
+    use HasApiTokens {
+        clients as oAuthClients;
+        tokens as oAuthTokens;
+        token as oAuthToken;
+        tokenCan as oAuthTokenCan;
+        createToken as createOAuthToken;
+        withAccessToken as withOAuthAccessToken;
+    }
 
     protected $table = 'mship_account';
     public $incrementing = false;
