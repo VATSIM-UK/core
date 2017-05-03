@@ -27,6 +27,7 @@ The following are the upgrade notes for deploying in production.
 
 ### feature/auth and feature/auth-sso
 1. Run `php artisan passport:keys`
+2. Add OAuth clients using `php artisan passport:client`
 
 ### Older Versions
 
