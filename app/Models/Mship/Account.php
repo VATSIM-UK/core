@@ -539,7 +539,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 
     public function ssoEmails()
     {
-        return $this->hasMany(\App\Models\Sso\Email::class, 'account_id');
+        return $this->hasManyThrough(\App\Models\Sso\Email::class, Email::class, 'account_id', 'account_email_id');
     }
 
     public function teamspeakRegistrations()
