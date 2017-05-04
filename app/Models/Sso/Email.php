@@ -39,6 +39,6 @@ class Email extends \Eloquent
 
     public function ssoAccount()
     {
-        return $this->belongsTo(\App\Models\Sso\Account::class, 'sso_account_id', 'id');
+        return $this->belongsTo(\Laravel\Passport\Client::class, 'sso_account_id', 'id');
     }
 }

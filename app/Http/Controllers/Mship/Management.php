@@ -6,7 +6,7 @@ use Auth;
 use Input;
 use Redirect;
 use Validator;
-use App\Models\Sso\Account as SSOSystem;
+use Laravel\Passport\Client as OAuthClient;
 use App\Models\Sys\Token as SystemToken;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Models\Mship\Account\Email as AccountEmail;
@@ -113,7 +113,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function getEmailAssignments()
     {
         // Get all SSO systems
-        $ssoSystems = SSOSystem::all();
+        $ssoSystems = OAuthClient::all();
 
         // Get all user emails that are currently verified!
         $userPrimaryEmail = $this->account->email;
@@ -152,7 +152,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function postEmailAssignments()
     {
         // Get all SSO systems
-        $ssoSystems = SSOSystem::all();
+        $ssoSystems = OAuthClient::all();
 
         // Get all user emails that are currently verified!
         $userPrimaryEmail = $this->account->email;
