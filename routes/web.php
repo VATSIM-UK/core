@@ -186,10 +186,6 @@ Route::group(['domain' => config('app.url')], function () {
             Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
             Route::get('/email/recipient-search', ['as' => 'mship.email.recipient-search', 'uses' => 'Email@getRecipientSearch']);
         });
-
-        Route::group(['prefix' => 'security'], function () {
-
-        });
     });
 
     Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth_full_group']], function () {
@@ -205,12 +201,6 @@ Route::group(['domain' => config('app.url')], function () {
         Route::get('/new', ['as' => 'slack.new', 'uses' => 'Registration@getNew']);
         Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
         Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
-    });
-
-    Route::group(['prefix' => 'sso', 'namespace' => 'Sso'], function () {
-        Route::get('auth/login', ['middleware' => 'user.must.read.notifications', 'as' => 'sso.auth.login', 'uses' => 'Authentication@getLogin']);
-        Route::post('security/generate', ['as' => 'sso.security.generate', 'uses' => 'Security@postGenerate']);
-        Route::post('security/details', ['as' => 'sso.security.details', 'uses' => 'Security@postDetails']);
     });
 });
 
