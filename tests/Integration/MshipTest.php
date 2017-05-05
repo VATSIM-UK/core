@@ -22,7 +22,7 @@ class MshipTest extends TestCase
     {
         $this->visit("/");
 
-        $this->seePageIs(route("mship.manage.landing"));
+        $this->seePageIs(route("default"));
     }
     
     /** @test **/

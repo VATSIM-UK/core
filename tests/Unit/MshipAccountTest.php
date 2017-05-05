@@ -35,6 +35,13 @@ class MshipAccountTest extends TestCase
         ]);
     }
 
+    protected function mockAuth()
+    {
+        \Auth::shouldReceive('user')->andReturn($this->account);
+        \Auth::shouldReceive('check')->andReturn(true);
+        \Auth::shouldReceive('id')->andReturn($this->account->id);
+    }
+
     /** @test */
     public function it_stores_basic_member_data()
     {
@@ -328,6 +335,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_stores_a_hashed_password()
     {
+        $this->mockAuth();
         $this->account->setPassword("testing123");
 
         $this->account = $this->account->fresh();
@@ -349,6 +357,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_determines_that_password_is_set()
     {
+        $this->mockAuth();
         $this->account->setPassword("testing456");
 
         $this->account = $this->account->fresh();
@@ -371,6 +380,7 @@ class MshipAccountTest extends TestCase
     public function it_determines_that_password_has_expired()
     {
         $temporary = true;
+        $this->mockAuth();
         $this->account->setPassword("testing911", $temporary);
 
         sleep(1); // Necessary to check the password has expired.
@@ -385,6 +395,7 @@ class MshipAccountTest extends TestCase
     {
         $this->expectException(DuplicatePasswordException::class);
 
+        $this->mockAuth();
         $this->account->setPassword("testing123");
         $this->account->setPassword("testing123");
     }
@@ -392,6 +403,7 @@ class MshipAccountTest extends TestCase
     /** @test * */
     public function it_overwrites_old_password_and_modifies_the_timestamps()
     {
+        $this->mockAuth();
         $this->account->setPassword("testing123");
 
         $oldPassword = $this->account->password;
