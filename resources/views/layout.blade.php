@@ -139,7 +139,11 @@
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
             <div class="breadcrumb_container">
                 <div class="breadcrumb_content_left">
-                    <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                    @if(Auth::check())
+                        <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                    @else
+                        <span>You are not logged in.</span>
+                    @endif
                 </div>
                 <div class="breadcrumb_content_right">
                     <a href="#">VATSIM UK</a>  /  Home

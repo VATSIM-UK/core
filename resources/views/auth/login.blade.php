@@ -25,16 +25,31 @@
                     <input name="remember" type="hidden" value="true">
 
                     <div class='form-group'>
-                        <label for="password" class="control-label">Secondary Password</label>
-                        <input class="form-control" name="password" type="password" value="" id="password">
-                        <span class='help-block'>
-                            <a href='#' data-toggle="modal" data-target="#resetConfirmModal">Forgotten Password?</a>
-                        </span>
+                        <label class="control-label col-sm-5">Account</label>
+                        <div class="col-sm-4">
+                            <p class="form-control-static">{{Session::get('auth.vatsim-sso')}}</p>
+                        </div>
                     </div>
 
-                    {!! ControlGroup::withContents(
-                        Form::submit("Login")
-                    )->withAttributes(["class" => "text-center"]) !!}
+                    <div class='form-group'>
+                        <label for="password" class="control-label col-sm-5">Secondary Password</label>
+                        <div class="col-sm-4">
+                            <input class="form-control" name="password" type="password" value="" id="password">
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <div class="col-sm-4 col-sm-offset-5">
+                            <a href='#' class="form-control-static" data-toggle="modal" data-target="#resetConfirmModal">Forgotten Password?</a>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <div class="col-sm-4 col-sm-offset-5">
+                            <input class="btn btn-default" type="submit" value="Login">
+                        </div>
+                    </div>
+
 
                     {!! Form::close() !!}
                 </div>
