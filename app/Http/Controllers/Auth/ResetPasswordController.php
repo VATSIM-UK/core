@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Http\Request;
 use Session;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 /**
  * This controller is responsible for handling password reset requests
  * and uses a simple trait to include this behavior. You're free to
  * explore this trait and override any methods you wish to tweak.
- *
- * @package App\Http\Controllers\Auth
  */
 class ResetPasswordController extends BaseController
 {

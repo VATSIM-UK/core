@@ -2,17 +2,14 @@
 
 namespace App\Models\Mship;
 
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account\Ban;
+use Laravel\Passport\HasApiTokens;
 use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Laravel\Passport\HasApiTokens;
-use VatsimXML;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +18,7 @@ use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
+use App\Exceptions\Mship\DuplicateStateException;
 use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
@@ -30,12 +28,13 @@ use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
 
@@ -165,7 +164,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
         RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
-
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -807,7 +805,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         try {
             $state = determine_mship_state_from_vatsim($region, $division);
             $this->addState($state, $region, $division);
-        } catch (DuplicateStateException $e) {}
+        } catch (DuplicateStateException $e) {
+        }
     }
 
     /**

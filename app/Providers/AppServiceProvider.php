@@ -5,8 +5,8 @@ namespace App\Providers;
 use URL;
 use HTML;
 use Config;
-use Illuminate\Support\ServiceProvider;
 use Validator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

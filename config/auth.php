@@ -102,9 +102,9 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'accounts',
-            'email'    => 'auth.emails.password',
-            'table'    => 'password_resets',
-            'expire'   => 60,
+            'email' => 'auth.emails.password',
+            'table' => 'password_resets',
+            'expire' => 60,
         ],
     ],
 

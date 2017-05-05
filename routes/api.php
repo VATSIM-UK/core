@@ -1,7 +1,6 @@
 <?php
 
 Route::get('user', function (\Illuminate\Http\Request $request) {
-
     $clientId = $request->user()->oAuthToken()->client->id;
 
     $account = $request->user();

@@ -24,7 +24,7 @@ trait ExcludesRoutes
                     return true;
                 }
             }
-        };
+        }
 
         return false;
     }

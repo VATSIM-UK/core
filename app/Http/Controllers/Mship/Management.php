@@ -6,8 +6,8 @@ use Auth;
 use Input;
 use Redirect;
 use Validator;
-use Laravel\Passport\Client as OAuthClient;
 use App\Models\Sys\Token as SystemToken;
+use Laravel\Passport\Client as OAuthClient;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Models\Mship\Account\Email as AccountEmail;
 
@@ -44,6 +44,7 @@ class Management extends \App\Http\Controllers\BaseController
             Auth::user()->is_invisible = 1;
         }
         Auth::user()->save();
+
         return Redirect::route('mship.manage.landing');
     }
 

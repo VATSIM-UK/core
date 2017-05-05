@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Policies\PasswordPolicy;
 use Gate;
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use App\Policies\PasswordPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {

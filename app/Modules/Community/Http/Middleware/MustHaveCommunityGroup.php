@@ -2,13 +2,9 @@
 
 namespace App\Modules\Community\Http\Middleware;
 
-use App\Traits\Middleware\ExcludesRoutes;
-use App\Traits\Middleware\RedirectsOnFailure;
 use Auth;
-use Closure;
-use Request;
-use Session;
 use Redirect;
+use App\Traits\Middleware\RedirectsOnFailure;
 
 class MustHaveCommunityGroup
 {

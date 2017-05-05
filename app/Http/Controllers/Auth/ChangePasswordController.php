@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\Mship\DuplicatePasswordException;
-use App\Http\Controllers\BaseController;
 use Auth;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Input;
 use Redirect;
-use Session;
+use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 
 /**
  * This controller is responsible for handling password creation,
  * modification and deletion requests for authenticated users.
- *
- * @package App\Http\Controllers\Auth
  */
 class ChangePasswordController extends BaseController
 {
