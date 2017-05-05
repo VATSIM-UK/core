@@ -90,3 +90,15 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
 
     return Response::json(['status' => 'success', 'data' => $return]);
 });
+
+Route::group([
+    'as' => 'networkdata.api.',
+    'namespace' => 'NetworkData',
+    'domain' => config('app.url'),
+    'prefix' => 'network-data',
+], function () {
+    Route::get('/online', [
+        'as' => 'online',
+        'uses' => 'Feed@getOnline',
+    ]);
+});

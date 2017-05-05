@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\NetworkData\AtcSessionEnded;
+use App\Listeners\NetworkData\AtcSessionRecordedSuccessNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -21,6 +23,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+        ],
+
+        AtcSessionEnded::class => [
+            AtcSessionRecordedSuccessNotification::class,
         ],
     ];
 

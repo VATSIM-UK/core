@@ -31,6 +31,8 @@ class Kernel extends ConsoleKernel
         Commands\SlackManager::class,
         Commands\ApiGenerator::class,
         Commands\TestEmails::class,
+        \App\Console\Commands\DownloadAndParse::class,
+        \App\Console\Commands\Statistics::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,

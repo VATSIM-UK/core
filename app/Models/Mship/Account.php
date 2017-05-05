@@ -35,7 +35,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use App\Traits\CommunityAccount as CommunityAccountTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
+use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
 
 /**
@@ -113,8 +113,8 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property-read mixed $visit_transfer_referee_pending
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $messagePosts
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\NetworkData\Models\Atc[] $networkDataAtc
- * @property-read \App\Modules\NetworkData\Models\Atc $networkDataAtcCurrent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
+ * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
