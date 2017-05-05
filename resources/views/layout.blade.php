@@ -136,9 +136,14 @@
         <div class="banner hidden-xs hidden-sm">
         </div>
 
-        <div class="breadcrumb_container hidden-xs hidden-sm">
-            <div class="breadcrumb_content">
-                <a href="#">VATSIM UK</a>  /  Home
+        <div class="breadcrumb_outer_container hidden-xs hidden-sm">
+            <div class="breadcrumb_container">
+                <div class="breadcrumb_content_left">
+                    <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                </div>
+                <div class="breadcrumb_content_right">
+                    <a href="#">VATSIM UK</a>  /  Home
+                </div>
             </div>
         </div>
 
