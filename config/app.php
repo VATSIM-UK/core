@@ -190,6 +190,7 @@ return [
         Bootstrapper\BootstrapperL5ServiceProvider::class,
         Caffeinated\Modules\ModulesServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
     ],
     /*
     |--------------------------------------------------------------------------

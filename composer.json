@@ -45,7 +45,8 @@
         "bugsnag/bugsnag-laravel": "^2.0",
         "watson/rememberable": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.1",
-        "laravel/browser-kit-testing": "^1.0"
+        "laravel/browser-kit-testing": "^1.0",
+        "laravel/passport": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

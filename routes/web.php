@@ -37,7 +37,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
     Route::group(['prefix' => 'adm'], function () {
 
         // Login is the only unauthenticated page.
-        Route::get('/', ['middleware' => 'auth.admin', 'uses' => 'Authentication@getLogin']);
+        Route::get('/', ['middleware' => ['auth_full_group'], 'uses' => 'Authentication@getLogin']);
         Route::group(['prefix' => 'authentication'], function () {
             Route::get('/login', ['as' => 'adm.authentication.login', 'uses' => 'Authentication@getLogin']);
             Route::post('/login', ['as' => 'adm.authentication.login.post', 'uses' => 'Authentication@postLogin']);
@@ -48,7 +48,7 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
         Route::get('/error/{code?}', ['as' => 'adm.error', 'uses' => 'Error@getDisplay']);
 
         // Auth required
-        Route::group(['middleware' => 'auth.admin'], function () {
+        Route::group(['middleware' => ['auth_full_group']], function () {
             Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
             Route::any('/search/{q?}', ['as' => 'adm.search', 'uses' => 'Dashboard@anySearch']);
 
@@ -136,21 +136,16 @@ Route::group(['domain' => config('app.url')], function () {
     Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
         // Guest access
         Route::group(['prefix' => 'auth'], function () {
-            Route::get('/redirect', ['as' => 'mship.auth.redirect', 'uses' => 'Authentication@getRedirect']);
             Route::get('/login-alternative', ['as' => 'mship.auth.loginAlternative', 'uses' => 'Authentication@getLoginAlternative']);
             Route::post('/login-alternative', ['as' => 'mship.auth.loginAlternative.post', 'uses' => 'Authentication@postLoginAlternative']);
-            Route::get('/login', ['as' => 'mship.auth.login', 'uses' => 'Authentication@getLogin']);
-            Route::get('/verify', ['as' => 'mship.auth.verify', 'uses' => 'Authentication@getVerify']);
-            Route::get('/logout/{force?}', ['as' => 'mship.auth.logout', 'uses' => 'Authentication@getLogout']);
-            Route::post('/logout/{force?}', ['as' => 'mship.auth.logout.post', 'uses' => 'Authentication@postLogout']);
 
             // /mship/auth - fully authenticated.
             Route::group(['middleware' => ['auth_full_group']], function () {
-                Route::get('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Authentication@getInvisibility']);
+                Route::post('/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Management@postInvisibility']);
             });
         });
 
-        Route::group(['middleware' => 'auth.user.full', 'prefix' => 'notification'], function () {
+        Route::group(['middleware' => 'auth_full_group', 'prefix' => 'notification'], function () {
             Route::get('/list', ['as' => 'mship.notification.list', 'uses' => 'Notification@getList']);
             Route::post('/acknowledge/{sysNotification}', ['as' => 'mship.notification.acknowledge', 'uses' => 'Notification@postAcknowledge']);
         });
@@ -191,22 +186,6 @@ Route::group(['domain' => config('app.url')], function () {
             Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
             Route::get('/email/recipient-search', ['as' => 'mship.email.recipient-search', 'uses' => 'Email@getRecipientSearch']);
         });
-
-        Route::group(['prefix' => 'security'], function () {
-            Route::get('/forgotten-link/{code}', ['as' => 'mship.security.forgotten.link', 'uses' => 'Security@getForgottenLink'])->where(['code' => '\w+']);
-
-            Route::group(['middleware' => 'auth.user'], function () {
-                Route::get('/forgotten', ['as' => 'mship.security.forgotten', 'uses' => 'Security@getForgotten']);
-                Route::get('/auth', ['as' => 'mship.security.auth', 'uses' => 'Security@getAuth']);
-                Route::post('/auth', ['as' => 'mship.security.auth.post', 'uses' => 'Security@postAuth']);
-                Route::get('/replace/{delete?}', ['as' => 'mship.security.replace', 'uses' => 'Security@getReplace'])->where(['delete' => '[1|0]']);
-                Route::post('/replace/{delete?}', ['as' => 'mship.security.replace.post', 'uses' => 'Security@postReplace'])->where(['delete' => '[1|0]']);
-            });
-
-            Route::group(['middleware' => ['auth_full_group']], function () {
-                Route::get('/enable', ['as' => 'mship.security.enable', 'uses' => 'Security@getEnable']);
-            });
-        });
     });
 
     Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth_full_group']], function () {
@@ -223,14 +202,30 @@ Route::group(['domain' => config('app.url')], function () {
         Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
         Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
     });
-
-    Route::group(['prefix' => 'sso', 'namespace' => 'Sso'], function () {
-        Route::get('auth/login', ['middleware' => 'user.must.read.notifications', 'as' => 'sso.auth.login', 'uses' => 'Authentication@getLogin']);
-        Route::post('security/generate', ['as' => 'sso.security.generate', 'uses' => 'Security@postGenerate']);
-        Route::post('security/details', ['as' => 'sso.security.details', 'uses' => 'Security@postDetails']);
-    });
 });
 
-Route::get('/', ['domain' => config('app.url'), 'as' => 'default', function () {
-    return Redirect::route('mship.manage.landing');
-}]);
+Route::get('/', ['domain' => config('app.url'), 'uses' => 'Mship\Management@getLanding', 'as' => 'default']);
+
+// Authentication Routes
+Route::get('login', 'Auth\LoginController@getLogin');
+Route::post('login', 'Auth\LoginController@loginMain')->name('login');
+Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary');
+Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('auth-secondary.post');
+Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+// Password Reset Routes
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+// Password Change routes
+Route::group(['middleware' => ['auth_full_group']], function () {
+    Route::get('password/create', 'Auth\ChangePasswordController@showCreateForm')->name('password.create');
+    Route::post('password/create', 'Auth\ChangePasswordController@create');
+    Route::get('password/change', 'Auth\ChangePasswordController@showChangeForm')->name('password.change');
+    Route::post('password/change', 'Auth\ChangePasswordController@change');
+    Route::get('password/delete', 'Auth\ChangePasswordController@showDeleteForm')->name('password.delete');
+    Route::post('password/delete', 'Auth\ChangePasswordController@delete');
+});

@@ -19,7 +19,7 @@ class ForgottenPasswordLink extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Token $token)
+    public function __construct($token)
     {
         parent::__construct();
 
@@ -50,7 +50,7 @@ class ForgottenPasswordLink extends Notification implements ShouldQueue
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK Web Services')
             ->subject($subject)
-            ->view('emails.mship.security.reset_confirmation', ['subject' => $subject, 'recipient' => $notifiable, 'account' => $notifiable, 'token' => $this->token]);
+            ->view('emails.mship.security.reset_confirmation', ['subject' => $subject, 'recipient' => $notifiable, 'account' => $notifiable, 'token' => route('password.reset', $this->token)]);
     }
 
     /**
@@ -61,6 +61,6 @@ class ForgottenPasswordLink extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return ['token_id' => $this->token->token_id];
+        return ['token' => $this->token];
     }
 }

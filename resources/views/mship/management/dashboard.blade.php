@@ -52,15 +52,10 @@
                             </div>
 
                             <div class="col-xs-4">
-                                <strong>
-                                    INVISIBILITY:
-                                </strong>
-
-                                @if($_account->is_invisible)
-                                    {!! HTML::link("mship/auth/invisibility", "Disable") !!}
-                                @else
-                                    {!! HTML::link("mship/auth/invisibility", "Enable")  !!}
-                                @endif
+                                {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
+                                <strong>INVISIBILITY:</strong>
+                                <a href="{{ route('mship.auth.invisibility') }}" onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
+                                {!! Form::close() !!}
                             </div>
                         </div>
                         <!-- Second Row [END] -->
@@ -103,19 +98,19 @@
 
                             @if($_account->password)
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/replace/0", "Click to Modify") !!}
+                                    {!! HTML::link(route('password.change'), "Click to Modify") !!}
                                 </div>
 
                                 <div class="col-xs-4">
                                         @if(!$_account->mandatory_password)
-                                            {!! HTML::link("mship/security/replace/1", "Click to Disable") !!}
+                                            {!! HTML::link(route('password.delete'), "Click to Disable") !!}
                                         @else
                                             Cannot be disabled.
                                         @endif
                                 </div>
                             @else
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/enable", "Click to Enable") !!}
+                                    {!! HTML::link(route('password.create'), "Click to Enable") !!}
                                 </div>
                             @endif
                         </div>

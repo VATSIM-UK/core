@@ -25,6 +25,12 @@ The following are the upgrade notes for deploying in production.
 2. Run `php artisan route:clear`
 3. Add `notification` queue to queue processor
 
+### feature/auth and feature/auth-sso
+1. Run `php artisan passport:keys`
+2. Add OAuth clients using `php artisan passport:client`
+3. Make sure all new client IDs correspond to `mship_oauth_emails`
+(preferably by updating the emails table, not forcing the ids of the clients)
+
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.

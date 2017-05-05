@@ -100,9 +100,9 @@
                                 <li class="col-sm-6">
                                     <ul>
                                         <li class="dropdown-header">Password</li>
-                                        <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
+                                        <li>{!! link_to_route('password.change', "Modify") !!}</li>
                                         @if(!Auth::user()->mandatory_password)
-                                            <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                            <li>{!! link_to_route("password.delete", "Disable") !!}</li>
                                         @endif
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Email Address</li>
@@ -122,10 +122,12 @@
                         </li>
                     </ul>
                 @endif
-                @if(Auth::check())
+                @if(Auth::check() || Session::has('auth.vatsim-sso'))
+                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
-                        <li><a href="{{ route('mship.auth.logout', ['Core']) }}">LOG OUT</a></li>
+                        <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a></li>
                     </ul>
+                    {!! Form::close() !!}
                 @endif
 
             </div>
@@ -134,9 +136,18 @@
         <div class="banner hidden-xs hidden-sm">
         </div>
 
-        <div class="breadcrumb_container hidden-xs hidden-sm">
-            <div class="breadcrumb_content">
-                <a href="#">VATSIM UK</a>  /  Home
+        <div class="breadcrumb_outer_container hidden-xs hidden-sm">
+            <div class="breadcrumb_container">
+                <div class="breadcrumb_content_left">
+                    @if(Auth::check())
+                        <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                    @else
+                        <span>You are not logged in.</span>
+                    @endif
+                </div>
+                <div class="breadcrumb_content_right">
+                    <a href="#">VATSIM UK</a>  /  Home
+                </div>
             </div>
         </div>
 
@@ -149,6 +160,12 @@
             @if(Session::has('error') OR isset($error))
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
+                </div>
+            @endif
+
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
                 </div>
             @endif
 
@@ -169,7 +186,7 @@
                 </div>
             @endif
 
-            @if(Auth::check() && Auth::user()->auth_extra && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
+            @if(Auth::check() && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
                 <div class="alert alert-warning" role="alert">
                     You currently have unread notifications. You can view them on the "{!! HTML::link(route("mship.notification.list"), "notifications page") !!}".
                 </div>

@@ -2,12 +2,17 @@
 
 namespace App\Models\Mship;
 
+use App\Exceptions\Mship\DuplicateStateException;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Laravel\Passport\HasApiTokens;
+use VatsimXML;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
@@ -28,6 +33,8 @@ use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
@@ -62,6 +69,7 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[] $activityRecent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Community\Models\Group[] $communityGroups
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
@@ -111,12 +119,13 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[] $qualifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readNotifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $secondaryEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[] $ssoTokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $states
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
@@ -152,9 +161,19 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
  */
-class Account extends \App\Models\Model implements AuthenticatableContract
+class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
+        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+
+    use HasApiTokens {
+        clients as oAuthClients;
+        tokens as oAuthTokens;
+        token as oAuthToken;
+        tokenCan as oAuthTokenCan;
+        createToken as createOAuthToken;
+        withAccessToken as withOAuthAccessToken;
+    }
 
     protected $table = 'mship_account';
     public $incrementing = false;
@@ -270,6 +289,27 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Get the e-mail address where password reset links are sent.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ForgottenPasswordLink($token));
     }
 
     /**
@@ -499,12 +539,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function ssoEmails()
     {
-        return $this->hasMany(\App\Models\Sso\Email::class, 'account_id');
-    }
-
-    public function ssoTokens()
-    {
-        return $this->hasMany(\App\Models\Sso\Token::class, 'account_id');
+        return $this->hasManyThrough(\App\Models\Sso\Email::class, Email::class, 'account_id', 'account_email_id');
     }
 
     public function teamspeakRegistrations()
@@ -590,6 +625,40 @@ class Account extends \App\Models\Model implements AuthenticatableContract
                 ->diffInHours(Carbon::now(), true);
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * Add qualifications to the account, calculated from the VATSIM identifiers.
+     *
+     * @param int $atcRating The VATSIM ATC rating
+     * @param int $pilotRating The VATSIM pilot rating
+     */
+    public function updateVatsimRatings(int $atcRating, int $pilotRating)
+    {
+        $qualifications = [];
+        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+
+        if ($atcRating >= 8) {
+            $info = VatsimXML::getData($this->id, 'idstatusprat');
+            if (isset($info->PreviousRatingInt)) {
+                $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+            }
+        }
+
+        for ($i = 1; $i <= 256; $i *= 2) {
+            if ($i & $pilotRating) {
+                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+            }
+        }
+
+        $ids = collect($qualifications)->pluck('id');
+        $this->qualifications()->syncWithoutDetaching($ids);
+
+        if ($atcRating === 0) {
+            $this->addNetworkBan('Network ban discovered via Cert login.');
+        } elseif ($atcRating > 0) {
+            $this->removeNetworkBan();
         }
     }
 
@@ -725,6 +794,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $this->states()->updateExistingPivot($state->id, [
             'end_at' => Carbon::now(),
         ]);
+    }
+
+    /**
+     * Update the member's region and division.
+     *
+     * @param string $division Division code as reported by VATSIM.
+     * @param string $region Region code as reported by VATSIM.
+     */
+    public function updateDivision($division, $region)
+    {
+        try {
+            $state = determine_mship_state_from_vatsim($region, $division);
+            $this->addState($state, $region, $division);
+        } catch (DuplicateStateException $e) {}
     }
 
     /**
@@ -922,11 +1005,21 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             throw new \App\Exceptions\Mship\DuplicatePasswordException;
         }
 
-        return $this->fill([
+        $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
             'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
+
+        // if the password is being reset by its owner...
+        if ($save && \Auth::user()->id === $this->id) {
+            \Session::put([
+                'password_hash' => \Auth::user()->getAuthPassword(),
+            ]);
+            \Session::put('auth.secondary', Carbon::now());
+        }
+
+        return $save;
     }
 
     /**
@@ -936,7 +1029,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function removePassword()
     {
-        $this->fill([
+        return $this->fill([
             'password' => null,
             'password_set_at' => null,
             'password_expires_at' => null,
@@ -1205,6 +1298,28 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         });
 
         return $bans->first();
+    }
+
+    public function addNetworkBan($reason = 'Network ban discovered.')
+    {
+        if ($this->is_network_banned === false) {
+            $newBan = new \App\Models\Mship\Account\Ban();
+            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $newBan->reason_extra = $reason;
+            $newBan->period_start = Carbon::now();
+            $newBan->save();
+
+            $this->bans()->save($newBan);
+        }
+    }
+
+    public function removeNetworkBan()
+    {
+        if ($this->is_network_banned === true) {
+            $ban = $this->network_ban;
+            $ban->period_finish = Carbon::now();
+            $ban->save();
+        }
     }
 
     public function getIsBannedAttribute()

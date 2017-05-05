@@ -8,6 +8,8 @@ use Redirect;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
+    protected $redirectTo = 'mship/notification/list';
+
     public function postAcknowledge($notification)
     {
         $this->account->readNotifications()->attach($notification);
@@ -19,7 +21,7 @@ class Notification extends \App\Http\Controllers\BaseController
             }
         }
 
-        return Redirect::route('mship.notification.list');
+        return redirect($this->redirectPath());
     }
 
     public function getList()

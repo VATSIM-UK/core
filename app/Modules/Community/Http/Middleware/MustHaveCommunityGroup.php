@@ -2,6 +2,8 @@
 
 namespace App\Modules\Community\Http\Middleware;
 
+use App\Traits\Middleware\ExcludesRoutes;
+use App\Traits\Middleware\RedirectsOnFailure;
 use Auth;
 use Closure;
 use Request;
@@ -10,34 +12,20 @@ use Redirect;
 
 class MustHaveCommunityGroup
 {
-    private $excludedRoutes = [
-        'community.membership.deploy',
-        'community.membership.deploy.post',
+    use RedirectsOnFailure;
+
+    protected $except = [
+        'community/membership/deploy',
     ];
 
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
+    public function validate($makeResponse)
     {
-        if (in_array(\Route::current()->getName(), $this->excludedRoutes)) {
-            return $next($request);
+        if (Auth::user()->hasState('DIVISION') && Auth::user()->communityGroups()->count() == 0) {
+            if ($makeResponse) {
+                return redirect()->guest(route('community.membership.deploy'));
+            } else {
+                return true;
+            }
         }
-
-        if (!Auth::user()->hasState('DIVISION')) {
-            return $next($request);
-        }
-
-        if (Auth::user()->communityGroups()->count() > 0) {
-            return $next($request);
-        }
-
-        Session::put('community_group_return', Request::fullUrl());
-
-        return Redirect::route('community.membership.deploy');
     }
 }

@@ -73,7 +73,6 @@ class Email extends \Eloquent
         }
 
         $ssoEmail = new SSOEmail;
-        $ssoEmail->account_id = $this->account->id;
         $ssoEmail->account_email_id = $this->getKey();
         $ssoEmail->sso_account_id = $ssoAccount->getKey();
         $ssoEmail->save();
