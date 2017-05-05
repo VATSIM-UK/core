@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Community\Membership;
+use App\Policies\MembershipPolicy;
 use Gate;
 use App\Models\Mship\Account;
 use Laravel\Passport\Passport;
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'password' => PasswordPolicy::class,
+        Membership::class => MembershipPolicy::class,
     ];
 
     /**

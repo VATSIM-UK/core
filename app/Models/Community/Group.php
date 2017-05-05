@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Community\Models;
+namespace App\Models\Community;
 
 use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
- * App\Modules\Community\Models\Group
+ * App\Models\Community\Group
  *
  * @property int $id
  * @property string $name
@@ -17,17 +17,17 @@ use App\Models\Mship\Account;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group inTier($tier)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group notDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCoordinateBoundaries($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereDefault($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereTier($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Modules\Community\Models\Group whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group inTier($tier)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group notDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereCoordinateBoundaries($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereDefault($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereTier($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Group whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Group extends Model

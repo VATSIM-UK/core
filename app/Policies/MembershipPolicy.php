@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Community\Policies;
+namespace App\Policies;
 
 use App\Models\Mship\Account;
-use App\Modules\Community\Models\Membership;
+use App\Models\Community\Membership;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MembershipPolicy

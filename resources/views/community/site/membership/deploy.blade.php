@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md-10 col-md-offset-1" style="margin-bottom: 15px;">
                     <p>
-                        {!! trans("community::membership.info") !!}
+                        {!! trans("membership.info") !!}
                     </p>
                 </div>
 
@@ -19,7 +19,7 @@
                 <div class="col-md-5" style="text-align: center;">
                     {!! Form::open(["route" => ["community.membership.deploy.post"], "method" => "POST"]) !!}
                     <p>
-                        {!! trans("community::membership.deploy.info") !!}
+                        {!! trans("membership.deploy.info") !!}
                     </p>
 
                     <div class="col-md-12">
@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="text-center" style="padding-top: 27px;">
-                        {!! Button::danger(trans("community::membership.deploy.button.invalid"))
+                        {!! Button::danger(trans("membership.deploy.button.invalid"))
                                   ->withAttributes(["id" => "confirm", "disabled" => "disabled"])
                                   ->submit() !!}
                     </div>
@@ -41,12 +41,12 @@
 
 
                     <p>
-                        {!! trans("community::membership.deploy.uk.info") !!}
+                        {!! trans("membership.deploy.uk.info") !!}
                     </p>
 
                     @if($isDefaultGroupMember)
                         <div class="text-center" style="padding-top: 27px;">
-                            {!! Button::danger(trans("community::membership.deploy.uk.button"))
+                            {!! Button::danger(trans("membership.deploy.uk.button"))
                                       ->withAttributes(["id" => "ukonly"])
                                       ->asLinkTo(URL::previous(route("mship.manage.dashboard"))) !!}
                         </div>
@@ -55,7 +55,7 @@
                         {!! Form::hidden("group", $defaultGroup->id) !!}
 
                         <div class="text-center" style="padding-top: 27px;">
-                            {!! Button::danger(trans("community::membership.deploy.uk.button"))
+                            {!! Button::danger(trans("membership.deploy.uk.button"))
                                       ->withAttributes(["id" => "ukonly"])
                                       ->submit() !!}
                         </div>
@@ -75,8 +75,8 @@
 
     <script type="text/javascript" language="javascript">
         var BUTTON_SELECTOR = '#confirm';
-        var BUTTON_TEXT_INVALID = '{!! trans("community::membership.deploy.button.invalid") !!}';
-        var BUTTON_TEXT_VALID = '{!! trans("community::membership.deploy.button.valid") !!}';
+        var BUTTON_TEXT_INVALID = '{!! trans("membership.deploy.button.invalid") !!}';
+        var BUTTON_TEXT_VALID = '{!! trans("membership.deploy.button.valid") !!}';
         var DROPDOWN_SELECTOR = '#group';
 
         function confirmValidGroupSelection() {

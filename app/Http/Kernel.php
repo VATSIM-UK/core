@@ -72,7 +72,7 @@ class Kernel extends HttpKernel
 
         // custom
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
-        'must.have.community.group' => \App\Modules\Community\Http\Middleware\MustHaveCommunityGroup::class,
+        'must.have.community.group' => Middleware\MustHaveCommunityGroup::class,
         'api.tracking' => \App\Http\Middleware\ApiTracking::class,
         'denyifbanned' => Middleware\DenyIfBanned::class,
         'mandatorypasswords' => Middleware\MandatoryPasswords::class,

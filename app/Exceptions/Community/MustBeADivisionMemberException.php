@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Community\Exceptions\Membership;
+namespace App\Exceptions\Community\Membership;
 
 use App\Models\Mship\Account;
 

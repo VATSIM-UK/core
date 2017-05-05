@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Community\Traits;
+namespace App\Traits;
 
-use App\Modules\Community\Models\Group;
-use App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException;
+use App\Models\Community\Group;
+use App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException;
 
 trait CommunityAccount
 {
@@ -14,7 +14,7 @@ trait CommunityAccount
      */
     public function communityGroups()
     {
-        return $this->belongsToMany(\App\Modules\Community\Models\Group::class, 'community_membership',
+        return $this->belongsToMany(\App\Models\Community\Group::class, 'community_membership',
             'account_id', 'group_id')
             ->withTimestamps()
             ->withPivot(['created_at', 'updated_at', 'deleted_at'])
@@ -26,7 +26,7 @@ trait CommunityAccount
      *
      * @return void
      */
-    public function addCommunityGroup(\App\Modules\Community\Models\Group $group)
+    public function addCommunityGroup(\App\Models\Community\Group $group)
     {
         $this->guardAgainstNonDivisionJoiningACommunityGroup();
         $this->guestAgainstMultipleMembershipsToSameTier($group);
@@ -49,18 +49,18 @@ trait CommunityAccount
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
         if (!$this->hasState('DIVISION')) {
-            throw new \App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException($this);
+            throw new \App\Exceptions\Community\Membership\MustBeADivisionMemberException($this);
         }
     }
 
-    private function guestAgainstMultipleMembershipsToSameTier(\App\Modules\Community\Models\Group $group)
+    private function guestAgainstMultipleMembershipsToSameTier(\App\Models\Community\Group $group)
     {
         $sameTier = $this->communityGroups->filter(function ($filteredGroup) use ($group) {
             return $filteredGroup->tier == $group->tier;
         });
 
         if ($sameTier->count() > 0) {
-            throw new \App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException($this, $group);
+            throw new \App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException($this, $group);
         }
     }
 }

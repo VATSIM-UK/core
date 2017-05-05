@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Community\Http\Requests;
+namespace App\Http\Requests\Community;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
-use App\Modules\Community\Models\Group;
+use App\Models\Community\Group;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Modules\Community\Models\Membership;
+use App\Models\Community\Membership;
 
 class DeployToCommunityGroupRequest extends FormRequest
 {

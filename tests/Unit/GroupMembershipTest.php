@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit;
+
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -14,7 +16,7 @@ class GroupMembershipTest extends TestCase
         $division = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($division);
 
-        $group = \App\Modules\Community\Models\Group::first();
+        $group = \App\Models\Community\Group::first();
 
         $member->fresh()->addCommunityGroup($group);
 
@@ -35,7 +37,7 @@ class GroupMembershipTest extends TestCase
         $memberA->addState($division);
         $memberB->addState($division);
 
-        $group = \App\Modules\Community\Models\Group::first();
+        $group = \App\Models\Community\Group::first();
 
         $memberA->fresh()->addCommunityGroup($group);
         $memberB->fresh()->addCommunityGroup($group);
@@ -57,7 +59,7 @@ class GroupMembershipTest extends TestCase
         $memberA->addState($division);
         $memberB->addState($division);
 
-        $group = \App\Modules\Community\Models\Group::first();
+        $group = \App\Models\Community\Group::first();
 
         $memberA->fresh()->addCommunityGroup($group);
         $memberB->fresh()->addCommunityGroup($group);
@@ -69,13 +71,13 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_not_possible_to_join_a_community_group_as_a_non_division_member()
     {
-        $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\MustBeADivisionMemberException::class);
+        $this->setExpectedException(\App\Exceptions\Community\Membership\MustBeADivisionMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $international = \App\Models\Mship\State::findByCode('INTERNATIONAL');
         $member->addState($international);
 
-        $defaultGroup = \App\Modules\Community\Models\Group::isDefault()->first();
+        $defaultGroup = \App\Models\Community\Group::isDefault()->first();
 
         $member->fresh()->addCommunityGroup($defaultGroup);
     }
@@ -87,8 +89,8 @@ class GroupMembershipTest extends TestCase
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
-        $tier1 = \App\Modules\Community\Models\Group::inTier(1)->first();
-        $tier2 = \App\Modules\Community\Models\Group::inTier(2)->first();
+        $tier1 = \App\Models\Community\Group::inTier(1)->first();
+        $tier2 = \App\Models\Community\Group::inTier(2)->first();
 
         $member->fresh()->addCommunityGroup($tier1);
         $member->fresh()->addCommunityGroup($tier2);
@@ -97,13 +99,13 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_not_possible_to_join_the_same_group_twice()
     {
-        $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
+        $this->setExpectedException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
-        $defaultGroup = \App\Modules\Community\Models\Group::isDefault()->first();
+        $defaultGroup = \App\Models\Community\Group::isDefault()->first();
 
         $member->fresh()->addCommunityGroup($defaultGroup);
         $member->fresh()->addCommunityGroup($defaultGroup);
@@ -112,16 +114,16 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function it_is_not_possible_to_join_more_than_one_group_from_the_same_tier()
     {
-        $this->setExpectedException(\App\Modules\Community\Exceptions\Membership\AlreadyAGroupTierMemberException::class);
+        $this->setExpectedException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
         $member->addState($divisionState);
 
-        $tier2A = \App\Modules\Community\Models\Group::inTier(2)->first();
-        $tier2B = \App\Modules\Community\Models\Group::inTier(2)
-                                                     ->where('id', '!=', $tier2A->id)
-                                                     ->first();
+        $tier2A = \App\Models\Community\Group::inTier(2)->first();
+        $tier2B = \App\Models\Community\Group::inTier(2)
+            ->where('id', '!=', $tier2A->id)
+            ->first();
 
         $member->fresh()->addCommunityGroup($tier2A);
         $member->fresh()->addCommunityGroup($tier2B);

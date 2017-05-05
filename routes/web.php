@@ -229,3 +229,31 @@ Route::group(['middleware' => ['auth_full_group']], function () {
     Route::get('password/delete', 'Auth\ChangePasswordController@showDeleteForm')->name('password.delete');
     Route::post('password/delete', 'Auth\ChangePasswordController@delete');
 });
+
+/**
+ * COMMUNITY
+ */
+Route::get('/community', function () {
+    return Redirect::route('community.deploy');
+});
+
+Route::group([
+    'as' => 'community.',
+    'namespace' => 'Community',
+    'domain' => config('app.url'),
+    'prefix' => 'community',
+    'middleware' => ['auth_full_group'],
+], function () {
+    Route::group(['as' => 'membership.', 'prefix' => 'membership'], function () {
+        Route::get('/deploy', [
+            'as' => 'deploy',
+            'uses' => 'Membership@getDeploy',
+        ]);
+
+        Route::post('/deploy/{default?}', [
+            'as' => 'deploy.post',
+            'uses' => 'Membership@postDeploy',
+        ])->where('default', '[default|true]');
+    });
+});
+

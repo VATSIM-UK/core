@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Community\Http\Middleware;
+namespace App\Http\Middleware;
 
 use Auth;
 use Redirect;

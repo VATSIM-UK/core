@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Community\Exceptions\Membership;
+namespace App\Exceptions\Community\Membership;
 
 use App\Models\Mship\Account;
-use App\Modules\Community\Models\Group;
+use App\Models\Community\Group;
 
 class AlreadyAGroupTierMemberException extends \Exception
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Community\Http\Controllers\Site;
+namespace App\Http\Controllers\Community;
 
-use App\Modules\Community\Models\Group;
+use App\Models\Community\Group;
 use App\Http\Controllers\BaseController;
-use App\Modules\Community\Http\Requests\DeployToCommunityGroupRequest;
+use App\Http\Requests\Community\DeployToCommunityGroupRequest;
 
 class Membership extends BaseController
 {
@@ -12,12 +12,12 @@ class Membership extends BaseController
 
     public function getDeploy()
     {
-        $this->authorize('deploy', new \App\Modules\Community\Models\Membership());
+        $this->authorize('deploy', new \App\Models\Community\Membership());
 
         $defaultGroup = Group::isDefault()->first();
         $groups = Group::notDefault()->inRandomOrder()->get();
 
-        return $this->viewMake('community::site.membership.deploy')
+        return $this->viewMake('community.site.membership.deploy')
                     ->with('defaultGroup', $defaultGroup)
                     ->with('isDefaultGroupMember', $defaultGroup->hasMember(\Auth::user()))
                     ->with('groups', $groups);
