@@ -2,14 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Traits\Middleware\ExcludesRoutes;
-use App\Traits\Middleware\RedirectsOnFailure;
 use Auth;
-use Closure;
-use Request;
-use Session;
 use Redirect;
-use Symfony\Component\VarDumper\VarDumper;
+use App\Traits\Middleware\RedirectsOnFailure;
 
 class UserMustReadNotifications
 {

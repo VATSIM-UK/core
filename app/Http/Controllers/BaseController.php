@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Auth\RedirectsUsers;
-use Session;
 use View;
 use Request;
+use Session;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -59,11 +59,11 @@ class BaseController extends \Illuminate\Routing\Controller
         });
     }
 
-    function redirectTo()
+    public function redirectTo()
     {
         if (Session::has('url.intended')) {
             return Session::pull('url.intended');
-        };
+        }
 
         return $this->redirectTo;
     }

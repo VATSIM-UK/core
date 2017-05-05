@@ -36,7 +36,6 @@ class PasswordPolicy extends Policy
         return $this->allow();
     }
 
-
     /**
      * Determine whether the user can delete their password.
      *

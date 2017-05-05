@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Mship\Account;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Session;
 use Illuminate\Http\Request;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 /**
  * This controller is responsible for handling password reset emails and
  * includes a trait which assists in sending these notifications from
  * your application to your users. Feel free to explore this trait.
- *
- * @package App\Http\Controllers\Auth
  */
 class ForgotPasswordController extends BaseController
 {

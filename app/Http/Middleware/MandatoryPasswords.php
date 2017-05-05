@@ -2,12 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Traits\Middleware\ExcludesRoutes;
-use App\Traits\Middleware\RedirectsOnFailure;
 use Auth;
-use Closure;
 use Session;
-use Symfony\Component\HttpFoundation\Response;
+use App\Traits\Middleware\RedirectsOnFailure;
 
 class MandatoryPasswords
 {

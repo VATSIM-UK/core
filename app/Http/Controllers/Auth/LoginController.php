@@ -2,26 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Middleware\RedirectToIntended;
-use App\Models\Mship\Account;
 use Auth;
-use Carbon\Carbon;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
 use Session;
 use VatsimSSO;
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Models\Mship\Qualification;
-use App\Exceptions\Mship\DuplicateQualificationException;
-use VatsimXML;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Models\Mship\Account;
+use App\Http\Controllers\BaseController;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 /**
  * This controller handles authenticating users for the application and
  * redirecting them to your home screen. The controller uses a trait
  * to conveniently provide its functionality to your applications.
- *
- * @package App\Http\Controllers\Auth
  */
 class LoginController extends BaseController
 {
@@ -205,7 +198,8 @@ class LoginController extends BaseController
         return $this->attemptSecondaryAuth();
     }
 
-    public function vSsoValidationFailure($error) {
-        return redirect()->route('default')->withError('Could not authenticate: ' . $error['message']);
+    public function vSsoValidationFailure($error)
+    {
+        return redirect()->route('default')->withError('Could not authenticate: '.$error['message']);
     }
 }
