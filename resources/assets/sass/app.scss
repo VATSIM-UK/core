@@ -28,7 +28,7 @@ body, html {
 
 .nav_upper_container{
   width: 100%;
-  height: 90px;
+  height: 55px;
   background: #17375e;
   border-bottom: 5px solid #00b0f0;
 }
@@ -36,12 +36,10 @@ body, html {
 .logo_container{
   height: 70%;
   float: left;
-  margin-left: 5.8%;
-  margin-right: 15px;
-  margin-top: 25px;
+  margin: 10px 15px 0 5.8%;
 
   img {
-    height: 70%;
+    height: 100%;
   }
 }
 
@@ -302,8 +300,8 @@ body, html {
     padding: 3px 15px !important;
   }
 }
-.navcustom>li>a, .navcustom span {
-  padding: 33px 15px;
+.navcustom>li>a {
+  padding: 16px 15px;
   font-size: 14px;
   color: #fff;
   display: block;
