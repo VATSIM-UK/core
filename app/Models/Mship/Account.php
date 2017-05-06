@@ -50,7 +50,6 @@ use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
  * @property string $password
  * @property \Carbon\Carbon $password_set_at
  * @property \Carbon\Carbon $password_expires_at
- * @property string $session_id
  * @property \Carbon\Carbon $last_login
  * @property string $last_login_ip
  * @property string $remember_token
@@ -200,7 +199,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'status' => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack = ['session_id', 'cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"

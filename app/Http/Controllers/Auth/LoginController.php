@@ -182,7 +182,6 @@ class LoginController extends BaseController
         $account->name_first = $user->name_first;
         $account->name_last = $user->name_last;
         $account->email = $user->email;
-        $account->session_id = Session::getId();
         $account->experience = $user->experience;
         $account->joined_at = $user->reg_date;
         $account->last_login = Carbon::now();
