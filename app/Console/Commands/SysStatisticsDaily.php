@@ -144,16 +144,10 @@ class SysStatisticsDaily extends Command
 
     private function runModuleStatistics($currentPeriod)
     {
-        foreach (\Module::enabled() as $module) {
-            try {
-                \Artisan::call($module['slug'].':statistics:daily', [
-                    'startPeriod' => $currentPeriod,
-                    'endPeriod' => $currentPeriod,
-                ]);
-            } catch (CommandNotFoundException $ex) {
-                $this->error($module['name']." doesn't have a daily statistics command.");
-            }
-        }
+        \Artisan::call('visittransfer:statistics:daily', [
+            'startPeriod' => $currentPeriod,
+            'endPeriod' => $currentPeriod,
+        ]);
     }
 
     /**

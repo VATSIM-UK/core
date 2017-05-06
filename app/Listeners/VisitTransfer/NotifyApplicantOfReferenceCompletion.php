@@ -4,7 +4,7 @@ namespace App\Listeners\VisitTransfer;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ReferenceUnderReview;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
+use App\Notifications\ApplicationReferenceSubmitted;
 
 class NotifyApplicantOfReferenceCompletion implements ShouldQueue
 {

@@ -14,29 +14,9 @@
             <directory>./tests/Unit/</directory>
         </testsuite>
 
-        <testsuite name="Modules:Visiting and Transferring Test Suite">
-            <directory>./app/Modules/Visittransfer/Tests/</directory>
-        </testsuite>
-
-        <testsuite name="Modules:Network Data Test Suite">
-            <directory>./app/Modules/NetworkData/Tests/</directory>
-        </testsuite>
-
-        <testsuite name="Modules:Community Test Suite">
-            <directory>./app/Modules/Community/Tests/</directory>
-        </testsuite>
-
         <testsuite name="Application Test">
             <directory>./tests/Integration/</directory>
         </testsuite>
-
-        <!--<testsuite name="Modules:Statistics Test Suite">-->
-        <!--<directory>./app/Modules/Statistics/Tests/</directory>-->
-        <!--</testsuite>-->
-
-        <!--<testsuite name="Modules:Ais Test Suite">-->
-            <!--<directory>./app/Modules/Ais/Tests/</directory>-->
-        <!--</testsuite>-->
     </testsuites>
     <filter>
         <whitelist>

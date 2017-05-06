@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
-use App\Modules\Visittransfer\Http\Controllers\Site\ErrorException;
+use ErrorException;
 use Auth;
 use Input;
 use Redirect;

@@ -58,21 +58,13 @@
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-6">
                                 <ul>
-                                    @if(Module::isEnabled("visittransfer"))
-                                        <li class="dropdown-header">Division Membership</li>
-                                        <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
-                                        <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
-                                        <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
-                                    @endif
-
-                                    @if(Module::isEnabled("visittransfer") && true)
-                                        <li class="divider"></li>
-                                    @endif
-
-                                    @if(Module::isEnabled("networkdata"))
-                                        <li class="dropdown-header">Network Data</li>
-                                        <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
-                                    @endif
+                                    <li class="dropdown-header">Division Membership</li>
+                                    <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Network Data</li>
+                                    <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
                                 </ul>
                             </li>
                             <li class="col-sm-6">

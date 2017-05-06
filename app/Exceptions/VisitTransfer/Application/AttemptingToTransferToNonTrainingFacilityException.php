@@ -2,13 +2,11 @@
 
 namespace App\Exceptions\VisitTransfer\Application;
 
-use App\Modules\Visittransfer\Exceptions\Application\Facility;
-
 class AttemptingToTransferToNonTrainingFacilityException extends \Exception
 {
     private $facility;
 
-    public function __construct(Facility $facility)
+    public function __construct($facility)
     {
         $this->facility = $facility;
 

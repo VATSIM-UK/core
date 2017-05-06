@@ -55,10 +55,6 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
             Route::group(['prefix' => 'system', 'namespace' => 'Sys'], function () {
                 Route::get('/activity', ['as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex']);
 
-                Route::get('/module', ['as' => 'adm.sys.module.list', 'uses' => 'Module@getIndex']);
-                Route::get('/module/{slug}/enable', ['as' => 'adm.sys.module.enable', 'uses' => 'Module@getEnable']);
-                Route::get('/module/{slug}/disable', ['as' => 'adm.sys.module.disable', 'uses' => 'Module@getDisable']);
-
                 Route::get('/jobs/failed', ['as' => 'adm.sys.jobs.failed', 'uses' => 'Jobs@getFailed']);
                 Route::post('/jobs/failed/{id}/retry', ['as' => 'adm.sys.jobs.failed.retry', 'uses' => 'Jobs@postFailed']);
                 Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);

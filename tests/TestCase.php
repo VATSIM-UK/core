@@ -4,7 +4,7 @@ namespace Tests;
 
 use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
     /**
      * The base URL to use while testing the application.

@@ -117,10 +117,6 @@ class BaseController extends \Illuminate\Routing\Controller
     public function getTitle()
     {
         if ($this->pageTitle == null) {
-            if ($this->isModuleRequest()) {
-                return $this->getModuleRequest()->get('name');
-            }
-
             return $this->breadcrumb->first()->get('name');
         }
 
@@ -134,14 +130,6 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function getSubTitle()
     {
-        if ($this->pageSubTitle == null) {
-            if ($this->isModuleRequest()) {
-                return $this->getControllerRequest();
-            }
-
-            return;
-        }
-
         return $this->pageSubTitle;
     }
 
@@ -177,42 +165,12 @@ class BaseController extends \Illuminate\Routing\Controller
     protected function buildBreadcrumb($startName, $startUri)
     {
         $this->addBreadcrumb($startName, $startUri);
-        $this->addModuleBreadcrumb();
         $this->addControllerBreadcrumbs();
-    }
-
-    protected function addModuleBreadcrumb()
-    {
-        if ($this->isModuleRequest()) {
-            $this->addBreadcrumb($this->getModuleRequest()->get('name'), $this->getModuleRequest()->get('slug'), true);
-        }
     }
 
     protected function addControllerBreadcrumbs()
     {
         $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
-    }
-
-    /**
-     * Determine if this request is for a module, rather than the core code.
-     *
-     * @return bool True if this request is for a module.
-     */
-    protected function isModuleRequest()
-    {
-        return strcasecmp($this->getRequestClassAsArray(false)[1], 'modules') == 0;
-    }
-
-    /**
-     * Get the information about the module use for this request.
-     *
-     * @return \Caffeinated\Modules\Collection
-     */
-    protected function getModuleRequest()
-    {
-        $requestClass = $this->getRequestClassAsArray(false);
-
-        return \Module::where('slug', strtolower($requestClass[2]));
     }
 
     protected function getControllerRequest()
@@ -229,11 +187,6 @@ class BaseController extends \Illuminate\Routing\Controller
         // Return the dirty path.
         if (!$clean) {
             return $requestClass;
-        }
-
-        // Remove app/modules/.../Http/Controllers/... from the class path.
-        if ($this->isModuleRequest()) {
-            return array_slice($requestClass, 6);
         }
 
         // Remove App/ From the class path.

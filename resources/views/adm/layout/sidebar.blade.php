@@ -187,12 +187,13 @@
                 </li>
             @endif
 
-            @foreach(Module::enabled() as $module)
-                @if($_account->hasChildPermission("adm/".$module["slug"]))
-                    @include("network-data.admin._sidebar")
-                    @include("visit-transfer.admin._sidebar")
-                @endif
-            @endforeach
+            @if($_account->hasChildPermission("adm/networkdata"))
+                @include("network-data.admin._sidebar")
+            @endif
+
+            @if($_account->hasChildPermission("adm/visittransfer"))
+                @include("visit-transfer.admin._sidebar")
+            @endif
 
             @if($_account->hasChildPermission("adm/system"))
                 <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
