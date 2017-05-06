@@ -16,7 +16,7 @@ class Authentication extends \App\Http\Controllers\Adm\AdmController
 {
     public function getLogin()
     {
-        return $this->viewMake('adm.authentication.login');
+        return redirect()->route('adm.dashboard');
     }
 
     public function getLogout()

@@ -266,7 +266,7 @@ Route::group([
     'namespace' => 'NetworkData',
     'domain' => config('app.url'),
     'prefix' => 'adm/network-data',
-    'middleware' => ['auth.admin'],
+    'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', [
         'as' => 'dashboard',
@@ -300,7 +300,7 @@ Route::group([
     'prefix' => 'adm/visit-transfer',
     'namespace' => 'VisitTransfer\Admin',
     'domain' => config('app.url'),
-    'middleware' => ['auth.admin'],
+    'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('/', [
         'as' => 'dashboard',
