@@ -3,8 +3,8 @@
 namespace App\Events\NetworkData;
 
 use App\Events\Event;
-use Illuminate\Queue\SerializesModels;
 use App\Models\NetworkData\Atc;
+use Illuminate\Queue\SerializesModels;
 
 class AtcSessionDeleted extends Event
 {

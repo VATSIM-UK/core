@@ -2,7 +2,6 @@
 
 namespace App\Events\VisitTransfer;
 
-use App\Events\VisitTransfer\ApplicationStatusChanged;
 use Illuminate\Queue\SerializesModels;
 use App\Models\VisitTransfer\Application;
 

@@ -4,8 +4,8 @@ namespace App\Http\Requests\VisitTransfer;
 
 use Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\VisitTransfer\Application;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationSubmitRequest extends FormRequest
 {

@@ -3,9 +3,9 @@
 namespace App\Listeners\VisitTransfer;
 
 use App\Models\Mship\Account;
+use App\Notifications\ApplicationReview;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ApplicationUnderReview;
-use App\Notifications\ApplicationReview;
 
 class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 {

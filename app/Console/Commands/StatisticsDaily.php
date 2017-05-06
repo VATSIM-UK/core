@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use Cache;
-use App\Models\Statistic;
-use App\Console\Commands\Command;
-use App\Models\VisitTransfer\Application;
 use Carbon\Carbon;
+use App\Models\Statistic;
+use App\Models\VisitTransfer\Application;
 
 class StatisticsDaily extends Command
 {

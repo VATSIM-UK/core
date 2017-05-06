@@ -4,9 +4,9 @@ namespace App\Http\Controllers\VisitTransfer\Admin;
 
 use Cache;
 use App\Models\Statistic;
-use App\Http\Controllers\Adm\AdmController;
 use App\Models\VisitTransfer\Reference;
 use App\Models\VisitTransfer\Application;
+use App\Http\Controllers\Adm\AdmController;
 
 class Dashboard extends AdmController
 {

@@ -3,9 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\VisitTransfer\Application;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReview extends Notification implements ShouldQueue

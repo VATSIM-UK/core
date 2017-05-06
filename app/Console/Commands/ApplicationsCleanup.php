@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\Command;
 use App\Models\VisitTransfer\Application;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 
