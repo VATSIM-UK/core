@@ -178,7 +178,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        @include("visittransfer::partials.application_status", ["application" => $application])
+                                        @include("visit-transfer.partials.application_status", ["application" => $application])
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)

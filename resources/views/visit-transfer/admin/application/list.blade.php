@@ -98,7 +98,7 @@
                                     {!! HTML::fuzzyDate($a->updated_at) !!}
                                 </td>
                                 <td class="text-center">
-                                    @include("visittransfer::partials.application_status", ["application" => $a])
+                                    @include("visit-transfer.partials.application_status", ["application" => $a])
                                 </td>
                             </tr>
                         @empty

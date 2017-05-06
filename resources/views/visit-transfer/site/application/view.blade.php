@@ -1,4 +1,4 @@
-@extends(($application->is_not_editable) ? 'visittransfer::site.application._layout_single' : 'visittransfer::site.application._layout')
+@extends(($application->is_not_editable) ? 'visit-transfer.site.application._layout_single' : 'visit-transfer.site.application._layout')
 
 @section('vt-content')
     <div class="row">
