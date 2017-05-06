@@ -65,7 +65,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
-                            {!! Button::danger("THERE ARE NO VISITING ATC PLACES")->disable() !!}
+                            {!! Button::danger("THERE ARE NO VISITING PILOT PLACES")->disable() !!}
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
                                 {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_VISIT, "pilot"])) !!}
