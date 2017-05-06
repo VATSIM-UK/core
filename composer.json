@@ -39,7 +39,6 @@
         "alawrence/laravel-ipboard": "dev-master",
         "vluzrmos/slack-api": "dev-master",
         "patricktalmadge/bootstrapper" : "~5",
-        "caffeinated/modules": "dev-master",
         "malahierba-lab/public-id": "dev-master",
         "pusher/pusher-php-server": "~2.0",
         "bugsnag/bugsnag-laravel": "^2.0",
@@ -77,15 +76,13 @@
     "scripts": {
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize",
-            "php artisan module:optimize"
+            "php artisan optimize"
         ],
         "pre-update-cmd": [
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize",
-            "php artisan module:optimize"
+            "php artisan optimize"
         ],
         "post-root-package-install": [
             "php -r \"copy('.env.example', '.env');\""

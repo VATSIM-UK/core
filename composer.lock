@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f5e6f2d7d9421bbb2696af70a5d9620",
+    "content-hash": "6ce5c92c7d855d6f67dbe7d34ab4651e",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -431,60 +431,6 @@
                 "tracking"
             ],
             "time": "2016-08-09T08:02:38+00:00"
-        },
-        {
-            "name": "caffeinated/modules",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/caffeinated/modules.git",
-                "reference": "9f67d471cc0df57be555631a4eae26306e21ed09"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/caffeinated/modules/zipball/9f67d471cc0df57be555631a4eae26306e21ed09",
-                "reference": "9f67d471cc0df57be555631a4eae26306e21ed09",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/config": "^5.3",
-                "illuminate/database": "^5.3",
-                "illuminate/filesystem": "^5.3",
-                "illuminate/routing": "^5.3",
-                "illuminate/support": "^5.3",
-                "php": ">=5.6.4"
-            },
-            "suggest": {
-                "wikimedia/composer-merge-plugin": "Allows the ability to create and merge composer.json files for your individual modules for module-specific dependency management."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Caffeinated\\Modules\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Shea Lewis",
-                    "email": "shea.lewis89@gmail.com"
-                }
-            ],
-            "description": "Laravel 5 Modules",
-            "keywords": [
-                "caffeinated",
-                "laravel",
-                "modules"
-            ],
-            "time": "2017-04-11T15:45:25+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -4860,12 +4806,12 @@
             "version": "0.9.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/mockery.git",
+                "url": "https://github.com/mockery/mockery.git",
                 "reference": "6fdb61243844dc924071d3404bb23994ea0b6856"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/6fdb61243844dc924071d3404bb23994ea0b6856",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/6fdb61243844dc924071d3404bb23994ea0b6856",
                 "reference": "6fdb61243844dc924071d3404bb23994ea0b6856",
                 "shasum": ""
             },
@@ -4967,12 +4913,12 @@
             "version": "1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/file_get_contents.git",
+                "url": "https://github.com/humbug/file_get_contents.git",
                 "reference": "66797199019d0cb4529cb8d29c6f0b4c5085b53a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/file_get_contents/zipball/66797199019d0cb4529cb8d29c6f0b4c5085b53a",
+                "url": "https://api.github.com/repos/humbug/file_get_contents/zipball/66797199019d0cb4529cb8d29c6f0b4c5085b53a",
                 "reference": "66797199019d0cb4529cb8d29c6f0b4c5085b53a",
                 "shasum": ""
             },
@@ -5024,12 +4970,12 @@
             "version": "1.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/phar-updater.git",
+                "url": "https://github.com/humbug/phar-updater.git",
                 "reference": "c17eeb3887dc4269d1b4837dc875d39e9f8149a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/phar-updater/zipball/c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
+                "url": "https://api.github.com/repos/humbug/phar-updater/zipball/c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
                 "reference": "c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
                 "shasum": ""
             },
@@ -6510,7 +6456,6 @@
         "maknz/slack": 20,
         "alawrence/laravel-ipboard": 20,
         "vluzrmos/slack-api": 20,
-        "caffeinated/modules": 20,
         "malahierba-lab/public-id": 20,
         "codeclimate/php-test-reporter": 20
     },
