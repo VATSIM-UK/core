@@ -50,6 +50,10 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('mshipNoteType', \App\Models\Mship\Note\Type::class, function () {
             Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist.");
         });
+
+        Route::bind('applicationByPublicId', function ($value) {
+            return \App\Models\VisitTransfer\Application::findByPublicId($value);
+        });
     }
 
     /**

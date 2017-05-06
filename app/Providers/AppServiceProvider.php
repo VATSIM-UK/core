@@ -7,6 +7,7 @@ use HTML;
 use Config;
 use Validator;
 use Illuminate\Support\ServiceProvider;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,6 +69,11 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
             return \Auth::user()->verifyPassword($value);
         });
+
+        View::composer(
+            ['visit-transfer.admin._sidebar'],
+            \App\Controllers\ViewComposers\StatisticsComposer::class
+        );
     }
 
     /**

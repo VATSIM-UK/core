@@ -28,6 +28,50 @@ class EventServiceProvider extends ServiceProvider
         AtcSessionEnded::class => [
             AtcSessionRecordedSuccessNotification::class,
         ],
+
+        \App\Events\VisitTransfer\ApplicationSubmitted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyAllReferees::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationUnderReview::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyCommunityOfUnderReviewApplication::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationRejected::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationAccepted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyTrainingDepartmentOfAcceptedApplication::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationCompleted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationStatusChanged::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceUnderReview::class => [
+            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCompletion::class,
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCompletion::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceAccepted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceAcceptance::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceRejected::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceRejection::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceDeleted::class => [
+            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
+        ],
     ];
 
     /**

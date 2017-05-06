@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         Commands\TestEmails::class,
         \App\Console\Commands\DownloadAndParse::class,
         \App\Console\Commands\Statistics::class,
+        \App\Console\Commands\StatisticsDaily::class,
+        \App\Console\Commands\ApplicationsCleanup::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,

@@ -19,7 +19,7 @@ use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicateStateException;
-use App\Modules\Visittransfer\Models\Application;
+use App\Models\VisitTransfer\Application;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -36,7 +36,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use App\Traits\CommunityAccount as CommunityAccountTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
-use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
+use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
 
 /**
  * App\Models\Mship\Account
@@ -129,8 +129,8 @@ use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationExcepti
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[] $visitTransferApplications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[] $visitTransferReferee
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereAge($value)
@@ -317,7 +317,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public function visitTransferApplications()
     {
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(\App\Models\VisitTransfer\Application::class)->orderBy('created_at', 'DESC');
     }
 
     public function visitApplications()
@@ -348,7 +348,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
     private function guardAgainstDivisionMemberVisitingTransferApplication()
     {
         if ($this->hasState('DIVISION')) {
-            throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
+            throw new \App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException($this);
         }
     }
 
@@ -364,14 +364,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array(
                 $application->status,
-                \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN
+                \App\Models\VisitTransfer\Application::$APPLICATION_IS_CONSIDERED_OPEN
             );
         });
     }
 
     public function visitTransferReferee()
     {
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
+        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
     }
 
     public function getVisitTransferRefereePendingAttribute()

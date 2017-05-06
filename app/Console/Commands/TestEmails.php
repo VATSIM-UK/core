@@ -13,18 +13,18 @@ use App\Notifications\Mship\WelcomeMember;
 use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\FeedbackReceived;
 use App\Notifications\Mship\EmailVerification;
-use App\Modules\Visittransfer\Models\Reference;
-use App\Modules\Visittransfer\Models\Application;
+use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransfer\Application;
 use App\Notifications\Mship\Security\TemporaryPassword;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
-use App\Modules\Visittransfer\Notifications\ApplicationReview;
-use App\Modules\Visittransfer\Notifications\ApplicationAccepted;
-use App\Modules\Visittransfer\Notifications\ApplicationStatusChanged;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceRequest;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceAccepted;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceRejected;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceCancelled;
-use App\Modules\Visittransfer\Notifications\ApplicationReferenceSubmitted;
+use App\Notifications\ApplicationReview;
+use App\Notifications\ApplicationAccepted;
+use App\Notifications\ApplicationStatusChanged;
+use App\Notifications\ApplicationReferenceRequest;
+use App\Notifications\ApplicationReferenceAccepted;
+use App\Notifications\ApplicationReferenceRejected;
+use App\Notifications\ApplicationReferenceCancelled;
+use App\Notifications\ApplicationReferenceSubmitted;
 
 /**
  * Experimental class used for generating emails to mailtrap.io

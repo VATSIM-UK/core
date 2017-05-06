@@ -189,9 +189,8 @@
 
             @foreach(Module::enabled() as $module)
                 @if($_account->hasChildPermission("adm/".$module["slug"]))
-                    @if(View::exists($module["slug"]."::admin._sidebar"))
-                        @include($module["slug"]."::admin._sidebar")
-                    @endif
+                    @include("network-data.admin._sidebar")
+                    @include("visit-transfer.admin._sidebar")
                 @endif
             @endforeach
 
