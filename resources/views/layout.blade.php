@@ -9,7 +9,8 @@
     <!--BugSnagScript-->
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
             data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}">
+            data-releasestage="{{ env('APP_ENV') }}"></script>
+    <script type="text/javascript">
         Bugsnag.notifyReleaseStages = ["staging", "production"];
 
         @if(Auth::check())
@@ -35,7 +36,7 @@
         <div class="nav_upper_container navbar-fixed-top">
             <div class="logo_container">
                 <a href="{{ route("default") }}">
-                    {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo", ["align" => "left", "height" => "70%"]) !!}
+                    {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo") !!}
                 </a>
             </div>
 

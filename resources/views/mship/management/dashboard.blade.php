@@ -141,7 +141,7 @@
                                 <div class="col-md-7">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <p align="center">
+                                            <p style="text-align: center;">
                                                 <b>CURRENT MEMBERSHIP(S)</b>
                                             </p>
                                         </div>
@@ -188,7 +188,7 @@
                                 <div class="col-md-5">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <p align="center">
+                                            <p style="text-align: center;">
                                               <b>TOTAL POINTS</b>
                                             </p>
                                         </div>
@@ -355,8 +355,8 @@
                                 </a>
                             </div>
                             <div class="col-xs-2">
-                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}">
-                                    <button type="button" class="btn btn-xs btn-danger">Delete</button>
+                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}" class="btn btn-xs btn-danger">
+                                    Delete
                                 </a>
                             </div>
 
