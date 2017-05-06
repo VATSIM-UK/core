@@ -13,13 +13,13 @@ use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
+use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicateStateException;
-use App\Models\VisitTransfer\Application;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -28,15 +28,15 @@ use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use App\Traits\CommunityAccount as CommunityAccountTrait;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 /**
  * App\Models\Mship\Account

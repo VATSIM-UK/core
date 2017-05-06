@@ -226,7 +226,7 @@ Route::group(['middleware' => ['auth_full_group']], function () {
     Route::post('password/delete', 'Auth\ChangePasswordController@delete');
 });
 
-/**
+/*
  * COMMUNITY
  */
 Route::get('/community', function () {
@@ -253,7 +253,7 @@ Route::group([
     });
 });
 
-/**
+/*
  * NETWORK DATA
  */
 
@@ -288,7 +288,7 @@ Route::group([
     Route::get('/online', ['as' => 'online', 'uses' => 'Online@getOnline']);
 });
 
-/**
+/*
  * VISITING & TRANSFERRING
  */
 Route::get('/visiting-transferring', function () {
@@ -492,4 +492,3 @@ Route::group([
         ]);
     });
 });
-

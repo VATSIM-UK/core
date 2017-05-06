@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\VisitTransfer\Facility;
+use Illuminate\Foundation\Http\FormRequest;
 
 class FacilityCreateUpdateRequest extends FormRequest
 {

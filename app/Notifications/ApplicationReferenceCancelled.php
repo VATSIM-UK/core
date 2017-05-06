@@ -3,9 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\VisitTransfer\Reference;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReferenceCancelled extends Notification implements ShouldQueue

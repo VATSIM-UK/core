@@ -3,8 +3,8 @@
 namespace App\Http\Requests\VisitTransfer;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\VisitTransfer\Application;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationSettingToggleRequest extends FormRequest
 {

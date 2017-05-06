@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use SlackUser;
 use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
 use App\Models\NetworkData\Atc;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\SlackMessage;

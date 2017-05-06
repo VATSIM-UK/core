@@ -2,8 +2,6 @@
 
 namespace App\Models\VisitTransfer;
 
-use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
 use Carbon\Carbon;
 use App\Models\Mship\State;
 use App\Models\Mship\Account;

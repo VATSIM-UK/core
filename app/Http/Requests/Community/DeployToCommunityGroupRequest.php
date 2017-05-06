@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Community;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Community\Group;
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use App\Models\Community\Membership;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Http\FormRequest;
 
 class DeployToCommunityGroupRequest extends FormRequest
 {

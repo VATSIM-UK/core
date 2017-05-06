@@ -4,8 +4,8 @@ namespace App\Policies\VisitTransfer;
 
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Reference;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\VisitTransfer\Application;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApplicationPolicy
 {

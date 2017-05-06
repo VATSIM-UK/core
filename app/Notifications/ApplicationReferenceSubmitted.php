@@ -4,9 +4,8 @@ namespace App\Notifications;
 
 use App\Models\Mship\Account;
 use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\VisitTransfer\Reference;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class ApplicationReferenceSubmitted extends Notification implements ShouldQueue
