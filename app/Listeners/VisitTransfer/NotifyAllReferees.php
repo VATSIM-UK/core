@@ -2,8 +2,8 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\VisitTransfer\Reference;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ApplicationSubmitted;
 use App\Notifications\ApplicationReferenceRequest;
 

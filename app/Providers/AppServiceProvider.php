@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use URL;
 use HTML;
+use View;
 use Config;
 use Validator;
 use Illuminate\Support\ServiceProvider;
-use View;
 
 class AppServiceProvider extends ServiceProvider
 {

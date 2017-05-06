@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use App\Models\Statistic;
 use App\Models\Mship\State;
 use App\Models\Mship\Account;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class SysStatisticsDaily extends Command
 {

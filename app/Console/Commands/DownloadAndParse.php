@@ -4,11 +4,11 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
+use App\Models\Mship\Qualification;
+use App\Events\NetworkData\NetworkDataParsed;
 use App\Exceptions\Mship\InvalidCIDException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\Events\NetworkData\NetworkDataParsed;
 use App\Events\NetworkData\NetworkDataDownloaded;
 
 class DownloadAndParse extends \App\Console\Commands\Command

@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use File;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

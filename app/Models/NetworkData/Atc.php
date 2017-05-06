@@ -6,11 +6,11 @@ use Event;
 use Malahierba\PublicId\PublicId;
 use Watson\Rememberable\Rememberable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\NetworkData\Atc
