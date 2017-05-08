@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 
-class MshipStateTest extends TestCase
+class MshipStateTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
@@ -24,7 +24,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_adds_a_state()
+    public function itAddsAState()
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
 
@@ -38,7 +38,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_invalid_exception_when_searching_for_invalid_state()
+    public function itThrowsInvalidExceptionWhenSearchingForInvalidState()
     {
         $this->setExpectedException(\App\Exceptions\Mship\InvalidStateException::class);
 
@@ -46,7 +46,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_old_permanent_state()
+    public function itDeletesOldPermanentState()
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
         $regionState = \App\Models\Mship\State::findByCode("REGION");
@@ -80,7 +80,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_keeps_current_temporary_state()
+    public function itKeepsCurrentTemporaryState()
     {
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
         $regionState = \App\Models\Mship\State::findByCode("REGION");
@@ -109,7 +109,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_temporary_states_when_delete_all_temps_state_is_added()
+    public function itDeletesTemporaryStatesWhenDeleteAllTempsStateIsAdded()
     {
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
@@ -143,7 +143,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_correct_primary_state_when_only_one_exists()
+    public function itReturnsCorrectPrimaryStateWhenOnlyOneExists()
     {
         $divisionState = \App\Models\Mship\State::findByCode("DIVISION");
 
@@ -153,7 +153,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_correct_primary_state_when_temporary_overrides()
+    public function itReturnsCorrectPrimaryStateWhenTemporaryOverrides()
     {
         $regionState = \App\Models\Mship\State::findByCode("REGION");
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
@@ -165,7 +165,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_correct_primary_state_when_temporary_overrides_and_multiple_temporary()
+    public function itReturnsCorrectPrimaryStateWhenTemporaryOverridesAndMultipleTemporary()
     {
         $regionState = \App\Models\Mship\State::findByCode("REGION");
         $visitorState = \App\Models\Mship\State::findByCode("VISITING");
@@ -179,7 +179,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_duplicate_exception_when_adding_duplicate_state()
+    public function itThrowsDuplicateExceptionWhenAddingDuplicateState()
     {
         $this->setExpectedException(\App\Exceptions\Mship\DuplicateStateException::class);
 
@@ -190,7 +190,7 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function it_remains_idempotent_when_trying_to_remove_a_state_that_isnt_set()
+    public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
     {
         $regionState = \App\Models\Mship\State::findByCode("REGION");
 

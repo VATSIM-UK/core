@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class GroupMembershipTest extends TestCase
+class GroupMembershipTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
     /** @test */
-    public function it_is_possible_to_join_a_community_group()
+    public function itIsPossibleToJoinACommunityGroup()
     {
         $member = factory(\App\Models\Mship\Account::class)->create();
         $division = \App\Models\Mship\State::findByCode('DIVISION');
@@ -27,7 +27,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_lists_all_members_in_a_group()
+    public function itListsAllMembersInAGroup()
     {
         $memberA = factory(\App\Models\Mship\Account::class)->create();
         $memberB = factory(\App\Models\Mship\Account::class)->create();
@@ -49,7 +49,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_if_a_member_is_in_a_group()
+    public function itCorrectlyDeterminesIfAMemberIsInAGroup()
     {
         $memberA = factory(\App\Models\Mship\Account::class)->create();
         $memberB = factory(\App\Models\Mship\Account::class)->create();
@@ -69,7 +69,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_is_not_possible_to_join_a_community_group_as_a_non_division_member()
+    public function itIsNotPossibleToJoinACommunityGroupAsANonDivisionMember()
     {
         $this->setExpectedException(\App\Exceptions\Community\Membership\MustBeADivisionMemberException::class);
 
@@ -83,7 +83,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_is_possible_to_join_multiple_groups_across_tiers()
+    public function itIsPossibleToJoinMultipleGroupsAcrossTiers()
     {
         $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
@@ -97,7 +97,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_is_not_possible_to_join_the_same_group_twice()
+    public function itIsNotPossibleToJoinTheSameGroupTwice()
     {
         $this->setExpectedException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
 
@@ -112,7 +112,7 @@ class GroupMembershipTest extends TestCase
     }
 
     /** @test */
-    public function it_is_not_possible_to_join_more_than_one_group_from_the_same_tier()
+    public function itIsNotPossibleToJoinMoreThanOneGroupFromTheSameTier()
     {
         $this->setExpectedException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
 

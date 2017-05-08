@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AtcSessionModelTest extends TestCase
+class AtcSessionModelTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
     /** @test */
-    public function it_can_create_an_atc_session()
+    public function itCanCreateAnAtcSession()
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionStarted::class);
 
@@ -22,7 +22,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_an_atc_session_and_mark_as_disconnected()
+    public function itCanCreateAnAtcSessionAndMarkAsDisconnected()
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionEnded::class);
 
@@ -38,7 +38,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function it_updates_minutes_online_when_a_session_is_marked_as_disconnected()
+    public function itUpdatesMinutesOnlineWhenASessionIsMarkedAsDisconnected()
     {
         $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->create();
 
@@ -52,7 +52,7 @@ class AtcSessionModelTest extends TestCase
     }
 
     /** @test */
-    public function it_triggers_an_event_when_an_atc_session_is_deleted()
+    public function itTriggersAnEventWhenAnAtcSessionIsDeleted()
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionDeleted::class);
 

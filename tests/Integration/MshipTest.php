@@ -4,9 +4,9 @@ namespace Tests\Integration;
 
 use App\Models\Sys\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 
-class MshipTest extends TestCase
+class MshipTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
     
@@ -18,7 +18,7 @@ class MshipTest extends TestCase
     }
 
     /** @test **/
-    public function it_redirects_to_the_landing_page_when_viewing_the_root_url_and_not_logged_in()
+    public function itRedirectsToTheLandingPageWhenViewingTheRootUrlAndNotLoggedIn()
     {
         $this->visit("/");
 
@@ -26,13 +26,13 @@ class MshipTest extends TestCase
     }
     
     /** @test **/
-    public function it_authenticates_a_user_post_vatsim_cert_return()
+    public function itAuthenticatesAUserPostVatsimCertReturn()
     {
         
     }
     
     /** @test **/
-    public function it_determines_that_cert_is_offline_and_offers_alternative_login()
+    public function itDeterminesThatCertIsOfflineAndOffersAlternativeLogin()
     {
         
     }

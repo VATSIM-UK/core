@@ -8,9 +8,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Mockery;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 
-class MshipAuthenticationTest extends TestCase
+class MshipAuthenticationTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
@@ -58,13 +58,13 @@ class MshipAuthenticationTest extends TestCase
      *
      * @test
      **/
-    public function it_constructs()
+    public function itConstructs()
     {
         $this->assertInstanceOf(\App\Http\Controllers\Auth\LoginController::class, $this->authenticationInstance);
     }
 
     /** @test **/
-    public function it_redirects_to_login_if_no_auth()
+    public function itRedirectsToLoginIfNoAuth()
     {
         // In this test, we assert that we're getting a redirect to the login page if no auth at all
         $expectedStatus = 302;

@@ -3,14 +3,14 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 
-class MshipRoleTest extends TestCase
+class MshipRoleTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
     /** @test * */
-    public function it_stores_role_details()
+    public function itStoresRoleDetails()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
 
@@ -20,7 +20,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_if_the_password_is_mandatory()
+    public function itCorrectlyDeterminesIfThePasswordIsMandatory()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
 
@@ -28,7 +28,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_if_a_password_lifetime_exists()
+    public function itCorrectlyDeterminesIfAPasswordLifetimeExists()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["password_lifetime" => 30]);
 
@@ -36,7 +36,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_determines_that_the_role_has_a_session_timeout()
+    public function itCorrectlyDeterminesThatTheRoleHasASessionTimeout()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 60]);
 
@@ -49,7 +49,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_loads_the_default_role()
+    public function itCorrectlyLoadsTheDefaultRole()
     {
         $role = factory(\App\Models\Mship\Role::class)->create(["default" => true]);
 
@@ -59,7 +59,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test * */
-    public function it_correctly_removes_the_default_status_from_the_old_default_role_when_creating_a_new_default_role()
+    public function itCorrectlyRemovesTheDefaultStatusFromTheOldDefaultRoleWhenCreatingANewDefaultRole()
     {
         $roleOriginalDefault = factory(\App\Models\Mship\Role::class)->create(["default" => true]);
 
@@ -72,7 +72,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_that_this_role_has_a_specific_permission()
+    public function itCorrectlyDeterminesThatThisRoleHasASpecificPermission()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
         $permission = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
@@ -89,7 +89,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_that_this_role_does_not_have_a_specific_permission()
+    public function itCorrectlyDeterminesThatThisRoleDoesNotHaveASpecificPermission()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
         $permissionA = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
@@ -114,7 +114,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_that_this_role_has_a_specific_permission_by_alpha_only_name()
+    public function itCorrectlyDeterminesThatThisRoleHasASpecificPermissionByAlphaOnlyName()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
         $permission = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
@@ -125,7 +125,7 @@ class MshipRoleTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_that_this_role_does_not_have_a_specific_permission_by_alpha_only_name()
+    public function itCorrectlyDeterminesThatThisRoleDoesNotHaveASpecificPermissionByAlphaOnlyName()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
         $permissionA = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);

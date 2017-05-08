@@ -3,17 +3,17 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class SiteTest extends TestCase
+class SiteTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
     /** Unit Testing */
 
     /** @test */
-    public function it_can_create_a_new_application_for_a_user()
+    public function itCanCreateANewApplicationForAUser()
     {
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
@@ -29,7 +29,7 @@ class SiteTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_attempting_to_create_a_duplicate_application()
+    public function itThrowsAnExceptionWhenAttemptingToCreateADuplicateApplication()
     {
         $this->setExpectedException(\App\Exceptions\VisitTransfer\Application\DuplicateApplicationException::class);
 
@@ -48,7 +48,7 @@ class SiteTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_attempting_to_create_an_application_for_a_division_member()
+    public function itThrowsAnExceptionWhenAttemptingToCreateAnApplicationForADivisionMember()
     {
         $this->setExpectedException(\App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException::class);
 

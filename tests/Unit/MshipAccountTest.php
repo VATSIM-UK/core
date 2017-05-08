@@ -11,13 +11,13 @@ use App\Models\Mship\Qualification;
 use App\Models\Mship\Role;
 use App\Notifications\Mship\EmailVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 
 /**
  * Class MshipAccountTest
  * @package Tests\Unit
  */
-class MshipAccountTest extends TestCase
+class MshipAccountTest extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
@@ -43,7 +43,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_basic_member_data()
+    public function itStoresBasicMemberData()
     {
         $this->seeInDatabase("mship_account", [
             "name_first" => "John",
@@ -55,7 +55,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_formats_names()
+    public function itCorrectlyFormatsNames()
     {
         $member = factory(Account::class)->create([
             "name_first" => "mary",
@@ -73,13 +73,13 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_determines_if_the_member_name_is_a_valid_display_name()
+    public function itCorrectlyDeterminesIfTheMemberNameIsAValidDisplayName()
     {
         $this->assertTrue($this->account->isValidDisplayName($this->account->real_name));
     }
 
     /** @test */
-    public function it_correctly_determines_if_the_nickname_is_a_valid_display_name()
+    public function itCorrectlyDeterminesIfTheNicknameIsAValidDisplayName()
     {
         $this->account->nickname = "Delboy";
         $this->account->save();
@@ -94,7 +94,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_that_a_name_is_still_valid_even_with_a_nickanem_set()
+    public function itDeterminesThatANameIsStillValidEvenWithANickanemSet()
     {
         $this->account->nickname = "Delboy";
         $this->account->save();
@@ -108,7 +108,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_determines_when_there_is_an_invalid_display_name()
+    public function itDeterminesWhenThereIsAnInvalidDisplayName()
     {
         $this->account->nickname = "Delboy";
         $this->account->save();
@@ -123,7 +123,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_primary_emails_within_the_account_model()
+    public function itStoresPrimaryEmailsWithinTheAccountModel()
     {
         $this->assertEquals("i_sleep@gmail.com", $this->account->email);
 
@@ -134,7 +134,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_if_the_given_email_exists_on_the_account()
+    public function itDeterminesIfTheGivenEmailExistsOnTheAccount()
     {
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
@@ -143,7 +143,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_if_the_given_email_exists_on_the_account_as_a_secondary_email()
+    public function itDeterminesIfTheGivenEmailExistsOnTheAccountAsASecondaryEmail()
     {
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_dont_sleep@gmail.com", $verified);
@@ -153,13 +153,13 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_if_the_given_email_already_exists_on_the_account_as_a_primary_email()
+    public function itDeterminesIfTheGivenEmailAlreadyExistsOnTheAccountAsAPrimaryEmail()
     {
         $this->assertTrue($this->account->fresh()->hasEmail("i_sleep@gmail.com"));
     }
 
     /** @test */
-    public function it_doesnt_permit_storing_of_primary_email_as_secondary()
+    public function itDoesntPermitStoringOfPrimaryEmailAsSecondary()
     {
         $this->expectException(DuplicateEmailException::class);
 
@@ -175,7 +175,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_permit_duplicate_secondary_emails_on_same_model()
+    public function itDoesntPermitDuplicateSecondaryEmailsOnSameModel()
     {
         $this->expectException(DuplicateEmailException::class);
 
@@ -185,7 +185,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_secondary_emails_to_be_stored()
+    public function itAllowsSecondaryEmailsToBeStored()
     {
         $this->expectsNotification($this->account, EmailVerification::class);
 
@@ -202,7 +202,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_list_new_secondary_emails_as_verified()
+    public function itDoesntListNewSecondaryEmailsAsVerified()
     {
         $this->expectsNotification($this->account, EmailVerification::class);
 
@@ -214,7 +214,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_lists_secondary_emails_as_verified()
+    public function itListsSecondaryEmailsAsVerified()
     {
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_three_sleep@hotmail.com", $verified);
@@ -223,7 +223,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_email_from_db()
+    public function itDeletesEmailFromDb()
     {
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_four_sleep@gmail.com", $verified);
@@ -237,7 +237,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_upgrades_email_from_secondary_to_primary()
+    public function itUpgradesEmailFromSecondaryToPrimary()
     {
         $verified = true;
         $email = $this->account->addSecondaryEmail("sauron@gmail.com", $verified);
@@ -252,7 +252,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_touches_account_updated_at_when_adding_an_email()
+    public function itTouchesAccountUpdatedAtWhenAddingAnEmail()
     {
         $originalUpdatedAt = $this->account->updated_at;
 
@@ -266,7 +266,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_qualifications()
+    public function itStoresQualifications()
     {
         $qualification = factory(Qualification::class)->create();
 
@@ -282,7 +282,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_duplicate_qualification_error_when_adding_qualification()
+    public function itReturnsDuplicateQualificationErrorWhenAddingQualification()
     {
         $this->expectException(DuplicateQualificationException::class);
 
@@ -293,7 +293,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_touches_account_updated_at_when_adding_a_qualification()
+    public function itTouchesAccountUpdatedAtWhenAddingAQualification()
     {
         $originalUpdatedAt = $this->account->updated_at;
 
@@ -306,7 +306,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_the_correct_account_based_on_slack_id()
+    public function itReturnsTheCorrectAccountBasedOnSlackId()
     {
         $slackID = substr(strrev(uniqid()), 0, 10);
 
@@ -320,7 +320,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_that_password_is_not_set()
+    public function itDeterminesThatPasswordIsNotSet()
     {
         $this->assertFalse($this->account->hasPassword());
 
@@ -333,7 +333,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_stores_a_hashed_password()
+    public function itStoresAHashedPassword()
     {
         $this->mockAuth();
         $this->account->setPassword("testing123");
@@ -355,7 +355,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_that_password_is_set()
+    public function itDeterminesThatPasswordIsSet()
     {
         $this->mockAuth();
         $this->account->setPassword("testing456");
@@ -377,7 +377,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_that_password_has_expired()
+    public function itDeterminesThatPasswordHasExpired()
     {
         $temporary = true;
         $this->mockAuth();
@@ -391,7 +391,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_throws_an_exception_when_the_same_password_is_set()
+    public function itThrowsAnExceptionWhenTheSamePasswordIsSet()
     {
         $this->expectException(DuplicatePasswordException::class);
 
@@ -401,7 +401,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_overwrites_old_password_and_modifies_the_timestamps()
+    public function itOverwritesOldPasswordAndModifiesTheTimestamps()
     {
         $this->mockAuth();
         $this->account->setPassword("testing123");
@@ -430,7 +430,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_adds_role_to_account()
+    public function itAddsRoleToAccount()
     {
         $role = factory(Role::class)->create();
 
@@ -445,7 +445,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_if_the_account_has_a_given_role()
+    public function itDeterminesIfTheAccountHasAGivenRole()
     {
         $role = factory(Role::class)->create();
 
@@ -455,7 +455,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_throws_duplicate_role_exception_when_adding_duplicate_role()
+    public function itThrowsDuplicateRoleExceptionWhenAddingDuplicateRole()
     {
         $this->expectException(DuplicateRoleException::class);
 
@@ -466,7 +466,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_removes_role_from_account()
+    public function itRemovesRoleFromAccount()
     {
         $role = factory(Role::class)->create();
 
@@ -488,13 +488,13 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_determines_that_password_is_not_mandatory()
+    public function itDeterminesThatPasswordIsNotMandatory()
     {
         $this->assertFalse($this->account->mandatory_password);
     }
 
     /** @test * */
-    public function it_determines_that_password_is_mandatory()
+    public function itDeterminesThatPasswordIsMandatory()
     {
         $role = factory(Role::class)->create(["password_mandatory" => true]);
 
@@ -506,7 +506,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_returns_an_infinite_session_timeout()
+    public function itReturnsAnInfiniteSessionTimeout()
     {
         $roleWithInfiniteTimeout = factory(Role::class)->create([
             "session_timeout" => 0
@@ -518,7 +518,7 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_returns_a_non_infinite_session_timeout()
+    public function itReturnsANonInfiniteSessionTimeout()
     {
         $roleWithInfiniteTimeout = factory(Role::class)->create([
             "session_timeout" => 0
@@ -535,37 +535,37 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function it_sets_a_users_active_status()
+    public function itSetsAUsersActiveStatus()
     {
 
     }
 
     /** @test * */
-    public function it_returns_a_users_active_status()
+    public function itReturnsAUsersActiveStatus()
     {
 
     }
 
     /** @test * */
-    public function it_sets_a_users_inactive_status()
+    public function itSetsAUsersInactiveStatus()
     {
 
     }
 
     /** @test * */
-    public function it_returns_a_users_inactive_status()
+    public function itReturnsAUsersInactiveStatus()
     {
 
     }
 
     /** @test * */
-    public function it_sets_a_users_locked_status()
+    public function itSetsAUsersLockedStatus()
     {
 
     }
 
     /** @test * */
-    public function it_returns_a_users_locked_status()
+    public function itReturnsAUsersLockedStatus()
     {
 
     }

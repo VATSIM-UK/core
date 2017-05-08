@@ -3,10 +3,10 @@
 namespace Tests\Integration;
 
 use App;
-use Tests\TestCase;
+use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class SiteDivisionMember extends TestCase
+class SiteDivisionMember extends BrowserKitTestCase
 {
     use DatabaseTransactions;
 
@@ -26,7 +26,7 @@ class SiteDivisionMember extends TestCase
     }
 
     /** @test */
-    public function it_loads_ok()
+    public function itLoadsOk()
     {
         $this->visit(route('visiting.landing'));
 
@@ -34,7 +34,7 @@ class SiteDivisionMember extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_allow_member_to_start_visit_atc_application()
+    public function itDoesntAllowMemberToStartVisitAtcApplication()
     {
         factory(App\Models\VisitTransfer\Facility::class, 'atc_visit')->create();
 
@@ -43,7 +43,7 @@ class SiteDivisionMember extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_allow_member_to_start_transferring_atc_application()
+    public function itDoesntAllowMemberToStartTransferringAtcApplication()
     {
         factory(App\Models\VisitTransfer\Facility::class, 'atc_visit')->create();
 
@@ -52,7 +52,7 @@ class SiteDivisionMember extends TestCase
     }
 
     /** @test */
-    public function it_doesnt_display_references_table_if_not_a_referee()
+    public function itDoesntDisplayReferencesTableIfNotAReferee()
     {
         $this->visit(route('visiting.landing'))
             ->dontSee('Pending References');
