@@ -43,12 +43,6 @@ Route::group(['namespace' => 'Adm', 'domain' => config('app.url')], function () 
 
         // Login is the only unauthenticated page.
         Route::get('/', ['middleware' => ['auth_full_group'], 'uses' => 'Authentication@getLogin']);
-        Route::group(['prefix' => 'authentication'], function () {
-            Route::get('/login', ['as' => 'adm.authentication.login', 'uses' => 'Authentication@getLogin']);
-            Route::post('/login', ['as' => 'adm.authentication.login.post', 'uses' => 'Authentication@postLogin']);
-            Route::get('/logout', ['as' => 'adm.authentication.logout', 'uses' => 'Authentication@getLogout']);
-            Route::get('/verify', ['as' => 'adm.authentication.verify', 'uses' => 'Authentication@getVerify']);
-        });
 
         Route::get('/error/{code?}', ['as' => 'adm.error', 'uses' => 'Error@getDisplay']);
 
