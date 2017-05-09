@@ -28,35 +28,12 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            if (Auth::check()) {
-                $this->account = Auth::user();
-                $this->account->load('roles', 'roles.permissions');
-
-                // Do we need to do some debugging on this user?
-                if ($this->account->debug) {
-                    \Debugbar::enable();
-                }
-
-                // if last login recorded is older than 45 minutes, record the new timestamp
-                if ($this->account->last_login < \Carbon\Carbon::now()
-                        ->subMinutes(45)
-                        ->toDateTimeString()
-                ) {
-                    $this->account->last_login = \Carbon\Carbon::now();
-                    // if the ip has changed, record this too
-                    $ip = Request::ip();
-                    if ($this->account->last_login_ip != $ip) {
-                        $this->account->last_login_ip = $ip;
-                    }
-                    $this->account->save();
-                }
-            } else {
-                $this->account = new Account();
-            }
-
-            return $next($request);
-        });
+        if (Auth::check()) {
+            $this->account = Auth::user();
+            $this->account->load('roles', 'roles.permissions');
+        } else {
+            $this->account = new Account();
+        }
     }
 
     public function redirectTo()

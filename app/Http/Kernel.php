@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RecordLoginInfo;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -48,6 +49,7 @@ class Kernel extends HttpKernel
         ],
         'auth_full_group' => [
             'auth',
+            'auth.record-info',
             'mandatorypasswords',
             'denyifbanned',
             'user.must.read.notifications',
@@ -77,5 +79,6 @@ class Kernel extends HttpKernel
         'denyifbanned' => Middleware\DenyIfBanned::class,
         'mandatorypasswords' => Middleware\MandatoryPasswords::class,
         'redirecttointended' => Middleware\RedirectToIntended::class,
+        'auth.record-info' => RecordLoginInfo::class,
     ];
 }
