@@ -21,7 +21,7 @@
                   {{ $feedback->isATC() ? "ATC" : "Pilot"  }}
                 </div>
                 <div class="col-md-3">
-                  <b> Target Memeber:</b></br>
+                  <b> Target Member:</b></br>
                   {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
                 </div>
                 @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/reporter'))
