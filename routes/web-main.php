@@ -42,7 +42,7 @@ Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
 // Admin panel
 Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_full_group']], function () {
     // Index
-    Route::get('/', 'Authentication@getLogin');
+    Route::get('/', function () { return redirect()->route('adm.dashboard'); });
 
     // Main
     Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
