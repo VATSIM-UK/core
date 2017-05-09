@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Reference;
+use App\Policies\VisitTransfer\ApplicationPolicy;
+use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
 use App\Models\Mship\Account;
 use Laravel\Passport\Passport;
@@ -20,6 +24,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'password' => PasswordPolicy::class,
         Membership::class => MembershipPolicy::class,
+        Application::class => ApplicationPolicy::class,
+        Reference::class => ReferencePolicy::class,
     ];
 
     /**

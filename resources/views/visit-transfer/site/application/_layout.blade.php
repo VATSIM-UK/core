@@ -86,7 +86,7 @@
 
                         @if($application->exists)
                             <li role="presentation">
-                                <a class="label label-info label-md">
+                                <a class="label label-info label-md" style="white-space: initial;">
                                     Application expires in <span id="applicationExpireTimer"></span>
                                 </a>
                             </li>
@@ -97,7 +97,7 @@
                 <div class="col-md-9 hidden-xs">
                     @yield("vt-content")
                 </div>
-                <div class="col-cs-12 visible-xs">
+                <div class="col-xs-12 visible-xs">
                     <p>
                         You are unable to complete your visiting or transferring applications on a mobile device.
                     </p>
@@ -145,12 +145,9 @@
             var t = Date.parse(endtime) - Date.parse(new Date());
             var seconds = Math.floor( (t/1000) % 60 );
             var minutes = Math.floor( (t/1000/60) % 60 );
-//            var hours = Math.floor( (t/(1000*60*60)) % 24 );
-//            var days = Math.floor( t/(1000*60*60*24) );
+
             return {
                 'total': t,
-//                'days': days,
-//                'hours': hours,
                 'minutes': minutes,
                 'seconds': seconds
             };

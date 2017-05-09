@@ -28,12 +28,16 @@ class BaseController extends \Illuminate\Routing\Controller
 
     public function __construct()
     {
-        if (Auth::check()) {
-            $this->account = Auth::user();
-            $this->account->load('roles', 'roles.permissions');
-        } else {
-            $this->account = new Account();
-        }
+        $this->middleware(function ($request, $next) {
+            if (Auth::check()) {
+                $this->account = Auth::user();
+                $this->account->load('roles', 'roles.permissions');
+            } else {
+                $this->account = new Account();
+            }
+
+            return $next($request);
+        });
     }
 
     public function redirectTo()
