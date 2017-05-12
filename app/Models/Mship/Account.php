@@ -973,14 +973,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * @param string $password The password string.
      * @param bool $temporary Will only be a temporary password
      * @return bool
-     * @throws \App\Exceptions\Mship\DuplicatePasswordException
      */
     public function setPassword($password, $temporary = false)
     {
-        if (\Hash::check($password, $this->password)) {
-            throw new \App\Exceptions\Mship\DuplicatePasswordException;
-        }
-
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),

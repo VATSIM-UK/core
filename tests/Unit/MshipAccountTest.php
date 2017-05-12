@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Exceptions\Mship\DuplicateEmailException;
-use App\Exceptions\Mship\DuplicatePasswordException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role;
@@ -375,16 +374,6 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account = $this->account->fresh();
 
         $this->assertTrue($this->account->hasPasswordExpired());
-    }
-
-    /** @test * */
-    public function itThrowsAnExceptionWhenTheSamePasswordIsSet()
-    {
-        $this->expectException(DuplicatePasswordException::class);
-
-        $this->mockAuth();
-        $this->account->setPassword("testing123");
-        $this->account->setPassword("testing123");
     }
 
     /** @test * */
