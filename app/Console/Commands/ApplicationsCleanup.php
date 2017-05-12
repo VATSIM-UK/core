@@ -21,7 +21,7 @@ class ApplicationsCleanup extends Command
      *
      * @var string
      */
-    protected $description = 'Clean-up the applications in the VT system.';
+    protected $description = 'Clean up the applications in the VT system.';
 
     /**
      * Execute the console command.
@@ -36,6 +36,9 @@ class ApplicationsCleanup extends Command
         $this->autoCompleteNonTrainingApplications();
     }
 
+    /**
+     * Cancel any applications that have exceeded their expiry time.
+     */
     private function cancelOldApplications()
     {
         foreach (Application::status(Application::STATUS_IN_PROGRESS)->get() as $application) {
@@ -43,54 +46,55 @@ class ApplicationsCleanup extends Command
                 try {
                     $application->expire();
                 } catch (ApplicationCannotBeExpiredException $e) {
-                    dd($e);
-                    // Do nothing here.  We don't care.  Maybe we were just late in catching them.
+                    // Shouldn't matter - maybe we were just late in catching them
+                    continue;
                 }
             }
         }
     }
 
+    /**
+     * If applicable, dispatch automated checks for submitted applications, otherwise progress them.
+     */
     private function runAutomatedChecks()
     {
-        $submittedApplications = Application::submitted()
-                                            ->get()
-                                            ->filter(function ($application) {
-                                                return !$application->is_pending_references;
-                                            });
+        $submittedApplications = Application::submitted()->get()->filter(function ($application) {
+            return !$application->is_pending_references;
+        });
 
         foreach ($submittedApplications as $application) {
-            if (!$application->should_perform_checks) {
+            if ($application->should_perform_checks) {
+                dispatch((new \App\Jobs\AutomatedApplicationChecks($application))->onQueue('med'));
+            } else {
                 $application->markAsUnderReview('Automated checks have been disabled for this facility - requires manual checking.');
-                continue;
             }
-
-            dispatch((new \App\Jobs\AutomatedApplicationChecks($application))->onQueue('med'));
         }
     }
 
+    /**
+     * If an application under review can be accepted automatically, accept it.
+     */
     private function autoAcceptApplications()
     {
-        $underReviewApplications = Application::underReview()
-                                              ->where('will_auto_accept', '=', 1)
-                                              ->get();
+        $underReviewApplications = Application::underReview()->where('will_auto_accept', 1)->get();
 
         foreach ($underReviewApplications as $application) {
             $application->accept('Application was automatically accepted as per the facility settings.');
-            continue;
         }
     }
 
+    /**
+     * If an accepted application doesn't require training, complete it.
+     */
     private function autoCompleteNonTrainingApplications()
     {
-        $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)
-                                           ->get()
-                                           ->filter(function ($application) {
-                                               return !$application->training_required;
-                                           });
+        $acceptedApplications = Application::status(Application::STATUS_ACCEPTED)->get()
+            ->filter(function ($application) {
+                return !$application->training_required;
+            });
 
         foreach ($acceptedApplications as $application) {
             $application->complete('Application was automatically completed as there is no training requirement.');
-            continue;
         }
     }
 }
