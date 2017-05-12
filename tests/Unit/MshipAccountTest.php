@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicatePasswordException;
-use App\Exceptions\Mship\DuplicateRoleException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role;
@@ -440,17 +439,6 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->fresh()->addRole($role);
 
         $this->assertTrue($this->account->fresh()->hasRole($role));
-    }
-
-    /** @test * */
-    public function itThrowsDuplicateRoleExceptionWhenAddingDuplicateRole()
-    {
-        $this->expectException(DuplicateRoleException::class);
-
-        $role = factory(Role::class)->create();
-
-        $this->account->fresh()->addRole($role);
-        $this->account->fresh()->addRole($role);
     }
 
     /** @test * */
