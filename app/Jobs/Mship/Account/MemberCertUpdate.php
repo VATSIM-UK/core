@@ -10,7 +10,6 @@ use App\Models\Mship\Account;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Exceptions\Mship\DuplicateStateException;
 use App\Models\Mship\Qualification as QualificationData;
 
 class MemberCertUpdate extends Job implements ShouldQueue
@@ -68,12 +67,8 @@ class MemberCertUpdate extends Job implements ShouldQueue
             $member->joined_at = $this->data->regdate;
             $member->save();
 
-            try {
-                $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
-                $member->addState($state, $this->data->region, $this->data->division);
-            } catch (DuplicateStateException $e) {
-                // Todo: Something.
-            }
+            $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
+            $member->addState($state, $this->data->region, $this->data->division);
 
             $member = $this->processBans($member);
             $member = $this->processRating($member);

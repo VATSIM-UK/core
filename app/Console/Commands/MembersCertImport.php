@@ -8,7 +8,6 @@ use App\Models\Mship\State;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use App\Exceptions\Mship\DuplicateStateException;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -97,11 +96,7 @@ class MembersCertImport extends Command
         $member->is_inactive = (bool) ($member_data['rating_atc'] < 0);
         $member->save();
 
-        try {
-            $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
-        } catch (DuplicateStateException $e) {
-            // TODO: Do something.
-        }
+        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
@@ -139,11 +134,7 @@ class MembersCertImport extends Command
         $member->email = $member_data['email'];
         $member->save();
 
-        try {
-            $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
-        } catch (DuplicateStateException $e) {
-            // TODO: Something.
-        }
+        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
     }
 
     protected function getMemberIdAndEmail()

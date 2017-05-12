@@ -19,7 +19,6 @@ use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Exceptions\Mship\DuplicateEmailException;
-use App\Exceptions\Mship\DuplicateStateException;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -739,13 +738,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * @param string|null $division Member's division
      *
      * @return mixed
-     * @throws \App\Exceptions\Mship\DuplicateStateException
      * @throws \App\Exceptions\Mship\InvalidStateException
      */
     public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
         if ($this->hasState($state)) {
-            throw new \App\Exceptions\Mship\DuplicateStateException($state);
+            return;
         }
 
         if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
@@ -784,11 +782,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public function updateDivision($division, $region)
     {
-        try {
-            $state = determine_mship_state_from_vatsim($region, $division);
-            $this->addState($state, $region, $division);
-        } catch (DuplicateStateException $e) {
-        }
+        $state = determine_mship_state_from_vatsim($region, $division);
+        $this->addState($state, $region, $division);
     }
 
     /**

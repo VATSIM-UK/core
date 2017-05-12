@@ -179,17 +179,6 @@ class MshipStateTest extends BrowserKitTestCase
     }
 
     /** @test */
-    public function itThrowsDuplicateExceptionWhenAddingDuplicateState()
-    {
-        $this->setExpectedException(\App\Exceptions\Mship\DuplicateStateException::class);
-
-        $regionState = \App\Models\Mship\State::findByCode("REGION");
-
-        $this->account->fresh()->addState($regionState, "EUR", "EUD");
-        $this->account->fresh()->addState($regionState, "EUR", "EUD");
-    }
-
-    /** @test */
     public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
     {
         $regionState = \App\Models\Mship\State::findByCode("REGION");
