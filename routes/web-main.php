@@ -42,7 +42,9 @@ Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
 // Admin panel
 Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_full_group']], function () {
     // Index
-    Route::get('/', function () { return redirect()->route('adm.dashboard'); });
+    Route::get('/', function () {
+        return redirect()->route('adm.dashboard');
+    });
 
     // Main
     Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
@@ -175,7 +177,6 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
     Route::get('/success', ['as' => 'slack.success', 'uses' => 'Registration@getConfirmed']);
     Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
 });
-
 
 /*
  * COMMUNITY

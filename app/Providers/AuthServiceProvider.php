@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Reference;
-use App\Policies\VisitTransfer\ApplicationPolicy;
-use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
 use App\Models\Mship\Account;
 use Laravel\Passport\Passport;
 use App\Policies\PasswordPolicy;
 use App\Policies\MembershipPolicy;
 use App\Models\Community\Membership;
+use App\Models\VisitTransfer\Reference;
+use App\Models\VisitTransfer\Application;
+use App\Policies\VisitTransfer\ReferencePolicy;
+use App\Policies\VisitTransfer\ApplicationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
