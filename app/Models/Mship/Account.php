@@ -27,7 +27,6 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
@@ -1133,17 +1132,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * @param Qualification $qualification
      *
      * @return bool
-     * @throws DuplicateQualificationException
      */
     public function addQualification(Qualification $qualification)
     {
-        if ($this->hasQualification($qualification)) {
-            throw new DuplicateQualificationException($qualification);
+        if (!$this->hasQualification($qualification)) {
+            $this->qualifications()->attach($qualification);
+            $this->touch();
         }
-
-        $this->qualifications()->attach($qualification);
-
-        $this->touch();
 
         return true;
     }

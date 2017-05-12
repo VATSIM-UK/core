@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Exceptions\Mship\DuplicateEmailException;
 use App\Exceptions\Mship\DuplicatePasswordException;
-use App\Exceptions\Mship\DuplicateQualificationException;
 use App\Exceptions\Mship\DuplicateRoleException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -279,17 +278,6 @@ class MshipAccountTest extends BrowserKitTestCase
             "qualification_id" => $qualification->id,
             "deleted_at" => null,
         ]);
-    }
-
-    /** @test */
-    public function itReturnsDuplicateQualificationErrorWhenAddingQualification()
-    {
-        $this->expectException(DuplicateQualificationException::class);
-
-        $qualification = factory(Qualification::class)->create();
-
-        $this->account->addQualification($qualification);
-        $this->account->fresh()->addQualification($qualification);
     }
 
     /** @test */

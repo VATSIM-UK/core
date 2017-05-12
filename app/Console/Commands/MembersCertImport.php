@@ -9,7 +9,6 @@ use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Exceptions\Mship\DuplicateStateException;
-use App\Exceptions\Mship\DuplicateQualificationException;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -112,14 +111,8 @@ class MembersCertImport extends Command
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
 
-                try {
-                    if ($prevAtcRating) {
-                        $member->addQualification($prevAtcRating);
-                    }
-                } catch (DuplicateQualificationException $e) {
-                    // TODO: Something.
-                } catch (Exception $e) {
-                    // TODO: Something.
+                if ($prevAtcRating) {
+                    $member->addQualification($prevAtcRating);
                 }
             } else {
                 $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
@@ -128,16 +121,10 @@ class MembersCertImport extends Command
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating
         if (($member_data['rating_atc'] < 8) || $member->hasState('DIVISION')) {
-            try {
-                $atcRating = Qualification::parseVatsimATCQualification($member_data['rating_atc']);
+            $atcRating = Qualification::parseVatsimATCQualification($member_data['rating_atc']);
 
-                if ($atcRating) {
-                    $member->addQualification($atcRating);
-                }
-            } catch (DuplicateQualificationException $e) {
-                // TODO: Something.
-            } catch (ErrorException $e) {
-                // TODO: Something.
+            if ($atcRating) {
+                $member->addQualification($atcRating);
             }
         }
 

@@ -12,7 +12,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Exceptions\Mship\DuplicateStateException;
 use App\Models\Mship\Qualification as QualificationData;
-use App\Exceptions\Mship\DuplicateQualificationException;
 
 class MemberCertUpdate extends Job implements ShouldQueue
 {
@@ -111,46 +110,42 @@ class MemberCertUpdate extends Job implements ShouldQueue
 
     protected function processRating($member)
     {
-        try {
-            // if they have an extra rating, log their previous rating
-            if ($this->data->rating >= 8) {
-                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
-                if (isset($_prevRat->PreviousRatingInt)) {
-                    $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
-                    if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
-                        $member->addQualification($prevAtcRating);
-                    }
-                }
-            } else {
-                // remove any extra ratings
-                foreach ($member->qualifications_atc_training as $qual) {
-                    $qual->pivot->delete();
-                }
-                foreach ($member->qualifications_pilot_training as $qual) {
-                    $qual->pivot->delete();
-                }
-                foreach ($member->qualifications_admin as $qual) {
-                    $qual->pivot->delete();
+        // if they have an extra rating, log their previous rating
+        if ($this->data->rating >= 8) {
+            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            if (isset($_prevRat->PreviousRatingInt)) {
+                $prevAtcRating = QualificationData::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
+                if (!is_null($prevAtcRating) && !$member->hasQualification($prevAtcRating)) {
+                    $member->addQualification($prevAtcRating);
                 }
             }
+        } else {
+            // remove any extra ratings
+            foreach ($member->qualifications_atc_training as $qual) {
+                $qual->pivot->delete();
+            }
+            foreach ($member->qualifications_pilot_training as $qual) {
+                $qual->pivot->delete();
+            }
+            foreach ($member->qualifications_admin as $qual) {
+                $qual->pivot->delete();
+            }
+        }
 
-            // log their current rating (unless they're a non-UK instructor)
-            if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState('DIVISION')
-            ) {
-                $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
-                if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
-                    $member->addQualification($atcRating);
-                }
+        // log their current rating (unless they're a non-UK instructor)
+        if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState('DIVISION')
+        ) {
+            $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
+            if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
+                $member->addQualification($atcRating);
             }
+        }
 
-            $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
-            foreach ($pilotRatings as $pr) {
-                if (!$member->hasQualification($pr)) {
-                    $member->addQualification($pr);
-                }
+        $pilotRatings = QualificationData::parseVatsimPilotQualifications($this->data->pilotrating);
+        foreach ($pilotRatings as $pr) {
+            if (!$member->hasQualification($pr)) {
+                $member->addQualification($pr);
             }
-        } catch (DuplicateQualificationException $e) {
-            // TOdo: Something.
         }
 
         return $member;
