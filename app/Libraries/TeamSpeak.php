@@ -16,6 +16,9 @@ use TeamSpeak3_Adapter_ServerQuery_Exception;
 use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 
+/**
+ * Provides static methods for managing TeamSpeak.
+ */
 class TeamSpeak
 {
     const CONNECTION_TIMED_OUT = 110;
@@ -24,7 +27,6 @@ class TeamSpeak
     const CLIENT_NICKNAME_INUSE = 513;
     const DATABASE_EMPTY_RESULT_SET = 1281;
     const PERMISSIONS_CLIENT_INSUFFICIENT = 2568;
-    const CACHE_PREFIX_CLIENT_DISCONNECT = 'teamspeak_client_disconnect_';
     const CACHE_NOTIFICATION_MANDATORY = 'teamspeak_notify_mandatory_';
     const CACHE_NICKNAME_PARTIALLY_CORRECT = 'teamspeak_nickname_partially_correct_';
     const CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE = 'teamspeak_nickname_partially_correct_grace_';
@@ -222,7 +224,6 @@ class TeamSpeak
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
     {
         if ($member->has_unread_must_acknowledge_notifications) {
-            $recentlyDisconnected = Cache::has(self::CACHE_PREFIX_CLIENT_DISCONNECT.$client['client_database_id']);
             $recentlyNotified = Cache::has(self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id']);
             $timeSincePublished = $member->unread_must_acknowledge_time_elapsed;
 
@@ -258,31 +259,22 @@ class TeamSpeak
         if (!$member->isValidDisplayName($client['client_nickname'])) {
             $recentlyTold = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-            // If their nickname doesn't even contain their name, or their grace period has ended
+            // if their nickname doesn't contain their name, or their grace period has ended
             if (!$member->isPartiallyValidDisplayName($client['client_nickname']) || ($recentlyTold && !$hasGracePeriod)) {
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
                 self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
                 Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
                 throw new ClientKickedFromServerException;
-            }
-            // If they are still in their grace period, lets not disturb.
-            if (!$hasGracePeriod) {
-                // We have a partially valid name. Could be incorrect callsgin? Lets give them a grace period
+            } elseif (!$hasGracePeriod) {
+                // set grace period to allow for possible mistakes
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
                 self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
-                Cache::put(
-                    self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'],
-                    Carbon::now(),
-                    6
-                );
-                Cache::put(
-                    self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'],
-                    Carbon::now(),
-                    3
-                );
+                $now = Carbon::now();
+                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6);
+                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3);
             }
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);

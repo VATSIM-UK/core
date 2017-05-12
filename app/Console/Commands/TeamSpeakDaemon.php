@@ -101,11 +101,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     public static function clientLeftEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Host $host)
     {
         if (isset(self::$connectedClients[$event->clid])) {
-            $dbid = self::$connectedClients[$event->clid];
             unset(self::$connectedClients[$event->clid]);
-
-            // cache their dbid and the current datetime for n minutes
-            Cache::put(TeamSpeak::CACHE_PREFIX_CLIENT_DISCONNECT.$dbid, Carbon::now(), 5);
         }
     }
 
