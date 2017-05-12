@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Exceptions\Mship\DuplicateEmailException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role;
@@ -158,8 +157,6 @@ class MshipAccountTest extends BrowserKitTestCase
     /** @test */
     public function itDoesntPermitStoringOfPrimaryEmailAsSecondary()
     {
-        $this->expectException(DuplicateEmailException::class);
-
         $verified = true;
         $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
@@ -169,16 +166,6 @@ class MshipAccountTest extends BrowserKitTestCase
             "account_id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
-    }
-
-    /** @test */
-    public function itDoesntPermitDuplicateSecondaryEmailsOnSameModel()
-    {
-        $this->expectException(DuplicateEmailException::class);
-
-        $verified = true;
-        $this->account->addSecondaryEmail("test_email@gmail.com", $verified);
-        $this->account->fresh()->addSecondaryEmail("test_email@gmail.com", $verified);
     }
 
     /** @test */

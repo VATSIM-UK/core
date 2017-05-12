@@ -18,7 +18,6 @@ use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
-use App\Exceptions\Mship\DuplicateEmailException;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -1072,18 +1071,19 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * @param bool   $verified Set to TRUE if the email should be automatically verified.
      *
      * @return \Illuminate\Database\Eloquent\Model|Email|false
-     * @throws \App\Exceptions\Mship\DuplicateEmailException
      */
     public function addSecondaryEmail($newEmail, $verified = false)
     {
-        if ($this->hasEmail($newEmail)) {
-            throw new DuplicateEmailException($newEmail);
+        if (!$this->hasEmail($newEmail)) {
+            $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
+            $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
+
+            return $this->secondaryEmails()->save($newSecondaryEmail);
         }
 
-        $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
-        $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
-
-        return $this->secondaryEmails()->save($newSecondaryEmail);
+        return $this->secondaryEmails->filter(function ($e) use ($newEmail) {
+            return strcasecmp($e->email, $newEmail) == 0;
+        })->first();
     }
 
     /**

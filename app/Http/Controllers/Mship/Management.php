@@ -8,7 +8,6 @@ use Redirect;
 use Validator;
 use App\Models\Sys\Token as SystemToken;
 use Laravel\Passport\Client as OAuthClient;
-use App\Exceptions\Mship\DuplicateEmailException;
 use App\Models\Mship\Account\Email as AccountEmail;
 
 class Management extends \App\Http\Controllers\BaseController
@@ -74,11 +73,11 @@ class Management extends \App\Http\Controllers\BaseController
                            ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
-        try {
+        if (!$this->account->hasEmail($email)) {
             $this->account->addSecondaryEmail($email);
-        } catch (DuplicateEmailException $e) {
+        } else {
             return Redirect::route('mship.manage.dashboard')
-                           ->withError('This email has already been added to your account.');
+                ->withError('This email has already been added to your account.');
         }
 
         return Redirect::route('mship.manage.dashboard')
