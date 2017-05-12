@@ -158,10 +158,9 @@ class MshipAccountTest extends BrowserKitTestCase
     public function itDoesntPermitStoringOfPrimaryEmailAsSecondary()
     {
         $verified = true;
-        $email = $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
+        $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
-        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
         $this->notSeeInDatabase("mship_account_email", [
             "account_id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
@@ -397,7 +396,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->account->fresh()->addRole($role);
+        $this->account->fresh()->roles()->attach($role);
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
 
@@ -412,7 +411,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->account->fresh()->addRole($role);
+        $this->account->fresh()->roles()->attach($role);
 
         $this->assertTrue($this->account->fresh()->hasRole($role));
     }
@@ -422,7 +421,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->account->fresh()->addRole($role);
+        $this->account->fresh()->roles()->attach($role);
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
         $this->seeInDatabase("mship_account_role", [
@@ -450,7 +449,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $role = factory(Role::class)->create(["password_mandatory" => true]);
 
-        $this->account->addRole($role);
+        $this->account->roles()->attach($role);
 
         $this->account = $this->account->fresh();
 
@@ -464,7 +463,7 @@ class MshipAccountTest extends BrowserKitTestCase
             "session_timeout" => 0
         ]);
 
-        $this->account->addRole($roleWithInfiniteTimeout);
+        $this->account->roles()->attach($roleWithInfiniteTimeout);
 
         $this->assertEquals(0, $this->account->fresh()->session_timeout);
     }
@@ -480,8 +479,8 @@ class MshipAccountTest extends BrowserKitTestCase
             "session_timeout" => 10
         ]);
 
-        $this->account->addRole($roleWithInfiniteTimeout);
-        $this->account->addRole($roleWithNonInfiniteTimeout);
+        $this->account->roles()->attach($roleWithInfiniteTimeout);
+        $this->account->roles()->attach($roleWithNonInfiniteTimeout);
 
         $this->assertEquals(10, $this->account->fresh()->session_timeout);
     }
