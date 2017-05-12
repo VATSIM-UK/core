@@ -478,22 +478,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
     }
 
     /**
-     * Attach a role to this account.
-     *
-     * @param Role $role The role to attach to the account.
-     *
-     * @return mixed
-     */
-    public function addRole(Role $role)
-    {
-        if ($this->hasRole($role)) {
-            throw new \App\Exceptions\Mship\DuplicateRoleException($role);
-        }
-
-        return $this->roles()->attach($role->id);
-    }
-
-    /**
      * Detach a role from this account.
      *
      * @param Role $role The role to remove from the account.
