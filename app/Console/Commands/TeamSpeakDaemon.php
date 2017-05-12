@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Cache;
 use Exception;
-use Carbon\Carbon;
 use TeamSpeak3_Node_Host;
 use TeamSpeak3_Node_Server;
 use App\Libraries\TeamSpeak;
