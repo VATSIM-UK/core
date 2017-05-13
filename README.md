@@ -37,7 +37,8 @@ should be disabled.
 3. Make sure all new client IDs correspond to `mship_oauth_emails`
 (preferably by updating the emails table, not forcing the ids of the clients)
 1. Update any external services to use the new OAuth API for authenticating users.
-1. Switch SendGrid notifications webhook to production URL
+1. Add SendGrid user to basic_users table
+1. Switch SendGrid notifications webhook to production URL (using new basic auth user)
 
 ### Older Versions
 
