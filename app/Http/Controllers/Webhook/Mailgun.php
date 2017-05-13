@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Webhook\Email;
+namespace App\Http\Controllers\Webhook;
 
 use Input;
 use Response;
 
-class Mailgun extends EmailWebhookController
+class Mailgun extends WebhookController
 {
     public function anyRoute()
     {

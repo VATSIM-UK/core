@@ -34,10 +34,8 @@ Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
 
     Route::any('slack', 'Slack@anyRouter')->name('webhook.slack');
 
-    Route::group(['prefix' => 'mail', 'namespace' => 'Mail'], function () {
-        //Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
-        Route::post('sendgrid', 'SendGrid@events');
-    });
+    //Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
+    Route::post('sendgrid', 'SendGrid@events');
 });
 
 // Admin panel
