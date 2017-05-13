@@ -28,7 +28,7 @@ class SendGrid extends WebhookController
             $this->processEvent($event);
         }
 
-        return response();
+        return response('');
     }
 
     /**
