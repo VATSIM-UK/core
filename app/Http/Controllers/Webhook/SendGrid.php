@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Email\Event;
+use App\Models\Email\Event;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

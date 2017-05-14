@@ -1,62 +1,46 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use Input;
+use App\Models\Email\Event;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Response;
 
 class Mailgun extends WebhookController
 {
-    public function anyRoute()
+    /**
+     * Parameters from Mailgun to exclude from the event data field.
+     *
+     * @var array $excludeData
+     */
+    private $excludeData = ['Message-Id', 'event', 'recipient', 'timestamp', 'token', 'signature'];
+
+    public function event(Request $request)
     {
-        // Verify that this is a valid request!
-        $timestamp = Input::get('timestamp');
-        $token = Input::get('token');
-        $ts_token = $timestamp.$token;
-
-        $encHmac = hash_hmac('sha256', $ts_token, env('MAILGUN_SECRET'));
-
-        if ($encHmac != Input::get('signature')) {
-            return Response::make('Unauthorised', 406);
-        }
-        // END OF VERIFICATION
-
-        // Get the messageID
-        $this->messageId = Input::get('message-id', 'NOTHING');
-
-        // Strip the @ symbol if present.
-        $this->messageId = strpos($this->messageId, '@') ? substr($this->messageId, 0, strpos($this->messageId, '@')) : $this->messageId;
-
-        // Try and find this queue message based on the ID.
-        $this->queueEntry = Queue::whereMessageId($this->messageId)->first();
-
-        if (!$this->queueEntry or !$this->queueEntry->exists) {
-            return Response::make("Accepted, but email doesn't exist.", 200);
+        if (!$this->verifyMailgun($request)) {
+            return Response::make('Unauthorised.', 406);
         }
 
-        // Now, let's deal with the message itself.
-        switch (Input::get('event')) {
-            case 'delivered':
-                $this->runDelivered(Input::get('message-headers'));
-                break;
-            case 'opened':
-                $this->runOpened(Input::get('device-type', 'client-name', 'user-agent', 'client-os', 'ip', 'client-type'));
-                break;
-            case 'clicked':
-                $this->runClicked(Input::get('device-type', 'client-name', 'user-agent', 'client-os', 'ip', 'client-type'));
-                break;
-            case 'complained':
-                $this->runSpam(Input::get('message-headers'));
-                break;
-            case 'unsubscribed':
-                $this->runUnsubscribed(Input::get('device-type', 'client-name', 'user-agent', 'client-os', 'ip', 'client-type'));
-                break;
-            case 'bounced':
-                $this->runBounce(Input::get('code', 'error', 'recipient'));
-                break;
-            case 'dropped':
-                $this->runDropped(Input::get('code', 'error', 'recipient'));
-                break;
-        }
+        $entry = [
+            'broker' => 'mailgun',
+            'message_id' => $request->input('Message-Id'),
+            'name' => $request->input('event'),
+            'recipient' => $request->input('recipient'),
+            'data' => array_diff_key($request->all(), array_flip($this->excludeData)),
+            'triggered_at' => Carbon::createFromTimestamp($request->input('timestamp')),
+        ];
+
+        Event::create($entry);
+
+        return response('');
+    }
+
+    private function verifyMailgun(Request $request)
+    {
+        $data = $request->input('timestamp').$request->input('token');
+        $signature = hash_hmac('sha256', $data, env('MAILGUN_SECRET'));
+
+        return $signature === $request->input('signature');
     }
 }

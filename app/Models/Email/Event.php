@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Email;
+namespace App\Models\Email;
 
 use App\Models\Model;
 

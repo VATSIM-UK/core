@@ -34,7 +34,7 @@ Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
 
     Route::any('slack', 'Slack@anyRouter')->name('webhook.slack');
 
-    //Route::any('mailgun', ['as' => 'webhook.email.mailgun', 'uses' => 'Mailgun@anyRoute']);
+    Route::post('mailgun', 'Mailgun@event')->middleware('auth.basic.once');
     Route::post('sendgrid', 'SendGrid@events')->middleware('auth.basic.once');
 });
 
