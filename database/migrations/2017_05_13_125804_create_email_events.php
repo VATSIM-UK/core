@@ -16,7 +16,7 @@ class CreateEmailEvents extends Migration
         Schema::create('email_events', function (Blueprint $table) {
             $table->increments('id');
             $table->string('broker');
-            $table->string('message_id');
+            $table->string('message_id')->nullable();
             $table->string('name');
             $table->string('recipient');
             $table->text('data');
