@@ -14,7 +14,7 @@ class Mailgun extends WebhookController
      *
      * @var array $excludeData
      */
-    private $excludeData = ['Message-Id', 'event', 'recipient', 'timestamp', 'token', 'signature'];
+    private $excludeData = ['Message-Id', 'message-id', 'event', 'recipient', 'timestamp', 'token', 'signature'];
 
     public function event(Request $request)
     {
@@ -24,7 +24,7 @@ class Mailgun extends WebhookController
 
         $entry = [
             'broker' => 'mailgun',
-            'message_id' => $request->input('Message-Id'),
+            'message_id' => $request->input('Message-Id') ?: $request->input('message-id'),
             'name' => $request->input('event'),
             'recipient' => $request->input('recipient'),
             'data' => array_diff_key($request->all(), array_flip($this->excludeData)),
