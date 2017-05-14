@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Models\Email\Event;
 use Carbon\Carbon;
+use App\Models\Email\Event;
 use Illuminate\Http\Request;
 
 class SendGrid extends WebhookController
@@ -11,7 +13,7 @@ class SendGrid extends WebhookController
     /**
      * Parameters from SendGrid to exclude from the event data field.
      *
-     * @var array $excludeData
+     * @var array
      */
     private $excludeData = ['smtp-id', 'event', 'email', 'timestamp', 'ip', 'tls', 'cert_err', 'useragent', 'sg_message_id'];
 

@@ -1,18 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Models\Email\Event;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Response;
+use Carbon\Carbon;
+use App\Models\Email\Event;
+use Illuminate\Http\Request;
 
 class Mailgun extends WebhookController
 {
     /**
      * Parameters from Mailgun to exclude from the event data field.
      *
-     * @var array $excludeData
+     * @var array
      */
     private $excludeData = ['Message-Id', 'message-id', 'event', 'recipient', 'timestamp', 'token', 'signature'];
 

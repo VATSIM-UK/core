@@ -48,7 +48,7 @@ return [
 
         'basic' => [
             'driver' => 'session',
-            'provider' => 'basic'
+            'provider' => 'basic',
         ],
     ],
 
