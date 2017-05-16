@@ -47,7 +47,7 @@ class ApplicationStatusChanged extends Notification implements ShouldQueue
         $subject = "[{$this->application->public_id}] {$this->application->type_string} Application {$this->application->status_string}";
 
         return (new MailMessage)
-            ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
+            ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.applicant.status_changed', [
                 'application' => $this->application,

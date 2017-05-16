@@ -33,11 +33,11 @@ class Slack extends WebhookController
         $this->slackPayload = $request->all();
 
         if (!($route = $this->route($this->payload('command')))) {
-            return Response::make('Invalid command routing.  Please seek support (web-support@vatsim-uk.co.uk).');
+            return Response::make('Invalid command routing.  Please seek support (web-support@vatsim.uk).');
         }
 
         if ($route['token'] != $this->payload('token')) {
-            return Response::make('Malformed command.  If error persists, seek support (web-support@vatsim-uk.co.uk).');
+            return Response::make('Malformed command.  If error persists, seek support (web-support@vatsim.uk).');
         }
 
         return Response::make(call_user_func([$this, $route['method']]));

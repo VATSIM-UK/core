@@ -83,7 +83,7 @@
                     <div class="row">
                         <div class="col-md-12">
                           <h3> Notification Emails </h3>
-                          <small> These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered (i.e all inputs left blank), this will default to {{ $facility->training_team }}-team@vatsim-uk.co.uk </small>
+                          <small> These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered (i.e all inputs left blank), this will default to {{ $facility->training_team }}-team@vatsim.uk </small>
                             <div class="row" id="notification-emails">
                                 @for ($i = 0; $i < (($emails->count() < 3) ? 3 : $emails->count() ); $i++)
                                   <div class="col-md-4">

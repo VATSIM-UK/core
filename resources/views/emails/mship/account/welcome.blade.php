@@ -42,7 +42,7 @@
 
 <p>
     If any details are incorrect, or you have any concerns, please
-    contact {!! link_to('mailto:community@vatsim-uk.co.uk', 'our community department') !!} who will be able to help you
+    contact {!! link_to('mailto:community@vatsim.uk', 'our community department') !!} who will be able to help you
     further.
 </p>
 
