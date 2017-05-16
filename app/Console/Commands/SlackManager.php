@@ -115,7 +115,7 @@ class SlackManager extends Command
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, "You've not linked your VATSIM UK and Slack accounts.", 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, "It's incredibly important that you do this, otherwise I will continue to nag.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim-uk.co.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
