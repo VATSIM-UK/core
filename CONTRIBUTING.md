@@ -8,7 +8,7 @@ By submitting code as an individual you agree that VATSIM UK can use your amendm
 ## Helping others
 Please help other UK Core WS contributors wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK slack team.
 
-To access Slack, you can visit https://core.vatsim-uk.co.uk and follow the registration instructions.  Once you've logged in, find the channel "WebServices"
+To access Slack, you can visit https://core.vatsim.uk and follow the registration instructions.  Once you've logged in, find the channel "WebServices"
 
 # I want to contribute!
 

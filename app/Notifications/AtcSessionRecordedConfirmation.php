@@ -42,7 +42,7 @@ class AtcSessionRecordedConfirmation extends Notification implements ShouldQueue
         return (new SlackMessage)
             ->success()
             ->to('@'.SlackUser::method('info', ['user' => $notifiable->slack_id])->user->name)
-            ->content('Your recent controlling session on '.$this->atcSession->callsign.' was recorded! What is this?  Find our more on the forum! https://community.vatsim-uk.co.uk/news/community/home-is-where-the-heart-is-r39/')
+            ->content('Your recent controlling session on '.$this->atcSession->callsign.' was recorded! What is this?  Find our more on the forum! https://community.vatsim.uk/news/community/home-is-where-the-heart-is-r39/')
             ->attachment(function ($attachment) {
                 $attachment->title('Session '.$this->atcSession->public_id.' - '.$this->atcSession->callsign)
                            ->fields([

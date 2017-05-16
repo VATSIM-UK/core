@@ -27,7 +27,8 @@ class FacilityCreateUpdateRequest extends FormRequest
             'stage_reference_quantity' => 'required_if:stage_reference_enabled,1|numeric|min:1',
             'stage_checks' => 'required|boolean',
             'auto_acceptance' => 'required|boolean',
-            'acceptance_emails.*' => 'email',
+            'public' => 'required|boolean',
+            'acceptance_emails.*' => 'nullable|email',
         ];
     }
 

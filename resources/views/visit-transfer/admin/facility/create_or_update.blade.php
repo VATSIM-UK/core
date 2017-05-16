@@ -44,6 +44,29 @@
                             ) !!}
                         </div>
                         <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-9">
+                                  {!! ControlGroup::generate(
+                                          Form::label('public', 'Should this facility be displayed as an option for every applicant?'),
+                                          Form::select("public", [0 => "No", 1 => "Yes"], Input::old("public", $facility->public))
+                                  ) !!}
+                                </div>
+                                <div class="col-md-3">
+                                  <p>
+                                    <b>Manual Join Key:</b>
+                                  </p>
+                                  <p>
+                                    <font size="4em" style="word-break: break-word;">
+                                      @if ($facility->public)
+                                        <i>N/A</i>
+                                      @else
+                                        <i data-toggle="tooltip" title="Give this key to applicants so that they can apply to join this facility">{{$facility->public_id}}</i>
+                                      @endif
+                                    </font>
+                                  </p>
+                                </div>
+                            </div>
+
                             {!! ControlGroup::generate(
                                     Form::label('training_required', 'Is training required?'),
                                     Form::select("training_required", [0 => "No", 1 => "Yes"], Input::old("training_required", $facility->training_required))
@@ -83,7 +106,7 @@
                     <div class="row">
                         <div class="col-md-12">
                           <h3> Notification Emails </h3>
-                          <small> These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered (i.e all inputs left blank), this will default to {{ $facility->training_team }}-team@vatsim-uk.co.uk </small>
+                          <small> These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered (i.e all inputs left blank), this will default to {{ $facility->training_team }}-team@vatsim.uk </small>
                             <div class="row" id="notification-emails">
                                 @for ($i = 0; $i < (($emails->count() < 3) ? 3 : $emails->count() ); $i++)
                                   <div class="col-md-4">

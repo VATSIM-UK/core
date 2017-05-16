@@ -2,10 +2,10 @@
 
 @section('vt-content')
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
             <div class="row">
-                <div class="col-md-6 col-md-offset-3">
+                <div class="col-md-10 col-md-offset-1">
 
                     <p>
                         Choosing the right facility
@@ -37,6 +37,34 @@
             {!! HTML::panelClose() !!}
         </div>
 
+        <div class="col-md-4">
+            {!! HTML::panelOpen("Facility Code", ["type" => "fa", "key" => "question"]) !!}
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        <b>Have you been given a facility code?</b>
+                    </p>
+                    <p>
+                        Enter in the code below.
+                    </p>
+                    <p>
+                      {!! Form::label("Facility Code:") !!}
+                      {!! Form::open(["route" => ["visiting.application.facility.manual.post", $application->public_id], "method" => "POST", "class" => "form-inline"]) !!}
+                        <div class="form-group">
+                          {!! Form::text("facility-code") !!}
+                        </div>
+                        {!! Button::primary("Submit")->submit() !!}
+                      {!! Form::close() !!}
+                    </p>
+
+                </div>
+
+            </div>
+            {!! HTML::panelClose() !!}
+        </div>
+      </div>
+
+      <div class="row">
         @foreach($facilities as $facility)
             <div class="col-md-3">
                 {!! HTML::panelOpen($facility->name, ["type" => "vuk", "key" => "letter-".strtolower($facility->name[0])], ["style" => "min-height: 220px;"]) !!}
