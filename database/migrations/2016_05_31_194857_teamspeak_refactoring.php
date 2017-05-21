@@ -64,13 +64,6 @@ class TeamspeakRefactoring extends Migration
             ['name' => 'teamspeak/channel/pilot', 'display_name' => 'TeamSpeak / Channel / Pilot Training', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
 
-        try {
-            Schema::table('teamspeak_log', function (Blueprint $table) {
-                $table->dropForeign('teamspeak_log_registration_id_foreign');
-            });
-        } catch (Exception $e) {
-            // Do nothing with a missing FK.
-        }
         Schema::drop('teamspeak_log');
     }
 

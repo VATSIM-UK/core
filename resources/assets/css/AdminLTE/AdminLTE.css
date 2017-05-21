@@ -87,6 +87,25 @@ body > .header {
     margin-left: 0;
   }
 }
+
+/* JQuery Sortable Styling */
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+ol.simple_connected_list{
+  display: inline;
+}
+
+ol.simple_connected_list li {
+  list-style: none;
+}
+
 /*
     By default the layout is not fixed but if you add the class .fixed to the body element
     the sidebar and the navbar will automatically become poisitioned fixed
@@ -603,7 +622,7 @@ body > .header .logo .icon {
     float: right;
   }
 }
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 992px) {
   body > .header {
     position: relative;
   }

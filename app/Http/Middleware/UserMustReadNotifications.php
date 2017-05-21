@@ -3,33 +3,28 @@
 namespace App\Http\Middleware;
 
 use Auth;
-use Closure;
-use Request;
-use Session;
 use Redirect;
+use App\Traits\Middleware\RedirectsOnFailure;
 
 class UserMustReadNotifications
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
+    use RedirectsOnFailure;
+
+    protected $except = [
+        'mship/notification/list',
+        'mship/notification/acknowledge/*',
+    ];
+
+    public function validate($makeResponse)
     {
-        if (Auth::check()
-            && Session::has('auth_extra')
-            && (Auth::user()->has_unread_important_notifications
-                || Auth::user()->has_unread_must_acknowledge_notifications
-            )
+        if (Auth::check() &&
+            (Auth::user()->has_unread_important_notifications || Auth::user()->has_unread_must_acknowledge_notifications)
         ) {
-            Session::set('force_notification_read_return_url', Request::fullUrl());
-
-            return Redirect::route('mship.notification.list');
+            if ($makeResponse) {
+                return redirect()->guest(route('mship.notification.list'));
+            } else {
+                return true;
+            }
         }
-
-        return $next($request);
     }
 }

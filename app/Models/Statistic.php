@@ -3,7 +3,7 @@
 namespace App\Models;
 
 /**
- * App\Models\Statistic.
+ * App\Models\Statistic
  *
  * @property int $id
  * @property string $period
@@ -11,20 +11,20 @@ namespace App\Models;
  * @property string $value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic wherePeriod($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereKey($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereValue($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereKey($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic wherePeriod($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Statistic whereValue($value)
  * @mixin \Eloquent
  */
 class Statistic extends \App\Models\Model
 {
-    protected $table      = 'statistic';
+    protected $table = 'statistic';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable   = ['period', 'key'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['period', 'key'];
 
     public static function setStatistic($period, $key, $value)
     {

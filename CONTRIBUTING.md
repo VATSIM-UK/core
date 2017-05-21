@@ -8,7 +8,7 @@ By submitting code as an individual you agree that VATSIM UK can use your amendm
 ## Helping others
 Please help other UK Core WS contributors wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK slack team.
 
-To access Slack, you can visit https://core.vatsim-uk.co.uk and follow the registration instructions.  Once you've logged in, find the channel "WebServices"
+To access Slack, you can visit https://core.vatsim.uk and follow the registration instructions.  Once you've logged in, find the channel "WebServices"
 
 # I want to contribute!
 
@@ -159,7 +159,7 @@ After all that setup, relax for 5 minutes!  If you've had any problems, come and
 
 ## Contributing to the code
 
-If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues marked with the "up-for-grabs" label.  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Ken C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
+If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues marked with the "up-for-grabs" label.  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
 
 If you're comfortable with contributing to Open Source projects on GitHub **please ensure you read our workflow**.
 

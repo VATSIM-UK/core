@@ -1,3 +1,7 @@
+@extends('emails.messages.post')
+
+@section('body')
+
 <p>
     Why not come and join us on Slack?
 </p>
@@ -19,3 +23,4 @@
 <p>
     We look forward to seeing you there!
 </p>
+@stop

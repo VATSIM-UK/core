@@ -1,9 +1,0 @@
-{
-	"name": "Airfield Information Services",
-	"slug": "ais",
-	"namespace": "Ais",
-	"version": "1.0",
-	"author": "VATSIM UK WST",
-	"license": "MIT",
-	"description": "Airfield data models, airfield data pages, airfield eMATS documentation."
-}

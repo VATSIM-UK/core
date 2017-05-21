@@ -12,8 +12,18 @@ engines:
     channel: "eslint-2"
   fixme:
     enabled: true
+    checks:
+      TODO:
+        enabled: false
   phpmd:
     enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      Naming/LongVariable:
+        enabled: false
+      Naming/ShortMethodName:
+        enabled: false
 ratings:
   paths:
   - "**.css"

@@ -3,7 +3,7 @@
 namespace App\Models\Staff;
 
 /**
- * App\Models\Staff\Position.
+ * App\Models\Staff\Position
  *
  * @property int $id
  * @property int $parent_id
@@ -11,23 +11,23 @@ namespace App\Models\Staff;
  * @property string $name
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Staff\Position $parent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Attribute[] $attributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereParentId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
+ * @property-read \App\Models\Staff\Position $parent
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position departments()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position positions()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Position extends \App\Models\Model
 {
-    protected $table      = 'staff_positions';
+    protected $table = 'staff_positions';
     protected $primaryKey = 'id';
 
     public function scopeDepartments($query)
@@ -42,22 +42,22 @@ class Position extends \App\Models\Model
 
     public function parent()
     {
-        return $this->belongsTo('\App\Models\Staff\Position');
+        return $this->belongsTo(\App\Models\Staff\Position::class);
     }
 
     public function children()
     {
-        return $this->hasMany('\App\Models\Staff\Position', 'parent_id', 'id');
+        return $this->hasMany(\App\Models\Staff\Position::class, 'parent_id', 'id');
     }
 
     public function attributes()
     {
-        return $this->belongsToMany('\App\Models\Staff\Attribute', 'staff_attribute_position');
+        return $this->belongsToMany(\App\Models\Staff\Attribute::class, 'staff_attribute_position');
     }
 
     public function filledBy()
     {
-        return $this->belongsToMany('\App\Models\Mship\Account', 'staff_account_position');
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'staff_account_position');
     }
 
     /**

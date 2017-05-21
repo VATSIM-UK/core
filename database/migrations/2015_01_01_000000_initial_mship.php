@@ -35,11 +35,6 @@ class InitialMship extends Migration
             $table->softDeletes();
         });
 
-        DB::table('mship_account')->insert([
-            ['account_id' => env('SYSTEM_ACCOUNT_VATUK', 707070), 'name_first' => 'VATSIM', 'name_last' => 'UK', 'status' => App\Models\Mship\Account::STATUS_SYSTEM],
-            ['account_id' => env('SYSTEM_ACCOUNT_VATSIM', 606060), 'name_first' => 'VATSIM', 'name_last' => 'NET', 'status' => App\Models\Mship\Account::STATUS_SYSTEM],
-        ]);
-
         Schema::create('mship_account_email', function ($table) {
             $table->bigIncrements('account_email_id')->unsigned();
             $table->string('email');
@@ -49,11 +44,6 @@ class InitialMship extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        DB::table('mship_account_email')->insert([
-            ['account_id' => env('SYSTEM_ACCOUNT_VATUK', 707070), 'email' => 'no-reply@vatsim-uk.co.uk', 'is_primary' => true, 'verified_at' => Carbon::now()->toDateTimeString()],
-            ['account_id' => env('SYSTEM_ACCOUNT_VATSIM', 606060), 'email' => 'no-reply@vatsim.net', 'is_primary' => true, 'verified_at' => Carbon::now()->toDateTimeString()],
-        ]);
 
         Schema::create('mship_account_qualification', function ($table) {
             $table->bigIncrements('account_qualification_id')->unsigned();
@@ -196,7 +186,7 @@ class InitialMship extends Migration
         Schema::create('mship_permission', function ($table) {
             $table->increments('permission_id')->unsigned();
             $table->string('name');
-            $table->string('display_name', 50);
+            $table->string('display_name', 100);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -298,12 +288,6 @@ class InitialMship extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-//
-//        Schema::table('mship_account_ban', function(Blueprint $table) {
-//            $table->foreign('reason_id')->references('ban_reason_id')->on('mship_ban_reason')
-//                  ->onDelete('restrict')
-//                  ->onUpdate('restrict');
-//        });
     }
 
     /**

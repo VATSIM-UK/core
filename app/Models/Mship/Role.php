@@ -6,7 +6,7 @@ use App\Traits\RecordsActivity;
 use App\Models\Mship\Permission as PermissionData;
 
 /**
- * App\Models\Mship\Role.
+ * App\Models\Mship\Role
  *
  * @property int $id
  * @property string $name
@@ -17,31 +17,31 @@ use App\Models\Mship\Permission as PermissionData;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
+ * @property-read bool $is_default
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
- * @property-read mixed $is_default
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
  * @mixin \Eloquent
  */
 class Role extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'mship_role';
+    protected $table = 'mship_role';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable   = ['name', 'default'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['name', 'default'];
     protected $attributes = ['default' => 0];
-    protected $rules      = [
-        'name'    => 'required|between:4,40',
+    protected $rules = [
+        'name' => 'required|between:4,40',
         'default' => 'required|boolean',
     ];
 

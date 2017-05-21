@@ -9,7 +9,8 @@
     <!--BugSnagScript-->
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
             data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
-            data-releasestage="{{ env('APP_ENV') }}">
+            data-releasestage="{{ env('APP_ENV') }}"></script>
+    <script type="text/javascript">
         Bugsnag.notifyReleaseStages = ["staging", "production"];
 
         @if(Auth::check())
@@ -25,6 +26,7 @@
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
     {!! HTML::style(elixir("css/app-all.css")) !!}
+    @yield('styles')
 </head>
 <body>
 <div class="container-fluid">
@@ -34,10 +36,17 @@
         <div class="nav_upper_container navbar-fixed-top">
             <div class="logo_container">
                 <a href="{{ route("default") }}">
-                    {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo", ["align" => "left", "height" => "70%"]) !!}
+                    {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo") !!}
                 </a>
             </div>
-            <div class="collapse navbar-collapse js-navbar-collapse">
+
+            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav">
+                <span class="nav-collapsed-icon"></span>
+                <span class="nav-collapsed-icon"></span>
+                <span class="nav-collapsed-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse js-navbar-collapse" id="nav">
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                         {!! link_to_route("default", "Home") !!}
@@ -50,21 +59,13 @@
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-6">
                                 <ul>
-                                    @if(Module::isEnabled("visittransfer"))
-                                        <li class="dropdown-header">Division Membership</li>
-                                        <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
-                                        <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
-                                        <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
-                                    @endif
-
-                                    @if(Module::isEnabled("visittransfer") && true)
-                                        <li class="divider"></li>
-                                    @endif
-
-                                    @if(Module::isEnabled("networkdata"))
-                                        <li class="dropdown-header">Network Data</li>
-                                        <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
-                                    @endif
+                                    <li class="dropdown-header">Division Membership</li>
+                                    <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
+                                    <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Network Data</li>
+                                    <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
                                 </ul>
                             </li>
                             <li class="col-sm-6">
@@ -72,12 +73,11 @@
                                     <li class="dropdown-header">Third-Party Services</li>
                                     <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
                                     <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
-
-                                    {{--<li class="divider"></li>--}}
-
-                                    {{--<li class="dropdown-header">Disputes</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.assignments", "Dealing with Disputes") !!}</li>--}}
-                                    {{--<li>{!! link_to_route("mship.manage.email.add", "Make a Complaint") !!}</li>--}}
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Community Features</li>
+                                    <li>{!! link_to_route("mship.notification.list", "View Notifications") !!}</li>
+                                    <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
+                                    <li>{!! link_to_route("mship.feedback.new", "Controller/Pilot Feedback") !!}</li>
                                 </ul>
                             </li>
                         </ul>
@@ -93,9 +93,9 @@
                                 <li class="col-sm-6">
                                     <ul>
                                         <li class="dropdown-header">Password</li>
-                                        <li>{!! link_to_route("mship.security.replace", "Modify") !!}</li>
+                                        <li>{!! link_to_route('password.change', "Modify") !!}</li>
                                         @if(!Auth::user()->mandatory_password)
-                                            <li>{!! link_to_route("mship.security.replace", "Disable", [1]) !!}</li>
+                                            <li>{!! link_to_route("password.delete", "Disable") !!}</li>
                                         @endif
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Email Address</li>
@@ -115,56 +115,12 @@
                         </li>
                     </ul>
                 @endif
-                <!--<ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">RTS <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">Sessions</li>
-                                    <li><a href="#">Management</a></li>
-                                    <li><a href="#">History</a></li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Exams</li>
-                                    <li><a href="#">Theory Exams</a></li>
-                                    <li><a href="#">Theory Results</a></li>
-                                    <li><a href="#">Practical Exam</a></li>
-                                    <li><a href="#">Practical Exam History</a></li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">Self</li>
-                                    <li><a href="#">Signature</a></li>
-                                    <li><a href="#">Email Settings</a></li>
-                                    <li><a href="#">Display Settings</a></li>
-                                    <li><a href="#">Default Booking Times</a></li>
-                                    <li><a href="#">My Details</a></li>
-                                    <li><a href="#">Email Member</a></li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-4">
-                                <ul>
-                                    <li class="dropdown-header">RTS</li>
-                                    <li><a href="#">Transfer</a></li>
-                                    <li><a href="#">Visit</a></li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">System</li>
-                                    <li><a href="#">Bookings Calendar</a></li>
-                                    <li><a href="#">Solo Endorsements</a></li>
-                                    <li><a href="#">Special Endorsements</a></li>
-                                    <li><a href="#">Visiting Controllers</a></li>
-                                    <li><a href="#">System Updates</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-
-                    </li>
-                </ul>-->
-                @if(Auth::check())
+                @if(Auth::check() || Session::has('auth.vatsim-sso'))
+                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
-                        <li><a href="{{ route('mship.auth.logout', ['Core']) }}">LOG OUT</a></li>
+                        <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a></li>
                     </ul>
+                    {!! Form::close() !!}
                 @endif
 
             </div>
@@ -173,9 +129,18 @@
         <div class="banner hidden-xs hidden-sm">
         </div>
 
-        <div class="breadcrumb_container hidden-xs hidden-sm">
-            <div class="breadcrumb_content">
-                <a href="#">VATSIM UK</a>  /  Home
+        <div class="breadcrumb_outer_container hidden-xs hidden-sm">
+            <div class="breadcrumb_container">
+                <div class="breadcrumb_content_left">
+                    @if(Auth::check())
+                        <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                    @else
+                        <span>You are not logged in.</span>
+                    @endif
+                </div>
+                <div class="breadcrumb_content_right">
+                    <a href="#">VATSIM UK</a>  /  Home
+                </div>
             </div>
         </div>
 
@@ -184,10 +149,16 @@
     </div>
 
     <div class="page_content">
-        <div class="row">
+        <div class="container-fluid">
             @if(Session::has('error') OR isset($error))
                 <div class="alert alert-danger" role="alert">
                     <strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
+                </div>
+            @endif
+
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
                 </div>
             @endif
 
@@ -208,14 +179,14 @@
                 </div>
             @endif
 
-            @if(Auth::check() && Auth::user()->auth_extra && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
+            @if(Auth::check() && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
                 <div class="alert alert-warning" role="alert">
                     You currently have unread notifications. You can view them on the "{!! HTML::link(route("mship.notification.list"), "notifications page") !!}".
                 </div>
             @endif
         </div>
 
-        <div class="row">
+        <div class="container-fluid">
             @yield('content', "No content to display")
         </div>
 

@@ -31,7 +31,7 @@
                 </a>
             </li>
             @endif
-                    <!--</li>
+                    {{-- </li>
         <li>
             <a href="pages/mailbox.html">
                 <i class="fa fa-envelope"></i> <span>Mailbox</span>
@@ -78,7 +78,7 @@
                 <li><a href="#"><i class="fa fa-angle-double-right"></i> Pilot Bookings</a></li>
                 <li><a href="#"><i class="fa fa-angle-double-right"></i> ATC Bookings</a></li>
             </ul>
-        </li>-->
+        </li>--> --}}
             @if($_account->hasChildPermission("adm/mship"))
                 <li class="treeview {{ (\Request::is('adm/mship*') ? 'active' : '') }}">
                     <a href="#">
@@ -102,7 +102,7 @@
                         @if($_account->hasChildPermission("adm/mship/permission") || $_account->hasChildPermission("adm/mship/role"))
                             <li class="treeview {{ ((\Request::is('adm/mship/permission*') || \Request::is('adm/mship/role*')) ? 'active' : '') }}">
                                 <a href="#">
-                                    <i class="ion ion-email"></i> <span>Roles & Permissions</span>
+                                    <i class="ion ion-email"></i> <span>Roles &amp; Permissions</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
@@ -133,17 +133,67 @@
                                 </ul>
                             </li>
                         @endif
+
                     </ul>
                 </li>
             @endif
 
-            @foreach(Module::enabled() as $module)
-                @if($_account->hasChildPermission("adm/".$module["slug"]))
-                    @if(View::exists($module["slug"]."::admin._sidebar"))
-                        @include($module["slug"]."::admin._sidebar")
-                    @endif
-                @endif
-            @endforeach
+            @if($_account->hasPermission("adm/mship/feedback"))
+                <li class="treeview {{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
+                    <a href="#">
+                        <i class="ion ion-help"></i> <span>Member Feedback</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if($_account->hasPermission("adm/mship/feedback/list"))
+                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.all") }}">
+                                <i class="fa fa-bars"></i>
+                                <span>All Feedback</span>
+                              </a>
+                          </li>
+                        @endif
+                        @if($_account->hasChildPermission("adm/mship/feedback/list/atc"))
+                          <li {!! (\Request::is('adm/mship/feedback/list/atc*') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.atc") }}">
+                                <i class="fa fa-bars"></i>
+                                <span>ATC Feedback</span>
+                              </a>
+                          </li>
+                        @endif
+                        @if($_account->hasPermission("adm/mship/feedback/list/pilot"))
+                          <li {!! (\Request::is('adm/mship/feedback/list/pilot*') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.pilot") }}">
+                                <i class="fa fa-bars"></i>
+                                <span>Pilot Feedback</span>
+                              </a>
+                          </li>
+                        @endif
+                        @if($_account->hasPermission("adm/mship/feedback/configure/*"))
+                          <li {!! (\Request::is('adm/mship/feedback/configure/1') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.config", [1]) }}">
+                                <i class="fa fa-cog"></i>
+                                <span>ATC Settings</span>
+                              </a>
+                          </li>
+                          <li {!! (\Request::is('adm/mship/feedback/configure/2') ? ' class="active"' : '') !!}>
+                              <a href="{{ URL::route("adm.mship.feedback.config", [2]) }}">
+                                <i class="fa fa-cog"></i>
+                                <span>Pilot Settings</span>
+                              </a>
+                          </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if($_account->hasChildPermission("adm/networkdata"))
+                @include("network-data.admin._sidebar")
+            @endif
+
+            @if($_account->hasChildPermission("adm/visittransfer"))
+                @include("visit-transfer.admin._sidebar")
+            @endif
 
             @if($_account->hasChildPermission("adm/system"))
                 <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
@@ -155,11 +205,6 @@
                         <li>
                             <a href="{{ URL::route("adm.sys.activity.list") }}" {{ ( Request::is('adm/system/activity*') ? 'active' : '') }}>
                                 <i class="fa fa-list"></i> <span>Activity Stream</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ URL::route("adm.sys.module.list") }}" {{ ( Request::is('adm/system/module*') ? 'active' : '') }}>
-                                <i class="fa fa-list"></i> <span>System Modules</span>
                             </a>
                         </li>
                         <li class="treeview {{ (\Request::is('adm/system/jobs*') ? 'active' : '') }}">

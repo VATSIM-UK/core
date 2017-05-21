@@ -1,5 +1,8 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
-    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/RTS system) has been reinstated with immediate effect.
+    Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been reinstated with immediate effect.
 </p>
 
 <p>
@@ -16,3 +19,4 @@
         <strong>This ban only applies to VATSIM UK services.  You will be notified separately if any network bans were also lifted.</strong>
     </p>
 @endif
+@stop

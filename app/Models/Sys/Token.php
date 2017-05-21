@@ -5,7 +5,7 @@ namespace App\Models\Sys;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sys\Token.
+ * App\Models\Sys\Token
  *
  * @property int $token_id
  * @property int $related_id
@@ -14,40 +14,40 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $code
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property string $expires_at
- * @property string $used_at
+ * @property \Carbon\Carbon $expires_at
+ * @property \Carbon\Carbon $used_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
- * @property-read mixed $is_used
- * @property-read mixed $is_expired
  * @property-read mixed $display_value
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereTokenId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereType($value)
+ * @property-read mixed $is_expired
+ * @property-read mixed $is_used
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCode($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereExpiresAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUsedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereExpiresAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereTokenId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUsedAt($value)
  * @mixin \Eloquent
  */
 class Token extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'sys_token';
+    protected $table = 'sys_token';
     protected $primaryKey = 'token_id';
-    protected $dates      = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
-    protected $hidden     = ['token_id'];
+    protected $dates = ['created_at', 'updated_at', 'expires_at', 'used_at', 'deleted_at'];
+    protected $hidden = ['token_id'];
 
     public function getRouteKeyName()
     {
@@ -102,10 +102,10 @@ class Token extends \App\Models\Model
             }
         }
 
-        $token             = new self;
-        $token->type       = $type;
+        $token = new self;
+        $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
-        $token->code       = uniqid(uniqid());
+        $token->code = uniqid(uniqid());
 
         if ($relation != null) {
             $relation->tokens()->save($token);

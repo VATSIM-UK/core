@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RecordLoginInfo;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -13,6 +14,9 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
     /**
@@ -21,25 +25,36 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
-        'web'             => [
+        'web' => [
+            // native
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            Middleware\TrackInactivity::class,
-            Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
+            // custom
+            \App\Http\Middleware\TrackInactivity::class,
         ],
-        'api'             => [
+        'api' => [
+            // native
             'throttle:60,1',
             'bindings',
+
+            // custom
             'auth:api',
             'api.tracking',
         ],
         'auth_full_group' => [
-            'auth.user.full',
+            'auth',
+            'auth.record-info',
+            'mandatorypasswords',
+            'denyifbanned',
             'user.must.read.notifications',
             'must.have.community.group',
+            'redirecttointended',
         ],
     ];
 
@@ -49,16 +64,22 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'                         => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.user'                    => Middleware\AuthUser::class,
-        'auth.user.full'               => Middleware\AuthUserFull::class,
-        'auth.admin'                   => Middleware\AuthAdmin::class,
+        // native
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.basic.once' => \App\Http\Middleware\AuthenticateOnceWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        // custom
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
-        'bindings'                     => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can'                          => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'                        => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle'                     => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'must.have.community.group'    => \App\Modules\Community\Http\Middleware\MustHaveCommunityGroup::class,
-        'api.tracking'                 => \App\Http\Middleware\ApiTracking::class,
+        'must.have.community.group' => Middleware\MustHaveCommunityGroup::class,
+        'api.tracking' => \App\Http\Middleware\ApiTracking::class,
+        'denyifbanned' => Middleware\DenyIfBanned::class,
+        'mandatorypasswords' => Middleware\MandatoryPasswords::class,
+        'redirecttointended' => Middleware\RedirectToIntended::class,
+        'auth.record-info' => RecordLoginInfo::class,
     ];
 }

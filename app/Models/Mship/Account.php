@@ -2,17 +2,22 @@
 
 namespace App\Models\Mship;
 
+use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account\Ban;
+use Laravel\Passport\HasApiTokens;
+use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
+use App\Models\VisitTransfer\Application;
+use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Notifications\Mship\SlackInvitation;
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
-use App\Exceptions\Mship\DuplicateEmailException;
-use App\Modules\Visittransfer\Models\Application;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -20,173 +25,153 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Exceptions\Mship\DuplicateQualificationException;
+use App\Traits\CommunityAccount as CommunityAccountTrait;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use App\Modules\Community\Traits\CommunityAccount as CommunityAccountTrait;
-use App\Modules\Networkdata\Traits\NetworkDataAccount as NetworkDataAccountTrait;
-use App\Modules\Visittransfer\Exceptions\Application\DuplicateApplicationException;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 /**
- * App\Models\Mship\Account.
+ * App\Models\Mship\Account
  *
- * @property int                                                                             $id
- * @property string                                                                          $slack_id
- * @property string                                                                          $name_first
- * @property string                                                                          $name_last
- * @property string                                                                          $nickname
- * @property string                                                                          $email
- * @property string                                                                          $password
- * @property \Carbon\Carbon
- *           $password_set_at
- * @property \Carbon\Carbon
- *           $password_expires_at
- * @property string                                                                          $session_id
- * @property \Carbon\Carbon                                                                  $last_login
- * @property int
- *           $last_login_ip
- * @property string
- *           $remember_token
- * @property string                                                                          $gender
- * @property string                                                                          $experience
- * @property int                                                                             $age
- * @property int                                                                             $status
- * @property bool
- *           $is_invisible
- * @property bool                                                                            $debug
- * @property \Carbon\Carbon                                                                  $joined_at
- * @property \Carbon\Carbon                                                                  $created_at
- * @property \Carbon\Carbon                                                                  $updated_at
- * @property \Carbon\Carbon
- *           $cert_checked_at
- * @property \Carbon\Carbon                                                                  $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[]
- *                $secondaryEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[]     $dataChanges
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[]
- *                $messagePosts
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[]   $bans
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[]
- *                $bansAsInstigator
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[]  $notes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[]  $noteWriter
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[]           $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[]
- *                $activityRecent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[]
- *                $qualifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[]          $roles
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\State[] $states
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[]           $ssoEmails
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Token[]           $ssoTokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[]
- *                $teamspeakRegistrations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[]
- *                $readNotifications
- * @property-read mixed
- *                $unread_notifications
- * @property-read mixed
- *                $unread_must_acknowledge_notifications
- * @property-read mixed
- *                $has_unread_notifications
- * @property-read mixed
- *                $has_unread_important_notifications
- * @property-read mixed
- *                $has_unread_must_acknowledge_notifications
- * @property-read mixed
- *                $unread_must_acknowledge_time_elapsed
- * @property-read mixed
- *                $active_qualifications
- * @property-read mixed
- *                $qualification_atc
- * @property-read mixed
- *                $qualifications_atc
- * @property-read mixed
- *                $qualifications_atc_training
- * @property-read mixed
- *                $qualifications_pilot
- * @property-read mixed
- *                $qualifications_pilot_string
- * @property-read mixed
- *                $qualifications_pilot_training
- * @property-read mixed
- *                $qualifications_admin
- * @property-read mixed
- *                $current_state
- * @property-read mixed                                                                      $all_states
- * @property-read mixed
- *                $password_lifetime
- * @property-read mixed
- *                $mandatory_password
- * @property mixed                                                                           $is_inactive
- * @property mixed                                                                           $is_system
- * @property-read mixed
- *                $is_system_banned
- * @property-read mixed                                                                      $system_ban
- * @property-read mixed
- *                $is_network_banned
- * @property-read mixed                                                                      $network_ban
- * @property-read mixed                                                                      $is_banned
- * @property-read mixed
- *                $status_string
- * @property-read mixed
- *                $status_array
- * @property-read mixed
- *                $verified_secondary_emails
- * @property-read mixed                                                                      $real_name
- * @property-read mixed                                                                      $name
- * @property-read mixed                                                                      $full_name
- * @property-read mixed
- *                $display_value
- * @property-read mixed
- *                $new_ts_registration
- * @property-read mixed
- *                $session_timeout
+ * @property int $id
+ * @property string $slack_id
+ * @property string $name_first
+ * @property string $name_last
+ * @property string $nickname
+ * @property string $email
+ * @property string $password
+ * @property \Carbon\Carbon $password_set_at
+ * @property \Carbon\Carbon $password_expires_at
+ * @property \Carbon\Carbon $last_login
+ * @property string $last_login_ip
+ * @property string $remember_token
+ * @property string $gender
+ * @property string $experience
+ * @property int $age
+ * @property int $status
+ * @property bool $is_invisible
+ * @property bool $debug
+ * @property \Carbon\Carbon $joined_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $cert_checked_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Activity[] $activityRecent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bans
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Ban[] $bansAsInstigator
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Community\Group[] $communityGroups
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
+ * @property-read mixed $active_qualifications
+ * @property-read mixed $display_value
+ * @property-read mixed $full_name
+ * @property-read mixed $has_unread_important_notifications
+ * @property-read mixed $has_unread_must_acknowledge_notifications
+ * @property-read mixed $has_unread_notifications
+ * @property-read mixed $is_banned
+ * @property mixed $is_inactive
+ * @property-read mixed $is_network_banned
+ * @property-read bool $is_on_network
+ * @property mixed $is_system
+ * @property-read mixed $is_system_banned
+ * @property-read bool $mandatory_password
+ * @property-read mixed|string $name
+ * @property-read mixed $network_ban
+ * @property-read mixed $new_ts_registration
+ * @property-read int $password_lifetime
+ * @property-read \Illuminate\Support\Collection $permanent_states
+ * @property-read mixed $primary_permanent_state
+ * @property-read mixed $primary_state
+ * @property-read mixed $qualification_atc
+ * @property-read mixed $qualifications_admin
+ * @property-read mixed $qualifications_atc
+ * @property-read mixed $qualifications_atc_training
+ * @property-read mixed $qualifications_pilot
+ * @property-read mixed $qualifications_pilot_string
+ * @property-read mixed $qualifications_pilot_training
+ * @property-read string $real_name
+ * @property-read int The timeout in minutes $session_timeout
+ * @property-read mixed $status_array
+ * @property-read mixed $status_string
+ * @property-read mixed $system_ban
+ * @property-read \Illuminate\Support\Collection $temporary_states
+ * @property-read mixed $unread_must_acknowledge_notifications
+ * @property-read int Period the notification has been effective for, in hours. $unread_must_acknowledge_time_elapsed
+ * @property-read mixed $unread_notifications
+ * @property-read \Illuminate\Support\Collection $verified_secondary_emails
+ * @property-read mixed $visit_transfer_current
+ * @property-read mixed $visit_transfer_referee_pending
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread\Post[] $messagePosts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
+ * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[] $qualifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readNotifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Email[] $secondaryEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $states
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereAge($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCertCheckedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDebug($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereExperience($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereGender($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereIsInvisible($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereJoinedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLogin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLoginIp($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNameFirst($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNameLast($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereNickname($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereEmail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePassword($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSessionId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLogin($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereLastLoginIp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereGender($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereExperience($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereAge($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSessionId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereIsInvisible($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDebug($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereJoinedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereCertCheckedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isSystem()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account isNotSystem()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Application[]
- *                $visitTransferApplications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Modules\Visittransfer\Models\Reference[]
- *                $visitTransferReferee
- * @property-read mixed
- *                $visit_transfer_referee_pending
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[]
- *                $messageThreads
  */
-class Account extends \App\Models\Model implements AuthenticatableContract
+class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait, RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
+        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+    use HasApiTokens {
+        clients as oAuthClients;
+        tokens as oAuthTokens;
+        token as oAuthToken;
+        tokenCan as oAuthTokenCan;
+        createToken as createOAuthToken;
+        withAccessToken as withOAuthAccessToken;
+    }
 
-    protected $table        = 'mship_account';
-    public $incrementing    = false;
-    protected $dates        = [
+    protected $table = 'mship_account';
+    public $incrementing = false;
+    protected $dates = [
         'last_login',
         'joined_at',
         'cert_checked_at',
@@ -196,7 +181,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $fillable     = [
+    protected $fillable = [
         'id',
         'name_first',
         'name_last',
@@ -205,13 +190,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         'password_set_at',
         'password_expires_at',
     ];
-    protected $attributes   = [
-        'name_first'    => '',
-        'name_last'     => '',
-        'status'        => self::STATUS_ACTIVE,
+    protected $attributes = [
+        'name_first' => '',
+        'name_last' => '',
+        'status' => self::STATUS_ACTIVE,
         'last_login_ip' => '127.0.0.1',
     ];
-    protected $doNotTrack   = ['session_id', 'cert_checked_at', 'last_login', 'remember_token'];
+    protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
 
     // Suggested values in version 2.2.4
 //    const STATUS_ACTIVE = 1; // b"000001"
@@ -223,14 +208,19 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     //const STATUS_SYSTEM_BANNED = 1; //b"0001"; @deprecated in version 2.2
     //const STATUS_NETWORK_SUSPENDED = 2; //b"0010"; @deprecated in version 2.2
     const STATUS_INACTIVE = 4; //b"0100";
-    const STATUS_LOCKED   = 8; //b"1000";
-    const STATUS_SYSTEM   = 8; //b"1000"; // Alias of LOCKED
+    const STATUS_LOCKED = 8; //b"1000";
+    const STATUS_SYSTEM = 8; //b"1000"; // Alias of LOCKED
 
     public function routeNotificationForSlack()
     {
-        return $this->slack_id;
+        return env('SLACK_ENDPOINT');
     }
 
+    /**
+     * @param Account $model
+     * @param null $extra
+     * @param null $data
+     */
     public static function eventCreated($model, $extra = null, $data = null)
     {
         parent::eventCreated($model, $extra, $data);
@@ -243,29 +233,21 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         // Queue the slack email
-        $delayOffset = \Carbon\Carbon::now()->diffInSeconds(\Carbon\Carbon::now()->addDays(7));
-        dispatch((new \App\Jobs\Mship\Account\SendSlackInviteEmail($model))->delay($delayOffset));
+        $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
 
     public static function findOrRetrieve($accountId)
     {
+        if (!is_numeric($accountId)) {
+            // Lets not process non-numeric CID's...
+            throw new InvalidCIDException();
+        }
         try {
             return self::findOrFail($accountId);
         } catch (ModelNotFoundException $e) {
-            $retrievedData = \VatsimXML::getData($accountId);
+            dispatch((new MemberCertUpdate($accountId))->onConnection('sync'));
 
-            $account = self::create([
-                'id'         => $retrievedData->cid,
-                'name_first' => $retrievedData->name_first,
-                'name_last'  => $retrievedData->name_last,
-            ]);
-
-            $state = determine_mship_state_from_vatsim($retrievedData->region, $retrievedData->division);
-            $account->addState($state);
-
-            \Artisan::queue('Members:CertUpdate', [
-                '--force' => $accountId,
-            ]);
+            $account = self::find($accountId);
 
             return $account;
         }
@@ -295,12 +277,33 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public static function scopeWithIp($query, $ip)
     {
-        return $query->where('last_login_ip', '=', ip2long($ip));
+        return $query->where('last_login_ip', '=', $ip);
     }
 
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Get the e-mail address where password reset links are sent.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ForgottenPasswordLink($token));
     }
 
     /**
@@ -310,7 +313,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function visitTransferApplications()
     {
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Application::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(\App\Models\VisitTransfer\Application::class)->orderBy('created_at', 'DESC');
     }
 
     public function visitApplications()
@@ -341,7 +344,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     private function guardAgainstDivisionMemberVisitingTransferApplication()
     {
         if ($this->hasState('DIVISION')) {
-            throw new \App\Modules\Visittransfer\Exceptions\Application\AlreadyADivisionMemberException($this);
+            throw new \App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException($this);
         }
     }
 
@@ -357,14 +360,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $this->visitTransferApplications->contains(function ($application, $key) {
             return in_array(
                 $application->status,
-                \App\Modules\Visittransfer\Models\Application::$APPLICATION_IS_CONSIDERED_OPEN
+                \App\Models\VisitTransfer\Application::$APPLICATION_IS_CONSIDERED_OPEN
             );
         });
     }
 
     public function visitTransferReferee()
     {
-        return $this->hasMany(\App\Modules\Visittransfer\Models\Reference::class);
+        return $this->hasMany(\App\Models\VisitTransfer\Reference::class);
     }
 
     public function getVisitTransferRefereePendingAttribute()
@@ -445,10 +448,14 @@ class Account extends \App\Models\Model implements AuthenticatableContract
             'mship_account_qualification',
             'account_id',
             'qualification_id'
-        )
-                    ->withTimestamps();
+        )->using(AccountQualification::class)
+            ->wherePivot('deleted_at', '=', null)
+            ->withTimestamps();
     }
 
+    /**
+     * @return mixed
+     */
     public function roles()
     {
         return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
@@ -471,22 +478,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function hasRole(Role $role)
     {
         return $this->roles->contains($role->id);
-    }
-
-    /**
-     * Attach a role to this account.
-     *
-     * @param Role $role The role to attach to the account.
-     *
-     * @return mixed
-     */
-    public function addRole(Role $role)
-    {
-        if ($this->hasRole($role)) {
-            throw new \App\Exceptions\Mship\DuplicateRoleException($role);
-        }
-
-        return $this->roles()->attach($role->id);
     }
 
     /**
@@ -531,17 +522,17 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function ssoEmails()
     {
-        return $this->hasMany(\App\Models\Sso\Email::class, 'account_id');
-    }
-
-    public function ssoTokens()
-    {
-        return $this->hasMany(\App\Models\Sso\Token::class, 'account_id');
+        return $this->hasManyThrough(\App\Models\Sso\Email::class, Email::class, 'account_id', 'account_email_id');
     }
 
     public function teamspeakRegistrations()
     {
         return $this->hasMany(\App\Models\TeamSpeak\Registration::class, 'account_id');
+    }
+
+    public function feedback()
+    {
+        return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
     }
 
     public function readNotifications()
@@ -617,6 +608,40 @@ class Account extends \App\Models\Model implements AuthenticatableContract
                 ->diffInHours(Carbon::now(), true);
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * Add qualifications to the account, calculated from the VATSIM identifiers.
+     *
+     * @param int $atcRating The VATSIM ATC rating
+     * @param int $pilotRating The VATSIM pilot rating
+     */
+    public function updateVatsimRatings(int $atcRating, int $pilotRating)
+    {
+        $qualifications = [];
+        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+
+        if ($atcRating >= 8) {
+            $info = VatsimXML::getData($this->id, 'idstatusprat');
+            if (isset($info->PreviousRatingInt)) {
+                $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+            }
+        }
+
+        for ($i = 1; $i <= 256; $i *= 2) {
+            if ($i & $pilotRating) {
+                $qualifications[] = Qualification::ofType('pilot')->networkValue($i)->first();
+            }
+        }
+
+        $ids = collect($qualifications)->pluck('id');
+        $this->qualifications()->syncWithoutDetaching($ids);
+
+        if ($atcRating === 0) {
+            $this->addNetworkBan('Network ban discovered via Cert login.');
+        } elseif ($atcRating > 0) {
+            $this->removeNetworkBan();
         }
     }
 
@@ -717,13 +742,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      * @param string|null $division Member's division
      *
      * @return mixed
-     * @throws \App\Exceptions\Mship\DuplicateStateException
      * @throws \App\Exceptions\Mship\InvalidStateException
      */
     public function addState(\App\Models\Mship\State $state, $region = null, $division = null)
     {
         if ($this->hasState($state)) {
-            throw new \App\Exceptions\Mship\DuplicateStateException($state);
+            return;
         }
 
         if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
@@ -737,8 +761,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         $state = $this->states()->attach($state, [
-            'start_at' => \Carbon\Carbon::now(),
-            'region'   => $region,
+            'start_at' => Carbon::now(),
+            'region' => $region,
             'division' => $division,
         ]);
 
@@ -750,8 +774,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     public function removeState(\App\Models\Mship\State $state)
     {
         return $this->states()->updateExistingPivot($state->id, [
-            'end_at' => \Carbon\Carbon::now(),
+            'end_at' => Carbon::now(),
         ]);
+    }
+
+    /**
+     * Update the member's region and division.
+     *
+     * @param string $division Division code as reported by VATSIM.
+     * @param string $region Region code as reported by VATSIM.
+     */
+    public function updateDivision($division, $region)
+    {
+        $state = determine_mship_state_from_vatsim($region, $division);
+        $this->addState($state, $region, $division);
     }
 
     /**
@@ -920,9 +956,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Calculate the password expiry for this account.
      *
-     * @param bool|false $temporary Should we treat the password as temporary?
+     * @param bool $temporary Should we treat the password as temporary?
      *
-     * @return null|\Carbon\Carbon
+     * @return null|Carbon
      */
     public function calculatePasswordExpiry($temporary = false)
     {
@@ -938,20 +974,27 @@ class Account extends \App\Models\Model implements AuthenticatableContract
     /**
      * Set the user's password.
      *
-     * @param            $password  The password string.
-     * @param bool|false $temporary Will only be a temporary password
+     * @param string $password The password string.
+     * @param bool $temporary Will only be a temporary password
+     * @return bool
      */
     public function setPassword($password, $temporary = false)
     {
-        if (\Hash::check($password, $this->password)) {
-            throw new \App\Exceptions\Mship\DuplicatePasswordException;
-        }
-
-        return $this->fill([
-            'password'            => $password,
-            'password_set_at'     => Carbon::now(),
+        $save = $this->fill([
+            'password' => $password,
+            'password_set_at' => Carbon::now(),
             'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
+
+        // if the password is being reset by its owner...
+        if ($save && \Auth::user()->id === $this->id) {
+            \Session::put([
+                'password_hash' => \Auth::user()->getAuthPassword(),
+            ]);
+            \Session::put('auth.secondary', Carbon::now());
+        }
+
+        return $save;
     }
 
     /**
@@ -961,9 +1004,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function removePassword()
     {
-        $this->fill([
-            'password'            => null,
-            'password_set_at'     => null,
+        return $this->fill([
+            'password' => null,
+            'password_set_at' => null,
             'password_expires_at' => null,
         ])->save();
     }
@@ -1032,19 +1075,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      * @param string $newEmail The new email address to add to this account.
      * @param bool   $verified Set to TRUE if the email should be automatically verified.
      *
-     * @return \Illuminate\Database\Eloquent\Model|int
-     * @throws \App\Exceptions\Mship\DuplicateEmailException
+     * @return \Illuminate\Database\Eloquent\Model|Email|false
      */
     public function addSecondaryEmail($newEmail, $verified = false)
     {
-        if ($this->hasEmail($newEmail)) {
-            throw new DuplicateEmailException($newEmail);
+        if (!$this->hasEmail($newEmail)) {
+            $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
+            $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
+
+            return $this->secondaryEmails()->save($newSecondaryEmail);
         }
 
-        $newSecondaryEmail              = new AccountEmail(['email' => $newEmail]);
-        $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
-
-        return $this->secondaryEmails()->save($newSecondaryEmail);
+        return $this->secondaryEmails->filter(function ($e) use ($newEmail) {
+            return strcasecmp($e->email, $newEmail) == 0;
+        })->first();
     }
 
     /**
@@ -1067,17 +1111,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      * @param Qualification $qualification
      *
      * @return bool
-     * @throws DuplicateQualificationException
      */
     public function addQualification(Qualification $qualification)
     {
-        if ($this->hasQualification($qualification)) {
-            throw new DuplicateQualificationException($qualification);
+        if (!$this->hasQualification($qualification)) {
+            $this->qualifications()->attach($qualification);
+            $this->touch();
         }
-
-        $this->qualifications()->attach($qualification);
-
-        $this->touch();
 
         return true;
     }
@@ -1090,7 +1130,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $type = Ban::TYPE_LOCAL
     ) {
         if ($writerId == null) {
-            $writerId = VATUK_ACCOUNT_SYSTEM;
+            $writerId = 0;
         } elseif (is_object($writerId)) {
             $writerId = $writerId->getKey();
         }
@@ -1099,13 +1139,13 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
 
         // Make a ban.
-        $ban                = new Ban();
-        $ban->account_id    = $this->id;
-        $ban->banned_by     = $writerId;
-        $ban->type          = $type;
-        $ban->reason_id     = $banReason->id;
-        $ban->reason_extra  = $banExtraReason;
-        $ban->period_start  = Carbon::now()->second(0);
+        $ban = new Ban();
+        $ban->account_id = $this->id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->id;
+        $ban->reason_extra = $banExtraReason;
+        $ban->period_start = Carbon::now()->second(0);
         $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
         $ban->save();
 
@@ -1126,16 +1166,16 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         if ($writer == null) {
-            $writer = VATUK_ACCOUNT_SYSTEM;
+            $writer = 0;
         } elseif (is_object($writer)) {
             $writer = $writer->getKey();
         }
 
-        $note               = new AccountNoteData();
-        $note->account_id   = $this->id;
-        $note->writer_id    = $writer;
+        $note = new AccountNoteData();
+        $note->account_id = $this->id;
+        $note->writer_id = $writer;
         $note->note_type_id = $noteType;
-        $note->content      = $noteContent;
+        $note->content = $noteContent;
         $note->save();
 
         if (!is_null($attachment)) {
@@ -1232,6 +1272,28 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         return $bans->first();
     }
 
+    public function addNetworkBan($reason = 'Network ban discovered.')
+    {
+        if ($this->is_network_banned === false) {
+            $newBan = new \App\Models\Mship\Account\Ban();
+            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $newBan->reason_extra = $reason;
+            $newBan->period_start = Carbon::now();
+            $newBan->save();
+
+            $this->bans()->save($newBan);
+        }
+    }
+
+    public function removeNetworkBan()
+    {
+        if ($this->is_network_banned === true) {
+            $ban = $this->network_ban;
+            $ban->period_finish = Carbon::now();
+            $ban->save();
+        }
+    }
+
     public function getIsBannedAttribute()
     {
         return $this->is_system_banned || $this->is_network_banned;
@@ -1277,16 +1339,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract
         }
 
         return $stati;
-    }
-
-    public function getLastLoginIpAttribute()
-    {
-        return long2ip($this->attributes['last_login_ip']);
-    }
-
-    public function setLastLoginIpAttribute($value)
-    {
-        $this->attributes['last_login_ip'] = ip2long($value);
     }
 
     /**
@@ -1370,7 +1422,29 @@ class Account extends \App\Models\Model implements AuthenticatableContract
      */
     public function isValidDisplayName($displayName)
     {
-        return strcasecmp($displayName, $this->name) == 0 || strcasecmp($displayName, $this->real_name) == 0;
+        $allowedNames = collect();
+        $allowedNames->push($this->name);
+        $allowedNames->push($this->real_name);
+
+        if ($this->networkDataAtcCurrent) {
+            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
+            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
+        }
+
+        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+            return strcasecmp($item, $displayName) == 0;
+        })->count() > 0;
+    }
+
+    public function isPartiallyValidDisplayName($displayName)
+    {
+        $allowedNames = collect();
+        $allowedNames->push($this->name);
+        $allowedNames->push($this->real_name);
+
+        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+            return strstr(strtolower($displayName), strtolower($item)) != false;
+        })->count() > 0;
     }
 
     public function getDisplayValueAttribute()
@@ -1380,12 +1454,12 @@ class Account extends \App\Models\Model implements AuthenticatableContract
 
     public function toArray()
     {
-        $array                 = parent::toArray();
-        $array['name']         = $this->name;
-        $array['name_real']    = $this->real_name;
-        $array['email']        = $this->email;
-        $array['atc_rating']   = $this->qualification_atc;
-        $array['atc_rating']   = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
+        $array = parent::toArray();
+        $array['name'] = $this->name;
+        $array['name_real'] = $this->real_name;
+        $array['email'] = $this->email;
+        $array['atc_rating'] = $this->qualification_atc;
+        $array['atc_rating'] = ($array['atc_rating'] ? $array['atc_rating']->name_long : '');
         $array['pilot_rating'] = [];
         foreach ($this->qualifications_pilot as $rp) {
             $array['pilot_rating'][] = $rp->code;

@@ -56,7 +56,7 @@
                             </td>
                             <td>{{ $r->default }}</td>
                             <td>{{ $r->accounts()->count() }}</td>
-                            <td>{{ $r->permissions->count() }}</td>
+                            <td><span class="{{ $r->permissions->isEmpty() ?: 'btn-link' }}" data-toggle="popover" data-trigger="hover" data-html="true" data-content="@foreach($r->permissions as $permission){{$permission->name}}<br> @endforeach">{{ $r->permissions->count() }}</span></td>
                             <td>{{ $r->updated_at->toDateTimeString() }}</td>
                             <td>
                                 @if($_account->hasPermission("adm/mship/role/*/update"))
@@ -84,4 +84,7 @@
 @section('scripts')
 @parent
 {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
+    <script type="text/javascript">
+            $('[data-toggle="popover"]').popover();
+    </script>
 @stop

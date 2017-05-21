@@ -5,45 +5,43 @@ namespace App\Models\Sys;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Sys\Read.
+ * App\Models\Sys\Read
  *
- * @property int $notification_read_id
+ * @property int $id
  * @property int $notification_id
  * @property int $account_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read active()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withStatus($status)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read mustAcknowledge()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read important()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read operational()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read general()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read user()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read important()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read mustAcknowledge()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read operational()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read since($sinceTimestamp)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationReadId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read user()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereAccountId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property int $id
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withStatus($status)
+ * @mixin \Eloquent
  */
 class Read extends \App\Models\Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'sys_notification_read';
+    protected $table = 'sys_notification_read';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at', 'deleted_at'];
-    protected $hidden     = ['id'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['id'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
-    const STATUS_IMPORTANT        = 70; // Will interrupt login process.
-    const STATUS_OPERATIONAL      = 50; // Web services
-    const STATUS_GENERAL          = 30; // General messages, to be read at some point.
-    const STATUS_USER             = 10; // User specific
-    const STATUS_UNPUBLISHED      = 0; // Drafts.
+    const STATUS_IMPORTANT = 70; // Will interrupt login process.
+    const STATUS_OPERATIONAL = 50; // Web services
+    const STATUS_GENERAL = 30; // General messages, to be read at some point.
+    const STATUS_USER = 10; // User specific
+    const STATUS_UNPUBLISHED = 0; // Drafts.
 
     public function scopeActive($query)
     {

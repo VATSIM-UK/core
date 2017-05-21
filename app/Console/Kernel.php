@@ -2,8 +2,6 @@
 
 namespace App\Console;
 
-use File;
-use Caffeinated\Modules\Facades\Module;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -23,35 +21,21 @@ class Kernel extends ConsoleKernel
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
         Commands\SyncMentors::class,
+        Commands\SyncMoodle::class,
         Commands\TeamSpeakManager::class,
         Commands\TeamSpeakCleanup::class,
         Commands\TeamSpeakDaemon::class,
         Commands\TeamSpeakMapper::class,
         Commands\SlackManager::class,
-        Commands\ApiGenerator::class,
+        Commands\TestEmails::class,
+        \App\Console\Commands\DownloadAndParse::class,
+        \App\Console\Commands\Statistics::class,
+        \App\Console\Commands\StatisticsDaily::class,
+        \App\Console\Commands\ApplicationsCleanup::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
     ];
-
-    /**
-     * Get the Artisan application instance.
-     *
-     * @return \Illuminate\Console\Application
-     */
-    protected function getArtisan()
-    {
-        foreach (Module::enabled() as $module) {
-            $moduleCommandsFile = config('modules.path').'/'.$module['basename'].'/Console/commands.php';
-
-            if (File::exists($moduleCommandsFile)) {
-                $moduleCommands = require $moduleCommandsFile;
-                $this->commands = array_merge($this->commands, $moduleCommands);
-            }
-        }
-
-        return parent::getArtisan();
-    }
 
     /**
      * Define the application's command schedule.

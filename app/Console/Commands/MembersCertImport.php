@@ -8,8 +8,6 @@ use App\Models\Mship\State;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use App\Exceptions\Mship\DuplicateStateException;
-use App\Exceptions\Mship\DuplicateQualificationException;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -30,9 +28,9 @@ class MembersCertImport extends Command
      */
     protected $description = 'Import/update member emails from CERT AutoTools';
 
-    protected $count_new    = 0;
+    protected $count_new = 0;
     protected $count_emails = 0;
-    protected $count_none   = 0;
+    protected $count_none = 0;
     protected $member_list;
     protected $member_email_list;
 
@@ -58,9 +56,9 @@ class MembersCertImport extends Command
         }
 
         $this->sendSlackSuccess('Members imported.', [
-            'New Members:'           => $this->count_new,
+            'New Members:' => $this->count_new,
             'Member Emails Updated:' => $this->count_emails,
-            'Unchanged Members:'     => $this->count_none,
+            'Unchanged Members:' => $this->count_none,
         ]);
     }
 
@@ -89,20 +87,16 @@ class MembersCertImport extends Command
     protected function createNewMember($member_data)
     {
         $member = new Account([
-            'id'         => $member_data['cid'],
+            'id' => $member_data['cid'],
             'name_first' => $member_data['name_first'],
-            'name_last'  => $member_data['name_last'],
-            'email'      => $member_data['email'],
-            'joined_at'  => $member_data['reg_date'],
+            'name_last' => $member_data['name_last'],
+            'email' => $member_data['email'],
+            'joined_at' => $member_data['reg_date'],
         ]);
         $member->is_inactive = (bool) ($member_data['rating_atc'] < 0);
         $member->save();
 
-        try {
-            $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
-        } catch (DuplicateStateException $e) {
-            // TODO: Do something.
-        }
+        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
 
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
@@ -112,14 +106,8 @@ class MembersCertImport extends Command
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);
 
-                try {
-                    if ($prevAtcRating) {
-                        $member->addQualification($prevAtcRating);
-                    }
-                } catch (DuplicateQualificationException $e) {
-                    // TODO: Something.
-                } catch (Exception $e) {
-                    // TODO: Something.
+                if ($prevAtcRating) {
+                    $member->addQualification($prevAtcRating);
                 }
             } else {
                 $this->sendSlackError('Member\'s previous rating is unavailable.', $member->id);
@@ -128,16 +116,10 @@ class MembersCertImport extends Command
 
         // if they're a division member, or their current rating isn't instructor, log their 'main' rating
         if (($member_data['rating_atc'] < 8) || $member->hasState('DIVISION')) {
-            try {
-                $atcRating = Qualification::parseVatsimATCQualification($member_data['rating_atc']);
+            $atcRating = Qualification::parseVatsimATCQualification($member_data['rating_atc']);
 
-                if ($atcRating) {
-                    $member->addQualification($atcRating);
-                }
-            } catch (DuplicateQualificationException $e) {
-                // TODO: Something.
-            } catch (ErrorException $e) {
-                // TODO: Something.
+            if ($atcRating) {
+                $member->addQualification($atcRating);
             }
         }
 
@@ -146,17 +128,13 @@ class MembersCertImport extends Command
 
     protected function updateMember($member_data)
     {
-        $member             = Account::find($member_data['cid']);
+        $member = Account::find($member_data['cid']);
         $member->name_first = $member_data['name_first'];
-        $member->name_last  = $member_data['name_last'];
-        $member->email      = $member_data['email'];
+        $member->name_last = $member_data['name_last'];
+        $member->email = $member_data['email'];
         $member->save();
 
-        try {
-            $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
-        } catch (DuplicateStateException $e) {
-            // TODO: Something.
-        }
+        $member->addState(State::findByCode('DIVISION'), 'EUR', 'GBR');
     }
 
     protected function getMemberIdAndEmail()

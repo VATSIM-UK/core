@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\NetworkData\AtcSessionEnded;
+use App\Listeners\NetworkData\AtcSessionRecordedSuccessNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,12 +14,63 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Mship\AccountTouched' => [
-            'App\Listeners\Sync\PushToForum',
-            'App\Listeners\Sync\PushToMoodle',
-            'App\Listeners\Sync\PushToRts',
-            'App\Listeners\Sync\PushToPts',
-            'App\Listeners\Sync\PushToTeamSpeak',
+        \App\Events\Mship\AccountTouched::class => [
+            \App\Listeners\Sync\PushToForum::class,
+            \App\Listeners\Sync\PushToMoodle::class,
+            \App\Listeners\Sync\PushToRts::class,
+            \App\Listeners\Sync\PushToPts::class,
+            \App\Listeners\Sync\PushToTeamSpeak::class,
+        ],
+        \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
+            \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+        ],
+
+        AtcSessionEnded::class => [
+            AtcSessionRecordedSuccessNotification::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationSubmitted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyAllReferees::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationUnderReview::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyCommunityOfUnderReviewApplication::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationRejected::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationAccepted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+            \App\Listeners\VisitTransfer\NotifyTrainingDepartmentOfAcceptedApplication::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationCompleted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ApplicationStatusChanged::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceUnderReview::class => [
+            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCompletion::class,
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCompletion::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceAccepted::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceAcceptance::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceRejected::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceRejection::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceDeleted::class => [
+            \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
         ],
     ];
 
@@ -29,7 +82,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

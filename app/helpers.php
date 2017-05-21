@@ -1,11 +1,53 @@
 <?php
 
+/**
+ * Check a string has uppercase characters. If the $count
+ * parameter is provided, check that the string has at
+ * least that number of uppercase characters.
+ *
+ * @param $string
+ * @param int $count
+ * @return bool
+ */
+function str_has_upper($string, $count = 1)
+{
+    return preg_match_all('/[A-Z]/', $string) >= $count;
+}
+
+/**
+ * Check a string has lowercase characters. If the $count
+ * parameter is provided, check that the string has at
+ * least that number of lowercase characters.
+ *
+ * @param $string
+ * @param int $count
+ * @return bool
+ */
+function str_has_lower($string, $count = 1)
+{
+    return preg_match_all('/[a-z]/', $string) >= $count;
+}
+
+/**
+ * Check a string has numeric characters. If the $count
+ * parameter is provided, check that the string has at
+ * least that number of numeric characters.
+ *
+ * @param $string
+ * @param int $count
+ * @return bool
+ */
+function str_has_numeric($string, $count = 1)
+{
+    return preg_match_all('/[0-9]/', $string) >= $count;
+}
+
 function determine_mship_state_from_vatsim($region, $division)
 {
     $states = \App\Models\Mship\State::orderBy('priority')->get();
 
     foreach ($states as $state) {
-        $regionMatch   = false;
+        $regionMatch = false;
         $divisionMatch = false;
 
         // We don't care about temps.

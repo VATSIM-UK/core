@@ -24,7 +24,7 @@ class CreateRequest extends Request
     public function rules()
     {
         return [
-            'id'               => 'exists:mship_ban_reason,id',
+            'id' => 'exists:mship_ban_reason,id',
             'ban_note_content' => 'required|min:5',
             'ban_reason_extra' => 'min:5',
         ];

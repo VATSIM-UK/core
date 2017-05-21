@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Personal Details</div>
                     <div class="panel-body">
@@ -52,15 +52,10 @@
                             </div>
 
                             <div class="col-xs-4">
-                                <strong>
-                                    INVISIBILITY:
-                                </strong>
-
-                                @if($_account->is_invisible)
-                                    {!! HTML::link("mship/auth/invisibility", "Disable") !!}
-                                @else
-                                    {!! HTML::link("mship/auth/invisibility", "Enable")  !!}
-                                @endif
+                                {!! Form::open(['route' => 'mship.auth.invisibility', 'id' => 'invisibility-form']) !!}
+                                <strong>INVISIBILITY:</strong>
+                                <a href="{{ route('mship.auth.invisibility') }}" onclick="event.preventDefault(); document.getElementById('invisibility-form').submit();">{{ $_account->is_invisible ? 'Disable' : 'Enable' }}</a>
+                                {!! Form::close() !!}
                             </div>
                         </div>
                         <!-- Second Row [END] -->
@@ -70,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-lock"></i> &thinsp; Secondary Password</div>
                     <div class="panel-body">
@@ -103,19 +98,19 @@
 
                             @if($_account->password)
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/replace/0", "Click to Modify") !!}
+                                    {!! HTML::link(route('password.change'), "Click to Modify") !!}
                                 </div>
 
                                 <div class="col-xs-4">
                                         @if(!$_account->mandatory_password)
-                                            {!! HTML::link("mship/security/replace/1", "Click to Disable") !!}
+                                            {!! HTML::link(route('password.delete'), "Click to Disable") !!}
                                         @else
                                             Cannot be disabled.
                                         @endif
                                 </div>
                             @else
                                 <div class="col-xs-4">
-                                    {!! HTML::link("mship/security/enable", "Click to Enable") !!}
+                                    {!! HTML::link(route('password.create'), "Click to Enable") !!}
                                 </div>
                             @endif
                         </div>
@@ -127,23 +122,26 @@
             </div>
 
             @if($_account->hasState("DIVISION") || $_account->hasState("TRANSFERRING"))
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-cogs"></i>
                             &thinsp;
                             Community Groups
+                            @if($_account->can('deploy', new \App\Models\Community\Membership()))
                             <div class="pull-right">
                                     <a href="{{ route("community.membership.deploy") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
-                            </div></div>
+                            </div>
+                            @endif
+                        </div>
                         <div class="panel-body">
                             <div class="row">
 
                                 <div class="col-md-7">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <p align="center">
+                                            <p style="text-align: center;">
                                                 <b>CURRENT MEMBERSHIP(S)</b>
                                             </p>
                                         </div>
@@ -190,7 +188,7 @@
                                 <div class="col-md-5">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <p align="center">
+                                            <p style="text-align: center;">
                                               <b>TOTAL POINTS</b>
                                             </p>
                                         </div>
@@ -220,7 +218,7 @@
                 </div>
             @endif
 
-            <div class="col-md-12">
+            <div class="">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications</div>
                     <div class="panel-body">
@@ -296,7 +294,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="col-md-12">
+            <div class="">
             <div class="panel panel-ukblue">
                 <div class="panel-heading">
                     <i class="fa fa-envelope"></i>&thinsp;
@@ -339,7 +337,7 @@
                                 {{ $email->email }}
                             </div>
 
-                            <div class="col-xs-4">
+                            <div class="col-xs-2">
                                 <b>STATUS:</b>
                                 <br />
                                 @if($email->verified_at == null)
@@ -356,6 +354,11 @@
                                     <em>on {{ $email->created_at }}</em>
                                 </a>
                             </div>
+                            <div class="col-xs-2">
+                                <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}" class="btn btn-xs btn-danger">
+                                    Delete
+                                </a>
+                            </div>
 
                         </div>
 
@@ -369,7 +372,7 @@
         </div>
 
             @if(!$_account->is_banned)
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="glyphicon glyphicon-earphone"></i>
                             &thinsp;
@@ -421,13 +424,13 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="fa fa-slack"></i>
                             &thinsp;
                             Slack Registration
                             <div class="pull-right">
-                                @if($_account->hasState("DIVISION"))
+                                @if(Gate::allows('register-slack'))
                                     <a href="{{ route("slack.new") }}">
                                         <i class="fa fa-plus-circle"></i>
                                     </a>
@@ -437,14 +440,12 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    @if($_account->hasState("DIVISION"))
-                                        @if($_account->slack_id)
-                                            Currently registered with Slack ID {{ $_account->slack_id }}.
-                                        @else
-                                            You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
-                                        @endif
+                                    @if($_account->slack_id)
+                                        Currently registered with Slack ID {{ $_account->slack_id }}.
+                                    @elseif(Gate::allows('register-slack'))
+                                        You are not yet registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
                                     @else
-                                        You are not elegible for Slack registration as you are not a UK member.
+                                        You are not eligible for Slack registration.
                                     @endif
                                 </div>
                             </div>

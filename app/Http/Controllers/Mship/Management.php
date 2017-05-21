@@ -6,10 +6,8 @@ use Auth;
 use Input;
 use Redirect;
 use Validator;
-use App\Models\Mship\Account;
-use App\Models\Sso\Account as SSOSystem;
 use App\Models\Sys\Token as SystemToken;
-use App\Exceptions\Mship\DuplicateEmailException;
+use Laravel\Passport\Client as OAuthClient;
 use App\Models\Mship\Account\Email as AccountEmail;
 
 class Management extends \App\Http\Controllers\BaseController
@@ -17,7 +15,7 @@ class Management extends \App\Http\Controllers\BaseController
     public function getLanding()
     {
         if (Auth::check()) {
-            return Redirect::route('mship.auth.redirect');
+            return redirect()->intended(route('mship.manage.dashboard'));
         }
 
         return $this->viewMake('mship.management.landing');
@@ -36,6 +34,19 @@ class Management extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.management.dashboard');
     }
 
+    public function postInvisibility()
+    {
+        // Toggle
+        if (Auth::user()->is_invisible) {
+            Auth::user()->is_invisible = 0;
+        } else {
+            Auth::user()->is_invisible = 1;
+        }
+        Auth::user()->save();
+
+        return Redirect::route('mship.manage.landing');
+    }
+
     public function getEmailAdd()
     {
         return $this->viewMake('mship.management.email.add');
@@ -43,7 +54,7 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function postEmailAdd()
     {
-        $email  = strtolower(Input::get('new_email'));
+        $email = strtolower(Input::get('new_email'));
         $email2 = strtolower(Input::get('new_email2'));
 
         $validator = Validator::make(
@@ -62,24 +73,50 @@ class Management extends \App\Http\Controllers\BaseController
                            ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
-        try {
+        if (!$this->account->hasEmail($email)) {
             $this->account->addSecondaryEmail($email);
-        } catch (DuplicateEmailException $e) {
-            return Redirect::route('mship.manage.email.add')
-                           ->withError($e);
+        } else {
+            return Redirect::route('mship.manage.dashboard')
+                ->withError('This email has already been added to your account.');
         }
 
         return Redirect::route('mship.manage.dashboard')
                        ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
     }
 
+    public function getEmailDelete(AccountEmail $email)
+    {
+        // Is this the user's email?
+        if ($email->account->id !== $this->account->id) {
+            return Redirect::route('mship.manage.dashboard');
+        }
+
+        return $this->viewMake('mship.management.email.delete')
+                    ->with('email', $email)
+                    ->with('assignments', $email->ssoEmails);
+    }
+
+    public function postEmailDelete(AccountEmail $email)
+    {
+        // Is this the user's email?
+        if ($email->account->id !== $this->account->id) {
+            return Redirect::route('mship.manage.dashboard');
+        }
+
+        // Delete the secondary email
+        $email->delete();
+
+        return Redirect::route('mship.manage.dashboard')
+                       ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
+    }
+
     public function getEmailAssignments()
     {
         // Get all SSO systems
-        $ssoSystems = SSOSystem::all();
+        $ssoSystems = OAuthClient::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail   = $this->account->email;
+        $userPrimaryEmail = $this->account->email;
         $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!
@@ -88,7 +125,7 @@ class Management extends \App\Http\Controllers\BaseController
         // Now build the user's matrix!
         $userMatrix = [];
         foreach ($ssoSystems as $sys) {
-            $umEntry               = [];
+            $umEntry = [];
             $umEntry['sso_system'] = $sys;
 
             // Let's see if the user has this system!
@@ -115,10 +152,10 @@ class Management extends \App\Http\Controllers\BaseController
     public function postEmailAssignments()
     {
         // Get all SSO systems
-        $ssoSystems = SSOSystem::all();
+        $ssoSystems = OAuthClient::all();
 
         // Get all user emails that are currently verified!
-        $userPrimaryEmail   = $this->account->email;
+        $userPrimaryEmail = $this->account->email;
         $userVerifiedEmails = $this->account->verified_secondary_emails;
 
         // Get user SSO email assignments!

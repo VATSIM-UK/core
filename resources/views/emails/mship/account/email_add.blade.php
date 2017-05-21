@@ -1,3 +1,6 @@
+@extends('emails.messages.post')
+
+@section('body')
 <p>
     This email address has been added as a secondary email address for our web services.
 </p>
@@ -13,3 +16,4 @@
 <p>
     {{ route("mship.manage.email.verify", ["code" => $token->code]) }}
 </p>
+@stop

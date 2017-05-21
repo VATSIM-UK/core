@@ -6,36 +6,36 @@ use Request;
 use App\Models\Model;
 
 /**
- * App\Models\Sys\Activity.
+ * App\Models\Sys\Activity
  *
  * @property int $id
  * @property int $actor_id
  * @property int $subject_id
  * @property string $subject_type
  * @property string $action
- * @property int $ip
+ * @property string $ip
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Mship\Account $actor
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
- * @property-read mixed $type
  * @property-read mixed $extra_data
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)
+ * @property-read mixed $type
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereAction($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereActorId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereIp($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereSubjectType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereAction($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereIp($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Activity extends Model
 {
-    protected $table      = 'sys_activity';
+    protected $table = 'sys_activity';
     protected $primaryKey = 'id';
-    protected $dates      = ['created_at', 'updated_at'];
-    protected $fillable   = ['actor_id', 'subject_id', 'subject_type', 'action'];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()
     {
@@ -45,16 +45,6 @@ class Activity extends Model
     public function subject()
     {
         return $this->morphTo()->withTrashed();
-    }
-
-    public function getIpAttribute()
-    {
-        return long2ip($this->attributes['ip']);
-    }
-
-    public function setIpAttribute($ip)
-    {
-        $this->attributes['ip'] = ip2long($ip);
     }
 
     public function getTypeAttribute()
@@ -67,7 +57,7 @@ class Activity extends Model
 
     public function getExtraDataAttribute()
     {
-        $extraData                               = [];
+        $extraData = [];
         $extraData[$this->subject->getKeyName()] = $this->subject->getKey();
 
         return $extraData;

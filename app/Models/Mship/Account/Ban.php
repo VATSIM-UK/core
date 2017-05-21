@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Traits\RecordsActivity;
 
 /**
- * App\Models\Mship\Account\Ban.
+ * App\Models\Mship\Account\Ban
  *
  * @property int $id
  * @property int $account_id
@@ -21,46 +21,46 @@ use App\Traits\RecordsActivity;
  * @property \Carbon\Carbon $repealed_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $banner
- * @property-read \App\Models\Mship\Ban\Reason $reason
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read mixed $display_value
+ * @property-read mixed $is_active
+ * @property-read mixed $is_expired
  * @property-read mixed $is_local
  * @property-read mixed $is_network
  * @property-read mixed $is_repealed
- * @property-read mixed $is_active
- * @property-read mixed $is_expired
- * @property-read mixed $type_string
  * @property-read mixed $period_amount_string
  * @property-read mixed $period_left
- * @property-read mixed $display_value
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNetwork()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isLocal()
+ * @property-read mixed $type_string
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
+ * @property-read \App\Models\Mship\Ban\Reason $reason
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isActive()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isHistoric()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isLocal()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNetwork()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Ban extends \App\Models\Model
 {
     use RecordsActivity;
 
-    protected $table      = 'mship_account_ban';
+    protected $table = 'mship_account_ban';
     protected $primaryKey = 'id';
-    protected $dates      = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
-    protected $touches    = ['account'];
+    protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
+    protected $touches = ['account'];
 
-    const TYPE_LOCAL   = 80;
+    const TYPE_LOCAL = 80;
     const TYPE_NETWORK = 90;
 
     public static function scopeIsNetwork($query)
@@ -95,17 +95,17 @@ class Ban extends \App\Models\Model
 
     public function account()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'account_id');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id');
     }
 
     public function banner()
     {
-        return $this->belongsTo('\App\Models\Mship\Account', 'banned_by');
+        return $this->belongsTo(\App\Models\Mship\Account::class, 'banned_by');
     }
 
     public function reason()
     {
-        return $this->belongsTo('\App\Models\Mship\Ban\Reason', 'reason_id', 'id');
+        return $this->belongsTo(\App\Models\Mship\Ban\Reason::class, 'reason_id', 'id');
     }
 
     public function notes()
@@ -136,9 +136,9 @@ class Ban extends \App\Models\Model
 
     public function getIsActiveAttribute()
     {
-        $period_start  = $this->period_start;
+        $period_start = $this->period_start;
         $period_finish = $this->period_finish;
-        $now           = \Carbon\Carbon::now();
+        $now = \Carbon\Carbon::now();
 
         return !$period_finish || ($now->between($period_start, $period_finish) && !$this->is_repealed);
     }

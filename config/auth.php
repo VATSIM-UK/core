@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard'     => 'web',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -37,13 +37,18 @@ return [
 
     'guards' => [
         'web' => [
-            'driver'   => 'session',
+            'driver' => 'session',
             'provider' => 'accounts',
         ],
 
         'api' => [
-            'driver'   => 'token',
-            'provider' => 'api_accounts',
+            'driver' => 'passport',
+            'provider' => 'accounts',
+        ],
+
+        'basic' => [
+            'driver' => 'session',
+            'provider' => 'basic',
         ],
     ],
 
@@ -67,17 +72,13 @@ return [
     'providers' => [
         'accounts' => [
             'driver' => 'eloquent',
-            'model'  => App\Models\Mship\Account::class,
-        ],
-        'api_accounts' => [
-            'driver' => 'eloquent',
-            'model'  => App\Models\Api\Account::class,
+            'model' => App\Models\Mship\Account::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'basic' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\BasicUser::class,
+        ],
     ],
 
     /*
@@ -99,13 +100,13 @@ return [
     |
     */
 
-//    'passwords' => [
-//        'users' => [
-//            'provider' => 'users',
-//            'email'    => 'auth.emails.password',
-//            'table'    => 'password_resets',
-//            'expire'   => 60,
-//        ],
-//    ],
+    'passwords' => [
+        'users' => [
+            'provider' => 'accounts',
+            'email' => 'auth.emails.password',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
+    ],
 
 ];

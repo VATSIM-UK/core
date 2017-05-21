@@ -55,8 +55,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@vatsim-uk.co.uk'),
-        'name'    => env('MAIL_FROM_NAME', 'VATSIM UK'),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@vatsim.uk'),
+        'name' => env('MAIL_FROM_NAME', 'VATSIM UK'),
     ],
 
     /*
@@ -110,4 +110,12 @@ return [
     */
 
     'sendmail' => '/usr/sbin/sendmail -bs',
+
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
 ];

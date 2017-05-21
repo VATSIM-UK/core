@@ -11,20 +11,18 @@ use Redirect;
 use App\Models\Mship\State;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Account\Note;
 use Illuminate\Support\Collection;
 use App\Models\Mship\Role as RoleData;
+use App\Notifications\Mship\BanCreated;
+use App\Notifications\Mship\BanModified;
+use App\Notifications\Mship\BanRepealed;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Jobs\Mship\Account\Ban\SendCreationEmail;
-use App\Jobs\Mship\Account\Ban\SendModifiedEmail;
-use App\Jobs\Mship\Account\Ban\SendRepealedEmail;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
-use App\Jobs\Mship\Security\TriggerPasswordResetConfirmation;
 
 class Account extends AdmController
 {
@@ -142,7 +140,8 @@ class Account extends AdmController
             'roles.permissions',
             'qualifications',
             'states',
-            'secondaryEmails'
+            'secondaryEmails',
+            'feedback'
         );
 
         // Get all possible roles!
@@ -169,7 +168,8 @@ class Account extends AdmController
                     ->with('availableRoles', $availableRoles)
                     ->with('banReasons', $banReasons)
                     ->with('noteTypes', $noteTypes)
-                    ->with('noteTypesAll', $noteTypesAll);
+                    ->with('noteTypesAll', $noteTypesAll)
+                    ->with('feedback', $account->feedback()->orderBy('created_at', 'desc')->get());
     }
 
     public function postRoleAttach(AccountData $account)
@@ -270,9 +270,6 @@ class Account extends AdmController
                            ->withError('You cannot reset non-existant security.');
         }
 
-        $job = (new TriggerPasswordResetConfirmation($account, true))->onQueue('high');
-        dispatch($job);
-
         return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
                        ->withSuccess('Security reset requested - user will receive an email.');
     }
@@ -338,8 +335,7 @@ class Account extends AdmController
             $this->account->id
         );
 
-        $job = (new SendCreationEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanCreated($ban));
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
                        ->withSuccess('You have successfully banned this member.');
@@ -370,8 +366,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
         $ban->repeal();
 
-        $job = (new SendRepealedEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanRepealed($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
                        ->withSuccess('Ban has been repealed.');
@@ -447,12 +442,11 @@ class Account extends AdmController
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra  = $ban->reason_extra."\n".Input::get('reason_extra');
+        $ban->reason_extra = $ban->reason_extra."\n".Input::get('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
-        $job = (new SendModifiedEmail($ban))->onQueue('high');
-        dispatch($job);
+        $this->account->notify(new BanModified($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
                        ->withSuccess('Your comment for this ban has been noted.');
@@ -478,7 +472,7 @@ class Account extends AdmController
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType->id, Input::get('content'), Auth::user());
+        $account->addNote($noteType, Input::get('content'), Auth::user());
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
                        ->withSuccess('The note has been saved successfully!');
@@ -492,7 +486,7 @@ class Account extends AdmController
 
         // Get all filters
         $filters = Input::get('filter', []);
-        $qs      = '';
+        $qs = '';
         foreach ($filters as $f) {
             $qs .= 'filter['.$f.']=1&';
         }
@@ -510,7 +504,7 @@ class Account extends AdmController
 
         // Let's do the login!
         Auth::loginUsingId($account->id, false);
-        Session::set('auth_override', true);
+        Session::put('auth_override', true);
 
         return Redirect::to(URL::route('mship.manage.dashboard'))
                        ->withSuccess('You are now impersonating this user - your reason has been logged. Be good!');

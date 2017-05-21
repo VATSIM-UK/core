@@ -8,6 +8,7 @@ use Auth;
 use Slack;
 use Request;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -25,6 +26,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
+        \Illuminate\Queue\MaxAttemptsExceededException::class,
     ];
 
     /**
@@ -44,7 +46,7 @@ class Handler extends ExceptionHandler
                 }
             }
 
-            if (class_exists(App::class) && App::isBooted()) {
+            if (class_exists(App::class) && App::isBooted() && App::environment('production')) {
                 $this->reportSlackError($e);
             }
 
@@ -70,18 +72,14 @@ class Handler extends ExceptionHandler
 
     protected function reportSlackError(Exception $e)
     {
-        if (App::environment('production')) {
-            $channel = 'wslogging';
-        } else {
-            $channel = 'wslogging_dev';
-        }
+        $channel = 'wslogging';
 
         $attachment = [
-            'fallback'    => 'Exception thrown: '.get_class($e),
-            'text'        => $e->getTraceAsString(),
+            'fallback' => 'Exception thrown: '.get_class($e),
+            'text' => $e->getTraceAsString(),
             'author_name' => get_class($e),
-            'color'       => 'danger',
-            'fields'      => [
+            'color' => 'danger',
+            'fields' => [
                 [
                     'title' => 'Exception:',
                     'value' => (new \ReflectionClass($e))->getShortName(),
@@ -135,5 +133,21 @@ class Handler extends ExceptionHandler
             Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
         } catch (Exception $e) {
         }
+    }
+
+    /**
+     * Convert an authentication exception into an unauthenticated response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        return redirect()->guest('/login');
     }
 }

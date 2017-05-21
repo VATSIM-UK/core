@@ -3,12 +3,11 @@ preset: laravel
 risky: false
 
 enabled:
-    - "align_equals"
-    - "align_double_arrow"
+    - "unalign_double_arrow"
 
 disabled:
-    - "unalign_equals"
     - "not_operator_with_successor_space"
+    - "phpdoc_summary"
 
 finder:
   exclude:
@@ -19,4 +18,3 @@ finder:
 
   not-name:
     - "*blade.php"
-    - "_ide_helper.php"

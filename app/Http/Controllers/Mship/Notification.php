@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Mship;
 use Auth;
 use Session;
 use Redirect;
-use App\Models\Mship\Account;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
+    protected $redirectTo = 'mship/notification/list';
+
     public function postAcknowledge($notification)
     {
         $this->account->readNotifications()->attach($notification);
@@ -20,14 +21,14 @@ class Notification extends \App\Http\Controllers\BaseController
             }
         }
 
-        return Redirect::route('mship.notification.list');
+        return redirect($this->redirectPath());
     }
 
     public function getList()
     {
         // Get all unread notifications.
         $unreadNotifications = $this->account->unreadNotifications;
-        $readNotifications   = $this->account->readNotifications;
+        $readNotifications = $this->account->readNotifications;
 
         return $this->viewMake('mship.notification.list')
                     ->with('unreadNotifications', $unreadNotifications)

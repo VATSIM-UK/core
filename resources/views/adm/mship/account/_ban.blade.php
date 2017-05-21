@@ -55,7 +55,11 @@
                 {{ $ban->period_finish->diffForHumans() }}
                 , {{ $ban->period_finish->toDateTimeString() }}
             @else
-                Forever
+                @if($ban->is_local)
+                    Forever
+                @elseif($ban->is_network)
+                    Unknown
+                @endif
             @endif
         </p>
 
@@ -72,11 +76,11 @@
         @if(count($ban->notes) > 0)
             <strong>
                 Related Notes (Newest first) -
-                <a data-toggle="collapse" href="#banNotes{{ $ban->id }}" aria-expanded="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? true : false }}"
+                <a data-toggle="collapse" data-target="#banNotes{{ $ban->id }}" href="#" onclick="return false;" aria-expanded="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? true : false }}"
                    aria-controls="#banNotes{{ $ban->id }}">Toggle Display</a>
             </strong>
 
-            <div class="{{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? "" : "collapse" }}" id="banNotes{{ $ban->id }}">
+            <div class="collapse {{ (isset($selectedTab) && $selectedTab == "bans" && $selectedTabId == $ban->id) ? "in" : "" }}" id="banNotes{{ $ban->id }}">
                 @foreach($ban->notes->sortByDesc("created_at") as $note)
                     @include('adm.mship.account._note', ["note" => $note])
                 @endforeach

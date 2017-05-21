@@ -4,7 +4,7 @@
 
     <div class="row">
         {!! Alert::warning(
-            "Having trouble with your registration? Please feel free to <a href='http://helpdesk.vatsim-uk.co.uk' class='alert-link'>contact us</a> with any queries or issues."
+            "Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues."
         )->withAttributes(["id" => "helpmessage", "style" => "display:none"]) !!}
 
 
@@ -25,7 +25,7 @@
                         <p>
                             <ol>
                             <li>An email invite has been sent to you from Slack.com (please check your junk mail).</li>
-                            <li>Follow the registration instructions in that email for http://vatsim-uk.slack.com ensuring your FULL NAME is {{ $_account->name }}</li>
+                            <li>Follow the registration instructions in that email for https://vatsim-uk.slack.com ensuring your FULL NAME is {{ $_account->name }}</li>
                             <li>Enter the below command (inclusive of slash) in any slack channel<blockquote>/register {{ $slackToken }}</blockquote></li>
                             <li>You will receive a confirmation message from "Slackbot" that your registration is successful</li>
                         </ol>
