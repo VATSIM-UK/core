@@ -108,11 +108,11 @@ class Application extends BaseController
                         ->withErrors($validator)
                         ->withInput();
         }
-        $facility = Facility::findByPublicID(Request::input("facility-code"));
-        if(!$facility){
+        $facility = Facility::findByPublicID(Request::input('facility-code'));
+        if (!$facility) {
           return Redirect::back()
-                      ->withError("That facility code is invalid.")
-                      ->withInput();
+                    ->withError('That facility code is invalid.')
+                    ->withInput();
         }
 
         try {
