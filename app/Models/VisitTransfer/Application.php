@@ -287,14 +287,14 @@ class Application extends Model
         }
 
         if ($this->is_pilot) {
-            return Facility::pilot()->get();
+            return Facility::pilot()->public()->get();
         }
 
         if ($this->is_visit) {
-            return Facility::atc()->canVisit()->get();
+            return Facility::atc()->public()->canVisit()->get();
         }
 
-        return Facility::atc()->canTransfer()->get();
+        return Facility::atc()->public()->canTransfer()->get();
     }
 
     public function getIsOpenAttribute()
