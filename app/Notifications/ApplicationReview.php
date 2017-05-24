@@ -47,7 +47,7 @@ class ApplicationReview extends Notification implements ShouldQueue
         $subject = "[{$this->application->public_id}] New {$this->application->type_status} Application";
 
         return (new MailMessage)
-            ->from('community@vatsim-uk.co.uk', 'VATSIM UK - Community Department')
+            ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
             ->view('visit-transfer.emails.community.new_application', [
                 'application' => $this->application,

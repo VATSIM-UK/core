@@ -57,6 +57,20 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th class="col-md-2">Memberships</th>
+                                    <td>
+                                        @foreach($application->account->states->merge($application->account->statesHistory) as $state)
+                                            @php
+                                                $output = $state->name;
+                                                if ($state->pivot->region && $state->pivot->division)
+                                                    $output .= ' ('.$state->pivot->region.'/'.$state->pivot->division.')';
+                                                $output .= ' from '.$state->pivot->start_at.' to '.($state->pivot->end_at ?: 'present');
+                                            @endphp
+                                            <p>{{ $output }}</p>
+                                        @endforeach
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>Type</th>
                                     <td>{{ $application->type_string }}</td>
                                 </tr>
@@ -118,6 +132,20 @@
                                         <th>Referee Rating</th>
                                         <td>
                                             @include("mship.partials._qualification", ["qualification" => $reference->account->qualification_atc])
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Memberships</th>
+                                        <td>
+                                            @foreach($reference->account->states->merge($reference->account->statesHistory) as $state)
+                                                @php
+                                                    $output = $state->name;
+                                                    if ($state->pivot->region && $state->pivot->division)
+                                                        $output .= ' ('.$state->pivot->region.'/'.$state->pivot->division.')';
+                                                    $output .= ' from '.$state->pivot->start_at.' to '.($state->pivot->end_at ?: 'present');
+                                                @endphp
+                                                <p>{{ $output }}</p>
+                                            @endforeach
                                         </td>
                                     </tr>
                                     <tr>

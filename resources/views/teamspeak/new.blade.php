@@ -9,7 +9,7 @@
     @endif
 
     {!! Alert::warning(
-            "Having trouble with your registration? Please feel free to <a href='http://helpdesk.vatsim-uk.co.uk' class='alert-link'>contact us</a> with any queries or issues."
+            "Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues."
         )->withAttributes(["id" => "helpmessage", "style" => "display:none"]) !!}
 
 

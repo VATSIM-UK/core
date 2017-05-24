@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEmailEvents extends Migration
+class CreateBasicUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateEmailEvents extends Migration
      */
     public function up()
     {
-        Schema::create('email_events', function (Blueprint $table) {
+        Schema::create('basic_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('broker');
-            $table->string('message_id')->nullable();
-            $table->string('name');
-            $table->string('recipient');
-            $table->text('data');
-            $table->timestamp('triggered_at');
+            $table->string('username');
+            $table->string('password');
         });
     }
 
@@ -31,6 +27,6 @@ class CreateEmailEvents extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('email_events');
+        Schema::dropIfExists('basic_users');
     }
 }

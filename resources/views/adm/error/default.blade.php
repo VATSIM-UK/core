@@ -16,7 +16,7 @@
         </p>
         @show
         <p>
-            If you keep experiencing this issue, please let the web services team know by emailing {!! HTML::mailto('web-support@vatsim-uk.co.uk') !!}.
+            If you keep experiencing this issue, please let the web services team know by emailing {!! HTML::mailto('web-support@vatsim.uk') !!}.
             @if(Auth::check())
                  Meanwhile, you may {!! link_to_route("adm.dashboard", "return to the dashboard") !!}.
             @endif

@@ -45,6 +45,11 @@ return [
             'driver' => 'passport',
             'provider' => 'accounts',
         ],
+
+        'basic' => [
+            'driver' => 'session',
+            'provider' => 'basic',
+        ],
     ],
 
     /*
@@ -69,15 +74,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Mship\Account::class,
         ],
-        'api_accounts' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Api\Account::class,
-        ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'basic' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\BasicUser::class,
+        ],
     ],
 
     /*
