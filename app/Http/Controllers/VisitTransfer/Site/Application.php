@@ -4,8 +4,10 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 
 use Auth;
 use Input;
+use Request;
 use Redirect;
 use Exception;
+use Validator;
 use ErrorException;
 use App\Models\Mship\Account;
 use Illuminate\Support\Facades\Gate;
@@ -93,6 +95,33 @@ class Application extends BaseController
         return $this->viewMake('visit-transfer.site.application.facility')
                     ->with('application', $this->getCurrentOpenApplicationForUser())
                     ->with('facilities', $this->getCurrentOpenApplicationForUser()->potential_facilities);
+    }
+
+    public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
+    {
+        $validator = Validator::make(Request::all(), [
+            'facility-code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return Redirect::back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $facility = Facility::findByPublicID(Request::input("facility-code"));
+        if(!$facility){
+          return Redirect::back()
+                      ->withError("That facility code is invalid.")
+                      ->withInput();
+        }
+
+        try {
+            $application->setFacility($facility);
+        } catch (Exception $e) {
+            return Redirect::route('visiting.application.facility', [$application->public_id])->withError($e->getMessage());
+        }
+
+        return Redirect::route('visiting.application.continue', [$application->public_id])->withSuccess('Facility selection saved!');
     }
 
     public function postFacility(ApplicationFacilitySelectedRequested $request, \App\Models\VisitTransfer\Application $application)
