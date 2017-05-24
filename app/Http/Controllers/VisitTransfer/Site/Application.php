@@ -100,7 +100,7 @@ class Application extends BaseController
     public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
     {
         $validator = Validator::make(Request::all(), [
-            'facility-code' => 'required',
+            'facility-code' => 'required|alpha_num',
         ]);
 
         if ($validator->fails()) {
