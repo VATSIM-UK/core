@@ -29,7 +29,7 @@
                             <th class="col-md-1" style="text-align: center;">Checks</th>
                             <th class="col-md-1" style="text-align: center;">Auto</th>
                             <th class="col-md-1" style="text-align: center;">Open</th>
-                            <th class="col-md-1" style="text-align: center;">Publicity</th>
+                            <th class="col-md-1" style="text-align: center;">Visibility</th>
                         </tr>
                         </thead>
                         <tbody>
