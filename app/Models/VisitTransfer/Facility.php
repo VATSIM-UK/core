@@ -3,6 +3,7 @@
 namespace App\Models\VisitTransfer;
 
 use App\Models\Contact;
+use Malahierba\PublicId\PublicId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Facility\Email;
@@ -58,7 +59,11 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  */
 class Facility extends Model
 {
-    use Notifiable;
+    use PublicId, Notifiable;
+
+    protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
+    protected static $public_id_min_length = 8;
+    protected static $public_id_alphabet = 'upper_alphanumeric';
 
     protected $table = 'vt_facility';
     protected $primaryKey = 'id';
@@ -76,6 +81,7 @@ class Facility extends Model
         'stage_reference_quantity',
         'stage_checks',
         'auto_acceptance',
+        'public',
     ];
 
     public function routeNotificationForMail()
@@ -168,6 +174,11 @@ class Facility extends Model
     public function scopeIsClosed($query)
     {
         return $query;
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('public', true);
     }
 
     public function scopeCanVisit($query)
