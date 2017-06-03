@@ -13,6 +13,19 @@ use App\Models\Mship\Account\Email as AccountEmail;
 
 class Dashboard extends \App\Http\Controllers\Adm\AdmController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->middleware(function ($request, $next) {
+            if (!$this->account->hasPermission('adm/dashboard')) {
+                return redirect($this->redirectPath());
+            }
+
+            return $next($request);
+        });
+    }
+
     public function getIndex()
     {
         $statistics = Cache::remember('statistics.mship', 60, function () {
