@@ -181,7 +181,7 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
  * COMMUNITY
  */
 Route::get('/community', function () {
-    return Redirect::route('community.deploy');
+    return Redirect::route('membership.deploy');
 });
 
 Route::group([
