@@ -30,7 +30,7 @@
         @if (!isset($form))
           {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
             {{Form::label('feedback_type', 'What kind of facility was the person operating?')}}
-            {{Form::select('feedback_type', ['1' => 'ATC', '2' => 'Pilot'])}}
+            {{Form::select('feedback_type', ['1' => 'ATC'])}}
             {{Form::submit("Next")}}
           {!! Form::close() !!}
         @else
