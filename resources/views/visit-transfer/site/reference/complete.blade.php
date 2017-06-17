@@ -3,12 +3,24 @@
 @section('vt-content')
     <div class="row">
         <div class="col-md-12">
+            {!! HTML::panelOpen("Reference Relationship", ["type" => "fa", "key" => "question-circle"]) !!}
+            <div class="text-center">
+              <p class="text-center">
+                <b>Do you know {{ $application->account->name }}?</b></br>
+                If you don't know the applicant, please press the button below. This will cancel your reference, and the applicant will need to provide an alternative reference.</br>
+                {!! Form::open(["route" => ["visiting.reference.complete.cancel", $token->code], "method" => "POST"]) !!}
+
+                {{ Form::submit('I do not know the applicant', ["class" => "btn btn-danger"]) }}
+
+                {!! Form::close() !!}
+              </p>
+            </div>
+            {!! HTML::panelClose() !!}
             {!! HTML::panelOpen("Reference Content", ["type" => "fa", "key" => "list"]) !!}
             <div class="row hidden-xs">
                 <div class="col-md-10 col-md-offset-1">
-
                     <p>
-                        You are complete a reference for {{ $application->account->name }}'s {{ $application->type_string }} application for {{ $application->facility->name }}.
+                        You are completing a reference for {{ $application->account->name }}'s {{ $application->type_string }} application for {{ $application->facility->name }}.
                         This application is bound by the Visiting &amp; Transferring Controller Policy (VTCP).
                         <br />
                         {!! link_to("https://www.vatsim.net/documents/transfer-and-visiting-controller-policy", "The VTCP can be located on the VATSIM.net website", ["target" => "_blank"]) !!}
