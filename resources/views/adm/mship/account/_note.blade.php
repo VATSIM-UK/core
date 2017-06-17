@@ -23,9 +23,14 @@
                     @endif
 
                     <i class="fa fa-user"></i>
-                    {{ $note->writer->name }}
-                    ({!! link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!}
-                    )
+                    @if (is_null($note->writer))
+                      Unknown/System
+                    @else
+                      {{$note->writer->name}}
+                      ({!! link_to_route("adm.mship.account.details", $note->writer_id, [$note->writer_id]) !!}
+                      )
+                    @endif
+
 
                     &nbsp;&nbsp;&nbsp;
 
