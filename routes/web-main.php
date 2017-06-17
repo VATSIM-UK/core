@@ -374,6 +374,11 @@ Route::group([
                 'uses' => 'Application@postFacility',
             ]);
 
+            Route::post('/facility/manual', [
+                'as' => 'facility.manual.post',
+                'uses' => 'Application@postManualFacility',
+            ]);
+
             Route::get('/statement', [
                 'as' => 'statement',
                 'uses' => 'Application@getStatement',

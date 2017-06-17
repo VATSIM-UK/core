@@ -29,6 +29,7 @@
                             <th class="col-md-1" style="text-align: center;">Checks</th>
                             <th class="col-md-1" style="text-align: center;">Auto</th>
                             <th class="col-md-1" style="text-align: center;">Open</th>
+                            <th class="col-md-1" style="text-align: center;">Visibility</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -92,6 +93,13 @@
                                         {!! Label::success("YES") !!}
                                     @else
                                         {!! Label::danger("NO") !!}
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if($f->public)
+                                        {!! Label::success("PUBLIC") !!}
+                                    @else
+                                        {!! Label::danger("PRIVATE") !!}
                                     @endif
                                 </td>
                             </tr>
