@@ -77,7 +77,7 @@
                                     <li class="dropdown-header">Community Features</li>
                                     <li>{!! link_to_route("mship.notification.list", "View Notifications") !!}</li>
                                     <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
-                                    <li>{!! link_to_route("mship.feedback.new", "Controller/Pilot Feedback") !!}</li>
+                                    <li>{!! link_to_route("mship.feedback.new.form", "Controller Feedback", [1]) !!}</li>
                                 </ul>
                             </li>
                         </ul>
