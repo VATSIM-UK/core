@@ -119,7 +119,7 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
 
     if ($ts2 <= \Carbon\Carbon::minValue() || $ts2 >= \Carbon\Carbon::maxValue()
         || $ts1 <= \Carbon\Carbon::minValue() || $ts1 >= \Carbon\Carbon::maxValue()) {
-        return "unreliable dates";
+        return 'unreliable dates';
     }
 
     $diff = $ts1->diff($ts2, $absolute);
