@@ -117,12 +117,17 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
         return 'unknown length';
     }
 
+    if ($ts2 <= \Carbon\Carbon::minValue() || $ts2 >= \Carbon\Carbon::maxValue()
+        || $ts1 <= \Carbon\Carbon::minValue() || $ts1 >= \Carbon\Carbon::maxValue()) {
+        return "unreliable dates";
+    }
+
     $diff = $ts1->diff($ts2, $absolute);
 
     $units = [];
 
     if ($diff->y > 0) {
-        $units[] = $diff->y.' '.str_plural('hour', $diff->y);
+        $units[] = $diff->y.' '.str_plural('year', $diff->y);
     }
 
     if ($diff->m > 0) {
@@ -142,7 +147,7 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
     }
 
     $lastElement = array_pop($units);
-    $unitsString = implode(',', $units).' and '.$lastElement;
+    $unitsString = implode(', ', $units).' and '.$lastElement;
 
     return $unitsString;
 }
