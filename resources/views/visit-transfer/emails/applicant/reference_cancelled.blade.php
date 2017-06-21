@@ -2,7 +2,7 @@
 
 @section('email-content')
     <p>
-        Your reference from {{ $reference->account->name }} has been cancelled. This is most likely because they referee indicated that they did not know you.
+        Your reference from {{ $reference->account->name }} has been cancelled. This is most likely because the referee indicated that they do not know you.
     </p>
 
     <p>
