@@ -7,7 +7,7 @@
             <div class="text-center">
               <p class="text-center">
                 <b>Do you know {{ $application->account->name }}?</b></br>
-                If you don't know the applicant, please press the button below. This will cancel your reference, and the applicant will need to provide an alternative reference.</br>
+                If you don't know the applicant, please press the button below. This will cancel your reference, and the application will be reviewed by Community staff.</br>
                 {!! Form::open(["route" => ["visiting.reference.complete.cancel", $token->code], "method" => "POST"]) !!}
 
                 {{ Form::submit('I do not know the applicant', ["class" => "btn btn-danger"]) }}
