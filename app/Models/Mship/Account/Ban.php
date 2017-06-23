@@ -4,6 +4,7 @@ namespace App\Models\Mship\Account;
 
 use Carbon\Carbon;
 use App\Traits\RecordsActivity;
+use App\Events\Mship\Bans\BanRepealed;
 
 /**
  * App\Models\Mship\Account\Ban
@@ -117,6 +118,7 @@ class Ban extends \App\Models\Model
     {
         $this->repealed_at = \Carbon\Carbon::now();
         $this->save();
+        event(new BanRepealed($this));
     }
 
     public function getIsLocalAttribute()

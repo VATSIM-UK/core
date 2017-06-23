@@ -12,6 +12,7 @@ use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
+use App\Events\Mship\Bans\AccountBanned;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
@@ -1145,6 +1146,8 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         $ban->save();
 
         $ban->notes()->save($note);
+
+        event(new AccountBanned($ban));
 
         return $ban;
     }

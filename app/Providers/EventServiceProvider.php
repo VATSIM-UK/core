@@ -21,6 +21,15 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Sync\PushToPts::class,
             \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
+
+        \App\Events\Mship\Bans\AccountBanned::class => [
+            \App\Listeners\Sync\Bans\PushBanToForum::class,
+        ],
+
+        \App\Events\Mship\Bans\BanRepealed::class => [
+            \App\Listeners\Sync\Bans\PushRepealToForum::class,
+        ],
+
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
