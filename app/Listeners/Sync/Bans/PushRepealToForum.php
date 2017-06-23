@@ -29,6 +29,16 @@ class PushRepealToForum
         $ban = $event->ban;
         $account = $event->ban->account;
 
-        \Log::info($account->real_name . " was unbanned");
+        require_once '/var/www/community/init.php';
+        require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
+
+        // Check if they still have outstanding bans
+        if($account->is_banned){
+          return;
+        }
+
+        // Update user's IPB record
+        $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', 0], "m.vatsim_cid='".$account->id."'");
     }
 }

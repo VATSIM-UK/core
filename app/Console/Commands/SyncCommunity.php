@@ -118,6 +118,12 @@ class SyncCommunity extends Command
                     $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
+                    // Check if they still have outstanding bans
+                    if(!$member_core->is_banned && $ips_member->temp_ban == -1){
+                      $ips_member->temp_ban = 0;
+                    }elseif ($member_core->is_banned && $ips_member->temp_ban == 0) {
+                      $ips_member->temp_ban = -1;
+                    }
                     $ips_member->save();
 
                     // Profile fields (raw update)
