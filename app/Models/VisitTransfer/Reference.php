@@ -260,22 +260,21 @@ class Reference extends Model
         event(new ReferenceRejected($this));
     }
 
-    public function cancel(){
-      $this->status = self::STATUS_CANCELLED;
-      $this->save();
+    public function cancel()
+    {
+        $this->status = self::STATUS_CANCELLED;
+        $this->save();
 
-      $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n"."Applicant not known to referee";
-      $note = $this->application->account->addNote(
+        $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n".'Applicant not known to referee';
+        $note = $this->application->account->addNote(
           Type::isShortCode('visittransfer')->first(),
           $noteContent,
           null,
           $this
       );
-      $this->notes()->save($note);
+        $this->notes()->save($note);
 
-      event(new ReferenceCancelled($this));
-
-
+        event(new ReferenceCancelled($this));
     }
 
     public function accept($staffComment = null, Account $actor = null)
