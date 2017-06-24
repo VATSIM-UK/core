@@ -38,4 +38,14 @@ class Reference extends BaseController
 
         return Redirect::route('visiting.landing')->withSuccess('You have successfully completed a reference for '.$reference->application->account->name.'.  Thank you.');
     }
+
+    public function postCancel(Token $token)
+    {
+        $reference = $token->related;
+        $reference->cancel();
+
+        $reference->application->markAsUnderReview();
+
+        return Redirect::route('visiting.landing')->withSuccess('You have canceled your reference for '.$reference->application->account->name.'.  Thank you.');
+    }
 }

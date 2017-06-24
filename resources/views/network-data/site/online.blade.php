@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
                     <p class="text-center">
-                        Coming early 2017!
+                        Coming soon!
                     </p>
                 </div>
 
