@@ -16,6 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Notifications\Mship\SlackInvitation;
+use Illuminate\Auth\AuthenticationException;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Models\Mship\Permission as PermissionData;
@@ -29,7 +30,6 @@ use App\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
 use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -976,8 +976,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public function setPassword($password, $temporary = false)
     {
-        if (!\Auth::user())
-        {
+        if (!\Auth::user()) {
             // user not authenticated, disallow password change in this manner.
             throw new AuthenticationException();
         }
