@@ -441,5 +441,12 @@ Route::group([
             'as' => 'complete.post',
             'uses' => 'Reference@postComplete',
         ]);
+
+
+
+        Route::post('/complete/{token}/cancel', [
+            'as' => 'complete.cancel',
+            'uses' => 'Reference@postCancel',
+        ]);
     });
 });

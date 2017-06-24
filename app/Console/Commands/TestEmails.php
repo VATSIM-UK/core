@@ -21,9 +21,9 @@ use App\Notifications\ApplicationStatusChanged;
 use App\Notifications\ApplicationReferenceRequest;
 use App\Notifications\ApplicationReferenceAccepted;
 use App\Notifications\ApplicationReferenceRejected;
-use App\Notifications\ApplicationReferenceCancelled;
 use App\Notifications\ApplicationReferenceSubmitted;
 use App\Notifications\Mship\Security\TemporaryPassword;
+use App\Notifications\ApplicationReferenceNoLongerNeeded;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
 
 /**
@@ -139,7 +139,7 @@ class TestEmails extends Command
         // visiting/transfer
         $testAccount->notify(new ApplicationAccepted($testApplication));
         $testAccount->notify(new ApplicationReferenceAccepted($testReference));
-        $testReference->notify(new ApplicationReferenceCancelled($testReference));
+        $testReference->notify(new ApplicationReferenceNoLongerNeeded($testReference));
         $testAccount->notify(new ApplicationReferenceRejected($testReference));
         $testReference->notify(new ApplicationReferenceRequest($testReference));
         $testAccount->notify(new ApplicationReferenceSubmitted($testReference));

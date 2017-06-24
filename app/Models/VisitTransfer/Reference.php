@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\VisitTransfer\ReferenceDeleted;
 use App\Events\VisitTransfer\ReferenceAccepted;
 use App\Events\VisitTransfer\ReferenceRejected;
+use App\Events\VisitTransfer\ReferenceCancelled;
 use App\Events\VisitTransfer\ReferenceUnderReview;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceAlreadySubmittedException;
@@ -87,6 +88,7 @@ class Reference extends Model
     const STATUS_UNDER_REVIEW = 50;
     const STATUS_ACCEPTED = 90;
     const STATUS_REJECTED = 95;
+    const STATUS_CANCELLED = 100;
 
     public static $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
@@ -203,6 +205,8 @@ class Reference extends Model
         switch ($this->attributes['status']) {
             case self::STATUS_DRAFT:
                 return 'Draft';
+            case self::STATUS_CANCELLED:
+                return 'Cancelled';
             case self::STATUS_REQUESTED:
                 return 'Requested';
             case self::STATUS_UNDER_REVIEW:
@@ -254,6 +258,24 @@ class Reference extends Model
         }
 
         event(new ReferenceRejected($this));
+    }
+
+    public function cancel(){
+      $this->status = self::STATUS_CANCELLED;
+      $this->save();
+
+      $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n"."Applicant not known to referee";
+      $note = $this->application->account->addNote(
+          Type::isShortCode('visittransfer')->first(),
+          $noteContent,
+          null,
+          $this
+      );
+      $this->notes()->save($note);
+
+      event(new ReferenceCancelled($this));
+
+
     }
 
     public function accept($staffComment = null, Account $actor = null)
