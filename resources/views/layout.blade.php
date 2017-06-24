@@ -94,7 +94,7 @@
                     </li>
                 </ul>
 
-                @if(Auth::check() || Session::has('auth.vatsim-sso'))
+                @if(Auth::check() && Session::has('auth.vatsim-sso'))
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
