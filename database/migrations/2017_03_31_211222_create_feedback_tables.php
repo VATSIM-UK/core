@@ -151,7 +151,7 @@ class CreateFeedbackTables extends Migration
               'type_id' => '4',
               'form_id' => '2',
               'slug' => 'professional4',
-              'question' => 'They service they provided was professional and well delivered.',
+              'question' => 'The service they provided was professional and well delivered.',
               'options' => json_encode(['values' => ['Strongly disagree', 'Disagree', 'Neither Agree nor Disagree', 'Agree', 'Strongly Agree']]),
               'required' => true,
               'sequence' => 4,
