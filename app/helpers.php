@@ -117,16 +117,10 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
         return 'unknown length';
     }
 
-<<<<<<< HEAD
     if ($ts2 < \Carbon\Carbon::minValue() || $ts2 > \Carbon\Carbon::maxValue()) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts2);
     } else if ($ts1 < \Carbon\Carbon::minValue() || $ts1 > \Carbon\Carbon::maxValue()) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts1);
-=======
-    if ($ts2 <= \Carbon\Carbon::minValue() || $ts2 >= \Carbon\Carbon::maxValue()
-        || $ts1 <= \Carbon\Carbon::minValue() || $ts1 >= \Carbon\Carbon::maxValue()) {
-        return 'unreliable dates';
->>>>>>> origin/feature/fix-bad-date
     }
 
     $diff = $ts1->diff($ts2, $absolute);
