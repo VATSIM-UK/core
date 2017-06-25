@@ -138,7 +138,7 @@ Now you can run gulp with the command `gulp` in your project directory.
 
 Open a new command prompt and within your project directory type `php artisan tinker`.
 
-Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXX)->password = "this_is_my_password";`
+Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXXX)->setPassword("this_is_my_password");`
 
 Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
 
