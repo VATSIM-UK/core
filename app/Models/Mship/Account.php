@@ -976,10 +976,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public function setPassword($password, $temporary = false)
     {
-        if (!\Auth::user()) {
-            // user not authenticated, disallow password change in this manner.
-            throw new AuthenticationException();
-        }
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
@@ -987,7 +983,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         ])->save();
 
         // if the password is being reset by its owner...
-        if ($save && \Auth::user()->id === $this->id) {
+        if ($save && \Auth::check() && \Auth::user()->id === $this->id) {
             \Session::put([
                 'password_hash' => \Auth::user()->getAuthPassword(),
             ]);
