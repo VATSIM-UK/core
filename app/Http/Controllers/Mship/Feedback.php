@@ -100,8 +100,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                 }
             }
             $errormessages[$question->slug.'.required'] = "You have not supplied an answer for '".$question->question."'.";
-            $errormessages[$question->slug.'.exists'] = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK memeber';
-            $errormessages[$question->slug.'.integer'] = 'You have not entered in a valid integer.';
+            $errormessages[$question->slug.'.exists'] = 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK member';
+            $errormessages[$question->slug.'.integer'] = 'You have not entered a valid integer.';
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([
