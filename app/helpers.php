@@ -119,7 +119,7 @@ function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute =
 
     if ($ts2 < \Carbon\Carbon::minValue() || $ts2 > \Carbon\Carbon::maxValue()) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts2);
-    } else if ($ts1 < \Carbon\Carbon::minValue() || $ts1 > \Carbon\Carbon::maxValue()) {
+    } elseif ($ts1 < \Carbon\Carbon::minValue() || $ts1 > \Carbon\Carbon::maxValue()) {
         throw new \Carbon\Exceptions\InvalidDateException('Date outside range', $ts1);
     }
 
