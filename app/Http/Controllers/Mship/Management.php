@@ -44,7 +44,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
         Auth::user()->save();
 
-        return Redirect::route('mship.manage.landing');
+        return redirect($this->redirectPath());
     }
 
     public function getEmailAdd()
