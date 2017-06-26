@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Adm;
 
-use Auth;
 use View;
-use App\Models\Mship\Account;
 
 class AdmController extends \App\Http\Controllers\BaseController
 {
