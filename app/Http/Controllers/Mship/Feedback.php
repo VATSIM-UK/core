@@ -142,10 +142,6 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getUserSearch($name, Request $request)
     {
-      $validator = Validator::make($request->all(), ['name' => 'required|alpha_dash']);
-      if ($validator->fails()) {
-          //return response()->json([]);
-      }
 
       $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")->limit(5)->with(['states'])->get(['id', 'name_first', 'name_last']);
 
@@ -162,7 +158,7 @@ class Feedback extends \App\Http\Controllers\BaseController
               }
             }
           }
-          
+
           $this->returnList->push(collect([
             'cid' => $user->id,
             'name' => $user->real_name,
