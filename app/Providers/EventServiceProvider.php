@@ -18,9 +18,9 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Sync\PushToForum::class,
             \App\Listeners\Sync\PushToMoodle::class,
             \App\Listeners\Sync\PushToRts::class,
-            \App\Listeners\Sync\PushToPts::class,
             \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
+
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
