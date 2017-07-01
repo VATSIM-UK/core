@@ -293,7 +293,7 @@ class CreateFeedbackTables extends Migration
         DB::table('mship_feedback_question_types')->insert([
             [
               'name' => 'userlookup',
-              'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the user\'s CID e.g 1234567">',
+              'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
               'rules' => 'integer|exists:mship_account,id',
               'requires_value' => false,
               'max_uses' => 1,
