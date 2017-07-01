@@ -99,7 +99,7 @@
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
                             <a href="#" class="dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b class="caret"></b></a>
-							<a href="#" class="dropdown-toggle visible-xs visible-sm" data-toggle="dropdown"><i class="fa fa-sliders"></i> <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle visible-xs visible-sm" data-toggle="dropdown"><i class="fa fa-sliders"></i> <b class="caret"></b></a>
                             <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
                                 <li class="col-sm-12">
                                     <ul>
@@ -116,7 +116,7 @@
                                                         P0
                                                     @endif
                                                 </b></a></li>
-										<li class="visible-xs visible-sm">{{ link_to_route("mship.notification.list","Notifications") }}</li>
+                                        <li class="visible-xs visible-sm">{{ link_to_route("mship.notification.list","Notifications") }}</li>
                                         <li class="divider"></li>
                                         <li>{!! link_to_route('password.change', "Modify Password") !!}</li>
                                         @if(!Auth::user()->mandatory_password)
@@ -141,21 +141,21 @@
                     <ul class="nav navbar-nav navcustom navbar-right navbar-notification hidden-xs hidden-sm">
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("mship.notification.list") }}" title="Notifications">
-								@if(Auth::user()->has_unread_notifications)
-									<i class="fa fa-bell unread-notifications"></i>
-								@else
-									<i class="fa fa-bell"></i>
-								@endif
-							</a>
+                                @if(Auth::user()->has_unread_notifications)
+                                    <i class="fa fa-bell unread-notifications"></i>
+                                @else
+                                    <i class="fa fa-bell"></i>
+                                @endif
+                            </a>
                         </li>
                     </ul>
-					@if(Auth::user()->hasPermission('adm/dashboard'))
-						<ul class="nav navbar-nav navcustom navbar-right navbar-notification">
-	                        <li class="dropdown dropdown-large">
-	                            <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard"><i class="fa fa-dashboard"></i></a>
-	                        </li>
-	                    </ul>
-					@endif
+                    @if(Auth::user()->hasPermission('adm/dashboard'))
+                        <ul class="nav navbar-nav navcustom navbar-right navbar-notification">
+                            <li class="dropdown dropdown-large">
+                                <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard"><i class="fa fa-dashboard"></i></a>
+                            </li>
+                        </ul>
+                    @endif
                 @elseif(Session::has('auth.vatsim-sso'))
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
