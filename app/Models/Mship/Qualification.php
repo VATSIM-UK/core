@@ -3,7 +3,6 @@
 namespace App\Models\Mship;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
  * App\Models\Mship\Qualification

@@ -12,7 +12,6 @@ use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class Feedback extends \App\Http\Controllers\BaseController
 {
-
     private $returnList;
 
     public function getFeedbackFormSelect()
@@ -142,33 +141,31 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getUserSearch($name, Request $request)
     {
+        $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")->limit(5)->with(['states'])->get(['id', 'name_first', 'name_last']);
 
-      $matches = Account::whereRaw("CONCAT(`name_first`, ' ',`name_last`) LIKE '%".$name."%'")->limit(5)->with(['states'])->get(['id', 'name_first', 'name_last']);
+        $this->returnList = collect();
 
-      $this->returnList = collect();
-
-      $matches->transform(function($user, $key){
-
-          foreach ($user->states as $key => $state) {
-            if($state->is_permanent){
-              if($state->code = "INTERNATIONAL" && ($state->region->first() == "*" || $state->division->first() == "*")){
-                $user->state = "Intl.";
-              }else{
-                $user->state = $state->region->first() . '/' . $state->division->first();
-              }
+        $matches->transform(function ($user, $key) {
+            foreach ($user->states as $key => $state) {
+                if ($state->is_permanent) {
+                    if ($state->code = 'INTERNATIONAL' && ($state->region->first() == '*' || $state->division->first() == '*')) {
+                        $user->state = 'Intl.';
+                    } else {
+                        $user->state = $state->region->first().'/'.$state->division->first();
+                    }
+                }
             }
-          }
 
-          $this->returnList->push(collect([
+            $this->returnList->push(collect([
             'cid' => $user->id,
             'name' => $user->real_name,
-            'status' => $user->state
+            'status' => $user->state,
           ]));
 
-          return $user;
-      });
-      $matches = null;
+            return $user;
+        });
+        $matches = null;
 
-      return response()->json($this->returnList);
+        return response()->json($this->returnList);
     }
 }
