@@ -94,7 +94,7 @@
                     </li>
                 </ul>
 
-                @if(Auth::check() || Session::has('auth.vatsim-sso'))
+                @if(Auth::check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
@@ -156,6 +156,14 @@
                             </li>
                         </ul>
                     @endif
+                @elseif(Session::has('auth.vatsim-sso'))
+                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
+                    <ul class="nav navbar-nav navcustom navbar-right">
+                        <li class="dropdown dropdown-large">
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
+                        </li>
+                    </ul>
+                    {!! Form::close() !!}
                 @endif
 
             </div>
