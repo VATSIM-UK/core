@@ -154,7 +154,7 @@ Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
         Route::get('/new/{form}', ['as' => 'mship.feedback.new.form', 'uses' => 'Feedback@getFeedback']);
         Route::post('/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
 
-        Route::get('/users/search/{name}',['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
+        Route::get('/users/search/{name}', ['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
     });
 
     Route::group(['middleware' => ['auth_full_group']], function () {
