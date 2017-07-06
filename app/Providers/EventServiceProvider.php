@@ -25,6 +25,14 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
+        \App\Events\Mship\Bans\AccountBanned::class => [
+            \App\Listeners\Sync\Bans\PushBanToForum::class,
+        ],
+
+        \App\Events\Mship\Bans\BanRepealed::class => [
+            \App\Listeners\Sync\Bans\PushRepealToForum::class,
+        ],
+
         AtcSessionEnded::class => [
             AtcSessionRecordedSuccessNotification::class,
         ],
