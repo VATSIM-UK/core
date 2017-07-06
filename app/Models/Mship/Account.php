@@ -983,7 +983,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         ])->save();
 
         // if the password is being reset by its owner...
-        if ($save && \Auth::user()->id === $this->id) {
+        if ($save && \Auth::check() && \Auth::user()->id === $this->id) {
             \Session::put([
                 'password_hash' => \Auth::user()->getAuthPassword(),
             ]);

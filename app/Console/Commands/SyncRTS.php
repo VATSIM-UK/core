@@ -31,7 +31,7 @@ class SyncRTS extends Command
      */
     public function handle()
     {
-        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.rts')->first()->id;
+        $this->sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first()->id;
 
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 

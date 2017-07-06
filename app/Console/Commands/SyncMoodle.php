@@ -36,7 +36,7 @@ class SyncMoodle extends Command
      */
     public function handle()
     {
-        $this->sso_account_id = DB::table('sso_account')->where('username', 'vuk.moodle')->first()->id;
+        $this->sso_account_id = DB::table('oauth_clients')->where('name', 'Moodle')->first()->id;
 
         DB::table('vatuk_moodle.mdl_user')->update(['vatuk_cron' => 0]);
 

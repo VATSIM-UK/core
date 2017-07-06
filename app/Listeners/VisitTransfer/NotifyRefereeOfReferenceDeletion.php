@@ -4,7 +4,7 @@ namespace App\Listeners\VisitTransfer;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ReferenceDeleted;
-use App\Notifications\ApplicationReferenceCancelled;
+use App\Notifications\ApplicationReferenceNoLongerNeeded;
 
 class NotifyRefereeOfReferenceDeletion implements ShouldQueue
 {
@@ -15,6 +15,6 @@ class NotifyRefereeOfReferenceDeletion implements ShouldQueue
 
     public function handle(ReferenceDeleted $event)
     {
-        $event->reference->notify(new ApplicationReferenceCancelled($event->reference));
+        $event->reference->notify(new ApplicationReferenceNoLongerNeeded($event->reference));
     }
 }

@@ -27,6 +27,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
         \Illuminate\Queue\MaxAttemptsExceededException::class,
+        \League\OAuth2\Server\Exception\OAuthServerException::class,
     ];
 
     /**

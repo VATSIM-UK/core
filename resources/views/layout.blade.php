@@ -33,7 +33,7 @@
 
     <div class="header_container">
 
-        <div class="nav_upper_container navbar-fixed-top">
+        <div class="nav_upper_container navbar-fixed-top navbar-toggleable-md">
             <div class="logo_container">
                 <a href="{{ route("default") }}">
                     {!! HTML::image("assets/images/vatsim_uk_logo.png", "UK Logo") !!}
@@ -55,75 +55,119 @@
 
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        {!! link_to_route("mship.feedback.new.form", "Feedback", [1]) !!}
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <b class="caret"></b></a>
                         <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-6">
+                            <li class="col-sm-12">
                                 <ul>
-                                    <li class="dropdown-header">Division Membership</li>
-                                    <li>{!! link_to_route("visiting.landing", "Visiting the UK") !!}</li>
-                                    <li>{!! link_to_route("visiting.landing", "Transfer to the UK") !!}</li>
-                                    <li>{!! link_to_route("visiting.landing", "Leaving the UK") !!}</li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Network Data</li>
-                                    <li>{!! link_to_route("networkdata.online", "Who's online") !!}</li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-6">
-                                <ul>
-                                    <li class="dropdown-header">Third-Party Services</li>
-                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
-                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Community Features</li>
-                                    <li>{!! link_to_route("mship.notification.list", "View Notifications") !!}</li>
-                                    <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
-                                    <li>{!! link_to_route("mship.feedback.new", "Controller/Pilot Feedback") !!}</li>
+                                    <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
+                                    <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
+                                    <li>{!! link_to_route("networkdata.online", "Who's Online") !!}</li>
+                                    <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
                                 </ul>
                             </li>
                         </ul>
+                    </li>
+                </ul>
 
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Membership</li>
+                                    <li>{!! link_to_route("visiting.landing", "Visit/Transfer") !!}</li>
+                                    <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Third-Party Services</li>
+                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
+                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 
                 @if(Auth::check())
-                    <ul class="nav navbar-nav navcustom">
+                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
+                    <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
-                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                                <li class="col-sm-6">
+                            <a href="#" class="dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle visible-xs visible-sm" data-toggle="dropdown"><i class="fa fa-sliders"></i> <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-12">
                                     <ul>
-                                        <li class="dropdown-header">Password</li>
-                                        <li>{!! link_to_route('password.change', "Modify") !!}</li>
+                                        <li><a>ATC Rating: <b>
+                                                    @if(Auth::user()->qualification_atc == "")
+                                                        OBS
+                                                    @else
+                                                        {{ Auth::user()->qualification_atc }}
+                                                    @endif
+                                                </b></a></li>
+                                        <li><a>Pilot Rating(s): <b>
+                                                    {{ (Auth::user()->toArray())['pilot_rating'] }}
+                                                    @if((Auth::user()->toArray())['pilot_rating'] == "")
+                                                        P0
+                                                    @endif
+                                                </b></a></li>
+                                        <li class="visible-xs visible-sm">{{ link_to_route("mship.notification.list","Notifications") }}</li>
+                                        <li class="divider"></li>
+                                        <li>{!! link_to_route('password.change', "Modify Password") !!}</li>
                                         @if(!Auth::user()->mandatory_password)
-                                            <li>{!! link_to_route("password.delete", "Disable") !!}</li>
+                                            <li>{!! link_to_route("password.delete", "Disable Password") !!}</li>
                                         @endif
                                         <li class="divider"></li>
-                                        <li class="dropdown-header">Email Address</li>
-                                        <li>{!! link_to_route("mship.manage.email.add", "Add Email") !!}</li>
-                                        <li>{!! link_to_route("mship.manage.email.assignments", "SSO Assignments") !!}</li>
-                                    </ul>
-                                </li>
-                                <li class="col-sm-6">
-                                    <ul>
-                                        <li class="dropdown-header">Third-Party Services</li>
-                                        <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
-                                        <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                        <li>{!! link_to_route("mship.manage.email.add", "Add Email Address") !!}</li>
+                                        <li>{!! link_to_route("mship.manage.email.assignments", "Email Assignments") !!}</li>
+                                        @if(Session::has('auth.vatsim-sso'))
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </li>
                             </ul>
-
                         </li>
                     </ul>
-                @endif
-                @if(Auth::check() || Session::has('auth.vatsim-sso'))
+                    {!! Form::close() !!}
+
+                    <ul class="nav navbar-nav navcustom navbar-right navbar-notification hidden-xs hidden-sm">
+                        <li class="dropdown dropdown-large">
+                            <a href="{{ route("mship.notification.list") }}" title="Notifications">
+                                @if(Auth::user()->has_unread_notifications)
+                                    <i class="fa fa-bell unread-notifications"></i>
+                                @else
+                                    <i class="fa fa-bell"></i>
+                                @endif
+                            </a>
+                        </li>
+                    </ul>
+                    @if(Auth::user()->hasPermission('adm/dashboard'))
+                        <ul class="nav navbar-nav navcustom navbar-right navbar-notification">
+                            <li class="dropdown dropdown-large">
+                                <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard"><i class="fa fa-dashboard"></i></a>
+                            </li>
+                        </ul>
+                    @endif
+                @elseif(Session::has('auth.vatsim-sso'))
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
-                        <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a></li>
+                        <li class="dropdown dropdown-large">
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
+                        </li>
                     </ul>
                     {!! Form::close() !!}
                 @endif
 
             </div>
+
         </div>
 
         <div class="banner hidden-xs hidden-sm">
@@ -133,7 +177,7 @@
             <div class="breadcrumb_container">
                 <div class="breadcrumb_content_left">
                     @if(Auth::check())
-                        <span>You are logged in as: {{Auth::user()->name.' (' .Auth::user()->id.')'}}</span>
+                        <span>You are logged in.</span>
                     @else
                         <span>You are not logged in.</span>
                     @endif
@@ -195,7 +239,7 @@
 </div>
 
     {!! HTML::script(elixir("js/app-all.js")) !!}
-    
+
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
