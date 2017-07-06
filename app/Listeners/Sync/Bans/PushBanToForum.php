@@ -29,7 +29,13 @@ class PushBanToForum
         $ban = $event->ban;
         $account = $event->ban->account;
 
-        require_once '/var/www/community/init.php';
+        $IPSInitFile = '/var/www/community/init.php';
+
+        if(!file_exists($IPSInitFile)){
+          return;
+        }
+
+        require_once $IPSInitFile;
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
