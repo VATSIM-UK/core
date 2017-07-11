@@ -26,7 +26,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         AtcSessionEnded::class => [
-            AtcSessionRecordedSuccessNotification::class,
+            //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
