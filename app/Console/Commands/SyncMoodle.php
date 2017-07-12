@@ -24,8 +24,6 @@ class SyncMoodle extends Command
      */
     protected $description = 'Synchronises members with Moodle.';
 
-    protected $sso_account_id;
-
     /**
      * Execute the console command.
      *
@@ -39,21 +37,24 @@ class SyncMoodle extends Command
                 return $moodleAccount->username;
             });
 
-        Account::whereNotNull('last_login')->with('states', 'qualifications', 'bans')->chunk(500, function ($coreAccounts) use (&$moodleAccounts) {
-            /** @var Account $coreAccount */
-            foreach ($coreAccounts as $coreAccount) {
-                $moodleAccountKey = $moodleAccounts->search(function ($moodleAccount) use ($coreAccount) {
-                    return "{$coreAccount->id}" === $moodleAccount->username;
-                });
+        Account::whereNotNull('last_login')
+            ->with('states', 'qualifications', 'bans')
+            ->chunk(500, function ($coreAccounts) use (&$moodleAccounts) {
+                /** @var Account $coreAccount */
+                foreach ($coreAccounts as $coreAccount) {
+                    $moodleAccountKey = $moodleAccounts->search(function ($moodleAccount) use ($coreAccount) {
+                        return "{$coreAccount->id}" === $moodleAccount->username;
+                    });
 
-                $moodleAccount = $moodleAccountKey !== false ? $moodleAccounts[$moodleAccountKey] : false;
+                    $moodleAccount = $moodleAccountKey !== false ? $moodleAccounts[$moodleAccountKey] : false;
 
-                $coreAccount->syncToMoodle($moodleAccount);
+                    $coreAccount->syncToMoodle($moodleAccount);
 
-                unset($moodleAccounts[$coreAccount->id]);
-            }
-        });
+                    unset($moodleAccounts[$coreAccount->id]);
+                }
+            });
 
+        // soft-delete any Moodle users that weren't in Core
         DB::table('vatuk_moodle.mdl_user')
             ->where(function ($query) {
                 $query->where('auth', '!=', 'nologin')
