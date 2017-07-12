@@ -57,7 +57,11 @@ class SyncMoodle extends Command
             }
         });
 
-        DB::table('vatuk_moodle.mdl_user')->whereIn('username', $moodleAccounts)
+        DB::table('vatuk_moodle.mdl_user')
+            ->where(function ($query) {
+                $query->where('auth', '!=', 'nologin')
+                    ->orWhere('deleted', '!=', 1);
+            })->whereIn('username', $moodleAccounts)
             ->update(['auth' => 'nologin', 'deleted' => 1]);
     }
 }
