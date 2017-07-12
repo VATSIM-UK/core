@@ -7,9 +7,6 @@ use App\Models\Mship\Account;
 
 /**
  * Runs nightly to sync Core users to Moodle.
- *
- * This script was moved into Core without improvements, and is therefore rather database-intensive. Future work may
- * need doing after Moodle starts utilising Core SSO.
  */
 class SyncMoodle extends Command
 {
