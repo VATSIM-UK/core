@@ -32,16 +32,17 @@ class SyncMoodle extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
         $this->sso_account_id = DB::table('oauth_clients')->where('name', 'Moodle')->first()->id;
 
-        DB::table('vatuk_moodle.mdl_user')->update(['vatuk_cron' => 0]);
-
         $members_moodle = DB::table('vatuk_moodle.mdl_user')
-            ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber']);
+            ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
+            ->keyBy(function ($member) {
+                return $member->username;
+            });
 
         Account::whereNotNull('last_login')->with('states', 'qualifications', 'bans')->chunk(500, function ($members) use ($members_moodle) {
             foreach ($members as $member) {
@@ -52,7 +53,7 @@ class SyncMoodle extends Command
                 })->first();
                 $email = is_null($ssoEmail) ? $member->email : $ssoEmail->email->email;
 
-                $inGoodStanding = ($member->hasState('DIVISION')
+                $allowLogin = ($member->hasState('DIVISION')
                         || $member->hasState('VISITING')
                         || $member->hasState('TRANSFERRING'))
                     && !$member->is_banned;
@@ -60,62 +61,73 @@ class SyncMoodle extends Command
                     return "{$member->id}" === $member_moodle->username;
                 });
 
-                if ($inGoodStanding && $moodleUser === false) {
-                    $this->log('User does not exist, creating', 'comment');
-                    DB::table('vatuk_moodle.mdl_user')->insert([
-                        'auth' => 'vatsim',
-                        'deleted' => 0,
-                        'confirmed' => 1,
-                        'policyagreed' => 1,
-                        'mnethostid' => 1,
-                        'username' => $member->id,
-                        'password' => md5(str_random(60)),
-                        'firstname' => $member->name_first,
-                        'lastname' => $member->name_last,
-                        'email' => $email,
-                        'vatuk_cron' => 1,
-                    ]);
+                if ($allowLogin && $moodleUser === false) {
+                    $this->createUser($member, $email);
                 } elseif ($moodleUser) {
-                    $old = [
-                        'auth' => $members_moodle[$moodleUser]->auth,
-                        'deleted' => $members_moodle[$moodleUser]->deleted,
-                        'firstname' => $members_moodle[$moodleUser]->firstname,
-                        'lastname' => $members_moodle[$moodleUser]->lastname,
-                        'email' => $members_moodle[$moodleUser]->email,
-                        'idnumber' => $members_moodle[$moodleUser]->idnumber,
-                        'vatuk_cron' => 1,
-                    ];
-
-                    $new = [
-                        'auth' => $inGoodStanding ? 'vatsim' : 'nologin',
-                        'deleted' => $inGoodStanding ? 0 : 1,
-                        'firstname' => $member->name_first,
-                        'lastname' => $member->name_last,
-                        'email' => $email,
-                        'idnumber' => $member->id,
-                        'vatuk_cron' => 1,
-                    ];
-
-                    $dirty = array_keys(array_diff_assoc($old, $new));
-                    if (!empty($dirty)) {
-                        $output = 'User exists, updating:';
-                        foreach ($dirty as $key) {
-                            $output .= " || $key: $old[$key] -> $new[$key]";
-                        }
-
-                        $this->log($output, 'comment');
-                        DB::table('vatuk_moodle.mdl_user')->where('username', $member->id)->update($new);
-                    } else {
-                        $this->log('User exists and is up to date', 'info');
-                        DB::table('vatuk_moodle.mdl_user')->where('username', $member->id)->update(['vatuk_cron' => 1]);
-                    }
+                    $this->updateUser($member, $email, $allowLogin, $members_moodle[$moodleUser]);
                 } else {
                     $this->log('User does not exist and is not eligible', 'info');
                 }
+
+                unset($members_moodle[$member->id]);
             }
         });
 
-        DB::table('vatuk_moodle.mdl_user')->where('vatuk_cron', 0)->update(['auth' => 'nologin', 'deleted' => 1]);
-        DB::table('vatuk_moodle.mdl_user')->update(['vatuk_cron' => 0]);
+        DB::table('vatuk_moodle.mdl_user')->whereIn('username', $members_moodle)
+            ->update(['auth' => 'nologin', 'deleted' => 1]);
+    }
+
+    protected function createUser($member, $email)
+    {
+        $this->log('User does not exist, creating', 'comment');
+        DB::table('vatuk_moodle.mdl_user')->insert([
+            'auth' => 'vatsim',
+            'deleted' => 0,
+            'confirmed' => 1,
+            'policyagreed' => 1,
+            'mnethostid' => 1,
+            'username' => $member->id,
+            'password' => md5(str_random(60)),
+            'firstname' => $member->name_first,
+            'lastname' => $member->name_last,
+            'email' => $email,
+            'vatuk_cron' => 1,
+        ]);
+    }
+
+    protected function updateUser($member, $email, $allowLogin, $moodleAccount)
+    {
+        $old = [
+            'auth' => $moodleAccount->auth,
+            'deleted' => $moodleAccount->deleted,
+            'firstname' => $moodleAccount->firstname,
+            'lastname' => $moodleAccount->lastname,
+            'email' => $moodleAccount->email,
+            'idnumber' => $moodleAccount->idnumber,
+            'vatuk_cron' => 1,
+        ];
+
+        $new = [
+            'auth' => $allowLogin ? 'vatsim' : 'nologin',
+            'deleted' => $allowLogin ? 0 : 1,
+            'firstname' => $member->name_first,
+            'lastname' => $member->name_last,
+            'email' => $email,
+            'idnumber' => $member->id,
+            'vatuk_cron' => 1,
+        ];
+
+        $dirty = array_keys(array_diff_assoc($old, $new));
+        if (!empty($dirty)) {
+            $output = 'User exists, updating:';
+            foreach ($dirty as $key) {
+                $output .= " || $key: $old[$key] -> $new[$key]";
+            }
+
+            $this->log($output, 'comment');
+            DB::table('vatuk_moodle.mdl_user')->where('username', $member->id)->update($new);
+        } else {
+            $this->log('User exists and is up to date', 'info');
+        }
     }
 }
