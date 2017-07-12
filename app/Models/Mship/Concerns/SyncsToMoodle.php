@@ -16,7 +16,7 @@ trait SyncsToMoodle
      *
      * @param mixed $moodleAccount Related Moodle account, false if doesn't exist
      */
-    function syncToMoodle($moodleAccount)
+    public function syncToMoodle($moodleAccount)
     {
         if (!isset(self::$sso_account_id)) {
             self::$sso_account_id = DB::table('oauth_clients')->where('name', 'Moodle')->first()->id;
