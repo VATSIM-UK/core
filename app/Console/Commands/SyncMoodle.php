@@ -63,7 +63,7 @@ class SyncMoodle extends Command
 
                 if ($allowLogin && $moodleUser === false) {
                     $this->createUser($member, $email);
-                } elseif ($moodleUser) {
+                } elseif ($moodleUser !== false) {
                     $this->updateUser($member, $email, $allowLogin, $members_moodle[$moodleUser]);
                 } else {
                     $this->log('User does not exist and is not eligible', 'info');
