@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Models\Mship\Concerns\SyncsToMoodle;
 use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -159,7 +160,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait, SyncsToMoodle;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
