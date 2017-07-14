@@ -15,6 +15,6 @@ class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
     public function handle(ApplicationAccepted $event)
     {
         $application = $event->application;
-        $application->facility->notify(new ApplicationAccepted($application));
+        $application->facility->notify(new \App\Notifications\ApplicationAccepted($application));
     }
 }
