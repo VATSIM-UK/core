@@ -32,45 +32,45 @@ class Router extends AdmController
         \Debugbar::disable();
         switch (Request::get('action')) {
             case 'automaticlogin':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postAuto", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postAuto', Request::all());
 
             case 'verifysession':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postVerify", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postVerify', Request::all());
 
             case 'getpilotcenterdata':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getPilotInfo", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getPilotInfo', Request::all());
 
             case 'getairports':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getAirports", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getAirports', Request::all());
 
             case 'getaircraft':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Data@getAircraft", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getAircraft', Request::all());
 
             case 'searchflights':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getSearch", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getSearch', Request::all());
 
             case 'getbidflights':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBids", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBids', Request::all());
 
             case 'bidonflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBid", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBid', Request::all());
 
             case 'deletebidflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBidDelete", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBidDelete', Request::all());
 
             case 'searchpireps':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Pirep@getSearch", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Pirep::class.'@getSearch', Request::all());
 
             case 'getpirepdata':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Pirep@getData", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Pirep::class.'@getData', Request::all());
 
             case 'createflight':
                 return '';
@@ -88,13 +88,13 @@ class Router extends AdmController
         \Debugbar::disable();
         switch (Request::get('action')) {
             case 'manuallogin':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Authentication@postManual", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postManual', Request::all());
 
             case 'searchflights':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getSearch", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getSearch', Request::all());
 
             case 'getbidflights':
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@getBids", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBids', Request::all());
 
             case 'bidonflight':
                 return '';
@@ -116,14 +116,14 @@ class Router extends AdmController
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@postPosition", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@postPosition', Request::all());
 
             case 'filepirep':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call("\App\Modules\Smartcars\Http\Controllers\Api\Flight@postReport", Request::all());
+                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@postReport', Request::all());
 
             default:
                 return 'Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1';
