@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Models\Mship\Concerns\SyncsToMoodle;
 use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -16,6 +15,7 @@ use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Models\Mship\Concerns\SyncsToMoodle;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;

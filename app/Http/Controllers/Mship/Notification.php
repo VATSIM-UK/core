@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Session;
 use Redirect;
 

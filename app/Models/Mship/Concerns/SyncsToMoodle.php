@@ -100,6 +100,7 @@ trait SyncsToMoodle
         $ssoEmail = $this->ssoEmails->filter(function ($ssoemail) {
             return $ssoemail->sso_account_id === self::$sso_account_id;
         })->first();
+
         return is_null($ssoEmail) ? $this->email : $ssoEmail->email->email;
     }
 
