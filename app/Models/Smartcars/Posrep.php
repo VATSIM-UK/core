@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Smartcars\Models;
+namespace App\Models\Smartcars;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,11 +20,11 @@ class Posrep extends Model
 
     public function bid()
     {
-        return $this->hasOne(\App\Modules\Smartcars\Models\Flight::class, 'id', 'flight_id');
+        return $this->hasOne(\App\Models\Smartcars\Flight::class, 'id', 'flight_id');
     }
 
     public function aircraft()
     {
-        return $this->hasOne(\App\Modules\Smartcars\Models\Aircraft::class, 'id', 'aircraft_id');
+        return $this->hasOne(\App\Models\Smartcars\Aircraft::class, 'id', 'aircraft_id');
     }
 }

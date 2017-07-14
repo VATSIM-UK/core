@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Smartcars\Models;
+namespace App\Models\Smartcars;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +20,7 @@ class Pirep extends Model
 
     public function bid()
     {
-        return $this->hasOne(\App\Modules\Smartcars\Models\Bid::class, 'id', 'bid_id');
+        return $this->hasOne(\App\Models\Smartcars\Bid::class, 'id', 'bid_id');
     }
 
     public function scopeBelongsTo($query, $cid)

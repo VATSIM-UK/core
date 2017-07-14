@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Smartcars\Http\Controllers\Api;
+namespace App\Http\Controllers\Smartcars\Api;
 
 use Input;
-use App\Modules\Smartcars\Models\Bid;
-use App\Modules\Smartcars\Models\Airport;
-use App\Modules\Smartcars\Models\Aircraft;
+use App\Models\Smartcars\Bid;
+use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Aircraft;
 use App\Http\Controllers\Adm\AdmController;
-use App\Modules\Smartcars\Models\Pirep as PirepData;
+use App\Models\Smartcars\Pirep as PirepData;
 
 class Pirep extends AdmController
 {

@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Modules\Smartcars\Http\Controllers\Api;
+namespace App\Http\Controllers\Smartcars\Api;
 
 use Input;
-use App\Modules\Smartcars\Models\Bid;
-use App\Modules\Smartcars\Models\Pirep;
-use App\Modules\Smartcars\Models\Posrep;
-use App\Modules\Smartcars\Models\Airport;
-use App\Modules\Smartcars\Models\Aircraft;
+use App\Models\Smartcars\Bid;
+use App\Models\Smartcars\Pirep;
+use App\Models\Smartcars\Posrep;
+use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Aircraft;
 use App\Http\Controllers\Adm\AdmController;
 
 class Flight extends AdmController
 {
     public function getSearch()
     {
-        $flights = \App\Modules\Smartcars\Models\Flight::with('departure')->with('arrival')->where('enabled', '=', 1);
+        $flights = \App\Models\Smartcars\Flight::with('departure')->with('arrival')->where('enabled', '=', 1);
 
         $departure = Airport::findByIcao(Input::get('departureicao'));
         if (Input::get('departureicao', null) != null) {
@@ -151,7 +151,7 @@ class Flight extends AdmController
 
     public function getBid()
     {
-        $flight = \App\Modules\Smartcars\Models\Flight::find(Input::get('routeid'));
+        $flight = \App\Models\Smartcars\Flight::find(Input::get('routeid'));
 
         if (!$flight) {
             return 'INVALID_ROUTEID';
@@ -173,7 +173,7 @@ class Flight extends AdmController
 
     public function getBidDelete()
     {
-        $bid = \App\Modules\Smartcars\Models\Bid::find(Input::get('bidid'));
+        $bid = \App\Models\Smartcars\Bid::find(Input::get('bidid'));
 
         if ($bid->account_id != Input::get('dbid')) {
             return 'AUTH_FAILED';

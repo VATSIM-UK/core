@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Smartcars\Models;
+namespace App\Models\Smartcars;
 
 use Illuminate\Database\Eloquent\Model;
 

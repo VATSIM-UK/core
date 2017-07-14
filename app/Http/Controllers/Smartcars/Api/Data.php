@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Smartcars\Http\Controllers\Api;
+namespace App\Http\Controllers\Smartcars\Api;
 
 use Input;
 use App\Models\Mship\Account;
-use App\Modules\Smartcars\Models\Airport;
-use App\Modules\Smartcars\Models\Aircraft;
+use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Aircraft;
 use App\Http\Controllers\Adm\AdmController;
 
 class Data extends AdmController

@@ -91,6 +91,8 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
     return Response::json(['status' => 'success', 'data' => $return]);
 });
 
+// NETWORK DATA
+
 Route::group([
     'as' => 'networkdata.api.',
     'namespace' => 'NetworkData',
@@ -101,4 +103,40 @@ Route::group([
         'as' => 'online',
         'uses' => 'Feed@getOnline',
     ]);
+});
+
+// SMARTCARS
+
+Route::group([
+    'as'         => 'smartcars.api.',
+    'prefix'     => 'smartcars',
+    'namespace'  => 'Smarcars\Api',
+    'domain'     => config('app.url'),
+], function () {
+    Route::get('/call', [
+        'as'   => 'call',
+        'uses' => 'Router@getRoute',
+    ]);
+
+    Route::post('/call', [
+        'as'   => 'call.post',
+        'uses' => 'Router@postRoute',
+    ]);
+
+    Route::group(['as' => 'auth.', 'prefix' => 'auth/'], function () {
+        Route::post('/manual', [
+            'as'   => 'manual',
+            'uses' => 'Authentication@postManual',
+        ]);
+
+        Route::post('/auto', [
+            'as'   => 'auto',
+            'uses' => 'Authentication@postAuto',
+        ]);
+
+        Route::post('/verify', [
+            'as'   => 'verify',
+            'uses' => 'Authentication@postVerify',
+        ]);
+    });
 });

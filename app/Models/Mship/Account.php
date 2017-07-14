@@ -465,7 +465,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 
     public function pireps()
     {
-        return $this->hasManyThrough(\App\Modules\Smartcars\Models\Pirep::class, \App\Modules\Smartcars\Models\Bid::class, 'account_id', 'bid_id', 'id');
+        return $this->hasManyThrough(\App\Models\Smartcars\Pirep::class, \App\Models\Smartcars\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
     /**

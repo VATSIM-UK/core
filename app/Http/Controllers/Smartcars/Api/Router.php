@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Smartcars\Http\Controllers\Api;
+namespace App\Http\Controllers\Smartcars\Api;
 
 use Input;
 use Request;
 use App\Models\Mship\Account;
-use App\Modules\Smartcars\Models\Session;
+use App\Models\Smartcars\Session;
 use App\Http\Controllers\Adm\AdmController;
 
 class Router extends AdmController

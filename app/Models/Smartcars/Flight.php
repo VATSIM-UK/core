@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Modules\Smartcars\Models;
+namespace App\Models\Smartcars;
 
+use App\Models\Smartcars\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 class Flight extends Model
@@ -39,16 +40,16 @@ class Flight extends Model
 
     public function departure()
     {
-        return $this->belongsTo(\App\Modules\Smartcars\Models\Airport::class, 'departure_id', 'id');
+        return $this->belongsTo(\App\Models\Smartcars\Airport::class, 'departure_id', 'id');
     }
 
     public function arrival()
     {
-        return $this->belongsTo(\App\Modules\Smartcars\Models\Airport::class, 'arrival_id', 'id');
+        return $this->belongsTo(\App\Models\Smartcars\Airport::class, 'arrival_id', 'id');
     }
 
     public function aircraft()
     {
-        return $this->belongsTo(\App\Modules\Smartcars\Models\Aircraft::class, 'aircraft_id', 'id');
+        return $this->belongsTo(\App\Models\Smartcars\Aircraft::class, 'aircraft_id', 'id');
     }
 }

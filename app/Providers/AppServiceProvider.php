@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Response;
 use URL;
 use HTML;
 use View;
@@ -74,6 +75,14 @@ class AppServiceProvider extends ServiceProvider
             ['visit-transfer.admin._sidebar'],
             \App\Controllers\ViewComposers\StatisticsComposer::class
         );
+
+        Response::macro('csv', function ($value) {
+            return Response::make(implode(',', $value));
+        });
+
+        Response::macro('psv', function ($value) {
+            return Response::make(implode('|', $value));
+        });
     }
 
     /**
