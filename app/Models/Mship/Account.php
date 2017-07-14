@@ -715,19 +715,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * Check whether the user has the given state presently.
      *
      * @param string|State $search The given state to check if the account has.
-     *
      * @return bool
+     * @throws InvalidStateException
      */
     public function hasState($search)
     {
         if (is_string($search)) {
-            $search = State::findByCode($search);
-        } elseif (!($search instanceof State)) {
+            return $this->states
+                ->contains('code', $search);
+        } elseif ($search instanceof State) {
+            return $this->states
+                ->contains('id', $search->id);
+        } else {
             throw new InvalidStateException();
         }
-
-        return $this->states
-            ->contains('id', $search->id);
     }
 
     /**
