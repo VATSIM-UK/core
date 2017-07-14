@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Session;
 use Redirect;
 
@@ -12,7 +13,7 @@ class Notification extends \App\Http\Controllers\BaseController
 
     public function postAcknowledge($notification)
     {
-        $this->account->readNotifications()->attach($notification);
+        $this->account->readNotifications()->syncWithoutDetaching([$notification->id]);
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if (Session::has('force_notification_read_return_url')) {
