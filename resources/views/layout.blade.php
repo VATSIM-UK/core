@@ -55,7 +55,7 @@
 
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
-                        {!! link_to_route("mship.feedback.new.form", "Feedback", [1]) !!}
+                        {!! link_to_route("mship.feedback.new", "Feedback") !!}
                     </li>
                 </ul>
 
