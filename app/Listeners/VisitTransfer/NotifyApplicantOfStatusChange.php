@@ -16,6 +16,6 @@ class NotifyApplicantOfStatusChange implements ShouldQueue
     public function handle(ApplicationStatusChangedEvent $event)
     {
         $application = $event->application;
-        $application->account->notify(new ApplicationStatusChanged($application));
+        $application->account->notify(new \App\Notifications\ApplicationStatusChanged($application));
     }
 }
