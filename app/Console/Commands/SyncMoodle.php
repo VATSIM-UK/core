@@ -59,7 +59,7 @@ class SyncMoodle extends Command
             ->where(function ($query) {
                 $query->where('auth', '!=', 'nologin')
                     ->orWhere('deleted', '!=', 1);
-            })->whereIn('username', $moodleAccounts)
+            })->whereIn('username', $moodleAccounts->pluck('username'))
             ->update(['auth' => 'nologin', 'deleted' => 1]);
     }
 }
