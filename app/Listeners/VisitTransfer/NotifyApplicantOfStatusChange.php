@@ -3,7 +3,6 @@
 namespace App\Listeners\VisitTransfer;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Notifications\ApplicationStatusChanged;
 use App\Events\VisitTransfer\ApplicationStatusChanged as ApplicationStatusChangedEvent;
 
 class NotifyApplicantOfStatusChange implements ShouldQueue
