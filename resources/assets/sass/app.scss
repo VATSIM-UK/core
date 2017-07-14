@@ -37,7 +37,7 @@ body, html {
 .logo_container{
   height: 70%;
   float: left;
-  margin: 10px 15px 0 5.8%;
+  margin: 10px 15px 0 5.0%;
 
   img {
     height: 100%;
@@ -48,7 +48,7 @@ body, html {
   float: right;
   text-align: right;
   width: auto;
-  margin-right: 5.8%;
+  margin-right: 5.0%;
   margin-top: 35px;
 }
 
@@ -68,14 +68,6 @@ body, html {
   padding-top: 25px;
   width: 80%;
   height: 100%
-}
-
-.navbar-right {
-  margin-right: 5.8%;
-}
-.navbar-collapse.in > .navbar-right,
-.navbar-collapse.collapsing > .navbar-right {
-  margin-right: -5.8%;
 }
 
 .nav_lower_container {
@@ -236,8 +228,9 @@ body, html {
   left: inherit;
 }
 
-.dropdown-menu {
-  left: inherit;
+.dropdown-menu-logout {
+  left:auto !important;
+  right:5% !important;
 }
 
 .dropdown-large {
@@ -286,7 +279,7 @@ body, html {
   font-weight: bold;
   font-size: 18px;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .dropdown-menu-large {
     margin-left: 0 ;
     margin-right: 0 ;
@@ -300,7 +293,38 @@ body, html {
   .dropdown-menu-large .dropdown-header {
     padding: 3px 15px !important;
   }
+  .navbar-notification {
+	  display: none;
+  }
 }
+@media (min-width: 768px) {
+  .navbar-right:not(.navbar-notification) {
+    margin-right: 5.0%;
+  }
+  .navbar-right.navbar-notification {
+    margin-right: 0 ;
+  }
+  .navbar-collapse.in > .navbar-right,
+  .navbar-collapse.collapsing > .navbar-right {
+    margin-right: -5.0%;
+  }
+}
+.account-dropdown {
+	li {
+		max-width: 100%;
+		min-width: 4em;
+		a {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+	}
+	max-width: calc(90% - 650px);
+}
+.unread-notifications {
+	color: #f55;
+}
+
 .navcustom>li>a {
   padding: 16px 15px;
   font-size: 14px;
@@ -310,6 +334,8 @@ body, html {
 
 .nav>li>a:focus, .nav>li>a:hover {
   background-color: #00b0f0;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+  transition-timing-function: ease-out;
 }
 
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover {

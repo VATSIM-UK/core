@@ -153,6 +153,8 @@ Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
         Route::post('/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedbackFormSelect']);
         Route::get('/new/{form}', ['as' => 'mship.feedback.new.form', 'uses' => 'Feedback@getFeedback']);
         Route::post('/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
+
+        Route::get('/users/search/{name}', ['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
     });
 
     Route::group(['middleware' => ['auth_full_group']], function () {
@@ -181,7 +183,7 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
  * COMMUNITY
  */
 Route::get('/community', function () {
-    return Redirect::route('community.deploy');
+    return Redirect::route('membership.deploy');
 });
 
 Route::group([
@@ -374,6 +376,11 @@ Route::group([
                 'uses' => 'Application@postFacility',
             ]);
 
+            Route::post('/facility/manual', [
+                'as' => 'facility.manual.post',
+                'uses' => 'Application@postManualFacility',
+            ]);
+
             Route::get('/statement', [
                 'as' => 'statement',
                 'uses' => 'Application@getStatement',
@@ -435,6 +442,11 @@ Route::group([
         Route::post('/complete/{token}', [
             'as' => 'complete.post',
             'uses' => 'Reference@postComplete',
+        ]);
+
+        Route::post('/complete/{token}/cancel', [
+            'as' => 'complete.cancel',
+            'uses' => 'Reference@postCancel',
         ]);
     });
 });

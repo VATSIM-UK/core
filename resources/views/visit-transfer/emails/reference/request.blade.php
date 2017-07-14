@@ -6,7 +6,7 @@
 </p>
 
 <p>
-    In order for their application to proceed you must click the URL below and either complete the application, or refuse to provide a reference.  This request will expire
+    In order for their application to proceed you must click the URL below and complete the application. If you do not know the applicant, you are able to state so at the following link. This request will expire
     in 14 days and {{ $application->account->name }}'s application will be automatically rejected.
 </p>
 

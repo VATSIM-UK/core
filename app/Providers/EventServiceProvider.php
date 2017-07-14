@@ -18,15 +18,15 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Sync\PushToForum::class,
             \App\Listeners\Sync\PushToMoodle::class,
             \App\Listeners\Sync\PushToRts::class,
-            \App\Listeners\Sync\PushToPts::class,
             \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
+
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
         AtcSessionEnded::class => [
-            AtcSessionRecordedSuccessNotification::class,
+            //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [
@@ -54,6 +54,10 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ApplicationStatusChanged::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
+        ],
+
+        \App\Events\VisitTransfer\ReferenceCancelled::class => [
+            \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCancellation::class,
         ],
 
         \App\Events\VisitTransfer\ReferenceUnderReview::class => [

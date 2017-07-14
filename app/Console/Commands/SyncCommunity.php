@@ -46,7 +46,7 @@ class SyncCommunity extends Command
         $countSuccess = 0;
         $countFailure = 0;
 
-        $sso_account_id = DB::table('sso_account')->where('username', 'vuk.community')->first()->id;
+        $sso_account_id = DB::table('oauth_clients')->where('name', 'Community')->first()->id;
         for ($i = 0; $i < $countTotal; $i++) {
             $members->next();
 

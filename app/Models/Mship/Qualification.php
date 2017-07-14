@@ -3,7 +3,6 @@
 namespace App\Models\Mship;
 
 use App\Traits\RecordsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
  * App\Models\Mship\Qualification
@@ -35,11 +34,11 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  */
 class Qualification extends \Eloquent
 {
-    use SoftDeletingTrait, RecordsActivity;
+    use RecordsActivity;
     protected $table = 'mship_qualification';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'deleted_at'];
     protected $hidden = ['id'];
+    public $timestamps = false;
 
     public function scopeOfType($query, $type)
     {
