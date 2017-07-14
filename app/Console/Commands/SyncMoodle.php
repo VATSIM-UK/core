@@ -38,18 +38,12 @@ class SyncMoodle extends Command
             });
 
         Account::whereNotNull('last_login')
-            ->with('states', 'qualifications', 'bans')
+            ->with('states', 'bans', 'ssoEmails')
             ->chunk(500, function ($coreAccounts) use (&$moodleAccounts) {
                 /** @var Account $coreAccount */
                 foreach ($coreAccounts as $coreAccount) {
-                    $moodleAccountKey = $moodleAccounts->search(function ($moodleAccount) use ($coreAccount) {
-                        return "{$coreAccount->id}" === $moodleAccount->username;
-                    });
-
-                    $moodleAccount = $moodleAccountKey !== false ? $moodleAccounts[$moodleAccountKey] : false;
-
+                    $moodleAccount = $moodleAccounts->get($coreAccount->id) ?: false;
                     $coreAccount->syncToMoodle($moodleAccount);
-
                     unset($moodleAccounts[$coreAccount->id]);
                 }
             });

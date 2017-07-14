@@ -22,20 +22,10 @@ trait SyncsToMoodle
             self::$sso_account_id = DB::table('oauth_clients')->where('name', 'Moodle')->first()->id;
         }
 
-        $ssoEmail = $this->ssoEmails->filter(function ($ssoemail) {
-            return $ssoemail->sso_account_id === self::$sso_account_id;
-        })->first();
-        $email = is_null($ssoEmail) ? $this->email : $ssoEmail->email->email;
-
-        $allowLogin = ($this->hasState('DIVISION')
-                || $this->hasState('VISITING')
-                || $this->hasState('TRANSFERRING'))
-            && !$this->is_banned;
-
-        if ($allowLogin && $moodleAccount === false) {
-            $this->createUser($email);
+        if ($moodleAccount === false && $this->canLoginToMoodle()) {
+            $this->createUser($this->getMoodleEmail());
         } elseif ($moodleAccount !== false) {
-            $this->updateUser($email, $allowLogin, $moodleAccount);
+            $this->updateUser($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
         } else {
             // do nothing - user is not eligible for a Moodle account, nor do they have one already
         }
@@ -98,5 +88,31 @@ trait SyncsToMoodle
         } else {
             // do nothing - account is up to date
         }
+    }
+
+    /**
+     * Get the email to use for the Moodle account.
+     *
+     * @return string
+     */
+    protected function getMoodleEmail()
+    {
+        $ssoEmail = $this->ssoEmails->filter(function ($ssoemail) {
+            return $ssoemail->sso_account_id === self::$sso_account_id;
+        })->first();
+        return is_null($ssoEmail) ? $this->email : $ssoEmail->email->email;
+    }
+
+    /**
+     * Check whether the user should be able to login to Moodle.
+     *
+     * @return bool
+     */
+    protected function canLoginToMoodle()
+    {
+        return ($this->hasState('DIVISION')
+                || $this->hasState('VISITING')
+                || $this->hasState('TRANSFERRING'))
+            && !$this->is_banned;
     }
 }
