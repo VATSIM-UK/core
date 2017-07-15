@@ -196,7 +196,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'name_first' => '',
         'name_last' => '',
         'status' => self::STATUS_ACTIVE,
-        'last_login_ip' => '127.0.0.1',
+        'last_login_ip' => '0.0.0.0',
     ];
     protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
 
