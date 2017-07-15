@@ -13,7 +13,6 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
-use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\Mship\WelcomeMember;
 use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\FeedbackReceived;
@@ -23,7 +22,7 @@ use App\Notifications\ApplicationReferenceRequest;
 use App\Notifications\ApplicationReferenceAccepted;
 use App\Notifications\ApplicationReferenceRejected;
 use App\Notifications\ApplicationReferenceSubmitted;
-use App\Notifications\Mship\Security\TemporaryPassword;
+use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\ApplicationReferenceNoLongerNeeded;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
 

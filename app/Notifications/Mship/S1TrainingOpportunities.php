@@ -4,7 +4,6 @@ namespace App\Notifications\Mship;
 
 use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
-use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

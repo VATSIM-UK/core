@@ -3,8 +3,6 @@
 namespace App\Listeners\Mship;
 
 use App\Events\Mship\QualificationAdded;
-use App\Models\Contact;
-use App\Notifications\Mship\FeedbackReceived;
 use App\Events\Mship\Feedback\NewFeedbackEvent;
 use App\Notifications\Mship\S1TrainingOpportunities;
 
