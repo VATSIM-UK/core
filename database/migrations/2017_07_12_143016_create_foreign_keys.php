@@ -20,16 +20,16 @@ class CreateForeignKeys extends Migration
         });
 
         Schema::table('community_membership', function (Blueprint $table) {
-            $table->foreign('group_id')->references('id')->on('community_group');
+            $table->foreign('group_id')->references('id')->on('community_group')->onDelete('cascade');
         });
 
         Schema::table('messages_thread_participant', function (Blueprint $table) {
-            $table->foreign('thread_id')->references('id')->on('messages_thread');
+            $table->foreign('thread_id')->references('id')->on('messages_thread')->onDelete('cascade');
             $table->foreign('account_id')->references('id')->on('mship_account');
         });
 
         Schema::table('messages_thread_post', function (Blueprint $table) {
-            $table->foreign('thread_id')->references('id')->on('messages_thread');
+            $table->foreign('thread_id')->references('id')->on('messages_thread')->onDelete('cascade');
             $table->foreign('account_id')->references('id')->on('mship_account');
         });
 
@@ -66,7 +66,7 @@ class CreateForeignKeys extends Migration
         DB::statement('delete from mship_account_role where account_id not in (select id from mship_account)');
         Schema::table('mship_account_role', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
-            $table->foreign('role_id')->references('id')->on('mship_role');
+            $table->foreign('role_id')->references('id')->on('mship_role')->onDelete('cascade');
         });
 
         DB::statement('delete from mship_account_state where account_id not in (select id from mship_account)');
@@ -98,13 +98,13 @@ class CreateForeignKeys extends Migration
 
         DB::statement('delete from mship_oauth_emails where sso_account_id not in (select id from oauth_clients)');
         Schema::table('mship_oauth_emails', function (Blueprint $table) {
-            $table->foreign('account_email_id')->references('id')->on('mship_account_email');
-            $table->foreign('sso_account_id')->references('id')->on('oauth_clients');
+            $table->foreign('account_email_id')->references('id')->on('mship_account_email')->onDelete('cascade');
+            $table->foreign('sso_account_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('mship_permission_role', function (Blueprint $table) {
-            $table->foreign('permission_id')->references('id')->on('mship_permission');
-            $table->foreign('role_id')->references('id')->on('mship_role');
+            $table->foreign('permission_id')->references('id')->on('mship_permission')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('mship_role')->onDelete('cascade');
         });
 
         Schema::table('networkdata_atc', function (Blueprint $table) {
@@ -117,14 +117,14 @@ class CreateForeignKeys extends Migration
             $table->unsignedInteger('user_id')->change();
             $table->unsignedInteger('client_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
-            $table->foreign('client_id')->references('id')->on('oauth_clients');
+            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_auth_codes', function (Blueprint $table) {
             $table->unsignedInteger('user_id')->change();
             $table->unsignedInteger('client_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
-            $table->foreign('client_id')->references('id')->on('oauth_clients');
+            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         DB::table('oauth_clients')->where('user_id', 0)->update(['user_id' => null]);
@@ -135,29 +135,29 @@ class CreateForeignKeys extends Migration
 
         Schema::table('oauth_personal_access_clients', function (Blueprint $table) {
             $table->unsignedInteger('client_id')->change();
-            $table->foreign('client_id')->references('id')->on('oauth_clients');
+            $table->foreign('client_id')->references('id')->on('oauth_clients')->onDelete('cascade');
         });
 
         Schema::table('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->foreign('access_token_id')->references('id')->on('oauth_access_tokens');
+            $table->foreign('access_token_id')->references('id')->on('oauth_access_tokens')->onDelete('cascade');
         });
 
         Schema::table('staff_account_position', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
-            $table->foreign('position_id')->references('id')->on('staff_positions');
+            $table->foreign('position_id')->references('id')->on('staff_positions')->onDelete('cascade');
         });
 
         Schema::table('staff_attribute_position', function (Blueprint $table) {
-            $table->foreign('attribute_id')->references('id')->on('staff_attributes');
-            $table->foreign('position_id')->references('id')->on('staff_positions');
+            $table->foreign('attribute_id')->references('id')->on('staff_attributes')->onDelete('cascade');
+            $table->foreign('position_id')->references('id')->on('staff_positions')->onDelete('cascade');
         });
 
         Schema::table('staff_attributes', function (Blueprint $table) {
-            $table->foreign('service_id')->references('id')->on('staff_services');
+            $table->foreign('service_id')->references('id')->on('staff_services')->onDelete('cascade');
         });
 
         Schema::table('staff_positions', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('staff_positions');
+            $table->foreign('parent_id')->references('id')->on('staff_positions')->onDelete('set null');
         });
 
         Schema::table('sys_activity', function (Blueprint $table) {
@@ -169,7 +169,7 @@ class CreateForeignKeys extends Migration
         });
 
         Schema::table('sys_notification_read', function (Blueprint $table) {
-            $table->foreign('notification_id')->references('id')->on('sys_notification');
+            $table->foreign('notification_id')->references('id')->on('sys_notification')->onDelete('cascade');
         });
 
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
@@ -186,22 +186,22 @@ class CreateForeignKeys extends Migration
 
         DB::table('teamspeak_channel')->where('parent_id', 0)->update(['parent_id' => null]);
         Schema::table('teamspeak_channel', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('teamspeak_channel');
+            $table->foreign('parent_id')->references('id')->on('teamspeak_channel')->onDelete('set null');
         });
 
         Schema::table('teamspeak_channel_group_permission', function (Blueprint $table) {
-            $table->foreign('channel_id')->references('id')->on('teamspeak_channel');
-            $table->foreign('channelgroup_id')->references('id')->on('teamspeak_group');
-            $table->foreign('permission_id')->references('id')->on('mship_permission');
+            $table->foreign('channel_id')->references('id')->on('teamspeak_channel')->onDelete('cascade');
+            $table->foreign('channelgroup_id')->references('id')->on('teamspeak_group')->onDelete('cascade');
+            $table->foreign('permission_id')->references('id')->on('mship_permission')->onDelete('cascade');
         });
 
         Schema::table('teamspeak_confirmation', function (Blueprint $table) {
-            $table->foreign('registration_id')->references('id')->on('teamspeak_registration');
+            $table->foreign('registration_id')->references('id')->on('teamspeak_registration')->onDelete('cascade');
         });
 
         Schema::table('teamspeak_group', function (Blueprint $table) {
-            $table->foreign('permission_id')->references('id')->on('mship_permission');
-            $table->foreign('qualification_id')->references('id')->on('mship_qualification');
+            $table->foreign('permission_id')->references('id')->on('mship_permission')->onDelete('set null');
+            $table->foreign('qualification_id')->references('id')->on('mship_qualification')->onDelete('set null');
         });
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
