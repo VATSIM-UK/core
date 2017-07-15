@@ -151,14 +151,11 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSessionId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withIp($ip)
  * @mixin \Eloquent
- * @property-read int The timeout in minutes $session_timeout
- * @property-read int Period the notification has been effective for, in hours. $unread_must_acknowledge_time_elapsed
  */
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {

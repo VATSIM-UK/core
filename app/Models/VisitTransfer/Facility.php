@@ -26,9 +26,11 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @property bool $stage_checks
  * @property bool $auto_acceptance
  * @property bool $open
+ * @property bool $public
  * @property string $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
+ * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility atc()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility canTransfer()
@@ -39,6 +41,7 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility onlyTransfer()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility onlyVisit()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility pilot()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility public()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility trainingRequired()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereAutoAcceptance($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereCanTransfer($value)
@@ -48,6 +51,7 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereOpen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageChecks($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceEnabled($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceQuantity($value)
@@ -56,10 +60,6 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingTeam($value)
  * @mixin \Eloquent
- * @property bool $public
- * @property-read string $public_id
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility public()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
  */
 class Facility extends Model
 {
