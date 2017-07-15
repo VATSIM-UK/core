@@ -56,6 +56,10 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingTeam($value)
  * @mixin \Eloquent
+ * @property bool $public
+ * @property-read string $public_id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility public()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
  */
 class Facility extends Model
 {
