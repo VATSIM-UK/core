@@ -25,7 +25,7 @@
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
-    {!! HTML::style(elixir("css/app-all.css")) !!}
+    {!! HTML::style(mix("css/app-all.css")) !!}
     @yield('styles')
 </head>
 <body>
@@ -241,7 +241,7 @@
 
 </div>
 
-    {!! HTML::script(elixir("js/app-all.js")) !!}
+    {!! HTML::script(mix("js/app-all.js")) !!}
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
