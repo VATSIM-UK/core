@@ -20,7 +20,7 @@ install:
 - cp .env.example .env
 - php artisan key:generate
 - php artisan migrate -vvv -n
-- npm install prod
+- npm run prod
 - chmod +x ./codeclimate.sh
 
 before_script:
