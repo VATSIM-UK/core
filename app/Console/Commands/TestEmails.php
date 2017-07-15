@@ -110,6 +110,7 @@ class TestEmails extends Command
         $this->log('testApplication');
         $testApplication = new Application();
         $testApplication->facility_id = 1;
+        $testApplication->account_id = $testAccount->id;
         $testApplication->save();
         $this->log('testReference');
         $testReference = new Reference();
@@ -124,6 +125,7 @@ class TestEmails extends Command
         $this->log('testFeedback');
         $testFeedback = new Feedback();
         $testFeedback->form_id = 1;
+        $testFeedback->account_id = $testAccount->id;
         $testFeedback->save();
 
         // main
