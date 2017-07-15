@@ -178,6 +178,11 @@ class Atc extends Model
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
     }
 
+    public function qualification()
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class);
+    }
+
     public function getAccountNameAttribute()
     {
         return $this->account->name;
