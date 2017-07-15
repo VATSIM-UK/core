@@ -35,7 +35,7 @@ trait RecordsActivity
     public function addActivity($event)
     {
         Activity::create([
-            'actor_id' => (Auth::check() ? Auth::id() : 0),
+            'actor_id' => (Auth::check() ? Auth::id() : null),
             'subject_id' => $this->getKey(),
             'subject_type' => get_class($this),
             'action' => $event,
