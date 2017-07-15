@@ -25,7 +25,7 @@ class MessageTest extends BrowserKitTestCase
                 $this->thread->participants()->save($participant);
             });
         factory(Post::class, 2)
-            ->create()
+            ->make()
             ->each(function($post) {
                 $this->thread->posts()->save($post);
             });
