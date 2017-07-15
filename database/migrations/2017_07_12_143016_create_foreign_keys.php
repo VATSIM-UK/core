@@ -16,7 +16,7 @@ class CreateForeignKeys extends Migration
         DB::statement('ALTER TABLE api_request MODIFY method VARCHAR(10)');
         Schema::table('api_request', function (Blueprint $table) {
             $table->unsignedInteger('api_account_id')->change();
-            $table->foreign('api_account_id')->references('id')->on('api_account');
+            $table->foreign('api_account_id')->references('id')->on('mship_account');
         });
 
         Schema::table('community_membership', function (Blueprint $table) {
@@ -34,7 +34,8 @@ class CreateForeignKeys extends Migration
         });
 
         DB::statement('ALTER TABLE mship_account_ban MODIFY account_id INT UNSIGNED NOT NULL');
-        DB::statement('ALTER TABLE mship_account_ban MODIFY banned_by INT UNSIGNED NOT NULL');
+        DB::statement('ALTER TABLE mship_account_ban MODIFY banned_by INT UNSIGNED');
+        DB::table('mship_account_ban')->where('banned_by', 0)->update(['banned_by' => null]);
         Schema::table('mship_account_ban', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
             $table->foreign('banned_by')->references('id')->on('mship_account');
@@ -46,21 +47,29 @@ class CreateForeignKeys extends Migration
         });
 
         Schema::table('mship_account_note', function (Blueprint $table) {
+            $table->unsignedInteger('writer_id')->nullable()->change();
+        });
+        DB::table('mship_account_note')->where('writer_id', 0)->update(['writer_id' => null]);
+        Schema::table('mship_account_note', function (Blueprint $table) {
             $table->foreign('note_type_id')->references('id')->on('mship_note_type');
             $table->foreign('account_id')->references('id')->on('mship_account');
             $table->foreign('writer_id')->references('id')->on('mship_account');
         });
 
+        DB::statement('delete from mship_account_qualification where account_id not in (select id from mship_account)');
+        DB::statement('delete from mship_account_qualification where qualification_id not in (select id from mship_qualification)');
         Schema::table('mship_account_qualification', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
             $table->foreign('qualification_id')->references('id')->on('mship_qualification');
         });
 
+        DB::statement('delete from mship_account_role where account_id not in (select id from mship_account)');
         Schema::table('mship_account_role', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
             $table->foreign('role_id')->references('id')->on('mship_role');
         });
 
+        DB::statement('delete from mship_account_state where account_id not in (select id from mship_account)');
         Schema::table('mship_account_state', function (Blueprint $table) {
             $table->unsignedInteger('state_id')->change();
             $table->foreign('account_id')->references('id')->on('mship_account');
@@ -87,6 +96,7 @@ class CreateForeignKeys extends Migration
             $table->foreign('form_id')->references('id')->on('mship_feedback_forms');
         });
 
+        DB::statement('delete from mship_oauth_emails where sso_account_id not in (select id from oauth_clients)');
         Schema::table('mship_oauth_emails', function (Blueprint $table) {
             $table->foreign('account_email_id')->references('id')->on('mship_account_email');
             $table->foreign('sso_account_id')->references('id')->on('oauth_clients');
@@ -117,6 +127,7 @@ class CreateForeignKeys extends Migration
             $table->foreign('client_id')->references('id')->on('oauth_clients');
         });
 
+        DB::table('oauth_clients')->where('user_id', 0)->update(['user_id' => null]);
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->unsignedInteger('user_id')->change();
             $table->foreign('user_id')->references('id')->on('mship_account');
@@ -150,6 +161,10 @@ class CreateForeignKeys extends Migration
         });
 
         Schema::table('sys_activity', function (Blueprint $table) {
+            $table->unsignedInteger('actor_id')->nullable()->change();
+        });
+        DB::table('sys_activity')->where('actor_id', 0)->update(['actor_id' => null]);
+        Schema::table('sys_activity', function (Blueprint $table) {
             $table->foreign('actor_id')->references('id')->on('mship_account');
         });
 
@@ -162,10 +177,14 @@ class CreateForeignKeys extends Migration
         });
 
         Schema::table('teamspeak_ban', function (Blueprint $table) {
+            $table->dropIndex('teamspeak_ban_account_id_index');
+        });
+        Schema::table('teamspeak_ban', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
             $table->foreign('authorised_by')->references('id')->on('mship_account');
         });
 
+        DB::table('teamspeak_channel')->where('parent_id', 0)->update(['parent_id' => null]);
         Schema::table('teamspeak_channel', function (Blueprint $table) {
             $table->foreign('parent_id')->references('id')->on('teamspeak_channel');
         });
@@ -247,10 +266,14 @@ class CreateForeignKeys extends Migration
         Schema::table('teamspeak_channel', function (Blueprint $table) {
             $table->dropForeign('teamspeak_channel_parent_id_foreign');
         });
+        DB::table('teamspeak_channel')->where('parent_id', null)->update(['parent_id' => 0]);
 
         Schema::table('teamspeak_ban', function (Blueprint $table) {
             $table->dropForeign('teamspeak_ban_account_id_foreign');
             $table->dropForeign('teamspeak_ban_authorised_by_foreign');
+        });
+        Schema::table('teamspeak_ban', function (Blueprint $table) {
+            $table->integer('account_id')->unsigned()->index()->change();
         });
 
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
@@ -263,6 +286,10 @@ class CreateForeignKeys extends Migration
 
         Schema::table('sys_activity', function (Blueprint $table) {
             $table->dropForeign('sys_activity_actor_id_foreign');
+        });
+        DB::table('sys_activity')->where('actor_id', null)->update(['actor_id' => 0]);
+        Schema::table('sys_activity', function (Blueprint $table) {
+            $table->unsignedInteger('actor_id')->change();
         });
 
         Schema::table('staff_positions', function (Blueprint $table) {
@@ -297,6 +324,7 @@ class CreateForeignKeys extends Migration
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->dropForeign('oauth_clients_user_id_foreign');
         });
+        DB::table('oauth_clients')->where('user_id', null)->update(['user_id' => 0]);
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->integer('user_id')->change();
         });
@@ -386,6 +414,10 @@ class CreateForeignKeys extends Migration
             $table->dropForeign('mship_account_note_account_id_foreign');
             $table->dropForeign('mship_account_note_writer_id_foreign');
         });
+        DB::table('mship_account_note')->where('writer_id', null)->update(['writer_id' => 0]);
+        Schema::table('mship_account_note', function (Blueprint $table) {
+            $table->unsignedInteger('writer_id')->change();
+        });
 
         Schema::table('mship_account_email', function (Blueprint $table) {
             $table->dropForeign('mship_account_email_account_id_foreign');
@@ -396,6 +428,7 @@ class CreateForeignKeys extends Migration
             $table->dropForeign('mship_account_ban_banned_by_foreign');
             $table->dropForeign('mship_account_ban_reason_id_foreign');
         });
+        DB::table('mship_account_ban')->where('banned_by', null)->update(['banned_by' => 0]);
         DB::statement('ALTER TABLE mship_account_ban MODIFY account_id MEDIUMINT UNSIGNED NOT NULL');
         DB::statement('ALTER TABLE mship_account_ban MODIFY banned_by MEDIUMINT UNSIGNED NOT NULL');
 
