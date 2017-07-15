@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship;
 
-use App\Models\Mship\Concerns\SyncsToMoodle;
+use App\Events\Mship\QualificationAdded;
 use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -16,6 +16,7 @@ use App\Models\Mship\Role as RoleData;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Models\Mship\Concerns\SyncsToMoodle;
 use App\Notifications\Mship\SlackInvitation;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
@@ -715,19 +716,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * Check whether the user has the given state presently.
      *
      * @param string|State $search The given state to check if the account has.
-     *
      * @return bool
+     * @throws InvalidStateException
      */
     public function hasState($search)
     {
         if (is_string($search)) {
-            $search = State::findByCode($search);
-        } elseif (!($search instanceof State)) {
+            return $this->states
+                ->contains('code', $search);
+        } elseif ($search instanceof State) {
+            return $this->states
+                ->contains('id', $search->id);
+        } else {
             throw new InvalidStateException();
         }
-
-        return $this->states
-            ->contains('id', $search->id);
     }
 
     /**
@@ -1113,6 +1115,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         if (!$this->hasQualification($qualification)) {
             $this->qualifications()->attach($qualification);
             $this->touch();
+            event(new QualificationAdded($this, $qualification));
         }
 
         return true;

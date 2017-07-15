@@ -13,6 +13,7 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
+use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\Mship\WelcomeMember;
 use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\FeedbackReceived;
@@ -109,6 +110,7 @@ class TestEmails extends Command
         $this->log('testApplication');
         $testApplication = new Application();
         $testApplication->facility_id = 1;
+        $testApplication->account_id = $testAccount->id;
         $testApplication->save();
         $this->log('testReference');
         $testReference = new Reference();
@@ -123,6 +125,7 @@ class TestEmails extends Command
         $this->log('testFeedback');
         $testFeedback = new Feedback();
         $testFeedback->form_id = 1;
+        $testFeedback->account_id = $testAccount->id;
         $testFeedback->save();
 
         // main
@@ -134,7 +137,7 @@ class TestEmails extends Command
         $testAccount->notify(new SlackInvitation());
         $testAccount->notify(new WelcomeMember());
         $testAccount->notify(new ForgottenPasswordLink($testTokenSecurityReset));
-        $testAccount->notify(new TemporaryPassword('test_password'));
+        $testAccount->notify(new S1TrainingOpportunities());
 
         // visiting/transfer
         $testAccount->notify(new ApplicationAccepted($testApplication));

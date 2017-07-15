@@ -21,6 +21,10 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
 
+        \App\Events\Mship\QualificationAdded::class => [
+            \App\Notifications\Mship\S1TrainingOpportunities::class,
+        ],
+
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
