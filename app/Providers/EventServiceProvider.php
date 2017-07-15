@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\Mship\EmailDeleting;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Listeners\NetworkData\AtcSessionRecordedSuccessNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,7 +23,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\QualificationAdded::class => [
-            \App\Notifications\Mship\S1TrainingOpportunities::class,
+            \App\Listeners\Mship\SendS1Email::class,
         ],
 
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [

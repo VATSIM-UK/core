@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Mship\Feedback;
+namespace App\Listeners\Mship;
 
 use App\Events\Mship\QualificationAdded;
 use App\Models\Contact;
