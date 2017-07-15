@@ -22,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\QualificationAdded::class => [
-
+            \App\Notifications\Mship\S1TrainingOpportunities::class,
         ],
 
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
