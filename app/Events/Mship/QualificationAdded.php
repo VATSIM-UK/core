@@ -3,9 +3,9 @@
 namespace App\Events\Mship;
 
 use App\Events\Event;
-use Illuminate\Queue\SerializesModels;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use Illuminate\Queue\SerializesModels;
 
 class QualificationAdded extends Event
 {

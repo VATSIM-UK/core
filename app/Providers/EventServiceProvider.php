@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\Mship\EmailDeleting;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Listeners\NetworkData\AtcSessionRecordedSuccessNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

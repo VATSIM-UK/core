@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Events\Mship\QualificationAdded;
 use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -13,6 +12,7 @@ use App\Models\Mship\Account\Email;
 use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
 use App\Models\Mship\Role as RoleData;
+use App\Events\Mship\QualificationAdded;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
