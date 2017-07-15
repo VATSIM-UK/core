@@ -12,7 +12,8 @@ before_install:
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS rts;' -uroot
 - composer install --prefer-dist --no-interaction -o > /dev/null
-- npm i -g npm@5.3.0
+- nvm install node
+- npm -v
 - npm install
 
 install:
@@ -44,6 +45,7 @@ after_script:
 cache:
   directories:
   - node_modules
+  - $HOME/.composer/cache/files
 
 notifications:
   email: false
