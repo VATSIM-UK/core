@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Events\Mship\QualificationAdded;
 use VatsimXML;
 use Carbon\Carbon;
 use App\Models\Mship\Note\Type;
@@ -1114,6 +1115,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         if (!$this->hasQualification($qualification)) {
             $this->qualifications()->attach($qualification);
             $this->touch();
+            event(new QualificationAdded($this, $qualification));
         }
 
         return true;
