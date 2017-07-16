@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\TeamSpeak;
 
-use Request;
-use Redirect;
-use Response;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
+use Redirect;
+use Request;
+use Response;
 
 class Registration extends \App\Http\Controllers\BaseController
 {

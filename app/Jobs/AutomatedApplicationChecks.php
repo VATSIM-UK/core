@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use Illuminate\Queue\SerializesModels;
 use App\Models\VisitTransfer\Application;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class AutomatedApplicationChecks extends Job implements ShouldQueue
 {

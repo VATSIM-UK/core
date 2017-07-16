@@ -3,13 +3,13 @@
 namespace App\Exceptions;
 
 use App;
-use Log;
 use Auth;
-use Slack;
-use Request;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Log;
+use Request;
+use Slack;
 
 class Handler extends ExceptionHandler
 {

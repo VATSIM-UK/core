@@ -2,19 +2,19 @@
 
 namespace App\Models\VisitTransfer;
 
-use App\Models\Sys\Token;
+use App\Events\VisitTransfer\ReferenceAccepted;
+use App\Events\VisitTransfer\ReferenceCancelled;
+use App\Events\VisitTransfer\ReferenceDeleted;
+use App\Events\VisitTransfer\ReferenceRejected;
+use App\Events\VisitTransfer\ReferenceUnderReview;
+use App\Exceptions\VisitTransfer\Reference\ReferenceAlreadySubmittedException;
+use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
+use App\Models\Sys\Token;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Events\VisitTransfer\ReferenceDeleted;
-use App\Events\VisitTransfer\ReferenceAccepted;
-use App\Events\VisitTransfer\ReferenceRejected;
-use App\Events\VisitTransfer\ReferenceCancelled;
-use App\Events\VisitTransfer\ReferenceUnderReview;
-use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
-use App\Exceptions\VisitTransfer\Reference\ReferenceAlreadySubmittedException;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Models\VisitTransfer\Reference

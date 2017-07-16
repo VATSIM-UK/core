@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use SlackUser;
 use App\Models\Mship\Account;
+use Exception;
 use GuzzleHttp\Exception\ServerException;
+use SlackUser;
 
 class SlackManager extends Command
 {

@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship;
 
-use App\Traits\RecordsActivity;
 use App\Models\Mship\Permission as PermissionData;
+use App\Traits\RecordsActivity;
 
 /**
  * App\Models\Mship\Role

@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use stdClass;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionException;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
+use stdClass;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {

@@ -2,12 +2,12 @@
 
 namespace App\Models\VisitTransfer;
 
+use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
-use Malahierba\PublicId\PublicId;
+use App\Models\VisitTransfer\Facility\Email;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use App\Models\VisitTransfer\Facility\Email;
-use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
+use Malahierba\PublicId\PublicId;
 
 /**
  * App\Models\VisitTransfer\Facility

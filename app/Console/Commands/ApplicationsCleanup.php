@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\VisitTransfer\Application;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
+use App\Models\VisitTransfer\Application;
 
 class ApplicationsCleanup extends Command
 {

@@ -2,15 +2,15 @@
 
 namespace App\Jobs\Mship\Account;
 
-use DB;
-use VatsimXML;
 use App\Jobs\Job;
-use Carbon\Carbon;
 use App\Models\Mship\Account;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Mship\Qualification as QualificationData;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use VatsimXML;
 
 class MemberCertUpdate extends Job implements ShouldQueue
 {

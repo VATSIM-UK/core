@@ -2,31 +2,31 @@
 
 namespace App\Models\VisitTransfer;
 
-use Carbon\Carbon;
-use App\Models\Mship\State;
-use App\Models\Mship\Account;
-use Malahierba\PublicId\PublicId;
-use Illuminate\Database\Eloquent\Model;
-use App\Notifications\Mship\SlackInvitation;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Events\VisitTransfer\ApplicationExpired;
 use App\Events\VisitTransfer\ApplicationAccepted;
-use App\Events\VisitTransfer\ApplicationRejected;
 use App\Events\VisitTransfer\ApplicationCompleted;
+use App\Events\VisitTransfer\ApplicationExpired;
+use App\Events\VisitTransfer\ApplicationRejected;
 use App\Events\VisitTransfer\ApplicationSubmitted;
-use App\Events\VisitTransfer\ApplicationWithdrawn;
 use App\Events\VisitTransfer\ApplicationUnderReview;
-use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
-use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
-use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
+use App\Events\VisitTransfer\ApplicationWithdrawn;
+use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
-use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
-use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
 use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
+use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
+use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
+use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
+use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
+use App\Models\Mship\Account;
+use App\Models\Mship\State;
+use App\Notifications\Mship\SlackInvitation;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Malahierba\PublicId\PublicId;
 
 /**
  * App\Models\VisitTransfer\Application

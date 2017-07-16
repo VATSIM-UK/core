@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Mship;
 
+use App\Notifications\Notification;
 use Gate;
 use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

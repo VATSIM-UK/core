@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Route;
-use Redirect;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Redirect;
+use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {

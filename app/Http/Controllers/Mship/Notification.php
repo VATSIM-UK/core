@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
-use Session;
 use Redirect;
+use Session;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
