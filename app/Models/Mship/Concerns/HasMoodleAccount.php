@@ -7,7 +7,7 @@ use DB;
 /**
  * Trait SyncsToMoodle
  */
-trait SyncsToMoodle
+trait HasMoodleAccount
 {
     protected static $sso_account_id;
 
@@ -23,9 +23,9 @@ trait SyncsToMoodle
         }
 
         if ($moodleAccount === false && $this->canLoginToMoodle()) {
-            $this->createUser($this->getMoodleEmail());
+            $this->createMoodleAccount($this->getMoodleEmail());
         } elseif ($moodleAccount !== false) {
-            $this->updateUser($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
+            $this->updateMoodleAccount($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
         } else {
             // do nothing - user is not eligible for a Moodle account, nor do they have one already
         }
@@ -36,7 +36,7 @@ trait SyncsToMoodle
      *
      * @param string $email
      */
-    protected function createUser($email)
+    protected function createMoodleAccount($email)
     {
         DB::table('vatuk_moodle.mdl_user')->insert([
             'auth' => 'vatsim',
@@ -60,7 +60,7 @@ trait SyncsToMoodle
      * @param bool $allowLogin
      * @param mixed $moodleAccount
      */
-    protected function updateUser($email, $allowLogin, $moodleAccount)
+    protected function updateMoodleAccount($email, $allowLogin, $moodleAccount)
     {
         $old = [
             'auth' => $moodleAccount->auth,

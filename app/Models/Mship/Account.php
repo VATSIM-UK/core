@@ -16,11 +16,11 @@ use App\Events\Mship\QualificationAdded;
 use Illuminate\Notifications\Notifiable;
 use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
-use App\Models\Mship\Concerns\SyncsToMoodle;
 use App\Notifications\Mship\SlackInvitation;
-use App\Models\Mship\Concerns\HasNetworkData;
 use App\Exceptions\Mship\InvalidCIDException;
+use App\Models\Mship\Concerns\HasNetworkData;
 use App\Exceptions\Mship\InvalidStateException;
+use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasCommunityGroups;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
@@ -160,7 +160,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, SyncsToMoodle;
+        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
