@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Feedback;
 
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -41,5 +42,10 @@ class Form extends Model
     public function questions()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
+    }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
     }
 }
