@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Statistics::class,
         \App\Console\Commands\StatisticsDaily::class,
         \App\Console\Commands\ApplicationsCleanup::class,
+        Commands\GenerateFeedbackSummary::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
