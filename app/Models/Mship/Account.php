@@ -18,8 +18,10 @@ use App\Models\VisitTransfer\Application;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Models\Mship\Concerns\SyncsToMoodle;
 use App\Notifications\Mship\SlackInvitation;
+use App\Models\Mship\Concerns\HasNetworkData;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
+use App\Models\Mship\Concerns\HasCommunityGroups;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Notification as SysNotification;
@@ -27,9 +29,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\CommunityAccount as CommunityAccountTrait;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
-use App\Models\Mship\Concerns\HasNetworkData;
 use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -160,7 +160,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, CommunityAccountTrait, HasNetworkData, SyncsToMoodle;
+        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, SyncsToMoodle;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
