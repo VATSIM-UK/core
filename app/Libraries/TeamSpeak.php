@@ -265,6 +265,7 @@ class TeamSpeak
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
                 self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
                 Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
                 throw new ClientKickedFromServerException;
             } elseif (!$hasGracePeriod) {
                 // set grace period to allow for possible mistakes
@@ -278,6 +279,7 @@ class TeamSpeak
             }
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
         }
     }
 
