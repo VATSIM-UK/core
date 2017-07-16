@@ -4,8 +4,9 @@ namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\BrowserKitTestCase;
+use Tests\TestCase;
 
-class MshipRoleTest extends BrowserKitTestCase
+class MshipRoleTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -14,7 +15,7 @@ class MshipRoleTest extends BrowserKitTestCase
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
 
-        $this->seeInDatabase("mship_role", [
+        $this->assertDatabaseHas("mship_role", [
             "id" => $role->id,
         ]);
     }
@@ -42,7 +43,7 @@ class MshipRoleTest extends BrowserKitTestCase
 
         $this->assertTrue($role->hasSessionTimeout());
 
-        $this->seeInDatabase("mship_role", [
+        $this->assertDatabaseHas("mship_role", [
             "id"              => $role->id,
             "session_timeout" => 60,
         ]);
@@ -79,7 +80,7 @@ class MshipRoleTest extends BrowserKitTestCase
 
         $role->attachPermission($permission);
 
-        $this->seeInDatabase("mship_permission_role", [
+        $this->assertDatabaseHas("mship_permission_role", [
             "role_id"       => $role->id,
             "permission_id" => $permission->id,
         ]);
@@ -97,12 +98,12 @@ class MshipRoleTest extends BrowserKitTestCase
 
         $role->attachPermission($permissionA);
 
-        $this->seeInDatabase("mship_permission_role", [
+        $this->assertDatabaseHas("mship_permission_role", [
             "role_id"       => $role->id,
             "permission_id" => $permissionA->id,
         ]);
 
-        $this->notseeInDatabase("mship_permission_role", [
+        $this->assertDatabaseMissing("mship_permission_role", [
             "role_id"       => $role->id,
             "permission_id" => $permissionB->id,
         ]);

@@ -4,8 +4,9 @@ namespace Tests\Unit;
 
 use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
-class GroupMembershipTest extends BrowserKitTestCase
+class GroupMembershipTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -20,7 +21,7 @@ class GroupMembershipTest extends BrowserKitTestCase
 
         $member->fresh()->addCommunityGroup($group);
 
-        $this->seeInDatabase('community_membership', [
+        $this->assertDatabaseHas('community_membership', [
             'account_id' => $member->id,
             'group_id' => $group->id,
         ]);

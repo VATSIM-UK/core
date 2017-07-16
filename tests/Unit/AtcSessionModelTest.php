@@ -5,8 +5,9 @@ namespace Tests\Unit;
 use App\Models\Mship\Qualification;
 use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
-class AtcSessionModelTest extends BrowserKitTestCase
+class AtcSessionModelTest extends TestCase
 {
     use DatabaseTransactions;
 
