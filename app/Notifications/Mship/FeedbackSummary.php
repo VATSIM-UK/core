@@ -57,7 +57,7 @@ class FeedbackSummary extends Notification implements ShouldQueue
                 'feedbackSince' => $this->feedbackSince,
                 'feedback' => $this->feedback,
                 'recipient' => $notifiable,
-                'subject' => $subject
+                'subject' => $subject,
             ]);
     }
 
