@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use Carbon\Carbon;
 use App\Models\Email\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SendGrid extends WebhookController

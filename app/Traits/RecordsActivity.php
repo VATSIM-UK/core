@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use Auth;
 use App\Models\Sys\Activity;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 trait RecordsActivity

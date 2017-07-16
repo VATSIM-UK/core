@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
-use SlackUser;
-use Illuminate\Bus\Queueable;
 use App\Models\NetworkData\Atc;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\SlackMessage;
+use SlackUser;
 
 class AtcSessionRecordedConfirmation extends Notification implements ShouldQueue
 {

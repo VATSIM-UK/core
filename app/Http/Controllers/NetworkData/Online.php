@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\NetworkData;
 
-use App\Models\NetworkData\Atc;
 use App\Http\Controllers\BaseController;
+use App\Models\NetworkData\Atc;
 
 class Online extends BaseController
 {

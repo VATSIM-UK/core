@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Mship;
 
-use DB;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
 use App\Models\Messages\Thread;
-use Illuminate\Http\JsonResponse;
-use App\Models\Messages\Thread\Post;
-use App\Notifications\Mship\MemberEmail;
 use App\Models\Messages\Thread\Participant;
+use App\Models\Messages\Thread\Post;
+use App\Models\Mship\Account;
+use App\Notifications\Mship\MemberEmail;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class Email extends \App\Http\Controllers\BaseController
 {

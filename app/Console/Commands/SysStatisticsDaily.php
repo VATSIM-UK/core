@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use DB;
-use Carbon\Carbon;
-use App\Models\Statistic;
-use App\Models\Mship\State;
 use App\Models\Mship\Account;
+use App\Models\Mship\State;
+use App\Models\Statistic;
+use Carbon\Carbon;
+use DB;
 
 class SysStatisticsDaily extends Command
 {

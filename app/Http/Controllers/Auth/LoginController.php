@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\BaseController;
+use App\Models\Mship\Account;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Session;
 use VatsimSSO;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
-use App\Http\Controllers\BaseController;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 /**
  * This controller handles authenticating users for the application and

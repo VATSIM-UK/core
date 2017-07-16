@@ -2,9 +2,9 @@
 
 namespace App\Listeners\Mship\Feedback;
 
+use App\Events\Mship\Feedback\NewFeedbackEvent;
 use App\Models\Contact;
 use App\Notifications\Mship\FeedbackReceived;
-use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class NotifyOfNewFeedback
 {

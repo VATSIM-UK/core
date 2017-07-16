@@ -2,19 +2,19 @@
 
 namespace App\Libraries;
 
-use DB;
-use Cache;
-use TeamSpeak3;
-use Carbon\Carbon;
-use TeamSpeak3_Node_Client;
+use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
+use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Channel;
-use App\Models\TeamSpeak\ServerGroup;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Registration;
+use App\Models\TeamSpeak\ServerGroup;
+use Cache;
+use Carbon\Carbon;
+use DB;
+use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
-use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
-use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
+use TeamSpeak3_Node_Client;
 
 /**
  * Provides static methods for managing TeamSpeak.

@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountQualification extends Pivot
 {

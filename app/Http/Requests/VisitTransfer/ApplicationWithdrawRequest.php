@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use Auth;
-use Illuminate\Support\Facades\Gate;
 use App\Models\VisitTransfer\Application;
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ApplicationWithdrawRequest extends FormRequest
 {

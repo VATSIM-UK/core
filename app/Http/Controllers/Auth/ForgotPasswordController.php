@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Session;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
 use App\Http\Controllers\BaseController;
-use Illuminate\Support\Facades\Password;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Session;
 
 /**
  * This controller is responsible for handling password reset emails and

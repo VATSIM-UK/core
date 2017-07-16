@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
-use Auth;
 use App\Http\Controllers\BaseController;
+use Auth;
 
 class Dashboard extends BaseController
 {

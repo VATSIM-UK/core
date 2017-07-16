@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Sys;
 
-use DB;
-use Artisan;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Adm\AdmController;
+use Artisan;
+use DB;
+use Illuminate\Http\Request;
 
 class Jobs extends AdmController
 {

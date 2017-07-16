@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use TeamSpeak3_Node_Host;
-use TeamSpeak3_Node_Server;
 use App\Libraries\TeamSpeak;
-use TeamSpeak3_Helper_Signal;
-use TeamSpeak3_Transport_Exception;
+use Exception;
 use TeamSpeak3_Adapter_ServerQuery_Event;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
+use TeamSpeak3_Helper_Signal;
+use TeamSpeak3_Node_Host;
+use TeamSpeak3_Node_Server;
+use TeamSpeak3_Transport_Exception;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {

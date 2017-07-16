@@ -2,9 +2,9 @@
 
 namespace App\Controllers\ViewComposers;
 
-use Illuminate\View\View;
-use App\Models\VisitTransfer\Reference;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Reference;
+use Illuminate\View\View;
 
 class StatisticsComposer
 {

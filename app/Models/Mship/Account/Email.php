@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Models\Sys\Token;
 use App\Models\Sso\Email as SSOEmail;
+use App\Models\Sys\Token;
 use App\Notifications\Mship\EmailVerification;
 
 /**

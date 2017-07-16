@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Exception;
 use App\Libraries\TeamSpeak;
+use Exception;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 class TeamSpeakManager extends TeamSpeakCommand

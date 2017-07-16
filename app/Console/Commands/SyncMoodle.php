@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use DB;
 use App\Models\Mship\Account;
+use DB;
 
 /**
  * Runs nightly to sync Core users to Moodle.

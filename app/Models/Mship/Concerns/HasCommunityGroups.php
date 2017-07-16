@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Models\Community\Group;
 use App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException;
+use App\Models\Community\Group;
 
 trait HasCommunityGroups
 {
