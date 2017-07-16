@@ -15,12 +15,12 @@ mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css').version();
 
 /* Concatenate all JS */
 mix.scripts([
-    'jquery-2.1.4.js',
-    '../vendor/bootstrap3/js/bootstrap.min.js',
-    '../vendor/bootstrap-tour/bootstrap-tour.min.js',
-    'classie.js',
-    'cbpAnimatedHeader.js',
-    'app.js',
+    'resources/assets/js/jquery-2.1.4.js',
+    'resources/assets/vendor/bootstrap3/js/bootstrap.min.js',
+    'resources/assets/vendor/bootstrap-tour/bootstrap-tour.min.js',
+    'resources/assets/js/classie.js',
+    'resources/assets/js/cbpAnimatedHeader.js',
+    'resources/assets/js/app.js',
 ], 'public/js/app-all.js').version();
 
 /* Move and shake our dependency files around too! */
