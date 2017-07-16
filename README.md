@@ -20,7 +20,7 @@ The following are the upgrade notes for deploying in production.
 
 ### 3.2.0
 
-No version-specific upgrade notes.
+Create cronjob for `feedback:summary` command: `0 22 * * * php artisan feedback:summarise --interval=p1d`
 
 ### Older Versions
 
