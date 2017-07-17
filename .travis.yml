@@ -12,14 +12,15 @@ before_install:
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS rts;' -uroot
 - composer install --prefer-dist --no-interaction -o > /dev/null
-- npm install gulp
+- nvm install node
+- npm -v
 - npm install
 
 install:
 - cp .env.example .env
 - php artisan key:generate
 - php artisan migrate -vvv -n
-- gulp --production
+- npm run prod
 - chmod +x ./codeclimate.sh
 
 before_script:
@@ -44,6 +45,7 @@ after_script:
 cache:
   directories:
   - node_modules
+  - $HOME/.composer/cache/files
 
 notifications:
   email: false

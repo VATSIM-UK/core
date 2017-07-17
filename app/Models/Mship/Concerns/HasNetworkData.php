@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Traits;
+namespace App\Models\Mship\Concerns;
 
-trait NetworkDataAccount
+trait HasNetworkData
 {
     /**
      * Fetch all ATC Sessions.

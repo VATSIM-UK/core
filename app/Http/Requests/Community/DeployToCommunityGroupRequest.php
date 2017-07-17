@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Community;
 
 use App\Models\Community\Group;
-use Illuminate\Validation\Rule;
 use App\Models\Community\Membership;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class DeployToCommunityGroupRequest extends FormRequest
 {

@@ -235,6 +235,7 @@ Route::group([
         return redirect()->route('networkdata.online');
     })->name('landing');
 
+    Route::get('/dashboard', 'MainController@getDashboard')->name('dashboard');
     Route::get('/online', ['as' => 'online', 'uses' => 'Online@getOnline']);
 });
 

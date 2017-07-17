@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use DB;
 use Carbon\Carbon;
+use DB;
 
 /**
  * Synchronises mentors in the RTS system to the forums.

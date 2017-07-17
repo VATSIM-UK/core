@@ -2,15 +2,15 @@
 
 namespace App\Models\NetworkData;
 
-use Event;
-use Malahierba\PublicId\PublicId;
-use Watson\Rememberable\Rememberable;
-use Illuminate\Database\Eloquent\Model;
-use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionDeleted;
+use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use Event;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Malahierba\PublicId\PublicId;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\NetworkData\Atc
@@ -176,6 +176,11 @@ class Atc extends Model
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
+    }
+
+    public function qualification()
+    {
+        return $this->belongsTo(\App\Models\Mship\Qualification::class);
     }
 
     public function getAccountNameAttribute()

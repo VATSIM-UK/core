@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use DB;
-use URL;
-use Auth;
-use Input;
-use Session;
-use Redirect;
-use App\Models\Mship\State;
-use App\Models\Mship\Note\Type;
-use App\Models\Mship\Ban\Reason;
-use Illuminate\Support\Collection;
-use App\Models\Mship\Role as RoleData;
-use App\Notifications\Mship\BanCreated;
-use App\Notifications\Mship\BanModified;
-use App\Notifications\Mship\BanRepealed;
 use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account as AccountData;
-use App\Models\Mship\Note\Type as NoteTypeData;
+use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
-use App\Http\Requests\Mship\Account\Ban\CommentRequest;
+use App\Models\Mship\Account as AccountData;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Note\Type as NoteTypeData;
+use App\Models\Mship\Role as RoleData;
+use App\Models\Mship\State;
+use App\Notifications\Mship\BanCreated;
+use App\Notifications\Mship\BanModified;
+use App\Notifications\Mship\BanRepealed;
+use Auth;
+use DB;
+use Illuminate\Support\Collection;
+use Input;
+use Redirect;
+use Session;
+use URL;
 
 class Account extends AdmController
 {

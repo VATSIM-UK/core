@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Webhook;
 
-use Response;
 use App\Models\Sys\Token;
 use Illuminate\Http\Request;
+use Response;
 
 class Slack extends WebhookController
 {

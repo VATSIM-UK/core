@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\SysStatisticsDaily::class,
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
+        Commands\SyncHelpdesk::class,
         Commands\SyncMentors::class,
         Commands\SyncMoodle::class,
         Commands\TeamSpeakManager::class,
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Statistics::class,
         \App\Console\Commands\StatisticsDaily::class,
         \App\Console\Commands\ApplicationsCleanup::class,
+        Commands\GenerateFeedbackSummary::class,
 
         /* Third Party */
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,

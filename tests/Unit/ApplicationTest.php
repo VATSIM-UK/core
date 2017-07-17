@@ -3,17 +3,17 @@
 
 namespace Tests\Unit;
 
-use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
-class SiteTest extends BrowserKitTestCase
+class ApplicationTest extends TestCase
 {
     use DatabaseTransactions;
 
     /** Unit Testing */
 
     /** @test */
-    public function itCanCreateANewApplicationForAUser()
+    public function testItCanCreateANewApplicationForAUser()
     {
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
@@ -29,9 +29,9 @@ class SiteTest extends BrowserKitTestCase
     }
 
     /** @test */
-    public function itThrowsAnExceptionWhenAttemptingToCreateADuplicateApplication()
+    public function testItThrowsAnExceptionWhenAttemptingToCreateADuplicateApplication()
     {
-        $this->setExpectedException(\App\Exceptions\VisitTransfer\Application\DuplicateApplicationException::class);
+        $this->expectException(\App\Exceptions\VisitTransfer\Application\DuplicateApplicationException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
@@ -48,9 +48,9 @@ class SiteTest extends BrowserKitTestCase
     }
 
     /** @test */
-    public function itThrowsAnExceptionWhenAttemptingToCreateAnApplicationForADivisionMember()
+    public function testItThrowsAnExceptionWhenAttemptingToCreateAnApplicationForADivisionMember()
     {
-        $this->setExpectedException(\App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException::class);
+        $this->expectException(\App\Exceptions\VisitTransfer\Application\AlreadyADivisionMemberException::class);
 
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->addState(\App\Models\Mship\State::findByCode('DIVISION'));

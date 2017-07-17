@@ -2,9 +2,8 @@
 
 namespace App\Listeners\Mship\Feedback;
 
-use App\Models\Contact;
-use App\Notifications\Mship\FeedbackReceived;
 use App\Events\Mship\Feedback\NewFeedbackEvent;
+use App\Notifications\Mship\FeedbackReceived;
 
 class NotifyOfNewFeedback
 {
@@ -26,16 +25,9 @@ class NotifyOfNewFeedback
      */
     public function handle(NewFeedbackEvent $event)
     {
-        $feedback = $event->feedback;
-
-        if ($feedback->isATC()) {
-            $recipient = Contact::where('key', 'ATC_TRAINING')->first();
-        } elseif ($feedback->isPilot()) {
-            $recipient = Contact::where('key', 'PILOT_TRAINING')->first();
-        } else {
-            return;
+        $contact = $event->feedback->form->contact;
+        if ($contact) {
+            $contact->notify(new FeedbackReceived($event->feedback));
         }
-
-        $recipient->notify(new FeedbackReceived($feedback));
     }
 }

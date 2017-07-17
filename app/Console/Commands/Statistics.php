@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\NetworkData\Atc;
+use App\Models\Statistic;
 use Cache;
 use Carbon\Carbon;
-use App\Models\Statistic;
-use App\Models\NetworkData\Atc;
 
 class Statistics extends Command
 {

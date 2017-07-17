@@ -25,7 +25,7 @@
     <!-- CSS -->
     {!! HTML::style('//fonts.googleapis.com/css?family=Yellowtail') !!}
     {!! HTML::style('//fonts.googleapis.com/css?family=Josefin+Slab:600') !!}
-    {!! HTML::style(elixir("css/app-all.css")) !!}
+    {!! HTML::style(mix("css/app-all.css")) !!}
     @yield('styles')
 </head>
 <body>
@@ -55,7 +55,7 @@
 
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
-                        {!! link_to_route("mship.feedback.new.form", "Feedback", [1]) !!}
+                        {!! link_to_route("mship.feedback.new", "Feedback") !!}
                     </li>
                 </ul>
 
@@ -67,8 +67,11 @@
                                 <ul>
                                     <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
                                     <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
-                                    <li>{!! link_to_route("networkdata.online", "Who's Online") !!}</li>
                                     <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Network Statistics</li>
+                                    <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
+                                    <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
                                 </ul>
                             </li>
                         </ul>
@@ -238,7 +241,7 @@
 
 </div>
 
-    {!! HTML::script(elixir("js/app-all.js")) !!}
+    {!! HTML::script(mix("js/app-all.js")) !!}
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

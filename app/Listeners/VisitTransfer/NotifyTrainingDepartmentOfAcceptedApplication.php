@@ -2,8 +2,8 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ApplicationAccepted;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
 {
@@ -15,6 +15,6 @@ class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
     public function handle(ApplicationAccepted $event)
     {
         $application = $event->application;
-        $application->facility->notify(new ApplicationAccepted($application));
+        $application->facility->notify(new \App\Notifications\ApplicationAccepted($application));
     }
 }

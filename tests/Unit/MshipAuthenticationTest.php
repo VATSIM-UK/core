@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Mockery;
 use Tests\BrowserKitTestCase;
+use Tests\TestCase;
 
-class MshipAuthenticationTest extends BrowserKitTestCase
+class MshipAuthenticationTest extends TestCase
 {
     use DatabaseTransactions;
 

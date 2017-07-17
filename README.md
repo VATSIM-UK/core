@@ -12,33 +12,16 @@ The following are the upgrade notes for deploying in production.
 2. Disable cronjobs
 3. Run `composer install --optimize-autoloader --no-dev` (dev: `composer install`)
 4. Run `php artisan migrate --step --force --no-interaction`
-6. Run `npm install --production` (dev: `npm install`)
-7. Run `gulp --production` (dev: `gulp`)
+6. Run `npm install`
+7. Run `npm run prod` (dev: `npm run dev`)
 8. **Perform version-specific upgrade steps (below)**
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 2.4.5.x to 3.0.0
+### 3.2.0
 
-Upgrading to version 3 will break services that authenticate with Core using
-SSO. All services must be updated to use the new OAuth API for authentication
-and authorization.
-
-Upgrading to version 3 will break module functionality. Any deployment commands
-and processes relating to modules (e.g. enabling modules, running migrations)
-should be disabled.
-
-1. Remove 'caffeinated/module' commands from deployment scripts.
-1. Run `php artisan view:clear`
-2. Run `php artisan route:clear`
-1. Run `php artisan passport:keys`
-3. Add `notification` queue to queue processor
-2. Add OAuth clients using `php artisan passport:client`
-3. Make sure all new client IDs correspond to `mship_oauth_emails`
-(preferably by updating the emails table, not forcing the ids of the clients)
-1. Update any external services to use the new OAuth API for authenticating users.
-1. Add SendGrid and Mailgun users to basic_users table
-1. Switch SendGrid and Mailgun notifications webhooks to production URL (using new basic auth users)
+* Create cronjob for `feedback:summary` command: `0 22 * * * php artisan feedback:summarise --interval=p1d`
+* Add `HELPDESK_DATABASE=` to `.env`
 
 ### Older Versions
 

@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use SlackUser;
 use App\Models\Mship\Account;
+use Bugsnag;
+use Exception;
 use GuzzleHttp\Exception\ServerException;
+use SlackUser;
 
 class SlackManager extends Command
 {
@@ -75,6 +76,8 @@ class SlackManager extends Command
 //                $this->messageAskingForRealEmail($localUser, $slackUser);
 //            }
             } catch (Exception $e) {
+                Bugsnag::notifyException($e);
+
                 $this->log('Caught: '.get_class($e));
                 $this->log($e->getTraceAsString());
 

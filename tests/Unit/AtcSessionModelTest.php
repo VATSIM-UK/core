@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Models\Mship\Qualification;
 use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
-class AtcSessionModelTest extends BrowserKitTestCase
+class AtcSessionModelTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -14,7 +16,11 @@ class AtcSessionModelTest extends BrowserKitTestCase
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionStarted::class);
 
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->create();
+        $qualification = Qualification::inRandomOrder()->first();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession->qualification_id = $qualification->id;
+        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account->networkDataAtc()->save($atcSession);
 
         $this->assertInstanceOf(\App\Models\NetworkData\Atc::class, $atcSession,
             'NetworkData::AtcSession not created.');
@@ -26,7 +32,11 @@ class AtcSessionModelTest extends BrowserKitTestCase
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionEnded::class);
 
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->create();
+        $qualification = Qualification::inRandomOrder()->first();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession->qualification_id = $qualification->id;
+        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account->networkDataAtc()->save($atcSession);
 
         $currentTimestamp = \Carbon\Carbon::now();
 
@@ -40,7 +50,11 @@ class AtcSessionModelTest extends BrowserKitTestCase
     /** @test */
     public function itUpdatesMinutesOnlineWhenASessionIsMarkedAsDisconnected()
     {
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->create();
+        $qualification = Qualification::inRandomOrder()->first();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession->qualification_id = $qualification->id;
+        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account->networkDataAtc()->save($atcSession);
 
         $atcSession->connected_at = \Carbon\Carbon::now()->subMinutes(2);
         $atcSession->save();
@@ -56,7 +70,11 @@ class AtcSessionModelTest extends BrowserKitTestCase
     {
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionDeleted::class);
 
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->create();
+        $qualification = Qualification::inRandomOrder()->first();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession->qualification_id = $qualification->id;
+        $account = factory(\App\Models\Mship\Account::class)->create();
+        $account->networkDataAtc()->save($atcSession);
 
         $atcSession->delete();
     }

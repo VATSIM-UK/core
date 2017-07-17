@@ -1,17 +1,16 @@
 /node_modules
+/public/hot
 /public/storage
+/storage/*.key
 /vendor
-/build
 /.idea
+/.vagrant
 Homestead.json
 Homestead.yaml
-Vagrantfile
-/.vagrant
+npm-debug.log
+yarn-error.log
 .env
-build/
 
-nbproject*
 _ide_helper.php
-_ide_helper_models.php
 .phpstorm.meta.php
-phpcs.log
+/build

@@ -2,19 +2,19 @@
 
 namespace App\Libraries;
 
-use DB;
-use Cache;
-use TeamSpeak3;
-use Carbon\Carbon;
-use TeamSpeak3_Node_Client;
+use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
+use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Channel;
-use App\Models\TeamSpeak\ServerGroup;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Registration;
+use App\Models\TeamSpeak\ServerGroup;
+use Cache;
+use Carbon\Carbon;
+use DB;
+use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
-use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
-use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
+use TeamSpeak3_Node_Client;
 
 /**
  * Provides static methods for managing TeamSpeak.
@@ -265,6 +265,7 @@ class TeamSpeak
                 self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
                 self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
                 Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+                Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
                 throw new ClientKickedFromServerException;
             } elseif (!$hasGracePeriod) {
                 // set grace period to allow for possible mistakes
@@ -278,6 +279,7 @@ class TeamSpeak
             }
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
         }
     }
 

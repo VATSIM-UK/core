@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
+use Config;
+use HTML;
+use Illuminate\Support\ServiceProvider;
 use Response;
 use URL;
-use HTML;
-use View;
-use Config;
 use Validator;
-use Illuminate\Support\ServiceProvider;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {

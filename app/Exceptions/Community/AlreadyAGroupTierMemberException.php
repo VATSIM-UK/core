@@ -2,8 +2,8 @@
 
 namespace App\Exceptions\Community\Membership;
 
-use App\Models\Mship\Account;
 use App\Models\Community\Group;
+use App\Models\Mship\Account;
 
 class AlreadyAGroupTierMemberException extends \Exception
 {

@@ -120,7 +120,7 @@ return [
     |
     */
 
-    'log' => 'single',
+    'log' => env('APP_LOG', 'single'),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
@@ -163,21 +163,13 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        /* BugSnag must ALWAYS be above the App Service Providers. */
+        /*
+         * Package Service Providers...
+         */
+        Laravel\Passport\PassportServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
+
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-
-        /*
-         * Application Service Providers...
-         */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-
-        /*
-         * Third party
-         */
         Collective\Html\HtmlServiceProvider::class,
         Vatsim\OAuth\OAuthServiceProvider::class,
         Vatsim\Xml\XmlServiceProvider::class,
@@ -187,9 +179,17 @@ return [
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
         Bootstrapper\BootstrapperL5ServiceProvider::class,
-        Laravel\Tinker\TinkerServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class,
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Class Aliases

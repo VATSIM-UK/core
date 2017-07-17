@@ -2,9 +2,9 @@
 
 namespace App\Events\Mship\Feedback;
 
-use Illuminate\Queue\SerializesModels;
 use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Queue\SerializesModels;
 
 class NewFeedbackEvent
 {

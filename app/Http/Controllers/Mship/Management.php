@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Sys\Token as SystemToken;
 use Auth;
 use Input;
+use Laravel\Passport\Client as OAuthClient;
 use Redirect;
 use Validator;
-use App\Models\Sys\Token as SystemToken;
-use Laravel\Passport\Client as OAuthClient;
-use App\Models\Mship\Account\Email as AccountEmail;
 
 class Management extends \App\Http\Controllers\BaseController
 {

@@ -2,38 +2,41 @@
 
 namespace App\Models\Mship;
 
-use VatsimXML;
-use Carbon\Carbon;
-use App\Models\Mship\Note\Type;
-use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Account\Ban;
-use Laravel\Passport\HasApiTokens;
-use App\Models\Mship\Account\Email;
-use Illuminate\Auth\Authenticatable;
-use Watson\Rememberable\Rememberable;
-use App\Models\Mship\Role as RoleData;
-use Illuminate\Notifications\Notifiable;
-use App\Models\VisitTransfer\Application;
-use App\Jobs\Mship\Account\MemberCertUpdate;
-use App\Notifications\Mship\SlackInvitation;
+use App\Events\Mship\QualificationAdded;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Exceptions\Mship\InvalidStateException;
-use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Sys\Notification as SysNotification;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Traits\RecordsActivity as RecordsActivityTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\CommunityAccount as CommunityAccountTrait;
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
-use App\Traits\NetworkDataAccount as NetworkDataAccountTrait;
-use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
+use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Account\Email;
+use App\Models\Mship\Account\Email as AccountEmail;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasHelpdeskAccount;
+use App\Models\Mship\Concerns\HasMoodleAccount;
+use App\Models\Mship\Concerns\HasNetworkData;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Role as RoleData;
+use App\Models\Sys\Notification as SysNotification;
+use App\Models\VisitTransfer\Application;
+use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Notifications\Mship\SlackInvitation;
+use App\Traits\RecordsActivity as RecordsActivityTrait;
+use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
+use Carbon\Carbon;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+use VatsimXML;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\Mship\Account
@@ -149,7 +152,6 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordExpiresAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account wherePasswordSetAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSessionId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereSlackId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account whereUpdatedAt($value)
@@ -159,7 +161,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, CommunityAccountTrait, NetworkDataAccountTrait;
+        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -194,7 +196,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'name_first' => '',
         'name_last' => '',
         'status' => self::STATUS_ACTIVE,
-        'last_login_ip' => '127.0.0.1',
+        'last_login_ip' => '0.0.0.0',
     ];
     protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
 
@@ -336,7 +338,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         $this->guardAgainstDivisionMemberVisitingTransferApplication();
         $this->guardAgainstDuplicateVisitingTransferApplications();
 
-        $application = Application::create($attributes);
+        $application = new Application($attributes);
 
         return $this->visitTransferApplications()->save($application);
     }
@@ -719,19 +721,20 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      * Check whether the user has the given state presently.
      *
      * @param string|State $search The given state to check if the account has.
-     *
      * @return bool
+     * @throws InvalidStateException
      */
     public function hasState($search)
     {
         if (is_string($search)) {
-            $search = State::findByCode($search);
-        } elseif (!($search instanceof State)) {
+            return $this->states
+                ->contains('code', $search);
+        } elseif ($search instanceof State) {
+            return $this->states
+                ->contains('id', $search->id);
+        } else {
             throw new InvalidStateException();
         }
-
-        return $this->states
-            ->contains('id', $search->id);
     }
 
     /**
@@ -1117,6 +1120,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         if (!$this->hasQualification($qualification)) {
             $this->qualifications()->attach($qualification);
             $this->touch();
+            event(new QualificationAdded($this, $qualification));
         }
 
         return true;

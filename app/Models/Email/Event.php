@@ -4,6 +4,25 @@ namespace App\Models\Email;
 
 use App\Models\Model;
 
+/**
+ * App\Models\Email\Event
+ *
+ * @property int $id
+ * @property string $broker
+ * @property string $message_id
+ * @property string $name
+ * @property string $recipient
+ * @property array $data
+ * @property \Carbon\Carbon $triggered_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereBroker($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereData($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereMessageId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereRecipient($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Email\Event whereTriggeredAt($value)
+ * @mixin \Eloquent
+ */
 class Event extends Model
 {
     protected $table = 'email_events';

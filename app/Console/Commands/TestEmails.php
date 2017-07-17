@@ -2,29 +2,29 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Sys\Token;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;
+use App\Models\Sys\Token;
+use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
-use App\Notifications\Mship\BanCreated;
+use App\Notifications\ApplicationAccepted;
+use App\Notifications\ApplicationReferenceAccepted;
+use App\Notifications\ApplicationReferenceNoLongerNeeded;
+use App\Notifications\ApplicationReferenceRejected;
+use App\Notifications\ApplicationReferenceRequest;
+use App\Notifications\ApplicationReferenceSubmitted;
 use App\Notifications\ApplicationReview;
+use App\Notifications\ApplicationStatusChanged;
+use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
-use App\Models\VisitTransfer\Application;
-use App\Notifications\ApplicationAccepted;
-use App\Notifications\Mship\WelcomeMember;
-use App\Notifications\Mship\SlackInvitation;
-use App\Notifications\Mship\FeedbackReceived;
 use App\Notifications\Mship\EmailVerification;
-use App\Notifications\ApplicationStatusChanged;
-use App\Notifications\ApplicationReferenceRequest;
-use App\Notifications\ApplicationReferenceAccepted;
-use App\Notifications\ApplicationReferenceRejected;
-use App\Notifications\ApplicationReferenceSubmitted;
-use App\Notifications\Mship\Security\TemporaryPassword;
-use App\Notifications\ApplicationReferenceNoLongerNeeded;
+use App\Notifications\Mship\FeedbackReceived;
+use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Notifications\Mship\SlackInvitation;
+use App\Notifications\Mship\WelcomeMember;
 
 /**
  * Experimental class used for generating emails to mailtrap.io
@@ -109,6 +109,7 @@ class TestEmails extends Command
         $this->log('testApplication');
         $testApplication = new Application();
         $testApplication->facility_id = 1;
+        $testApplication->account_id = $testAccount->id;
         $testApplication->save();
         $this->log('testReference');
         $testReference = new Reference();
@@ -123,6 +124,7 @@ class TestEmails extends Command
         $this->log('testFeedback');
         $testFeedback = new Feedback();
         $testFeedback->form_id = 1;
+        $testFeedback->account_id = $testAccount->id;
         $testFeedback->save();
 
         // main
@@ -134,7 +136,7 @@ class TestEmails extends Command
         $testAccount->notify(new SlackInvitation());
         $testAccount->notify(new WelcomeMember());
         $testAccount->notify(new ForgottenPasswordLink($testTokenSecurityReset));
-        $testAccount->notify(new TemporaryPassword('test_password'));
+        $testAccount->notify(new S1TrainingOpportunities());
 
         // visiting/transfer
         $testAccount->notify(new ApplicationAccepted($testApplication));

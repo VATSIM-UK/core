@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
-use Auth;
-use Input;
-use Request;
-use Redirect;
-use Exception;
-use Validator;
-use ErrorException;
-use App\Models\Mship\Account;
-use Illuminate\Support\Facades\Gate;
-use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\VisitTransfer\ApplicationStartRequest;
-use App\Http\Requests\VisitTransfer\ApplicationSubmitRequest;
-use App\Http\Requests\VisitTransfer\ApplicationWithdrawRequest;
+use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeDeleteRequest;
+use App\Http\Requests\VisitTransfer\ApplicationStartRequest;
 use App\Http\Requests\VisitTransfer\ApplicationStatementSubmitRequest;
-use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
+use App\Http\Requests\VisitTransfer\ApplicationSubmitRequest;
+use App\Http\Requests\VisitTransfer\ApplicationWithdrawRequest;
+use App\Models\Mship\Account;
+use App\Models\VisitTransfer\Facility;
+use App\Models\VisitTransfer\Reference;
+use Auth;
+use ErrorException;
+use Exception;
+use Illuminate\Support\Facades\Gate;
+use Input;
+use Redirect;
+use Request;
+use Validator;
 
 class Application extends BaseController
 {

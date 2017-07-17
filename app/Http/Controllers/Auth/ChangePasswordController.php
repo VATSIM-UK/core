@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
-use Redirect;
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use Auth;
+use Illuminate\Http\Request;
+use Redirect;
 
 /**
  * This controller is responsible for handling password creation,
