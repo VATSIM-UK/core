@@ -22,5 +22,3 @@ mix.webpackConfig({
 
 mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css').version();
 mix.js('resources/assets/js/app.js', 'public/js/app-all.js').version();
-//mix.copyDirectory('resources/assets/images', 'public/images');
-

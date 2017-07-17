@@ -1,8 +1,8 @@
 @extends('adm.layout')
 
 @section('scripts')
-  {!! HTML::script(asset("assets/js/plugins/datetimepickerxdan/jquery.datetimepicker.full.min.js")) !!}
-  {!! HTML::script(asset('assets/js/plugins/jquerysortable/jquery-sortable.js')) !!}
+  {!! HTML::script(asset("AdminLTE/js/plugins/datetimepickerxdan/jquery.datetimepicker.full.min.js")) !!}
+  {!! HTML::script(asset('AdminLTE/js/plugins/jquerysortable/jquery-sortable.js')) !!}
   <script type="text/javascript">
     $(function  () {
       var count = $("#feedback-form-questions li").length;

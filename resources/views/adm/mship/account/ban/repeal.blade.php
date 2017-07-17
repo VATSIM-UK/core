@@ -52,5 +52,5 @@
 
 @section('scripts')
 @parent
-{!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
+{!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
 @stop
