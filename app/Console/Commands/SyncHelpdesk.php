@@ -36,10 +36,9 @@ class SyncHelpdesk extends Command
         $hdb = config('services.helpdesk.database');
 
         $helpdeskAccounts = DB::table($hdb.'.ost_user')
-            ->leftJoin($hdb.'.ost_user__cdata', 'ost_user.id', '=', 'ost_user__cdata.user_id')
             ->leftJoin($hdb.'.ost_user_account', 'ost_user.id', '=', 'ost_user_account.user_id')
             ->leftJoin($hdb.'.ost_user_email', 'ost_user.id', '=', 'ost_user_email.user_id')
-            ->get(['ost_user.id', 'ost_user_account.id as account_id', 'username', 'cid as cdata_cid', 'ost_user.name', 'ost_user_email.id as email_id', 'address as email'])
+            ->get(['ost_user.id', 'ost_user_account.id as account_id', 'username', 'ost_user.name', 'ost_user_email.id as email_id', 'address as email'])
             ->keyBy('username');
 
         Account::whereNotNull('last_login')->whereNotNull('email')

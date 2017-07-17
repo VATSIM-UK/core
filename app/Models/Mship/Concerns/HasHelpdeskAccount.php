@@ -53,6 +53,9 @@ trait HasHelpdeskAccount
                     'updated' => $now,
                 ]);
 
+            DB::table(config('services.helpdesk.database').'.ost_user__cdata')
+                ->insert(['user_id' => $userId, 'cid' => $this->id]);
+
             $user = DB::table(config('services.helpdesk.database').'.ost_user')
                 ->where('id', $userId)
                 ->first(['ost_user.id', 'ost_user.name']);
@@ -71,21 +74,6 @@ trait HasHelpdeskAccount
     {
         $this->updateHelpdeskNameAndEmail($helpdeskAccount);
         $this->updateHelpdeskUsername($helpdeskAccount);
-
-        if ($helpdeskAccount->cdata_cid !== (string) $this->id) {
-            $existingCdata = DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                ->where('user_id', $helpdeskAccount->id)
-                ->first(['user_id']);
-
-            if ($existingCdata) {
-                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                    ->where('user_id', $existingCdata->user_id)
-                    ->update(['cid' => $this->id]);
-            } else {
-                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                    ->insert(['user_id' => $helpdeskAccount->id, 'cid' => $this->id]);
-            }
-        }
     }
 
     protected function updateHelpdeskNameAndEmail($helpdeskAccount)
