@@ -42,9 +42,7 @@ trait HasHelpdeskAccount
             ->where('address', $this->getHelpdeskEmail())
             ->first();
 
-        if ($emailInUse) {
-            // if their email is in use (by another account), do nothing
-        } else {
+        if (!$emailInUse) {
             $now = Carbon::now();
             $userId = DB::table(config('services.helpdesk.database').'.ost_user')
                 ->insertGetId([
@@ -62,7 +60,6 @@ trait HasHelpdeskAccount
 
             $this->updateHelpdeskAccount($user);
         }
-
     }
 
     /**
@@ -71,6 +68,27 @@ trait HasHelpdeskAccount
      * @param mixed $helpdeskAccount
      */
     protected function updateHelpdeskAccount($helpdeskAccount)
+    {
+        $this->updateHelpdeskNameAndEmail($helpdeskAccount);
+        $this->updateHelpdeskUsername($helpdeskAccount);
+
+        if ($helpdeskAccount->cdata_cid !== (string) $this->id) {
+            $existingCdata = DB::table(config('services.helpdesk.database').'.ost_user__cdata')
+                ->where('user_id', $helpdeskAccount->id)
+                ->first(['user_id']);
+
+            if ($existingCdata) {
+                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
+                    ->where('user_id', $existingCdata->user_id)
+                    ->update(['cid' => $this->id]);
+            } else {
+                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
+                    ->insert(['user_id' => $helpdeskAccount->id, 'cid' => $this->id]);
+            }
+        }
+    }
+
+    protected function updateHelpdeskNameAndEmail($helpdeskAccount)
     {
         $emailId = null;
         $newEmail = $this->getHelpdeskEmail();
@@ -81,9 +99,7 @@ trait HasHelpdeskAccount
                 ->whereIn('user_id', DB::table(config('services.helpdesk.database').'.ost_user_account')->select('user_id'))
                 ->exists();
 
-            if ($emailInUse) {
-                // do nothing - email used by another account
-            } else {
+            if (!$emailInUse) {
                 // delete old emails from the database
                 DB::table(config('services.helpdesk.database').'.ost_user_email')
                     ->where('user_id', $helpdeskAccount->id)->orWhere('address', $newEmail)
@@ -111,22 +127,10 @@ trait HasHelpdeskAccount
                     'default_email_id' => $emailId ?: $helpdeskAccount->email_id,
                 ]);
         }
+    }
 
-        if ($helpdeskAccount->cdata_cid !== (string) $this->id) {
-            $existingCdata = DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                ->where('user_id', $helpdeskAccount->id)
-                ->first(['user_id']);
-
-            if ($existingCdata) {
-                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                    ->where('user_id', $existingCdata->user_id)
-                    ->update(['cid' => $this->id]);
-            } else {
-                DB::table(config('services.helpdesk.database').'.ost_user__cdata')
-                    ->insert(['user_id' => $helpdeskAccount->id, 'cid' => $this->id]);
-            }
-        }
-
+    protected function updateHelpdeskUsername($helpdeskAccount)
+    {
         if ($helpdeskAccount->username !== (string) $this->id) {
             if ($helpdeskAccount->account_id) {
                 DB::table(config('services.helpdesk.database').'.ost_user_account')
