@@ -721,11 +721,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
     public function hasState($search)
     {
         if (is_string($search)) {
-            return $this->states
-                ->contains('code', $search);
+            return $this->states->contains(function ($state) use ($search) {
+                return strcasecmp($state->code, $search) === 0;
+            });
         } elseif ($search instanceof State) {
-            return $this->states
-                ->contains('id', $search->id);
+            return $this->states->contains('id', $search->id);
         } else {
             throw new InvalidStateException();
         }
