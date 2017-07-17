@@ -73,10 +73,25 @@ trait HasHelpdeskAccount
     protected function updateHelpdeskAccount($helpdeskAccount)
     {
         $this->updateHelpdeskNameAndEmail($helpdeskAccount);
+
         $this->updateHelpdeskUsername($helpdeskAccount);
     }
 
     protected function updateHelpdeskNameAndEmail($helpdeskAccount)
+    {
+        $emailId = $this->updateHelpdeskEmailGetId($helpdeskAccount);
+        $updateName = $helpdeskAccount->name !== $this->name;
+        if ($emailId || $updateName) {
+            DB::table(config('services.helpdesk.database').'.ost_user')
+                ->where('id', $helpdeskAccount->id)
+                ->update([
+                    'name' => $this->name,
+                    'default_email_id' => $emailId ?: $helpdeskAccount->email_id,
+                ]);
+        }
+    }
+
+    protected function updateHelpdeskEmailGetId($helpdeskAccount)
     {
         $emailId = null;
         $newEmail = $this->getHelpdeskEmail();
@@ -102,19 +117,7 @@ trait HasHelpdeskAccount
             }
         }
 
-        $name = null;
-        if ($helpdeskAccount->name !== $this->name) {
-            $name = $this->name;
-        }
-
-        if ($emailId || $name) {
-            DB::table(config('services.helpdesk.database').'.ost_user')
-                ->where('id', $helpdeskAccount->id)
-                ->update([
-                    'name' => $name ?: $helpdeskAccount->name,
-                    'default_email_id' => $emailId ?: $helpdeskAccount->email_id,
-                ]);
-        }
+        return $emailId;
     }
 
     protected function updateHelpdeskUsername($helpdeskAccount)
