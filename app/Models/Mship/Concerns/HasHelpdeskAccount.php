@@ -32,8 +32,6 @@ trait HasHelpdeskAccount
 
     /**
      * Create a new account for the user in Moodle.
-     *
-     * @param string $email
      */
     protected function createHelpdeskAccount()
     {
@@ -77,6 +75,11 @@ trait HasHelpdeskAccount
         $this->updateHelpdeskUsername($helpdeskAccount);
     }
 
+    /**
+     * Update the user's Helpdesk name and email.
+     *
+     * @param $helpdeskAccount
+     */
     protected function updateHelpdeskNameAndEmail($helpdeskAccount)
     {
         $emailId = $this->updateHelpdeskEmailGetId($helpdeskAccount);
@@ -91,6 +94,13 @@ trait HasHelpdeskAccount
         }
     }
 
+    /**
+     * Update the user's Helpdesk email and return the email ID.
+     * Does not update default_email_id on user's account.
+     *
+     * @param $helpdeskAccount
+     * @return int|null
+     */
     protected function updateHelpdeskEmailGetId($helpdeskAccount)
     {
         $emailId = null;
@@ -120,6 +130,11 @@ trait HasHelpdeskAccount
         return $emailId;
     }
 
+    /**
+     * Update the user's Helpdesk username.
+     *
+     * @param $helpdeskAccount
+     */
     protected function updateHelpdeskUsername($helpdeskAccount)
     {
         if ($helpdeskAccount->username !== (string) $this->id) {
