@@ -1,7 +1,5 @@
-import 'cbpAnimatedHeader';
-
 $('body').scrollspy({
     target: '.navbar-fixed-top'
 });
 
-$(".tooltip_displays").tooltip();
+$('.tooltip_displays').tooltip();
