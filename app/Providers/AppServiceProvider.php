@@ -5,7 +5,6 @@ namespace App\Providers;
 use Config;
 use HTML;
 use Illuminate\Support\ServiceProvider;
-use Response;
 use URL;
 use Validator;
 use View;
@@ -75,14 +74,6 @@ class AppServiceProvider extends ServiceProvider
             ['visit-transfer.admin._sidebar'],
             \App\Controllers\ViewComposers\StatisticsComposer::class
         );
-
-        Response::macro('csv', function ($value) {
-            return Response::make(implode(',', $value));
-        });
-
-        Response::macro('psv', function ($value) {
-            return Response::make(implode('|', $value));
-        });
     }
 
     /**
