@@ -120,7 +120,7 @@ trait HasHelpdeskAccount
             if ($existingCdata) {
                 DB::table(config('services.helpdesk.database').'.ost_user__cdata')
                     ->where('user_id', $existingCdata->user_id)
-                    ->update(['cid'  => $this->id]);
+                    ->update(['cid' => $this->id]);
             } else {
                 DB::table(config('services.helpdesk.database').'.ost_user__cdata')
                     ->insert(['user_id' => $helpdeskAccount->id, 'cid' => $this->id]);

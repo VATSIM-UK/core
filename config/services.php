@@ -45,5 +45,4 @@ return [
         'database' => env('HELPDESK_DATABASE'),
     ],
 
-
 ];
