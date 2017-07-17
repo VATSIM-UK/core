@@ -13,6 +13,7 @@ use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Note\Type;
@@ -160,7 +161,7 @@ use Watson\Rememberable\Rememberable;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount;
+        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;

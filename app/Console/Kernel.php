@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\SysStatisticsDaily::class,
         Commands\SyncRTS::class,
         Commands\SyncCommunity::class,
+        Commands\SyncHelpdesk::class,
         Commands\SyncMentors::class,
         Commands\SyncMoodle::class,
         Commands\TeamSpeakManager::class,

@@ -18,6 +18,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \DB::listen(function ($query) {
+            var_dump([
+                $query->sql,
+                $query->bindings,
+                $query->time
+            ]);
+        });
+
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }

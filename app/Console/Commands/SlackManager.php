@@ -77,7 +77,7 @@ class SlackManager extends Command
 //            }
             } catch (Exception $e) {
                 Bugsnag::notifyException($e);
-                
+
                 $this->log('Caught: '.get_class($e));
                 $this->log($e->getTraceAsString());
 
