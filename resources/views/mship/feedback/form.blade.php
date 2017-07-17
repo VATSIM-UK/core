@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('scripts')
-{!! HTML::script(asset("assets\js\plugins\datetimepickerxdan\jquery.datetimepicker.full.min.js")) !!}
+{!! HTML::script(asset("AdminLTE/js/plugins/datetimepickerxdan/jquery.datetimepicker.full.min.js")) !!}
 <script type="text/javascript">
   $(document).ready(function(){
     $('.datetimepickercustom').datetimepicker();

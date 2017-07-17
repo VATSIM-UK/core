@@ -1,3 +1,5 @@
+import 'cbpAnimatedHeader';
+
 $('body').scrollspy({
     target: '.navbar-fixed-top'
 });

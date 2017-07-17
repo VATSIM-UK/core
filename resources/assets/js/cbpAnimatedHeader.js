@@ -1,3 +1,5 @@
+import classie from 'classie';
+
 /**
  * cbpAnimatedHeader.js v1.0.0
  * http://www.codrops.com
