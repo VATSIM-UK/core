@@ -105,8 +105,8 @@ trait HasPassword
     public function getMandatoryPasswordAttribute()
     {
         return $this->roles->filter(function ($role) {
-                return $role->hasMandatoryPassword();
-            })->count() > 0;
+            return $role->hasMandatoryPassword();
+        })->count() > 0;
     }
 
     /**
