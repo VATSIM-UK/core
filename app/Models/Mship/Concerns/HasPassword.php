@@ -47,13 +47,16 @@ trait HasPassword
      */
     public function setPasswordAttribute($password)
     {
-        if ($password == null) {
+        // if password is null, remove the current password
+        // elseif password is already hashed, store it as provided
+        // else password needs hashing, hash and store it
+        if ($password === null) {
             $this->attributes['password'] = null;
-
-            return;
+        } elseif (!\Hash::needsRehash($password)) {
+            $this->attributes['password'] = $password;
+        } else {
+            $this->attributes['password'] = \Hash::make($password);
         }
-
-        $this->attributes['password'] = \Hash::make($password);
     }
 
     /**
