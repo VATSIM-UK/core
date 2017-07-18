@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 trait HasNotifications
 {
-    public function readNotifications()
+    public function readSystemNotifications()
     {
         return $this->belongsToMany(
             \App\Models\Sys\Notification::class,
