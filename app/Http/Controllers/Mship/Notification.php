@@ -28,7 +28,7 @@ class Notification extends \App\Http\Controllers\BaseController
     {
         // Get all unread notifications.
         $unreadNotifications = $this->account->unreadNotifications;
-        $readNotifications = $this->account->readNotifications;
+        $readNotifications = $this->account->readSystemNotifications;
 
         return $this->viewMake('mship.notification.list')
                     ->with('unreadNotifications', $unreadNotifications)

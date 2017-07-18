@@ -23,7 +23,7 @@ trait HasNotifications
     public function getUnreadNotificationsAttribute()
     {
         // Get all read notifications
-        $readNotifications = $this->readNotifications;
+        $readNotifications = $this->readSystemNotifications;
 
         // Get all notifications
         $allNotifications = SysNotification::published()
