@@ -7,6 +7,7 @@ use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasEmails;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
@@ -38,7 +39,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
         RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications;
+        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
