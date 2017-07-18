@@ -31,8 +31,8 @@ trait HasQualifications
     public function hasQualification(Qualification $qualification)
     {
         return $this->qualifications->filter(function ($q) use ($qualification) {
-                return $q->id == $qualification->id;
-            })->count() > 0;
+            return $q->id == $qualification->id;
+        })->count() > 0;
     }
 
     /**
