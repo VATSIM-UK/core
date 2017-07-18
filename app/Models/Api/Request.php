@@ -9,22 +9,22 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $api_account_id
- * @property string $method
+ * @property string|null $method
  * @property string $url_name
  * @property string $url_full
- * @property int $response_code
- * @property string $response_full
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereApiAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereMethod($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereResponseCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereResponseFull($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUrlFull($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Api\Request whereUrlName($value)
+ * @property int|null $response_code
+ * @property string|null $response_full
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereApiAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereResponseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereResponseFull($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUrlFull($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereUrlName($value)
  * @mixin \Eloquent
  */
 class Request extends Model

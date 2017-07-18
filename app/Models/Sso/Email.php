@@ -8,17 +8,17 @@ use App\Traits\RecordsActivity;
  * App\Models\Sso\Email
  *
  * @property int $id
- * @property int $account_email_id
+ * @property int|null $account_email_id
  * @property int $sso_account_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Mship\Account\Email $email
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Mship\Account\Email|null $email
  * @property-read \Laravel\Passport\Client $ssoAccount
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereAccountEmailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereSsoAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Email extends \Eloquent

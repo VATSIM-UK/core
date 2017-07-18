@@ -9,16 +9,16 @@ namespace App\Models\Messages\Thread;
  * @property int $thread_id
  * @property int $account_id
  * @property string $content
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $author
  * @property-read \App\Models\Messages\Thread $thread
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereContent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereThreadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Post extends \App\Models\Model

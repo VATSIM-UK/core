@@ -10,22 +10,22 @@ namespace App\Models\Messages\Thread;
  * @property int $account_id
  * @property string $display_as
  * @property int $status
- * @property \Carbon\Carbon $read_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $read_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Messages\Thread $thread
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isOwner()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant isViewer()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant isOwner()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant isViewer()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereDisplayAs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereReadAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereThreadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Participant extends \App\Models\Model

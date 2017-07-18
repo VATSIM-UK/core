@@ -10,15 +10,15 @@ use App\Models\Model;
  * @property int $id
  * @property int $group_id
  * @property int $account_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereGroupId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Community\Membership whereUpdatedAt($value)
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Membership whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Membership extends Model

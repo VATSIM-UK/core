@@ -10,17 +10,17 @@ use Carbon\Carbon;
  *
  * @property int $id
  * @property int $account_id
- * @property int $banned_by
+ * @property int|null $banned_by
  * @property int $type
- * @property int $reason_id
+ * @property int|null $reason_id
  * @property string $reason_extra
  * @property \Carbon\Carbon $period_start
- * @property \Carbon\Carbon $period_finish
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $repealed_at
+ * @property \Carbon\Carbon|null $period_finish
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $repealed_at
  * @property-read \App\Models\Mship\Account $account
- * @property-read \App\Models\Mship\Account $banner
+ * @property-read \App\Models\Mship\Account|null $banner
  * @property-read mixed $display_value
  * @property-read mixed $is_active
  * @property-read mixed $is_expired
@@ -31,24 +31,24 @@ use Carbon\Carbon;
  * @property-read mixed $period_left
  * @property-read mixed $type_string
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \App\Models\Mship\Ban\Reason $reason
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isActive()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isHistoric()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isLocal()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNetwork()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban isRepealed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
+ * @property-read \App\Models\Mship\Ban\Reason|null $reason
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isHistoric()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isLocal()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isNetwork()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isNotRepealed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban isRepealed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereBannedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban wherePeriodFinish($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban wherePeriodStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereReasonExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereReasonId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereRepealedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Ban extends \App\Models\Model
