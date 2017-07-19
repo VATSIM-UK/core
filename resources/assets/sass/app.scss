@@ -5,7 +5,7 @@ $font-family: Calibri, Tahoma, Geneva, sans-serif;
 @import "node_modules/bootstrap-tour/build/css/bootstrap-tour.min";
 @import "node_modules/ionicons/dist/scss/ionicons";
 @import "node_modules/font-awesome/scss/font-awesome";
-@import "public/AdminLTE/css/datetimepickerxdan/jquery.datetimepicker.min";
+@import "node_modules/jquery-datetimepicker/jquery.datetimepicker";
 @import "_visit-transfer";
 
 root {

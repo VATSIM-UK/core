@@ -76,8 +76,3 @@
     </div>
 </div>
 @stop
-
-@section('scripts')
-@parent
-{!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
-@stop

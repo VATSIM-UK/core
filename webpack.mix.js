@@ -20,5 +20,13 @@ mix.webpackConfig({
     }
 });
 
-mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css').version();
-mix.js('resources/assets/js/app.js', 'public/js/app-all.js').version();
+// admin (AdminLTE)
+mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
+mix.js('resources/assets/js/admin.js', 'public/js/admin-all.js');
+
+// members (main)
+mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css');
+mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
+
+// general
+mix.version();
