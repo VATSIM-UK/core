@@ -47,7 +47,7 @@
         <!-- Logo -->
         <a href="{{ URL::route("adm.dashboard") }}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>ADM</b></span>
+            <span class="logo-mini"><b>V</b>UK</span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg"><b>VATSIM</b>UK</span>
         </a>
@@ -105,19 +105,9 @@
     </div><!-- /.right-side -->
 </div><!-- ./wrapper -->
 
-<!-- add new calendar event modal -->
-
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-
-
-
-
-
-
-
-{!! HTML::script('https://code.jquery.com/ui/1.11.1/jquery-ui.min.js') !!}
 <!-- Morris.js charts -->
 {!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js') !!}
 {!! HTML::script('/AdminLTE/js/plugins/morris/morris.min.js') !!}
@@ -145,14 +135,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js" integrity="sha384-vMMciU9KnFBubM1yw+Q+6f68+ZHeeD0LPvydPm6xdw75vMiYRB03L7+4K5gGoh5w" crossorigin="anonymous"></script><!-- iCheck -->
 {!! HTML::script('/AdminLTE/js/plugins/iCheck/icheck.min.js') !!}
 
-<!-- AdminLTE App -->
-{!! HTML::script('/AdminLTE/js/app.js') !!}
+{{--<!-- AdminLTE App -->--}}
+{!! HTML::script('/AdminLTE/js/app.min.js') !!}
 
 <script language="javascript" type="text/javascript">
     $('.selectpicker').selectpicker();
-</script>
-
-<script language="javascript" type="text/javascript">
     $('[data-toggle="confirmation"]').confirmation({
         placement: "top",
         btnOkClass: "btn btn-xs btn-primary",
