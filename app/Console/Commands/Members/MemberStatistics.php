@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Members;
 
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Statistic;
 use Carbon\Carbon;
 use DB;
 
-class SysStatisticsDaily extends Command
+class MemberStatistics extends Command
 {
     /**
      * Errors:
@@ -60,8 +61,6 @@ class SysStatisticsDaily extends Command
 
             $this->addNewDivisionMembersStatistic($currentPeriod);
             $this->addCurrentDivisionMembersStatistic($currentPeriod);
-
-            $this->runModuleStatistics($currentPeriod);
 
             $currentPeriod = $currentPeriod->addDay();
             $this->progressBar->advance();
@@ -139,14 +138,6 @@ class SysStatisticsDaily extends Command
         } catch (\Exception $e) {
             $this->sendSlackError('Unable to update CURRENT DIVISION MEMBER statistics.', ['Error Code' => 3]);
         }
-    }
-
-    private function runModuleStatistics($currentPeriod)
-    {
-        \Artisan::call('visittransfer:statistics:daily', [
-            'startPeriod' => $currentPeriod,
-            'endPeriod' => $currentPeriod,
-        ]);
     }
 
     /**

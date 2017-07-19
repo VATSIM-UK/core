@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\NetworkData;
 
 use App\Events\NetworkData\NetworkDataDownloaded;
 use App\Events\NetworkData\NetworkDataParsed;
@@ -11,7 +11,7 @@ use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class DownloadAndParse extends \App\Console\Commands\Command
+class ProcessNetworkData extends \App\Console\Commands\Command
 {
     use DispatchesJobs;
 

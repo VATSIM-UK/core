@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\VisitTransfer;
 
+use App\Console\Commands\Command;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 use App\Models\VisitTransfer\Application;
 
@@ -14,7 +15,7 @@ class ApplicationsCleanup extends Command
      *
      * @var string
      */
-    protected $signature = 'visittransfer:cleanup';
+    protected $signature = 'visit-transfer:cleanup';
 
     /**
      * The console command description.
@@ -46,7 +47,6 @@ class ApplicationsCleanup extends Command
                 try {
                     $application->expire();
                 } catch (ApplicationCannotBeExpiredException $e) {
-                    // Shouldn't matter - maybe we were just late in catching them
                     continue;
                 }
             }

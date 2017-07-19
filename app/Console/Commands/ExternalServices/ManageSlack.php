@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\ExternalServices;
 
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use Bugsnag;
 use Exception;
-use GuzzleHttp\Exception\ServerException;
 use SlackUser;
 
-class SlackManager extends Command
+class ManageSlack extends Command
 {
     /**
      * The name and signature of the console command.

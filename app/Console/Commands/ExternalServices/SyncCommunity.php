@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\ExternalServices;
 
+use App\Console\Commands\Command;
+use Exception;
 use App\Models\Mship\Account;
 use DB;
 

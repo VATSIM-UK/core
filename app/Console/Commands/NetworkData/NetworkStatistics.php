@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\NetworkData;
 
+use App\Console\Commands\Command;
 use App\Models\NetworkData\Atc;
 use App\Models\Statistic;
 use Cache;
 use Carbon\Carbon;
 
-class Statistics extends Command
+class NetworkStatistics extends Command
 {
     /**
      * The console command signature.

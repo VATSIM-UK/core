@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\VisitTransfer;
 
+use App\Console\Commands\Command;
 use App\Models\Statistic;
 use App\Models\VisitTransfer\Application;
 use Cache;
 use Carbon\Carbon;
 
-class StatisticsDaily extends Command
+class VisitTransferStatistics extends Command
 {
     /**
      * The console command signature.

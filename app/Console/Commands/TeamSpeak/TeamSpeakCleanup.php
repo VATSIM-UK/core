@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\TeamSpeak;
 
+use App\Console\Commands\Command;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
 use Carbon\Carbon;
@@ -69,7 +70,7 @@ class TeamSpeakCleanup extends Command
     /**
      * Check the registration for a TeamSpeak client.
      *
-     * @param $client The client being checked.
+     * @param mixed $client The client being checked.
      * @return int Returns 0 if no change has been made, or 1 if the client was deleted.
      */
     protected function checkRegistration($client)

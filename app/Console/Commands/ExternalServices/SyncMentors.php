@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\ExternalServices;
 
+use App\Console\Commands\Command;
 use Carbon\Carbon;
 use DB;
 

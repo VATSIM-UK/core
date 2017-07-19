@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\TeamSpeak;
 
+use App\Console\Commands\Command;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Permission;
 use App\Models\Mship\Qualification;

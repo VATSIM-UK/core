@@ -22,6 +22,9 @@ The following are the upgrade notes for deploying in production.
 
 * Create cronjob for `feedback:summary` command: `0 22 * * * php artisan feedback:summarise --interval=p1d`
 * Add `HELPDESK_DATABASE=` to `.env`
+* Create cronjob for Helpdesk sync command
+* Rename visittransfer:cleanup to visit-transfer:cleanup
+* Add cronjob for `visittransfer:statistics:daily`
 
 ### Older Versions
 

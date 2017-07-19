@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Members;
 
+use App\Console\Commands\Command;
 use App\Jobs\Mship\Account\MemberCertUpdate;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class MembersCertUpdate extends Command
+class UpdateMembers extends Command
 {
     use DispatchesJobs;
 

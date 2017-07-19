@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Development;
 
+use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;

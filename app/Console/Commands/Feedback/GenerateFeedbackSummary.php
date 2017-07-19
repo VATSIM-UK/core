@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Feedback;
 
 use App\Models\Mship\Feedback\Feedback;
 use App\Notifications\Mship\FeedbackSummary;

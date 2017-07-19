@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Members;
 
+use App\Console\Commands\Command;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -12,7 +13,7 @@ use VatsimXML;
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
  */
-class MembersCertImport extends Command
+class ImportMembers extends Command
 {
     /**
      * The console command name.
