@@ -50,7 +50,7 @@ return [
             'charset' => env('DB_MYSQL_CHARSET', 'utf8'),
             'collation' => env('DB_MYSQL_COLLATION', 'utf8_unicode_ci'),
             'prefix' => env('DB_MYSQL_PREFIX', ''),
-            'strict' => false,
+            'strict' => true,
             'engine' => null,
         ],
 
