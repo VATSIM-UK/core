@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\TeamSpeak;
 
-use App\Console\Commands\TeamSpeak\TeamSpeakCommand;
 use App\Libraries\TeamSpeak;
 use Exception;
 use TeamSpeak3_Adapter_ServerQuery_Event;

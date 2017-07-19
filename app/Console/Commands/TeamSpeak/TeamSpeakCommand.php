@@ -3,8 +3,6 @@
 namespace App\Console\Commands\TeamSpeak;
 
 use App\Console\Commands\Command;
-use App\Console\Commands\TeamSpeak\TeamSpeakDaemon;
-use App\Console\Commands\TeamSpeak\TeamSpeakManager;
 use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Libraries\TeamSpeak;
