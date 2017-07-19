@@ -22,7 +22,6 @@ mix.webpackConfig({
 
 // admin (AdminLTE)
 mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
-mix.js('resources/assets/js/admin.js', 'public/js/admin-all.js');
 
 // members (main)
 mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css');
