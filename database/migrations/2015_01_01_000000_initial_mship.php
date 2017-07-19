@@ -272,7 +272,7 @@ class InitialMship extends Migration
             $table->smallInteger('type')->unsigned();
             $table->integer('reason_id')->unsigned()->nullable();
             $table->text('reason_extra');
-            $table->timestamp('period_start')->nullable();
+            $table->timestamp('period_start');
             $table->timestamp('period_finish')->nullable();
             $table->timestamps();
             $table->timestamp('repealed_at')->nullable();
