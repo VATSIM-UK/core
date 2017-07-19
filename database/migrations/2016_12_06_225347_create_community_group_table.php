@@ -17,7 +17,7 @@ class CreateCommunityGroupTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('name', 30);
             $table->smallInteger('tier')->nullable();
-            $table->longText('coordinate_boundaries');
+            $table->longText('coordinate_boundaries')->nullable();
             $table->boolean('default')->default(false);
             $table->timestamps();
             $table->softDeletes();

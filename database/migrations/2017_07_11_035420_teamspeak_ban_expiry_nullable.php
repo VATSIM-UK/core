@@ -21,6 +21,6 @@ class TeamspeakBanExpiryNullable extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE teamspeak_ban MODIFY expires_at TIMESTAMP NOT NULL DEFAULT 0');
+
     }
 }

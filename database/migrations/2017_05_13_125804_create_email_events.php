@@ -20,7 +20,7 @@ class CreateEmailEvents extends Migration
             $table->string('name');
             $table->string('recipient');
             $table->text('data');
-            $table->timestamp('triggered_at');
+            $table->timestamp('triggered_at')->nullable();
         });
     }
 
