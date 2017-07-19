@@ -32,7 +32,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
             // All Stats
             $statistics = [];
             $statistics['members_total'] = (\App\Models\Mship\Account::count());
-            $statistics['members_active'] = (\App\Models\Mship\Account::where('status', '=', 0)->count());
+            $statistics['members_active'] = (\App\Models\Mship\Account::where('inactive', 0)->count());
 
             $statistics['members_division'] = DB::table('mship_account_state')
                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
