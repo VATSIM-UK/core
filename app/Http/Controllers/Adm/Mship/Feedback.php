@@ -25,8 +25,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postNewForm(UpdateFeedbackFormRequest $request)
     {
-        $new_ident   = isset($_POST['ident'])   ? $_POST['ident']   : null;
-        $new_name    = isset($_POST['name'])    ? $_POST['name']    : null;
+        $new_ident = isset($_POST['ident']) ? $_POST['ident'] : null;
+        $new_name = isset($_POST['name']) ? $_POST['name'] : null;
         $new_contact = isset($_POST['contact']) ? $_POST['contact'] : null;
         if ($new_ident == null) {
             return Redirect::back()
@@ -50,7 +50,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             'name' => 'CID of the member you are leaving feedback for.',
             'slug' => 'usercid',
             'required' => true,
-            'type' => 'userlookup']);
+            'type' => 'userlookup', ]);
 
         return $this->postConfigure($form, $request);
     }
@@ -130,14 +130,16 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                       ->withSuccess('Updated!');
     }
 
-    public function postEnableForm(Form $form) {
+    public function postEnableForm(Form $form) 
+    {
         $form->enabled = true;
         $form->save();
         return Redirect::back()
             ->withSuccess('Updated!');
     }
 
-    public function postDisableForm(Form $form) {
+    public function postDisableForm(Form $form)
+    {
         $form->enabled = false;
         $form->save();
         return Redirect::back()
