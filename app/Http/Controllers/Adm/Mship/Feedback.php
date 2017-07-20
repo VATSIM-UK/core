@@ -134,7 +134,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $form->enabled = true;
         $form->save();
-        
+
         return Redirect::back()
             ->withSuccess('Updated!');
     }
@@ -143,7 +143,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $form->enabled = false;
         $form->save();
-        
+
         return Redirect::back()
             ->withSuccess('Updated!');
     }
