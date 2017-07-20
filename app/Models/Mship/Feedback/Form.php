@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property bool $enabled
  * @property int|null $contact_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form onlyTrashed()
  * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereContactId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Form whereDeletedAt($value)

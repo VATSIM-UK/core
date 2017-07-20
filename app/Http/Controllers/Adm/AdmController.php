@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm;
 
+use App\Models\Mship\Feedback\Form;
 use View;
 
 class AdmController extends \App\Http\Controllers\BaseController
@@ -26,6 +27,8 @@ class AdmController extends \App\Http\Controllers\BaseController
     public function viewMake($view)
     {
         $view = View::make($view);
+
+        $view->with('_feedbackForms', Form::whereDeletedAt(null)->orderBy('id', 'asc')->getModels());
 
         $view->with('_account', $this->account);
 

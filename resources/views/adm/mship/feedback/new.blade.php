@@ -97,12 +97,12 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title ">
-                        Customize the Feedback Form</br>
+                        Create a New Feedback Form</br>
                     </h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->id]]) !!}
+                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.new.create"]]) !!}
                         {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
                         <div class="col-md-9">
                             <div class="box box-primary">
@@ -116,18 +116,6 @@
                                         <ol class='simple_connected_list' id="feedback-form-questions">
                                             @if (old('old_data') != null)
                                                 {!! old('old_data') !!}
-                                            @else
-                                                @php
-                                                    $i = 1;
-                                                @endphp
-                                                @foreach ($current_questions as $question)
-                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => 'template'])
-                                                    @php
-                                                        $i++;
-                                                    @endphp
-                                                @endforeach
-
-
                                             @endif
                                         </ol>
                                     </div>
@@ -136,32 +124,21 @@
                         </div>
                         <div class="col-md-3">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="box box-danger">
                                         <div class="box-header">
 
                                         </div>
                                         <div class="box-body">
-                                            {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
-                                        </div>
-                                    </div>
-                                </div>
-                                {{ Form::close() }}
-                                @if($form->enabled)
-                                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.disable", $form->id]]) !!}
-                                @else
-                                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.enable", $form->id]]) !!}
-                                @endif
-                                <div class="col-md-6">
-                                    <div class="box box-danger">
-                                        <div class="box-header">
-                                        </div>
-                                        <div class="box-body">
-                                            @if($form->enabled)
-                                                {{ Form::submit("Disable Form", ['class' => 'btn btn-danger', 'style' => 'color:white;']) }}
-                                            @else
-                                                {{ Form::submit("Enable Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
-                                            @endif
+                                            {{ Form::text('name', null, ['placeholder' => 'Name (e.g. ATC Feedback)', 'required' => '']) }}
+                                            <br/>
+                                            {{ Form::text('ident', null, ['placeholder' => 'Unique Identifier (e.g. atc)', 'required' => '']) }}
+                                            <br/>
+                                            {{ Form::email('contact', null, ['placeholder' => 'Email to contact when a form is sent']) }}
+                                            <br/>
+                                            {{ Form::submit("Create New Feedback Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
+                                            <br/>
+                                            <small>Note: New forms default to disabled and you must enable it manually.</small>
                                         </div>
                                     </div>
                                 </div>

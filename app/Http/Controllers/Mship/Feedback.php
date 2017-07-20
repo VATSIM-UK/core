@@ -16,7 +16,14 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getFeedbackFormSelect()
     {
-        return view('mship.feedback.form');
+        $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->getModels();
+        $feedbackForms = [];
+        foreach ($forms as $f) {
+            $feedbackForms[$f->id] = $f->name;
+        }
+
+        return view('mship.feedback.form')
+            ->with('feedbackForms', $feedbackForms);
     }
 
     public function postFeedbackFormSelect(Request $request)
