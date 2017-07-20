@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Jobs\Mship\Account;
+namespace App\Jobs;
 
-use App\Jobs\Job;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification as QualificationData;
 use Carbon\Carbon;
@@ -12,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use VatsimXML;
 
-class MemberCertUpdate extends Job implements ShouldQueue
+class UpdateMember extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 

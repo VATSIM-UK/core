@@ -3,7 +3,7 @@
 namespace App\Console\Commands\Members;
 
 use App\Console\Commands\Command;
-use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Jobs\UpdateMember;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -39,7 +39,7 @@ class UpdateMembers extends Command
         $members = $this->getMembers();
 
         foreach ($members as $member) {
-            $job = new MemberCertUpdate($member);
+            $job = new UpdateMember($member);
             $this->dispatch($job);
             $this->log("$member added to update queue");
         }
