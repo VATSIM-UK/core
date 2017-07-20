@@ -130,7 +130,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                       ->withSuccess('Updated!');
     }
 
-    public function postEnableForm(Form $form) 
+    public function postEnableForm(Form $form)
     {
         $form->enabled = true;
         $form->save();
