@@ -46,11 +46,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $form = $this->makeNewForm($new_ident, $new_name, $new_contact);
 
-        $this->makeUserCidQuestion($form, [
-            'name' => 'CID of the member you are leaving feedback for.',
-            'slug' => 'usercid',
-            'required' => true,
-            'type' => 'userlookup', ]);
+        $this->makeUserCidQuestion($form);
 
         return $this->postConfigure($form, $request);
     }
@@ -170,21 +166,15 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         return $new_question->id;
     }
 
-    public function makeUserCidQuestion($form, $question)
+    public function makeUserCidQuestion($form)
     {
         $type = Type::where('name', 'userlookup')->first();
         $new_question = new Question();
-        $new_question->question = $question['name'];
-        $new_question->slug = $question['slug'];
+        $new_question->question = 'CID of the member you are leaving feedback for.';
+        $new_question->slug = 'usercid';
         $new_question->type_id = $type->id;
         $new_question->form_id = $form->id;
-        if (isset($question['options']['values']) && $question['options']['values'] != '') {
-            $question['options']['values'] = explode(',', $question['options']['values']);
-        }
-        if (isset($question['options'])) {
-            $new_question->options = $question['options'];
-        }
-        $new_question->required = $question['required'];
+        $new_question->required = true;
         $new_question->sequence = 1;
         $new_question->permanent = true;
         $new_question->save();
