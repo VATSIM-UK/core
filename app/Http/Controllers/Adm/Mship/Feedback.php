@@ -198,6 +198,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         if ($targeted) {
             $this->makeUserCidQuestion($new_form);
         }
+
         return $new_form;
     }
 

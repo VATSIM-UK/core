@@ -130,7 +130,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         if (!$cidfield && !$form->targeted) {
             // No specific target, feedback points at submitter
             $account = Account::find(\Auth::user()->id);
-        } else if ($cidfield != null) {
+        } elseif ($cidfield != null) {
             $account = Account::find($request->input($cidfield));
         } else {
             // No one specified a user lookup field!
