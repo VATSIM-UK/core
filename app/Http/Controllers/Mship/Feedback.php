@@ -43,9 +43,10 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedback(Form $form)
     {
         $questions = $form->questions()->orderBy('sequence')->get();
-        if (!$questions) {
+        if (!$questions || !$form->enabled) {
             // We have no questions to display!
-            return Redirect::route('mship.manage.dashboard');
+            return Redirect::route('mship.manage.dashboard')
+                ->withError('There was an issue loading the requested form');
         }
 
         // Lets parse the questions ready for inserting
@@ -125,14 +126,19 @@ class Feedback extends \App\Http\Controllers\BaseController
                         ->withInput();
         }
 
-        if (!$cidfield) {
+        $account = null;
+        if (!$cidfield && !$form->targeted) {
+            // No specific target, feedback points at submitter
+            $account = Account::find(\Auth::user()->id);
+        } else if ($cidfield != null) {
+            $account = Account::find($request->input($cidfield));
+        } else {
             // No one specified a user lookup field!
             return Redirect::route('mship.manage.dashboard')
                     ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
         }
 
         // Make new feedback
-        $account = Account::find($request->input($cidfield));
         $feedback = $account->feedback()->create([
             'submitter_account_id' => \Auth::user()->id,
             'form_id' => $form->id,

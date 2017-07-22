@@ -25,28 +25,17 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postNewForm(UpdateFeedbackFormRequest $request)
     {
-        $new_ident = isset($_POST['ident']) ? $_POST['ident'] : null;
-        $new_name = isset($_POST['name']) ? $_POST['name'] : null;
-        $new_contact = isset($_POST['contact']) ? $_POST['contact'] : null;
-        if ($new_ident == null) {
-            return Redirect::back()
-                ->withInput($request->input())
-                ->withError('Form \'ident\' not specified');
-        }
-        if ($new_name == null) {
-            return Redirect::back()
-                ->withInput($request->input())
-                ->withError('Form \'name\' not specified');
-        }
+        $new_ident = $request->input('ident');
+        $new_name = $request->input('name');
+        $new_contact = $request->input('contact');
+        $targeted = $request->input('targeted') == '1' ? true : false;
         if (Form::whereSlug($new_ident)->exists()) {
             return Redirect::back()
                 ->withInput($request->input())
                 ->withError('New form identifier \''.$new_ident.'\' already exists');
         }
 
-        $form = $this->makeNewForm($new_ident, $new_name, $new_contact);
-
-        $this->makeUserCidQuestion($form);
+        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted);
 
         return $this->postConfigure($form, $request);
     }
@@ -182,7 +171,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         return $new_question->id;
     }
 
-    public function makeNewForm($ident, $name, $contact)
+    public function makeNewForm($ident, $name, $contact, $targeted)
     {
         $new_form = new Form();
         $new_form->slug = $ident;
@@ -203,8 +192,12 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             }
         }
         $new_form->enabled = false;
+        $new_form->targeted = $targeted;
         $new_form->save();
 
+        if ($targeted) {
+            $this->makeUserCidQuestion($new_form);
+        }
         return $new_form;
     }
 
@@ -235,17 +228,21 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getViewFeedback(FeedbackModel $feedback)
     {
-        if ($this->account->hasChildPermission('adm/mship/feedback/list')) {
+        $targeted = $feedback->form->targeted;
+        if ($this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*')) {
             return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback);
+                    ->with('feedback', $feedback)
+                    ->with('targeted', $targeted);
         }
         if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
             return $this->viewMake('adm.mship.feedback.view')
-                      ->with('feedback', $feedback);
+                      ->with('feedback', $feedback)
+                      ->with('targeted', $targeted);
         }
         if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
             return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback);
+                    ->with('feedback', $feedback)
+                    ->with('targeted', $targeted);
         }
         abort(401, 'Unauthorized action.');
     }
@@ -253,7 +250,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
         $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
+        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
 

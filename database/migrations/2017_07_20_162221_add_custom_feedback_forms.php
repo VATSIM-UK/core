@@ -20,6 +20,9 @@ class AddCustomFeedbackForms extends Migration
         Schema::table('mship_feedback_forms', function (Blueprint $table) {
             $table->boolean('enabled')->default(true)->after('contact_id');
         });
+        Schema::table('mship_feedback_forms', function (Blueprint $table) {
+            $table->boolean('targeted')->default(true)->after('enabled');
+        });
     }
 
     /**
@@ -31,6 +34,9 @@ class AddCustomFeedbackForms extends Migration
     {
         Schema::table('mship_feedback_forms', function (Blueprint $table) {
             $table->dropColumn('enabled');
+        });
+        Schema::table('mship_feedback_forms', function (Blueprint $table) {
+            $table->dropColumn('targeted');
         });
     }
 }

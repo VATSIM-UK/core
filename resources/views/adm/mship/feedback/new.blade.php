@@ -136,6 +136,9 @@
                                             <br/>
                                             {{ Form::email('contact', null, ['placeholder' => 'Email to contact when a form is sent']) }}
                                             <br/>
+                                            {{ Form::checkbox('targeted', '1', true) }}
+                                            This form is user specific.
+                                            <br/><br/>
                                             {{ Form::submit("Create New Feedback Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
                                             <br/>
                                             <small>Note: New forms default to disabled and you must enable it manually.</small>
