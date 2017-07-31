@@ -287,7 +287,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
 
-        $slackAccount = Account::findWithSlackId($slackID);
+        $slackAccount = Account::where('slack_id', $slackID)->first();
 
         $this->assertEquals($slackAccount->id, $this->account->fresh()->id);
     }

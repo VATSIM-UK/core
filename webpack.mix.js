@@ -11,23 +11,21 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css').version();
+mix.webpackConfig({
+    resolve: {
+        modules: [
+            'node_modules',
+            path.resolve(__dirname, 'resources/assets/js')
+        ]
+    }
+});
 
-/* Concatenate all JS */
-mix.scripts([
-    'resources/assets/js/jquery-2.1.4.js',
-    'resources/assets/vendor/bootstrap3/js/bootstrap.min.js',
-    'resources/assets/vendor/bootstrap-tour/bootstrap-tour.min.js',
-    'resources/assets/js/classie.js',
-    'resources/assets/js/cbpAnimatedHeader.js',
-    'resources/assets/js/app.js',
-], 'public/js/app-all.js').version();
+// admin (AdminLTE)
+mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
 
-/* Move and shake our dependency files around too! */
-mix.copy('resources/assets/css/images/**', 'public/build/css/images')
-    .copy('resources/assets/css/AdminLTE/**', 'public/assets/css')
-    .copy('resources/assets/js/AdminLTE/**', 'public/assets/js')
-    .copy('resources/assets/vendor/bootstrap3/fonts/**', 'public/build/fonts')
-    .copy('resources/assets/vendor/font-awesome/fonts/**', 'public/build/fonts')
-    .copy('resources/assets/vendor/ionicons/fonts', 'public/build/fonts')
-    .copy('resources/assets/images/**', 'public/assets/images');
+// members (main)
+mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css');
+mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
+
+// general
+mix.version();

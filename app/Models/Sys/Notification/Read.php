@@ -10,21 +10,26 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property int $id
  * @property int $notification_id
  * @property int $account_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read active()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read general()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read important()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read mustAcknowledge()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read operational()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read since($sinceTimestamp)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read user()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereNotificationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withStatus($status)
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read active()
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read general()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read important()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read mustAcknowledge()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read operational()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read since($sinceTimestamp)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read user()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read whereNotificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Read withStatus($status)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withoutTrashed()
  * @mixin \Eloquent
  */
 class Read extends \App\Models\Model

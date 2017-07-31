@@ -154,7 +154,7 @@
                         <tbody>
                             <tr>
                                 <td style="padding: 20px 15px 0 15px; background-color: rgb(23, 55, 94);" bgcolor="#17375e">
-                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="border-radius: 0px; display: block;" alt="" src="{!! asset('assets/images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
+                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="border-radius: 0px; display: block;" alt="" src="{!! asset('images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
                                 </td>
                             </tr>
                             <tr>
@@ -220,12 +220,12 @@
                                                             <tr>
                                                                 <td class="center" style="text-align: left; color: rgb(241, 241, 241); line-height: 22px; padding-top: 5px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-size: 11px; font-weight: normal; vertical-align: top;" valign="top">
                                                                     <a href="https://twitter.com/vatsimuk" style="text-decoration: none;">
-                                                                        <img title="Twitter" alt="Twitter" src="{!! asset('assets/images/twitter.png') !!}" unselectable="on" border="0" width="50">
+                                                                        <img title="Twitter" alt="Twitter" src="{!! asset('images/twitter.png') !!}" unselectable="on" border="0" width="50">
                                                                     </a>
-                                                                    <a href="https://vatsim.uk"><img title="VATSIM UK Website" alt="VATSIM UK Website" src="{!! asset('assets/images/earth.png') !!}" unselectable="on" border="0" width="33"></a>
+                                                                    <a href="https://vatsim.uk"><img title="VATSIM UK Website" alt="VATSIM UK Website" src="{!! asset('images/earth.png') !!}" unselectable="on" border="0" width="33"></a>
                                                                 </td>
                                                                 <td class="center" style="color: rgb(153, 153, 153); padding: 10px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-size: 11px;text-align: right;" valign="top">
-                                                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="float:right;border-radius: 0px; display: block;" alt="" src="{!! asset('assets/images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
+                                                                    <a href="{{ \URL::to('/') }}"><img class="logo" width="200" style="float:right;border-radius: 0px; display: block;" alt="" src="{!! asset('images/vatsim_uk_logo.png') !!}" unselectable="on" border="0"></a>
                                                                 </td>
                                                             </tr>
                                                         </tbody>

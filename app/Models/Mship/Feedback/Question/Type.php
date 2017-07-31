@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property string $code
- * @property string $rules
+ * @property string|null $rules
  * @property int $max_uses
  * @property bool $requires_value
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Question[] $questions
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereMaxUses($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereRequiresValue($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question\Type whereRules($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereMaxUses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRequiresValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRules($value)
  * @mixin \Eloquent
  */
 class Type extends Model

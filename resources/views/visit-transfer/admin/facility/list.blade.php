@@ -111,8 +111,3 @@
         </div>
     </div>
 @stop
-
-@section('scripts')
-    @parent
-    {!! HTML::script('/assets/js/plugins/datatables/dataTables.bootstrap.js') !!}
-@stop

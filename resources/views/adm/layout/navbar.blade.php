@@ -8,7 +8,7 @@
         <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header bg-light-blue">
-                {!! HTML::image("assets/images/default_avatar.png", "User Image", ["class" => "img-circle"]) !!}
+                {!! HTML::image("images/default_avatar.png", "User Image", ["class" => "img-circle"]) !!}
                 <p>
                     {{ $_account->name_first . ' ' . $_account->name_last }}
                     <small>Member since {{ $_account->created_at->diffForHumans() }} <br /><em> {{ $_account->created_at->toDateTimeString() }}</em></small>

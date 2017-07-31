@@ -13,28 +13,28 @@ use Illuminate\Notifications\Notifiable;
  * @property int $form_id
  * @property int $account_id
  * @property int $submitter_account_id
- * @property \Carbon\Carbon $actioned_at
- * @property string $actioned_comment
- * @property int $actioned_by_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $actioned_at
+ * @property string|null $actioned_comment
+ * @property int|null $actioned_by_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $actioner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
  * @property-read \App\Models\Mship\Feedback\Form $form
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Mship\Account $submitter
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback aTC()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback pilot()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedById($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereActionedComment($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereFormId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereSubmitterAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Feedback whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback aTC()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback pilot()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereActionedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereActionedById($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereActionedComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereFormId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereSubmitterAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Feedback extends Model

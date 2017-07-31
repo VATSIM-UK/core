@@ -36,8 +36,7 @@ class Account extends AdmController
         $sortDir = in_array(Input::get('sort_dir'), ['ASC', 'DESC']) ? Input::get('sort_dir') : 'ASC';
 
         // ORM it all!
-        $memberSearch = AccountData::isNotSystem()
-                                   ->orderBy($sortBy, $sortDir)
+        $memberSearch = AccountData::orderBy($sortBy, $sortDir)
                                    ->with('qualifications')
                                    ->with('states')
                                    ->with('bans')

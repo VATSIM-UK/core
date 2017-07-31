@@ -23,7 +23,7 @@
 
     @section('error_image')
         <p align='center'>
-            {!! HTML::image("/assets/images/error.jpg") !!}
+            {!! HTML::image("/images/error.jpg") !!}
         </p>
     @show
 

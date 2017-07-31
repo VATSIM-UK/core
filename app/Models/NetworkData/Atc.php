@@ -18,40 +18,46 @@ use Watson\Rememberable\Rememberable;
  * @property int $id
  * @property int $account_id
  * @property string $callsign
- * @property float $frequency
+ * @property float|null $frequency
  * @property int $qualification_id
- * @property bool $facility_type
- * @property \Carbon\Carbon $connected_at
- * @property \Carbon\Carbon $disconnected_at
- * @property int $minutes_online
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
+ * @property int $facility_type
+ * @property \Carbon\Carbon|null $connected_at
+ * @property \Carbon\Carbon|null $disconnected_at
+ * @property int|null $minutes_online
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read mixed $account_name
  * @property-read mixed $is_online
  * @property-read string $public_id
  * @property-read mixed $type
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc forAccountId($id)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc forQualificationId($id)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc isUK()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc offline()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc onFrequency()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc online()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc thisYear()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereCallsign($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereConnectedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereDisconnectedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereFacilityType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereFrequency($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereMinutesOnline($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereQualificationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withCallsign($callsign)
+ * @property-read \App\Models\Mship\Qualification $qualification
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forAccountId($id)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc forQualificationId($id)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc isUK()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc offline()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc onFrequency()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc online()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc thisYear()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereCallsign($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereConnectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereDisconnectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereFacilityType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereMinutesOnline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereQualificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsign($callsign)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
  * @mixin \Eloquent
  */
 class Atc extends Model
