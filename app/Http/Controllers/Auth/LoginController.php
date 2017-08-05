@@ -90,7 +90,6 @@ class LoginController extends BaseController
             return redirect()->to(VatsimSSO::sendToVatsim());
         } else {
             throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
-
 //            Session::put('cert_offline', true);
 //
 //            return redirect()->route('mship.auth.loginAlternative')->withError(VatsimSSO::error()['message']);
