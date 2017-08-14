@@ -324,6 +324,9 @@
                             <br />
                                 Verified
                         </div>
+                        <div class="col-xs-4">
+                            <a style="text-decoration:none" class="tooltip_displays" data-toggle="tooltip" title="Primary email changes are done through CERT. These take up to 24 hours to become visible on core.">Looking to change this?</a>
+                        </div>
                     </div>
                     <!-- Top Row [END] -->
 
