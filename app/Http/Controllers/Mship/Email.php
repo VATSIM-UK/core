@@ -22,16 +22,23 @@ class Email extends \App\Http\Controllers\BaseController
 
     protected function recipientErrors(Account $member)
     {
-        $hasDivision = $member->hasState('DIVISION');
+        $hasDivision = $member->hasState('DIVISION')
+            || $member->hasState('VISITING')
+            || $member->hasState('TRANSFERRING');
         $isActive = !$member->is_inactive;
+        $emailKnown = !empty($member->email);
 
         $errors = [];
         if (!$hasDivision) {
-            $errors[] = 'Recipient is not a member of the division.';
+            $errors[] = 'Recipient is not a member of or associated with the division.';
         }
 
         if (!$isActive) {
             $errors[] = 'Recipient is not an active member.';
+        }
+
+        if (!$emailKnown) {
+            $errors[] = 'Recipient\'s email address is unknown.';
         }
 
         return $errors;
