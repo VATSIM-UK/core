@@ -67,8 +67,9 @@ class Email extends \App\Http\Controllers\BaseController
         $thread->participants()->save($recipient, ['status' => Participant::STATUS_VIEWER]);
 
         $post = new Post(['content' => $request->input('message')]);
-        $thread->posts()->save($post);
-        $this->account->messagePosts()->save($post);
+        $post->thread()->associate($thread);
+        $post->author()->associate($this->account);
+        $post->save();
 
         $allowReply = true;
         if ($request->has('hide-email')) {
