@@ -64,7 +64,9 @@ class ApplicationsCleanup extends Command
 
         foreach ($submittedApplications as $application) {
             if ($application->should_perform_checks) {
-                dispatch((new \App\Jobs\AutomatedApplicationChecks($application))->onQueue('med'));
+                $application->setCheckOutcome('90_day', $application->check90DayQualification());
+
+                $application->markAsUnderReview('Automated checks have completed.');
             } else {
                 $application->markAsUnderReview('Automated checks have been disabled for this facility - requires manual checking.');
             }

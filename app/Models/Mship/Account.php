@@ -3,7 +3,7 @@
 namespace App\Models\Mship;
 
 use App\Exceptions\Mship\InvalidCIDException;
-use App\Jobs\Mship\Account\MemberCertUpdate;
+use App\Jobs\UpdateMember;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCommunityGroups;
@@ -119,7 +119,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         try {
             return self::findOrFail($accountId);
         } catch (ModelNotFoundException $e) {
-            dispatch((new MemberCertUpdate($accountId))->onConnection('sync'));
+            dispatch((new UpdateMember($accountId))->onConnection('sync'));
 
             $account = self::find($accountId);
 
