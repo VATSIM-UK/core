@@ -55,8 +55,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                     }
                     continue;
                 }
-            // No values, so we cant use it :/
-            continue;
+                // No values, so we cant use it :/
+                continue;
             }
 
             $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));

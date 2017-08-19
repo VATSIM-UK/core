@@ -30,8 +30,8 @@ class AddIpv6Support extends Migration
             $table->dropColumn('last_login_ip_old');
         });
 
-          /*
-          SYS_ACTIVITY
+        /*
+        SYS_ACTIVITY
          */
 
         Schema::table('sys_activity', function (Blueprint $table) {
@@ -45,8 +45,8 @@ class AddIpv6Support extends Migration
             $table->renameColumn('ip_new', 'ip');
         });
 
-         /*
-          SYS_SESSIONS - Not doing too much to this as it is not implemented at the moment
+        /*
+         SYS_SESSIONS - Not doing too much to this as it is not implemented at the moment
         */
 
         Schema::table('sys_sessions', function (Blueprint $table) {

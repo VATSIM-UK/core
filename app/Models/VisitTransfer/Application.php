@@ -627,7 +627,7 @@ class Application extends Model
         $this->guardAgainstNonAcceptedApplication();
 
         $this->status = self::STATUS_COMPLETED;
-//        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
+        //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
         $this->save();
 
         if ($staffComment) {
