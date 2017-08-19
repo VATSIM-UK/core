@@ -62,7 +62,13 @@ trait HasQualifications
     public function updateVatsimRatings(int $atcRating, int $pilotRating)
     {
         $qualifications = [];
-        $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+
+        if ($atcRating === 0) {
+            $this->addNetworkBan('Network ban discovered via Cert login.');
+        } elseif ($atcRating > 0) {
+            $this->removeNetworkBan();
+            $qualifications[] = Qualification::parseVatsimATCQualification($atcRating);
+        }
 
         if ($atcRating >= 8) {
             $info = VatsimXML::getData($this->id, 'idstatusprat');
@@ -79,12 +85,6 @@ trait HasQualifications
 
         $ids = collect($qualifications)->pluck('id');
         $this->qualifications()->syncWithoutDetaching($ids);
-
-        if ($atcRating === 0) {
-            $this->addNetworkBan('Network ban discovered via Cert login.');
-        } elseif ($atcRating > 0) {
-            $this->removeNetworkBan();
-        }
     }
 
     public function getActiveQualificationsAttribute()
