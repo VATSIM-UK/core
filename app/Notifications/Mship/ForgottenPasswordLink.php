@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Mship\Security;
+namespace App\Notifications\Mship;
 
 use App\Models\Sys\Token;
 use App\Notifications\Notification;
