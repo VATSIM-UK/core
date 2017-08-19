@@ -319,13 +319,19 @@
                             {{ $_account->email }}
                         </div>
 
-                        <div class="col-xs-4">
+                        <div class="col-xs-2">
                             <b>STATUS:</b>
                             <br />
                                 Verified
                         </div>
-                        <div class="col-xs-4">
-                            <a style="text-decoration:none" class="tooltip_displays" data-toggle="tooltip" title="Primary email changes are done through CERT. These take up to 24 hours to become visible on core.">Looking to change this?</a>
+                        <div class="col-xs-4 hidden-xs hidden-sm">
+                            <br />
+                        </div>
+                        <div class="col-xs-2">
+                            <br>
+                            <a href="https://cert.vatsim.net/vatsimnet/newmail.php" class="btn btn-xs btn-warning" target="_blank">
+                                Change
+                            </a>
                         </div>
                     </div>
                     <!-- Top Row [END] -->
@@ -358,6 +364,7 @@
                                 </a>
                             </div>
                             <div class="col-xs-2">
+                                <br>
                                 <a href="{{ route('mship.manage.email.delete', ['email' => $email->id]) }}" class="btn btn-xs btn-danger">
                                     Delete
                                 </a>
