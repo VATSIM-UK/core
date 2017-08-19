@@ -467,3 +467,26 @@ Route::any('frame.php', function () {
 
     return $return;
 });
+
+Route::group([
+    'as' => 'fte.',
+    'prefix' => 'fte',
+    'namespace' => 'Flight Training Exercises',
+    'middleware' => ['auth_full_group'],
+], function () {
+    Route::get('dashboard', function () {
+        return view('fte.dashboard');
+    })->name('dashboard');
+    Route::get('view', function () {
+        return view('fte.view');
+    });
+    Route::get('map', function () {
+        return view('fte.map');
+    })->name('map');
+    Route::get('history', function () {
+        return view('fte.history');
+    })->name('history');
+    Route::get('flighthistory', function () {
+        return view('fte.flighthistory');
+    });
+});
