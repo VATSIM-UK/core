@@ -35,6 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'slack' => [
+        'token' => env('SLACK_SECRET'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Services
