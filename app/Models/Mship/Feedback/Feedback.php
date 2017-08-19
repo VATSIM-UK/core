@@ -64,7 +64,7 @@ class Feedback extends Model
     public function scopePilot($query)
     {
         // Find ATC form model
-      $form = Form::where('slug', 'pilot')->first();
+        $form = Form::where('slug', 'pilot')->first();
 
         return $query->where('form_id', $form->id);
     }
