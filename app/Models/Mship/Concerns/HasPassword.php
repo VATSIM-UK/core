@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Notifications\Mship\ForgottenPasswordLink;
 use Carbon\Carbon;
 
 trait HasPassword
