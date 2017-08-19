@@ -334,7 +334,7 @@ class Account extends AdmController
             $this->account->id
         );
 
-        $this->account->notify(new BanCreated($ban));
+        $account->notify(new BanCreated($ban));
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
                        ->withSuccess('You have successfully banned this member.');
