@@ -132,6 +132,11 @@ class Pilot extends Model
     public function setDisconnectedAtAttribute($timestamp)
     {
         $this->attributes['disconnected_at'] = $timestamp;
+        $this->current_altitude = null;
+        $this->current_groundspeed = null;
+        $this->current_latitude = null;
+        $this->current_longitude = null;
+
         $this->calculateTimeOnline();
     }
 
