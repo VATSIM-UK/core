@@ -185,11 +185,11 @@ class Application extends Model
         self::STATUS_IN_PROGRESS,
     ];
 
-    public static function create(array $attributes = [])
+    public function __construct(array $attributes = [])
     {
         $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
 
-        return static::query()->create($attributes);
+        parent::__construct($attributes);
     }
 
     /** All Laravel scopes **/
