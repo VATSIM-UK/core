@@ -19,12 +19,12 @@ class CreateNetworkdataPilotsTable extends Migration
             $table->string('callsign', 10);
             $table->unsignedInteger('qualification_id');
             $table->string('flight_type', 1);
-            $table->string('departure_airport', 10);
-            $table->string('arrival_airport', 10);
-            $table->string('alternative_airport', 10);
-            $table->string('aircraft', 10);
-            $table->mediumInteger('cruise_altitude');
-            $table->unsignedSmallInteger('cruise_tas');
+            $table->string('departure_airport');
+            $table->string('arrival_airport');
+            $table->string('alternative_airport');
+            $table->string('aircraft');
+            $table->string('cruise_altitude');
+            $table->string('cruise_tas');
             $table->text('route');
             $table->text('remarks');
             $table->double('current_latitude', 12, 8)->nullable();
@@ -35,6 +35,7 @@ class CreateNetworkdataPilotsTable extends Migration
             $table->timestamp('arrived_at')->nullable();
             $table->timestamp('connected_at')->nullable();
             $table->timestamp('disconnected_at')->nullable();
+            $table->unsignedInteger('minutes_online')->nullable();
             $table->timestamps();
         });
 
