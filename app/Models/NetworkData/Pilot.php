@@ -117,8 +117,12 @@ class Pilot extends Model
         return $this->attributes['disconnected_at'] === null;
     }
 
-    public function isAtAirport(Airport $airport)
+    public function isAtAirport(Airport $airport = null)
     {
+        if (is_null($airport)) {
+            return false;
+        }
+
         $location = $airport->containsCoordinates($this->current_latitude, $this->current_longitude);
         $altitude = $this->current_altitude < $airport->altitude + 500;
 
@@ -127,7 +131,7 @@ class Pilot extends Model
 
     public function setDisconnectedAtAttribute($timestamp)
     {
-        $this->attributes['timestamp'] = $timestamp;
+        $this->attributes['disconnected_at'] = $timestamp;
         $this->calculateTimeOnline();
     }
 

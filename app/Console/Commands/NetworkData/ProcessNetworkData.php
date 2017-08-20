@@ -193,14 +193,20 @@ class ProcessNetworkData extends Command
                 // determine if they have departed or arrived at their planned airports
                 $departed = $wasAtDepartureAirport && !$isAtDepartureAirport;
                 if ($departed) {
-                    $flight->departure_time = $this->lastUpdatedAt;
+                    $flight->departed_at = $this->lastUpdatedAt;
                 }
 
                 $arrivedAtMainAirport = !$wasAtArrivalAirport && $isAtArrivalAirport;
                 $arrivedAtAlternativeAirport = !$wasAtAlternativeAirport && $isAtAlternativeAirport;
                 if ($arrivedAtMainAirport || $arrivedAtAlternativeAirport) {
-                    $flight->arrival_time = $this->lastUpdatedAt;
+                    $flight->arrived_at = $this->lastUpdatedAt;
                 }
+            } else {
+                // pilot just connected
+                $flight->current_latitude = $pilotData['latitude'];
+                $flight->current_longitude = $pilotData['longitude'];
+                $flight->current_altitude = $pilotData['altitude'];
+                $flight->current_groundspeed = $pilotData['groundspeed'];
             }
 
             $flight->save();
