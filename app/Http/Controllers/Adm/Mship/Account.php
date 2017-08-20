@@ -137,7 +137,7 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
-        $this->setTitle('Account Details: ' . $account->name);
+        $this->setTitle('Account Details: '.$account->name);
 
         return $this->viewMake('adm.mship.account.detail')
             ->with('selectedTab', $tab)
@@ -171,7 +171,7 @@ class Account extends AdmController
         }
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-            ->withSuccess($role->name . ' role attached successfully. This user inherited ' . count($role->permissions) . ' permissions.');
+            ->withSuccess($role->name.' role attached successfully. This user inherited '.count($role->permissions).' permissions.');
     }
 
     public function getRoleDetach(AccountData $account, RoleData $role)
@@ -195,7 +195,7 @@ class Account extends AdmController
             ->detach($role);
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
-            ->withSuccess($role->name . ' role detached successfully. This user lost ' . count($role->permissions) . ' permissions.');
+            ->withSuccess($role->name.' role detached successfully. This user lost '.count($role->permissions).' permissions.');
     }
 
     public function postSecurityEnable(AccountData $account)
@@ -402,17 +402,17 @@ class Account extends AdmController
             return Redirect::route('adm.mship.account.index');
         }
 
-        $period_finish = \Carbon\Carbon::parse(Input::get('finish_date') . ' ' . Input::get('finish_time'), 'UTC');
+        $period_finish = \Carbon\Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
         if ($ban->period_finish->eq($period_finish)) {
             return Redirect::back()->withInput()->withError("You didn't change the ban period.");
         }
 
         if ($ban->period_finish->gt($period_finish)) {
-            $noteComment = 'Ban has been reduced from ' . $ban->period_finish->toDateTimeString() . ".\n";
+            $noteComment = 'Ban has been reduced from '.$ban->period_finish->toDateTimeString().".\n";
         } else {
-            $noteComment = 'Ban has been extended from ' . $ban->period_finish->toDateTimeString() . ".\n";
+            $noteComment = 'Ban has been extended from '.$ban->period_finish->toDateTimeString().".\n";
         }
-        $noteComment .= 'New finish: ' . $period_finish->toDateTimeString() . "\n";
+        $noteComment .= 'New finish: '.$period_finish->toDateTimeString()."\n";
         $noteComment .= Input::get('note');
 
         // Attach the note.
@@ -420,7 +420,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
 
         // Modify the ban
-        $ban->reason_extra = $ban->reason_extra . "\n" . Input::get('reason_extra');
+        $ban->reason_extra = $ban->reason_extra."\n".Input::get('reason_extra');
         $ban->period_finish = $period_finish;
         $ban->save();
 
@@ -466,10 +466,10 @@ class Account extends AdmController
         $filters = Input::get('filter', []);
         $qs = '';
         foreach ($filters as $f) {
-            $qs .= 'filter[' . $f . ']=1&';
+            $qs .= 'filter['.$f.']=1&';
         }
 
-        return Redirect::to(URL::route('adm.mship.account.details', [$account->id, 'notes']) . '?' . $qs);
+        return Redirect::to(URL::route('adm.mship.account.details', [$account->id, 'notes']).'?'.$qs);
     }
 
     public function postImpersonate(AccountData $account)
