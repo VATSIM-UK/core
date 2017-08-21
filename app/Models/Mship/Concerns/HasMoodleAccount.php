@@ -84,7 +84,7 @@ trait HasMoodleAccount
 
         $dirty = array_keys(array_diff_assoc($old, $new));
         if (!empty($dirty)) {
-            DB::table('vatuk_moodle.mdl_user')->where('username', $this->id)->update($new);
+            DB::table('vatuk_moodle.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
         }
