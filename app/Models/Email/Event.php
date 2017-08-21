@@ -13,7 +13,7 @@ use App\Models\Model;
  * @property string $name
  * @property string $recipient
  * @property array $data
- * @property \Carbon\Carbon $triggered_at
+ * @property \Carbon\Carbon|null $triggered_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereBroker($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereId($value)

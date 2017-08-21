@@ -45,7 +45,7 @@ use Malahierba\PublicId\PublicId;
  * @property int $will_auto_accept
  * @property string|null $statement
  * @property int $status
- * @property string $status_note
+ * @property string|null $status_note
  * @property \Carbon\Carbon|null $expires_at
  * @property \Carbon\Carbon|null $submitted_at
  * @property \Carbon\Carbon|null $created_at

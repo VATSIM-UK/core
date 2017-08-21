@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 /**
  * App\Models\Model
+ *
+ * @method static \Illuminate\Database\Eloquent\Model make(array $attributes = array())
  * @method static \Illuminate\Database\Eloquent\Builder withGlobalScope(string $identifier, $scope)
  * @method static \Illuminate\Database\Eloquent\Builder withoutGlobalScope($scope)
  * @method static \Illuminate\Database\Eloquent\Builder withoutGlobalScopes($scopes = NULL)
@@ -37,8 +39,8 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  * @method static \Illuminate\Support\Collection pluck(string $column, $key = NULL)
  * @method static \Illuminate\Contracts\Pagination\LengthAwarePaginator paginate(int $perPage = NULL, array $columns = array(0=>'*',), string $pageName = 'page', $page = NULL)
  * @method static \Illuminate\Contracts\Pagination\Paginator simplePaginate(int $perPage = NULL, array $columns = array(0=>'*',), string $pageName = 'page', $page = NULL)
- * @method static \Illuminate\Database\Eloquent\Model create(array $attributes = array())
- * @method static \Illuminate\Database\Eloquent\Model forceCreate(array $attributes)
+ * @method static \Illuminate\Database\Eloquent\Model|$this create(array $attributes = array())
+ * @method static \Illuminate\Database\Eloquent\Model|$this forceCreate(array $attributes)
  * @method static array addUpdatedAtColumn(array $values)
  * @method static onDelete(\Closure $callback)
  * @method static mixed scopes(array $scopes)
@@ -63,7 +65,10 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  * @method static bool chunk(int $count, callable $callback)
  * @method static bool each(callable $callback, int $count = 1000)
  * @method static mixed first(array $columns = array(0=>'*',))
- * @method static mixed when($value, \Closure $callback, \Closure $default = NULL)
+ * @method static mixed when($value, callable $callback, callable $default = NULL)
+ * @method static mixed unless($value, callable $callback, callable $default = NULL)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginator(\Illuminate\Support\Collection $items, int $total, int $perPage, int $currentPage, array $options)
+ * @method static \Illuminate\Pagination\Paginator simplePaginator(\Illuminate\Support\Collection $items, int $perPage, int $currentPage, array $options)
  * @method static \Illuminate\Database\Eloquent\Builder|static has(string $relation, string $operator = '>=', int $count = 1, string $boolean = 'and', $callback = NULL)
  * @method static \Illuminate\Database\Eloquent\Builder|static hasNested(string $relations, string $operator = '>=', int $count = 1, string $boolean = 'and', $callback = NULL)
  * @method static \Illuminate\Database\Eloquent\Builder|static orHas(string $relation, string $operator = '>=', int $count = 1)
@@ -77,6 +82,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  * @method static \Illuminate\Database\Eloquent\Builder addWhereCountQuery(\Illuminate\Database\Query\Builder $query, string $operator = '>=', int $count = 1, string $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Relations\Relation getRelationWithoutConstraints(string $relation)
  * @method static bool canUseExistsForExistenceCheck(string $operator, int $count)
+ * @mixin \Eloquent
  */
 abstract class Model extends EloquentModel
 {

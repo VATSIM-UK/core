@@ -7,7 +7,7 @@ namespace App\Models\Sys;
  *
  * @property int $id
  * @property string $title
- * @property string $content
+ * @property string|null $content
  * @property int $status
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
