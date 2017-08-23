@@ -79,13 +79,13 @@ class ProcessNetworkData extends Command
             if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
                 // ignore observers
                 continue;
-            } else if (substr($controllerData['callsign'], -4) == '_SUP') {
+            } elseif (substr($controllerData['callsign'], -4) == '_SUP') {
                 // ignore supervisors
                 continue;
-            } else if (substr($controllerData['callsign'], -5) == '_ATIS') {
+            } elseif (substr($controllerData['callsign'], -5) == '_ATIS') {
                 // ignore ATIS connections
                 continue;
-            } else if ($controllerData['frequency'] < 118 || $controllerData['frequency'] > 136) {
+            } elseif ($controllerData['frequency'] < 118 || $controllerData['frequency'] > 136) {
                 // ignore out-of-range frequencies
                 continue;
             }
@@ -93,7 +93,7 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: ' . $controllerData['cid'], 'vvv');
+                $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
                 continue;
             }
 
