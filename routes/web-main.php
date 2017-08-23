@@ -476,6 +476,6 @@ Route::group([
 ], function () {
     Route::get('dashboard', 'SmartcarsController@getDashboard')->name('dashboard');
     Route::get('map', 'SmartcarsController@getMap')->name('map');
-    Route::get('exercises/{id}', 'SmartcarsController@getExercise')->name('exercise');
+    Route::get('exercises/{id?}', 'SmartcarsController@getExercise')->name('exercises');
     Route::get('history/{id?}', 'SmartcarsController@getHistory')->name('history');
 });

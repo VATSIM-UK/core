@@ -11,6 +11,20 @@ class SmartcarsController extends BaseController
         return view('fte.dashboard');
     }
 
+    public function getMap()
+    {
+        return view('fte.map');
+    }
+
+    public function getExercise($exerciseId = null)
+    {
+        if (is_null($exerciseId)) {
+            return view('fte.exercises');
+        } else {
+            return view('fte.exercise');
+        }
+    }
+
     public function getHistory($flightId = null)
     {
         if (is_null($flightId)) {
@@ -18,15 +32,5 @@ class SmartcarsController extends BaseController
         } else {
             return view('fte.completed-flight');
         }
-    }
-
-    public function getExercise()
-    {
-        return view('fte.exercise');
-    }
-
-    public function getMap()
-    {
-        return view('fte.map');
     }
 }
