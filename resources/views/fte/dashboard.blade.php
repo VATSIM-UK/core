@@ -26,8 +26,8 @@
                     Choose one of 3 launch exercises and take flight discovering the South East of the UK
                     and much more. To get started click on one of the exercises below and follow the instructions
                     provided.<br/><br/>
-                    If you have any questions please contact the Pilot Training Department via the Helpdesk or by
-                    clicking {{ HTML::link('https://helpdesk.vatsim.uk/','here',array("target"=>"_blank")) }}.
+                    If you have any questions please contact the Pilot Training Department via the Helpdesk
+                    ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 seaside village of Lydd. Don’t forget to avoid the danger areas and nuclear power station!
                 <br>
                 <div class="text-right">
-                    {!! Button::primary(trans("View Details >>")) !!}
+                    <a href="{{ route('fte.exercise', 1) }}" class="btn btn-primary">View Details >></a>
                 </div>
             </div>
         </div>
@@ -77,12 +77,12 @@
                 <br>
                 Are you the King of the Castle? Route along the south coast visiting Hastings Castle, one of the most
                 iconic battle
-                grounds of Britain’s past, Pevensey Castle and Lewes Castle. Your trip will end with a visit to the
+                grounds of Britain's past, Pevensey Castle and Lewes Castle. Your trip will end with a visit to the
                 seaside town of
                 Brighton before landing into Shoreham.<br>
                 <br>
                 <div class="text-right">
-                    {!! Button::primary(trans("View Details >>")) !!}
+                    <a href="{{ route('fte.exercise', 1) }}" class="btn btn-primary">View Details >></a>
                 </div>
             </div>
         </div>
@@ -98,12 +98,12 @@
                 <br>
                 Time to venture over the water! A short trip routing westbound along the coast, and a small hop across
                 the
-                water will lead you to the southern tip of the Isle of Wight. After admiring the views you’re routing
+                water will lead you to the southern tip of the Isle of Wight. After admiring the views you're routing
                 continues up
                 towards the town of Bournemouth.<br>
                 <br>
                 <div class="text-right">
-                    {!! Button::primary(trans("View Details >>")) !!}
+                    <a href="{{ route('fte.exercise', 1) }}" class="btn btn-primary">View Details >></a>
                 </div>
             </div>
         </div>

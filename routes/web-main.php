@@ -471,22 +471,11 @@ Route::any('frame.php', function () {
 Route::group([
     'as' => 'fte.',
     'prefix' => 'fte',
-    'namespace' => 'Flight Training Exercises',
+    'namespace' => 'Smartcars',
     'middleware' => ['auth_full_group'],
 ], function () {
-    Route::get('dashboard', function () {
-        return view('fte.dashboard');
-    })->name('dashboard');
-    Route::get('view', function () {
-        return view('fte.view');
-    });
-    Route::get('map', function () {
-        return view('fte.map');
-    })->name('map');
-    Route::get('history', function () {
-        return view('fte.history');
-    })->name('history');
-    Route::get('flighthistory', function () {
-        return view('fte.flighthistory');
-    });
+    Route::get('dashboard', 'SmartcarsController@getDashboard')->name('dashboard');
+    Route::get('map', 'SmartcarsController@getMap')->name('map');
+    Route::get('exercises/{id}', 'SmartcarsController@getExercise')->name('exercise');
+    Route::get('history/{id?}', 'SmartcarsController@getHistory')->name('history');
 });

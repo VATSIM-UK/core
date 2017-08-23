@@ -25,7 +25,7 @@
                         <td>Road Trip</td>
                         <td>-120fpm</td>
                         <td>1hr 16m</td>
-                        <td><a href="#">View</a></td>
+                        <td><a href="{{ route('fte.history', 1) }}">View</a></td>
                     </tr>
                     <tr>
                         <td>20th June 2017</td>
