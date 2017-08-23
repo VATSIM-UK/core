@@ -78,7 +78,7 @@ trait HasMoodleAccount
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
             'email' => $email,
-            'idnumber' => $this->id,
+            'idnumber' => (string) $this->id,
             'vatuk_cron' => 1,
         ];
 

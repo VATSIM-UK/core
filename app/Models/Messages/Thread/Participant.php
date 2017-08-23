@@ -8,8 +8,8 @@ namespace App\Models\Messages\Thread;
  * @property int $id
  * @property int $thread_id
  * @property int $account_id
- * @property string $display_as
- * @property int $status
+ * @property string|null $display_as
+ * @property int|null $status
  * @property \Carbon\Carbon|null $read_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at

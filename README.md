@@ -18,13 +18,9 @@ The following are the upgrade notes for deploying in production.
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 3.2.0
+### 3.3.0
 
-* Create cronjob for `feedback:summary` command: `0 22 * * * php artisan feedback:summarise --interval=p1d`
-* Add `HELPDESK_DATABASE=` to `.env`
-* Create cronjob for Helpdesk sync command
-* Rename visittransfer:cleanup to visit-transfer:cleanup
-* Add cronjob for `visittransfer:statistics:daily`
+* No version-specific steps required.
 
 ### Older Versions
 

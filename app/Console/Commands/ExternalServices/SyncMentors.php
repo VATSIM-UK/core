@@ -95,10 +95,11 @@ class SyncMentors extends Command
             ->leftJoin('prod_rts.members AS m', 'v.member_id', '=', 'm.id')
             ->leftJoin('prod_rts.rts', 'p.rts_id', '=', 'rts.id')
             ->where('v.status', 5)
-            ->orderBy('name')
+            ->where(function ($query) {
+                $query->where(DB::raw('v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'")'), true)
+                    ->orWhere(DB::raw('v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'")'), true);
+            })->orderBy('name')
             ->orderBy('callsign')
-            ->having('atc_cutoff', '=', 0)
-            ->orHaving('pilot_cutoff', '=', 0)
             ->get();
 
         $currentMentor = null;

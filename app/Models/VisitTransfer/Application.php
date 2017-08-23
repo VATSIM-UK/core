@@ -45,7 +45,7 @@ use Malahierba\PublicId\PublicId;
  * @property int $will_auto_accept
  * @property string|null $statement
  * @property int $status
- * @property string $status_note
+ * @property string|null $status_note
  * @property \Carbon\Carbon|null $expires_at
  * @property \Carbon\Carbon|null $submitted_at
  * @property \Carbon\Carbon|null $created_at
@@ -185,11 +185,11 @@ class Application extends Model
         self::STATUS_IN_PROGRESS,
     ];
 
-    public static function create(array $attributes = [])
+    public function __construct(array $attributes = [])
     {
         $attributes['expires_at'] = \Carbon\Carbon::now()->addHour();
 
-        return static::query()->create($attributes);
+        parent::__construct($attributes);
     }
 
     /** All Laravel scopes **/
@@ -627,7 +627,7 @@ class Application extends Model
         $this->guardAgainstNonAcceptedApplication();
 
         $this->status = self::STATUS_COMPLETED;
-//        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
+        //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
         $this->save();
 
         if ($staffComment) {

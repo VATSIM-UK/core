@@ -20,7 +20,7 @@ use Watson\Rememberable\Rememberable;
  * @property string $callsign
  * @property float|null $frequency
  * @property int $qualification_id
- * @property int $facility_type
+ * @property int|null $facility_type
  * @property \Carbon\Carbon|null $connected_at
  * @property \Carbon\Carbon|null $disconnected_at
  * @property int|null $minutes_online

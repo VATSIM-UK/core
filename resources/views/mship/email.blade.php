@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-lg-8 col-lg-offset-2">
         <div class="panel panel-ukblue">
             <div class="panel-heading">Email a Member</div>
             <div class="panel-body">

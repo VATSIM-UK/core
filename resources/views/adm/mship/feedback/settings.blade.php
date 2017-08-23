@@ -1,5 +1,27 @@
 @extends('adm.layout')
 
+@section('styles')
+<style>
+    /* JQuery Sortable Styling */
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+    }
+    ol.simple_connected_list{
+        display: inline;
+    }
+
+    ol.simple_connected_list li {
+        list-style: none;
+    }
+</style>
+@endsection
+
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"
             integrity="sha384-mwD0+87SDVjJjyfTMQHNVV+IyWDM38MhzdCFZ+SRefmD75v+M5K0R3naFNLnZf1L"
