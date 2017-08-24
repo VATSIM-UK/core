@@ -44,7 +44,7 @@ class GenerateFeedbackSummary extends Command
         // interval spec: http://php.net/manual/en/dateinterval.construct.php
         $intervalSpec = strtoupper($this->option('interval'));
         $interval = new DateInterval($intervalSpec);
-        $feedbackStart = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'])->sub($interval);
+        $feedbackStart = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'])->second(0)->sub($interval);
 
         $groupedFeedback = Feedback::where('created_at', '>=', $feedbackStart)->with('form', 'form.contact')->get()
             ->groupBy(function (Feedback $feedback) {

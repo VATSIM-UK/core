@@ -27,7 +27,7 @@
                     <div class='form-group'>
                         <label class="control-label col-sm-5">Account</label>
                         <div class="col-sm-4">
-                            <p class="form-control-static">{{Session::get('auth.vatsim-sso')}}</p>
+                            <p class="form-control-static">{{ Auth::guard('vatsim-sso')->user()->id }}</p>
                         </div>
                     </div>
 

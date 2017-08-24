@@ -131,7 +131,7 @@
                                         <li class="divider"></li>
                                         <li>{!! link_to_route("mship.manage.email.add", "Add Email Address") !!}</li>
                                         <li>{!! link_to_route("mship.manage.email.assignments", "Email Assignments") !!}</li>
-                                        @if(Session::has('auth.vatsim-sso'))
+                                        @if(Auth::guard('vatsim-sso')->check())
                                             <li class="divider"></li>
                                             <li>
                                                 <a href="{{ route('logout') }}"
@@ -165,7 +165,7 @@
                             </li>
                         </ul>
                     @endif
-                @elseif(Session::has('auth.vatsim-sso'))
+                @elseif(Auth::guard('vatsim-sso')->check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
                         <li class="dropdown dropdown-large">

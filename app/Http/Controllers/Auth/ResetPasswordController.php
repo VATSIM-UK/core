@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use Session;
 
 /**
  * This controller is responsible for handling password reset requests
@@ -55,7 +54,7 @@ class ResetPasswordController extends BaseController
      */
     protected function credentials(Request $request)
     {
-        return array_merge(['id' => Session::get('auth.vatsim-sso')], $request->only(
+        return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $request->only(
             'password', 'password_confirmation', 'token'
         ));
     }

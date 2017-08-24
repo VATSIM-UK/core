@@ -11,7 +11,7 @@ use App\Models\Mship\Account;
  * @property int $id
  * @property string $name
  * @property int|null $tier
- * @property string $coordinate_boundaries
+ * @property string|null $coordinate_boundaries
  * @property int $default
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
