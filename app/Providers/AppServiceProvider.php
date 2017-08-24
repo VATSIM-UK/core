@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(
             ['visit-transfer.admin._sidebar'],
-            \App\Controllers\ViewComposers\StatisticsComposer::class
+            \App\Http\ViewComposers\StatisticsComposer::class
         );
     }
 

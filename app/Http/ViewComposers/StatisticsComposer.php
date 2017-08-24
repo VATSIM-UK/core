@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\ViewComposers;
+namespace App\Http\ViewComposers;
 
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
