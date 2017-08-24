@@ -11,7 +11,9 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\NetworkData\Pilot;
+use Cache;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Vatsimphp\VatsimData;
 
@@ -92,10 +94,13 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            DB::beginTransaction();
+
             try {
                 $account = Account::findOrRetrieve($controllerData['cid']);
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$controllerData['cid'], 'vvv');
+                DB::commit();
                 continue;
             }
 
@@ -114,6 +119,8 @@ class ProcessNetworkData extends Command
                     'updated_at' => Carbon::now(),
                 ]
             );
+
+            DB::commit();
         }
     }
 
@@ -142,10 +149,13 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            DB::beginTransaction();
+
             try {
                 $account = Account::findOrRetrieve($pilotData['cid']);
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: ' . $pilotData['cid'], 'vvv');
+                DB::commit();
                 continue;
             }
 
@@ -170,9 +180,9 @@ class ProcessNetworkData extends Command
             ]);
 
             if ($flight->exists) {
-                $departureAirport = Airport::where('ident', $flight->departure_airport)->first();
-                $arrivalAirport = Airport::where('ident', $flight->arrival_airport)->first();
-                $alternativeAirport = Airport::where('ident', $flight->alternative_airport)->first();
+                $departureAirport = $this->getAirport($flight->departure_airport);
+                $arrivalAirport = $this->getAirport($flight->arrival_airport);
+                $alternativeAirport = $this->getAirport($flight->alternative_airport);
 
                 // check their location before we update it
                 $wasAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -203,13 +213,15 @@ class ProcessNetworkData extends Command
                 }
             } else {
                 // pilot just connected
-                $flight->current_latitude = $pilotData['latitude'];
-                $flight->current_longitude = $pilotData['longitude'];
-                $flight->current_altitude = $pilotData['altitude'];
-                $flight->current_groundspeed = $pilotData['groundspeed'];
+                $flight->current_latitude = $pilotData['latitude'] ?: null;
+                $flight->current_longitude = $pilotData['longitude'] ?: null;
+                $flight->current_altitude = $pilotData['altitude'] ?: null;
+                $flight->current_groundspeed = $pilotData['groundspeed'] ?: null;
             }
 
             $flight->save();
+
+            DB::commit();
         }
     }
 
@@ -225,6 +237,19 @@ class ProcessNetworkData extends Command
         $expiringPilots->each(function (Pilot $session) {
             $session->disconnected_at = $this->lastUpdatedAt;
             $session->save();
+        });
+    }
+
+    /**
+     * Retrieve and cache an airport from the database.
+     *
+     * @param $ident string
+     * @return mixed
+     */
+    private function getAirport(string $ident)
+    {
+        return Cache::remember('airport_'.$ident, 720, function () use ($ident) {
+            return Airport::where('ident', $ident)->first();
         });
     }
 }
