@@ -132,10 +132,13 @@ class Pilot extends Model
     public function setDisconnectedAtAttribute($timestamp)
     {
         $this->attributes['disconnected_at'] = $timestamp;
-        $this->current_altitude = null;
-        $this->current_groundspeed = null;
-        $this->current_latitude = null;
-        $this->current_longitude = null;
+
+        if (!is_null($timestamp)) {
+            $this->current_altitude = null;
+            $this->current_groundspeed = null;
+            $this->current_latitude = null;
+            $this->current_longitude = null;
+        }
 
         $this->calculateTimeOnline();
     }
@@ -145,7 +148,7 @@ class Pilot extends Model
      * When called this will calculate the total difference in
      * minutes and persist/save the value to the database.
      */
-    public function calculateTimeOnline()
+    protected function calculateTimeOnline()
     {
         if (!is_null($this->disconnected_at)) {
             $this->minutes_online = $this->connected_at->diffInMinutes($this->disconnected_at);

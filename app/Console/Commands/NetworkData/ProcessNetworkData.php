@@ -169,7 +169,9 @@ class ProcessNetworkData extends Command
                 'arrival_airport' => $pilotData['planned_destairport'],
                 'connected_at' => Carbon::createFromFormat('YmdHis', $pilotData['time_logon']),
                 'disconnected_at' => null,
-            ], [
+            ]);
+
+            $flight->fill([
                 'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
                 'alternative_airport' => $pilotData['planned_altairport'],
                 'aircraft' => $pilotData['planned_aircraft'],
@@ -219,7 +221,7 @@ class ProcessNetworkData extends Command
                 $flight->current_groundspeed = $pilotData['groundspeed'] ?: null;
             }
 
-            $flight->save();
+            $flight->touch();
 
             DB::commit();
         }
