@@ -2,7 +2,7 @@
 
 $factory->define(App\Models\Sys\Notification::class, function ($faker) {
     return [
-        'title' => $faker->sentence,
+        'title' => $faker->text(75),
         'content' => $faker->paragraph,
         'status' => \App\Models\Sys\Notification::STATUS_GENERAL,
         'effective_at' => \Carbon\Carbon::now(),

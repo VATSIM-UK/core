@@ -469,7 +469,7 @@
                                         </p>
                                         <div class="form-group">
                                             <label for="note_type_id">Note Type</label>
-                                            <select name="note_type_id" class="form-control selectpicker">
+                                            <select name="note_type_id" class="form-control">
                                                 @foreach($noteTypes as $nt)
                                                 <option value="{{ $nt->id }}">
                                                     {{ $nt->name }}

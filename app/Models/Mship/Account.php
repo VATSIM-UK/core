@@ -235,8 +235,9 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         if (!is_numeric($accountId)) {
             throw new InvalidCIDException();
         }
+
         try {
-            return self::findOrFail($accountId);
+            return self::findOrFail((int) $accountId);
         } catch (ModelNotFoundException $e) {
             dispatch((new UpdateMember($accountId))->onConnection('sync'));
 

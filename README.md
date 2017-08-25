@@ -20,7 +20,7 @@ The following are the upgrade notes for deploying in production.
 
 ### 3.3.0
 
-* No version-specific steps required.
+* Import airport data to `airports` table.
 
 ### Older Versions
 
