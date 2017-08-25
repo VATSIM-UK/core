@@ -159,12 +159,10 @@ class ProcessNetworkData extends Command
             try {
                 $account = Account::findOrRetrieve($pilotData['cid']);
             } catch (InvalidCIDException $e) {
-                $this->info('Invalid CID: ' . $pilotData['cid'], 'vvv');
+                $this->info('Invalid CID: '.$pilotData['cid'], 'vvv');
                 DB::commit();
                 continue;
             }
-
-            $qualification = Qualification::parseVatsimATCQualification($pilotData['rating']);
 
             $flight = Pilot::firstOrNew([
                 'account_id' => $account->id,
@@ -177,7 +175,6 @@ class ProcessNetworkData extends Command
             ]);
 
             $flight->fill([
-                'qualification_id' => is_null($qualification) ? 0 : $qualification->id,
                 'alternative_airport' => $pilotData['planned_altairport'],
                 'aircraft' => $pilotData['planned_aircraft'],
                 'cruise_altitude' => $pilotData['planned_altitude'],

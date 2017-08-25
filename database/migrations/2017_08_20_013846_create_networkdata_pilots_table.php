@@ -17,7 +17,6 @@ class CreateNetworkdataPilotsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('account_id');
             $table->string('callsign', 10);
-            $table->unsignedInteger('qualification_id');
             $table->string('flight_type', 1);
             $table->string('departure_airport');
             $table->string('arrival_airport');
@@ -41,7 +40,6 @@ class CreateNetworkdataPilotsTable extends Migration
 
         Schema::table('networkdata_pilots', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('mship_account');
-            $table->foreign('qualification_id')->references('id')->on('mship_qualification');
         });
     }
 
@@ -54,7 +52,6 @@ class CreateNetworkdataPilotsTable extends Migration
     {
         Schema::table('networkdata_pilots', function (Blueprint $table) {
             $table->dropForeign('networkdata_pilots_account_id_foreign');
-            $table->dropForeign('networkdata_pilots_qualification_id_foreign');
         });
 
         Schema::dropIfExists('networkdata_pilots');

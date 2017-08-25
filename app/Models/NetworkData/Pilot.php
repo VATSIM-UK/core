@@ -156,7 +156,7 @@ class Pilot extends Model
                 ->where('connected_at', $this->connected_at)
                 ->orderBy('created_at', 'ASC')
                 ->first();
-            
+
             // If this session was the first flight plan filed, the time online
             // is calculated from their connected_at time. If they changed
             // their flight plan, we'll use the time they changed it.
