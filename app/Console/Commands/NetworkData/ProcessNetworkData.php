@@ -14,6 +14,7 @@ use App\Models\NetworkData\Pilot;
 use Cache;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Vatsimphp\VatsimData;
 
@@ -57,10 +58,8 @@ class ProcessNetworkData extends Command
         $this->vatsimPHP->loadData();
         $this->setLastUpdatedTimestamp();
         event(new NetworkDataDownloaded());
-        $this->parseAtc();
-        $this->endExpiredAtcSessions();
-        $this->parsePilots();
-        $this->endExpiredPilotSessions();
+        $this->processATC();
+        $this->processPilots();
         event(new NetworkDataParsed());
         Atc::flushCache();
     }
@@ -77,8 +76,10 @@ class ProcessNetworkData extends Command
     /**
      * Parse the recently downloaded data, inserting/updating controllers in the feed as necessary.
      */
-    private function parseAtc()
+    private function processATC()
     {
+        $awaitingUpdate = Atc::online()->get()->keyBy('id');
+
         foreach ($this->vatsimPHP->getControllers() as $controllerData) {
             if ($controllerData['facilitytype'] < 1 || substr($controllerData['callsign'], -4) == '_OBS') {
                 // ignore observers
@@ -105,7 +106,7 @@ class ProcessNetworkData extends Command
             }
 
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
-            Atc::updateOrCreate(
+            $atc = Atc::updateOrCreate(
                 [
                     'account_id' => $account->id,
                     'callsign' => $controllerData['callsign'],
@@ -120,19 +121,21 @@ class ProcessNetworkData extends Command
                 ]
             );
 
+            $awaitingUpdate->forget([$atc->id]);
+
             DB::commit();
         }
+
+        $this->endExpiredAtcSessions($awaitingUpdate);
     }
 
     /**
      * Update the disconnected_at flag for any controllers not in the latest data feed.
+     *
+     * @param Collection $expiringAtc
      */
-    private function endExpiredAtcSessions()
+    private function endExpiredAtcSessions($expiringAtc)
     {
-        $expiringAtc = Atc::online()
-            ->where('updated_at', '<', $this->lastUpdatedAt)
-            ->get();
-
         $expiringAtc->each(function (Atc $session) {
             $session->disconnectAt($this->lastUpdatedAt);
         });
@@ -141,8 +144,10 @@ class ProcessNetworkData extends Command
     /**
      * Parse the recently downloaded data, inserting/updating pilots in the feed as necessary.
      */
-    private function parsePilots()
+    private function processPilots()
     {
+        $awaitingUpdate = Pilot::online()->get()->keyBy('id');
+
         foreach ($this->vatsimPHP->getPilots() as $pilotData) {
             if (empty($pilotData['planned_revision'])) {
                 // ignore flights with no flightplan
@@ -223,19 +228,21 @@ class ProcessNetworkData extends Command
 
             $flight->touch();
 
+            $awaitingUpdate->forget([$flight->id]);
+
             DB::commit();
         }
+
+        $this->endExpiredPilotSessions($awaitingUpdate);
     }
 
     /**
      * Update the disconnected_at flag for any pilots not in the latest data feed.
+     *
+     * @param Collection $expiringPilots
      */
-    private function endExpiredPilotSessions()
+    private function endExpiredPilotSessions($expiringPilots)
     {
-        $expiringPilots = Pilot::online()
-            ->where('updated_at', '<', $this->lastUpdatedAt)
-            ->get();
-
         $expiringPilots->each(function (Pilot $session) {
             $session->disconnected_at = $this->lastUpdatedAt;
             $session->save();
