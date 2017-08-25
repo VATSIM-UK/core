@@ -144,14 +144,27 @@ class Pilot extends Model
     }
 
     /**
-     * Calculate the total number of minutes the user spent online
-     * When called this will calculate the total difference in
-     * minutes and persist/save the value to the database.
+     * Calculate the total number of minutes the user spent online.
+     * This will take into account whether the user has filed
+     * multiple flight plans within the same session.
      */
     protected function calculateTimeOnline()
     {
         if (!is_null($this->disconnected_at)) {
-            $this->minutes_online = $this->connected_at->diffInMinutes($this->disconnected_at);
+            $firstFlightplan = self::where('account_id', $this->account_id)
+                ->where('callsign', $this->callsign)
+                ->where('connected_at', $this->connected_at)
+                ->orderBy('created_at', 'ASC')
+                ->first();
+            
+            // If this session was the first flight plan filed, the time online
+            // is calculated from their connected_at time. If they changed
+            // their flight plan, we'll use the time they changed it.
+            if ($this->id === $firstFlightplan->id) {
+                $this->minutes_online = $this->connected_at->diffInMinutes($this->disconnected_at);
+            } else {
+                $this->minutes_online = $this->created_at->diffInMinutes($this->disconnected_at);
+            }
         }
     }
 }
