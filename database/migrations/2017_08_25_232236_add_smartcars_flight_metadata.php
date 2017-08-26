@@ -13,6 +13,9 @@ class AddSmartcarsFlightMetadata extends Migration
      */
     public function up()
     {
+        DB::statement('ALTER TABLE smartcars_airport MODIFY latitude DOUBLE(12,8) NOT NULL');
+        DB::statement('ALTER TABLE smartcars_airport MODIFY longitude DOUBLE(12,8) NOT NULL');
+
         Schema::table('smartcars_flight', function (Blueprint $table) {
             $table->string('name')->after('code');
             $table->text('description')->after('name');
@@ -27,6 +30,9 @@ class AddSmartcarsFlightMetadata extends Migration
      */
     public function down()
     {
+        DB::statement('ALTER TABLE smartcars_airport MODIFY latitude DOUBLE(8,2)');
+        DB::statement('ALTER TABLE smartcars_airport MODIFY longitude DOUBLE(8,2)');
+
         Schema::table('smartcars_flight', function (Blueprint $table) {
             $table->dropColumn('name', 'description', 'featured');
         });
