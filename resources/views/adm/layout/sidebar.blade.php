@@ -187,6 +187,49 @@
                 </li>
             @endif
 
+            @can('use-permission', 'smartcars')
+                <li class="treeview {{ Request::is('adm/smartcars*') ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="ion ion-paper-airplane"></i> <span>smartCARS</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('use-permission', 'smartcars/aircraft')
+                            <li {!! Request::is('adm/smartcars/aircraft*') ? ' class="active"' : '' !!}>
+                                <a href="{{ URL::route('adm.smartcars.aircraft') }}">
+                                    <i class="fa fa-plane"></i>
+                                    <span>Aircraft</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('use-permission', 'smartcars/airports')
+                            <li {!! Request::is('adm/smartcars/airports*') ? ' class="active"' : '' !!}>
+                                <a href="{{ URL::route('adm.smartcars.airports') }}">
+                                    <i class="fa fa-road"></i>
+                                    <span>Airports</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('use-permission', 'smartcars/exercises')
+                            <li {!! Request::is('adm/smartcars/exercises*') ? ' class="active"' : '' !!}>
+                                <a href="{{ URL::route('adm.smartcars.exercises') }}">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                    <span>Exercises</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('use-permission', 'smartcars/flights')
+                            <li {!! Request::is('adm/smartcars/flights*') ? ' class="active"' : '' !!}>
+                                <a href="{{ URL::route('adm.smartcars.flights') }}">
+                                    <i class="fa fa-fighter-jet"></i>
+                                    <span>Member Flights</span>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcan
+
             @if($_account->hasChildPermission("adm/networkdata"))
                 @include("network-data.admin._sidebar")
             @endif
