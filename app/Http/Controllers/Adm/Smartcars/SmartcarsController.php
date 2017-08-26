@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Adm\Smartcars;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Smartcars\Aircraft;
 use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Flight;
 
 class SmartcarsController extends AdmController
 {
@@ -30,7 +31,9 @@ class SmartcarsController extends AdmController
     {
         $this->authorize('use-permission', 'smartcars/exercises');
 
-        return $this->viewMake('adm.smartcars.exercises');
+        $exercises = Flight::query()->orderBy('created_at')->with('departure', 'arrival', 'aircraft')->paginate(50);
+
+        return $this->viewMake('adm.smartcars.exercises')->with('exercises', $exercises);
     }
 
     public function getFlights()

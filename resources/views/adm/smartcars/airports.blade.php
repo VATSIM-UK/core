@@ -9,7 +9,8 @@
                         smartCARS Airports
                     </h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body table-responsive">
+                    {{ $airports->render() }}
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th>ICAO</th>
@@ -28,6 +29,7 @@
                             </tr>
                         @endforeach
                     </table>
+                    {{ $airports->render() }}
                 </div>
             </div>
         </div>

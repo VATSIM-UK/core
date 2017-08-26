@@ -9,7 +9,8 @@
                         smartCARS Aircraft
                     </h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body table-responsive">
+                    {{ $aircraft->render() }}
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th>ICAO</th>
@@ -36,6 +37,7 @@
                         </tr>
                         @endforeach
                     </table>
+                    {{ $aircraft->render() }}
                 </div>
             </div>
         </div>
