@@ -13,6 +13,7 @@ class AddSmartcarsPermissions extends Migration
     public function up()
     {
         DB::table('mship_permission')->insert([
+            ['name' => 'smartcars', 'display_name' => 'smartCARS', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/aircraft', 'display_name' => 'smartCARS / Aircraft', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/aircraft/create', 'display_name' => 'smartCARS / Aircraft / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/aircraft/update', 'display_name' => 'smartCARS / Aircraft / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
@@ -38,6 +39,7 @@ class AddSmartcarsPermissions extends Migration
     public function down()
     {
         DB::table('mship_permission')->whereIn('name', [
+            'smartcars',
             'smartcars/aircraft',
             'smartcars/aircraft/create',
             'smartcars/aircraft/update',
