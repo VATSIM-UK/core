@@ -21,6 +21,7 @@ The following are the upgrade notes for deploying in production.
 ### 3.3.0
 
 * Import airport data to `airports` table.
+* Run `php artisan storage:link`
 
 ### Older Versions
 
