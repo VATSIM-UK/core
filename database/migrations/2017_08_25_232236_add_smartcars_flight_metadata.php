@@ -19,7 +19,7 @@ class AddSmartcarsFlightMetadata extends Migration
         Schema::table('smartcars_flight', function (Blueprint $table) {
             $table->string('name')->after('code');
             $table->text('description')->after('name');
-            $table->boolean('featured')->after('description');
+            $table->boolean('featured')->default(0)->after('description');
         });
     }
 
