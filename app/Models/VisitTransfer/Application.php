@@ -493,6 +493,7 @@ class Application extends Model
         $this->guardAgainstTooManyReferees();
 
         $referee = new Reference([
+            'account_id' => $refereeAccount->id,
             'email' => $email,
             'relationship' => $relationship,
         ]);
