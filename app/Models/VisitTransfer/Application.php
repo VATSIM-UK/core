@@ -500,7 +500,6 @@ class Application extends Model
         $reference->account()->associate($refereeAccount);
 
         $this->referees()->save($reference);
-
     }
 
     public function setStatement($statement)
