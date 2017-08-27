@@ -492,14 +492,14 @@ class Application extends Model
 
         $this->guardAgainstTooManyReferees();
 
-        $referee = new Reference([
+        $reference = new Reference([
             'email' => $email,
             'relationship' => $relationship,
         ]);
 
-        $this->referees()->save($referee);
+        $reference->account()->associate($refereeAccount);
 
-        $refereeAccount->visitTransferReferee()->save($referee);
+        $this->referees()->save($reference);
     }
 
     public function setStatement($statement)
