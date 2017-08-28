@@ -2,12 +2,12 @@
 
 namespace App\Models\VisitTransfer;
 
+use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
-use Malahierba\PublicId\PublicId;
+use App\Models\VisitTransfer\Facility\Email;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use App\Models\VisitTransfer\Facility\Email;
-use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
+use Malahierba\PublicId\PublicId;
 
 /**
  * App\Models\VisitTransfer\Facility
@@ -15,46 +15,50 @@ use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
  * @property int $id
  * @property string $name
  * @property string $description
- * @property bool $can_transfer
- * @property bool $can_visit
- * @property bool $training_required
+ * @property int $can_transfer
+ * @property int $can_visit
+ * @property int $training_required
  * @property string $training_team
- * @property int $training_spaces
- * @property bool $stage_statement_enabled
- * @property bool $stage_reference_enabled
+ * @property int|null $training_spaces
+ * @property int $stage_statement_enabled
+ * @property int $stage_reference_enabled
  * @property int $stage_reference_quantity
- * @property bool $stage_checks
- * @property bool $auto_acceptance
- * @property bool $open
- * @property string $deleted_at
+ * @property int $stage_checks
+ * @property int $auto_acceptance
+ * @property int $open
+ * @property int $public
+ * @property string|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
+ * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility atc()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility canTransfer()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility canVisit()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility hasTrainingSpace()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility isClosed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility isOpen()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility onlyTransfer()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility onlyVisit()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility pilot()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility trainingRequired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereAutoAcceptance($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereCanTransfer($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereCanVisit($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereDescription($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereOpen($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageChecks($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceEnabled($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceQuantity($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereStageStatementEnabled($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingRequired($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility whereTrainingTeam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility atc()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canTransfer()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility canVisit()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility hasTrainingSpace()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility isClosed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility isOpen()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility onlyTransfer()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility onlyVisit()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility pilot()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility public()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility trainingRequired()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereAutoAcceptance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereCanTransfer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereCanVisit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereOpen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility wherePublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageChecks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageReferenceQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereStageStatementEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingSpaces($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereTrainingTeam($value)
  * @mixin \Eloquent
  */
 class Facility extends Model

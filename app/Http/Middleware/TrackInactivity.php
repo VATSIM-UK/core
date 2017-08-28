@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Auth;
+use Carbon\Carbon;
 use Closure;
 use Session;
-use Carbon\Carbon;
 
 class TrackInactivity
 {
@@ -33,7 +33,6 @@ class TrackInactivity
 
             if ($timeout !== 0 && $inactive >= $timeout) {
                 // forget their secondary authentication
-                Session::forget('auth.secondary');
                 Auth::logout();
 
                 return redirect()->guest('/login');

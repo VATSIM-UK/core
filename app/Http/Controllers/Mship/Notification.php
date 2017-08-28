@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
-use Session;
 use Redirect;
+use Session;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
@@ -12,7 +12,7 @@ class Notification extends \App\Http\Controllers\BaseController
 
     public function postAcknowledge($notification)
     {
-        $this->account->readNotifications()->attach($notification);
+        $this->account->readSystemNotifications()->syncWithoutDetaching([$notification->id]);
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if (Session::has('force_notification_read_return_url')) {
@@ -28,7 +28,7 @@ class Notification extends \App\Http\Controllers\BaseController
     {
         // Get all unread notifications.
         $unreadNotifications = $this->account->unreadNotifications;
-        $readNotifications = $this->account->readNotifications;
+        $readNotifications = $this->account->readSystemNotifications;
 
         return $this->viewMake('mship.notification.list')
                     ->with('unreadNotifications', $unreadNotifications)

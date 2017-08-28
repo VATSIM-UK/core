@@ -25,7 +25,7 @@ class InitialTeamspeak extends Migration
             $table->string('reason', 255);
             $table->integer('authorised_by')->unsigned();
             $table->timestamps();
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->softDeletes();
         });
 

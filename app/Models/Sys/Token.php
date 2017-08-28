@@ -12,32 +12,37 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property string $related_type
  * @property string $type
  * @property string $code
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $expires_at
- * @property \Carbon\Carbon $used_at
- * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $expires_at
+ * @property \Carbon\Carbon|null $used_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read mixed $display_value
  * @property-read mixed $is_expired
  * @property-read mixed $is_used
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token expired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token hasCode($code)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notExpired()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token notUsed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token ofType($type)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token used()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token valid()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereExpiresAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereRelatedType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereTokenId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token whereUsedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token expired()
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token hasCode($code)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token notExpired()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token notUsed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token ofType($type)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token used()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token valid()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereRelatedId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereRelatedType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereTokenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Token whereUsedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withoutTrashed()
  * @mixin \Eloquent
  */
 class Token extends \App\Models\Model

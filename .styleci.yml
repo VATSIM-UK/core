@@ -8,6 +8,7 @@ enabled:
 disabled:
     - "not_operator_with_successor_space"
     - "phpdoc_summary"
+    - "length_ordered_imports"
 
 finder:
   exclude:

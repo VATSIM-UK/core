@@ -10,30 +10,35 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  *
  * @property int $id
  * @property string $name
- * @property string $short_code
- * @property bool $is_available
- * @property bool $is_system
- * @property bool $is_default
+ * @property string|null $short_code
+ * @property int $is_available
+ * @property int $is_system
+ * @property int $is_default
  * @property string $colour_code
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isAvailable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type isSystem()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type usable()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereColourCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isAvailable()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isDefault()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isShortCode($shortCode)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isSystem()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type usable()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereColourCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereIsAvailable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereIsSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereShortCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withoutTrashed()
  * @mixin \Eloquent
  */
 class Type extends \Eloquent

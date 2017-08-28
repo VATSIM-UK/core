@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Models\Mship\Permission as PermissionData;
+use App\Models\Mship\Role as RoleData;
 use Input;
 use Redirect;
-use App\Models\Mship\Role as RoleData;
-use App\Models\Mship\Permission as PermissionData;
 
 class Role extends \App\Http\Controllers\Adm\AdmController
 {

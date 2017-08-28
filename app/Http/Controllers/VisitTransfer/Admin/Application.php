@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\VisitTransfer\Admin;
 
+use App\Http\Controllers\Adm\AdmController;
+use App\Http\Requests\VisitTransfer\ApplicationAcceptRequest;
+use App\Http\Requests\VisitTransfer\ApplicationCheckOutcomeRequest;
+use App\Http\Requests\VisitTransfer\ApplicationRejectRequest;
+use App\Http\Requests\VisitTransfer\ApplicationSettingToggleRequest;
+use App\Models\Mship\Account;
+use App\Models\VisitTransfer\Application as ApplicationModel;
+use App\Models\VisitTransfer\Reference as ReferenceModel;
 use Auth;
 use Input;
 use Redirect;
-use App\Models\Mship\Account;
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\VisitTransfer\Reference as ReferenceModel;
-use App\Http\Requests\VisitTransfer\ApplicationAcceptRequest;
-use App\Http\Requests\VisitTransfer\ApplicationRejectRequest;
-use App\Models\VisitTransfer\Application as ApplicationModel;
-use App\Http\Requests\VisitTransfer\ApplicationCheckOutcomeRequest;
-use App\Http\Requests\VisitTransfer\ApplicationSettingToggleRequest;
 
 class Application extends AdmController
 {

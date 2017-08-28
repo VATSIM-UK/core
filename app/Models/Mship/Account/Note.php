@@ -10,25 +10,25 @@ use App\Traits\RecordsActivity;
  * @property int $id
  * @property int $note_type_id
  * @property int $account_id
- * @property int $writer_id
- * @property int $attachment_id
- * @property string $attachment_type
+ * @property int|null $writer_id
+ * @property int|null $attachment_id
+ * @property string|null $attachment_type
  * @property string $content
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $attachment
  * @property-read \App\Models\Mship\Note\Type $type
- * @property-read \App\Models\Mship\Account $writer
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereAttachmentId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereAttachmentType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereContent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereNoteTypeId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note whereWriterId($value)
+ * @property-read \App\Models\Mship\Account|null $writer
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAttachmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereAttachmentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereNoteTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereWriterId($value)
  * @mixin \Eloquent
  */
 class Note extends \App\Models\Model

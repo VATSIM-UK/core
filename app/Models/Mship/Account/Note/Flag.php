@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property-read \App\Models\Mship\Account $flagger
  * @property-read \App\Models\Mship\Account\Note $note
  * @property-read \App\Models\Mship\Account $resolver
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Flag onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Flag withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Flag withoutTrashed()
  * @mixin \Eloquent
  */
 class Flag extends \Eloquent

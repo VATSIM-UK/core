@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="col-md-6 hidden-xs hidden-sm">
-                        {!! Image::rounded(asset('assets/images/ts_connect.png'), 'Connection Screenshot')->responsive() !!}
+                        {!! Image::rounded(asset('images/ts_connect.png'), 'Connection Screenshot')->responsive() !!}
                     </div>
                 </div>
             {!! HTML::panelClose() !!}

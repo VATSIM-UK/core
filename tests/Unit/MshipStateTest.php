@@ -4,8 +4,9 @@ namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\BrowserKitTestCase;
+use Tests\TestCase;
 
-class MshipStateTest extends BrowserKitTestCase
+class MshipStateTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -30,7 +31,7 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->addState($divisionState, "EUR", "GBR");
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $divisionState->id,
             "end_at" => null,
@@ -53,7 +54,7 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->addState($regionState, "EUR", "EUD");
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $regionState->id,
             "end_at" => null,
@@ -61,19 +62,19 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->fresh()->addState($divisionState, "EUR", "GBR");
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $divisionState->id,
             "end_at" => null,
         ]);
 
-        $this->notseeInDatabase("mship_account_state", [
+        $this->assertDatabaseMissing("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $regionState->id,
             "end_at" => null,
         ]);
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $regionState->id
         ]);
@@ -87,7 +88,7 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->addState($visitorState);
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,
@@ -95,13 +96,13 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->fresh()->addState($regionState, "EUR", "EUD");
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,
         ]);
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,
@@ -116,7 +117,7 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->addState($visitorState);
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,
@@ -124,19 +125,19 @@ class MshipStateTest extends BrowserKitTestCase
 
         $this->account->fresh()->addState($divisionState, "EUR", "GBR");
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $divisionState->id,
             "end_at" => null,
         ]);
 
-        $this->notseeInDatabase("mship_account_state", [
+        $this->assertDatabaseMissing("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
             "end_at" => null,
         ]);
 
-        $this->seeInDatabase("mship_account_state", [
+        $this->assertDatabaseHas("mship_account_state", [
             "account_id" => $this->account->id,
             "state_id" => $visitorState->id,
         ]);

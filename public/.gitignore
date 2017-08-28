@@ -1,4 +1,7 @@
-assets/
-build/
-css/
-js/
+/assets
+/build
+/css
+/js
+/fonts
+mix-manifest.json
+/images/vendor

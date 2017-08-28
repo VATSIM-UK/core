@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * App\Models\Mship\Account\Note\Format
  *
  * @property-read \App\Models\Mship\Account\Note $note
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Format onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Format withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Format withoutTrashed()
  * @mixin \Eloquent
  */
 class Format extends \Eloquent

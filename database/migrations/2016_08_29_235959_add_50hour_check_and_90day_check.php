@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class Add50HourCheckAnd90DayCheck extends Migration
 {
@@ -26,8 +26,8 @@ class Add50HourCheckAnd90DayCheck extends Migration
     public function down()
     {
         Schema::table('vt_application', function (Blueprint $table) {
-            $table->dropColumn('check_outcome_50hours');
-            $table->dropColumn('check_outcome_90day');
+            $table->dropColumn('check_outcome_50_hours');
+            $table->dropColumn('check_outcome_90_day');
         });
     }
 }

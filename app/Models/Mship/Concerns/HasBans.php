@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Models\Mship\Concerns;
+
+use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Note\Type;
+use Carbon\Carbon;
+
+trait HasBans
+{
+    public function bans()
+    {
+        return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'account_id')->orderBy(
+            'created_at',
+            'DESC'
+        );
+    }
+
+    public function addBan(
+        Reason $banReason,
+        $banExtraReason = null,
+        $banNote = null,
+        $writerId = null,
+        $type = Ban::TYPE_LOCAL
+    ) {
+        if ($writerId == null) {
+            $writerId = 0;
+        } elseif (is_object($writerId)) {
+            $writerId = $writerId->getKey();
+        }
+
+        // Attach the note.
+        $note = $this->addNote(Type::isShortCode('discipline')->first(), $banNote, $writerId);
+
+        // Make a ban.
+        $ban = new Ban();
+        $ban->account_id = $this->id;
+        $ban->banned_by = $writerId;
+        $ban->type = $type;
+        $ban->reason_id = $banReason->id;
+        $ban->reason_extra = $banExtraReason;
+        $ban->period_start = Carbon::now()->second(0);
+        $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
+        $ban->save();
+
+        $ban->notes()->save($note);
+
+        return $ban;
+    }
+
+    public function getIsSystemBannedAttribute()
+    {
+        $bans = $this->bans->filter(function ($ban) {
+            return $ban->is_active && $ban->is_local;
+        });
+
+        return $bans->count() > 0;
+    }
+
+    public function getSystemBanAttribute()
+    {
+        $bans = $this->bans->filter(function ($ban) {
+            return $ban->is_active && $ban->is_local;
+        });
+
+        return $bans->first();
+    }
+
+    public function getIsNetworkBannedAttribute()
+    {
+        $bans = $this->bans->filter(function ($ban) {
+            return $ban->is_active && $ban->is_network;
+        });
+
+        return $bans->count() > 0;
+    }
+
+    public function getNetworkBanAttribute()
+    {
+        $bans = $this->bans->filter(function ($ban) {
+            return $ban->is_active && $ban->is_network;
+        });
+
+        return $bans->first();
+    }
+
+    public function addNetworkBan($reason = 'Network ban discovered.')
+    {
+        if ($this->is_network_banned === false) {
+            $newBan = new \App\Models\Mship\Account\Ban();
+            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $newBan->reason_extra = $reason;
+            $newBan->period_start = Carbon::now();
+            $newBan->save();
+
+            $this->bans()->save($newBan);
+        }
+    }
+
+    public function removeNetworkBan()
+    {
+        if ($this->is_network_banned === true) {
+            $ban = $this->network_ban;
+            $ban->period_finish = Carbon::now();
+            $ban->save();
+        }
+    }
+
+    public function getIsBannedAttribute()
+    {
+        return $this->is_system_banned || $this->is_network_banned;
+    }
+}

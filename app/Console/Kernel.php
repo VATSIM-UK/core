@@ -3,7 +3,6 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -14,26 +13,31 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\GenerateEloquentMethodPHPDoc::class,
-        Commands\MembersCertImport::class,
-        Commands\MembersCertUpdate::class,
-        Commands\SysStatisticsDaily::class,
-        Commands\SyncRTS::class,
-        Commands\SyncCommunity::class,
-        Commands\SyncMentors::class,
-        Commands\SyncMoodle::class,
-        Commands\TeamSpeakManager::class,
-        Commands\TeamSpeakCleanup::class,
-        Commands\TeamSpeakDaemon::class,
-        Commands\TeamSpeakMapper::class,
-        Commands\SlackManager::class,
-        Commands\TestEmails::class,
-        \App\Console\Commands\DownloadAndParse::class,
-        \App\Console\Commands\Statistics::class,
-        \App\Console\Commands\StatisticsDaily::class,
-        \App\Console\Commands\ApplicationsCleanup::class,
+        // production
+        Commands\ExternalServices\ManageSlack::class,
+        Commands\ExternalServices\SyncCommunity::class,
+        Commands\ExternalServices\SyncHelpdesk::class,
+        Commands\ExternalServices\SyncMentors::class,
+        Commands\ExternalServices\SyncMoodle::class,
+        Commands\ExternalServices\SyncRTS::class,
+        Commands\Feedback\GenerateFeedbackSummary::class,
+        Commands\Members\ImportMembers::class,
+        Commands\Members\MemberStatistics::class,
+        Commands\Members\UpdateMembers::class,
+        Commands\NetworkData\NetworkStatistics::class,
+        Commands\NetworkData\ProcessNetworkData::class,
+        Commands\TeamSpeak\TeamSpeakCleanup::class,
+        Commands\TeamSpeak\TeamSpeakDaemon::class,
+        Commands\TeamSpeak\TeamSpeakManager::class,
+        Commands\TeamSpeak\TeamSpeakMapper::class,
+        Commands\VisitTransfer\ApplicationsCleanup::class,
+        Commands\VisitTransfer\VisitTransferStatistics::class,
 
-        /* Third Party */
+        // development
+        Commands\Development\GenerateEloquentMethodPHPDoc::class,
+        Commands\Development\TestEmails::class,
+
+        // third-party
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
     ];
 
@@ -45,11 +49,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //        $schedule->command("statistics:download")->cron("*/2 * * * *")->withoutOverlapping();
-
-        // Work the queue - the last thing that should be processed!
-        $schedule->command('queue:work')->everyMinute()->withoutOverlapping();
-        //-- end
+        //
     }
 
     /**

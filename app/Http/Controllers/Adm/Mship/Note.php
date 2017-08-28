@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Redirect;
 use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Note\Type as NoteType;
 use App\Http\Requests\Mship\Note\Type\CreateEditNoteType;
+use App\Models\Mship\Note\Type as NoteType;
+use Redirect;
 
 class Note extends AdmController
 {

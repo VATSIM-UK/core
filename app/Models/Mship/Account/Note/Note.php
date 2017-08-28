@@ -11,26 +11,31 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property int $id
  * @property int $note_type_id
  * @property int $account_id
- * @property int $writer_id
- * @property int $attachment_id
- * @property string $attachment_type
+ * @property int|null $writer_id
+ * @property int|null $attachment_id
+ * @property string|null $attachment_type
  * @property string $content
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $actioner
  * @property-read \App\Models\Mship\Account\Note\Flag $flag
  * @property-read \App\Models\Mship\Account\Note\Format $format
  * @property-write mixed $data
  * @property-read \App\Models\Mship\Account $user
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAccountId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereContent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereNoteTypeId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note whereWriterId($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereAttachmentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereNoteTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note\Note whereWriterId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account\Note\Note withoutTrashed()
  * @mixin \Eloquent
  */
 class Note extends \Eloquent

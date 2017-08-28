@@ -2,33 +2,33 @@
 
 namespace App\Models\Mship;
 
-use App\Traits\RecordsActivity;
 use App\Models\Mship\Permission as PermissionData;
+use App\Traits\RecordsActivity;
 
 /**
  * App\Models\Mship\Role
  *
  * @property int $id
  * @property string $name
- * @property bool $default
- * @property int $session_timeout
- * @property bool $password_mandatory
+ * @property int $default
+ * @property int|null $session_timeout
+ * @property int $password_mandatory
  * @property int $password_lifetime
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
  * @property-read bool $is_default
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Permission[] $permissions
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role hasTimeout()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role isDefault()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereDefault($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role hasTimeout()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role isDefault()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role wherePasswordLifetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role wherePasswordMandatory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereSessionTimeout($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Role whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Role extends \App\Models\Model

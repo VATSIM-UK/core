@@ -270,6 +270,7 @@
 @section("scripts")
     @parent
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/js/bootstrap-tour.min.js" integrity="sha384-vzCaHnPHCvqX/NZEoFP8o6Kl3oz4t69lFsHpZ8uIzr+NURIp0PoavFo0OXXchs3V" crossorigin="anonymous"></script>
     <script type="text/javascript">
         var tour = new Tour({
             name: "VT-Dashboard",

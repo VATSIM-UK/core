@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ReferenceAcceptRequest extends FormRequest
 {

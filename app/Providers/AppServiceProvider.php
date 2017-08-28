@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
-use URL;
-use HTML;
-use View;
+use Bugsnag;
 use Config;
-use Validator;
+use HTML;
 use Illuminate\Support\ServiceProvider;
+use URL;
+use Validator;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
+
+        $this->registerBugsnagCallback();
 
         HTML::component('icon', 'components.html.icon', ['type', 'key']);
         HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);
@@ -72,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(
             ['visit-transfer.admin._sidebar'],
-            \App\Controllers\ViewComposers\StatisticsComposer::class
+            \App\Http\ViewComposers\StatisticsComposer::class
         );
     }
 
@@ -85,5 +88,23 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
+    }
+
+    /**
+     * Register a Bugsnag callback to avoid grouping
+     * SQL errors by the Model::save function.
+     */
+    private function registerBugsnagCallback()
+    {
+        Bugsnag::registerCallback(function ($report) {
+            $stacktrace = $report->getStacktrace();
+            $frames = $stacktrace->getFrames();
+
+            foreach ($frames as &$frame) {
+                if ($frame['file'] === 'app/Models/Model.php' && $frame['method'] === 'App\\Models\\Model::save') {
+                    $frame['inProject'] = false;
+                }
+            }
+        });
     }
 }

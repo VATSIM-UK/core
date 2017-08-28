@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Notifications\Mship\Security;
+namespace App\Notifications\Mship;
 
 use App\Models\Sys\Token;
-use Illuminate\Bus\Queueable;
 use App\Notifications\Notification;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

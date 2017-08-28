@@ -8,12 +8,13 @@ use App\Models\Mship\Role;
 use App\Notifications\Mship\EmailVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\BrowserKitTestCase;
+use Tests\TestCase;
 
 /**
  * Class MshipAccountTest
  * @package Tests\Unit
  */
-class MshipAccountTest extends BrowserKitTestCase
+class MshipAccountTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -41,7 +42,7 @@ class MshipAccountTest extends BrowserKitTestCase
     /** @test */
     public function itStoresBasicMemberData()
     {
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "name_first" => "John",
             "name_last" => "Doe",
             "email" => "i_sleep@gmail.com",
@@ -61,7 +62,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->assertEquals("Mary", $member->name_first);
         $this->assertEquals("Jane", $member->name_last);
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $member->id,
             "name_first" => "Mary",
             "name_last" => "Jane",
@@ -80,7 +81,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
@@ -95,7 +96,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
@@ -109,7 +110,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->nickname = "Delboy";
         $this->account->save();
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "nickname" => "Delboy",
         ]);
@@ -123,7 +124,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $this->assertEquals("i_sleep@gmail.com", $this->account->email);
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
@@ -161,7 +162,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->addSecondaryEmail("i_sleep@gmail.com", $verified);
 
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
-        $this->notSeeInDatabase("mship_account_email", [
+        $this->assertDatabaseMissing("mship_account_email", [
             "account_id" => $this->account->id,
             "email" => "i_sleep@gmail.com",
         ]);
@@ -178,7 +179,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->assertCount(1, $this->account->fresh()->secondaryEmails);
         $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck("id"));
 
-        $this->seeInDatabase("mship_account_email", [
+        $this->assertDatabaseHas("mship_account_email", [
             "account_id" => $this->account->id,
             "email" => "i_also_sleep@hotmail.com",
         ]);
@@ -257,7 +258,7 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->assertTrue($this->account->fresh()->hasQualification($qualification));
 
-        $this->seeInDatabase("mship_account_qualification", [
+        $this->assertDatabaseHas("mship_account_qualification", [
             "account_id" => $this->account->id,
             "qualification_id" => $qualification->id,
             "deleted_at" => null,
@@ -286,7 +287,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->save();
 
 
-        $slackAccount = Account::findWithSlackId($slackID);
+        $slackAccount = Account::where('slack_id', $slackID)->first();
 
         $this->assertEquals($slackAccount->id, $this->account->fresh()->id);
     }
@@ -296,7 +297,7 @@ class MshipAccountTest extends BrowserKitTestCase
     {
         $this->assertFalse($this->account->hasPassword());
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "password" => null,
             "password_set_at" => null,
@@ -314,12 +315,12 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->assertTrue(\Hash::check("testing123", $this->account->password));
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "password" => $this->account->password,
         ]);
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->assertDatabaseMissing("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -336,12 +337,12 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->assertTrue($this->account->hasPassword());
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "password" => $this->account->password,
         ]);
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->assertDatabaseMissing("mship_account", [
             "id" => $this->account->id,
             "password_set_at" => null,
             "password_expires_at" => null,
@@ -374,7 +375,7 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->account = $this->account->fresh();
 
-        $this->seeInDatabase("mship_account", [
+        $this->assertDatabaseHas("mship_account", [
             "id" => $this->account->id,
             "password" => $oldPassword,
             "password_set_at" => $oldPasswordSetAt,
@@ -383,7 +384,7 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->account->setPassword("testing456");
 
-        $this->notSeeInDatabase("mship_account", [
+        $this->assertDatabaseMissing("mship_account", [
             "id" => $this->account->id,
             "password" => $oldPassword,
             "password_set_at" => $oldPasswordSetAt,
@@ -400,7 +401,7 @@ class MshipAccountTest extends BrowserKitTestCase
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
 
-        $this->seeInDatabase("mship_account_role", [
+        $this->assertDatabaseHas("mship_account_role", [
             "account_id" => $this->account->id,
             "role_id" => $role->id,
         ]);
@@ -424,7 +425,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->fresh()->roles()->attach($role);
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
-        $this->seeInDatabase("mship_account_role", [
+        $this->assertDatabaseHas("mship_account_role", [
             "account_id" => $this->account->id,
             "role_id" => $role->id,
         ]);
@@ -432,7 +433,7 @@ class MshipAccountTest extends BrowserKitTestCase
         $this->account->fresh()->removeRole($role);
 
         $this->assertFalse($this->account->fresh()->roles->contains($role->id));
-        $this->notSeeInDatabase("mship_account_role", [
+        $this->assertDatabaseMissing("mship_account_role", [
             "account_id" => $this->account->id,
             "role_id" => $role->id,
         ]);

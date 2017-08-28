@@ -3,8 +3,8 @@
 namespace App\Listeners\NetworkData;
 
 use App\Events\NetworkData\AtcSessionEnded;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\AtcSessionRecordedConfirmation;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AtcSessionRecordedSuccessNotification implements ShouldQueue
 {

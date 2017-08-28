@@ -24,7 +24,7 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
     $return['atc_rating'] = $account->qualification_atc->vatsim;
     $return['atc_rating_human_short'] = $account->qualification_atc->name_small;
     $return['atc_rating_human_long'] = $account->qualification_atc->name_long;
-    $return['atc_rating_date'] = $account->qualification_atc->created_at->toDateTimeString();
+    $return['atc_rating_date'] = $account->qualification_atc->pivot->created_at->toDateTimeString();
 
     $return['pilot_ratings_bin'] = 0;
     $return['pilot_ratings'] = [];
@@ -38,7 +38,7 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
             $e['rating'] = $qual->vatsim;
             $e['human_short'] = $qual->name_small;
             $e['human_long'] = $qual->name_long;
-            $e['date'] = $qual->created_at->toDateTimeString();
+            $e['date'] = $qual->pivot->created_at->toDateTimeString();
             $return['pilot_ratings'][] = (array) $e;
             $return['pilot_ratings_bin'] += $qual->vatsim;
         }
@@ -51,7 +51,7 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
         $e['rating'] = $qual->vatsim;
         $e['human_short'] = $qual->name_small;
         $e['human_long'] = $qual->name_long;
-        $e['date'] = $qual->created_at->toDateTimeString();
+        $e['date'] = $qual->pivot->created_at->toDateTimeString();
         $return['admin_ratings'][] = (array) $e;
     }
 
@@ -61,7 +61,7 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
         $e['rating'] = $qual->vatsim;
         $e['human_short'] = $qual->name_small;
         $e['human_long'] = $qual->name_long;
-        $e['date'] = $qual->created_at->toDateTimeString();
+        $e['date'] = $qual->pivot->created_at->toDateTimeString();
         $return['training_pilot_ratings'][] = (array) $e;
     }
 
@@ -71,7 +71,7 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
         $e['rating'] = $qual->vatsim;
         $e['human_short'] = $qual->name_small;
         $e['human_long'] = $qual->name_long;
-        $e['date'] = $qual->created_at->toDateTimeString();
+        $e['date'] = $qual->pivot->created_at->toDateTimeString();
         $return['training_atc_ratings'][] = (array) $e;
     }
 

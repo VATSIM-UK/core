@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Slack;
 
+use App\Models\Sys\Token;
 use DB;
 use Redirect;
 use Response;
 use SlackUserAdmin;
-use App\Models\Sys\Token;
 
 class Registration extends \App\Http\Controllers\BaseController
 {

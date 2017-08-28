@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use Response;
-use Carbon\Carbon;
 use App\Models\Email\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Response;
 
 class Mailgun extends WebhookController
 {

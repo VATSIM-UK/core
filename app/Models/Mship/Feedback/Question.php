@@ -17,26 +17,31 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $required
  * @property int $sequence
  * @property bool $permanent
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $deleted_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
  * @property-read \App\Models\Mship\Feedback\Form $form
  * @property-read \App\Models\Mship\Feedback\Question\Type $type
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question notActioned()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question notPermanent()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereFormId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereOptions($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question wherePermanent($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereQuestion($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereRequired($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereSequence($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereSlug($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereTypeId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question whereUpdatedAt($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question notActioned()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question notPermanent()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereFormId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question wherePermanent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereQuestion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereSequence($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Question withoutTrashed()
  * @mixin \Eloquent
  */
 class Question extends Model

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCommunityGroupTable extends Migration
 {
@@ -17,7 +17,7 @@ class CreateCommunityGroupTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('name', 30);
             $table->smallInteger('tier')->nullable();
-            $table->longText('coordinate_boundaries');
+            $table->longText('coordinate_boundaries')->nullable();
             $table->boolean('default')->default(false);
             $table->timestamps();
             $table->softDeletes();

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Community;
 
-use App\Models\Community\Group;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Community\DeployToCommunityGroupRequest;
+use App\Models\Community\Group;
 
 class Membership extends BaseController
 {
@@ -33,6 +33,6 @@ class Membership extends BaseController
             \Auth::user()->syncWithDefaultCommunityGroup();
         }
 
-        return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to this '".$chosenGroup->name."' Group!");
+        return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to the '".$chosenGroup->name."' Group!");
     }
 }

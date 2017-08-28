@@ -69,7 +69,7 @@
                     {{ number_format(array_get($statistics, "members_nondivision", 0)) }}
                 </h3>
                 <p>
-                    <small>None-Div Members</small>
+                    <small>Non-Div Members</small>
                 </p>
             </div>
             <div class="icon">

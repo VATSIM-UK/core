@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $facility_id
  * @property string $email
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility\Email whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility\Email whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility\Email whereFacilityId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility\Email whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\VisitTransfer\Facility\Email whereUpdatedAt($value)
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereFacilityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility\Email whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Email extends Model

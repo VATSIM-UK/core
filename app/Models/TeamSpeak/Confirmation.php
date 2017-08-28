@@ -9,13 +9,13 @@ use App\Traits\RecordsActivity;
  *
  * @property int $registration_id
  * @property string $privilege_key
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\TeamSpeak\Registration $registration
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereRegistrationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereRegistrationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Confirmation extends \App\Models\Model

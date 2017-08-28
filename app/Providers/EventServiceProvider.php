@@ -21,8 +21,12 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Sync\PushToTeamSpeak::class,
         ],
 
+        \App\Events\Mship\QualificationAdded::class => [
+            \App\Listeners\Mship\SendS1Email::class,
+        ],
+
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
-            \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+            //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
         \App\Events\Mship\Bans\AccountBanned::class => [
@@ -35,7 +39,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         AtcSessionEnded::class => [
-            AtcSessionRecordedSuccessNotification::class,
+            //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
         ],
 
         \App\Events\VisitTransfer\ApplicationSubmitted::class => [

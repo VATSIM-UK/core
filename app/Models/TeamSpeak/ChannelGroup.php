@@ -11,20 +11,20 @@ use App\Scopes\TeamSpeak\GroupScope;
  * @property int $dbid
  * @property string $name
  * @property string $type
- * @property bool $default
- * @property bool $protected
- * @property int $permission_id
- * @property int $qualification_id
- * @property-read \App\Models\Mship\Permission $permission
- * @property-read \App\Models\Mship\Qualification $qualification
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereDbid($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereDefault($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup wherePermissionId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereProtected($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereQualificationId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\ChannelGroup whereType($value)
+ * @property int $default
+ * @property int $protected
+ * @property int|null $permission_id
+ * @property int|null $qualification_id
+ * @property-read \App\Models\Mship\Permission|null $permission
+ * @property-read \App\Models\Mship\Qualification|null $qualification
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereDbid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup wherePermissionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereProtected($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereQualificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\ChannelGroup whereType($value)
  * @mixin \Eloquent
  */
 class ChannelGroup extends Group
