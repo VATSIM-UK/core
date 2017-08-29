@@ -120,11 +120,11 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         Route::get('staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
     });
 
-    Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars'], function () {
-        Route::get('airports', 'SmartcarsController@getAirports')->name('adm.smartcars.airports');
-        Route::get('aircraft', 'SmartcarsController@getAircraft')->name('adm.smartcars.aircraft');
-        Route::get('exercises', 'SmartcarsController@getExercises')->name('adm.smartcars.exercises');
-        Route::get('flights', 'SmartcarsController@getFlights')->name('adm.smartcars.flights');
+    Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
+        Route::resource('aircraft', 'Resources\AircraftController');
+        Route::resource('airports', 'Resources\AirportController');
+        Route::resource('exercises', 'Resources\ExerciseController');
+        Route::resource('flights', 'Resources\FlightController', ['only' => ['index', 'show']]);
     });
 });
 
