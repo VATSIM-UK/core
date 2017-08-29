@@ -121,7 +121,7 @@ trait HasStates
             $exisitingState = $this->states->where('id', $state->id)->first();
             if ($exisitingState->pivot->region == $region && $exisitingState->pivot->division == $division) {
                 return;
-            };
+            }
         }
 
         if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
