@@ -11,7 +11,7 @@
                 </div>
                 <div class="box-body table-responsive">
                     {{ $exercises->render() }}
-                    <table id="exercises-table" class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped">
                         <tr>
                             <th>Image</th>
                             <th>Code</th>

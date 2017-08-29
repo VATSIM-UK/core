@@ -6,6 +6,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Smartcars\Aircraft;
 use App\Models\Smartcars\Airport;
 use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\Pirep;
 
 class SmartcarsController extends AdmController
 {
@@ -40,6 +41,8 @@ class SmartcarsController extends AdmController
     {
         $this->authorize('use-permission', 'smartcars/flights');
 
-        return $this->viewMake('adm.smartcars.flights');
+        $flights = Pirep::query()->orderBy('created_at')->paginate(50);
+
+        return $this->viewMake('adm.smartcars.flights')->with('flights', $flights);
     }
 }
