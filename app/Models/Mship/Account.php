@@ -262,9 +262,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
             $noteType = Type::isDefault()->first()->getKey();
         }
 
-        if ($writer == null) {
-            $writer = 0;
-        } elseif (is_object($writer)) {
+        if (!is_null($writer) && is_object($writer)) {
             $writer = $writer->getKey();
         }
 
