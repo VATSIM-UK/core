@@ -119,8 +119,8 @@ trait HasStates
         if ($this->hasState($state)) {
             // Verify the same region/division information, else we want to update the state
             $exisitingState = $this->states->where('id', $state->id)->first();
-            if($exisitingState->pivot->region == $region && $exisitingState->pivot->division == $division){
-              return;
+            if ($exisitingState->pivot->region == $region && $exisitingState->pivot->division == $division) {
+                return;
             };
         }
 
