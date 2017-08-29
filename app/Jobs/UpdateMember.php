@@ -64,7 +64,6 @@ class UpdateMember extends Job implements ShouldQueue
             $member->cert_checked_at = Carbon::now();
             $member->is_inactive = (bool) ($this->data->rating < 0);
             $member->joined_at = $this->data->regdate;
-            $member->save();
 
             $state = determine_mship_state_from_vatsim($this->data->region, $this->data->division);
             $member->addState($state, $this->data->region, $this->data->division);
