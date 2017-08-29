@@ -196,7 +196,7 @@
                     <ul class="treeview-menu">
                         @can('use-permission', 'smartcars/aircraft')
                             <li {!! Request::is('adm/smartcars/aircraft*') ? ' class="active"' : '' !!}>
-                                <a href="{{ URL::route('adm.smartcars.aircraft') }}">
+                                <a href="{{ URL::route('adm.smartcars.aircraft.index') }}">
                                     <i class="fa fa-plane"></i>
                                     <span>Aircraft</span>
                                 </a>
@@ -204,7 +204,7 @@
                         @endcan
                         @can('use-permission', 'smartcars/airports')
                             <li {!! Request::is('adm/smartcars/airports*') ? ' class="active"' : '' !!}>
-                                <a href="{{ URL::route('adm.smartcars.airports') }}">
+                                <a href="{{ URL::route('adm.smartcars.airports.index') }}">
                                     <i class="fa fa-road"></i>
                                     <span>Airports</span>
                                 </a>
@@ -212,7 +212,7 @@
                         @endcan
                         @can('use-permission', 'smartcars/exercises')
                             <li {!! Request::is('adm/smartcars/exercises*') ? ' class="active"' : '' !!}>
-                                <a href="{{ URL::route('adm.smartcars.exercises') }}">
+                                <a href="{{ URL::route('adm.smartcars.exercises.index') }}">
                                     <i class="fa fa-pencil-square-o"></i>
                                     <span>Exercises</span>
                                 </a>
@@ -220,7 +220,7 @@
                         @endcan
                         @can('use-permission', 'smartcars/flights')
                             <li {!! Request::is('adm/smartcars/flights*') ? ' class="active"' : '' !!}>
-                                <a href="{{ URL::route('adm.smartcars.flights') }}">
+                                <a href="{{ URL::route('adm.smartcars.flights.index') }}">
                                     <i class="fa fa-fighter-jet"></i>
                                     <span>Member Flights</span>
                                 </a>
