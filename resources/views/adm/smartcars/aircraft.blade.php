@@ -5,9 +5,9 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">
-                        smartCARS Aircraft
-                    </h3>
+                    <h3 class="box-title">smartCARS Aircraft</h3>
+                    <a href="{{ route('adm.smartcars.aircraft.create') }}" class="btn btn-primary pull-right"><i
+                                class="fa fa-plus"></i> Create New</a>
                 </div>
                 <div class="box-body table-responsive">
                     {{ $aircraft->render() }}
@@ -22,6 +22,7 @@
                             <th>Cruise Altitude</th>
                             <th>Max Passengers</th>
                             <th>Max Cargo (kg)</th>
+                            <th colspan="2">Actions</th>
                         </tr>
                         @foreach($aircraft as $ac)
                         <tr>
@@ -34,6 +35,14 @@
                             <td>{{ $ac->cruise_altitude }}</td>
                             <td>{{ $ac->max_passengers }}</td>
                             <td>{{ $ac->max_cargo_kg }}</td>
+                            <td>
+                                <a href="{{ route('adm.smartcars.aircraft.edit', $ac->id) }}" class="btn btn-xs btn-warning">Edit</a>
+                            </td>
+                            <td>
+                                {!! Form::open(['method'  => 'delete', 'route' => ['adm.smartcars.aircraft.destroy', $ac->id]]) !!}
+                                <input class="btn btn-xs btn-danger" type="submit" value="Delete">
+                                {!! Form::close() !!}
+                            </td>
                         </tr>
                         @endforeach
                     </table>

@@ -5,9 +5,9 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">
-                        smartCARS Exercises
-                    </h3>
+                    <h3 class="box-title">smartCARS Exercises</h3>
+                    <a href="{{ route('adm.smartcars.exercises.create') }}" class="btn btn-primary pull-right"><i
+                                class="fa fa-plus"></i> Create New</a>
                 </div>
                 <div class="box-body table-responsive">
                     {{ $exercises->render() }}
@@ -29,6 +29,7 @@
                             <th>Flight Time</th>
                             <th>Notes</th>
                             <th>Enabled</th>
+                            <th colspan="2">Actions</th>
                         </tr>
                         @foreach($exercises as $exercise)
                             <tr>
@@ -55,6 +56,14 @@
                                 <td>{{ $exercise->flight_time }}</td>
                                 <td>{{ $exercise->notes }}</td>
                                 <td>{{ $exercise->enabled ? 'Yes' : 'No' }}</td>
+                                <td>
+                                    <a href="{{ route('adm.smartcars.exercises.edit', $exercise->id) }}" class="btn btn-xs btn-warning">Edit</a>
+                                </td>
+                                <td>
+                                    {!! Form::open(['method'  => 'delete', 'route' => ['adm.smartcars.exercises.destroy', $exercise->id]]) !!}
+                                    <input class="btn btn-xs btn-danger" type="submit" value="Delete">
+                                    {!! Form::close() !!}
+                                </td>
                             </tr>
                         @endforeach
                     </table>
