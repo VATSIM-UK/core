@@ -52,4 +52,9 @@ class Flight extends Model
     {
         return $this->belongsTo(\App\Models\Smartcars\Aircraft::class, 'aircraft_id', 'id');
     }
+
+    public function getImageAttribute()
+    {
+        return FlightImage::find($this->id);
+    }
 }

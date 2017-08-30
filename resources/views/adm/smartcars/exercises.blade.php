@@ -34,10 +34,9 @@
                         @foreach($exercises as $exercise)
                             <tr>
                                 <td>
-                                    @if(Storage::drive('public')->has("smartcars/exercises/$exercise->id.jpg"))
-                                        <a href="{{ asset("storage/smartcars/exercises/$exercise->id.jpg") }}">
-                                            <img src="{{ asset("storage/smartcars/exercises/$exercise->id.jpg") }}"
-                                                 style="max-width: 150px;">
+                                    @if($exercise->image)
+                                        <a href="{{ $exercise->image->asset() }}">
+                                            <img src="{{ $exercise->image->asset() }}" style="max-width: 150px;">
                                         </a>
                                     @endif
                                 </td>
