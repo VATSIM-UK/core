@@ -31,8 +31,8 @@
                                     <a href="{{ route('adm.smartcars.airports.edit', $airport->id) }}" class="btn btn-xs btn-warning">Edit</a>
                                 </td>
                                 <td>
-                                    {!! Form::open(['method'  => 'delete', 'route' => ['adm.smartcars.airports.destroy', $airport->id]]) !!}
-                                    <input class="btn btn-xs btn-danger" type="submit" value="Delete">
+                                    {!! Form::open(['id' => "delete-$airport->id", 'method'  => 'delete', 'route' => ['adm.smartcars.airports.destroy', $airport->id]]) !!}
+                                    <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
                                     {!! Form::close() !!}
                                 </td>
                             </tr>
@@ -44,3 +44,12 @@
         </div>
     </div>
 @stop
+
+@section('scripts')
+    <script type="text/javascript">
+        d = '';
+        function onConfirm(event, element) {
+            element.parent().submit();
+        }
+    </script>
+@endsection
