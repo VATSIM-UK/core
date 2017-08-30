@@ -44,6 +44,7 @@ trait HasHelpdeskAccount
             $now = Carbon::now();
             $userId = DB::table(config('services.helpdesk.database').'.ost_user')
                 ->insertGetId([
+                    'default_email_id' => 0,
                     'org_id' => 0,
                     'status' => 0,
                     'name' => $this->name,

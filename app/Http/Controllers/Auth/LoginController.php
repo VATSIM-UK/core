@@ -39,7 +39,7 @@ class LoginController extends BaseController
 
     public function getLogin()
     {
-        if ($this->hasVatsimAuth() && !$this->hasSecondaryAuth()) {
+        if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
             return $this->attemptSecondaryAuth();
         } else {
             return redirect()->route('default');
@@ -55,25 +55,20 @@ class LoginController extends BaseController
     public function loginMain(Request $request)
     {
         // user has not been authenticated with VATSIM SSO
-        if (!$this->hasVatsimAuth()) {
+        if (!Auth::guard('vatsim-sso')->check()) {
             return $this->attemptVatsimAuth();
         }
 
-        if (!$this->hasSecondaryAuth()) {
+        if (!Auth::check()) {
             $this->attemptSecondaryAuth();
         }
 
         return redirect()->intended(route('mship.manage.dashboard'));
     }
 
-    protected function hasVatsimAuth()
-    {
-        return Session::has('auth.vatsim-sso');
-    }
-
     protected function getVatsimAuth()
     {
-        return Session::get('auth.vatsim-sso');
+        return Auth::guard('vatsim-sso')->user()->id;
     }
 
     protected function attemptVatsimAuth()
@@ -90,52 +85,34 @@ class LoginController extends BaseController
             return redirect()->to(VatsimSSO::sendToVatsim());
         } else {
             throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
-//            Session::put('cert_offline', true);
-//
-//            return redirect()->route('mship.auth.loginAlternative')->withError(VatsimSSO::error()['message']);
         }
     }
 
     protected function setVatsimAuth($userId)
     {
-        Session::put('auth.vatsim-sso', $userId);
-    }
-
-    protected function hasSecondaryAuth()
-    {
-        return Session::has('auth.secondary');
+        Auth::guard('vatsim-sso')->loginUsingId($userId);
     }
 
     protected function attemptSecondaryAuth()
     {
-        $member = Account::find($this->getVatsimAuth());
+        $member = Auth::guard('vatsim-sso')->user();
         if ($member->hasPassword()) {
             return redirect()->route('auth-secondary');
         } else {
-            $this->setSecondaryAuth();
-            Auth::login(Account::find($this->getVatsimAuth()), true);
+            Auth::login(Auth::guard('vatsim-sso')->user(), true);
 
             return redirect('/');
         }
     }
 
-    protected function setSecondaryAuth()
-    {
-        Session::put('auth.secondary', Carbon::now());
-    }
-
     public function loginSecondary(Request $request)
     {
-        if (!Session::has('auth.vatsim-sso')) {
+        if (!Auth::guard('vatsim-sso')->check()) {
             return redirect()->route('default')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
         $response = $this->login($request);
-
-        if (Auth::check()) {
-            $this->setSecondaryAuth();
-        }
 
         return $response;
     }
@@ -148,7 +125,7 @@ class LoginController extends BaseController
      */
     protected function credentials(Request $request)
     {
-        return ['id' => $request->session()->get('auth.vatsim-sso'), 'password' => $request->input('password')];
+        return ['id' => Auth::guard('vatsim-sso')->user()->id, 'password' => $request->input('password')];
     }
 
     /**
@@ -178,7 +155,6 @@ class LoginController extends BaseController
 
     public function vSsoValidationSuccess($user, $request)
     {
-        // At this point WE HAVE data in the form of $user;
         $account = Account::firstOrNew(['id' => $user->id]);
         $account->name_first = $user->name_first;
         $account->name_last = $user->name_last;
@@ -193,7 +169,6 @@ class LoginController extends BaseController
         $account->save();
 
         $this->setVatsimAuth($user->id);
-        Session::forget('auth.secondary');
 
         return $this->attemptSecondaryAuth();
     }

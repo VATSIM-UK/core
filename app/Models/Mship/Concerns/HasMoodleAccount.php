@@ -78,13 +78,13 @@ trait HasMoodleAccount
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
             'email' => $email,
-            'idnumber' => $this->id,
+            'idnumber' => (string) $this->id,
             'vatuk_cron' => 1,
         ];
 
         $dirty = array_keys(array_diff_assoc($old, $new));
         if (!empty($dirty)) {
-            DB::table('vatuk_moodle.mdl_user')->where('username', $this->id)->update($new);
+            DB::table('vatuk_moodle.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
         }

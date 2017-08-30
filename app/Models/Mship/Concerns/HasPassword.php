@@ -2,8 +2,11 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Notifications\Mship\Security\ForgottenPasswordLink;
+use App\Notifications\Mship\ForgottenPasswordLink;
+use Auth;
 use Carbon\Carbon;
+use Hash;
+use Session;
 
 trait HasPassword
 {
@@ -35,7 +38,7 @@ trait HasPassword
             $this->save();
         }
 
-        return \Hash::check($password, $this->password);
+        return Hash::check($password, $this->password);
     }
 
     /**
@@ -52,10 +55,10 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes['password'] = null;
-        } elseif (!\Hash::needsRehash($password)) {
+        } elseif (!Hash::needsRehash($password)) {
             $this->attributes['password'] = $password;
         } else {
-            $this->attributes['password'] = \Hash::make($password);
+            $this->attributes['password'] = Hash::make($password);
         }
     }
 
@@ -146,11 +149,10 @@ trait HasPassword
         ])->save();
 
         // if the password is being reset by its owner...
-        if ($save && \Auth::check() && \Auth::user()->id === $this->id) {
-            \Session::put([
-                'password_hash' => \Auth::user()->getAuthPassword(),
+        if ($save && Auth::check() && Auth::user()->id === $this->id) {
+            Session::put([
+                'password_hash' => Auth::user()->getAuthPassword(),
             ]);
-            \Session::put('auth.secondary', Carbon::now());
         }
 
         return $save;

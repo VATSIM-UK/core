@@ -87,8 +87,6 @@ class UpdateMember extends Job implements ShouldQueue
             $newBan->type = Account\Ban::TYPE_NETWORK;
             $newBan->reason_extra = 'Network ban discovered via Cert update scripts.';
             $newBan->period_start = Carbon::now();
-            $newBan->save();
-
             $member->bans()->save($newBan);
         }
 
