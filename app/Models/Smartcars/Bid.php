@@ -5,6 +5,35 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
+/**
+ * App\Models\Smartcars\Bid
+ *
+ * @property int $id
+ * @property int $flight_id
+ * @property int $account_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $completed_at
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \App\Models\Mship\Account $account
+ * @property-read \App\Models\Smartcars\Flight $flight
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid accountId($accountId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid flightId($flightId)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid pending()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereFlightId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Smartcars\Bid withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Bid extends Model
 {
     use SoftDeletingTrait;
