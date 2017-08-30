@@ -62,7 +62,7 @@ class AircraftController extends Controller
      */
     public function edit(Aircraft $aircraft)
     {
-        //
+        return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', $aircraft);
     }
 
     /**

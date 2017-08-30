@@ -62,7 +62,7 @@ class AirportController extends Controller
      */
     public function edit(Airport $airport)
     {
-        //
+        return $this->viewMake('adm.smartcars.airport-form')->with('airport', $airport);
     }
 
     /**
