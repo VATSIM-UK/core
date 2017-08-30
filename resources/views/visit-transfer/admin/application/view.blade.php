@@ -462,7 +462,7 @@
                         </p>
                         <div class="form-group">
                             <label for="rejection_reason">Rejection Reason</label>
-                            <select name="rejection_reason" class="form-control selectpicker">
+                            <select name="rejection_reason" class="form-control">
                                 <option>
                                     Negative Reference
                                 </option>
@@ -573,7 +573,7 @@
                         </p>
                         <div class="form-group">
                             <label for="rejection_reason">Rejection Reason</label>
-                            <select name="rejection_reason" class="form-control selectpicker">
+                            <select name="rejection_reason" class="form-control">
                                 <option>
                                     Unsuitable content provided
                                 </option>
