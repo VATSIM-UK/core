@@ -19,15 +19,15 @@ class AddSmartcarsPermissions extends Migration
             ['name' => 'smartcars/aircraft/update', 'display_name' => 'smartCARS / Aircraft / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/aircraft/delete', 'display_name' => 'smartCARS / Aircraft / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/airports', 'display_name' => 'smartCARS / Airports', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/airport/create', 'display_name' => 'smartCARS / Airport / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/airport/update', 'display_name' => 'smartCARS / Airport / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/airport/delete', 'display_name' => 'smartCARS / Airport / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/airports/create', 'display_name' => 'smartCARS / Airport / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/airports/update', 'display_name' => 'smartCARS / Airport / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/airports/delete', 'display_name' => 'smartCARS / Airport / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/exercises', 'display_name' => 'smartCARS / Exercises', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/exercise/create', 'display_name' => 'smartCARS / Exercise / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/exercise/update', 'display_name' => 'smartCARS / Exercise / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/exercise/delete', 'display_name' => 'smartCARS / Exercise / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/exercises/create', 'display_name' => 'smartCARS / Exercise / Create', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/exercises/update', 'display_name' => 'smartCARS / Exercise / Update', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/exercises/delete', 'display_name' => 'smartCARS / Exercise / Delete', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'smartcars/flights', 'display_name' => 'smartCARS / Flights', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'smartcars/flight/override', 'display_name' => 'smartCARS / Flight / Approve or Deny', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'smartcars/flights/override', 'display_name' => 'smartCARS / Flight / Approve or Deny', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
     }
 
