@@ -15,27 +15,27 @@
                     @endif
 
                     <div class="form-group">
-                        <label for="icao">ICAO Code</label>
+                        <label for="icao">ICAO Code<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="icao" name="icao" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->icao }}@endisset" placeholder="C172">
+                               value="@isset($aircraft){{ $aircraft->icao }}@endisset" placeholder="C172" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">Name<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="name" name="name" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->name }}@endisset" placeholder="Cessna">
+                               value="@isset($aircraft){{ $aircraft->name }}@endisset" placeholder="Cessna" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="fullname">Full Name</label>
+                        <label for="fullname">Full Name<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="fullname" name="fullname" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->fullname }}@endisset" placeholder="Cessna 172">
+                               value="@isset($aircraft){{ $aircraft->fullname }}@endisset" placeholder="Cessna 172" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="registration">Registration</label>
+                        <label for="registration">Registration<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="registration" name="registration" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->registraton }}@endisset" placeholder="GABCD">
+                               value="@isset($aircraft){{ $aircraft->registration }}@endisset" placeholder="GABCD" required>
                     </div>
 
                     <div class="form-group">

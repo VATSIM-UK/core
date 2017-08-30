@@ -8,6 +8,44 @@ use App\Http\Controllers\Adm\AdmController as Controller;
 
 class AircraftController extends Controller
 {
+    protected $defaults = [
+        'range_nm' => 0,
+        'weight_kg' => 0,
+        'cruise_altitude' => 0,
+        'max_passengers' => 0,
+        'max_cargo_kg' => 0,
+    ];
+
+    /**
+     * Define where to redirect requests.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        return route('adm.smartcars.aircraft.index');
+    }
+
+    /**
+     * Get the validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            'icao' => 'required|string|max:4',
+            'name' => 'required|string|max:12',
+            'fullname' => 'required|string|max:50',
+            'registration' => 'required|string|max:5',
+            'range_nm' => 'nullable|numeric|max:1000000',
+            'weight_kg' => 'nullable|numeric|max:1000000',
+            'cruise_altitude' => 'nullable|numeric|max:1000000',
+            'max_passengers' => 'nullable|numeric|max:1000000',
+            'max_cargo_kg' => 'nullable|numeric|max:1000000',
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,6 +67,8 @@ class AircraftController extends Controller
      */
     public function create()
     {
+        $this->authorize('use-permission', 'smartcars/aircraft/create');
+
         return $this->viewMake('adm.smartcars.aircraft-form');
     }
 
@@ -40,7 +80,13 @@ class AircraftController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/aircraft/create');
+
+        $this->validate($request, $this->rules());
+
+        Aircraft::create(array_filter($request->all()) + $this->defaults);
+
+        return redirect($this->redirectPath())->with('success', 'Aircraft created.');
     }
 
     /**
@@ -62,6 +108,8 @@ class AircraftController extends Controller
      */
     public function edit(Aircraft $aircraft)
     {
+        $this->authorize('use-permission', 'smartcars/aircraft/update');
+
         return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', $aircraft);
     }
 
@@ -74,7 +122,13 @@ class AircraftController extends Controller
      */
     public function update(Request $request, Aircraft $aircraft)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/aircraft/update');
+
+        $this->validate($request, $this->rules());
+
+        $aircraft->fill(array_filter($request->all()) + $this->defaults)->save();
+
+        return redirect($this->redirectPath())->with('success', 'Aircraft updated.');
     }
 
     /**
@@ -85,6 +139,10 @@ class AircraftController extends Controller
      */
     public function destroy(Aircraft $aircraft)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/aircraft/delete');
+
+        $aircraft->delete();
+
+        return redirect($this->redirectPath())->with('success', 'Aircraft deleted.');
     }
 }
