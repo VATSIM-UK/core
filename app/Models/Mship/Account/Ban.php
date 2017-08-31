@@ -56,6 +56,7 @@ class Ban extends \App\Models\Model
     protected $primaryKey = 'id';
     protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];
     protected $touches = ['account'];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     const TYPE_LOCAL = 80;
     const TYPE_NETWORK = 90;

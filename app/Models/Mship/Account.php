@@ -194,6 +194,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'last_login_ip' => '0.0.0.0',
     ];
     protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
     public function routeNotificationForSlack()

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\TracksChanges;
+use App\Models\Concerns\TracksEvents;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 /**
@@ -87,7 +88,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  */
 abstract class Model extends EloquentModel
 {
-    use TracksChanges;
+    use TracksChanges, TracksEvents;
 
     protected static function boot()
     {

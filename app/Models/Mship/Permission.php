@@ -31,6 +31,7 @@ class Permission extends \App\Models\Model
         'name' => 'required',
         'display_name' => 'required|between:3,50',
     ];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public static function eventDeleted($model)
     {

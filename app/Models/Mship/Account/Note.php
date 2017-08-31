@@ -35,6 +35,7 @@ class Note extends \App\Models\Model
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
     protected $touches = ['account'];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public function account()
     {

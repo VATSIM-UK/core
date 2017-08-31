@@ -41,6 +41,7 @@ class Role extends \App\Models\Model
         'name' => 'required|between:4,40',
         'default' => 'required|boolean',
     ];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public static function eventDeleted($model)
     {

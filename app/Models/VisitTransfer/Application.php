@@ -127,6 +127,7 @@ class Application extends Model
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-applications';
     protected static $public_id_min_length = 8;
     protected static $public_id_alphabet = 'upper_alphanumeric';
+    protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     protected $table = 'vt_application';
     protected $fillable = [
