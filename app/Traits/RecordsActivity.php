@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait RecordsActivity
 {
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
 
@@ -34,13 +34,13 @@ trait RecordsActivity
 
     public function addActivity($event)
     {
-        Activity::create([
-            'actor_id' => (Auth::check() ? Auth::id() : null),
-            'subject_id' => $this->getKey(),
-            'subject_type' => get_class($this),
-            'action' => $event,
-        ]);
+        if (Auth::check()) {
+            Activity::create([
+                'actor_id' => Auth::id(),
+                'subject_id' => $this->getKey(),
+                'subject_type' => get_class($this),
+                'action' => $event,
+            ]);
+        }
     }
-
-    abstract public function __toString();
 }
