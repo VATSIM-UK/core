@@ -21,6 +21,6 @@ class NullableEmailVerifiedTimes extends Migration
      */
     public function down()
     {
-        DB::statement("ALTER TABLE `mship_account_email` MODIFY `verified_at` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00';");
+        //
     }
 }

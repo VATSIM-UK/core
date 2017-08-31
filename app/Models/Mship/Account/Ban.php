@@ -14,7 +14,7 @@ use Carbon\Carbon;
  * @property int $type
  * @property int|null $reason_id
  * @property string $reason_extra
- * @property \Carbon\Carbon $period_start
+ * @property \Carbon\Carbon|null $period_start
  * @property \Carbon\Carbon|null $period_finish
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at

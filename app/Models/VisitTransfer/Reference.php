@@ -26,7 +26,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $relationship
  * @property string|null $reference
  * @property int $status
- * @property string $status_note
+ * @property string|null $status_note
  * @property string|null $contacted_at
  * @property string|null $reminded_at
  * @property string|null $submitted_at

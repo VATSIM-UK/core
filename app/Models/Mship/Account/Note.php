@@ -11,8 +11,8 @@ use App\Traits\RecordsActivity;
  * @property int $note_type_id
  * @property int $account_id
  * @property int|null $writer_id
- * @property int $attachment_id
- * @property string $attachment_type
+ * @property int|null $attachment_id
+ * @property string|null $attachment_type
  * @property string $content
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
