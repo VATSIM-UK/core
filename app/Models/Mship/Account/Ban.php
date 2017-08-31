@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Traits\RecordsActivity;
 use Carbon\Carbon;
 
 /**
@@ -53,8 +52,6 @@ use Carbon\Carbon;
  */
 class Ban extends \App\Models\Model
 {
-    use RecordsActivity;
-
     protected $table = 'mship_account_ban';
     protected $primaryKey = 'id';
     protected $dates = ['period_start', 'period_finish', 'created_at', 'repealed_at', 'updated_at'];

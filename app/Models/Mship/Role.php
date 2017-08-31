@@ -3,7 +3,6 @@
 namespace App\Models\Mship;
 
 use App\Models\Mship\Permission as PermissionData;
-use App\Traits\RecordsActivity;
 
 /**
  * App\Models\Mship\Role
@@ -33,8 +32,6 @@ use App\Traits\RecordsActivity;
  */
 class Role extends \App\Models\Model
 {
-    use RecordsActivity;
-
     protected $table = 'mship_role';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];

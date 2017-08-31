@@ -2,8 +2,6 @@
 
 namespace App\Models\Sso;
 
-use App\Traits\RecordsActivity;
-
 /**
  * App\Models\Sso\Email
  *
@@ -23,8 +21,6 @@ use App\Traits\RecordsActivity;
  */
 class Email extends \Eloquent
 {
-    use RecordsActivity;
-
     protected $table = 'mship_oauth_emails';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];

@@ -2,7 +2,6 @@
 
 namespace App\Models\Mship\Note;
 
-use App\Traits\RecordsActivity as RecordsActivityTrait;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -44,7 +43,6 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 class Type extends \Eloquent
 {
     use SoftDeletingTrait;
-    use RecordsActivityTrait;
 
     protected $table = 'mship_note_type';
     protected $primaryKey = 'id';

@@ -2,8 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Traits\RecordsActivity;
-
 /**
  * App\Models\Mship\State
  *
@@ -38,7 +36,6 @@ use App\Traits\RecordsActivity;
  */
 class State extends \Eloquent
 {
-    use RecordsActivity;
     protected $table = 'mship_state';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'deleted_at'];

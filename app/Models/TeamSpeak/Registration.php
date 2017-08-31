@@ -4,7 +4,6 @@ namespace App\Models\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
-use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use TeamSpeak3;
 
@@ -44,7 +43,7 @@ use TeamSpeak3;
  */
 class Registration extends \App\Models\Model
 {
-    use SoftDeletingTrait, RecordsActivity;
+    use SoftDeletingTrait;
 
     protected $table = 'teamspeak_registration';
     protected $primaryKey = 'id';
