@@ -21,8 +21,6 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Role as RoleData;
 use App\Notifications\Mship\SlackInvitation;
-use App\Observers\ModelActivityObserver;
-use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -157,7 +155,7 @@ use Watson\Rememberable\Rememberable;
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
+        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails;
     use HasApiTokens {
         clients as oAuthClients;
