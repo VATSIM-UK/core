@@ -111,8 +111,8 @@ trait HasMoodleAccount
      */
     protected function canLoginToMoodle()
     {
-        return ($this->hasState('DIVISION')
+        return $this->hasState('DIVISION')
                 || $this->hasState('VISITING')
-                || $this->hasState('TRANSFERRING'))
+                || $this->hasState('TRANSFERRING');
     }
 }
