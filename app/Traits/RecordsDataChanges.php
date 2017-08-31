@@ -3,16 +3,9 @@
 namespace App\Traits;
 
 use App\Models\Sys\Data\Change;
-use Illuminate\Database\Eloquent\Model;
 
 trait RecordsDataChanges
 {
-    public static function bootRecordsDataChanges()
-    {
-        static::saving(function (Model $model) {
-        });
-    }
-
     public function recordChanges($model)
     {
         foreach ($model->getDirty() as $attribute => $value) {
