@@ -2,8 +2,6 @@
 
 namespace App\Models\Mship\Account;
 
-use App\Traits\RecordsActivity;
-
 /**
  * App\Models\Mship\Account\Note
  *
@@ -33,12 +31,11 @@ use App\Traits\RecordsActivity;
  */
 class Note extends \App\Models\Model
 {
-    use RecordsActivity;
-
     protected $table = 'mship_account_note';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
     protected $touches = ['account'];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     public function account()
     {

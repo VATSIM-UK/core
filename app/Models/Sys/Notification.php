@@ -36,6 +36,7 @@ class Notification extends \App\Models\Model
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at', 'effective_at'];
     protected $hidden = ['id'];
+    protected $trackedEvents = ['created', 'updated', 'deleted'];
 
     const STATUS_MUST_ACKNOWLEDGE = 99; // Will interrupt login process AND ban from services until acknowledged.
     const STATUS_IMPORTANT = 70; // Will interrupt login process.

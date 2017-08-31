@@ -2,8 +2,6 @@
 
 namespace App\Models\Mship;
 
-use App\Traits\RecordsActivity;
-
 /**
  * App\Models\Mship\Qualification
  *
@@ -28,7 +26,6 @@ use App\Traits\RecordsActivity;
  */
 class Qualification extends \Eloquent
 {
-    use RecordsActivity;
     protected $table = 'mship_qualification';
     protected $primaryKey = 'id';
     protected $hidden = ['id'];

@@ -87,6 +87,7 @@ class Reference extends Model
     ];
     protected $touches = ['application'];
     public $timestamps = false;
+    protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
     const STATUS_DRAFT = 10;
     const STATUS_REQUESTED = 30;

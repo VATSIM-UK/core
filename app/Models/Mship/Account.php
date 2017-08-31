@@ -21,8 +21,6 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\Permission as PermissionData;
 use App\Models\Mship\Role as RoleData;
 use App\Notifications\Mship\SlackInvitation;
-use App\Traits\RecordsActivity as RecordsActivityTrait;
-use App\Traits\RecordsDataChanges as RecordsDataChangesTrait;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -156,8 +154,8 @@ use Watson\Rememberable\Rememberable;
  */
 class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable, RecordsActivityTrait,
-        RecordsDataChangesTrait, HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
+    use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
+        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails;
     use HasApiTokens {
         clients as oAuthClients;
@@ -195,12 +193,18 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
-    protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
     public function routeNotificationForSlack()
     {
         return env('SLACK_ENDPOINT');
+    }
+
+    protected static function boot()
+    {
+        self::created([get_called_class(), 'eventCreated']);
     }
 
     /**
@@ -210,8 +214,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
-        parent::eventCreated($model, $extra, $data);
-
         // Add the user to the default role.
         $defaultRole = RoleData::isDefault()->first();
 
@@ -245,12 +247,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 
             return $account;
         }
-    }
-
-    public function dataChanges()
-    {
-        return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')
-                    ->orderBy('created_at', 'DESC');
     }
 
     public function messageThreads()
