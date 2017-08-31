@@ -57,12 +57,12 @@ class Pirep extends AdmController
     {
         $pirep = PirepData::find(Input::get('pirepid'));
 
-        $return                = [];
-        $return['duration']    = $pirep->flight_time;
+        $return = [];
+        $return['duration'] = $pirep->flight_time;
         $return['landingrate'] = $pirep->landing_rate;
-        $return['fuelused']    = $pirep->fuel_used;
-        $return['status']      = 1;
-        $return['log']         = str_replace(',', '', $pirep->log);
+        $return['fuelused'] = $pirep->fuel_used;
+        $return['status'] = 1;
+        $return['log'] = str_replace(',', '', $pirep->log);
 
         return response()->csv($return);
     }

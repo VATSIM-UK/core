@@ -95,29 +95,29 @@ class Flight extends AdmController
     {
         $aircraft = Aircraft::findByRegistration(Input::get('aircraft'));
 
-        $bid    = Bid::find(Input::get('bidid'));
+        $bid = Bid::find(Input::get('bidid'));
         $flight = $bid->flight;
 
         if ($flight->id != Input::get('routeid')) {
             return 'ERROR';
         }
 
-        $posrep                     = new Posrep;
-        $posrep->bid_id             = $bid->id;
-        $posrep->aircraft_id        = $aircraft->id;
-        $posrep->route              = Input::get('route');
-        $posrep->altitude           = Input::get('altitude');
-        $posrep->heading_mag        = Input::get('magneticheading');
-        $posrep->heading_true       = Input::get('trueheading');
-        $posrep->latitude           = Input::get('latitude');
-        $posrep->longitude          = Input::get('longitude');
-        $posrep->groundspeed        = Input::get('groundspeed');
+        $posrep = new Posrep;
+        $posrep->bid_id = $bid->id;
+        $posrep->aircraft_id = $aircraft->id;
+        $posrep->route = Input::get('route');
+        $posrep->altitude = Input::get('altitude');
+        $posrep->heading_mag = Input::get('magneticheading');
+        $posrep->heading_true = Input::get('trueheading');
+        $posrep->latitude = Input::get('latitude');
+        $posrep->longitude = Input::get('longitude');
+        $posrep->groundspeed = Input::get('groundspeed');
         $posrep->distance_remaining = Input::get('distanceremaining');
-        $posrep->phase              = Input::get('phase');
-        $posrep->time_departure     = Input::get('departuretime');
-        $posrep->time_remaining     = Input::get('timeremaining');
-        $posrep->time_arrival       = Input::get('arrivaltime');
-        $posrep->network            = Input::get('onlinenetwork');
+        $posrep->phase = Input::get('phase');
+        $posrep->time_departure = Input::get('departuretime');
+        $posrep->time_remaining = Input::get('timeremaining');
+        $posrep->time_arrival = Input::get('arrivaltime');
+        $posrep->network = Input::get('onlinenetwork');
         $posrep->save();
 
         return 'SUCCESS';
@@ -127,21 +127,21 @@ class Flight extends AdmController
     {
         $aircraft = Aircraft::findByRegistration(Input::get('aircraft'));
 
-        $bid    = Bid::find(Input::get('bidid'));
+        $bid = Bid::find(Input::get('bidid'));
         $flight = $bid->flight;
 
         if ($flight->id != Input::get('routeid')) {
             return 'ERROR';
         }
 
-        $pirep               = new Pirep;
-        $pirep->bid_id       = $bid->id;
-        $pirep->route        = Input::get('route');
-        $pirep->flight_time  = Input::get('flighttime');
+        $pirep = new Pirep;
+        $pirep->bid_id = $bid->id;
+        $pirep->route = Input::get('route');
+        $pirep->flight_time = Input::get('flighttime');
         $pirep->landing_rate = Input::get('landingrate');
-        $pirep->comments     = Input::get('comments');
-        $pirep->fuel_used    = Input::get('fuelused');
-        $pirep->log          = Input::get('log');
+        $pirep->comments = Input::get('comments');
+        $pirep->fuel_used = Input::get('fuelused');
+        $pirep->log = Input::get('log');
         $pirep->save();
 
         $bid->complete();
@@ -163,8 +163,8 @@ class Flight extends AdmController
             return 'FLIGHT_ALREADY_BID';
         }
 
-        $bid             = new Bid;
-        $bid->flight_id  = $flight->id;
+        $bid = new Bid;
+        $bid->flight_id = $flight->id;
         $bid->account_id = Input::get('dbid');
         $bid->save();
 

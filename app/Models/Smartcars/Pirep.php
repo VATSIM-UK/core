@@ -37,13 +37,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Pirep extends Model
 {
-    protected $table      = 'smartcars_pirep';
-    protected $fillable   = [
+    protected $table = 'smartcars_pirep';
+    protected $fillable = [
         'bid_id',
         'flight_id',
     ];
-    public $timestamps    = true;
-    protected $dates      = [
+    public $timestamps = true;
+    protected $dates = [
         'created_at',
         'updated_at',
         'deleted_at',

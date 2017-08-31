@@ -24,13 +24,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Session extends Model
 {
-    protected $table      = 'smartcars_session';
-    protected $fillable   = [
+    protected $table = 'smartcars_session';
+    protected $fillable = [
         'session_id',
         'account_id',
     ];
-    public $timestamps    = true;
-    protected $dates      = [
+    public $timestamps = true;
+    protected $dates = [
         'created_at',
         'updated_at',
     ];

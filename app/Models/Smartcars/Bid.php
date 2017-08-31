@@ -38,13 +38,13 @@ class Bid extends Model
 {
     use SoftDeletingTrait;
 
-    protected $table      = 'smartcars_bid';
-    protected $fillable   = [
+    protected $table = 'smartcars_bid';
+    protected $fillable = [
         'flight_id',
         'account_id',
     ];
-    public $timestamps    = true;
-    protected $dates      = [
+    public $timestamps = true;
+    protected $dates = [
         'created_at',
         'updated_at',
         'completed_at',

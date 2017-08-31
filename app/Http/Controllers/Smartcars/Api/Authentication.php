@@ -13,14 +13,14 @@ class Authentication extends AdmController
     {
         $info = [];
 
-        $info['dbid']       = $account->id;
-        $info['code']       = 'PTE';
-        $info['pilotid']    = $account->id;
-        $info['sessionid']  = $session->session_id;
-        $info['firstname']  = $account->name_first;
-        $info['lastname']   = $account->name_last;
-        $info['email']      = $account->email;
-        $info['ranklevel']  = 1;
+        $info['dbid'] = $account->id;
+        $info['code'] = 'PTE';
+        $info['pilotid'] = $account->id;
+        $info['sessionid'] = $session->session_id;
+        $info['firstname'] = $account->name_first;
+        $info['lastname'] = $account->name_last;
+        $info['email'] = $account->email;
+        $info['ranklevel'] = 1;
         $info['rankstring'] = str_replace(',', '-', $account->qualifications_pilot_string);
 
         return $info;
