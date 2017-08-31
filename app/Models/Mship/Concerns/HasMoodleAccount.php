@@ -114,6 +114,5 @@ trait HasMoodleAccount
         return ($this->hasState('DIVISION')
                 || $this->hasState('VISITING')
                 || $this->hasState('TRANSFERRING'))
-            && !$this->is_banned;
     }
 }
