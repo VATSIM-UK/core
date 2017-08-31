@@ -12,10 +12,10 @@ class Data extends AdmController
 {
     public function getPilotInfo()
     {
-        $totalHours         = Account::find(Input::get('dbid'))->pireps()->sum('flight_time');
-        $totalFlights       = Account::find(Input::get('dbid'))->pireps()->count();
+        $totalHours = Account::find(Input::get('dbid'))->pireps()->sum('flight_time');
+        $totalFlights = Account::find(Input::get('dbid'))->pireps()->count();
         $averageLandingRate = (int) Account::find(Input::get('dbid'))->pireps()->avg('landing_rate');
-        $totalPireps        = $totalFlights;
+        $totalPireps = $totalFlights;
 
         return $totalHours.','.$totalFlights.','.$averageLandingRate.','.$totalPireps;
     }

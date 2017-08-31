@@ -28,16 +28,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Airport extends Model
 {
-    protected $table      = 'smartcars_airport';
-    protected $fillable   = [
+    protected $table = 'smartcars_airport';
+    protected $fillable = [
         'icao',
         'name',
         'country',
         'latitude',
         'longitude',
     ];
-    public $timestamps    = true;
-    protected $dates      = [
+    public $timestamps = true;
+    protected $dates = [
         'created_at',
         'updated_at',
     ];

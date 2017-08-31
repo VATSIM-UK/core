@@ -14,7 +14,7 @@ class Router extends AdmController
 
     public function __construct()
     {
-        $this->pilot   = Account::find(Input::get('dbid'));
+        $this->pilot = Account::find(Input::get('dbid'));
         $this->session = Session::findBySessionId(Input::get('sessionid', null));
     }
 
