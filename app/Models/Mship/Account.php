@@ -202,6 +202,11 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         return env('SLACK_ENDPOINT');
     }
 
+    protected static function boot()
+    {
+        self::created([get_called_class(), 'eventCreated']);
+    }
+
     /**
      * @param Account $model
      * @param null $extra
@@ -209,8 +214,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
-        parent::eventCreated($model, $extra, $data);
-
         // Add the user to the default role.
         $defaultRole = RoleData::isDefault()->first();
 

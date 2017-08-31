@@ -43,22 +43,14 @@ class Role extends \App\Models\Model
     ];
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
-    public static function eventDeleted($model)
+    protected static function boot()
     {
-        parent::eventCreated($model);
-
-        // Since we've deleted a role, let's delete all related accounts and permissions!
-        foreach ($model->accounts as $a) {
-            $model->accounts()->detach($a);
-        }
-
-        $model->detachPermissions($model->permissions);
+        self::created([get_called_class(), 'eventCreated']);
+        self::updated([get_called_class(), 'eventUpdated']);
     }
 
     public static function eventCreated($model)
     {
-        parent::eventCreated($model);
-
         // Let's undefault any other default models.
         if ($model->default) {
             $def = self::isDefault()->where('id', '!=', $model->getKey())->first();
@@ -71,8 +63,6 @@ class Role extends \App\Models\Model
 
     public static function eventUpdated($model)
     {
-        parent::eventUpdated($model);
-
         // Let's undefault any other default models.
         if ($model->default) {
             $def = self::isDefault()->where('id', '!=', $model->getKey())->first();

@@ -33,14 +33,6 @@ class Permission extends \App\Models\Model
     ];
     protected $trackedEvents = ['created', 'updated', 'deleted'];
 
-    public static function eventDeleted($model)
-    {
-        parent::eventCreated($model);
-
-        // When we delete a permission, we delete the role assignments too.
-        $model->detachRoles($model->roles);
-    }
-
     public static function scopeIsName($query, $name)
     {
         return $query->whereName($name);

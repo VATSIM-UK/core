@@ -90,26 +90,6 @@ abstract class Model extends EloquentModel
 {
     use TracksChanges, TracksEvents;
 
-    protected static function boot()
-    {
-        parent::boot();
-        self::created([get_called_class(), 'eventCreated']);
-        self::updated([get_called_class(), 'eventUpdated']);
-        self::deleted([get_called_class(), 'eventDeleted']);
-    }
-
-    public static function eventCreated($model)
-    {
-    }
-
-    public static function eventUpdated($model)
-    {
-    }
-
-    public static function eventDeleted($model)
-    {
-    }
-
     public function toArray()
     {
         $array = parent::toArray();
