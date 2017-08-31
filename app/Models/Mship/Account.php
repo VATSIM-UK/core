@@ -193,7 +193,7 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
         'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
-    protected $doNotTrack = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
     protected $casts = ['inactive' => 'boolean'];
 
     public function routeNotificationForSlack()
@@ -243,12 +243,6 @@ class Account extends \App\Models\Model implements AuthenticatableContract, Auth
 
             return $account;
         }
-    }
-
-    public function dataChanges()
-    {
-        return $this->morphMany(\App\Models\Sys\Data\Change::class, 'model')
-                    ->orderBy('created_at', 'DESC');
     }
 
     public function messageThreads()
