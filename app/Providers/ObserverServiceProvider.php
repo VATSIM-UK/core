@@ -20,9 +20,6 @@ class ObserverServiceProvider extends ServiceProvider
         Mship\Account::observe(ModelActivityObserver::class);
         Mship\Account\Ban::observe(ModelActivityObserver::class);
         Mship\Account\Note::observe(ModelActivityObserver::class);
-        Mship\Account\Note\Flag::observe(ModelActivityObserver::class);
-        Mship\Account\Note\Format::observe(ModelActivityObserver::class);
-        Mship\Account\Note\Note::observe(ModelActivityObserver::class);
         Mship\Ban\Reason::observe(ModelActivityObserver::class);
         Mship\Note\Type::observe(ModelActivityObserver::class);
         Mship\Permission::observe(ModelActivityObserver::class);
