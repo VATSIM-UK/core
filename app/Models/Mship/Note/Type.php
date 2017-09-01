@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Note\Type isAvailable()

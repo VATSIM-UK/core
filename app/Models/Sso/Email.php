@@ -12,6 +12,7 @@ use App\Models\Model;
  * @property int $sso_account_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Account\Email|null $email
  * @property-read \Laravel\Passport\Client $ssoAccount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereAccountEmailId($value)

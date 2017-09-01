@@ -14,6 +14,7 @@ use App\Models\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $author
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Messages\Thread $thread
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereContent($value)

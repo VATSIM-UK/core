@@ -28,6 +28,7 @@ use Malahierba\PublicId\PublicId;
  * @property int $public
  * @property string|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $applications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications

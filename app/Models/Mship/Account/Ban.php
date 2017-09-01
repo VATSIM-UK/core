@@ -21,6 +21,7 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon|null $repealed_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account|null $banner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $display_value
  * @property-read mixed $is_active
  * @property-read mixed $is_expired

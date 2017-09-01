@@ -17,6 +17,7 @@ use App\Models\Mship\Qualification;
  * @property int $protected
  * @property int|null $permission_id
  * @property int|null $qualification_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Permission|null $permission
  * @property-read \App\Models\Mship\Qualification|null $qualification
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Group whereDbid($value)

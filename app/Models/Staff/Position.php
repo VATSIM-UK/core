@@ -15,6 +15,7 @@ use App\Models\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Attribute[] $attributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
  * @property-read \App\Models\Staff\Position|null $parent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Position departments()

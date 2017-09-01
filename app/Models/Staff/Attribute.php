@@ -12,6 +12,7 @@ use App\Models\Model;
  * @property string $name
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $positions
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Attribute whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Attribute whereId($value)

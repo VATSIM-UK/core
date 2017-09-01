@@ -33,6 +33,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\VisitTransfer\Application $application
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_accepted
  * @property-read mixed $is_rejected
  * @property-read mixed $is_requested

@@ -11,6 +11,7 @@ use App\Models\Model;
  * @property string $privilege_key
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\TeamSpeak\Registration $registration
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation wherePrivilegeKey($value)

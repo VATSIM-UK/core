@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $expires_at
  * @property \Carbon\Carbon|null $used_at
  * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $display_value
  * @property-read mixed $is_expired
  * @property-read mixed $is_used

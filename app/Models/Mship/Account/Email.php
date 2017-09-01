@@ -17,6 +17,7 @@ use App\Notifications\Mship\EmailVerification;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_verified
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens

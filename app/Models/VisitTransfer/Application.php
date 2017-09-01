@@ -52,6 +52,7 @@ use Malahierba\PublicId\PublicId;
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\VisitTransfer\Facility|null $facility
  * @property-read mixed $facility_name
  * @property-read mixed $is_accepted

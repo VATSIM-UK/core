@@ -10,6 +10,7 @@ namespace App\Models;
  * @property float|null $latitude
  * @property float|null $longitude
  * @property int|null $elevation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereElevation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIdent($value)

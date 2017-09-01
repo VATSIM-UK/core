@@ -16,6 +16,7 @@ use App\Models\Model;
  * @property int $automatic
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereAutomatic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereCreatedAt($value)
