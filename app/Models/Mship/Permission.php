@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Models\Model;
 use App\Models\Mship\Role as RoleData;
 
 /**
@@ -21,7 +22,7 @@ use App\Models\Mship\Role as RoleData;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Permission whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Permission extends \App\Models\Model
+class Permission extends Model
 {
     protected $table = 'mship_permission';
     protected $primaryKey = 'id';

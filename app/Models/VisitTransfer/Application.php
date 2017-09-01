@@ -24,7 +24,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
 

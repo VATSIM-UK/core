@@ -2,6 +2,8 @@
 
 namespace App\Models\TeamSpeak;
 
+use App\Models\Model;
+
 /**
  * App\Models\TeamSpeak\Confirmation
  *
@@ -16,7 +18,7 @@ namespace App\Models\TeamSpeak;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Confirmation whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Confirmation extends \App\Models\Model
+class Confirmation extends Model
 {
     public $incrementing = false;
     protected $table = 'teamspeak_confirmation';

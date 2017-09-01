@@ -2,7 +2,7 @@
 
 namespace App\Models\Api;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\Api\Request

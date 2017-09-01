@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship;
 
+use App\Models\Model;
+
 /**
  * App\Models\Mship\Qualification
  *
@@ -24,7 +26,7 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereVatsim($value)
  * @mixin \Eloquent
  */
-class Qualification extends \Eloquent
+class Qualification extends Model
 {
     protected $table = 'mship_qualification';
     protected $primaryKey = 'id';

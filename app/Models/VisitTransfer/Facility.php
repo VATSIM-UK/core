@@ -4,8 +4,7 @@ namespace App\Models\VisitTransfer;
 
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
 use App\Models\Contact;
-use App\Models\VisitTransfer\Facility\Email;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 

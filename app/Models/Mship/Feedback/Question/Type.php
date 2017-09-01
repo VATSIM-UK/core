@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship\Feedback\Question;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\Mship\Feedback\Question\Type

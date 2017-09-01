@@ -2,6 +2,8 @@
 
 namespace App\Models\Staff;
 
+use App\Models\Model;
+
 /**
  * App\Models\Staff\Service
  *
@@ -15,7 +17,7 @@ namespace App\Models\Staff;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Service whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Service extends \App\Models\Model
+class Service extends Model
 {
     protected $table = 'staff_services';
     protected $primaryKey = 'id';

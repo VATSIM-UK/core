@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Model;
+
 /**
  * App\Models\Mship\Account\Note
  *
@@ -29,7 +31,7 @@ namespace App\Models\Mship\Account;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Note whereWriterId($value)
  * @mixin \Eloquent
  */
-class Note extends \App\Models\Model
+class Note extends Model
 {
     protected $table = 'mship_account_note';
     protected $primaryKey = 'id';

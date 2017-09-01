@@ -2,6 +2,8 @@
 
 namespace App\Models\Staff;
 
+use App\Models\Model;
+
 /**
  * App\Models\Staff\Position
  *
@@ -25,7 +27,7 @@ namespace App\Models\Staff;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Position extends \App\Models\Model
+class Position extends Model
 {
     protected $table = 'staff_positions';
     protected $primaryKey = 'id';

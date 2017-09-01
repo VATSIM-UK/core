@@ -2,6 +2,8 @@
 
 namespace App\Models\Messages\Thread;
 
+use App\Models\Model;
+
 /**
  * App\Models\Messages\Thread\Participant
  *
@@ -28,7 +30,7 @@ namespace App\Models\Messages\Thread;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Participant extends \App\Models\Model
+class Participant extends Model
 {
     protected $table = 'messages_thread_participant';
     protected $primaryKey = 'id';

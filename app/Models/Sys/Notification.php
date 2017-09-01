@@ -2,6 +2,8 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Model;
+
 /**
  * App\Models\Sys\Notification
  *
@@ -30,7 +32,7 @@ namespace App\Models\Sys;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification withStatus($status)
  * @mixin \Eloquent
  */
-class Notification extends \App\Models\Model
+class Notification extends Model
 {
     protected $table = 'sys_notification';
     protected $primaryKey = 'id';

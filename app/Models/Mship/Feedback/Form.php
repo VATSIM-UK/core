@@ -3,7 +3,7 @@
 namespace App\Models\Mship\Feedback;
 
 use App\Models\Contact;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**

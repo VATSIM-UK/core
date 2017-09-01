@@ -34,7 +34,7 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class State extends \Eloquent
+class State extends \App\Models\Model
 {
     protected $table = 'mship_state';
     protected $primaryKey = 'id';

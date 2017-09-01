@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Model;
 use Carbon\Carbon;
 
 /**
@@ -50,7 +51,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Ban extends \App\Models\Model
+class Ban extends Model
 {
     protected $table = 'mship_account_ban';
     protected $primaryKey = 'id';

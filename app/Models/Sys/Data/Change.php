@@ -2,6 +2,8 @@
 
 namespace App\Models\Sys\Data;
 
+use App\Models\Model;
+
 /**
  * App\Models\Sys\Data\Change
  *
@@ -26,7 +28,7 @@ namespace App\Models\Sys\Data;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Data\Change whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Change extends \App\Models\Model
+class Change extends Model
 {
     protected $table = 'sys_data_change';
     protected $primaryKey = 'data_change_id';

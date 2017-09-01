@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Note;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -40,7 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Note\Type withoutTrashed()
  * @mixin \Eloquent
  */
-class Type extends \Eloquent
+class Type extends Model
 {
     use SoftDeletingTrait;
 

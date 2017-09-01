@@ -19,7 +19,7 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Statistic whereValue($value)
  * @mixin \Eloquent
  */
-class Statistic extends \App\Models\Model
+class Statistic extends Model
 {
     protected $table = 'statistic';
     protected $primaryKey = 'id';

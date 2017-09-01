@@ -2,6 +2,7 @@
 
 namespace App\Models\Messages;
 
+use App\Models\Model;
 use App\Models\Mship\Account;
 
 /**
@@ -21,7 +22,7 @@ use App\Models\Mship\Account;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Thread extends \App\Models\Model
+class Thread extends Model
 {
     protected $table = 'messages_thread';
     protected $primaryKey = 'id';

@@ -3,6 +3,7 @@
 namespace App\Models\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use TeamSpeak3;
@@ -41,7 +42,7 @@ use TeamSpeak3;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withoutTrashed()
  * @mixin \Eloquent
  */
-class Registration extends \App\Models\Model
+class Registration extends Model
 {
     use SoftDeletingTrait;
 

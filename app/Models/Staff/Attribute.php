@@ -2,6 +2,8 @@
 
 namespace App\Models\Staff;
 
+use App\Models\Model;
+
 /**
  * App\Models\Staff\Attribute
  *
@@ -18,7 +20,7 @@ namespace App\Models\Staff;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Attribute whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Attribute extends \App\Models\Model
+class Attribute extends Model
 {
     protected $table = 'staff_attributes';
     protected $primaryKey = 'id';

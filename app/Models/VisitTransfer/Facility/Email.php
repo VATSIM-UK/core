@@ -2,7 +2,7 @@
 
 namespace App\Models\VisitTransfer\Facility;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\VisitTransfer\Facility\Email

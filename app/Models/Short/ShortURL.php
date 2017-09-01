@@ -2,6 +2,7 @@
 
 namespace App\Models\Short;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Short\ShortURL withoutTrashed()
  * @mixin \Eloquent
  */
-class ShortURL extends \App\Models\Model
+class ShortURL extends Model
 {
     use SoftDeletingTrait;
 

@@ -2,7 +2,7 @@
 
 namespace App\Models\TeamSpeak;
 
-use App\Models\Model as Model;
+use App\Models\Model;
 use App\Models\Mship\Permission;
 use App\Models\Mship\Qualification;
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Model;
 use App\Models\Sso\Email as SSOEmail;
 use App\Models\Sys\Token;
 use App\Notifications\Mship\EmailVerification;
@@ -29,7 +30,7 @@ use App\Notifications\Mship\EmailVerification;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
  * @mixin \Eloquent
  */
-class Email extends \Eloquent
+class Email extends Model
 {
     protected $table = 'mship_account_email';
     protected $dates = ['verified_at', 'created_at', 'updated_at'];

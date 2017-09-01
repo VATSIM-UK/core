@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -45,7 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withoutTrashed()
  * @mixin \Eloquent
  */
-class Token extends \App\Models\Model
+class Token extends Model
 {
     use SoftDeletingTrait;
 

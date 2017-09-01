@@ -2,6 +2,8 @@
 
 namespace App\Models\Sso;
 
+use App\Models\Model;
+
 /**
  * App\Models\Sso\Email
  *
@@ -19,7 +21,7 @@ namespace App\Models\Sso;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sso\Email whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Email extends \Eloquent
+class Email extends Model
 {
     protected $table = 'mship_oauth_emails';
     protected $primaryKey = 'id';
