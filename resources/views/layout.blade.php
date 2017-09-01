@@ -146,8 +146,16 @@
                     </ul>
                     {!! Form::close() !!}
 
-                    <ul class="nav navbar-nav navcustom navbar-right navbar-notification hidden-xs hidden-sm">
-                        <li class="dropdown dropdown-large">
+                    <ul class="nav navbar-nav navcustom navbar-right navbar-notification">
+                        @if(Auth::user()->hasPermission('adm/dashboard'))
+                            <li class="dropdown dropdown-large">
+                                <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard">
+                                    <i class="fa fa-dashboard hidden-xs"></i>
+                                    <span class="hidden-sm hidden-md hidden-lg">Admin Dashboard</span>
+                                </a>
+                            </li>
+                        @endif
+                        <li class="dropdown dropdown-large hidden-xs">
                             <a href="{{ route("mship.notification.list") }}" title="Notifications">
                                 @if(Auth::user()->has_unread_notifications)
                                     <i class="fa fa-bell unread-notifications"></i>
@@ -157,14 +165,6 @@
                             </a>
                         </li>
                     </ul>
-                    @if(Auth::user()->hasPermission('adm/dashboard'))
-                        <ul class="nav navbar-nav navcustom navbar-right">
-                            <li class="dropdown dropdown-large">
-                                <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard"><i
-                                            class="fa fa-dashboard"></i></a>
-                            </li>
-                        </ul>
-                    @endif
                 @elseif(Auth::guard('vatsim-sso')->check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
