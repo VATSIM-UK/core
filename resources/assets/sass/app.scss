@@ -305,18 +305,22 @@ body, html {
     margin-right: -5.0%;
   }
 }
-.account-dropdown {
-	li {
-		max-width: 100%;
-		min-width: 4em;
-		a {
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-		}
-	}
-	max-width: calc(90% - 650px);
+
+@media (min-width: $screen-sm-min) {
+  .account-dropdown {
+    li {
+      max-width: 100%;
+      min-width: 4em;
+      a {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+    max-width: calc(90% - 650px);
+  }
 }
+
 .unread-notifications {
 	color: #f55;
 }

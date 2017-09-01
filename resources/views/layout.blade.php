@@ -101,10 +101,10 @@
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
-                            <a href="#" class="dropdown-toggle hidden-xs hidden-sm"
+                            <a href="#" class="dropdown-toggle hidden-sm"
                                data-toggle="dropdown">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b
                                         class="caret"></b></a>
-                            <a href="#" class="dropdown-toggle visible-xs visible-sm" data-toggle="dropdown"><i
+                            <a href="#" class="dropdown-toggle visible-sm" data-toggle="dropdown"><i
                                         class="fa fa-sliders"></i> <b class="caret"></b></a>
                             <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
                                 <li class="col-sm-12">
