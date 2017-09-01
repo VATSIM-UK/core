@@ -17,13 +17,21 @@
                   {{ $feedback->created_at->format("d-m-Y H:i A") }}
                 </div>
                 <div class="col-md-3">
-                  <b> Target Department:</b></br>
-                  {{ $feedback->isATC() ? "ATC" : "Pilot"  }}
+                    <b> Target Department:</b></br>
+                    @if($feedback->isATC())
+                        ATC
+                    @elseif($feedback->isPilot())
+                        Pilot
+                    @else
+                        {{ $feedback->form->contact->email or "N/A" }}
+                    @endif
                 </div>
-                <div class="col-md-3">
-                  <b> Target Member:</b></br>
-                  {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
-                </div>
+                @if($targeted)
+                    <div class="col-md-3">
+                      <b> Target Member:</b></br>
+                      {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
+                    </div>
+                @endif
                 @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/reporter'))
                   <div class="col-md-12">
                     <b>Submitter:</b></br>

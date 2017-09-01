@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adm\Mship;
 
 use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
+use App\Models\Contact;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
@@ -12,6 +13,33 @@ use Illuminate\Support\Facades\Redirect;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
+    public function getNewForm()
+    {
+        $question_types = Type::all();
+        $new_question = new Question();
+
+        return $this->viewMake('adm.mship.feedback.new')
+            ->with('question_types', $question_types)
+            ->with('new_question', $new_question);
+    }
+
+    public function postNewForm(UpdateFeedbackFormRequest $request)
+    {
+        $new_ident = $request->input('ident');
+        $new_name = $request->input('name');
+        $new_contact = $request->input('contact');
+        $targeted = $request->input('targeted') == '1' ? true : false;
+        if (Form::whereSlug($new_ident)->exists()) {
+            return Redirect::back()
+                ->withInput($request->input())
+                ->withError('New form identifier \''.$new_ident.'\' already exists');
+        }
+
+        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted);
+
+        return $this->postConfigure($form, $request);
+    }
+
     public function getConfigure(Form $form)
     {
         $question_types = Type::all();
@@ -87,6 +115,24 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                       ->withSuccess('Updated!');
     }
 
+    public function postEnableForm(Form $form)
+    {
+        $form->enabled = true;
+        $form->save();
+
+        return Redirect::back()
+            ->withSuccess('Updated!');
+    }
+
+    public function postDisableForm(Form $form)
+    {
+        $form->enabled = false;
+        $form->save();
+
+        return Redirect::back()
+            ->withSuccess('Updated!');
+    }
+
     public function makeNewQuestion($form, $question, $sequence)
     {
         $type = Type::where('name', $question['type'])->first();
@@ -103,9 +149,57 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
         $new_question->required = $question['required'];
         $new_question->sequence = $sequence;
+        $new_question->permanent = false;
         $new_question->save();
 
         return $new_question->id;
+    }
+
+    public function makeUserCidQuestion($form)
+    {
+        $type = Type::where('name', 'userlookup')->first();
+        $new_question = new Question();
+        $new_question->question = 'CID of the member you are leaving feedback for.';
+        $new_question->slug = 'usercid';
+        $new_question->type_id = $type->id;
+        $new_question->form_id = $form->id;
+        $new_question->required = true;
+        $new_question->sequence = 1;
+        $new_question->permanent = true;
+        $new_question->save();
+
+        return $new_question->id;
+    }
+
+    public function makeNewForm($ident, $name, $contact, $targeted)
+    {
+        $new_form = new Form();
+        $new_form->slug = $ident;
+        $new_form->name = $name;
+        if ($contact != null && $contact != '') {
+            $contact_model = Contact::whereEmail($contact);
+            if ($contact_model->exists()) {
+                $new_form->contact_id = $contact_model->first()->id;
+            } else {
+                $new_contact = new Contact();
+                $contact_prefix = ucwords(preg_replace('/[^A-Za-z0-9]+/', ' ', explode('@', $contact)[0]));
+                $contact_key = strtoupper(preg_replace('/[\s]+/', '_', $contact_prefix));
+                $new_contact->key = $contact_key;
+                $new_contact->name = $contact_prefix;
+                $new_contact->email = $contact;
+                $new_contact->save();
+                $new_form->contact_id = $new_contact->id;
+            }
+        }
+        $new_form->enabled = false;
+        $new_form->targeted = $targeted;
+        $new_form->save();
+
+        if ($targeted) {
+            $this->makeUserCidQuestion($new_form);
+        }
+
+        return $new_form;
     }
 
     public function getAllFeedback()
@@ -120,25 +214,14 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                     ->with('feedback', $feedback);
     }
 
-    public function getATCFeedback()
+    public function getFormFeedback($slug)
     {
-        if (!$this->account->hasChildPermission('adm/mship/feedback/list/atc')) {
-            abort(404, 'Unauthorized action.');
-        }
-
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->atc()->get();
-
-        return $this->viewMake('adm.mship.feedback.list')
-                    ->with('feedback', $feedback);
-    }
-
-    public function getPilotFeedback()
-    {
-        if (!$this->account->hasPermission('adm/mship/feedback/list/pilot')) {
+        if (!$this->account->hasPermission('adm/mship/feedback/list/*')) {
             abort(401, 'Unauthorized action.');
         }
 
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->pilot()->get();
+        $form = Form::whereSlug($slug)->firstOrFail();
+        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->get();
 
         return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
@@ -146,17 +229,21 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getViewFeedback(FeedbackModel $feedback)
     {
-        if ($this->account->hasChildPermission('adm/mship/feedback/list')) {
+        $targeted = $feedback->form->targeted;
+        if ($this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*')) {
             return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback);
+                    ->with('feedback', $feedback)
+                    ->with('targeted', $targeted);
         }
         if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
             return $this->viewMake('adm.mship.feedback.view')
-                      ->with('feedback', $feedback);
+                      ->with('feedback', $feedback)
+                      ->with('targeted', $targeted);
         }
         if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
             return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback);
+                    ->with('feedback', $feedback)
+                    ->with('targeted', $targeted);
         }
         abort(401, 'Unauthorized action.');
     }
@@ -164,7 +251,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
         $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
+        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
         $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
 

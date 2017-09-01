@@ -19,7 +19,7 @@
                         <th class="col-md-3">
                               Subject of Feedback
                         </th>
-                        <th>Facility</th>
+                        <th>Feedback Form</th>
                         <th>Date Submitted</th>
                         <th>Action Taken</th>
                     </tr>
@@ -29,7 +29,7 @@
                     <tr>
                         <td>{!! link_to_route('adm.mship.feedback.view', $f->id, [$f->id]) !!}</td>
                         <td>{{ $f->account->real_name }}</td>
-                        <td>{{ $f->isATC() ? "ATC" : "Pilot"  }}</td>
+                        <td>{{ $f->form->name  }}</td>
                         <td>{{ $f->created_at->format("d-m-Y H:i A") }}</td>
                         <td>
                           @if ($f->actioned_at)
