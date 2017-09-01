@@ -15,10 +15,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \App\Events\Mship\AccountTouched::class => [
-            \App\Listeners\Sync\PushToForum::class,
-            \App\Listeners\Sync\PushToMoodle::class,
-            \App\Listeners\Sync\PushToRts::class,
-            \App\Listeners\Sync\PushToTeamSpeak::class,
+            // Look to implement a sync to external services here
         ],
 
         \App\Events\Mship\QualificationAdded::class => [
