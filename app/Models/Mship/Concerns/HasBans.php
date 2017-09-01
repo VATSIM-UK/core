@@ -88,13 +88,14 @@ trait HasBans
     public function addNetworkBan($reason = 'Network ban discovered.')
     {
         if ($this->is_network_banned === false) {
-            $newBan = new \App\Models\Mship\Account\Ban();
-            $newBan->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
-            $newBan->reason_extra = $reason;
-            $newBan->period_start = Carbon::now();
-            $newBan->save();
+            $ban = new \App\Models\Mship\Account\Ban();
+            $ban->type = \App\Models\Mship\Account\Ban::TYPE_NETWORK;
+            $ban->reason_extra = $reason;
+            $ban->period_start = Carbon::now();
 
-            $this->bans()->save($newBan);
+            $ban->account()->associate($this);
+
+            $ban->save();
         }
     }
 

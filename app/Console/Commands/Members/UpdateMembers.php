@@ -77,7 +77,7 @@ class UpdateMembers extends Command
             $members->where(function ($query) {
                 $query->where('cert_checked_at', '<=', Carbon::now()->subDays(25))
                     ->whereNull('last_login')
-                    ->where('status', 0);
+                    ->where('inactive', 0);
             });
         }
 
