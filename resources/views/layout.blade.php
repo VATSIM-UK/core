@@ -158,7 +158,7 @@
                         </li>
                     </ul>
                     @if(Auth::user()->hasPermission('adm/dashboard'))
-                        <ul class="nav navbar-nav navcustom navbar-right navbar-notification">
+                        <ul class="nav navbar-nav navcustom navbar-right">
                             <li class="dropdown dropdown-large">
                                 <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard"><i
                                             class="fa fa-dashboard"></i></a>
