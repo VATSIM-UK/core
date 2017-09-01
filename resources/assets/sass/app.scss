@@ -294,15 +294,11 @@ body, html {
   }
 }
 @media (min-width: 768px) {
-  .navbar-right:not(.navbar-notification) {
+  .navbar-right {
     margin-right: 5.0%;
   }
   .navbar-right.navbar-notification {
     margin-right: 0 ;
-  }
-  .navbar-collapse.in > .navbar-right,
-  .navbar-collapse.collapsing > .navbar-right {
-    margin-right: -5.0%;
   }
 }
 
