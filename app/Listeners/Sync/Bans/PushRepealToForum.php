@@ -6,7 +6,7 @@ use App\Events\Mship\Bans\BanRepealed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SyncRepeal
+class PushRepealToForum
 {
     /**
      * Create the event listener.

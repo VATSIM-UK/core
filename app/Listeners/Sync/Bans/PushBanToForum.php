@@ -2,12 +2,11 @@
 
 namespace App\Listeners\Sync\Bans;
 
-use Artisan;
 use App\Events\Mship\Bans\AccountBanned;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SyncBan
+class PushBanToForum
 {
     /**
      * Create the event listener.
@@ -29,14 +28,6 @@ class SyncBan
     {
         $ban = $event->ban;
         $account = $event->ban->account;
-
-        // TeamSpeak
-
-        // Run TeamSpeak Manager to ban the user from TS if they are currently connected
-        $teaman = Artisan::queue('teaman:runner');
-
-
-        // IPB
 
         $IPSInitFile = '/var/www/community/init.php';
 
