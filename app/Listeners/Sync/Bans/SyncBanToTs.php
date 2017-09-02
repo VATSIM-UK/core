@@ -3,9 +3,6 @@
 namespace App\Listeners\Sync\Bans;
 
 use Artisan;
-use App\Events\Mship\Bans\AccountBanned;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SyncBanToTs
 {
