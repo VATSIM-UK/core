@@ -104,9 +104,9 @@ class SyncCommunity extends Command
             $changePRating = strcmp($member['field_14'], $pRatingString);
 
             // Ban Status Change
-            if($pBanned && ($member['temp_ban'] != -1)){
+            if ($pBanned && ($member['temp_ban'] != -1)) {
                 $changeBan = true;
-            }else if(!$pBanned && ($member['temp_ban'] != 0)){
+            } elseif (!$pBanned && ($member['temp_ban'] != 0)) {
                 $changeBan = true;
             }
 
@@ -130,10 +130,10 @@ class SyncCommunity extends Command
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
                     // Check/set bans
-                    if(!$member_core->is_banned && $ips_member->temp_ban == -1){
-                      $ips_member->temp_ban = 0;
-                    }elseif ($member_core->is_banned && $ips_member->temp_ban == 0) {
-                      $ips_member->temp_ban = -1;
+                    if (!$member_core->is_banned && $ips_member->temp_ban == -1) {
+                        $ips_member->temp_ban = 0;
+                    } elseif ($member_core->is_banned && $ips_member->temp_ban == 0) {
+                        $ips_member->temp_ban = -1;
                     }
                     $ips_member->save();
 
