@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\Bans\AccountBanned;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
@@ -45,6 +46,7 @@ trait HasBans
         $ban->save();
 
         $ban->notes()->save($note);
+        event(new AccountBanned($ban));
 
         return $ban;
     }
