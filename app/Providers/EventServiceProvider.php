@@ -27,12 +27,12 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\Bans\AccountBanned::class => [
-            \App\Listeners\Sync\Bans\PushBanToTs::class,
-            \App\Listeners\Sync\Bans\PushBanToForum::class,
+            \App\Listeners\Sync\Bans\SyncBanToTs::class,
+            \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
 
         \App\Events\Mship\Bans\BanRepealed::class => [
-            \App\Listeners\Sync\Bans\PushRepealToForum::class,
+            \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
 
         AtcSessionEnded::class => [

@@ -2,11 +2,11 @@
 
 namespace App\Listeners\Sync\Bans;
 
-use App\Events\Mship\Bans\BanRepealed;
+use App\Events\Mship\Bans\AccountBanned;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PushRepealToForum
+class SyncToForum
 {
     /**
      * Create the event listener.
@@ -21,13 +21,11 @@ class PushRepealToForum
     /**
      * Handle the event.
      *
-     * @param  BanRepealed  $event
+     * @param  AccountBanned  $event
      * @return void
      */
-    public function handle(BanRepealed $event)
+    public function handle(\App\Events\Event $event)
     {
-        $ban = $event->ban;
-        $account = $event->ban->account;
 
         $IPSInitFile = '/var/www/community/init.php';
 
@@ -39,12 +37,12 @@ class PushRepealToForum
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
-        // Check if they still have outstanding bans
         if($account->is_banned){
-          return;
+          $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', -1], "m.vatsim_cid='".$account->id."'");
+        }else{
+          $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', 0], "m.vatsim_cid='".$account->id."'");
         }
 
-        // Update user's IPB record
-        $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', 0], "m.vatsim_cid='".$account->id."'");
+
     }
 }
