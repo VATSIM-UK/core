@@ -78,17 +78,6 @@ body, html {
   height: 90px;
 }
 
-.notification_container {
-  width: 100%;
-  padding: 15px;
-  background: #17375e;
-  color: white;
-}
-
-.event_thumbs_container {
-  padding: 15px;
-}
-
 .page_content {
   margin: 0 auto;
   padding-top: 40px;
@@ -97,18 +86,6 @@ body, html {
 
 .btn-toolbar {
   text-align: center;
-}
-
-.align_left {
-  text-align: left;
-}
-
-.align_center {
-  text-align: center;
-}
-
-.align_right {
-  text-align: right;
 }
 
 /* Bootstrap Overwrite */
@@ -143,31 +120,4 @@ body, html {
   .panel-body .row-text-contain {
     word-break: break-word;
   }
-}
-
-/* Airfield Data CSS */
-
-.runway_container {
-  margin: 0 auto;
-  width: 98%;
-  min-height: 75px;
-  padding: 10px;
-  border: 2px solid #e3e3e3;
-}
-
-.runay_active {
-  border: 2px solid #5CB85C;
-}
-
-.runway_name {
-  margin-top: -20px;
-}
-
-.runway_bg_fill {
-  padding: 5px 9px;
-  background: white;
-}
-
-.runway_info {
-  padding-top: 13px;
 }
