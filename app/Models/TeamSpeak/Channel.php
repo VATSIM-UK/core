@@ -2,7 +2,7 @@
 
 namespace App\Models\TeamSpeak;
 
-use App\Models\Model as Model;
+use App\Models\Model;
 
 /**
  * App\Models\TeamSpeak\Channel
@@ -12,6 +12,7 @@ use App\Models\Model as Model;
  * @property string $name
  * @property bool $protected
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Channel[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\TeamSpeak\Channel|null $parent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TeamSpeak\Channel whereName($value)

@@ -16,6 +16,7 @@ namespace App\Models\Mship;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_permanent
  * @property-read mixed $is_temporary
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State hasCode($code)
@@ -34,7 +35,7 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\State whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class State extends \Eloquent
+class State extends \App\Models\Model
 {
     protected $table = 'mship_state';
     protected $primaryKey = 'id';

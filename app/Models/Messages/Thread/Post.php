@@ -2,6 +2,8 @@
 
 namespace App\Models\Messages\Thread;
 
+use App\Models\Model;
+
 /**
  * App\Models\Messages\Thread\Post
  *
@@ -12,6 +14,7 @@ namespace App\Models\Messages\Thread;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $author
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Messages\Thread $thread
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereContent($value)
@@ -21,7 +24,7 @@ namespace App\Models\Messages\Thread;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Post whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Post extends \App\Models\Model
+class Post extends Model
 {
     protected $table = 'messages_thread_post';
     protected $primaryKey = 'id';

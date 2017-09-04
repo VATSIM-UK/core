@@ -2,7 +2,9 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Model;
 use Carbon\Carbon;
+use App\Events\Mship\Bans\BanRepealed;
 
 /**
  * App\Models\Mship\Account\Ban
@@ -20,6 +22,7 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon|null $repealed_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account|null $banner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $display_value
  * @property-read mixed $is_active
  * @property-read mixed $is_expired
@@ -50,7 +53,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Ban whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Ban extends \App\Models\Model
+class Ban extends Model
 {
     protected $table = 'mship_account_ban';
     protected $primaryKey = 'id';
@@ -115,6 +118,7 @@ class Ban extends \App\Models\Model
     {
         $this->repealed_at = \Carbon\Carbon::now();
         $this->save();
+        event(new BanRepealed($this));
     }
 
     public function getIsLocalAttribute()

@@ -17,6 +17,7 @@ use App\Models\Mship\Account;
  * @property \Carbon\Carbon|null $updated_at
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $accounts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Group inTier($tier)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Group isDefault()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Community\Group notDefault()

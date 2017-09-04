@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $expires_at
  * @property \Carbon\Carbon|null $used_at
  * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $display_value
  * @property-read mixed $is_expired
  * @property-read mixed $is_used
@@ -45,7 +47,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Token withoutTrashed()
  * @mixin \Eloquent
  */
-class Token extends \App\Models\Model
+class Token extends Model
 {
     use SoftDeletingTrait;
 

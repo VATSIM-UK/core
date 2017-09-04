@@ -2,6 +2,7 @@
 
 namespace App\Models\Short;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Short\ShortURL onlyTrashed()
  * @method static bool|null restore()
@@ -26,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Short\ShortURL withoutTrashed()
  * @mixin \Eloquent
  */
-class ShortURL extends \App\Models\Model
+class ShortURL extends Model
 {
     use SoftDeletingTrait;
 

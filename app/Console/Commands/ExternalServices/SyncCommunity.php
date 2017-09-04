@@ -93,6 +93,7 @@ class SyncCommunity extends Command
             $state = $member_core->primary_state->name;
             $aRatingString = $member_core->qualification_atc->name_long;
             $pRatingString = $member_core->qualifications_pilot_string;
+            $pBanned = $member_core->is_banned;
 
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
@@ -101,8 +102,16 @@ class SyncCommunity extends Command
             $changeCID = strcmp($member['field_12'], $member_core->id);
             $changeARating = strcmp($member['field_13'], $aRatingString);
             $changePRating = strcmp($member['field_14'], $pRatingString);
+
+            // Ban Status Change
+            if ($pBanned && ($member['temp_ban'] != -1)) {
+                $changeBan = true;
+            } elseif (!$pBanned && ($member['temp_ban'] != 0)) {
+                $changeBan = true;
+            }
+
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
-                              || $changeARating || $changePRating;
+                              || $changeARating || $changePRating || $changeBan;
 
             if ($verbose) {
                 $this->output->write(' // ID: '.$member_core->id);
@@ -120,6 +129,12 @@ class SyncCommunity extends Command
                     $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
+                    // Check/set bans
+                    if (!$member_core->is_banned && $ips_member->temp_ban == -1) {
+                        $ips_member->temp_ban = 0;
+                    } elseif ($member_core->is_banned && $ips_member->temp_ban == 0) {
+                        $ips_member->temp_ban = -1;
+                    }
                     $ips_member->save();
 
                     // Profile fields (raw update)

@@ -17,6 +17,7 @@ use Request;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account|null $actor
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $extra_data
  * @property-read mixed $type
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject

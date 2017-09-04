@@ -14,6 +14,7 @@ use App\Models\Model;
  * @property string $recipient
  * @property array $data
  * @property \Carbon\Carbon|null $triggered_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereBroker($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Email\Event whereId($value)

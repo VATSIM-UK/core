@@ -2,6 +2,8 @@
 
 namespace App\Models\Messages\Thread;
 
+use App\Models\Model;
+
 /**
  * App\Models\Messages\Thread\Participant
  *
@@ -14,6 +16,7 @@ namespace App\Models\Messages\Thread;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Messages\Thread $thread
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant isOwner()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant isStatus($status)
@@ -28,7 +31,7 @@ namespace App\Models\Messages\Thread;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messages\Thread\Participant whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Participant extends \App\Models\Model
+class Participant extends Model
 {
     protected $table = 'messages_thread_participant';
     protected $primaryKey = 'id';

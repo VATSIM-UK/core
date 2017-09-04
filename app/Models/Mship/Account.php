@@ -4,6 +4,7 @@ namespace App\Models\Mship;
 
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
+use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCommunityGroups;
@@ -152,7 +153,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account withoutTrashed()
  * @mixin \Eloquent
  */
-class Account extends \App\Models\Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,

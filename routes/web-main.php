@@ -106,12 +106,16 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         });
 
         Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
+            Route::get('new', ['as' => 'new', 'uses' => 'Feedback@getNewForm']);
+            Route::post('new', ['as' => 'new.create', 'uses' => 'Feedback@postNewForm']);
+
             Route::get('configure/{form}', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
             Route::post('configure/{form}', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
+            Route::post('configure/{form}/enable', ['as' => 'config.enable', 'uses' => 'Feedback@postEnableForm']);
+            Route::post('configure/{form}/disable', ['as' => 'config.disable', 'uses' => 'Feedback@postDisableForm']);
 
             Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
-            Route::get('list/atc', ['as' => 'atc', 'uses' => 'Feedback@getATCFeedback']);
-            Route::get('list/pilot', ['as' => 'pilot', 'uses' => 'Feedback@getPilotFeedback']);
+            Route::get('list/{slug}', ['as' => 'form', 'uses' => 'Feedback@getFormFeedback']);
             Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
             Route::post('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@postActioned']);
             Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);

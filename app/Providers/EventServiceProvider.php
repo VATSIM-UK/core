@@ -15,10 +15,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \App\Events\Mship\AccountTouched::class => [
-            \App\Listeners\Sync\PushToForum::class,
-            \App\Listeners\Sync\PushToMoodle::class,
-            \App\Listeners\Sync\PushToRts::class,
-            \App\Listeners\Sync\PushToTeamSpeak::class,
+            // Look to implement a sync to external services here
         ],
 
         \App\Events\Mship\QualificationAdded::class => [
@@ -27,6 +24,15 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
             //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+        ],
+
+        \App\Events\Mship\Bans\AccountBanned::class => [
+            \App\Listeners\Sync\Bans\SyncBanToTs::class,
+            \App\Listeners\Sync\Bans\SyncBanToForum::class,
+        ],
+
+        \App\Events\Mship\Bans\BanRepealed::class => [
+            \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
 
         AtcSessionEnded::class => [

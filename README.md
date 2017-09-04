@@ -18,9 +18,8 @@ The following are the upgrade notes for deploying in production.
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 3.3.0
+### 3.4.0
 
-* Import airport data to `airports` table.
 * Run `php artisan storage:link`
 
 ### Older Versions

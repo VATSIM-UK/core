@@ -2,6 +2,8 @@
 
 namespace App\Models\Staff;
 
+use App\Models\Model;
+
 /**
  * App\Models\Staff\Position
  *
@@ -13,6 +15,7 @@ namespace App\Models\Staff;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Attribute[] $attributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff\Position[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $filledBy
  * @property-read \App\Models\Staff\Position|null $parent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Position departments()
@@ -25,7 +28,7 @@ namespace App\Models\Staff;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff\Position whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Position extends \App\Models\Model
+class Position extends Model
 {
     protected $table = 'staff_positions';
     protected $primaryKey = 'id';

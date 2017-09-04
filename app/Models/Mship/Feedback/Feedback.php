@@ -3,7 +3,7 @@
 namespace App\Models\Mship\Feedback;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -21,6 +21,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Mship\Account $actioner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Answer[] $answers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Form $form
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Mship\Account $submitter

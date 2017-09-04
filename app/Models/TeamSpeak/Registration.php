@@ -3,6 +3,7 @@
 namespace App\Models\TeamSpeak;
 
 use App\Libraries\TeamSpeak;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use TeamSpeak3;
@@ -23,6 +24,7 @@ use TeamSpeak3;
  * @property string|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\TeamSpeak\Confirmation $confirmation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration onlyTrashed()
  * @method static bool|null restore()
@@ -41,7 +43,7 @@ use TeamSpeak3;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\TeamSpeak\Registration withoutTrashed()
  * @mixin \Eloquent
  */
-class Registration extends \App\Models\Model
+class Registration extends Model
 {
     use SoftDeletingTrait;
 

@@ -2,7 +2,7 @@
 
 namespace App\Models\Api;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\Api\Request
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $response_full
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereApiAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Api\Request whereId($value)

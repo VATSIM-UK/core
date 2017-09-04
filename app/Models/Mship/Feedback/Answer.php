@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship\Feedback;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\Mship\Feedback\Answer
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $feedback_id
  * @property int $question_id
  * @property string $response
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Feedback $feedback
  * @property-read \App\Models\Mship\Feedback\Question $question
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Answer notPermanent()

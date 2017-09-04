@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -12,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $key
  * @property string $name
  * @property string $email
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Contact whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Contact whereId($value)

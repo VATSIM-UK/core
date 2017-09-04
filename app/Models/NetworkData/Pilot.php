@@ -3,7 +3,7 @@
 namespace App\Models\NetworkData;
 
 use App\Models\Airport;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 /**
  * App\Models\NetworkData\Pilot
@@ -11,14 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $account_id
  * @property string $callsign
- * @property int $qualification_id
  * @property string $flight_type
  * @property string $departure_airport
  * @property string $arrival_airport
  * @property string $alternative_airport
  * @property string $aircraft
- * @property int $cruise_altitude
- * @property int $cruise_tas
+ * @property string $cruise_altitude
+ * @property string $cruise_tas
  * @property string $route
  * @property string $remarks
  * @property float|null $current_latitude
@@ -29,9 +28,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $arrived_at
  * @property \Carbon\Carbon|null $connected_at
  * @property \Carbon\Carbon|null $disconnected_at
+ * @property int|null $minutes_online
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Qualification $qualification
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot offline()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot online()
@@ -54,7 +55,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereDisconnectedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereFlightType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereQualificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereMinutesOnline($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot whereUpdatedAt($value)

@@ -11,6 +11,7 @@ namespace App\Models;
  * @property string $value
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Statistic whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Statistic whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Statistic whereKey($value)
@@ -19,7 +20,7 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Statistic whereValue($value)
  * @mixin \Eloquent
  */
-class Statistic extends \App\Models\Model
+class Statistic extends Model
 {
     protected $table = 'statistic';
     protected $primaryKey = 'id';

@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Models\Model;
 use App\Models\Sso\Email as SSOEmail;
 use App\Models\Sys\Token;
 use App\Notifications\Mship\EmailVerification;
@@ -16,6 +17,7 @@ use App\Notifications\Mship\EmailVerification;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $is_verified
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sso\Email[] $ssoEmails
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
@@ -29,7 +31,7 @@ use App\Notifications\Mship\EmailVerification;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Account\Email whereVerifiedAt($value)
  * @mixin \Eloquent
  */
-class Email extends \Eloquent
+class Email extends Model
 {
     protected $table = 'mship_account_email';
     protected $dates = ['verified_at', 'created_at', 'updated_at'];

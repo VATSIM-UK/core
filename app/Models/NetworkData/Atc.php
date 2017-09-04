@@ -6,8 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
-use Event;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
 use Watson\Rememberable\Rememberable;
@@ -28,6 +27,7 @@ use Watson\Rememberable\Rememberable;
  * @property \Carbon\Carbon|null $updated_at
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $account_name
  * @property-read mixed $is_online
  * @property-read string $public_id

@@ -2,6 +2,8 @@
 
 namespace App\Models\Mship;
 
+use App\Models\Model;
+
 /**
  * App\Models\Mship\Qualification
  *
@@ -13,6 +15,7 @@ namespace App\Models\Mship;
  * @property string $name_grp
  * @property int $vatsim
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification ofType($type)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereCode($value)
@@ -24,7 +27,7 @@ namespace App\Models\Mship;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereVatsim($value)
  * @mixin \Eloquent
  */
-class Qualification extends \Eloquent
+class Qualification extends Model
 {
     protected $table = 'mship_qualification';
     protected $primaryKey = 'id';

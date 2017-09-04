@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Sys\Read withoutTrashed()
  * @mixin \Eloquent
  */
-class Read extends \App\Models\Model
+class Read extends Model
 {
     use SoftDeletingTrait;
 

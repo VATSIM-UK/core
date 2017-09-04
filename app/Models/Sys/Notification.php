@@ -2,6 +2,8 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Model;
+
 /**
  * App\Models\Sys\Notification
  *
@@ -12,6 +14,7 @@ namespace App\Models\Sys;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property \Carbon\Carbon|null $effective_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $readBy
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification general()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification important()
@@ -30,7 +33,7 @@ namespace App\Models\Sys;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Notification withStatus($status)
  * @mixin \Eloquent
  */
-class Notification extends \App\Models\Model
+class Notification extends Model
 {
     protected $table = 'sys_notification';
     protected $primaryKey = 'id';
