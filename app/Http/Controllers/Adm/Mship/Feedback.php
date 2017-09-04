@@ -205,7 +205,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getAllFeedback()
     {
         if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {
-            abort(401, 'Unauthorized action.');
+            abort(403, 'Unauthorized action.');
         }
 
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->get();
@@ -217,7 +217,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getFormFeedback($slug)
     {
         if (!$this->account->hasPermission('adm/mship/feedback/list/*')) {
-            abort(401, 'Unauthorized action.');
+            abort(403, 'Unauthorized action.');
         }
 
         $form = Form::whereSlug($slug)->firstOrFail();
@@ -245,7 +245,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                     ->with('feedback', $feedback)
                     ->with('targeted', $targeted);
         }
-        abort(401, 'Unauthorized action.');
+        abort(403, 'Unauthorized action.');
     }
 
     public function postActioned(FeedbackModel $feedback, Request $request)
@@ -263,7 +263,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                               ->withSuccess('Feedback marked as actioned!');
             }
         }
-        abort(401, 'Unauthorized action.');
+        abort(403, 'Unauthorized action.');
     }
 
     public function getUnActioned(FeedbackModel $feedback)
@@ -281,6 +281,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                               ->withSuccess('Feedback unmarked as actioned!');
             }
         }
-        abort(401, 'Unauthorized action.');
+        abort(403, 'Unauthorized action.');
     }
 }
