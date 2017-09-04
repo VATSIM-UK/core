@@ -6,8 +6,8 @@ Route::get('/', 'Mship\Management@getLanding')->name('default');
 // Authentication
 Route::get('login', 'Auth\LoginController@getLogin');
 Route::post('login', 'Auth\LoginController@loginMain')->name('login');
-Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary');
-Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('auth-secondary.post');
+Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary')->middleware('auth:vatsim-sso');
+Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('auth-secondary.post')->middleware('auth:vatsim-sso');
 Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 

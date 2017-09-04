@@ -34,7 +34,7 @@ class LoginController extends BaseController
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except('showLoginForm', 'loginSecondary', 'logout');
     }
 
     public function getLogin()
@@ -112,6 +112,7 @@ class LoginController extends BaseController
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
+        Auth::shouldUse('web');
         $response = $this->login($request);
 
         return $response;
