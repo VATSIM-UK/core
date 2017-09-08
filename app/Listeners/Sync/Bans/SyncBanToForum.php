@@ -2,7 +2,7 @@
 
 namespace App\Listeners\Sync\Bans;
 
-use App\Events\Mship\Bans\AccountBanned;
+use App\Events\Mship\Bans\BanUpdated;
 
 class SyncBanToForum
 {
@@ -19,10 +19,10 @@ class SyncBanToForum
     /**
      * Handle the event.
      *
-     * @param  AccountBanned  $event
+     * @param  BanUpdated  $event
      * @return void
      */
-    public function handle(AccountBanned $event)
+    public function handle(BanUpdated $event)
     {
         $IPSInitFile = '/var/www/community/init.php';
 
