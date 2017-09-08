@@ -36,9 +36,9 @@ class SyncBanToForum
 
         $account = $event->ban->account;
         if ($account->is_banned) {
-            $query = \IPS\Db::i()->update('core_members', ['temp_ban' => -1], "m.vatsim_cid='".$account->id."'");
+            \IPS\Db::i()->update('core_members', ['temp_ban' => -1], ['vatsim_cid=?', $account->id]);
         } else {
-            $query = \IPS\Db::i()->update('core_members', ['temp_ban' => 0], "m.vatsim_cid='".$account->id."'");
+            \IPS\Db::i()->update('core_members', ['temp_ban' => 0], ['vatsim_cid=?', $account->id]);
         }
     }
 }
