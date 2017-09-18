@@ -2,9 +2,9 @@
 
 namespace App\Listeners\Sync\Bans;
 
-use App\Events\Mship\Bans\AccountBanned;
+use App\Events\Mship\Bans\BanUpdated;
 
-class SyncToForum
+class SyncBanToForum
 {
     /**
      * Create the event listener.
@@ -19,10 +19,10 @@ class SyncToForum
     /**
      * Handle the event.
      *
-     * @param  AccountBanned  $event
+     * @param  BanUpdated  $event
      * @return void
      */
-    public function handle(\App\Events\Event $event)
+    public function handle(BanUpdated $event)
     {
         $IPSInitFile = '/var/www/community/init.php';
 
@@ -34,10 +34,11 @@ class SyncToForum
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
+        $account = $event->ban->account;
         if ($account->is_banned) {
-            $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', -1], "m.vatsim_cid='".$account->id."'");
+            \IPS\Db::i()->update('core_members', ['temp_ban' => -1], ['vatsim_cid=?', $account->id]);
         } else {
-            $query = \IPS\Db::i()->update(['core_members', 'm'], ['m.temp_ban', 0], "m.vatsim_cid='".$account->id."'");
+            \IPS\Db::i()->update('core_members', ['temp_ban' => 0], ['vatsim_cid=?', $account->id]);
         }
     }
 }
