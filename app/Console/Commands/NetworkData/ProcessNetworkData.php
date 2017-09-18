@@ -194,10 +194,10 @@ class ProcessNetworkData extends Command
                 $wasAtAlternativeAirport = $flight->isAtAirport($alternativeAirport);
 
                 // update their location
-                $flight->current_latitude = $pilotData['latitude'];
-                $flight->current_longitude = $pilotData['longitude'];
-                $flight->current_altitude = $pilotData['altitude'];
-                $flight->current_groundspeed = $pilotData['groundspeed'];
+                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
 
                 // check their new location
                 $isAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -217,10 +217,10 @@ class ProcessNetworkData extends Command
                 }
             } else {
                 // pilot just connected
-                $flight->current_latitude = $pilotData['latitude'] ?: null;
-                $flight->current_longitude = $pilotData['longitude'] ?: null;
-                $flight->current_altitude = $pilotData['altitude'] ?: null;
-                $flight->current_groundspeed = $pilotData['groundspeed'] ?: null;
+                $flight->current_latitude = !empty($pilotData['latitude']) ? $pilotData['latitude'] : null;
+                $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
+                $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
+                $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
             }
 
             $flight->touch();
