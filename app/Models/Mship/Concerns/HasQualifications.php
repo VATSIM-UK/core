@@ -84,7 +84,10 @@ trait HasQualifications
         }
 
         $ids = collect($qualifications)->pluck('id');
-        $this->qualifications()->syncWithoutDetaching($ids);
+
+        if (!empty($ids)) {
+            $this->qualifications()->syncWithoutDetaching($ids);
+        }
     }
 
     public function getActiveQualificationsAttribute()
