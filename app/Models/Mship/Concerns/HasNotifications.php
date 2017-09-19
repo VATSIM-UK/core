@@ -16,8 +16,7 @@ trait HasNotifications
             'notification_id'
         )
             ->orderBy('status', 'DESC')
-            ->orderBy('effective_at', 'DESC')
-            ->withTimestamps();
+            ->orderBy('effective_at', 'DESC');
     }
 
     public function getUnreadNotificationsAttribute()
