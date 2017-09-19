@@ -2,7 +2,6 @@
 
 namespace App\Models\Concerns;
 
-
 /**
  * For use with models which have no updated_at column.
  */
@@ -12,6 +11,7 @@ trait OverridesUpdatedAt
     {
         // do nothing
     }
+
     public function getUpdatedAtColumn()
     {
         return null;
