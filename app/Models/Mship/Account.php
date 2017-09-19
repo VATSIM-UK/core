@@ -205,6 +205,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     protected static function boot()
     {
+        parent::boot();
+
         self::created([get_called_class(), 'eventCreated']);
     }
 
