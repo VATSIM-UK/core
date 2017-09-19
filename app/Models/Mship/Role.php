@@ -47,6 +47,8 @@ class Role extends Model
 
     protected static function boot()
     {
+        parent::boot();
+
         self::created([get_called_class(), 'eventCreated']);
         self::updated([get_called_class(), 'eventUpdated']);
     }
