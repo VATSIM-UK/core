@@ -41,7 +41,7 @@ class MshipStateTest extends TestCase
     /** @test */
     public function itThrowsInvalidExceptionWhenSearchingForInvalidState()
     {
-        $this->setExpectedException(\App\Exceptions\Mship\InvalidStateException::class);
+        $this->expectException(\App\Exceptions\Mship\InvalidStateException::class);
 
         $this->account->fresh()->hasState($this->account);
     }
