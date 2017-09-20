@@ -45,8 +45,7 @@
         "watson/rememberable": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.1",
         "laravel/browser-kit-testing": "^1.0",
-        "laravel/passport": "^4.0",
-        "laravel/dusk": "^2.0"
+        "laravel/passport": "^4.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
