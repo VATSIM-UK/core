@@ -12,15 +12,4 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 abstract class Model extends Eloquent
 {
     use TracksChanges, TracksEvents;
-
-    public function toArray()
-    {
-        $array = parent::toArray();
-        $array['status'] = ($this->deleted_at ? 'Deleted' : 'Active');
-        if (isset($array['pivot'])) {
-            unset($array['pivot']);
-        }
-
-        return $array;
-    }
 }
