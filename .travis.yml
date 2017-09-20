@@ -2,6 +2,7 @@ language: php
 php:
 - 7.0
 - 7.1
+- 7.2
 services:
 - mysql:5.5
 
@@ -11,7 +12,7 @@ matrix:
 before_install:
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS rts;' -uroot
-- composer install --prefer-dist --no-interaction -o > /dev/null
+- composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 - nvm install node
 - npm -v
 - npm install
