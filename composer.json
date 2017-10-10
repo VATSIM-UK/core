@@ -78,6 +78,7 @@
     "extra": {
         "laravel": {
             "dont-discover": [
+                "laravelcollective/html"
             ]
         }
     },
