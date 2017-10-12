@@ -121,3 +121,10 @@ body, html {
     word-break: break-word;
   }
 }
+
+.panel-group#unreadNotifications, .panel-group#readNotifications {
+  padding: 10px;
+  .panel {
+    margin-bottom:15px;
+  }
+}
