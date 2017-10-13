@@ -125,11 +125,13 @@ class UpdateMember extends Job implements ShouldQueue
         }
 
         // log their current rating (unless they're a non-UK instructor)
-        if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState('DIVISION')
-        ) {
+        if (($this->data->rating != 8 && $this->data->rating != 9) || $member->hasState('DIVISION')) {
             $atcRating = QualificationData::parseVatsimATCQualification($this->data->rating);
             if (!is_null($atcRating) && !$member->hasQualification($atcRating)) {
                 $member->addQualification($atcRating);
+            } elseif (is_null($atcRating) && !$member->qualification_atc) {
+                // if we cannot find their ATC raiting and they don't have one already, set OBS
+                $member->addQualification(1);
             }
         }
 
