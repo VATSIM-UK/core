@@ -131,7 +131,8 @@ class UpdateMember extends Job implements ShouldQueue
                 $member->addQualification($atcRating);
             } elseif (is_null($atcRating) && !$member->qualification_atc) {
                 // if we cannot find their ATC raiting and they don't have one already, set OBS
-                $member->addQualification(1);
+                $atcRating = QualificationData::parseVatsimATCQualification(1);
+                $member->addQualification($atcRating);
             }
         }
 
