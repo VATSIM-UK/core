@@ -344,7 +344,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
         $ban->repeal();
 
-        $this->account->notify(new BanRepealed($ban));
+        $ban->account->notify(new BanRepealed($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Ban has been repealed.');
@@ -424,7 +424,7 @@ class Account extends AdmController
         $ban->period_finish = $period_finish;
         $ban->save();
 
-        $this->account->notify(new BanModified($ban));
+        $ban->account->notify(new BanModified($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Your comment for this ban has been noted.');
