@@ -137,6 +137,10 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
+        $feedbackTargeted = $account->feedback()->orderBy('created_at', 'desc')->get();
+
+        $vtapplications = $account->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
+
         $this->setTitle('Account Details: '.$account->name);
 
         return $this->viewMake('adm.mship.account.detail')
@@ -147,7 +151,8 @@ class Account extends AdmController
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
             ->with('noteTypesAll', $noteTypesAll)
-            ->with('feedback', $account->feedback()->orderBy('created_at', 'desc')->get());
+            ->with('feedback', $feedbackTargeted)
+            ->with('vtapplications', $vtapplications);
     }
 
     public function postRoleAttach(AccountData $account)
