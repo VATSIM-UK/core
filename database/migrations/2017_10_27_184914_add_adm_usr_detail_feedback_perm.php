@@ -11,13 +11,13 @@ class AddAdmUsrDetailFeedbackPerm extends Migration
      */
     public function up()
     {
-      DB::table('mship_permission')
-      ->insert([
-              'name' => 'adm/mship/account/*/feedback',
-              'display_name' => 'Admin / Membership / Account / Recieved Feedback',
-              'created_at' => \Carbon\Carbon::now(),
-              'updated_at' => \Carbon\Carbon::now(),
-          ]);
+        DB::table('mship_permission')
+        ->insert([
+                'name' => 'adm/mship/account/*/feedback',
+                'display_name' => 'Admin / Membership / Account / Recieved Feedback',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ]);
     }
 
     /**
@@ -27,7 +27,7 @@ class AddAdmUsrDetailFeedbackPerm extends Migration
      */
     public function down()
     {
-      DB::table('mship_permission')
+        DB::table('mship_permission')
         ->where('name', '=', 'adm/mship/account/*/feedback')
         ->delete();
     }
