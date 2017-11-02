@@ -59,8 +59,11 @@ class ManageSlack extends Command
 
                 $localUser = Account::where('slack_id', $slackUser->id)->first();
 
-                if (!$localUser && $this->userIsActive($slackUser)) {
-                    $this->messageUserAdvisingOfRegistration($slackUser);
+                if (!$localUser) {
+                    if ($this->userIsActive($slackUser)) {
+                        $this->messageUserAdvisingOfRegistration($slackUser);
+                    }
+
                     continue;
                 }
 
