@@ -71,7 +71,7 @@ class ManageSlack extends Command
                     $this->messageDsgAdvisingOfBannedUser($localUser, $slackUser);
                 }
 
-                if (!$localUser->isValidDisplayName($slackUser->real_name) && $this->userIsActive($slackUser)) {
+                if (!$localUser->isValidDisplayName($slackUser->profile->real_name) && $this->userIsActive($slackUser)) {
                     $this->messageAskingForRealName($localUser, $slackUser);
                 }
             } catch (Exception $e) {
