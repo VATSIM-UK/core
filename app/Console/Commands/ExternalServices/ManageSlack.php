@@ -5,6 +5,7 @@ namespace App\Console\Commands\ExternalServices;
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use Bugsnag;
+use Cache;
 use Exception;
 use SlackUser;
 
@@ -52,36 +53,40 @@ class ManageSlack extends Command
 
         foreach ($this->slackUsers->members as $slackUser) {
             try {
-                $localUser = Account::where('slack_id', $slackUser->id)->first();
-                $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
-
-                if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
+                if ($slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
                     continue;
                 }
 
-                if (!$localUser || $localUser->exists == false) {
+                $localUser = Account::where('slack_id', $slackUser->id)->first();
+
+                if (!$localUser && $this->userIsActive($slackUser)) {
                     $this->messageUserAdvisingOfRegistration($slackUser);
                     continue;
                 }
 
-                if ($slackUser->presence == 'active' && $localUser->is_banned) {
-                    $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
+                if ($localUser->is_banned && $this->userIsActive($slackUser)) {
+                    $this->messageDsgAdvisingOfBannedUser($localUser, $slackUser);
                 }
 
-                if (!$localUser->isValidDisplayName($slackUser->real_name)) {
+                if (!$localUser->isValidDisplayName($slackUser->real_name) && $this->userIsActive($slackUser)) {
                     $this->messageAskingForRealName($localUser, $slackUser);
                 }
             } catch (Exception $e) {
                 Bugsnag::notifyException($e);
 
-                $this->log('Caught: '.get_class($e));
-                $this->log($e->getTraceAsString());
-
                 $this->sendSlackError('ServerException processing client.', [
                     'id' => $slackUser->id,
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
+    }
+
+    private function userIsActive($slackUser)
+    {
+        return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
+            return SlackUser::getPresence($slackUser->id)->presence;
+        }) == 'active';
     }
 
     private function messageAskingForRealName($localUser, $slackUser)
@@ -93,7 +98,7 @@ class ManageSlack extends Command
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 
-    private function messageDsgAdvisitingOfBannedUser($localUser, $slackUser)
+    private function messageDsgAdvisingOfBannedUser($localUser, $slackUser)
     {
         $this->sendSlackError('A user who is banned, is using Slack.', [
             'User CID' => $localUser->id, 'Slack User' => $slackUser->id.' - '.$slackUser->name,
