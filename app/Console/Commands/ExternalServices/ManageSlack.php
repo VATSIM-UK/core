@@ -92,9 +92,9 @@ class ManageSlack extends Command
     private function messageAskingForRealName($localUser, $slackUser)
     {
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "Your current name doesn't match your VATSIM profile.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "Please set your slack name to '".$localUser->name."'", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "You can change your profile settings by clicking the 'View Profile & Account' menu option.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Your current name does not match your VATSIM profile.', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, "Please set your Slack name to '{$localUser->name}'.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, "You can change your profile settings by clicking the 'Profile & Account' menu option.", 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 
@@ -108,10 +108,9 @@ class ManageSlack extends Command
     private function messageUserAdvisingOfRegistration($slackUser)
     {
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "You've not linked your VATSIM UK and Slack accounts.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "It's incredibly important that you do this, otherwise I will continue to nag.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Your VATSIM UK and Slack accounts are not currently linked.', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 }
