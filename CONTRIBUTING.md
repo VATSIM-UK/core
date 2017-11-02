@@ -58,9 +58,9 @@ You'll need to make use of Composer a lot for the UK Web Services.  Head on over
 
 We make use of UnitTesting (and it'll be expected that you do too, if you're contributing code).  Head on over to the [PHPUnit testing](https://phpunit.de/manual/current/en/installation.html) website to see how to set this up on your machine.
 
-#### Node.js, NPM & Gulp
+#### Node.js and NPM
 
-We utilise Gulp for our CSS, JS and asset management.  You'll need to throw NPM onto your machine.  [Dave McFarland does a great job of detailing how this should happen](http://blog.teamtreehouse.com/install-node-js-npm-windows).
+You'll need to throw NPM onto your machine.  [Dave McFarland does a great job of detailing how this should happen](http://blog.teamtreehouse.com/install-node-js-npm-windows).
 
 _We'll warn you now, NPM can be a bit of a pain._
 
@@ -103,13 +103,12 @@ Beyond your initial setup, you can just run `composer update -o` on future code 
  * `APP_DEBUGBAR` = `true`
  * `APP_KEY` = Leave blank, we'll fix this in a second
  * `APP_URL` = Whatever URL you setup in the last section (recommended `vukcore.localhost`)
- * `SESSION_DOMAIN` = Leave this blank (i.e `SESSION_DOMAIN=`)
  * `DB_MYSQL_*` = Should match the MySQL account you setup.
  * `TS_*` = If you have your own TS server, integration information can be added here.
  * `MAIL_*` = SMTP, setup the details as per your MailTrap.io settings
  * `SLACK_*` = You won't have access, so leave this blank
  * `VATSIM_CERT_*` = You won't have access, so leave this blank
- * `SSO_*` = If you have an [VATSIM SSO Account](https://cert.vatsim.net/sso) by all means use it.
+ * `SSO_*` = See point 5 below.
 
 Once you've saved that, in the command line run `php artisan key:generate` to set the `APP_KEY` variable.
 
@@ -123,25 +122,25 @@ You'll need to run these with `php artisan migrate --step -vvv`.
 
 I'd suggest you read about [Laravel migrations](https://www.laravel.com/docs/master/migrations).
 
-#### 4 - Run Gulp
+#### 4 - Run npm
 
-The first time you try and run gulp, you'll get an error.  To fix that:
+You will need to run npm to set up dependencies:
 
 * Open a command prompt
 * Navigate to your project directory
-* Run `npm install -g gulp`
-* Install dependencies `npm install`
+* Run `npm install` to install dependencies
+    * If you are developing on a Windows PC, you will need to run `npm install --no-bin-links`, as Windows cannot handle symbolic links.
+* Run `npm run dev` for development, `npm run prod` for production
 
-Now you can run gulp with the command `gulp` in your project directory.
+#### 5 - Setting Up Demo SSO
 
-#### 5 - Add your own account
+In order to log in to your development environment, you must use the VATSIM SSO demo.
 
-Open a new command prompt and within your project directory type `php artisan tinker`.
-
-Within the new PHP environment that you're given access to, enter: `\App\Models\Mship\Account::findOrRetrieve(XXXXXXXX)->setPassword("this_is_my_password");`
-
-Make sure you replace `XXXXXXXX` with your CID and `this_is_my_password` with a development password.  When you navigate to the landing page, you can enter your CID and password to login.
-
+* The credentials for your .env file may be found here: <https://forums.vatsim.net/viewtopic.php?f=134&t=65319>
+    * You should use the 'vACC or above' credentials, as Core will need to use email addresses.
+* The login details for the Demo SSO site may be found here: <https://forums.vatsim.net/viewtopic.php?f=134&t=64909>
+    * DO NOT use your own VATSIM credentials, they will not work.
+    * If you wish to set up a secondary password on the account, you may do that through the front end after logging in.
 
 #### 6 - (Optional) Admin panel access
 
