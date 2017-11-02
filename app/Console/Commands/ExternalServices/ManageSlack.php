@@ -5,6 +5,7 @@ namespace App\Console\Commands\ExternalServices;
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use Bugsnag;
+use Cache;
 use Exception;
 use SlackUser;
 
@@ -52,48 +53,55 @@ class ManageSlack extends Command
 
         foreach ($this->slackUsers->members as $slackUser) {
             try {
+                if ($slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
+                    continue;
+                }
+
                 $localUser = Account::where('slack_id', $slackUser->id)->first();
-                $slackUser->presence = SlackUser::getPresence($slackUser->id)->presence;
 
-                if ($slackUser->presence != 'active' || $slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
+                if (!$localUser) {
+                    if ($this->userIsActive($slackUser)) {
+                        $this->messageUserAdvisingOfRegistration($slackUser);
+                    }
+
                     continue;
                 }
 
-                if (!$localUser || $localUser->exists == false) {
-                    $this->messageUserAdvisingOfRegistration($slackUser);
-                    continue;
+                if ($localUser->is_banned && $this->userIsActive($slackUser)) {
+                    $this->messageDsgAdvisingOfBannedUser($localUser, $slackUser);
                 }
 
-                if ($slackUser->presence == 'active' && $localUser->is_banned) {
-                    $this->messageDsgAdvisitingOfBannedUser($localUser, $slackUser);
-                }
-
-                if (!$localUser->isValidDisplayName($slackUser->real_name)) {
+                if (!$localUser->isValidDisplayName($slackUser->profile->real_name) && $this->userIsActive($slackUser)) {
                     $this->messageAskingForRealName($localUser, $slackUser);
                 }
             } catch (Exception $e) {
                 Bugsnag::notifyException($e);
 
-                $this->log('Caught: '.get_class($e));
-                $this->log($e->getTraceAsString());
-
                 $this->sendSlackError('ServerException processing client.', [
                     'id' => $slackUser->id,
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
     }
 
+    private function userIsActive($slackUser)
+    {
+        return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
+            return SlackUser::getPresence($slackUser->id)->presence;
+        }) == 'active';
+    }
+
     private function messageAskingForRealName($localUser, $slackUser)
     {
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "Your current name doesn't match your VATSIM profile.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "Please set your slack name to '".$localUser->name."'", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "You can change your profile settings by clicking the 'View Profile & Account' menu option.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Your current name does not match your VATSIM profile.', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, "Please set your Slack name to '{$localUser->name}'.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, "You can change your profile settings by clicking the 'Profile & Account' menu option.", 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 
-    private function messageDsgAdvisitingOfBannedUser($localUser, $slackUser)
+    private function messageDsgAdvisingOfBannedUser($localUser, $slackUser)
     {
         $this->sendSlackError('A user who is banned, is using Slack.', [
             'User CID' => $localUser->id, 'Slack User' => $slackUser->id.' - '.$slackUser->name,
@@ -103,10 +111,9 @@ class ManageSlack extends Command
     private function messageUserAdvisingOfRegistration($slackUser)
     {
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "You've not linked your VATSIM UK and Slack accounts.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "It's incredibly important that you do this, otherwise I will continue to nag.", 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Your VATSIM UK and Slack accounts are not currently linked.', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 }
