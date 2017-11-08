@@ -6,7 +6,7 @@ use App\Events\Event;
 use App\Models\Mship\Account\Ban;
 use Illuminate\Queue\SerializesModels;
 
-class BanRepealed extends Event
+class BanUpdated extends Event
 {
     use SerializesModels;
 

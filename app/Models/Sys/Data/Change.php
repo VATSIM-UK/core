@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys\Data;
 
+use App\Models\Concerns\OverridesUpdatedAt;
 use App\Models\Model;
 
 /**
@@ -31,6 +32,8 @@ use App\Models\Model;
  */
 class Change extends Model
 {
+    use OverridesUpdatedAt;
+
     protected $table = 'sys_data_change';
     protected $primaryKey = 'data_change_id';
     protected $hidden = ['data_change_id'];

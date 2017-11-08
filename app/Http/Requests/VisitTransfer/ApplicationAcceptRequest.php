@@ -16,7 +16,7 @@ class ApplicationAcceptRequest extends FormRequest
     public function rules()
     {
         return [
-            'accept_staff_note' => 'string',
+            'accept_staff_note' => 'nullable|string',
         ];
     }
 

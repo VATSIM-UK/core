@@ -72,7 +72,7 @@ trait HasQualifications
 
         if ($atcRating >= 8) {
             $info = VatsimXML::getData($this->id, 'idstatusprat');
-            if (isset($info->PreviousRatingInt)) {
+            if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
                 $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
             }
         }
@@ -84,7 +84,10 @@ trait HasQualifications
         }
 
         $ids = collect($qualifications)->pluck('id');
-        $this->qualifications()->syncWithoutDetaching($ids);
+
+        if (!empty($ids)) {
+            $this->qualifications()->syncWithoutDetaching($ids);
+        }
     }
 
     public function getActiveQualificationsAttribute()

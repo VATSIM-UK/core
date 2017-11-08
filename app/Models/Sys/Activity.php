@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys;
 
+use App\Models\Concerns\OverridesUpdatedAt;
 use App\Models\Model;
 use Request;
 
@@ -33,9 +34,11 @@ use Request;
  */
 class Activity extends Model
 {
+    use OverridesUpdatedAt;
+
     protected $table = 'sys_activity';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at'];
     protected $fillable = ['actor_id', 'subject_id', 'subject_type', 'action'];
 
     public function actor()

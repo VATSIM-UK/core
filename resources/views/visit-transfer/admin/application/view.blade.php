@@ -539,13 +539,13 @@
                         </p>
 
                         <div class="form-group">
-                            <label for="accept_staff_note">Staff Note (mandatory - min 40 characters)</label>
+                            <label for="accept_staff_note">Staff Note (optional)</label>
                             <textarea name="accept_staff_note" class="form-control" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Accept Reference - this cannot be undone</button>
+                        <button type="submit" class="btn btn-success">Accept Application - this cannot be undone</button>
                     </div>
                 </div>
             </div>

@@ -137,6 +137,10 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
+        $feedbackTargeted = $account->feedback()->orderBy('created_at', 'desc')->get();
+
+        $vtapplications = $account->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
+
         $this->setTitle('Account Details: '.$account->name);
 
         return $this->viewMake('adm.mship.account.detail')
@@ -147,7 +151,8 @@ class Account extends AdmController
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
             ->with('noteTypesAll', $noteTypesAll)
-            ->with('feedback', $account->feedback()->orderBy('created_at', 'desc')->get());
+            ->with('feedback', $feedbackTargeted)
+            ->with('vtapplications', $vtapplications);
     }
 
     public function postRoleAttach(AccountData $account)
@@ -344,7 +349,7 @@ class Account extends AdmController
         $ban->notes()->save($note);
         $ban->repeal();
 
-        $this->account->notify(new BanRepealed($ban));
+        $ban->account->notify(new BanRepealed($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Ban has been repealed.');
@@ -424,7 +429,7 @@ class Account extends AdmController
         $ban->period_finish = $period_finish;
         $ban->save();
 
-        $this->account->notify(new BanModified($ban));
+        $ban->account->notify(new BanModified($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Your comment for this ban has been noted.');

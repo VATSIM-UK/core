@@ -121,7 +121,7 @@
                             </h4>
                         </div><!-- /.box-header -->
                         <div class="box-body">
-                            {{ $answer->response }}
+                            {!! nl2br(e($answer->response)) !!}
                         </div>
                     </div>
                   </div>
