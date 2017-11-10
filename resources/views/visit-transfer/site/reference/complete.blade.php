@@ -16,8 +16,8 @@
               </p>
             </div>
             {!! HTML::panelClose() !!}
-            {!! HTML::panelOpen("Reference Content", "vt_reference_content", ["type" => "fa", "key" => "list", "id" => "vt_referee_reference_content"]) !!}
-            <div class="row">
+            {!! HTML::panelOpen("Reference Content", ["type" => "fa", "key" => "list"]) !!}
+            <div id="vt_referee_reference_content" class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <p>
                         You are completing a reference for {{ $application->account->name }}'s {{ $application->type_string }} application for {{ $application->facility->name }}.
