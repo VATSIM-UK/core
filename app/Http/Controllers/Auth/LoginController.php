@@ -96,8 +96,10 @@ class LoginController extends BaseController
     protected function attemptSecondaryAuth()
     {
         if (Session::has('url.intended')) {
-            $intended = Session::pull('url.intended');
+            $intended = Session::get('url.intended');
             if (starts_with($intended, route('password.request'))) {
+                Session::remove('url.intended');
+
                 return redirect($intended);
             }
         }
