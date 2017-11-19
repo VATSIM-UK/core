@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="box-body">
-              Page {{ $feedback->currentPage() }} of {{ $feedback->lastPage() }}
+              Page <b>{{ $feedback->currentPage() }}</b> of <b>{{ $feedback->lastPage() }}</b>
               <table id="mship-accounts" class="table table-bordered table-striped">
                   <thead>
                       <tr>
