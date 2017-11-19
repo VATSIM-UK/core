@@ -208,7 +208,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             abort(403, 'Unauthorized action.');
         }
 
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->get();
+        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->paginate(10);
 
         return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
@@ -221,7 +221,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
 
         $form = Form::whereSlug($slug)->firstOrFail();
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->get();
+        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->paginate(10);
 
         return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
