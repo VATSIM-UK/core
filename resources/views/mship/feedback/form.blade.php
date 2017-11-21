@@ -133,6 +133,7 @@
           <p>
             All questions are required unless an <i>(optional)</i> is displayed beside it.
           </p>
+          <hr>
   				@foreach ($questions as $question)
             <div class="form-group{{ $errors->has($question->slug) ? " has-error" : "" }}">
               {{ Form::label($question->slug, $question->question . ($question->required ? "" : " (optional)")) }} </br>
