@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 use App\Models\Contact;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
 use App\Models\Mship\Feedback\Form;
@@ -10,6 +9,8 @@ use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Question\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Mship\Feedback\NewFeedbackFormRequest;
+use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
@@ -23,19 +24,20 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             ->with('new_question', $new_question);
     }
 
-    public function postNewForm(UpdateFeedbackFormRequest $request)
+    public function postNewForm(NewFeedbackFormRequest $request)
     {
         $new_ident = $request->input('ident');
         $new_name = $request->input('name');
         $new_contact = $request->input('contact');
         $targeted = $request->input('targeted') == '1' ? true : false;
+        $public = $request->input('public') == '1' ? true : false;
         if (Form::whereSlug($new_ident)->exists()) {
             return Redirect::back()
                 ->withInput($request->input())
                 ->withError('New form identifier \''.$new_ident.'\' already exists');
         }
 
-        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted);
+        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
 
         return $this->postConfigure($form, $request);
     }
@@ -115,18 +117,18 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                       ->withSuccess('Updated!');
     }
 
-    public function postEnableForm(Form $form)
+    public function getEnableDisableForm(Form $form)
     {
-        $form->enabled = true;
+        $form->enabled = !$form->enabled;
         $form->save();
 
         return Redirect::back()
             ->withSuccess('Updated!');
     }
 
-    public function postDisableForm(Form $form)
+    public function getFormVisibility(Form $form)
     {
-        $form->enabled = false;
+        $form->public = !$form->public;
         $form->save();
 
         return Redirect::back()
@@ -171,7 +173,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         return $new_question->id;
     }
 
-    public function makeNewForm($ident, $name, $contact, $targeted)
+    public function makeNewForm($ident, $name, $contact, $targeted, $public)
     {
         $new_form = new Form();
         $new_form->slug = $ident;
@@ -193,6 +195,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
         $new_form->enabled = false;
         $new_form->targeted = $targeted;
+        $new_form->public = $public;
         $new_form->save();
 
         if ($targeted) {

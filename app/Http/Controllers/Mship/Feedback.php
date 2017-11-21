@@ -16,7 +16,7 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getFeedbackFormSelect()
     {
-        $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->getModels();
+        $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->public()->getModels();
         $feedbackForms = [];
         foreach ($forms as $f) {
             $feedbackForms[$f->id] = $f->name;
