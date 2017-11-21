@@ -116,10 +116,19 @@
         @else
           {!! Form::open(["route" => ["mship.feedback.new.form.post", $form->slug]]) !!}
       		<p>
-      			Here you can submit anonymous feedback @if($form->targeted) about a <b>UK</b> division member @endif. Please try to explain your answers fully. Your identity is kept anonymous to staff &amp; the subject of the feedback. However, senior staff will be able to discover your identity in the case of abuse of this system.
+            @if($form->targeted)
+              Here you can submit anonymous feedback about a <b>UK</b> division member.
+              Please try to explain your answers fully. Your identity is kept anonymous to staff &amp; the subject of the feedback. However, senior staff will be able to discover your identity in the case of abuse of this system.
+            @else
+              Here you can submit anonymous feedback.
+              Please try to explain your answers fully. Your identity is kept anonymous to staff, however senior staff will be able to discover your identity in the case of abuse of this system.
+            @endif
       		</p>
           <p>
-      			The contents of your responses will be sent to the relevant team(s). It will not necessarily be sent directly to the subject of your feedback.
+      			The contents of your responses will be sent to the relevant team(s).
+            @if($form->targeted)
+              It will not necessarily be sent directly to the subject of your feedback.
+            @endif
       		</p>
           <p>
             All questions are required unless an <i>(optional)</i> is displayed beside it.
