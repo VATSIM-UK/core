@@ -22,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
-            \App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+            //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
         \App\Events\Mship\Bans\BanUpdated::class => [
