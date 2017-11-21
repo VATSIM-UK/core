@@ -2,7 +2,12 @@
 
 @section('body')
 <p>
-    A new item of {{strtoupper($feedback->formSlug())}} feedback as been submitted for {{ $feedback->account->real_name }}
+    @if($feedback->targeted)
+      A new item of {{strtoupper($feedback->formSlug())}} feedback has been submitted for {{ $feedback->account->real_name }}
+    @else
+      A new item of {{strtoupper($feedback->formSlug())}} feedback has been submitted
+    @endif
+
 </p>
 
 <p>
