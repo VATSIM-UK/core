@@ -39,7 +39,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
 
-        return $this->configureForm($form, $request);;
+        return $this->configureForm($form, $request);
     }
 
     public function getConfigure(Form $form)
