@@ -39,7 +39,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
 
-        return $this->postConfigure($form, $request);
+        return $this->configureForm($form, $request);;
     }
 
     public function getConfigure(Form $form)
@@ -57,64 +57,68 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postConfigure(Form $form, UpdateFeedbackFormRequest $request)
     {
-        $in_use_question_ids = [];
+        return $this->configureForm($form, $request);
+    }
 
-        $all_current_questions = $form->questions;
-        $permanent_questions = $all_current_questions->filter(function ($question, $key) {
-            if ($question->permanent) {
-                return true;
-            }
+    private function configureForm($form, $request){
+      $in_use_question_ids = [];
 
-            return false;
-        });
-        foreach ($permanent_questions as $question) {
-            $in_use_question_ids[] = ['id', '!=', $question->id];
-        }
+      $all_current_questions = $form->questions;
+      $permanent_questions = $all_current_questions->filter(function ($question, $key) {
+          if ($question->permanent) {
+              return true;
+          }
 
-        $i = $permanent_questions->count() + 1;
-        foreach (array_values($request->input('question')) as $question) {
-            if (isset($question['exists'])) {
-                // The question exisits already. Lets see if it is appropriate to create a new question, or update.
-                $exisiting_question = Question::find($question['exists']);
-                if ($exisiting_question->question != $question['name']) {
-                    // Make a new question
-                    $exisiting_question->delete();
-                    $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
-                    $i++;
-                    continue;
-                }
+          return false;
+      });
+      foreach ($permanent_questions as $question) {
+          $in_use_question_ids[] = ['id', '!=', $question->id];
+      }
 
-                // We will update it instead
-                $exisiting_question->required = $question['required'];
-                $exisiting_question->slug = $question['slug'].$i;
-                $exisiting_question->sequence = $i;
-                if (isset($question['options']['values'])) {
-                    $question['options']['values'] = explode(',', $question['options']['values']);
-                }
-                if (isset($question['options'])) {
-                    $exisiting_question->options = $question['options'];
-                } else {
-                    $exisiting_question->options = null;
-                }
+      $i = $permanent_questions->count() + 1;
+      foreach (array_values($request->input('question')) as $question) {
+          if (isset($question['exists'])) {
+              // The question exisits already. Lets see if it is appropriate to create a new question, or update.
+              $exisiting_question = Question::find($question['exists']);
+              if ($exisiting_question->question != $question['name']) {
+                  // Make a new question
+                  $exisiting_question->delete();
+                  $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
+                  $i++;
+                  continue;
+              }
 
-                $exisiting_question->required = $question['required'];
-                $exisiting_question->save();
-                $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
-                $i++;
-                continue;
-            } else {
-                // Make a new question
-                $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
-                $i++;
-                continue;
-            }
-        }
+              // We will update it instead
+              $exisiting_question->required = $question['required'];
+              $exisiting_question->slug = $question['slug'].$i;
+              $exisiting_question->sequence = $i;
+              if (isset($question['options']['values'])) {
+                  $question['options']['values'] = explode(',', $question['options']['values']);
+              }
+              if (isset($question['options'])) {
+                  $exisiting_question->options = $question['options'];
+              } else {
+                  $exisiting_question->options = null;
+              }
 
-        //Check if we have lost any questions along the way, and delete them
-        $form->questions()->where($in_use_question_ids)->delete();
+              $exisiting_question->required = $question['required'];
+              $exisiting_question->save();
+              $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
+              $i++;
+              continue;
+          } else {
+              // Make a new question
+              $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
+              $i++;
+              continue;
+          }
+      }
 
-        return Redirect::back()
-                      ->withSuccess('Updated!');
+      //Check if we have lost any questions along the way, and delete them
+      $form->questions()->where($in_use_question_ids)->delete();
+
+      return Redirect::back()
+                    ->withSuccess('Updated!');
     }
 
     public function getEnableDisableForm(Form $form)
