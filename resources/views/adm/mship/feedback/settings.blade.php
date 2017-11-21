@@ -164,19 +164,24 @@
                                           <h4 class="box-title">Form Controls</h4>
                                         </div>
                                         <div class="box-body text-center">
-                                          {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
-                                          {{ Form::close() }}</br></br>
-                                          <div class="btn-group">
-                                            @if($form->enabled)
-                                              <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Disable Form</a>
-                                            @else
-                                            <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Enable Form</a>
-                                            @endif
-                                            @if($form->public)
-                                              <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Unlisted</a>
-                                            @else
-                                            <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Listed</a>
-                                            @endif
+                                          <div class="col-md-12">
+                                            {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
+                                            {{ Form::close() }}</br></br>
+                                            <div class="btn-group">
+                                              @if($form->enabled)
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Disable Form</a>
+                                              @else
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Enable Form</a>
+                                              @endif
+                                              @if($form->public)
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Unlisted</a>
+                                              @else
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Listed</a>
+                                              @endif
+                                            </div>
+                                          </div>
+                                          <div class="col-md-12" style="word-break: break-word;">
+                                            Form Link: {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
                                           </div>
                                         </div>
                                     </div>
