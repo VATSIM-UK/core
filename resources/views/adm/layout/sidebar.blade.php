@@ -171,16 +171,16 @@
                                 </li>
                             @endif
                         @endforeach
-                        @if($_account->hasPermission("adm/mship/feedback/configure/*"))
-                            @foreach($_feedbackForms as $f)
-                                <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
-                                    <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
-                                        <i class="fa fa-cog"></i>
-                                        <span>{!! $f->name !!} Settings</span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        @endif
+                        @foreach($_feedbackForms as $f)
+                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug))
+                            <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
+                                <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
+                                    <i class="fa fa-cog"></i>
+                                    <span>{!! $f->name !!} Settings</span>
+                                </a>
+                            </li>
+                            @endif
+                        @endforeach
                     </ul>
                 </li>
             @endif

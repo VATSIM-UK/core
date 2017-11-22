@@ -124,7 +124,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->id]]) !!}
+                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
                         {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
                         <div class="col-md-9">
                             <div class="box box-primary">
@@ -169,14 +169,14 @@
                                             {{ Form::close() }}</br></br>
                                             <div class="btn-group">
                                               @if($form->enabled)
-                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Disable Form</a>
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Disable Form</a>
                                               @else
-                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->id)}}">Enable Form</a>
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Enable Form</a>
                                               @endif
                                               @if($form->public)
-                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Unlisted</a>
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Unlisted</a>
                                               @else
-                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->id)}}">Make Listed</a>
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Listed</a>
                                               @endif
                                             </div>
                                           </div>
