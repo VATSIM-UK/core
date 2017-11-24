@@ -45,7 +45,11 @@ class FeedbackReceived extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = 'New Member Feedback Received';
+        if($this->feedback->targeted){
+          $subject = 'New Member Feedback Received';
+        }else{
+          $subject = 'New Feedback Received';
+        }
 
         return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
