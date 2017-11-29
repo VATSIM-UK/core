@@ -211,7 +211,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getAllFeedback()
     {
-        if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {
+        if (!$this->account->hasChildPermission('adm/mship/feedback/list/*')) {
             abort(403, 'Unauthorized action.');
         }
 
