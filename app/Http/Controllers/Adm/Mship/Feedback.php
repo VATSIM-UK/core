@@ -223,7 +223,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedback($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
+        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
             abort(403, 'Unauthorized action.');
         }
 
