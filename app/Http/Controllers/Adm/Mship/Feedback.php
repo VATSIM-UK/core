@@ -237,17 +237,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getViewFeedback(FeedbackModel $feedback)
     {
         $targeted = $feedback->form->targeted;
-        if ($this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*')) {
-            return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback)
-                    ->with('targeted', $targeted);
-        }
-        if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
-            return $this->viewMake('adm.mship.feedback.view')
-                      ->with('feedback', $feedback)
-                      ->with('targeted', $targeted);
-        }
-        if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
+        if ($this->account->hasPermission('adm/mship/feedback/list/*') || $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug)) {
             return $this->viewMake('adm.mship.feedback.view')
                     ->with('feedback', $feedback)
                     ->with('targeted', $targeted);
