@@ -8,10 +8,10 @@
                     <h3 class="box-title">smartCARS Exercise</h3>
                 </div>
                 <div class="box-body">
-                    @if(!isset($exercise))
+                    @if(!$exercise->exists)
                         {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.exercises.store'], 'files' => true]) !!}
                     @else
-                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.exercises.update', $exercise->id], 'files' => true]) !!}
+                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.exercises.update', $exercise], 'files' => true]) !!}
                     @endif
 
                     <div class="form-group">
@@ -33,26 +33,26 @@
                     <div class="form-group">
                         <label for="code">Code</label>
                         <input type="text" id="code" name="code" class="form-control"
-                               value="@isset($exercise){{ $exercise->code }}@endisset">
+                               value="{{ old('code') ?: $exercise->code }}">
                     </div>
 
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" class="form-control"
-                               value="@isset($exercise){{ $exercise->name }}@endisset">
+                               value="{{ old('name') ?: $exercise->name }}">
                     </div>
 
                     <div class="form-group">
                         <label for="description">Description</label>
                         <input type="text" id="description" name="description" class="form-control"
-                               value="@isset($exercise){{ $exercise->description }}@endisset">
+                               value="{{ old('description') ?: $exercise->description }}">
                     </div>
 
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox"
-                                       name="featured"{{ isset($exercise->featured) ? ' checked' : '' }}>Featured
+                                       name="featured"{{ old('featured') || $exercise->featured ? ' checked' : '' }}>Featured
                             </label>
                         </div>
                     </div>
@@ -60,71 +60,86 @@
                     <div class="form-group">
                         <label for="flightnum">Flight #</label>
                         <input type="text" id="flightnum" name="flightnum" class="form-control"
-                               value="@isset($exercise){{ $exercise->flightnum }}@endisset">
+                               value="{{ old('flightnum') ?: $exercise->flightnum }}">
                     </div>
 
                     <div class="form-group">
                         <label for="departure_id">Departure Airport</label>
                         <select id="departure_id" name="departure_id" class="form-control">
-                            <option>TO DO - fill list</option>
+                            @foreach(\App\Models\Smartcars\Airport::all() as $airport)
+                                <option value="{{ $airport->id }}"
+                                        {{ old('departure_id') == $airport->id ? 'selected' : ''}}>
+                                    {{ $airport->icao }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="arrival_id">Arrival Airport</label>
                         <select id="arrival_id" name="arrival_id" class="form-control">
-                            <option>TO DO - fill list</option>
+                            @foreach(\App\Models\Smartcars\Airport::all() as $airport)
+                                <option value="{{ $airport->id }}"
+                                        {{ old('arrival_id') == $airport->id ? 'selected' : ''}}>
+                                    {{ $airport->icao }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="route">Route</label>
                         <input type="text" id="route" name="route" class="form-control"
-                               value="@isset($exercise){{ $exercise->route }}@endisset">
+                               value="{{ old('route') ?: $exercise->route }}">
                     </div>
 
                     <div class="form-group">
                         <label for="route_details">Route Details</label>
                         <input type="text" id="route_details" name="route_details" class="form-control"
-                               value="@isset($exercise){{ $exercise->route_details }}@endisset">
+                               value="{{ old('route_details') ?: $exercise->route_details }}">
                     </div>
 
                     <div class="form-group">
                         <label for="aircraft_id">Aircraft</label>
                         <select id="aircraft_id" name="aircraft_id" class="form-control">
-                            <option>TO DO - fill list</option>
+                            @foreach(\App\Models\Smartcars\Aircraft::all() as $aircraft)
+                                <option value="{{ $aircraft->id }}"
+                                        {{ old('aircraft_id') == $aircraft->id ? 'selected' : ''}}>
+                                    {{ $aircraft->icao }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="cruise_altitude">Cruise Altitude</label>
                         <input type="text" id="cruise_altitude" name="cruise_altitude" class="form-control"
-                               value="@isset($exercise){{ $exercise->cruise_altitude }}@endisset">
+                               value="{{ old('cruise_altitude') ?: $exercise->cruise_altitude }}">
                     </div>
 
                     <div class="form-group">
                         <label for="distance">Distance (nm)</label>
                         <input type="number" id="distance" name="distance" class="form-control"
-                               value="@isset($exercise){{ $exercise->distance }}@endisset">
+                               value="{{ old('distance') ?: $exercise->distance }}">
                     </div>
 
                     <div class="form-group">
                         <label for="flight_time">Flight Time</label>
-                        <input type="number" id="flight_time" name="flight_time" class="form-control"
-                               value="@isset($exercise){{ $exercise->flight_time }}@endisset">
+                        <input type="number" step="any" id="flight_time" name="flight_time" class="form-control"
+                               value="{{ old('flight_time') ?: $exercise->flight_time }}">
                     </div>
 
                     <div class="form-group">
                         <label for="cruise_altitude">Notes</label>
                         <input type="text" id="notes" name="notes" class="form-control"
-                               value="@isset($exercise){{ $exercise->notes }}@endisset">
+                               value="{{ old('notes') ?: $exercise->notes }}">
                     </div>
 
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox"
-                                       name="enabled"{{ isset($exercise->enabled) ? ' checked' : '' }}>Enabled
+                                       name="enabled"{{ old('enabled') || $exercise->enabled ? ' checked' : '' }}>Enabled
                             </label>
                         </div>
                     </div>

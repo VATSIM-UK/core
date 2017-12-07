@@ -41,4 +41,9 @@ class FlightImage
     {
         return asset("storage/$this->path");
     }
+
+    public function delete()
+    {
+        Storage::disk('public')->delete($this->path);
+    }
 }

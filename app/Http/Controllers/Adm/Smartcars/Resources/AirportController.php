@@ -9,9 +9,36 @@ use App\Http\Controllers\Adm\AdmController as Controller;
 class AirportController extends Controller
 {
     /**
+     * Get the validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            'icao' => 'required|string|max:4|unique:smartcars_airport,icao',
+            'name' => 'required|string|max:100',
+            'country' => 'required|string|max:50',
+            'latitude' => 'required|numeric|min:-90|max:90',
+            'longitude' => 'required|numeric|min:-180|max:180',
+        ];
+    }
+
+    /**
+     * Define where to redirect requests.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        return route('adm.smartcars.airports.index');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
     {
@@ -26,21 +53,31 @@ class AirportController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
-        return $this->viewMake('adm.smartcars.airport-form');
+        $this->authorize('use-permission', 'smartcars/airports/create');
+
+        return $this->viewMake('adm.smartcars.airport-form')->with('airport', new Airport());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/airports/create');
+
+        $this->validate($request, $this->rules());
+
+        Airport::create(array_filter($request->all()));
+
+        return redirect($this->redirectPath())->with('success', 'Airport created.');
     }
 
     /**
@@ -57,34 +94,50 @@ class AirportController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Airport  $airport
+     * @param  \App\Models\Smartcars\Airport $airport
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Airport $airport)
     {
+        $this->authorize('use-permission', 'smartcars/airports/update');
+
         return $this->viewMake('adm.smartcars.airport-form')->with('airport', $airport);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Airport  $airport
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Smartcars\Airport $airport
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Airport $airport)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/airports/update');
+
+        $this->validate($request, $this->rules());
+
+        $airport->fill(array_filter($request->all()))->save();
+
+        return redirect($this->redirectPath())->with('success', 'Airport updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Airport  $airport
+     * @param  \App\Models\Smartcars\Airport $airport
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Exception
      */
     public function destroy(Airport $airport)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/airports/delete');
+
+        $airport->delete();
+
+        return redirect($this->redirectPath())->with('success', 'Airport deleted.');
     }
 }

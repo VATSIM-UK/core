@@ -8,64 +8,64 @@
                     <h3 class="box-title">smartCARS Aircraft</h3>
                 </div>
                 <div class="box-body">
-                    @if(!isset($aircraft))
+                    @if(!$aircraft->exists)
                         {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.aircraft.store']]) !!}
                     @else
-                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.aircraft.update', $aircraft->id]]) !!}
+                        {!! Form::open(['method'  => 'put', 'route' => ['adm.smartcars.aircraft.update', $aircraft]]) !!}
                     @endif
 
                     <div class="form-group">
                         <label for="icao">ICAO Code<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="icao" name="icao" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->icao }}@endisset" placeholder="C172" required>
+                               value="{{ old('icao') ?: $aircraft->icao }}" placeholder="C172" required>
                     </div>
 
                     <div class="form-group">
                         <label for="name">Name<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="name" name="name" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->name }}@endisset" placeholder="Cessna" required>
+                               value="{{ old('name') ?: $aircraft->name }}" placeholder="Cessna" required>
                     </div>
 
                     <div class="form-group">
                         <label for="fullname">Full Name<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="fullname" name="fullname" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->fullname }}@endisset" placeholder="Cessna 172" required>
+                               value="{{ old('fullname') ?: $aircraft->fullname }}" placeholder="Cessna 172" required>
                     </div>
 
                     <div class="form-group">
                         <label for="registration">Registration<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="registration" name="registration" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->registration }}@endisset" placeholder="GABCD" required>
+                               value="{{ old('registration') ?: $aircraft->registration }}" placeholder="GABCD" required>
                     </div>
 
                     <div class="form-group">
                         <label for="range_nm">Range (nm)</label>
                         <input type="number" id="range_nm" name="range_nm" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->range_nm }}@endisset" placeholder="0">
+                               value="{{ old('range_nm') ?: $aircraft->range_nm }}" placeholder="0">
                     </div>
 
                     <div class="form-group">
                         <label for="weight_kg">Weight (kg)</label>
                         <input type="number" id="weight_kg" name="weight_kg" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->weight_kg }}@endisset" placeholder="0">
+                               value="{{ old('weight_kg') ?: $aircraft->weight_kg }}" placeholder="0">
                     </div>
 
                     <div class="form-group">
                         <label for="cruise_altitude">Cruise Altitude</label>
                         <input type="number" id="cruise_altitude" name="cruise_altitude" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->cruise_altitude }}@endisset" placeholder="0">
+                               value="{{ old('cruise_altitude') ?: $aircraft->cruise_altitude }}" placeholder="0">
                     </div>
 
                     <div class="form-group">
                         <label for="max_passengers">Max Passengers</label>
                         <input type="number" id="max_passengers" name="max_passengers" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->max_passengers }}@endisset" placeholder="0">
+                               value="{{ old('max_passengers') ?: $aircraft->max_passengers }}" placeholder="0">
                     </div>
 
                     <div class="form-group">
                         <label for="max_cargo_kg">Max Cargo (kg)</label>
                         <input type="number" id="max_cargo_kg" name="max_cargo_kg" class="form-control"
-                               value="@isset($aircraft){{ $aircraft->max_cargo_kg }}@endisset" placeholder="0">
+                               value="{{ old('max_cargo_kg') ?: $aircraft->max_cargo_kg }}" placeholder="0">
                     </div>
 
                     <input class="btn btn-primary" type="submit" value="Submit">

@@ -20,15 +20,43 @@ class ExerciseController extends Controller
     }
 
     /**
+     * Get the validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            'image' => 'file|nullable|max:10240|mimes:jpeg,bmp,png',
+            'code' => 'required|string|max:3',
+            'name' => 'required|string|max:250',
+            'description' => 'required|string|max:3000',
+            'featured' => '',
+            'flightnum' => 'required|string|max:10',
+            'departure_id' => 'required|exists:smartcars_airport,id',
+            'arrival_id' => 'required|exists:smartcars_airport,id',
+            'route' => 'required|string|max:3000',
+            'route_details' => 'required|string|max:3000',
+            'aircraft_id' => 'required|exists:smartcars_aircraft,id',
+            'cruise_altitude' => 'required|numeric|max:1000000',
+            'distance' => 'required|numeric|max:1000000',
+            'flight_time' => 'required|numeric|max:100',
+            'notes' => 'required|string|max:3000',
+            'enabled' => '',
+        ];
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
     {
         $this->authorize('use-permission', 'smartcars/exercises');
 
-        $exercises = Flight::query()->orderBy('created_at')->with('departure', 'arrival', 'aircraft')->paginate(50);
+        $exercises = Flight::orderBy('created_at')->with('departure', 'arrival', 'aircraft')->paginate(50);
 
         return $this->viewMake('adm.smartcars.exercises')->with('exercises', $exercises);
     }
@@ -37,22 +65,40 @@ class ExerciseController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
-        return $this->viewMake('adm.smartcars.exercise-form');
+        $this->authorize('use-permission', 'smartcars/exercises/create');
+
+        return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', new Flight());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
-        // $image = $request->file('image');
-        // Storage::drive('public')->putFileAs('smartcars/exercises', $image, "id_of_exercise.{$image->extension()}");
+        $this->authorize('use-permission', 'smartcars/exercises/create');
+
+        $this->validate($request, $this->rules());
+
+        $exercise = new Flight();
+        $exercise->fill(array_filter($request->except('image')));
+        $exercise->featured = $request->input('featured') ? true : false;
+        $exercise->enabled = $request->input('enabled') ? true : false;
+        $exercise->save();
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image->storeAs('smartcars/exercises', "{$exercise->id}.{$image->extension()}", ['disk' => 'public']);
+        }
+
+        return redirect($this->redirectPath())->with('success', 'Exercise created.');
     }
 
     /**
@@ -69,34 +115,62 @@ class ExerciseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Flight $exercise)
     {
+        $this->authorize('use-permission', 'smartcars/exercises/update');
+
         return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', $exercise);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Flight $exercise)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/exercises/update');
+
+        $this->validate($request, $this->rules());
+
+        $exercise->fill(array_filter($request->except('image')));
+        $exercise->featured = $request->input('featured') ? true : false;
+        $exercise->enabled = $request->input('enabled') ? true : false;
+        $exercise->save();
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image->storeAs('smartcars/exercises', "{$exercise->id}.{$image->extension()}", ['disk' => 'public']);
+        }
+
+        return redirect($this->redirectPath())->with('success', 'Exercise updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Exception
      */
     public function destroy(Flight $exercise)
     {
-        //
+        $this->authorize('use-permission', 'smartcars/exercises/delete');
+
+        if ($exercise->image) {
+            $exercise->image->delete();
+        }
+
+        $exercise->delete();
+
+        return redirect($this->redirectPath())->with('success', 'Exercise deleted.');
     }
 }

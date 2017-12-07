@@ -55,6 +55,9 @@ class Flight extends Model
     protected $table = 'smartcars_flight';
     protected $fillable = [
         'code',
+        'name',
+        'description',
+        'featured',
         'flightnum',
         'departure_id',
         'arrival_id',
@@ -71,6 +74,11 @@ class Flight extends Model
     protected $dates = [
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'featured' => 'bool',
+        'enabled' => 'bool',
     ];
 
     public static function findByIcao($icao)

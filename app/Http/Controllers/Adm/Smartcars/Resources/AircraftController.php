@@ -50,12 +50,13 @@ class AircraftController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
     {
         $this->authorize('use-permission', 'smartcars/aircraft');
 
-        $aircraft = Aircraft::query()->orderBy('icao')->paginate(50);
+        $aircraft = Aircraft::orderBy('icao')->paginate(50);
 
         return $this->viewMake('adm.smartcars.aircraft')->with('aircraft', $aircraft);
     }
@@ -64,19 +65,21 @@ class AircraftController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
         $this->authorize('use-permission', 'smartcars/aircraft/create');
 
-        return $this->viewMake('adm.smartcars.aircraft-form');
+        return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', new Aircraft());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
@@ -103,8 +106,9 @@ class AircraftController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Aircraft  $aircraft
+     * @param  \App\Models\Smartcars\Aircraft $aircraft
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Aircraft $aircraft)
     {
@@ -116,9 +120,10 @@ class AircraftController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Aircraft  $aircraft
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Smartcars\Aircraft $aircraft
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Aircraft $aircraft)
     {
@@ -134,8 +139,10 @@ class AircraftController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Aircraft  $aircraft
+     * @param  \App\Models\Smartcars\Aircraft $aircraft
      * @return \Illuminate\Http\Response
+     * @throws \Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Aircraft $aircraft)
     {
