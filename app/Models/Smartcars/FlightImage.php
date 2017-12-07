@@ -14,14 +14,24 @@ class FlightImage
         $this->path = $imagePath;
     }
 
+    /**
+     * @param $id
+     * @return FlightImage|null
+     */
     public static function find($id)
     {
-        $flightImages = Storage::drive('public')->files('smartcars/exercises');
-        $imageMatches = preg_grep('/^smartcars\/exercises\/'.$id.'\.[A-Za-z0-9]*$/', $flightImages);
+        $image = null;
 
-        $imagePath = Arr::first($imageMatches);
-        if ($imagePath) {
-            return new self($imagePath);
+        $flightImages = Storage::drive('public')->files('smartcars/exercises');
+        foreach ($flightImages as $flightImage) {
+            if (starts_with($flightImage, "smartcars/exercises/$id.")) {
+                $image = $flightImage;
+                break;
+            }
+        }
+
+        if ($image) {
+            return new self($image);
         }
 
         return null;
