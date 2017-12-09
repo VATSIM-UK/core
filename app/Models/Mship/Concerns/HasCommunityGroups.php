@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException;
+use App\Exceptions\Community\AlreadyAGroupTierMemberException;
 use App\Models\Community\Group;
 
 trait HasCommunityGroups
@@ -49,7 +49,7 @@ trait HasCommunityGroups
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
         if (!$this->hasState('DIVISION')) {
-            throw new \App\Exceptions\Community\Membership\MustBeADivisionMemberException($this);
+            throw new \App\Exceptions\Community\MustBeADivisionMemberException($this);
         }
     }
 
@@ -60,7 +60,7 @@ trait HasCommunityGroups
         });
 
         if ($sameTier->count() > 0) {
-            throw new \App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException($this, $group);
+            throw new \App\Exceptions\Community\AlreadyAGroupTierMemberException($this, $group);
         }
     }
 }
