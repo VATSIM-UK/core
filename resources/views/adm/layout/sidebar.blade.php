@@ -153,8 +153,8 @@
                                 </a>
                             </li>
                         @endif
-                        @if($_account->hasPermission("adm/mship/feedback/list"))
-                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
+                        @if($_account->hasPermission("adm/mship/feedback/list/*"))
+                          <li {!! (\Request::is('adm/mship/feedback/list/*') ? ' class="active"' : '') !!}>
                               <a href="{{ URL::route("adm.mship.feedback.all") }}">
                                 <i class="fa fa-bars"></i>
                                 <span>All Feedback</span>
@@ -162,8 +162,8 @@
                           </li>
                         @endif
                         @foreach($_feedbackForms as $f)
-                            @if($_account->hasPermission("adm/mship/feedback/list/".$f->slug))
-                                <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug.'*') ? ' class="active"' : '') !!}>
+                            @if($_account->hasPermission("adm/mship/feedback/list/".$f->slug) || $_account->hasPermission("adm/mship/feedback/list/*"))
+                                <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
                                     <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
                                         <i class="fa fa-bars"></i>
                                         <span>{!! $f->name !!}</span>
