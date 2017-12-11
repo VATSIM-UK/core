@@ -2,6 +2,7 @@
 
 namespace App\Models\Smartcars;
 
+use App\Events\Smartcars\BidCompleted;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
@@ -43,10 +44,7 @@ class Bid extends Model
         'flight_id',
         'account_id',
     ];
-    public $timestamps = true;
     protected $dates = [
-        'created_at',
-        'updated_at',
         'completed_at',
         'deleted_at',
     ];
@@ -80,5 +78,7 @@ class Bid extends Model
     {
         $this->completed_at = \Carbon\Carbon::now();
         $this->save();
+
+        event(new BidCompleted($this));
     }
 }
