@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Smartcars;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Smartcars\Bid;
+use App\Models\Smartcars\Flight;
 
 class SmartcarsController extends BaseController
 {
@@ -16,13 +18,44 @@ class SmartcarsController extends BaseController
         return view('fte.map');
     }
 
-    public function getExercise($exerciseId = null)
+    public function getExercise(Flight $exercise = null)
     {
-        if (is_null($exerciseId)) {
+        if (is_null($exercise)) {
             return view('fte.exercises');
         } else {
-            return view('fte.exercise');
+            $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
+
+            return view('fte.exercise')->with('exercise', $exercise)->with('booking', $bid);
         }
+    }
+
+    public function bookExercise(Flight $exercise)
+    {
+        $bids = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->get();
+        if ($bids->isNotEmpty()) {
+            return redirect()->back()->with('error', 'Exercise has already been booked.');
+        }
+
+        Bid::create([
+            'account_id' => $this->account->id,
+            'flight_id' => $exercise->id,
+        ]);
+
+        return redirect()->back()->with('success', 'Exercise booked successfully.');
+    }
+
+    public function cancelExercise(Flight $exercise)
+    {
+        $bids = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->get();
+        if ($bids->isEmpty()) {
+            return redirect()->back()->with('error', 'There are no bookings to remove.');
+        }
+
+        $bids->each(function ($bid) {
+            $bid->delete();
+        });
+
+        return redirect()->back()->with('success', 'Exercise booking successfully deleted.');
     }
 
     public function getHistory($flightId = null)
