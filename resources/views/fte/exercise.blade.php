@@ -1,5 +1,115 @@
 @extends ('layout')
 
+@section('content')
+    <div class="col-md-4">
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
+            <div class="panel-body">
+                <div class="">
+                    <a href="{{ route('fte.dashboard') }}" class="btn btn-primary"><< Dashboard</a>
+
+                    @empty($booking)
+                        <a class="btn btn-success" href="{{ route('fte.exercise.book', $exercise) }}"
+                           onclick="event.preventDefault(); document.getElementById('book-form').submit();">
+                            Book Flight
+                        </a>
+                        <form id="book-form" action="{{ route('fte.exercise.book', $exercise) }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    @else
+                        <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $exercise) }}"
+                           onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
+                            Cancel Flight
+                        </a>
+                        <form id="cancel-form" action="{{ route('fte.exercise.cancel', $exercise) }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    @endempty
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Flight Details
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <b>Code:</b>
+                        {{ $exercise->code }}
+                    </div>
+                    <div class="col-xs-6">
+                        <b>Name:</b>
+                        {{ $exercise->name }}
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>Departure:</b>
+                        {{ $exercise->departure->name }} ({{ $exercise->departure->icao }})
+                    </div>
+                    <div class="col-xs-12">
+                        <b>Arrival:</b>
+                        {{ $exercise->arrival->name }} ({{ $exercise->arrival->icao }})
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>Registration:</b>
+                        {{ $exercise->aircraft->registration }}
+                    </div>
+                    <div class="col-xs-12">
+                        <b>Aircraft Type:</b>
+                        {{ $exercise->aircraft->fullname }} ({{ $exercise->aircraft->icao }})
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
+            <div class="panel-body">
+                <div class="">
+                    <p><a href="https://vatsim.uk/{{ $exercise->departure->icao }}/">Departure Resources</a></p>
+                    <p><a href="https://vatsim.uk/{{ $exercise->arrival->icao }}/">Arrival Resources</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel panel-ukblue" style="min-height: 500px;">
+            <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
+            </div>
+            <div class="panel-body text-center">
+                <div id="mapdiv" style="width: 100%; background-color:#eeeeee; height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
+            <div class="panel-body">
+                <p>Information unavailable.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-ukblue">
+            <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
+            <div class="panel-body">
+                <strong>Departure Aerodrome:</strong> <a href="http://metar.vatsim.net/metar.php?id={{ $exercise->departure->icao }}">Click Here</a>
+                <br>
+                <strong>Arrival Aerodrome:</strong> <a href="http://metar.vatsim.net/metar.php?id={{ $exercise->arrival->icao }}">Click Here</a>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section ('scripts')
     <script src="//www.amcharts.com/lib/3/ammap.js" type="text/javascript"></script>
     <script src="//www.amcharts.com/lib/3/maps/js/worldHigh.js" type="text/javascript"></script>
@@ -78,104 +188,3 @@
         });
     </script>
 @endsection
-
-@section('content')
-
-    <div class="col-md-4">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions
-            </div>
-            <div class="panel-body">
-                <div class="">
-                    <a href="{{ route('fte.dashboard') }}" class="btn btn-primary"><< Dashboard</a>
-                    {!! Button::success('Book Flight') !!}
-                    {!! Button::danger('Cancel Flight') !!}
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Flight Details
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <b>ID:</b>
-                        VFR1
-                    </div>
-                    <div class="col-xs-6">
-                        <b>Name:</b>
-                        Road Trip
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Departure:</b>
-                        Biggin Hill (EGKB)
-                    </div>
-                    <div class="col-xs-12">
-                        <b>Arrival:</b>
-                        Lydd (EGMD)
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Registration:</b>
-                        G-NOOB
-                    </div>
-                    <div class="col-xs-12">
-                        <b>Aircraft Type:</b>
-                        Cessna 172 (C172)
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources
-            </div>
-            <div class="panel-body">
-                <div class="">
-                    <p>Charts? NOTAMS? Airfield info pages?</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-8">
-        <div class="panel panel-ukblue" style="min-height: 500px;">
-            <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
-            </div>
-            <div class="panel-body text-center">
-                <div id="mapdiv" style="width: 100%; background-color:#eeeeee; height: 500px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
-            <div class="panel-body">
-                <p>10x Crashes by Dan</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
-            <div class="panel-body">
-                <?php
-                $dep_metar = file_get_contents("http://metar.vatsim.net/metar.php?id=EGKB");
-                $arr_metar = file_get_contents("http://metar.vatsim.net/metar.php?id=EGMD");
-                echo "<strong>Departure Aerodrome:</strong> " . $dep_metar;
-                echo "<br />";
-                echo "<strong>Arrival Aerodrome:</strong> " . $arr_metar;
-                ?>
-            </div>
-        </div>
-    </div>
-
-@stop
