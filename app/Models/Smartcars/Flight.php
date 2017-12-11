@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $code
  * @property string $name
  * @property string $description
- * @property int $featured
+ * @property bool $featured
  * @property string $flightnum
  * @property int $departure_id
  * @property int $arrival_id
@@ -22,11 +22,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $distance
  * @property float $flight_time
  * @property string $notes
- * @property int $enabled
+ * @property bool $enabled
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Aircraft $aircraft
  * @property-read \App\Models\Smartcars\Airport $arrival
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriteria[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
  * @property-read mixed $image
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight icao($icao)
@@ -71,11 +72,6 @@ class Flight extends Model
         'enabled',
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
-
     protected $casts = [
         'featured' => 'bool',
         'enabled' => 'bool',
@@ -104,6 +100,11 @@ class Flight extends Model
     public function aircraft()
     {
         return $this->belongsTo(\App\Models\Smartcars\Aircraft::class, 'aircraft_id', 'id');
+    }
+
+    public function criteria()
+    {
+        return $this->hasMany(FlightCriteria::class, 'flight_id', 'id');
     }
 
     public function getImageAttribute()
