@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\Smartcars\Flight $flight
+ * @property-read \App\Models\Smartcars\Pirep $pirep
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Posrep[] $posreps
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid accountId($accountId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Bid flightId($flightId)
  * @method static bool|null forceDelete()
@@ -80,5 +82,15 @@ class Bid extends Model
         $this->save();
 
         event(new BidCompleted($this));
+    }
+
+    public function pirep()
+    {
+        return $this->belongsTo(Pirep::class, 'bid_id', 'id');
+    }
+
+    public function posreps()
+    {
+        return $this->hasMany(Posrep::class, 'bid_id', 'id');
     }
 }
