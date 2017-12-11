@@ -49,12 +49,19 @@
                             <input class="btn btn-default" type="submit" value="Login">
                         </div>
                     </div>
-
-
                     {!! Form::close() !!}
                 </div>
             </div>
             {!! HTML::panelClose() !!}
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-uk-danger">
+              <div class="panel-heading"><i class="fa fa-exclamation-circle"></i> Having issues?</div>
+              <div class="panel-body">
+                Use your primary email address (*****<b>{{"@" . explode("@", Auth::user()->email)[1]}}</b>) to send an email to
+                <p>{{ HTML::mailto("web-support@vatsim.uk")}}</p>
+              </div>
+            </div>
         </div>
     </div>
 

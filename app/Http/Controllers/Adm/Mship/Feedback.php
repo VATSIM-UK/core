@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 use App\Models\Contact;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
 use App\Models\Mship\Feedback\Form;
@@ -10,6 +9,8 @@ use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Question\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Mship\Feedback\NewFeedbackFormRequest;
+use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
@@ -23,21 +24,22 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             ->with('new_question', $new_question);
     }
 
-    public function postNewForm(UpdateFeedbackFormRequest $request)
+    public function postNewForm(NewFeedbackFormRequest $request)
     {
         $new_ident = $request->input('ident');
         $new_name = $request->input('name');
         $new_contact = $request->input('contact');
         $targeted = $request->input('targeted') == '1' ? true : false;
+        $public = $request->input('public') == '1' ? true : false;
         if (Form::whereSlug($new_ident)->exists()) {
             return Redirect::back()
                 ->withInput($request->input())
                 ->withError('New form identifier \''.$new_ident.'\' already exists');
         }
 
-        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted);
+        $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
 
-        return $this->postConfigure($form, $request);
+        return $this->configureForm($form, $request);
     }
 
     public function getConfigure(Form $form)
@@ -55,78 +57,82 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function postConfigure(Form $form, UpdateFeedbackFormRequest $request)
     {
-        $in_use_question_ids = [];
-
-        $all_current_questions = $form->questions;
-        $permanent_questions = $all_current_questions->filter(function ($question, $key) {
-            if ($question->permanent) {
-                return true;
-            }
-
-            return false;
-        });
-        foreach ($permanent_questions as $question) {
-            $in_use_question_ids[] = ['id', '!=', $question->id];
-        }
-
-        $i = $permanent_questions->count() + 1;
-        foreach (array_values($request->input('question')) as $question) {
-            if (isset($question['exists'])) {
-                // The question exisits already. Lets see if it is appropriate to create a new question, or update.
-                $exisiting_question = Question::find($question['exists']);
-                if ($exisiting_question->question != $question['name']) {
-                    // Make a new question
-                    $exisiting_question->delete();
-                    $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
-                    $i++;
-                    continue;
-                }
-
-                // We will update it instead
-                $exisiting_question->required = $question['required'];
-                $exisiting_question->slug = $question['slug'].$i;
-                $exisiting_question->sequence = $i;
-                if (isset($question['options']['values'])) {
-                    $question['options']['values'] = explode(',', $question['options']['values']);
-                }
-                if (isset($question['options'])) {
-                    $exisiting_question->options = $question['options'];
-                } else {
-                    $exisiting_question->options = null;
-                }
-
-                $exisiting_question->required = $question['required'];
-                $exisiting_question->save();
-                $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
-                $i++;
-                continue;
-            } else {
-                // Make a new question
-                $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
-                $i++;
-                continue;
-            }
-        }
-
-        //Check if we have lost any questions along the way, and delete them
-        $form->questions()->where($in_use_question_ids)->delete();
-
-        return Redirect::back()
-                      ->withSuccess('Updated!');
+        return $this->configureForm($form, $request);
     }
 
-    public function postEnableForm(Form $form)
+    private function configureForm($form, $request){
+      $in_use_question_ids = [];
+
+      $all_current_questions = $form->questions;
+      $permanent_questions = $all_current_questions->filter(function ($question, $key) {
+          if ($question->permanent) {
+              return true;
+          }
+
+          return false;
+      });
+      foreach ($permanent_questions as $question) {
+          $in_use_question_ids[] = ['id', '!=', $question->id];
+      }
+
+      $i = $permanent_questions->count() + 1;
+      foreach (array_values($request->input('question')) as $question) {
+          if (isset($question['exists'])) {
+              // The question exisits already. Lets see if it is appropriate to create a new question, or update.
+              $exisiting_question = Question::find($question['exists']);
+              if ($exisiting_question->question != $question['name']) {
+                  // Make a new question
+                  $exisiting_question->delete();
+                  $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
+                  $i++;
+                  continue;
+              }
+
+              // We will update it instead
+              $exisiting_question->required = $question['required'];
+              $exisiting_question->slug = $question['slug'].$i;
+              $exisiting_question->sequence = $i;
+              if (isset($question['options']['values'])) {
+                  $question['options']['values'] = explode(',', $question['options']['values']);
+              }
+              if (isset($question['options'])) {
+                  $exisiting_question->options = $question['options'];
+              } else {
+                  $exisiting_question->options = null;
+              }
+
+              $exisiting_question->required = $question['required'];
+              $exisiting_question->save();
+              $in_use_question_ids[] = ['id', '!=', $exisiting_question->id];
+              $i++;
+              continue;
+          } else {
+              // Make a new question
+              $in_use_question_ids[] = ['id', '!=', $this->makeNewQuestion($form, $question, $i)];
+              $i++;
+              continue;
+          }
+      }
+
+      //Check if we have lost any questions along the way, and delete them
+      $form->questions()->where($in_use_question_ids)->delete();
+
+      return Redirect::back()
+                    ->withSuccess('Updated!');
+    }
+
+    public function getEnableDisableForm(Form $form)
     {
-        $form->enabled = true;
+        $form->enabled = !$form->enabled;
         $form->save();
 
         return Redirect::back()
             ->withSuccess('Updated!');
     }
 
-    public function postDisableForm(Form $form)
+    public function getFormVisibility(Form $form)
     {
-        $form->enabled = false;
+        $form->public = !$form->public;
         $form->save();
 
         return Redirect::back()
@@ -171,7 +177,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         return $new_question->id;
     }
 
-    public function makeNewForm($ident, $name, $contact, $targeted)
+    public function makeNewForm($ident, $name, $contact, $targeted, $public)
     {
         $new_form = new Form();
         $new_form->slug = $ident;
@@ -193,6 +199,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         }
         $new_form->enabled = false;
         $new_form->targeted = $targeted;
+        $new_form->public = $public;
         $new_form->save();
 
         if ($targeted) {
@@ -204,11 +211,11 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getAllFeedback()
     {
-        if (!$this->account->hasChildPermission('adm/mship/feedback/list')) {
+        if (!$this->account->hasChildPermission('adm/mship/feedback/list/*')) {
             abort(403, 'Unauthorized action.');
         }
 
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->get();
+        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->paginate(15);
 
         return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
@@ -216,12 +223,12 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedback($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
+        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
             abort(403, 'Unauthorized action.');
         }
 
         $form = Form::whereSlug($slug)->firstOrFail();
-        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->get();
+        $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->paginate(15);
 
         return $this->viewMake('adm.mship.feedback.list')
                     ->with('feedback', $feedback);
@@ -230,17 +237,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getViewFeedback(FeedbackModel $feedback)
     {
         $targeted = $feedback->form->targeted;
-        if ($this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*')) {
-            return $this->viewMake('adm.mship.feedback.view')
-                    ->with('feedback', $feedback)
-                    ->with('targeted', $targeted);
-        }
-        if ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true) {
-            return $this->viewMake('adm.mship.feedback.view')
-                      ->with('feedback', $feedback)
-                      ->with('targeted', $targeted);
-        }
-        if ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false) {
+        if ($this->account->hasPermission('adm/mship/feedback/list/*') || $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug)) {
             return $this->viewMake('adm.mship.feedback.view')
                     ->with('feedback', $feedback)
                     ->with('targeted', $targeted);

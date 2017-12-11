@@ -89,6 +89,24 @@ body, html {
   text-align: center;
 }
 
+#vt_referee_reference_content .control-label{
+  text-align: left !important;
+}
+
+.checkbox-button.btn span.fa {
+  opacity: 0;
+}
+
+.checkbox-button.btn input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.checkbox-button.btn.active span.fa {
+  opacity: 1;
+}
+
 /* Bootstrap Overwrite */
 
 .label-xs {
@@ -114,6 +132,22 @@ body, html {
   > .panel-heading {
     background-color: #17375e;
     border-color: #17375E;
+    color: white;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .panel-body .row-text-contain {
+    word-break: break-word;
+  }
+}
+
+.panel-uk-danger {
+  border: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  > .panel-heading {
+    background-color: #c30c1d;
+    border-color: #840712;
     color: white;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

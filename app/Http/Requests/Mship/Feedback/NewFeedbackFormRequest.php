@@ -5,7 +5,7 @@ namespace App\Http\Requests\Mship\Feedback;
 use App\Http\Requests\Request;
 use App\Models\Mship\Note\Type;
 
-class UpdateFeedbackFormRequest extends Request
+class NewFeedbackFormRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,6 +31,9 @@ class UpdateFeedbackFormRequest extends Request
             'question.*.type' => 'required|exists:mship_feedback_question_types,name',
             'question.*.exists' => 'exists:mship_feedback_questions,id',
             'question.*.required' => 'required|boolean',
+            'ident' => 'required',
+            'name' => 'required',
+            'contact' => 'nullable|email',
             'targeted' => 'nullable|boolean',
             'public' => 'nullable|boolean',
         ];

@@ -72,7 +72,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function itIsNotPossibleToJoinACommunityGroupAsANonDivisionMember()
     {
-        $this->expectException(\App\Exceptions\Community\Membership\MustBeADivisionMemberException::class);
+        $this->expectException(\App\Exceptions\Community\MustBeADivisionMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $international = \App\Models\Mship\State::findByCode('INTERNATIONAL');
@@ -100,7 +100,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function itIsNotPossibleToJoinTheSameGroupTwice()
     {
-        $this->expectException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
+        $this->expectException(\App\Exceptions\Community\AlreadyAGroupTierMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');
@@ -115,7 +115,7 @@ class GroupMembershipTest extends TestCase
     /** @test */
     public function itIsNotPossibleToJoinMoreThanOneGroupFromTheSameTier()
     {
-        $this->expectException(\App\Exceptions\Community\Membership\AlreadyAGroupTierMemberException::class);
+        $this->expectException(\App\Exceptions\Community\AlreadyAGroupTierMemberException::class);
 
         $member = factory(\App\Models\Mship\Account::class)->create();
         $divisionState = \App\Models\Mship\State::findByCode('DIVISION');

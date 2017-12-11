@@ -138,6 +138,9 @@
                                             <br/>
                                             {{ Form::checkbox('targeted', '1', true) }}
                                             This form is user specific.
+                                            <br/>
+                                            {{ Form::checkbox('public', '1', true) }}
+                                            This form should be listed publically.
                                             <br/><br/>
                                             {{ Form::submit("Create New Feedback Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
                                             <br/>

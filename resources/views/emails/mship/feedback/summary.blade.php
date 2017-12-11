@@ -6,9 +6,16 @@
 
     <ul>
         @foreach ($feedback as $item)
-            <li><strong>{{ $item->account->name }}</strong> - {{ $item->form->name }}
-                (Submitted: {{ $item->created_at->toDateTimeString() }})
-            </li>
+            @if ($item->targeted)
+              <li><strong>{{ $item->account->name }}</strong> - {{ $item->form->name }}
+                  (Submitted: {{ $item->created_at->toDateTimeString() }})
+              </li>
+            @else
+              <li><strong>{{ $item->form->name }}
+                  (Submitted: {{ $item->created_at->toDateTimeString() }})
+              </li>
+            @endif
+
         @endforeach
     </ul>
 

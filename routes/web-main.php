@@ -12,9 +12,9 @@ Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('auth-v
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Password Reset
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email')->middleware('auth:vatsim-sso');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset')->middleware('auth:vatsim-sso');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.request')->middleware('auth:vatsim-sso');
 
 // Password Change
 Route::group(['middleware' => ['auth_full_group']], function () {

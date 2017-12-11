@@ -52,6 +52,15 @@ class Form extends Model
         'slug',
     ];
 
+    public function scopePublic($query){
+      return $query->where('public', true);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function questions()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);

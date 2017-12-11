@@ -73,8 +73,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
             Route::get('configure/{form}', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
             Route::post('configure/{form}', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
-            Route::post('configure/{form}/enable', ['as' => 'config.enable', 'uses' => 'Feedback@postEnableForm']);
-            Route::post('configure/{form}/disable', ['as' => 'config.disable', 'uses' => 'Feedback@postDisableForm']);
+            Route::get('configure/{form}/toggle', ['as' => 'config.toggle', 'uses' => 'Feedback@getEnableDisableForm']);
+            Route::get('configure/{form}/visibility', ['as' => 'config.visibility', 'uses' => 'Feedback@getFormVisibility']);
 
             Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
             Route::get('list/{slug}', ['as' => 'form', 'uses' => 'Feedback@getFormFeedback']);
