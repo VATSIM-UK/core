@@ -42,11 +42,11 @@ class Pirep extends Model
         'bid_id',
         'flight_id',
     ];
-    public $timestamps = true;
     protected $dates = [
-        'created_at',
-        'updated_at',
         'deleted_at',
+    ];
+    protected $casts = [
+        'passed' => 'boolean',
     ];
 
     public function bid()
@@ -59,5 +59,17 @@ class Pirep extends Model
         return $query->whereHas('bid', function ($query) use ($cid) {
             $query->where('account_id', '=', $cid);
         });
+    }
+
+    public function markPassed($reason = 'Flight passed all criteria.')
+    {
+        $this->passed = true;
+        $this->pass_reason = $reason;
+    }
+
+    public function markFailed($reason = 'Flight failed at least one of the required criteria.')
+    {
+        $this->passed = false;
+        $this->pass_reason = $reason;
     }
 }
