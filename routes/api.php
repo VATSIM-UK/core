@@ -110,7 +110,7 @@ Route::group([
 Route::group([
     'as' => 'smartcars.api.',
     'prefix' => 'smartcars',
-    'namespace' => 'Smarcars\Api',
+    'namespace' => 'Smartcars\Api',
     'domain' => config('app.url'),
 ], function () {
     Route::get('/call', [
