@@ -20,6 +20,7 @@
                             <th>Fuel Used</th>
                             <th>Log</th>
                             <th>Status</th>
+                            <th>Passed?</th>
                         </tr>
                         @foreach($flights as $flight)
                             <tr>
@@ -31,8 +32,7 @@
                                 <td>{{ $flight->comments }}</td>
                                 <td>{{ $flight->fuel_used }}</td>
                                 <td>
-                                    <button class="btn btn-primary" data-toggle="collapse"
-                                            data-target="#{{ $flight->id }}-log">
+                                    <button class="btn btn-xs btn-primary" data-toggle="collapse" data-target="#{{ $flight->id }}-log">
                                         Show/Hide
                                     </button>
                                     <div id="{{ $flight->id }}-log" class="collapse">
@@ -40,6 +40,16 @@
                                     </div>
                                 </td>
                                 <td>{{ $flight->status }}</td>
+                                <td>
+                                    @if($flight->passed === true)
+                                        <i class="fa fa-check"></i>
+                                    @elseif($flight->passed === false)
+                                        <i class="fa fa-times"></i>
+                                    @else
+                                        <i class="fa fa-spinner"></i>
+                                    @endif
+                                    &nbsp;<a class="btn btn-xs btn-warning pull-right" href="{{ route('adm.smartcars.flights.edit', $flight) }}">Change</a>
+                                </td>
                             </tr>
                         @endforeach
                     </table>
