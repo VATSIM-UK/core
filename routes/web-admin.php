@@ -87,9 +87,9 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
     });
 
     Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
-        Route::resource('aircraft', 'Resources\AircraftController');
-        Route::resource('airports', 'Resources\AirportController');
-        Route::resource('exercises', 'Resources\ExerciseController');
+        Route::resource('configure/aircraft', 'Resources\AircraftController');
+        Route::resource('configure/airports', 'Resources\AirportController');
+        Route::resource('configure/exercises', 'Resources\ExerciseController');
         Route::resource('flights', 'Resources\FlightController');
     });
 });
