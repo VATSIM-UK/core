@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriteria[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
  * @property-read mixed $image
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight enabled()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight featured()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight icao($icao)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight whereArrivalId($value)
@@ -105,6 +107,16 @@ class Flight extends Model
     public function criteria()
     {
         return $this->hasMany(FlightCriteria::class, 'flight_id', 'id');
+    }
+
+    public function scopeEnabled($query)
+    {
+        return $query->where('enabled', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
     }
 
     public function getImageAttribute()
