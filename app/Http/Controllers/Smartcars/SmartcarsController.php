@@ -10,7 +10,9 @@ class SmartcarsController extends BaseController
 {
     public function getDashboard()
     {
-        return view('fte.dashboard');
+        $exercises = Flight::where('featured', true)->orderBy('created_at')->get();
+
+        return view('fte.dashboard')->with('exercises', $exercises);
     }
 
     public function getMap()
@@ -21,7 +23,7 @@ class SmartcarsController extends BaseController
     public function getExercise(Flight $exercise = null)
     {
         if (is_null($exercise)) {
-            return view('fte.exercises');
+            return view('fte.exercises')->with('exercises', Flight::orderBy('created_at')->get());
         } else {
             $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
 
