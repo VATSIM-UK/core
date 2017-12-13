@@ -10,7 +10,7 @@ class SmartcarsController extends BaseController
 {
     public function getDashboard()
     {
-        $exercises = Flight::where('featured', true)->orderBy('created_at')->get();
+        $exercises = Flight::featured()->enabled()->orderBy('created_at')->get();
 
         return view('fte.dashboard')->with('exercises', $exercises);
     }
@@ -23,7 +23,9 @@ class SmartcarsController extends BaseController
     public function getExercise(Flight $exercise = null)
     {
         if (is_null($exercise)) {
-            return view('fte.exercises')->with('exercises', Flight::orderBy('created_at')->get());
+            $exercises = Flight::enabled()->orderBy('created_at')->get();
+
+            return view('fte.exercises')->with('exercises', $exercises);
         } else {
             $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
 
