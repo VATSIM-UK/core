@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $fuel_used
  * @property string $log
  * @property int $status
+ * @property bool $passed
+ * @property string|null $pass_reason
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Bid $bid
@@ -30,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereLandingRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereLog($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep wherePassReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep wherePassed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereUpdatedAt($value)
