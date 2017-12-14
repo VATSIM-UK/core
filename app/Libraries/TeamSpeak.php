@@ -365,8 +365,6 @@ class TeamSpeak
             $maxIdleTime = 10;
         }
 
-        \Log::info($maxIdleTime);
-
         $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id']);
         if ($idleTime >= $maxIdleTime) {
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.1', ['maxIdleTime' => $maxIdleTime]));
