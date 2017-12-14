@@ -15,6 +15,7 @@ use DB;
 use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use TeamSpeak3_Node_Client;
+use TeamSpeak3_Node_Server;
 
 /**
  * Provides static methods for managing TeamSpeak.
@@ -347,7 +348,7 @@ class TeamSpeak
      * @param Account                $member
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
-    public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member)
+    public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member,TeamSpeak3_Node_Server $server)
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
@@ -358,6 +359,13 @@ class TeamSpeak
         } else {
             $maxIdleTime = 60;
         }
+
+        if($server->channelGetById($client->cid)->getId() == 1){
+            // This is the default channel
+            $maxIdleTime = 10;
+        }
+
+        \Log::info($maxIdleTime);
 
         $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id']);
         if ($idleTime >= $maxIdleTime) {
