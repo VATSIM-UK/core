@@ -348,7 +348,7 @@ class TeamSpeak
      * @param Account                $member
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
-    public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member,TeamSpeak3_Node_Server $server)
+    public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member)
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
@@ -360,7 +360,7 @@ class TeamSpeak
             $maxIdleTime = 60;
         }
 
-        if($server->channelGetById($client->cid)->getId() == 1){
+        if($client['cid'] == array_values($client->getParent()->channelList(['channel_flag_default' => 1]))[0]['cid']){
             // This is the default channel
             $maxIdleTime = 10;
         }

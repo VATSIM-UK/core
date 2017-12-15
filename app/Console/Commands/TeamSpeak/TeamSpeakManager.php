@@ -48,7 +48,7 @@ class TeamSpeakManager extends TeamSpeakCommand
                         TeamSpeak::checkClientNickname($client, $member);
                         TeamSpeak::checkClientServerGroups($client, $member);
                         TeamSpeak::checkClientChannelGroups($client, $member);
-                        TeamSpeak::checkClientIdleTime($client, $member, $tscon);
+                        TeamSpeak::checkClientIdleTime($client, $member);
                     }
                 } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                     self::handleServerQueryException($e);
