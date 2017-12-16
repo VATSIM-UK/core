@@ -17,10 +17,14 @@ class CreateSmartcarsFlightCriteria extends Migration
             $table->increments('id');
             $table->unsignedInteger('flight_id');
             $table->unsignedInteger('order');
-            $table->double('min_latitude', 12, 8)->nullable();
-            $table->double('max_latitude', 12, 8)->nullable();
-            $table->double('min_longitude', 12, 8)->nullable();
-            $table->double('max_longitude', 12, 8)->nullable();
+            $table->double('p1_latitude', 12, 8)->nullable();
+            $table->double('p1_longitude', 12, 8)->nullable();
+            $table->double('p2_latitude', 12, 8)->nullable();
+            $table->double('p2_longitude', 12, 8)->nullable();
+            $table->double('p3_latitude', 12, 8)->nullable();
+            $table->double('p3_longitude', 12, 8)->nullable();
+            $table->double('p4_latitude', 12, 8)->nullable();
+            $table->double('p4_longitude', 12, 8)->nullable();
             $table->integer('min_altitude')->nullable();
             $table->integer('max_altitude')->nullable();
             $table->smallInteger('min_groundspeed')->nullable();
