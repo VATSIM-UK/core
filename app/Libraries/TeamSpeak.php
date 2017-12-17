@@ -15,7 +15,6 @@ use DB;
 use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use TeamSpeak3_Node_Client;
-use TeamSpeak3_Node_Server;
 
 /**
  * Provides static methods for managing TeamSpeak.
@@ -360,7 +359,7 @@ class TeamSpeak
             $maxIdleTime = 60;
         }
 
-        if($client['cid'] == array_values($client->getParent()->channelList(['channel_flag_default' => 1]))[0]['cid']){
+        if ($client['cid'] == array_values($client->getParent()->channelList(['channel_flag_default' => 1]))[0]['cid']) {
             // This is the default channel
             $maxIdleTime = 10;
         }

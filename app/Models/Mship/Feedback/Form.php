@@ -55,8 +55,9 @@ class Form extends Model
         'slug',
     ];
 
-    public function scopePublic($query){
-      return $query->where('public', true);
+    public function scopePublic($query)
+    {
+        return $query->where('public', true);
     }
 
     public function getRouteKeyName()

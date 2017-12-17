@@ -13,12 +13,12 @@ class FixFeedbackOptionalQuestions extends Migration
      */
     public function up()
     {
-      Schema::table('mship_feedback_answers', function (Blueprint $table) {
-          $table->text('response')->nullable()->change();
-      });
-      Schema::table('mship_feedback_forms', function (Blueprint $table) {
-          $table->boolean('public')->after('targeted')->default(true);
-      });
+        Schema::table('mship_feedback_answers', function (Blueprint $table) {
+            $table->text('response')->nullable()->change();
+        });
+        Schema::table('mship_feedback_forms', function (Blueprint $table) {
+            $table->boolean('public')->after('targeted')->default(true);
+        });
     }
 
     /**
@@ -28,11 +28,11 @@ class FixFeedbackOptionalQuestions extends Migration
      */
     public function down()
     {
-      Schema::table('mship_feedback_answers', function (Blueprint $table) {
-          $table->text('response')->change();
-      });
-      Schema::table('mship_feedback_forms', function (Blueprint $table) {
-          $table->dropColumn('public');
-      });
+        Schema::table('mship_feedback_answers', function (Blueprint $table) {
+            $table->text('response')->change();
+        });
+        Schema::table('mship_feedback_forms', function (Blueprint $table) {
+            $table->dropColumn('public');
+        });
     }
 }

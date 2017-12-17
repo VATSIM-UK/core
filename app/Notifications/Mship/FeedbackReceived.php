@@ -45,10 +45,10 @@ class FeedbackReceived extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        if($this->feedback->targeted){
-          $subject = 'New Member Feedback Received';
-        }else{
-          $subject = 'New Feedback Received';
+        if ($this->feedback->targeted) {
+            $subject = 'New Member Feedback Received';
+        } else {
+            $subject = 'New Feedback Received';
         }
 
         return (new MailMessage)
