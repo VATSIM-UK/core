@@ -16,7 +16,6 @@ use Request;
  * @property string $action
  * @property string $ip
  * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account|null $actor
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $extra_data
@@ -29,7 +28,6 @@ use Request;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereSubjectType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sys\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Activity extends Model
