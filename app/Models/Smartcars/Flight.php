@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Aircraft $aircraft
  * @property-read \App\Models\Smartcars\Airport $arrival
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriteria[] $criteria
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriterion[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
  * @property-read mixed $image
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight enabled()
@@ -106,7 +106,7 @@ class Flight extends Model
 
     public function criteria()
     {
-        return $this->hasMany(FlightCriteria::class, 'flight_id', 'id');
+        return $this->hasMany(FlightCriterion::class, 'flight_id', 'id');
     }
 
     public function scopeEnabled($query)

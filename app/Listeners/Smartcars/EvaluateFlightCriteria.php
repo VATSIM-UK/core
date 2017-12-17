@@ -3,6 +3,8 @@
 namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
+use App\Models\Smartcars\FlightCriterion;
+use App\Models\Smartcars\Posrep;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EvaluateFlightCriteria implements ShouldQueue
@@ -16,55 +18,70 @@ class EvaluateFlightCriteria implements ShouldQueue
     {
         $bid = $event->bid;
         $flight = $bid->flight;
-        $flightCriteria = $flight->criteria->sortBy('order');
+        $criteria = $flight->criteria->sortBy('order');
         $pirep = $bid->pirep;
+        $posreps = $bid->posreps->sortBy('created_at');
 
-        foreach ($flightCriteria as $criterion) {
-            $posreps = $bid->posreps->filter(function ($posrep) use ($criterion) {
-                if ($criterion->min_latitude !== null && $criterion->min_latitude > $posrep->latitude) {
-                    return false;
-                }
-
-                if ($criterion->max_latitude !== null && $criterion->max_latitude < $posrep->latitude) {
-                    return false;
-                }
-
-                if ($criterion->min_longitude !== null && $criterion->min_longitude > $posrep->longitude) {
-                    return false;
-                }
-
-                if ($criterion->max_longitude !== null && $criterion->max_longitude < $posrep->longitude) {
-                    return false;
-                }
-
-                if ($criterion->min_altitude !== null && $criterion->min_altitude > $posrep->altitude) {
-                    return false;
-                }
-
-                if ($criterion->max_altitude !== null && $criterion->max_altitude < $posrep->altitude) {
-                    return false;
-                }
-
-                if ($criterion->min_groundspeed !== null && $criterion->min_groundspeed > $posrep->groundspeed) {
-                    return false;
-                }
-
-                if ($criterion->max_groundspeed !== null && $criterion->max_groundspeed > $posrep->groundspeed) {
-                    return false;
-                }
-
-                return true;
-            });
-
-            if ($posreps->isEmpty()) {
-                $pirep->markFailed("Failed on criterion #{$criterion->id}");
-                $pirep->save();
-
-                return;
+        $criterion = $criteria->shift();
+        foreach ($posreps as $posrep) {
+            if ($this->validPosrep($posrep, $criterion)) {
+                continue;
             }
+
+            $criterion = $criteria->shift();
+            if ($criterion === null) {
+                $pirep->markFailed("Posrep #{$posrep->id} failed - eligible posrep after all criteria fulfilled");
+                $pirep->save();
+            }
+
+            if ($this->validPosrep($posrep, $criterion)) {
+                continue;
+            }
+
+            $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
+            $pirep->save();
+
+            return;
         }
 
         $pirep->markPassed();
         $pirep->save();
+    }
+
+    /**
+     * @param Posrep $posrep
+     * @param FlightCriterion|null $criterion
+     * @return bool
+     */
+    protected function validPosrep($posrep, $criterion)
+    {
+        if ($criterion === null) {
+            return false;
+        }
+
+        // location
+        if (!$criterion->hasPoint($posrep->latitude, $posrep->longitude)) {
+            return false;
+        }
+
+        // altitude
+        if ($criterion->min_altitude !== null && $posrep->altitude < $criterion->min_altitude) {
+            return false;
+        }
+
+        if ($criterion->max_altitude !== null && $posrep->altitude > $criterion->max_altitude) {
+            return false;
+        }
+
+        // groundspeed
+        if ($criterion->min_groundspeed !== null && $posrep->groundspeed < $criterion->min_groundspeed) {
+            return false;
+        }
+
+        if ($criterion->max_groundspeed !== null && $posrep->groundspeed > $criterion->max_groundspeed) {
+            return false;
+        }
+
+        return true;
     }
 }

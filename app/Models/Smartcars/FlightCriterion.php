@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\FlightCriteria
+ * App\Models\Smartcars\FlightCriterion
  *
  * @property int $id
  * @property int $flight_id
@@ -18,29 +18,33 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $max_altitude
  * @property int|null $min_groundspeed
  * @property int|null $max_groundspeed
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereFlightId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMaxAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMaxGroundspeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMaxLatitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMaxLongitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMinAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMinGroundspeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMinLatitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereMinLongitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriteria whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereFlightId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxAltitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinAltitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereOrder($value)
  * @mixin \Eloquent
  */
-class FlightCriteria extends Model
+class FlightCriterion extends Model
 {
     protected $table = 'smartcars_flight_criteria';
 
     protected $fillable = [
         'flight_id',
-        'min_latitude',
-        'max_latitude',
-        'min_longitude',
-        'max_longitude',
+        'p1_latitude',
+        'p1_longitude',
+        'p2_latitude',
+        'p2_longitude',
+        'p3_latitude',
+        'p3_longitude',
+        'p4_latitude',
+        'p4_longitude',
         'min_altitude',
         'max_altitude',
         'min_groundspeed',
@@ -58,7 +62,7 @@ class FlightCriteria extends Model
      * @param float $longitude  The longitude of the point (horizontal, x)
      * @return bool
      */
-    public function containsPoint($latitude, $longitude)
+    public function hasPoint($latitude, $longitude)
     {
         $x = $longitude;
         $y = $latitude;
