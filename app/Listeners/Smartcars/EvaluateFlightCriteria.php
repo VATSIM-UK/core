@@ -4,16 +4,18 @@ namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
 use App\Models\Smartcars\FlightCriterion;
+use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Posrep;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EvaluateFlightCriteria implements ShouldQueue
 {
-    public function __construct()
-    {
-        //
-    }
-
+    /**
+     * Handle the event.
+     *
+     * @param BidCompleted $event
+     * @return void
+     */
     public function handle(BidCompleted $event)
     {
         $bid = $event->bid;
@@ -22,43 +24,53 @@ class EvaluateFlightCriteria implements ShouldQueue
         $pirep = $bid->pirep;
         $posreps = $bid->posreps->sortBy('created_at');
 
+        $newCriterion = true;
         $criterion = $criteria->shift();
         foreach ($posreps as $posrep) {
             if ($this->validPosrep($posrep, $criterion)) {
+                $newCriterion = false;
+
                 continue;
             }
 
+            if ($newCriterion) {
+                // went outside of the defined criteria
+                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
+                $pirep->save();
+
+                return;
+            }
+
+            $newCriterion = true;
             $criterion = $criteria->shift();
             if ($criterion === null) {
+                // flight did not finish within the defined criteria
                 $pirep->markFailed("Posrep #{$posrep->id} failed - eligible posrep after all criteria fulfilled");
                 $pirep->save();
-            }
 
-            if ($this->validPosrep($posrep, $criterion)) {
-                continue;
+                return;
             }
+        }
 
-            $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
+        if (($criterion = $criteria->shift())) {
+            // flight finished early, before all criteria were fulfilled
+            $pirep->markFailed("Not all criteria were fulfilled, starting from criterion #{$criterion->id}");
             $pirep->save();
 
             return;
         }
 
-        $pirep->markPassed();
+        $pirep->markPassed("All posreps passed successfully and all criteria were met");
         $pirep->save();
     }
 
     /**
      * @param Posrep $posrep
-     * @param FlightCriterion|null $criterion
+     * @param FlightCriterion $criterion
      * @return bool
      */
     protected function validPosrep($posrep, $criterion)
     {
-        if ($criterion === null) {
-            return false;
-        }
-
         // location
         if (!$criterion->hasPoint($posrep->latitude, $posrep->longitude)) {
             return false;
