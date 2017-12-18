@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7cbd76ee33d430aca7917ff21fc73eb4",
+    "content-hash": "4aa69155a0f720441720e23efd081a45",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
