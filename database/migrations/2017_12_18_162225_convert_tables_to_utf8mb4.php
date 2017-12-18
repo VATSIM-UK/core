@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ConvertTablesToUtf8mb4 extends Migration
@@ -16,8 +14,7 @@ class ConvertTablesToUtf8mb4 extends Migration
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
         $tables = DB::select('SHOW FULL TABLES WHERE Table_type = \'BASE TABLE\'');
-        foreach($tables as $table)
-        {
+        foreach ($tables as $table) {
             $tableName = array_values((array) $table)[0];
 
             DB::statement("ALTER TABLE
@@ -39,8 +36,7 @@ class ConvertTablesToUtf8mb4 extends Migration
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
         $tables = DB::select('SHOW FULL TABLES WHERE Table_type = \'BASE TABLE\'');
-        foreach($tables as $table)
-        {
+        foreach ($tables as $table) {
             $tableName = array_values((array) $table)[0];
 
             DB::statement("ALTER TABLE
