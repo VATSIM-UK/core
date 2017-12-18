@@ -102,9 +102,9 @@
         <div class="panel panel-ukblue">
             <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
             <div class="panel-body">
-                <strong>Departure Aerodrome:</strong> <a href="http://metar.vatsim.net/metar.php?id={{ $exercise->departure->icao }}">Click Here</a>
+                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $exercise->departure->icao }}">Click Here</a></span>
                 <br>
-                <strong>Arrival Aerodrome:</strong> <a href="http://metar.vatsim.net/metar.php?id={{ $exercise->arrival->icao }}">Click Here</a>
+                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $exercise->arrival->icao }}">Click Here</a></span>
             </div>
         </div>
     </div>
@@ -114,6 +114,19 @@
     <script src="//www.amcharts.com/lib/3/ammap.js" type="text/javascript"></script>
     <script src="//www.amcharts.com/lib/3/maps/js/worldHigh.js" type="text/javascript"></script>
     <script>
+        $.get('{{ route('metar', $exercise->departure->icao) }}', function (data) {
+            $('#dep-metar').fadeOut(400, function () {
+                    $('#dep-metar').html(data);
+                    $(this).fadeIn();
+                });
+        });
+        $.get('{{ route('metar', $exercise->arrival->icao) }}', function (data) {
+            $('#arr-metar').fadeOut(400, function () {
+                $('#arr-metar').html(data);
+                $(this).fadeIn();
+            });
+        });
+
         var map;
 
         // svg path for plane icon

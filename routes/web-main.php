@@ -150,9 +150,7 @@ Route::group([
     });
 });
 
-/*
- * SmartCARS ROUTES
- */
+// SmartCARS
 Route::any('frame.php', function () {
     \Log::info(\Request::method().'::'.\Request::fullUrl());
     \Log::info(\Request::all());
@@ -179,3 +177,21 @@ Route::group([
     Route::post('exercises/{exercise}/cancel', 'SmartcarsController@cancelExercise')->name('exercise.cancel');
     Route::get('history/{pirep?}', 'SmartcarsController@getHistory')->name('history');
 });
+
+// Helpers
+
+Route::get('metar/{airportIcao}', function ($airportIcao) {
+    return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
+        $client = new GuzzleHttp\Client();
+
+        try {
+            $response = $client->get("http://metar.vatsim.net/metar.php?id=$airportIcao");
+
+            if ($response->getStatusCode() === 200) {
+                return (string) $response->getBody();
+            }
+        } catch (GuzzleHttp\Exception\TransferException $e) {}
+
+        return 'METAR UNAVAILABLE';
+    });
+})->name('metar')->middleware(['auth']);
