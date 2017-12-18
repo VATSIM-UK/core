@@ -137,7 +137,7 @@ class Flight extends AdmController
         $pirep = new Pirep;
         $pirep->bid_id = $bid->id;
         $pirep->route = Input::get('route');
-        $pirep->flight_time = Input::get('flighttime');
+        $pirep->flight_time = str_replace('.', ':', Input::get('flighttime')).':00';
         $pirep->landing_rate = Input::get('landingrate');
         $pirep->comments = Input::get('comments');
         $pirep->fuel_used = Input::get('fuelused');
