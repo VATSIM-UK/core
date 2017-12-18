@@ -88,4 +88,17 @@ class FlightCriterion extends Model
 
         return $inside;
     }
+
+    /**
+     * Returns the centroid of the criterion's coordinates.
+     *
+     * @return array
+     */
+    public function centroid()
+    {
+        $latitude = ($this->p1_latitude + $this->p2_latitude + $this->p3_latitude + $this->p4_latitude) / 4;
+        $longitude = ($this->p1_longitude + $this->p2_longitude + $this->p3_longitude + $this->p4_longitude) / 4;
+
+        return ['latitude' => $latitude, 'longitude' => $longitude];
+    }
 }
