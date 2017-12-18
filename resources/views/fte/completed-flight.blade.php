@@ -100,48 +100,48 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <b>Date:</b>
-                        21st July 2017
+                        {{ $pirep->created_at }}
                     </div>
                     <div class="col-xs-4">
                         <b>Landing Rate:</b>
-                        -120fpm
+                        {{ $pirep->landing_rate }}
                     </div>
                     <div class="col-xs-4">
                         <b>Duration:</b>
-                        1hr 16m
+                        {{ $pirep->flight_time }}
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-4">
                         <b>ID:</b>
-                        VFR1
+                        {{ $pirep->bid->flight->id }}
                     </div>
                     <div class="col-xs-6">
                         <b>Name:</b>
-                        Road Trip
+                        {{ $pirep->bid->flight->name }}
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-12">
                         <b>Departure:</b>
-                        Biggin Hill (EGKB)
+                        {{ $pirep->bid->flight->departure->name }} ({{ $pirep->bid->flight->departure->icao }})
                     </div>
                     <div class="col-xs-12">
                         <b>Arrival:</b>
-                        Lydd (EGMD)
+                        {{ $pirep->bid->flight->arrival->name }} ({{ $pirep->bid->flight->arrival->icao }})
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-12">
                         <b>Registration:</b>
-                        G-NOOB
+                        {{ $pirep->bid->flight->aircraft->registration }}
                     </div>
                     <div class="col-xs-12">
                         <b>Aircraft Type:</b>
-                        Cessna 172 (C172)
+                        {{ $pirep->bid->flight->aircraft->fullname }} ({{ $pirep->bid->flight->aircraft->icao }})
                     </div>
                 </div>
             </div>

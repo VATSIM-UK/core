@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Smartcars;
 use App\Http\Controllers\BaseController;
 use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\Pirep;
+use Illuminate\Http\Request;
 
 class SmartcarsController extends BaseController
 {
@@ -62,12 +64,14 @@ class SmartcarsController extends BaseController
         return redirect()->back()->with('success', 'Exercise booking successfully deleted.');
     }
 
-    public function getHistory($flightId = null)
+    public function getHistory(Request $request, Pirep $pirep = null)
     {
-        if (is_null($flightId)) {
-            return view('fte.history');
+        if (is_null($pirep)) {
+            $pireps = Pirep::query()->belongsTo($request->user()->id)->orderByDesc('created_at')->get();
+
+            return view('fte.history')->with('pireps', $pireps);
         } else {
-            return view('fte.completed-flight');
+            return view('fte.completed-flight')->with('pirep', $pirep);
         }
     }
 }
