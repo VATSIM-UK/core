@@ -2,7 +2,6 @@
 
 namespace App\Models\Smartcars;
 
-use Illuminate\Support\Arr;
 use Storage;
 
 class FlightImage

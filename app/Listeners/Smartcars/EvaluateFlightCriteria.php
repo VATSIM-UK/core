@@ -4,7 +4,6 @@ namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
 use App\Models\Smartcars\FlightCriterion;
-use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Posrep;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -60,7 +59,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
-        $pirep->markPassed("All posreps passed successfully and all criteria were met");
+        $pirep->markPassed('All posreps passed successfully and all criteria were met');
         $pirep->save();
     }
 
