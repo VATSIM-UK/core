@@ -105,7 +105,7 @@ class Flight extends AdmController
         $posrep = new Posrep;
         $posrep->bid_id = $bid->id;
         $posrep->aircraft_id = $aircraft->id;
-        $posrep->route = Input::get('route');
+        $posrep->route = Input::get('route') ?: '';
         $posrep->altitude = Input::get('altitude');
         $posrep->heading_mag = Input::get('magneticheading');
         $posrep->heading_true = Input::get('trueheading');
@@ -136,7 +136,7 @@ class Flight extends AdmController
 
         $pirep = new Pirep;
         $pirep->bid_id = $bid->id;
-        $pirep->route = Input::get('route');
+        $pirep->route = Input::get('route') ?: '';
         $pirep->flight_time = str_replace('.', ':', Input::get('flighttime')).':00';
         $pirep->landing_rate = Input::get('landingrate');
         $pirep->comments = Input::get('comments');
