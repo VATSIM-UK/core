@@ -55,7 +55,7 @@ class Pirep extends Model
 
     public function bid()
     {
-        return $this->hasOne(\App\Models\Smartcars\Bid::class, 'id', 'bid_id');
+        return $this->belongsTo(\App\Models\Smartcars\Bid::class, 'bid_id', 'id');
     }
 
     public function scopeBelongsTo($query, $cid)

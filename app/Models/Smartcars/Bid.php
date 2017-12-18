@@ -86,7 +86,7 @@ class Bid extends Model
 
     public function pirep()
     {
-        return $this->belongsTo(Pirep::class, 'bid_id', 'id');
+        return $this->hasOne(Pirep::class, 'bid_id', 'id');
     }
 
     public function posreps()
