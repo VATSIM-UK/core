@@ -29,6 +29,8 @@ class SmartcarsController extends BaseController
 
             return view('fte.exercises')->with('exercises', $exercises);
         } else {
+            $this->authorize('bid', $exercise);
+
             $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
 
             return view('fte.exercise')->with('exercise', $exercise)->with('booking', $bid);
@@ -37,6 +39,8 @@ class SmartcarsController extends BaseController
 
     public function bookExercise(Flight $exercise)
     {
+        $this->authorize('bid', $exercise);
+
         $bids = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->get();
         if ($bids->isNotEmpty()) {
             return redirect()->back()->with('error', 'Exercise has already been booked.');
@@ -71,6 +75,8 @@ class SmartcarsController extends BaseController
 
             return view('fte.history')->with('pireps', $pireps);
         } else {
+            $this->authorize('view', $pirep);
+
             return view('fte.completed-flight')->with('pirep', $pirep);
         }
     }
