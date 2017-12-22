@@ -14,6 +14,7 @@
                         <th>Flight Name</th>
                         <th>Landing Rate</th>
                         <th>Duration</th>
+                        <th>Pass/Fail</th>
                         <th>Details</th>
                     </tr>
                     @foreach($pireps as $pirep)
@@ -23,6 +24,15 @@
                             <td>{{ $pirep->bid->flight->name }}</td>
                             <td>{{ $pirep->landing_rate }}</td>
                             <td>{{ $pirep->flight_time }}</td>
+                            <td>
+                                @if($pirep->passed === true)
+                                    <i class="fa fa-check"></i>
+                                @elseif($pirep->passed === false)
+                                    <i class="fa fa-times"></i>
+                                @else
+                                    <i class="fa fa-spinner"></i>
+                                @endif
+                            </td>
                             <td><a href="{{ route('fte.history', $pirep) }}">View</a></td>
                         </tr>
                     @endforeach

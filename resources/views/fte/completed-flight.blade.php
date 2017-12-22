@@ -144,6 +144,27 @@
                         {{ $pirep->bid->flight->aircraft->fullname }} ({{ $pirep->bid->flight->aircraft->icao }})
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>Pass/Fail:</b>
+                        @if($pirep->passed === true)
+                            Passed
+                        @elseif($pirep->passed === false)
+                            Failed
+                        @else
+                            Pending
+                        @endif
+                    </div>
+                    <div class="col-xs-12">
+                        <b>Reason:</b>
+                        {{ $pirep->pass_reason  }}
+                    </div>
+                    <div class="col-xs-12">
+                        <b>Problem?</b>
+                        <a href="https://helpdesk.vatsim.uk" target="_blank">Contact the PTD</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
