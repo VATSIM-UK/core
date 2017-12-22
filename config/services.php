@@ -39,6 +39,12 @@ return [
         'token' => env('SLACK_SECRET'),
     ],
 
+    'google' => [
+        'maps' => [
+            'jsapi' => env('MAPS_API_KEY', ''),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Services

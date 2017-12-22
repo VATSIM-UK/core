@@ -33,7 +33,10 @@ class SmartcarsController extends BaseController
 
             $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
 
-            return view('fte.exercise')->with('exercise', $exercise)->with('booking', $bid);
+            return view('fte.exercise')
+                ->with('flight', $exercise)
+                ->with('criteria', $exercise->criteria->sortBy('order'))
+                ->with('booking', $bid);
         }
     }
 
@@ -77,7 +80,12 @@ class SmartcarsController extends BaseController
         } else {
             $this->authorize('view', $pirep);
 
-            return view('fte.completed-flight')->with('pirep', $pirep);
+            return view('fte.completed-flight')
+                ->with('pirep', $pirep)
+                ->with('bid', $pirep->bid)
+                ->with('flight', $pirep->bid->flight)
+                ->with('criteria', $pirep->bid->flight->criteria->sortBy('order'))
+                ->with('posreps', $pirep->bid->posreps->sortBy('created_at'));
         }
     }
 }
