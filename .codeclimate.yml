@@ -36,3 +36,4 @@ exclude_paths:
   - "storage/"
   - "public/"
   - "resources/"
+  - "database/migrations/"
