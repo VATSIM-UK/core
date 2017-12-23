@@ -21,6 +21,7 @@ install:
 - cp .env.example .env
 - php artisan key:generate
 - php artisan migrate -vvv -n
+- php artisan migrate:refresh -vvv -n
 - npm run prod
 
 before_script:
