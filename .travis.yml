@@ -1,13 +1,12 @@
 language: php
+
 php:
 - 7.0
 - 7.1
 - 7.2
-services:
-- mysql:5.5
 
-matrix:
-  fast_finish: true
+addons:
+  mariadb: '10.2'
 
 before_install:
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
