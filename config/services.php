@@ -58,4 +58,8 @@ return [
         'database' => env('HELPDESK_DATABASE'),
     ],
 
+    'moodle' => [
+        'database' => env('MOODLE_DATABASE'),
+    ]
+
 ];
