@@ -60,6 +60,6 @@ return [
 
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
-    ]
+    ],
 
 ];
