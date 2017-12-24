@@ -41,9 +41,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | VATSIM UK Services
+    | VATSIM UK Hosted Services
     |--------------------------------------------------------------------------
     */
+
+    'community' => [
+        'init_file' => env('COMMUNITY_INIT_FILE', '/srv/www/community/init.php'),
+    ],
 
     'helpdesk' => [
         'database' => env('HELPDESK_DATABASE'),
