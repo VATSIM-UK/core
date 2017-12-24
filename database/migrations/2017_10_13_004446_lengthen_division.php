@@ -28,8 +28,6 @@ class LengthenDivision extends Migration
         DB::table('mship_account_state')
             ->where(DB::raw('LENGTH(division)'), '>', 3)
             ->update(['division' => DB::raw('SUBSTRING(division, 1, 3)')]);
-        Schema::table('mship_account_state', function (Blueprint $table) {
-            $table->string('division', 3)->nullable()->change();
-        });
+        DB::statement('ALTER TABLE mship_account_state CHANGE division division VARCHAR(3) DEFAULT NULL');
     }
 }

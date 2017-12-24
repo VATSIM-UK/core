@@ -55,7 +55,6 @@
         "symfony/css-selector": "~3.0",
         "laravel/homestead": "^3.0",
         "laracasts/generators": "^1.1",
-        "codeclimate/php-test-reporter": "dev-master",
         "filp/whoops": "~2.0"
     },
     "autoload": {
@@ -101,7 +100,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.0"
+            "php": "7.1"
         },
         "preferred-install": "dist",
         "sort-packages": true
