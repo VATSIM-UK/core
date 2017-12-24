@@ -46,7 +46,12 @@ return [
     */
 
     'community' => [
+        'database' => env('COMMUNITY_DATABASE'),
         'init_file' => env('COMMUNITY_INIT_FILE', '/srv/www/community/init.php'),
+    ],
+
+    'cts' => [
+        'database' => env('CTS_DATABASE'),
     ],
 
     'helpdesk' => [
