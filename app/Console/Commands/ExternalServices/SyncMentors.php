@@ -40,27 +40,33 @@ class SyncMentors extends Command
     protected $pilotGroupID;
     protected $atcGroupID;
 
+    protected $ctsDB;
+    protected $communityDB;
+
     /**
      * Create a new command instance.
      */
     public function initialise()
     {
+        $this->ctsDB = config('services.cts.database');
+        $this->communityDB = config('services.community.database');
+
         // set the cutoff date
         $this->atcCutoffDate = Carbon::now()->subMonths(6);
         $this->pilotCutoffDate = Carbon::now()->subYears(5);
 
         // intialise scripts for interfacing with the forums
-        require_once '/var/www/community/init.php';
+        require_once config('services.community.init_file');
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         // get the relevant DB IDs
-        foreach (DB::table('prod_rts.rts')->get(['id', 'name']) as $rts) {
+        foreach (DB::table(config('services.cts.database').'.rts')->get(['id', 'name']) as $rts) {
             $this->rtsIDs[snake_case($rts->name)] = $rts->id;
         }
-        $this->memberForumIDs = DB::table('prod_community.ibf_core_members')->pluck('member_id', 'vatsim_cid');
-        $this->forumGroupIDs = DB::table('prod_community.ibf_core_groups AS g')
-            ->join('prod_community.ibf_core_sys_lang_words AS w', DB::raw('CONCAT("core_group_", g.g_id)'), '=', 'w.word_key')
+        $this->memberForumIDs = DB::table("{$this->communityDB}.ibf_core_members")->pluck('member_id', 'vatsim_cid');
+        $this->forumGroupIDs = DB::table("{$this->communityDB}.ibf_core_groups AS g")
+            ->join("{$this->communityDB}.ibf_core_sys_lang_words AS w", DB::raw('CONCAT("core_group_", g.g_id)'), '=', 'w.word_key')
             ->pluck('word_default', 'g_id');
         $this->pilotGroupID = array_search('Pilot Mentors', $this->forumGroupIDs);
         $this->atcGroupID = array_search('ATC Mentors', $this->forumGroupIDs);
@@ -82,22 +88,22 @@ class SyncMentors extends Command
     protected function addGroupsToMembers()
     {
         // get all mentor position assignments
-        $positions = DB::table('prod_rts.position_validations AS v')
+        $positions = DB::table("{$this->ctsDB}.position_validations AS v")
             ->select(
                 'v.member_id AS id',
                 'v.position_id AS position',
                 'p.callsign',
                 'm.name',
                 'rts.id as rts_id',
-                DB::raw('IF (v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'"), FALSE, TRUE) AS atc_cutoff'),
-                DB::raw('IF (v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'"), FALSE, TRUE) AS pilot_cutoff')
-            )->leftJoin('prod_rts.positions AS p', 'p.id', '=', 'v.position_id')
-            ->leftJoin('prod_rts.members AS m', 'v.member_id', '=', 'm.id')
-            ->leftJoin('prod_rts.rts', 'p.rts_id', '=', 'rts.id')
+                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'"), FALSE, TRUE) AS atc_cutoff'),
+                DB::raw("IF (v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'"), FALSE, TRUE) AS pilot_cutoff')
+            )->leftJoin("{$this->ctsDB}.positions AS p", 'p.id', '=', 'v.position_id')
+            ->leftJoin("{$this->ctsDB}.members AS m", 'v.member_id', '=', 'm.id')
+            ->leftJoin("{$this->ctsDB}.rts", 'p.rts_id', '=', 'rts.id')
             ->where('v.status', 5)
             ->where(function ($query) {
-                $query->where(DB::raw('v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'")'), true)
-                    ->orWhere(DB::raw('v.member_id IN (SELECT DISTINCT mentor_id FROM prod_rts.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = '.$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'")'), true);
+                $query->where(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id != ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->atcCutoffDate.'")'), true)
+                    ->orWhere(DB::raw("v.member_id IN (SELECT DISTINCT mentor_id FROM {$this->ctsDB}.sessions WHERE taken = 1 AND cancelled_datetime IS NULL AND noShow = 0 AND rts_id = ".$this->rtsIDs['pilots'].' AND taken_date > "'.$this->pilotCutoffDate.'")'), true);
             })->orderBy('name')
             ->orderBy('callsign')
             ->get();

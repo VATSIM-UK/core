@@ -24,6 +24,7 @@ class SyncRTS extends Command
     protected $description = 'Sync membership data from Core to the RTS system.';
 
     protected $sso_account_id;
+    protected $ctsDB;
 
     /**
      * Execute the console command.
@@ -32,11 +33,12 @@ class SyncRTS extends Command
      */
     public function handle()
     {
+        $this->ctsDB = config('services.cts.database');
         $this->sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first()->id;
 
         $this->log("RTS DIVISION DATABASE IMPORT STARTED\n");
 
-        $members = DB::table('prod_rts.members');
+        $members = DB::table("{$this->ctsDB}.members");
         if ($this->option('force')) {
             $members->where('cid', '=', $this->option('force'))
                     ->where('deleted', '=', '0');
@@ -115,7 +117,7 @@ class SyncRTS extends Command
             unset($updateData['email']);
         }
 
-        DB::table('prod_rts.members')
+        DB::table("{$this->ctsDB}.members")
             ->where('cid', '=', $cid)
             ->update($updateData);
 
