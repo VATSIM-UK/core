@@ -33,10 +33,6 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-xs-4">
-                        <b>ID:</b>
-                        {{ $flight->id }}
-                    </div>
                     <div class="col-xs-6">
                         <b>Name:</b>
                         {{ $flight->name }}
