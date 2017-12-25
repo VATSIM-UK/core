@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-xs-4">
                         <b>Landing Rate:</b>
-                        {{ $pirep->landing_rate }}
+                        {{ $pirep->landing_rate }}fpm
                     </div>
                     <div class="col-xs-4">
                         <b>Duration:</b>
@@ -77,12 +77,8 @@
                         @endif
                     </div>
                     <div class="col-xs-12">
-                        <b>Reason:</b>
-                        {{ $pirep->pass_reason  }}
-                    </div>
-                    <div class="col-xs-12">
                         <b>Problem?</b>
-                        <a href="https://helpdesk.vatsim.uk" target="_blank">Contact the PTD</a>
+                        <a href="https://helpdesk.vatsim.uk" target="_blank">Contact the Pilot Training Department.</a>
                     </div>
                 </div>
             </div>
