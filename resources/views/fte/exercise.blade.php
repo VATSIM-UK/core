@@ -30,17 +30,20 @@
         </div>
 
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Flight Details
+            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Exercise Details
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-xs-4">
-                        <b>Code:</b>
-                        {{ $flight->code }}
-                    </div>
                     <div class="col-xs-6">
                         <b>Name:</b>
                         {{ $flight->name }}
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>Description:</b>
+                        {{ $flight->description }}
                     </div>
                 </div>
                 <br/>
