@@ -10,17 +10,15 @@
                 <table class="table table-bordered table-striped table-hover">
                     <tr>
                         <th>Date</th>
-                        <th>Flight ID</th>
-                        <th>Flight Name</th>
+                        <th>Exercise Name</th>
                         <th>Landing Rate</th>
                         <th>Duration</th>
-                        <th>Pass/Fail</th>
+                        <th>Outcome</th>
                         <th>Details</th>
                     </tr>
                     @foreach($pireps as $pirep)
                         <tr>
-                            <td>{{ $pirep->created_at }}</td>
-                            <td>{{ $pirep->bid->flight->id }}</td>
+                            <td>{{ $pirep->created_at->format('dS M Y') }}</td>
                             <td>{{ $pirep->bid->flight->name }}</td>
                             <td>{{ $pirep->landing_rate }}</td>
                             <td>{{ $pirep->flight_time }}</td>
