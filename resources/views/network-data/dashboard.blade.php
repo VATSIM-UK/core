@@ -40,8 +40,8 @@
                     <table class="table table-striped tabled-bordered table-hover">
                         <tr>
                             <th>Callsign</th>
-                            <th>Type</th>
-                            <th>Frequency</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
                             <th>Duration</th>
                             <th>Logged On</th>
                         </tr>
