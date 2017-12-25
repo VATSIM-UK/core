@@ -4,6 +4,7 @@ namespace App\Http\Controllers\NetworkData;
 
 use App\Http\Controllers\BaseController;
 use App\Models\NetworkData\Atc;
+use App\Models\NetworkData\Pilot;
 
 class Online extends BaseController
 {
@@ -18,7 +19,16 @@ class Online extends BaseController
                               },
                           ])->get();
 
+        $pilotSessions = Pilot::remember(2)
+            ->online()
+            ->withinDivision()
+            ->with([
+                'account' => function ($q) {
+                    $q->remember(1);
+                },
+            ])->get();
+
         return $this->viewMake('network-data.site.online')
-                    ->with('atcSessions', $atcSessions);
+                    ->with('atcSessions', $atcSessions)->with('pilotSessions', $pilotSessions);
     }
 }

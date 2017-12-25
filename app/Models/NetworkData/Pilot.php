@@ -4,6 +4,7 @@ namespace App\Models\NetworkData;
 
 use App\Models\Airport;
 use App\Models\Model;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\NetworkData\Pilot
@@ -64,6 +65,9 @@ use App\Models\Model;
  */
 class Pilot extends Model
 {
+
+    use Rememberable;
+
     protected $table = 'networkdata_pilots';
     protected $primaryKey = 'id';
     public $dates = ['departed_at', 'arrived_at', 'connected_at', 'disconnected_at', 'created_at', 'updated_at'];

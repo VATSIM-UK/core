@@ -45,9 +45,37 @@
             {!! HTML::panelOpen("Online Pilots", ["type" => "vuk", "key" => "letter-p"]) !!}
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
-                    <p class="text-center">
-                        Coming soon!
-                    </p>
+                    <table class="table table-striped tabled-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Callsign</th>
+                            <th>Aircraft</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
+                            <th>Name</th>
+                            <th>Logged On</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($pilotSessions as $pilot)
+                            <tr>
+                                <td>{{ $pilot->callsign }}</td>
+                                <td>{{ $pilot->aircraft }}</td>
+                                <td>{{ $pilot->departure_airport }}</td>
+                                <td>{{ $pilot->arrival_airport }}</td>
+                                <td>@include("partials._account_link", ["account" => $pilot->account])</td>
+                                <td>{{ HTML::fuzzyDate($pilotSessions->connected_at) }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="6" class="text-center">
+                                There are currently {{ $pilotSessions->count() }} pilots within the UK.
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
 
             </div>
