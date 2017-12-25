@@ -65,7 +65,6 @@ use Watson\Rememberable\Rememberable;
  */
 class Pilot extends Model
 {
-
     use Rememberable;
 
     protected $table = 'networkdata_pilots';
