@@ -176,6 +176,7 @@ Route::group([
     Route::post('exercises/{exercise}/book', 'SmartcarsController@bookExercise')->name('exercise.book');
     Route::post('exercises/{exercise}/cancel', 'SmartcarsController@cancelExercise')->name('exercise.cancel');
     Route::get('history/{pirep?}', 'SmartcarsController@getHistory')->name('history');
+    Route::get('guide', 'SmartcarsController@getGuide')->name('guide');
 });
 
 // Helpers

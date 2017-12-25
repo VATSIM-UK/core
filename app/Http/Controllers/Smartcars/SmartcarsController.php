@@ -22,6 +22,11 @@ class SmartcarsController extends BaseController
         return view('fte.map');
     }
 
+    public function getGuide()
+    {
+        return view('fte.guide');
+    }
+
     public function getExercise(Flight $exercise = null)
     {
         if (is_null($exercise)) {

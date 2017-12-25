@@ -4,14 +4,14 @@
     <div class="row equal">
         <div class="col-md-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
+                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Getting Started
                 </div>
                 <div class="panel-body text-center">
-                    <a href="{{route("fte.map")}}">
-                        {{ HTML::image('/images/world.png', 'world', array( 'width' => 80, 'height' => 80 )) }}
+                    <a href="{{route("fte.guide")}}">
+                        {{ HTML::image('/images/book.png', 'world', array( 'width' => 80, 'height' => 80 )) }}
                     </a>
                     <br><br>
-                    View map of all flights in progress.
+                    Check out this guide for how to get started.
                 </div>
             </div>
         </div>
