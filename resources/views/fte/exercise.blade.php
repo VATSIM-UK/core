@@ -13,18 +13,20 @@
                            onclick="event.preventDefault(); document.getElementById('book-form').submit();">
                             Book Flight
                         </a>
-                        <form id="book-form" action="{{ route('fte.exercise.book', $flight) }}" method="POST" style="display: none;">
+                        <form id="book-form" action="{{ route('fte.exercise.book', $flight) }}" method="POST"
+                              style="display: none;">
                             {{ csrf_field() }}
                         </form>
-                    @else
-                        <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
-                           onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
-                            Cancel Flight
-                        </a>
-                        <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    @endempty
+                        @else
+                            <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
+                               onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
+                                Cancel Flight
+                            </a>
+                            <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST"
+                                  style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+                            @endempty
                 </div>
             </div>
         </div>
@@ -96,7 +98,9 @@
         <div class="panel panel-ukblue">
             <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
             <div class="panel-body">
-                <p>Information unavailable.</p>
+                <p>Flight Training Exercises is still really new!<br>
+                    Once we have enough exercises completed, we will be able to show stats like average flight time,
+                    average landing rate and average pass rate.</p>
             </div>
         </div>
     </div>
@@ -105,9 +109,11 @@
         <div class="panel panel-ukblue">
             <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
             <div class="panel-body">
-                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
+                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a
+                            href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
                 <br>
-                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
+                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a
+                            href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
             </div>
         </div>
     </div>
@@ -120,9 +126,11 @@
         var map;
 
         function initMap() {
-            google.maps.Polyline.prototype.getBounds = function() {
+            google.maps.Polyline.prototype.getBounds = function () {
                 var bounds = new google.maps.LatLngBounds();
-                this.getPath().forEach(function(element,index){ bounds.extend(element); });
+                this.getPath().forEach(function (element, index) {
+                    bounds.extend(element);
+                });
                 return bounds;
             };
 
