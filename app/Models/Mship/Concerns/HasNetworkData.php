@@ -13,8 +13,7 @@ trait HasNetworkData
     {
         return $this->hasMany(\App\Models\NetworkData\Atc::class, 'account_id', 'id');
     }
-
-
+    
     /**
      * Get the member's current ATC session, if connected.
      *
