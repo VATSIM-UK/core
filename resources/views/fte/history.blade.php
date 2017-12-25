@@ -20,7 +20,7 @@
                         <tr>
                             <td>{{ $pirep->created_at->format('dS M Y') }}</td>
                             <td>{{ $pirep->bid->flight->name }}</td>
-                            <td>{{ $pirep->landing_rate }}</td>
+                            <td>{{ $pirep->landing_rate }}fpm</td>
                             <td>{{ $pirep->flight_time }}</td>
                             <td>
                                 @if($pirep->passed === true)
