@@ -109,18 +109,29 @@
         <div class="panel panel-ukblue">
             <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
             <div class="panel-body">
-                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a
-                            href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
+                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
                 <br>
-                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a
-                            href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
+                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
             </div>
         </div>
     </div>
 @endsection
 
-@section ('scripts')
 @section('scripts')
+    <script>
+        $.get('{{ route('metar', $flight->departure->icao) }}', function (data) {
+            $('#dep-metar').fadeOut(400, function () {
+                $('#dep-metar').html(data);
+                $(this).fadeIn();
+            });
+        });
+        $.get('{{ route('metar', $flight->arrival->icao) }}', function (data) {
+            $('#arr-metar').fadeOut(400, function () {
+                $('#arr-metar').html(data);
+                $(this).fadeIn();
+            });
+        });
+    </script>
     <script>
         var poly;
         var map;
@@ -147,5 +158,4 @@
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap">
     </script>
-@endsection
 @endsection
