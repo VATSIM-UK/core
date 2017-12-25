@@ -14,6 +14,7 @@ trait HasNetworkData
         return $this->hasMany(\App\Models\NetworkData\Atc::class, 'account_id', 'id');
     }
 
+
     /**
      * Get the member's current ATC session, if connected.
      *
@@ -41,8 +42,8 @@ trait HasNetworkData
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-//    public function networkDataPilot()
-//    {
-//        return $this->hasMany(\App\Modules\NetworkData\Models\Pilot::class, "account_id", "id");
-//    }
+    public function networkDataPilot()
+    {
+        return $this->hasMany(\App\Models\NetworkData\Pilot::class, 'account_id', 'id');
+    }
 }

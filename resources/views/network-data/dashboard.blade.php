@@ -36,9 +36,26 @@
             {!! HTML::panelOpen('My Pilot Sessions', ['type' => 'vuk', 'key' => 'letter-p']) !!}
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
-                    <p class="text-center">
-                        Coming soon!
-                    </p>
+                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->links() }}</span>
+                    <table class="table table-striped tabled-bordered table-hover">
+                        <tr>
+                            <th>Callsign</th>
+                            <th>Type</th>
+                            <th>Frequency</th>
+                            <th>Duration</th>
+                            <th>Logged On</th>
+                        </tr>
+                        @foreach($pilotSessions as $pilot)
+                            <tr>
+                                <td>{{ $pilot->callsign }}</td>
+                                <td>{{ $pilot->departure_airport }}</td>
+                                <td>{{ $pilot->arrival_airport }}</td>
+                                <td>{{ Carbon\Carbon::now()->subMinutes($pilot->minutes_online)->diffForHumans(null, true) }}</td>
+                                <td>{{ HTML::fuzzyDate($pilot->connected_at) }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->links() }}</span>
                 </div>
 
             </div>
