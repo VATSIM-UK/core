@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <b>Date:</b>
-                        {{ $pirep->created_at->toDateString() }}
+                        {{ $pirep->created_at->format('dS M Y') }}
                     </div>
                     <div class="col-xs-4">
                         <b>Landing Rate:</b>
