@@ -6,8 +6,7 @@
             <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
             <div class="panel-body">
                 <div class="">
-                    <a href="{{ route('fte.dashboard') }}" class="btn btn-primary"><< Dashboard</a>
-
+                    <a href="{{ route('fte.dashboard') }}" class="btn btn-primary">&lt;&lt; Dashboard</a>
                     @empty($booking)
                         <a class="btn btn-success" href="{{ route('fte.exercise.book', $flight) }}"
                            onclick="event.preventDefault(); document.getElementById('book-form').submit();">
@@ -17,16 +16,16 @@
                               style="display: none;">
                             {{ csrf_field() }}
                         </form>
-                        @else
-                            <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
-                               onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
-                                Cancel Flight
-                            </a>
-                            <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST"
-                                  style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
-                            @endempty
+                    @else
+                        <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
+                           onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
+                            Cancel Flight
+                        </a>
+                        <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST"
+                              style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    @endempty
                 </div>
             </div>
         </div>
@@ -76,10 +75,11 @@
         <div class="panel panel-ukblue">
             <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
             <div class="panel-body">
-                <div class="">
-                    <p><a href="https://vatsim.uk/{{ $flight->departure->icao }}/">Departure Resources</a></p>
-                    <p><a href="https://vatsim.uk/{{ $flight->arrival->icao }}/">Arrival Resources</a></p>
-                </div>
+                @forelse($flight->resources->sortBy('display_name') as $resource)
+                    <p><a href="{{ $resource->asset() }}">{{ $resource->display_name }}</a></p>
+                @empty
+                    <p>No resources available.</p>
+                @endforelse
             </div>
         </div>
     </div>

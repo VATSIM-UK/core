@@ -29,7 +29,7 @@
                             <th>Flight Time</th>
                             <th>Notes</th>
                             <th>Enabled</th>
-                            <th colspan="2">Actions</th>
+                            <th colspan="3">Actions</th>
                         </tr>
                         @foreach($exercises as $exercise)
                             <tr>
@@ -62,6 +62,9 @@
                                     {!! Form::open(['id' => "delete-$exercise->id", 'method'  => 'delete', 'route' => ['adm.smartcars.exercises.destroy', $exercise->id]]) !!}
                                     <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
                                     {!! Form::close() !!}
+                                </td>
+                                <td>
+                                    <a href="{{ route('adm.smartcars.resources.index', $exercise) }}" class="btn btn-xs btn-primary">Resources</a>
                                 </td>
                             </tr>
                         @endforeach
