@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $bid_id
  * @property int $aircraft_id
- * @property string $route
+ * @property string|null $route
  * @property int $altitude
  * @property int $heading_mag
  * @property int $heading_true

@@ -10,10 +10,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $flight_id
  * @property int $order
- * @property float|null $min_latitude
- * @property float|null $max_latitude
- * @property float|null $min_longitude
- * @property float|null $max_longitude
+ * @property float|null $p1_latitude
+ * @property float|null $p1_longitude
+ * @property float|null $p2_latitude
+ * @property float|null $p2_longitude
+ * @property float|null $p3_latitude
+ * @property float|null $p3_longitude
+ * @property float|null $p4_latitude
+ * @property float|null $p4_longitude
  * @property int|null $min_altitude
  * @property int|null $max_altitude
  * @property int|null $min_groundspeed
@@ -22,13 +26,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxAltitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxGroundspeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxLatitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinAltitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinGroundspeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinLatitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Latitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Longitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP2Latitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP2Longitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP3Latitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP3Longitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP4Latitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP4Longitude($value)
  * @mixin \Eloquent
  */
 class FlightCriterion extends Model

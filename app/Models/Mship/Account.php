@@ -112,6 +112,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Pirep[] $pireps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[] $qualifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readSystemNotifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
