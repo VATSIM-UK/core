@@ -141,6 +141,7 @@ In order to log in to your development environment, you must use the VATSIM SSO 
 * The login details for the Demo SSO site may be found here: <https://forums.vatsim.net/viewtopic.php?f=134&t=64909>
     * DO NOT use your own VATSIM credentials, they will not work.
     * If you wish to set up a secondary password on the account, you may do that through the front end after logging in.
+> You *must* ensure that you preserve the new lines in the RSA key, else it will fail. When pasting this into the .env file, ensure that you replace any new lines with a `\n`. E.G at the start of the key, `-----BEGIN RSA PRIVATE KEY-----\n[RSA Key continues here...]`
 
 #### 6 - (Optional) Admin panel access
 
