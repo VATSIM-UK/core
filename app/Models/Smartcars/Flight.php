@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriterion[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
  * @property-read mixed $image
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightResource[] $resources
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight enabled()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight featured()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight icao($icao)
@@ -107,6 +108,11 @@ class Flight extends Model
     public function criteria()
     {
         return $this->hasMany(FlightCriterion::class, 'flight_id', 'id');
+    }
+
+    public function resources()
+    {
+        return $this->hasMany(FlightResource::class, 'flight_id', 'id');
     }
 
     public function scopeEnabled($query)
