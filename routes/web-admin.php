@@ -90,6 +90,7 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         Route::resource('configure/aircraft', 'Resources\AircraftController');
         Route::resource('configure/airports', 'Resources\AirportController');
         Route::resource('configure/exercises', 'Resources\ExerciseController');
+        Route::resource('configure/exercises/{flight}/resources', 'Resources\ExerciseResourceController');
         Route::resource('flights', 'Resources\FlightController');
     });
 });
