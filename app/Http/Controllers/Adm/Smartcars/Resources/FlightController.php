@@ -12,6 +12,7 @@ class FlightController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
     {
@@ -25,8 +26,9 @@ class FlightController extends Controller
     /**
      * Edit the specified resource.
      *
-     * @param  \App\Models\Smartcars\Pirep  $flight
+     * @param  \App\Models\Smartcars\Pirep $flight
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Pirep $flight)
     {
@@ -38,8 +40,9 @@ class FlightController extends Controller
     /**
      * Update the specified resource.
      *
-     * @param  \App\Models\Smartcars\Pirep  $flight
+     * @param  \App\Models\Smartcars\Pirep $flight
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Pirep $flight)
     {

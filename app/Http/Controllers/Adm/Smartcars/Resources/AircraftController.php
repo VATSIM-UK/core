@@ -93,17 +93,6 @@ class AircraftController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Smartcars\Aircraft  $aircraft
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Aircraft $aircraft)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Smartcars\Aircraft $aircraft

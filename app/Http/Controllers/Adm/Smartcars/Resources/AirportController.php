@@ -81,17 +81,6 @@ class AirportController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Smartcars\Airport  $airport
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Airport $airport)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Smartcars\Airport $airport

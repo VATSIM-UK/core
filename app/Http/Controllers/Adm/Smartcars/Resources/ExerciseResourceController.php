@@ -78,18 +78,6 @@ class ExerciseResourceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Smartcars\Flight  $flight
-     * @param  \App\Models\Smartcars\FlightResource  $flightResource
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Flight $flight, FlightResource $flightResource)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Smartcars\Flight $flight
