@@ -22,7 +22,7 @@
                                     <td>{{ $atc->callsign }}</td>
                                     <td>{{ $atc->type }}</td>
                                     <td>{{ $atc->frequency }}</td>
-                                    <td>@include("partials._account_link", ["account" => $atc->account])</td>
+                                    <td>{{ $atc->account->name }}</td>
                                     <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
                                 </tr>
                             @endforeach
@@ -63,8 +63,8 @@
                                 <td>{{ $pilot->aircraft }}</td>
                                 <td>{{ $pilot->departure_airport }}</td>
                                 <td>{{ $pilot->arrival_airport }}</td>
-                                <td>@include("partials._account_link", ["account" => $pilot->account])</td>
-                                <td>{{ HTML::fuzzyDate($pilotSessions->connected_at) }}</td>
+                                <td>{{ $pilot->account->name }}</td>
+                                <td>{{ HTML::fuzzyDate($pilot->connected_at) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

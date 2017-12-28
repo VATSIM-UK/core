@@ -93,6 +93,11 @@ class Pilot extends Model
         return $query->whereNull('disconnected_at');
     }
 
+    public function getHumanDurationAttribute()
+    {
+        return now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
+    }
+
     public static function scopeOffline($query)
     {
         return $query->whereNotNull('disconnected_at');

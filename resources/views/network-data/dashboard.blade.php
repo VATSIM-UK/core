@@ -20,7 +20,7 @@
                                 <td>{{ $atc->callsign }}</td>
                                 <td>{{ $atc->type }}</td>
                                 <td>{{ $atc->frequency }}</td>
-                                <td>{{ Carbon\Carbon::now()->subMinutes($atc->minutes_online)->diffForHumans(null, true) }}</td>
+                                <td>{{ $atc->human_duration }}</td>
                                 <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
                             </tr>
                         @endforeach
@@ -50,7 +50,7 @@
                                 <td>{{ $pilot->callsign }}</td>
                                 <td>{{ $pilot->departure_airport }}</td>
                                 <td>{{ $pilot->arrival_airport }}</td>
-                                <td>{{ Carbon\Carbon::now()->subMinutes($pilot->minutes_online)->diffForHumans(null, true) }}</td>
+                                <td>{{ $pilot->human_duration }}</td>
                                 <td>{{ HTML::fuzzyDate($pilot->connected_at) }}</td>
                             </tr>
                         @endforeach
