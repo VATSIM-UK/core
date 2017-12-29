@@ -110,7 +110,7 @@ class ExerciseResourceController extends Controller
         if ($resource->type === 'file' && $request->file('file')) {
             Storage::drive('public')->delete($resource->resource);
             $resource->resource = $request->file('file')->store('smartcars/exercises/resources', ['disk' => 'public']);
-        } else if ($resource->type === 'uri' && $request->input('uri')) {
+        } elseif ($resource->type === 'uri' && $request->input('uri')) {
             $resource->resource = $request->input('uri');
         }
 

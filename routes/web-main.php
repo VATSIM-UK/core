@@ -191,7 +191,8 @@ Route::get('metar/{airportIcao}', function ($airportIcao) {
             if ($response->getStatusCode() === 200) {
                 return (string) $response->getBody();
             }
-        } catch (GuzzleHttp\Exception\TransferException $e) {}
+        } catch (GuzzleHttp\Exception\TransferException $e) {
+        }
 
         return 'METAR UNAVAILABLE';
     });

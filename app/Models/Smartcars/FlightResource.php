@@ -37,7 +37,7 @@ class FlightResource extends Model
 
     public function setTypeAttribute($value)
     {
-        if ($value !== "uri" && $value !== "file") {
+        if ($value !== 'uri' && $value !== 'file') {
             throw new \UnexpectedValueException("Invalid type: $value");
         }
 
@@ -46,7 +46,7 @@ class FlightResource extends Model
 
     public function asset()
     {
-        if ($this->type === "file") {
+        if ($this->type === 'file') {
             return asset('storage/'.$this->resource);
         }
 
