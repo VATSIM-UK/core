@@ -50,7 +50,7 @@
 
     <div class="row">
         @foreach($exercises as $exercise)
-            <div class="col-md-{{ 12 / $exercises->count() }} hidden-xs">
+            <div class="col-md-{{ 12 / $exercises->count() }}">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i> &thinsp; {{ $exercise->name }}</div>
                     <div class="panel-body">

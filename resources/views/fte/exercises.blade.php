@@ -5,7 +5,7 @@
         @if($loop->first || $loop->index % 3 == 0)
             <div class="row">
                 @endif
-                <div class="col-md-4 hidden-xs">
+                <div class="col-md-4">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i>&thinsp; {{ $exercise->name }}</div>
                         <div class="panel-body">
