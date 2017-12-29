@@ -38,7 +38,7 @@ trait HasMoodleAccount
      */
     protected function createMoodleAccount($email)
     {
-        DB::table('vatuk_moodle.mdl_user')->insert([
+        DB::table(config('services.moodle.database').'.mdl_user')->insert([
             'auth' => 'vatsim',
             'deleted' => 0,
             'confirmed' => 1,
@@ -84,7 +84,7 @@ trait HasMoodleAccount
 
         $dirty = array_keys(array_diff_assoc($old, $new));
         if (!empty($dirty)) {
-            DB::table('vatuk_moodle.mdl_user')->where('username', (string) $this->id)->update($new);
+            DB::table(config('services.moodle.database').'.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date
         }

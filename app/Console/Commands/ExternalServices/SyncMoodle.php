@@ -32,7 +32,9 @@ class SyncMoodle extends Command
      */
     public function handle()
     {
-        $moodleAccounts = DB::table('vatuk_moodle.mdl_user')
+        $moodleDB = config('services.moodle.database');
+
+        $moodleAccounts = DB::table("{$moodleDB}.mdl_user")
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
             ->keyBy(function ($moodleAccount) {
                 return $moodleAccount->username;
@@ -50,7 +52,7 @@ class SyncMoodle extends Command
             });
 
         // soft-delete any Moodle users that weren't in Core
-        DB::table('vatuk_moodle.mdl_user')
+        DB::table("{$moodleDB}.mdl_user")
             ->where(function ($query) {
                 $query->where('auth', '!=', 'nologin')
                     ->orWhere('deleted', '!=', 1);

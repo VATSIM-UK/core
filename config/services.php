@@ -47,12 +47,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | VATSIM UK Services
+    | VATSIM UK Hosted Services
     |--------------------------------------------------------------------------
     */
 
+    'community' => [
+        'database' => env('COMMUNITY_DATABASE'),
+        'init_file' => env('COMMUNITY_INIT_FILE'),
+    ],
+
+    'cts' => [
+        'database' => env('CTS_DATABASE'),
+    ],
+
     'helpdesk' => [
         'database' => env('HELPDESK_DATABASE'),
+    ],
+
+    'moodle' => [
+        'database' => env('MOODLE_DATABASE'),
     ],
 
 ];
