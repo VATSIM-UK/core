@@ -30,7 +30,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="5" class="text-center">
-                                    There are currently {{ $atcSessions->count() }} UK controllers online.
+                                    There {{ trans_choice('general.isare', $atcSessions) }} currently {{ $atcSessions->count() }} UK {{ str_plural('controller', $atcSessions->count()) }} online.
                                 </th>
                             </tr>
                         </tfoot>
@@ -71,7 +71,7 @@
                         <tfoot>
                         <tr>
                             <th colspan="6" class="text-center">
-                                There are currently {{ $pilotSessions->count() }} pilots within the UK.
+                                There {{ trans_choice('general.isare', $pilotSessions) }} currently {{ $pilotSessions->count() }} {{ str_plural('pilot', $pilotSessions->count()) }} flying within the UK.
                             </th>
                         </tr>
                         </tfoot>
