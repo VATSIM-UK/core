@@ -95,7 +95,7 @@ class Pilot extends Model
 
     public function getHumanDurationAttribute()
     {
-        return now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
+        return Carbon\Carbon::now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
     }
 
     public static function scopeOffline($query)
