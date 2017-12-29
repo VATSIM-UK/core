@@ -14,7 +14,7 @@
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th>ICAO</th>
-                            <th>Name</th>
+                            <th>Manufacturer</th>
                             <th>Full Name</th>
                             <th>Registration</th>
                             <th>Range (nm)</th>

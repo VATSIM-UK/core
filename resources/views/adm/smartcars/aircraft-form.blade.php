@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Name<i class="fa fa-asterisk text-danger"></i></label>
+                        <label for="name">Manufacturer<i class="fa fa-asterisk text-danger"></i></label>
                         <input type="text" id="name" name="name" class="form-control"
                                value="{{ old('name') ?: $aircraft->name }}" placeholder="Cessna" required>
                     </div>
