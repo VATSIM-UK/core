@@ -19,7 +19,7 @@
                             <th>Registration</th>
                             <th>Range (nm)</th>
                             <th>Weight (kg)</th>
-                            <th>Cruise Altitude</th>
+                            <th>Service Ceiling</th>
                             <th>Max Passengers</th>
                             <th>Max Cargo (kg)</th>
                             <th colspan="2">Actions</th>

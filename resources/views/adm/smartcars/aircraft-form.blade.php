@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="cruise_altitude">Cruise Altitude</label>
+                        <label for="cruise_altitude">Service Ceiling</label>
                         <input type="number" id="cruise_altitude" name="cruise_altitude" class="form-control"
                                value="{{ old('cruise_altitude') ?: $aircraft->cruise_altitude }}" placeholder="0">
                     </div>
