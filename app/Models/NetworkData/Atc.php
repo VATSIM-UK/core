@@ -236,6 +236,11 @@ class Atc extends Model
         event(new AtcSessionEnded($this));
     }
 
+    public function getHumanDurationAttribute()
+    {
+        return \Carbon\Carbon::now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
+    }
+
     /**
      * Calculate the total number of minutes the user spent online
      * When called this will calculate the total difference in

@@ -4,6 +4,7 @@ namespace App\Models\NetworkData;
 
 use App\Models\Airport;
 use App\Models\Model;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\NetworkData\Pilot
@@ -64,6 +65,8 @@ use App\Models\Model;
  */
 class Pilot extends Model
 {
+    use Rememberable;
+
     protected $table = 'networkdata_pilots';
     protected $primaryKey = 'id';
     public $dates = ['departed_at', 'arrived_at', 'connected_at', 'disconnected_at', 'created_at', 'updated_at'];
@@ -88,6 +91,11 @@ class Pilot extends Model
     public static function scopeOnline($query)
     {
         return $query->whereNull('disconnected_at');
+    }
+
+    public function getHumanDurationAttribute()
+    {
+        return \Carbon\Carbon::now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
     }
 
     public static function scopeOffline($query)
