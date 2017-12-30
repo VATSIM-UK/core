@@ -6,7 +6,6 @@
             {!! HTML::panelOpen('My ATC Sessions', ['type' => 'vuk', 'key' => 'letter-a']) !!}
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
-                    <span style="display: flex; justify-content: center;">{{ $atcSessions->links() }}</span>
                     <table class="table table-striped tabled-bordered table-hover">
                         <tr>
                             <th>Date</th>
@@ -36,7 +35,6 @@
             {!! HTML::panelOpen('My Pilot Sessions', ['type' => 'vuk', 'key' => 'letter-p']) !!}
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 15px;">
-                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->links() }}</span>
                     <table class="table table-striped tabled-bordered table-hover">
                         <tr>
                             <th>Date</th>
