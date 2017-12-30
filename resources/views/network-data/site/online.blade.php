@@ -8,31 +8,33 @@
                 <div class="col-md-12" style="margin-bottom: 15px;">
                     <table class="table table-striped tabled-bordered table-hover">
                         <thead>
-                            <tr>
-                                <th>Callsign</th>
-                                <th>Type</th>
-                                <th>Frequency</th>
-                                <th>Name</th>
-                                <th>Logged On</th>
-                            </tr>
+                        <tr>
+                            <th>Callsign</th>
+                            <th>Type</th>
+                            <th>Frequency</th>
+                            <th>Name</th>
+                            <th>Logged On</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @foreach($atcSessions as $atc)
-                                <tr>
-                                    <td>{{ $atc->callsign }}</td>
-                                    <td>{{ $atc->type }}</td>
-                                    <td>{{ $atc->frequency }}</td>
-                                    <td>{{ $atc->account->name }}</td>
-                                    <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
-                                </tr>
-                            @endforeach
+                        @foreach($atcSessions as $atc)
+                            <tr>
+                                <td>{{ $atc->callsign }}</td>
+                                <td>{{ $atc->type }}</td>
+                                <td>{{ $atc->frequency }}</td>
+                                <td>{{ $atc->account->name }}</td>
+                                <td>{{ HTML::fuzzyDate($atc->connected_at) }}</td>
+                            </tr>
+                        @endforeach
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <th colspan="5" class="text-center">
-                                    There {{ trans_choice('general.isare', $atcSessions) }} currently {{ $atcSessions->count() }} UK {{ str_plural('controller', $atcSessions->count()) }} online.
-                                </th>
-                            </tr>
+                        <tr>
+                            <th colspan="5" class="text-center">
+                                There {{ trans_choice('general.isare', $atcSessions) }}
+                                currently {{ $atcSessions->count() }}
+                                UK {{ str_plural('controller', $atcSessions->count()) }} online.
+                            </th>
+                        </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -71,7 +73,9 @@
                         <tfoot>
                         <tr>
                             <th colspan="6" class="text-center">
-                                There {{ trans_choice('general.isare', $pilotSessions) }} currently {{ $pilotSessions->count() }} {{ str_plural('pilot', $pilotSessions->count()) }} flying within the UK.
+                                There {{ trans_choice('general.isare', $pilotSessions) }}
+                                currently {{ $pilotSessions->count() }} {{ str_plural('pilot', $pilotSessions->count()) }}
+                                flying within the UK.
                             </th>
                         </tr>
                         </tfoot>
