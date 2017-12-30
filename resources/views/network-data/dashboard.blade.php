@@ -3,17 +3,17 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            {!! HTML::panelOpen('My ATC Sessions', ['type' => 'vuk', 'key' => 'letter-a']) !!}
-            <div class="row">
-                <div class="col-md-12" style="margin-bottom: 15px;">
-                    <table class="table table-striped tabled-bordered table-hover">
-                        <tr>
-                            <th>Date</th>
-                            <th>Callsign</th>
-                            <th>Position</th>
-                            <th>Frequency</th>
-                            <th>Duration</th>
-                        </tr>
+                        {!! HTML::panelOpen('My ATC Sessions', ['type' => 'vuk', 'key' => 'letter-a']) !!}
+                        <div class="row">
+                            <div class="col-md-12" style="margin-bottom: 15px;">
+                                <table class="table table-striped tabled-bordered table-hover">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Callsign</th>
+                                        <th>Position</th>
+                                        <th>Frequency</th>
+                                        <th>Duration</th>
+                                    </tr>
                         @foreach($atcSessions as $atc)
                             <tr>
                                 <td>{{ $atc->connected_at->format('d/m/Y') }}</td>
@@ -24,7 +24,7 @@
                             </tr>
                         @endforeach
                     </table>
-                    <span style="display: flex; justify-content: center;">{{ $atcSessions->appends('pilotSessions', Input::get('pilotSessions'))->links() }}</span>
+                    <span style="display: flex; justify-content: center;">{{ $atcSessions->appends(request()->query())->links() }}</span>
                 </div>
 
             </div>
@@ -53,7 +53,7 @@
                             </tr>
                         @endforeach
                     </table>
-                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->appends('atcSessions', Input::get('pilotSessions'))->links() }}</span>
+                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->appends(request()->query())->links() }}</span>
                 </div>
 
             </div>
