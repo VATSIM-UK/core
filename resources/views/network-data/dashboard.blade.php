@@ -28,6 +28,13 @@
                         @endforeach
                         </tbody>
                         <tfoot>
+                        @if($atcSessions->isEmpty())
+                            <tr>
+                                <th colspan="5" class="text-center">
+                                    <span style="display: flex; justify-content: center;">You have not made any connections to the network as a controller.</span>
+                                </th>
+                            </tr>
+                        @endif
                         <tr>
                             <th colspan="5" class="text-center">
                                 <span style="display: flex; justify-content: center;">{{ $atcSessions->appends(request()->query())->links() }}</span>
@@ -36,7 +43,6 @@
                         </tfoot>
                     </table>
                 </div>
-
             </div>
             {!! HTML::panelClose() !!}
         </div>
@@ -67,6 +73,13 @@
                         @endforeach
                         </tbody>
                         <tfoot>
+                        @if($pilotSessions->isEmpty())
+                            <tr>
+                                <th colspan="5" class="text-center">
+                                    <span style="display: flex; justify-content: center;">You have not made any connections to the network as a pilot.</span>
+                                </th>
+                            </tr>
+                        @endif
                         <tr>
                             <th colspan="5" class="text-center">
                                 <span style="display: flex; justify-content: center;">{{ $pilotSessions->appends(request()->query())->links() }}</span>
