@@ -24,7 +24,7 @@
                             </tr>
                         @endforeach
                     </table>
-                    <span style="display: flex; justify-content: center;">{{ $atcSessions->links() }}</span>
+                    <span style="display: flex; justify-content: center;">{{ $atcSessions->appends('pilotSessions', Input::get('pilotSessions'))->links() }}</span>
                 </div>
 
             </div>
@@ -53,7 +53,7 @@
                             </tr>
                         @endforeach
                     </table>
-                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->links() }}</span>
+                    <span style="display: flex; justify-content: center;">{{ $pilotSessions->appends('atcSessions', Input::get('pilotSessions'))->links() }}</span>
                 </div>
 
             </div>
