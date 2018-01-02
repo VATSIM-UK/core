@@ -52,7 +52,7 @@
         @foreach($exercises as $exercise)
             <div class="col-md-{{ 12 / $exercises->count() }}">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i> &thinsp; {{ $exercise->name }}</div>
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Featured - {{ $exercise->name }}</div>
                     <div class="panel-body">
                         @if($exercise->image)
                             <div class="text-center">
@@ -67,5 +67,17 @@
                 </div>
             </div>
         @endforeach
+    </div>
+
+    <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="text-center">
+                            <a href="{{ route('fte.exercises') }}" class="btn btn-primary">View All Exercises &gt;&gt;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 @stop
