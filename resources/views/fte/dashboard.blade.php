@@ -55,7 +55,9 @@
                     <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i> &thinsp; {{ $exercise->name }}</div>
                     <div class="panel-body">
                         @if($exercise->image)
-                            <img src="{{ $exercise->image->asset() }}" width="100%" height="100px" alt="{{ $exercise->name }}">
+                            <div class="text-center">
+                                <img src="{{ $exercise->image->asset() }}" class="img-responsive center-block" alt="{{ $exercise->name }}">
+                            </div>
                         @endif
                         <p style="margin-top: 10px;">{{ $exercise->description }}</p>
                         <div class="text-right">

@@ -17,6 +17,7 @@
                     <div class="form-group">
                         <label for="image">Image</label>
                         <input type="file" id="image" name="image" class="form-control">
+                        <p>Please ensure the image has an aspect ratio of 3:1 to display correctly.</p>
                     </div>
 
                     @if(isset($exercise) && $exercise->image)
