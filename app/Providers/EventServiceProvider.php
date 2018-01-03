@@ -66,7 +66,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\VisitTransfer\ReferenceUnderReview::class => [
-            \App\Listeners\VisitTransfer\CancelPlannedRefereeNotifications::class,
             \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceCompletion::class,
             \App\Listeners\VisitTransfer\NotifyApplicantOfReferenceCompletion::class,
         ],
