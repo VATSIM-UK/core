@@ -124,7 +124,6 @@ class Application extends AdmController
             ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' completed.');
     }
 
-
     public function postCheckMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
     {
         try {
