@@ -27,6 +27,15 @@
                                                 "data-target" => "#modalApplicationAccept",
                                            ]) !!}
                             @endcan
+
+                            @can("complete", $application)
+                                {!! Button::success("Mark Application Complete")
+                                           ->withAttributes([
+                                                "class" => "pull-right",
+                                                "data-toggle" => "modal",
+                                                "data-target" => "#modalApplicationComplete",
+                                           ]) !!}
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -551,6 +560,45 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success">Accept Application - this cannot be undone
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {!! Form::close() !!}
+        </div>
+
+        <div class="modal fade" id="modalApplicationComplete" tabindex="-1" role="dialog"
+             aria-labelledby="Accept Application" aria-hidden="true">
+            {!! Form::open(array("url" => URL::route("visiting.admin.application.complete.post", $application->id))) !!}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Complete Application #{{ $application->public_id }}
+                            - {{ $application->type_string }} {{ $application->facility_name }}
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            It is important that you understand <strong class="text-danger">this action cannot be
+                                undone.</strong>
+                        </p>
+
+                        <p>
+                            You must write a staff note detailing why you have completed the application.
+                            <strong class="text-danger">The member will not be provided a copy of this information</strong>.
+                        </p>
+
+                        <div class="form-group">
+                            <label for="complete_staff_note">Staff Note (optional)</label>
+                            <textarea name="complete_staff_note" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Complete Application - this cannot be undone
                         </button>
                     </div>
                 </div>
