@@ -34,7 +34,7 @@ class EvaluateFlightCriteria implements ShouldQueue
 
             if ($newCriterion) {
                 // went outside of the defined criteria
-                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->order}");
+                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
                 $pirep->save();
 
                 return;
