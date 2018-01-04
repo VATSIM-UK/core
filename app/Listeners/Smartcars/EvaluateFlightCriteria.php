@@ -26,7 +26,7 @@ class EvaluateFlightCriteria implements ShouldQueue
         $newCriterion = true;
         $criterion = $criteria->shift();
         foreach ($posreps as $posrep) {
-            if ($this->validPosrep($posrep, $criterion)) {
+            if ($this->isValid($criterion)) {
                 $newCriterion = false;
 
                 continue;
@@ -61,38 +61,5 @@ class EvaluateFlightCriteria implements ShouldQueue
 
         $pirep->markPassed('All posreps passed successfully and all criteria were met');
         $pirep->save();
-    }
-
-    /**
-     * @param Posrep $posrep
-     * @param FlightCriterion $criterion
-     * @return bool
-     */
-    protected function validPosrep($posrep, $criterion)
-    {
-        // location
-        if (!$criterion->hasPoint($posrep->latitude, $posrep->longitude)) {
-            return false;
-        }
-
-        // altitude
-        if ($criterion->min_altitude !== null && $posrep->altitude < $criterion->min_altitude) {
-            return false;
-        }
-
-        if ($criterion->max_altitude !== null && $posrep->altitude > $criterion->max_altitude) {
-            return false;
-        }
-
-        // groundspeed
-        if ($criterion->min_groundspeed !== null && $posrep->groundspeed < $criterion->min_groundspeed) {
-            return false;
-        }
-
-        if ($criterion->max_groundspeed !== null && $posrep->groundspeed > $criterion->max_groundspeed) {
-            return false;
-        }
-
-        return true;
     }
 }

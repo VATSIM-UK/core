@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $bid_id
  * @property int $aircraft_id
- * @property string|null $route
+ * @property string $route
  * @property int $altitude
  * @property int $heading_mag
  * @property int $heading_true
@@ -69,5 +69,39 @@ class Posrep extends Model
     public function aircraft()
     {
         return $this->hasOne(\App\Models\Smartcars\Aircraft::class, 'id', 'aircraft_id');
+    }
+
+    /**
+     * Determine whether a posrep is valid against the provided criteria.
+     *
+     * @param FlightCriterion $criterion
+     * @return bool
+     */
+    public function isValid(FlightCriterion $criterion)
+    {
+        // location
+        if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
+            return false;
+        }
+
+        // altitude
+        if ($criterion->min_altitude !== null && $this->altitude < $criterion->min_altitude) {
+            return false;
+        }
+
+        if ($criterion->max_altitude !== null && $this->altitude > $criterion->max_altitude) {
+            return false;
+        }
+
+        // groundspeed
+        if ($criterion->min_groundspeed !== null && $this->groundspeed < $criterion->min_groundspeed) {
+            return false;
+        }
+
+        if ($criterion->max_groundspeed !== null && $this->groundspeed > $criterion->max_groundspeed) {
+            return false;
+        }
+
+        return true;
     }
 }
