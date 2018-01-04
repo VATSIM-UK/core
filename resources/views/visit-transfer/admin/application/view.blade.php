@@ -592,7 +592,7 @@
                         </p>
 
                         <div class="form-group">
-                            <label for="complete_staff_note">Staff Note (optional)</label>
+                            <label for="complete_staff_note">Staff Note (mandatory)</label>
                             <textarea name="complete_staff_note" class="form-control" rows="5"></textarea>
                         </div>
                     </div>

@@ -16,7 +16,7 @@ class ApplicationCompleteRequest extends FormRequest
     public function rules()
     {
         return [
-            'complete_staff_note' => 'nullable|string',
+            'complete_staff_note' => 'nullable|string|min:25|required',
         ];
     }
 
@@ -42,6 +42,5 @@ class ApplicationCompleteRequest extends FormRequest
         $application = $this->route('application');
 
         return Gate::allows('complete', $application);
-        //return true;
     }
 }
