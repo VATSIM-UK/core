@@ -3,7 +3,6 @@
 namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
-use App\Models\Smartcars\FlightCriterion;
 use App\Models\Smartcars\Posrep;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
