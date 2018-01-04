@@ -125,7 +125,7 @@ class Flight extends AdmController
 
     public function postReport()
     {
-        $aircraft = Aircraft::findByRegistration(Input::get('aircraft'));
+        $aircraft = Aircraft::find(Input::get('aircraft'));
 
         $bid = Bid::find(Input::get('bidid'));
         $flight = $bid->flight;
