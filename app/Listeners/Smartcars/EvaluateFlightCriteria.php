@@ -26,7 +26,7 @@ class EvaluateFlightCriteria implements ShouldQueue
         $newCriterion = true;
         $criterion = $criteria->shift();
         foreach ($posreps as $posrep) {
-            if ($this->isValid($criterion)) {
+            if ($posrep->isValid($criterion)) {
                 $newCriterion = false;
 
                 continue;
