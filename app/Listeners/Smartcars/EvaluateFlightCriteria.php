@@ -22,28 +22,22 @@ class EvaluateFlightCriteria implements ShouldQueue
         $pirep = $bid->pirep;
         $posreps = $bid->posreps->sortBy('created_at');
 
-        $newCriterion = true;
         $criterion = $criteria->shift();
         foreach ($posreps as $posrep) {
             if ($posrep->isValid($criterion)) {
-                $newCriterion = false;
-
                 continue;
             }
 
-            if ($newCriterion) {
-                // went outside of the defined criteria
-                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
-                $pirep->save();
-
-                return;
-            }
-
-            $newCriterion = true;
             $criterion = $criteria->shift();
             if ($criterion === null) {
                 // flight did not finish within the defined criteria
                 $pirep->markFailed("Posrep #{$posrep->id} failed - eligible posrep after all criteria fulfilled");
+                $pirep->save();
+
+                return;
+            } elseif (!$posrep->isValid($criterion)) {
+                // if still not valid, went outside of the defined criteria
+                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
                 $pirep->save();
 
                 return;
