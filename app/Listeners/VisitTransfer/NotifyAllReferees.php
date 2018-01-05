@@ -24,7 +24,7 @@ class NotifyAllReferees implements ShouldQueue
             if($ref->reminded_at == null){
                 return !$ref->is_submitted;
             }
-            return $ref->reminded_at->lte(Carbon::now()) && !$ref->is_submitted;
+            return $ref->reminded_at->isPast() && !$ref->is_submitted;
         });
 
         $contactAt = Carbon::now();
