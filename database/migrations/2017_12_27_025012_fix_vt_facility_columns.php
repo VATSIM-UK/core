@@ -13,9 +13,9 @@ class FixVtFacilityColumns extends Migration
      */
     public function up()
     {
-      Schema::table('vt_facility', function (Blueprint $table) {
-          $table->integer('training_spaces')->unsigned()->default(0)->nullable()->change();
-      });
+        Schema::table('vt_facility', function (Blueprint $table) {
+            $table->integer('training_spaces')->unsigned()->default(0)->nullable()->change();
+        });
     }
 
     /**
@@ -25,8 +25,8 @@ class FixVtFacilityColumns extends Migration
      */
     public function down()
     {
-      Schema::table('vt_facility', function (Blueprint $table) {
-          $table->integer('training_spaces')->unsigned()->default(0)->change();
-      });
+        Schema::table('vt_facility', function (Blueprint $table) {
+            $table->integer('training_spaces')->unsigned()->default(0)->change();
+        });
     }
 }
