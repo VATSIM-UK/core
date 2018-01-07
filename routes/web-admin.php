@@ -78,6 +78,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
             Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
             Route::get('list/{slug}', ['as' => 'form', 'uses' => 'Feedback@getFormFeedback']);
+            Route::get('list/{slug}/export', ['as' => 'form.export', 'uses' => 'Feedback@getFormFeedbackExport']);
+            Route::post('list/{slug}/export', ['as' => 'form.export.post', 'uses' => 'Feedback@postFormFeedbackExport']);
             Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
             Route::post('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@postActioned']);
             Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);
