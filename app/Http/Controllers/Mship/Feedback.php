@@ -98,7 +98,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             if ($question->required) {
                 $rules[] = 'required';
             }
-            if (count($rules > 0)) {
+            if (count($rules) > 0) {
                 $ruleset[$question->slug] = join($rules, '|');
             }
 
