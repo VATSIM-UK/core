@@ -87,6 +87,7 @@ class Reference extends Model
         'status_note',
     ];
     protected $touches = ['application'];
+    protected $dates = ['contacted_at', 'reminded_at', 'submitted_at', 'deleted_at'];
     public $timestamps = false;
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
