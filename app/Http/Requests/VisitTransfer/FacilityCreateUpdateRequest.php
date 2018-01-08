@@ -24,7 +24,7 @@ class FacilityCreateUpdateRequest extends FormRequest
             'training_spaces' => 'required_if:training_required,1',
             'stage_statement_enabled' => 'required|boolean',
             'stage_reference_enabled' => 'required|boolean',
-            'stage_reference_quantity' => 'required_if:stage_reference_enabled,1|numeric|min:1',
+            'stage_reference_quantity' => 'required_if:stage_reference_enabled,1|integer',
             'stage_checks' => 'required|boolean',
             'auto_acceptance' => 'required|boolean',
             'public' => 'required|boolean',
@@ -42,7 +42,7 @@ class FacilityCreateUpdateRequest extends FormRequest
         return [
             'name.required' => 'You must provide a name of at least 5 characters.',
             'name.min' => 'You must provide a name of at least 5 characters.',
-            'description.min' => 'Your description, if provided, must be at least 25 characters.',
+            'description.min' => 'Your description must be at least 25 characters.',
             'can_visit.required' => 'You must specify if somebody can visit this facility.',
             'can_visit.in' => "You have provided in invalid response to 'can visit'.",
             'can_transfer.required' => 'You must specify if somebody can transfer to this facility.',
