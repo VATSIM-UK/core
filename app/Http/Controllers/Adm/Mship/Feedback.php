@@ -234,7 +234,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->paginate(15);
 
         return $this->viewMake('adm.mship.feedback.list')
-                    ->with('feedback', $feedback);
+                    ->with('feedback', $feedback)
+                    ->with('form', $form);
     }
 
     public function getFormFeedbackExport($slug)
@@ -336,8 +337,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         });
       })->download('xls');
-      return $this->viewMake('adm.mship.feedback.export')
-                  ->with('form', $form);
+      return Redirect::back();
     }
 
     public function getViewFeedback(FeedbackModel $feedback)

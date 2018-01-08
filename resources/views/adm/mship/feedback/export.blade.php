@@ -19,7 +19,7 @@
     <section class="col-lg-12">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title"><i class="fa fa-inbox"></i>Export <b>{{$form->name}}</b></h3>
+                <h3 class="box-title"><i class="fa fa-inbox"></i> Export <b>{{$form->name}}</b></h3>
             </div>
             <div class="box-body">
               {{Form::open(['route' => ['adm.mship.feedback.form.export.post', $form->slug], 'method' => 'post'])}}
