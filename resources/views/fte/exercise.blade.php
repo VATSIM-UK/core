@@ -77,7 +77,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
                 <div class="panel-body">
                     @forelse($flight->resources->sortBy('display_name') as $resource)
-                        <p><a href="{{ $resource->asset() }}">{{ $resource->display_name }}</a></p>
+                        <p><a href="{{ $resource->asset() }}" target="_blank">{{ $resource->display_name }}</a></p>
                     @empty
                         <p>No resources available.</p>
                     @endforelse
