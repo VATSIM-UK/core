@@ -24,7 +24,7 @@
                         Fancy something different? VATSIM UK is proud to announce the launch of Flight Training Exercises –
                         the new
                         way to learn and have fun!<br/><br/>
-                        Choose one of 3 launch exercises and take flight discovering the South East of the UK
+                        Choose any one of our exercises and take flight, discovering the South East of the UK
                         and much more. To get started click on one of the exercises below and follow the instructions
                         provided.<br/><br/>
                         If you have any questions please contact the Pilot Training Department via the Helpdesk
