@@ -122,7 +122,7 @@
                             Click on the exercise that you wish to complete and click <strong>Fly</strong>.
                         </li>
                         <li>
-                            Select an aircraft in the first dropdown menu, "Flying on VATSIM" from the second dropdown menu and leave all other settings as they are.
+                            Select an aircraft in the first dropdown menu, "Flying on VATSIM" from the second dropdown menu and leave all other settings.
                         <li>
                             Load up at the departure aerodrome in your simulator of choice.
                             <ul>
