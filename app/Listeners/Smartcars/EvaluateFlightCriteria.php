@@ -22,45 +22,34 @@ class EvaluateFlightCriteria implements ShouldQueue
         $pirep = $bid->pirep;
         $posreps = $bid->posreps->sortBy('created_at');
 
-        $criterion = $criteria->shift();
         foreach ($posreps as $posrep) {
-            if ($posrep->isValid($criterion)) {
-                continue;
+            $matchesCriteria = false;
+            foreach ($criteria as $criterion) {
+                if ($posrep->isValid($criterion)) {
+                    $matchesCriteria = true;
+
+                    break;
+                }
             }
 
-            $criterion = $criteria->shift();
-            if ($criterion === null) {
-                // flight did not finish within the defined criteria
-                $pirep->markFailed("Posrep #{$posrep->id} failed - eligible posrep after all criteria fulfilled");
-                $pirep->save();
-
-                return;
-            } elseif (!$posrep->isValid($criterion)) {
-                // if still not valid, went outside of the defined criteria
-                $pirep->markFailed("Posrep #{$posrep->id} failed at criterion #{$criterion->id}");
+            if (!$matchesCriteria) {
+                // posrep didn't match any criteria
+                $pirep->markFailed("Failed: Posrep #{$posrep->id} didn't match any of the available criteria");
                 $pirep->save();
 
                 return;
             }
-        }
-
-        if (($criterion = $criteria->shift())) {
-            // flight finished early, before all criteria were fulfilled
-            $pirep->markFailed("Not all criteria were fulfilled, starting from criterion #{$criterion->id}");
-            $pirep->save();
-
-            return;
         }
 
         if (str_contains($pirep->log, 'Simrate set to')) {
             // simrate was changed
-            $pirep->markFailed('The simrate was changed during the flight');
+            $pirep->markFailed('Failed: The simrate was changed during the flight');
             $pirep->save();
 
             return;
         }
 
-        $pirep->markPassed('All posreps passed successfully and all criteria were met');
+        $pirep->markPassed('Success: Flight passed all required checks');
         $pirep->save();
     }
 }
