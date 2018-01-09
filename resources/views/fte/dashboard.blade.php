@@ -25,8 +25,7 @@
                         the new
                         way to learn and have fun!<br/><br/>
                         Choose any one of our exercises and take flight, discovering the South East of the UK
-                        and much more. To get started click on one of the exercises below and follow the instructions
-                        provided.<br/><br/>
+                        and much more. To get started check out {!! link_to_route('fte.guide', 'our guide here') !!}.<br/><br/>
                         If you have any questions please contact the Pilot Training Department via the Helpdesk
                         ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).
                     </div>
