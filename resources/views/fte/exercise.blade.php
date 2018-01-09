@@ -1,124 +1,128 @@
 @extends ('layout')
 
 @section('content')
-    <div class="col-md-4">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
-            <div class="panel-body">
-                <div class="">
-                    <a href="{{ route('fte.dashboard') }}" class="btn btn-primary">&lt;&lt; Dashboard</a>
-                    @empty($booking)
-                        <a class="btn btn-success" href="{{ route('fte.exercise.book', $flight) }}"
-                           onclick="event.preventDefault(); document.getElementById('book-form').submit();">
-                            Book Flight
-                        </a>
-                        <form id="book-form" action="{{ route('fte.exercise.book', $flight) }}" method="POST"
-                              style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    @else
-                        <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
-                           onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
-                            Cancel Flight
-                        </a>
-                        <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST"
-                              style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    @endempty
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
+                <div class="panel-body">
+                    <div class="">
+                        <a href="{{ route('fte.dashboard') }}" class="btn btn-primary">&lt;&lt; Dashboard</a>
+                        @empty($booking)
+                            <a class="btn btn-success" href="{{ route('fte.exercise.book', $flight) }}"
+                               onclick="event.preventDefault(); document.getElementById('book-form').submit();">
+                                Book Flight
+                            </a>
+                            <form id="book-form" action="{{ route('fte.exercise.book', $flight) }}" method="POST"
+                                  style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+                            @else
+                                <a class="btn btn-danger" href="{{ route('fte.exercise.cancel', $flight) }}"
+                                   onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
+                                    Cancel Flight
+                                </a>
+                                <form id="cancel-form" action="{{ route('fte.exercise.cancel', $flight) }}" method="POST"
+                                      style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
+                                @endempty
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Exercise Details
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <b>Name:</b>
+                            {{ $flight->name }}
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>Description:</b>
+                            {{ $flight->description }}
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>Departure:</b>
+                            {{ $flight->departure->name }} ({{ $flight->departure->icao }})
+                        </div>
+                        <div class="col-xs-12">
+                            <b>Arrival:</b>
+                            {{ $flight->arrival->name }} ({{ $flight->arrival->icao }})
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>Maximum Altitude:</b>
+                            {{ $flight->cruise_altitude }}ft
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>Registration:</b>
+                            {{ $flight->aircraft->registration }}
+                        </div>
+                        <div class="col-xs-12">
+                            <b>Aircraft Type:</b>
+                            {{ $flight->aircraft->fullname }} ({{ $flight->aircraft->icao }})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
+                <div class="panel-body">
+                    @forelse($flight->resources->sortBy('display_name') as $resource)
+                        <p><a href="{{ $resource->asset() }}">{{ $resource->display_name }}</a></p>
+                    @empty
+                        <p>No resources available.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
 
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Exercise Details
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-6">
-                        <b>Name:</b>
-                        {{ $flight->name }}
-                    </div>
+        <div class="col-md-8">
+            <div class="panel panel-ukblue" style="min-height: 500px;">
+                <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Description:</b>
-                        {{ $flight->description }}
-                    </div>
+                <div class="panel-body text-center">
+                    <div id="map" style="width: 100%; height: 500px;"></div>
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Departure:</b>
-                        {{ $flight->departure->name }} ({{ $flight->departure->icao }})
-                    </div>
-                    <div class="col-xs-12">
-                        <b>Arrival:</b>
-                        {{ $flight->arrival->name }} ({{ $flight->arrival->icao }})
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Maximum Altitude:</b>
-                        {{ $flight->cruise_altitude }}ft
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <b>Registration:</b>
-                        {{ $flight->aircraft->registration }}
-                    </div>
-                    <div class="col-xs-12">
-                        <b>Aircraft Type:</b>
-                        {{ $flight->aircraft->fullname }} ({{ $flight->aircraft->icao }})
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Resources</div>
-            <div class="panel-body">
-                @forelse($flight->resources->sortBy('display_name') as $resource)
-                    <p><a href="{{ $resource->asset() }}">{{ $resource->display_name }}</a></p>
-                @empty
-                    <p>No resources available.</p>
-                @endforelse
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-8">
-        <div class="panel panel-ukblue" style="min-height: 500px;">
-            <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Map
-            </div>
-            <div class="panel-body text-center">
-                <div id="map" style="width: 100%; height: 500px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
-            <div class="panel-body">
-                <p>Flight Training Exercises is still really new!<br>
-                    Once we have enough exercises completed, we will be able to show stats like average flight time,
-                    average landing rate and average pass rate.</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
-            <div class="panel-body">
-                <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
-                <br>
-                <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-equalizer"></i> &thinsp; Statistics</div>
+                <div class="panel-body">
+                    <p>Flight Training Exercises is still really new!<br>
+                        Once we have enough exercises completed, we will be able to show stats like average flight time,
+                        average landing rate and average pass rate.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-cloud"></i> &thinsp; Weather</div>
+                <div class="panel-body">
+                    <strong>Departure Aerodrome:</strong> <span id="dep-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->departure->icao }}">Click Here</a></span>
+                    <br>
+                    <strong>Arrival Aerodrome:</strong> <span id="arr-metar"><a href="http://metar.vatsim.net/metar.php?id={{ $flight->arrival->icao }}">Click Here</a></span>
+                </div>
             </div>
         </div>
     </div>
