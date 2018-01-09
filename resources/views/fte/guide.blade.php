@@ -11,7 +11,7 @@
                     <div class="text-center">
                         You’ve made it!<br>
                         Here is a basic guide on what you need to do to get started with Flight Training Exercises.<br>
-                        If you have any other questions then please {!! HTML::link('https://helpdesk.vatsim.uk', 'contact us on via our Helpdesk', array("target"=>"_blank")) !!}.
+                        If you have any other questions then please {!! HTML::link('https://helpdesk.vatsim.uk', 'contact us via our Helpdesk', array("target"=>"_blank")) !!}.
                     </div>
                 </div>
             </div>
