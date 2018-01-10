@@ -41,7 +41,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             }
         }
 
-        if (str_contains($pirep->log, 'Simrate set to')) {
+        if (str_contains($pirep->log, 'Simulation rate set to')) {
             // simrate was changed
             $pirep->markFailed('Failed: The simrate was changed during the flight');
             $pirep->save();
