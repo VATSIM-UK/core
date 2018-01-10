@@ -58,11 +58,8 @@ class FlightController extends Controller
             'reason' => 'required|string|max:250',
         ]);
 
-        if ($request->input('passed')) {
-            $flight->markPassed($request->input('reason'));
-        } else {
-            $flight->markFailed($request->input('reason'));
-        }
+        $flight->mark($request->input('passed'), $request->input('reason'));
+        $flight->save();
 
         return redirect(route('adm.smartcars.flights.index'))->with('success', 'Flight updated.');
     }

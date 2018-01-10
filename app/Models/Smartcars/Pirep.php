@@ -65,15 +65,18 @@ class Pirep extends Model
         });
     }
 
+    public function mark($passed, $reason) {
+        $this->passed = $passed;
+        $this->pass_reason = $reason;
+    }
+
     public function markPassed($reason = 'Flight passed all criteria.')
     {
-        $this->passed = true;
-        $this->pass_reason = $reason;
+        $this->mark(true, $reason);
     }
 
     public function markFailed($reason = 'Flight failed at least one of the required criteria.')
     {
-        $this->passed = false;
-        $this->pass_reason = $reason;
+        $this->mark(false, $reason);
     }
 }
