@@ -29,11 +29,11 @@ class AllowNullSmartcarsColumns extends Migration
     public function down()
     {
         Schema::table('smartcars_pirep', function (Blueprint $table) {
-            $table->mediumText('comments')->nullable(false)->change();
+            $table->mediumText('comments')->change();
         });
 
         Schema::table('smartcars_posrep', function (Blueprint $table) {
-            $table->time('time_departure')->nullable(false)->change();
+            $table->time('time_departure')->change();
         });
     }
 }
