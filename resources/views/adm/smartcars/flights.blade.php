@@ -26,7 +26,12 @@
                         @foreach($flights as $flight)
                             <tr>
                                 <td>{{ $flight->bid_id }}</td>
-                                <td>{{ $flight->bid->account->name }} ({{ $flight->bid->account->id }})</td>
+                                <td>
+                                    <a href="{{ route('adm.mship.account.details', $flight->bid->account) }}">
+                                        {{ $flight->bid->account->name }} ({{ $flight->bid->account->id }})
+                                    </a>
+                                </td>
+                                </td>
                                 <td>
                                     <a href="{{ route('adm.smartcars.exercises.edit', $flight->bid->flight) }}">
                                         {{ $flight->bid->flight->name }}
