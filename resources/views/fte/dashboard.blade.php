@@ -60,7 +60,7 @@
                             </div>
                         @endif
                         <p style="margin-top: 10px;">{{ $exercise->description }}</p>
-                        <div class="text-right">
+                        <div class="panel-base text-right">
                             <a href="{{ route('fte.exercises', $exercise) }}" class="btn btn-primary">View Details &gt;&gt;</a>
                         </div>
                     </div>

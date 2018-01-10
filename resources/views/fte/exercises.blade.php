@@ -4,7 +4,7 @@
     @foreach($exercises as $exercise)
         @if($loop->first || $loop->index % 3 == 0)
             <div class="row row-flex">
-                @endif
+        @endif
                 <div class="col-md-4">
                     <div class="panel panel-ukblue">
                         <div class="panel-heading"><i class="glyphicon glyphicon-triangle-right"></i>&thinsp; {{ $exercise->name }}</div>
@@ -15,13 +15,13 @@
                                 </div>
                             @endif
                             <p style="margin-top: 10px;">{{ $exercise->description }}</p>
-                            <div class="text-right">
-                                <a href="{{ route('fte.exercises', $exercise) }}" class="btn btn-primary">View Details &gt;&gt;</a>
-                            </div>
+                        </div>
+                        <div class="panel-base text-right">
+                            <a href="{{ route('fte.exercises', $exercise) }}" class="btn btn-primary">View Details &gt;&gt;</a>
                         </div>
                     </div>
                 </div>
-                @if($loop->last || $loop->index % 3 == 2)
+        @if($loop->last || $loop->index % 3 == 2)
             </div>
         @endif
     @endforeach
