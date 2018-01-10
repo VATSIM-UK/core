@@ -7,7 +7,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Getting Started
                 </div>
                 <div class="panel-body text-center">
-                    <a href="{{route("fte.guide")}}">
+                    <a href="{{route("fte.guide")}}" style="text-decoration: none;">
                         {{ HTML::image('/images/book.png', 'world', array( 'width' => 80, 'height' => 80 )) }}
                     </a>
                     <br><br>
@@ -38,7 +38,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; Past Flights
                 </div>
                 <div class="panel-body text-center">
-                    <a href="{{route("fte.history")}}">
+                    <a href="{{route("fte.history")}}" style="text-decoration: none;">
                         {{ HTML::image('/images/history.png', 'history', array( 'width' => 80, 'height' => 80 )) }}
                     </a>
                     <br><br>
