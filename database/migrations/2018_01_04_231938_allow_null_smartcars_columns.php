@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class AllowNullSmartcarsColumns extends Migration
 {
@@ -11,10 +12,13 @@ class AllowNullSmartcarsColumns extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE `smartcars_pirep`
-	CHANGE COLUMN `comments` `comments` MEDIUMTEXT NULL COLLATE \'utf8mb4_unicode_ci\' AFTER `landing_rate`');
-        DB::statement('ALTER TABLE `smartcars_posrep`
-	CHANGE COLUMN `time_departure` `time_departure` TIME NULL AFTER `phase`');
+        Schema::table('smartcars_pirep', function (Blueprint $table) {
+            $table->mediumText('comments')->nullable()->change();
+        });
+
+        Schema::table('smartcars_posrep', function (Blueprint $table) {
+            $table->time('time_departure')->nullable()->change();
+        });
     }
 
     /**
@@ -24,9 +28,12 @@ class AllowNullSmartcarsColumns extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE `smartcars_pirep`
-	CHANGE COLUMN `comments` `comments` MEDIUMTEXT NOT NULL COLLATE \'utf8mb4_unicode_ci\' AFTER `landing_rate`');
-        DB::statement('ALTER TABLE `smartcars_posrep`
-	CHANGE COLUMN `time_departure` `time_departure` TIME NOT NULL AFTER `phase`');
+        Schema::table('smartcars_pirep', function (Blueprint $table) {
+            $table->mediumText('comments')->nullable(false)->change();
+        });
+
+        Schema::table('smartcars_posrep', function (Blueprint $table) {
+            $table->time('time_departure')->nullable(false)->change();
+        });
     }
 }
