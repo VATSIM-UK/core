@@ -34,7 +34,12 @@ class FlightController extends Controller
     {
         $this->authorize('use-permission', 'smartcars/flights/override');
 
-        return $this->viewMake('adm.smartcars.flight-form')->with('flight', $flight);
+        return $this->viewMake('adm.smartcars.flight-form')
+            ->with('pirep', $flight)
+            ->with('bid', $flight->bid)
+            ->with('flight', $flight->bid->flight)
+            ->with('criteria', $flight->bid->flight->criteria->sortBy('order'))
+            ->with('posreps', $flight->bid->posreps->sortBy('created_at'));
     }
 
     /**
