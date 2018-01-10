@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row row-flex">
         @foreach($exercises as $exercise)
             <div class="col-md-{{ 12 / $exercises->count() }}">
                 <div class="panel panel-ukblue">

@@ -3,7 +3,7 @@
 @section('content')
     @foreach($exercises as $exercise)
         @if($loop->first || $loop->index % 3 == 0)
-            <div class="row">
+            <div class="row row-flex">
                 @endif
                 <div class="col-md-4">
                     <div class="panel panel-ukblue">
