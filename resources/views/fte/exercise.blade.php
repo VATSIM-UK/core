@@ -7,7 +7,7 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-ok-circle"></i> &thinsp; Actions</div>
                 <div class="panel-body">
                     <div class="">
-                        <a href="{!! URL::previous() !!}" class="btn btn-primary">&lt;&lt; Back</a>
+                        <a href="{{ URL::previous() }}" class="btn btn-primary">&lt;&lt; Back</a>
                         @empty($booking)
                             <a class="btn btn-success" href="{{ route('fte.exercise.book', $flight) }}"
                                onclick="event.preventDefault(); document.getElementById('book-form').submit();">
