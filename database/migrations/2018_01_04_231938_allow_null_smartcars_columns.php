@@ -18,6 +18,8 @@ class AllowNullSmartcarsColumns extends Migration
 
         Schema::table('smartcars_posrep', function (Blueprint $table) {
             $table->time('time_departure')->nullable()->change();
+            $table->time('time_remaining')->nullable()->change();
+            $table->time('time_arrival')->nullable()->change();
         });
     }
 
@@ -34,6 +36,8 @@ class AllowNullSmartcarsColumns extends Migration
 
         Schema::table('smartcars_posrep', function (Blueprint $table) {
             $table->time('time_departure')->change();
+            $table->time('time_remaining')->change();
+            $table->time('time_arrival')->change();
         });
     }
 }
