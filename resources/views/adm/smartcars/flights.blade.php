@@ -12,7 +12,8 @@
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th>Bid</th>
-                            <th>Aircraft</th>
+                            <th>Member</th>
+                            <th>Exercise</th>
                             <th>Route</th>
                             <th>Flight Time</th>
                             <th>Landing Rate</th>
@@ -25,7 +26,12 @@
                         @foreach($flights as $flight)
                             <tr>
                                 <td>{{ $flight->bid_id }}</td>
-                                <td>{{ $flight->aircraft_id }}</td>
+                                <td>{{ $flight->bid->account->name }} ({{ $flight->bid->account->id }})</td>
+                                <td>
+                                    <a href="{{ route('adm.smartcars.exercises.edit', $flight->bid->flight) }}">
+                                        {{ $flight->bid->flight->name }}
+                                    </a>
+                                </td>
                                 <td>{{ $flight->route }}</td>
                                 <td>{{ $flight->flight_time }}</td>
                                 <td>{{ $flight->landing_rate }}</td>
