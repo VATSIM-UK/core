@@ -115,8 +115,8 @@ class Flight extends AdmController
         $posrep->distance_remaining = Input::get('distanceremaining');
         $posrep->phase = Input::get('phase');
         $posrep->time_departure = Input::get('departuretime');
-        $posrep->time_remaining = Input::get('timeremaining');
-        $posrep->time_arrival = Input::get('arrivaltime');
+        $posrep->time_remaining = Input::get('timeremaining') !== 'N/A' ? Input::get('timeremaining') : null;
+        $posrep->time_arrival = Input::get('arrivaltime') !== 'N/A' ? Input::get('arrivaltime') : null;
         $posrep->network = Input::get('onlinenetwork');
         $posrep->save();
 
