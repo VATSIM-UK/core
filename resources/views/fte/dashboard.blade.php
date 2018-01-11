@@ -3,7 +3,7 @@
 @section('content')
     <div class="row equal">
         <div class="col-md-3">
-            <div class="panel panel-ukblue">
+            <div class="panel panel-ukblue" id="gettingStarted">
                 <div class="panel-heading"><i class="glyphicon glyphicon-book"></i> &thinsp; Getting Started
                 </div>
                 <div class="panel-body text-center">
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-ukblue">
+            <div class="panel panel-ukblue" id="welcomeBox">
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Flight Training Exercises
                 </div>
                 <div class="panel-body">
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="panel panel-ukblue">
+            <div class="panel panel-ukblue" id="flightHistory">
                 <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; Past Flights
                 </div>
                 <div class="panel-body text-center">
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="row row-flex">
+    <div class="row row-flex" id="exercises">
         @foreach($exercises as $exercise)
             <div class="col-md-{{ 12 / $exercises->count() }}">
                 <div class="panel panel-ukblue">
@@ -71,7 +71,7 @@
 
     <div class="row">
             <div class="col-md-4 col-md-offset-4">
-                <div class="panel">
+                <div class="panel" id="allExercises">
                     <div class="panel-body">
                         <div class="text-center">
                             <a href="{{ route('fte.exercises') }}" class="btn btn-primary">View All Exercises &gt;&gt;</a>
@@ -80,4 +80,59 @@
                 </div>
             </div>
     </div>
+@stop
+
+@section("scripts")
+    @parent
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/js/bootstrap-tour.min.js" integrity="sha384-vzCaHnPHCvqX/NZEoFP8o6Kl3oz4t69lFsHpZ8uIzr+NURIp0PoavFo0OXXchs3V" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        var tour = new Tour({
+            name: "FTEGuide",
+            steps: [
+                {
+                    element: "#welcomeBox",
+                    title: "Welcome!",
+                    content: "Welcome to Flight Training Exercises.<br>Let us show you around.",
+                    backdrop: true,
+                    placement: "top"
+                },
+
+                {
+                    element: "#exercises",
+                    title: "Featured Exercises",
+                    content: "Here you will find currently featured exercises.",
+                    backdrop: true,
+                    placement: "top"
+                },
+
+                {
+                    element: "#allExercises",
+                    title: "There's More...",
+                    content: "A full list of exercises is available here.",
+                    backdrop: true,
+                    placement: "bottom"
+                },
+
+                {
+                    element: "#flightHistory",
+                    title: "Flight History",
+                    content: "Feel free to review your previous flights here.",
+                    backdrop: true,
+                    placement: "left"
+                },
+
+                {
+                    element: "#gettingStarted",
+                    title: "Getting Started",
+                    content: "Now you've navigated your way around, click here to find out how to get started!",
+                    backdrop: true,
+                    placement: "right"
+                },
+            ]
+        });
+
+        tour.init();
+        tour.start();
+    </script>
 @stop
