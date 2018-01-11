@@ -65,7 +65,8 @@ class Pirep extends Model
         });
     }
 
-    public function mark($passed, $reason) {
+    public function mark($passed, $reason)
+    {
         $this->passed = $passed;
         $this->pass_reason = $reason;
     }
