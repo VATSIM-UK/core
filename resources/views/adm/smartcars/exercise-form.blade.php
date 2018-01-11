@@ -125,7 +125,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="flight_time">Flight Time</label>
+                        <label for="flight_time">Flight Time (HH:MM)</label>
                         <input type="number" step="any" id="flight_time" name="flight_time" class="form-control"
                                value="{{ old('flight_time') ?: $exercise->flight_time }}">
                     </div>
