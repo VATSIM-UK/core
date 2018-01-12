@@ -187,6 +187,11 @@ Route::group([
         'uses' => 'Application@postReject',
     ])->where('application', "\d+");
 
+    Route::post('/application/{application}/complete', [
+        'as' => 'application.complete.post',
+        'uses' => 'Application@postComplete',
+    ])->where('application', "\d+");
+
     Route::get('/application/{scope?}', [
         'as' => 'application.list',
         'uses' => 'Application@getList',
