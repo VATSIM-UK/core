@@ -42,7 +42,7 @@
         "malahierba-lab/public-id": "dev-master",
         "pusher/pusher-php-server": "~3.0",
         "bugsnag/bugsnag-laravel": "^2.0",
-        "watson/rememberable": "^2.0",
+        "watson/rememberable": "2.0.3",
         "barryvdh/laravel-ide-helper": "^2.1",
         "laravel/browser-kit-testing": "^1.0",
         "laravel/passport": "^4.0"
