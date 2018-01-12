@@ -56,7 +56,6 @@
               </h3>
           </div><!-- /.box-header -->
           <div class="box-body">
-            <div class="row">
               <div class="col-md-3">
                 <b> Status:</b></br>
                 @if ($feedback->actioned_at)
@@ -65,36 +64,36 @@
                   {!! HTML::img("cross_mark_circle", "png", 24, 32) !!}
                 @endif
               </div>
-                @if ($feedback->actioned_at)
-                    <div class="col-md-3">
-                      <b>Marked actioned at:</b></br>
-                      {{ $feedback->actioned_at->format("d-m-Y H:i A") }}
-                    </div>
-                    <div class="col-md-3">
-                      <b>Marked actioned by:</b></br>
-                      {{ $feedback->actioner->real_name }}
-                    </div>
-                    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
-                      <div class="col-md-3">
-                        <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-danger']) }}</a>
-                      </div>
-                    @endif
-
-                    <div class="col-md-12">
-                      <b>Actioned Comment:</b></br>
-                      {{ $feedback->actioned_comment }}
-                    </div>
-                @else
-                    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
-                      {{ Form::open(['route' => ['adm.mship.feedback.action', $feedback->id]]) }}
-                      <div class="col-md-9">
-                        {{ Form::label('Action Comment')}}
-                        {{ Form::textarea('comment', null, ['rows' => 1, "cols"=> 10]) }}
-                        {{ Form::submit('Mark Actioned', ['class' => 'btn btn-warning']) }}
-                      </div>
-                    @endif
+              @if ($feedback->actioned_at)
+              <div class="col-md-3">
+                <b>Marked actioned at:</b></br>
+                {{ $feedback->actioned_at->format("d-m-Y H:i A") }}
+              </div>
+              <div class="col-md-3">
+                <b>Marked actioned by:</b></br>
+                {{ $feedback->actioner->real_name }}
+              </div>
+                @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
+                <div class="col-md-3">
+                  <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-danger']) }}</a>
+                </div>
                 @endif
-            </div>
+              <div class="col-md-12">
+                <b>Actioned Comment:</b></br>
+                {{ $feedback->actioned_comment }}
+              </div>
+              @else
+                @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
+                  {{ Form::open(['route' => ['adm.mship.feedback.action', $feedback->id]]) }}
+                  <div class="col-md-9">
+                    <p>
+                      {{ Form::label('Action Comment')}}
+                      {{ Form::textarea('comment', null, ['rows' => 1, "cols"=> 10]) }}
+                    </p>
+                    {{ Form::submit('Mark Actioned', ['class' => 'btn btn-warning']) }}
+                  </div>
+                @endif
+              @endif
           </div>
       </div>
     </div>
@@ -121,7 +120,7 @@
                             </h4>
                         </div><!-- /.box-header -->
                         <div class="box-body">
-                            {{ $answer->response }}
+                            {!! nl2br(e($answer->response)) !!}
                         </div>
                     </div>
                   </div>

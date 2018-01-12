@@ -10,7 +10,7 @@ use App\Models\Model;
  * @property int $id
  * @property int $feedback_id
  * @property int $question_id
- * @property string $response
+ * @property string|null $response
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \App\Models\Mship\Feedback\Feedback $feedback
  * @property-read \App\Models\Mship\Feedback\Question $question

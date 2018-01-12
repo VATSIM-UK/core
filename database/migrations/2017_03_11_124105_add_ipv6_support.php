@@ -35,7 +35,7 @@ class AddIpv6Support extends Migration
          */
 
         Schema::table('sys_activity', function (Blueprint $table) {
-            $table->string('ip_new', 45)->after('ip')->default('0.0.0.0');
+            $table->string('ip_new', 45)->after('ip')->nullable();
         });
 
         $this->convertOldIPsToNew('sys_activity', 'ip', 'ip_new');
@@ -43,6 +43,7 @@ class AddIpv6Support extends Migration
         Schema::table('sys_activity', function (Blueprint $table) {
             $table->dropColumn('ip');
             $table->renameColumn('ip_new', 'ip');
+            $table->string('ip', 45)->default('0.0.0.0')->change();
         });
 
         /*
@@ -58,7 +59,7 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
-            $table->string('ip_new', 45)->after('ip')->default('0.0.0.0');
+            $table->string('ip_new', 45)->after('ip')->nullable();
         });
 
         $this->convertOldIPsToNew('sys_timeline_entry', 'ip', 'ip_new');
@@ -66,6 +67,7 @@ class AddIpv6Support extends Migration
         Schema::table('sys_timeline_entry', function (Blueprint $table) {
             $table->dropColumn('ip');
             $table->renameColumn('ip_new', 'ip');
+            $table->string('ip', 45)->default('0.0.0.0')->change();
         });
 
         /*
@@ -73,8 +75,8 @@ class AddIpv6Support extends Migration
         */
 
         Schema::table('teamspeak_registration', function (Blueprint $table) {
-            $table->string('registration_ip_new', 45)->after('registration_ip')->default('0.0.0.0');
-            $table->string('last_ip_new', 45)->after('last_ip')->default('0.0.0.0');
+            $table->string('registration_ip_new', 45)->after('registration_ip')->nullable();
+            $table->string('last_ip_new', 45)->after('last_ip')->nullable();
         });
 
         $this->convertOldIPsToNew('teamspeak_registration', 'registration_ip', 'registration_ip_new');
@@ -85,6 +87,8 @@ class AddIpv6Support extends Migration
             $table->dropColumn('last_ip');
             $table->renameColumn('registration_ip_new', 'registration_ip');
             $table->renameColumn('last_ip_new', 'last_ip');
+            $table->string('registration_ip_new', 45)->default('0.0.0.0')->change();
+            $table->string('last_ip_new', 45)->default('0.0.0.0')->change();
         });
     }
 

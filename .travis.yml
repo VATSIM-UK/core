@@ -1,33 +1,35 @@
 language: php
-php:
-- 7.0
-- 7.1
-services:
-- mysql:5.5
 
-matrix:
-  fast_finish: true
+php:
+- 7.1
+- 7.2
+
+addons:
+  mariadb: '10.2'
 
 before_install:
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS rts;' -uroot
-- composer install --prefer-dist --no-interaction -o > /dev/null
+- composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 - nvm install node
 - npm -v
 - npm install
 
 install:
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
 - cp .env.example .env
 - php artisan key:generate
 - php artisan migrate -vvv -n
+- php artisan migrate:refresh -vvv -n
 - npm run prod
-- chmod +x ./codeclimate.sh
 
 before_script:
+- ./cc-test-reporter before-build
 - php artisan serve -q &
 
 script:
-- vendor/bin/phpunit
+- vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
 
@@ -40,7 +42,7 @@ deploy:
 after_deploy:
 
 after_script:
-  ./codeclimate.sh
+- if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT; fi
 
 cache:
   directories:

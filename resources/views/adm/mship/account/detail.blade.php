@@ -16,6 +16,9 @@
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/feedback"))
                         <li {!! $selectedTab == "feedback" ? "class='active'" : "" !!}><a href="#feedback" role="tab" data-toggle="tab">Feedback</a></li>
                     @endif
+                    @if($_account->hasPermission("adm/visit-transfer/application/*"))
+                        <li {!! $selectedTab == "vtapps" ? "class='active'" : "" !!}><a href="#vtapps" role="tab" data-toggle="tab">V/T Applications</a></li>
+                    @endif
                     @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
                         <li {!! $selectedTab == "bans" ? "class='active'" : "" !!}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
@@ -239,16 +242,11 @@
                                         <h3 class="box-title">Recieved Feedback</h3>
                                     </div><!-- /.box-header -->
                                     <div class="box-body">
-                                        <table style="width:100%">
+                                        <table class="table table-striped table-bordered table-condensed">
                                           <thead>
                                               <tr>
-                                                  <th class="col-md-1">
-                                                      ID
-                                                  </th>
-                                                  <th class="col-md-3">
-                                                        Subject of Feedback
-                                                  </th>
-                                                  <th>Facility</th>
+                                                  <th>ID</th>
+                                                  <th>Feedback Form</th>
                                                   <th>Date Submitted</th>
                                                   <th>Action Taken</th>
                                               </tr>
@@ -257,8 +255,7 @@
                                               @foreach($feedback as $f)
                                               <tr>
                                                   <td>{!! link_to_route('adm.mship.feedback.view', $f->id, [$f->id]) !!}</td>
-                                                  <td>{{ $f->account->real_name }}</td>
-                                                  <td>{{ $f->isATC() ? "ATC" : "Pilot"  }}</td>
+                                                  <td>{{ $f->form->name }}</td>
                                                   <td>{{ $f->created_at->format("d-m-Y H:i A") }}</td>
                                                   <td>
                                                     @if ($f->actioned_at)
@@ -267,6 +264,50 @@
                                                         {!! HTML::img("cross_mark_circle", "png", 35, 47) !!}
                                                     @endif
                                                   </td>
+                                              </tr>
+                                              @endforeach
+                                          </tbody>
+                                        </table>
+                                    </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+                    @endif
+
+                    @if($_account->hasPermission("adm/visit-transfer/application/*"))
+                        <div class="tab-pane fade {{ $selectedTab == "vtapps" ? "in active" : "" }}" id="vtapps">
+                            <!-- general form elements -->
+                            <div class="box box-primary">
+
+                                    <div class="box-header">
+                                        <h3 class="box-title">Visit / Transfer Application History</h3>
+                                    </div><!-- /.box-header -->
+                                    <div class="box-body">
+                                        <table class="table table-striped table-bordered table-condensed">
+                                          <thead>
+                                              <tr>
+                                                  <th>ID</th>
+                                                  <th>Type</th>
+                                                  <th>Facility</th>
+                                                  <th>Created</th>
+                                                  <th>Updated</th>
+                                                  <th>Status</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              @foreach($vtapplications as $a)
+                                              <tr>
+                                                <td>{!! link_to_route('visiting.admin.application.view', $a->public_id, [$a->id]) !!}</td>
+                                                <td>{{ $a->type_string }}</td>
+                                                <td>{{ $a->facility_name }}</td>
+                                                <td>
+                                                    {!! HTML::fuzzyDate($a->created_at) !!}
+                                                </td>
+                                                <td>
+                                                    {!! HTML::fuzzyDate($a->updated_at) !!}
+                                                </td>
+                                                <td>
+                                                    @include("visit-transfer.partials.application_status", ["application" => $a])
+                                                </td>
                                               </tr>
                                               @endforeach
                                           </tbody>

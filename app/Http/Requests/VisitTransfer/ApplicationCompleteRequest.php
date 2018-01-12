@@ -6,7 +6,7 @@ use App\Models\VisitTransfer\Application;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class ApplicationAcceptRequest extends FormRequest
+class ApplicationCompleteRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +16,7 @@ class ApplicationAcceptRequest extends FormRequest
     public function rules()
     {
         return [
-            'accept_staff_note' => 'nullable|string',
+            'complete_staff_note' => 'nullable|string|min:25|required',
         ];
     }
 
@@ -28,7 +28,7 @@ class ApplicationAcceptRequest extends FormRequest
     public function messages()
     {
         return [
-            'accept_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
+            'complete_staff_note.string' => 'You must only provide alphanumeric text in your staff note.',
         ];
     }
 
@@ -41,6 +41,6 @@ class ApplicationAcceptRequest extends FormRequest
     {
         $application = $this->route('application');
 
-        return Gate::allows('accept', $application);
+        return Gate::allows('complete', $application);
     }
 }

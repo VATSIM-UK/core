@@ -124,7 +124,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->id]]) !!}
+                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
                         {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
                         <div class="col-md-9">
                             <div class="box box-primary">
@@ -158,36 +158,34 @@
                         </div>
                         <div class="col-md-3">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="box box-danger">
                                         <div class="box-header">
-
+                                          <h4 class="box-title">Form Controls</h4>
                                         </div>
-                                        <div class="box-body">
+                                        <div class="box-body text-center">
+                                          <div class="col-md-12">
                                             {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
+                                            {{ Form::close() }}</br></br>
+                                            <div class="btn-group">
+                                              @if($form->enabled)
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Disable Form</a>
+                                              @else
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Enable Form</a>
+                                              @endif
+                                              @if($form->public)
+                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Unlisted</a>
+                                              @else
+                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Listed</a>
+                                              @endif
+                                            </div>
+                                          </div>
+                                          <div class="col-md-12" style="word-break: break-word;">
+                                            Form Link: {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
+                                          </div>
                                         </div>
                                     </div>
                                 </div>
-                                {{ Form::close() }}
-                                @if($form->enabled)
-                                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.disable", $form->id]]) !!}
-                                @else
-                                    {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.enable", $form->id]]) !!}
-                                @endif
-                                <div class="col-md-6">
-                                    <div class="box box-danger">
-                                        <div class="box-header">
-                                        </div>
-                                        <div class="box-body">
-                                            @if($form->enabled)
-                                                {{ Form::submit("Disable Form", ['class' => 'btn btn-danger', 'style' => 'color:white;']) }}
-                                            @else
-                                                {{ Form::submit("Enable Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                {{ Form::close() }}
                                 @include('adm.mship.feedback._question', ['question' => $new_question, 'hideme' => true, 'num' => 'template'])
                                 <div class="col-md-12">
                                     <div class="box box-warning">

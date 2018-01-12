@@ -53,7 +53,7 @@ class ProcessNetworkData extends Command
     /**
      * Executes all necessary console commands.
      */
-    public function fire()
+    public function handle()
     {
         $this->vatsimPHP->loadData();
         $this->setLastUpdatedTimestamp();

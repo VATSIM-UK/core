@@ -41,8 +41,8 @@ trait HasNetworkData
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-//    public function networkDataPilot()
-//    {
-//        return $this->hasMany(\App\Modules\NetworkData\Models\Pilot::class, "account_id", "id");
-//    }
+    public function networkDataPilot()
+    {
+        return $this->hasMany(\App\Models\NetworkData\Pilot::class, 'account_id', 'id');
+    }
 }

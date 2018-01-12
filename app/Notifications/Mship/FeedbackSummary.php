@@ -48,7 +48,7 @@ class FeedbackSummary extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $subject = 'Member Feedback Summary';
+        $subject = 'Feedback Summary';
 
         return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')

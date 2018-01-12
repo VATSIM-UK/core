@@ -175,6 +175,15 @@ class ApplicationPolicy
         return true;
     }
 
+    public function complete(Account $user, Application $application)
+    {
+        if ($application->is_editable || $application->is_closed || $application->is_under_review) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function checkOutcome(Account $user, Application $application)
     {
         return $application->is_open;
