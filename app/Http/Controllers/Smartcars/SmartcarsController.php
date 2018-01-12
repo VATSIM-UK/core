@@ -13,11 +13,11 @@ class SmartcarsController extends BaseController
     public function getDashboard()
     {
         $exercises = Flight::featured()->enabled()->orderBy('created_at')->get();
-        $bid = Bid::accountId($this->account->id);
+        $pireps = Pirep::query()->belongsTo($this->account->id)->count();
 
         return view('fte.dashboard')
             ->with('exercises', $exercises)
-            ->with('bid', $bid);
+            ->with('pireps', $pireps);
     }
 
     public function getMap()
