@@ -70,6 +70,11 @@ class Form extends Model
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
     }
 
+    public function feedback()
+    {
+      return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

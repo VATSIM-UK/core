@@ -7,13 +7,20 @@
     <section class="col-lg-12">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title"><i class="fa fa-inbox"></i>Latest Feedback Submissions</h3>
+                <h3 class="box-title"><i class="fa fa-inbox"></i> Latest Feedback Submissions</h3>
                 <div class="btn-group pull-right">
-                  {{ $feedback->links() }}
+                    <div style="display:inline-block">
+                        {{ $feedback->links() }}
+                    </div>
+                    @if(isset($form))
+                    <div style="display:inline-block">
+                        <a href="{{route('adm.mship.feedback.form.export', $form->slug)}}" class="btn btn-primary"> <i class="fa fa-share"></i> Export</a>
+                    </div>
+                    @endif
                 </div>
             </div>
             <div class="box-body">
-              Page <b>{{ $feedback->currentPage() }}</b> of <b>{{ $feedback->lastPage() }}</b>
+              Page <b>{{ $feedback->currentPage() }}</b> of <b>{{ $feedback->lastPage() }}</b> | <b>{{ $feedback->count() }}</b> submissions of <b>{{ $feedback->total() }}</b> total
               <table id="mship-accounts" class="table table-bordered table-striped">
                   <thead>
                       <tr>
