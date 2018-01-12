@@ -5,6 +5,7 @@ namespace App\Console\Commands\VisitTransfer;
 use App\Console\Commands\Command;
 use App\Models\Statistic;
 use App\Models\VisitTransfer\Application;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Cache;
 use Carbon\Carbon;
 
@@ -80,10 +81,7 @@ class VisitTransferStatistics extends Command
             $this->log('Done.  '.$count.' total applications');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update TOTAL APPLICATIONS (VISITTRANSFER) statistics.',
-                ['Error Code' => 3]
-            );
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -105,10 +103,7 @@ class VisitTransferStatistics extends Command
             $this->log('Done.  '.$count.' open applications');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update OPEN APPLICATIONS (VISITTRANSFER) statistics.',
-                ['Error Code' => 3]
-            );
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -130,10 +125,7 @@ class VisitTransferStatistics extends Command
             $this->log('Done. '.$count.' rejected applications');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update CLOSED APPLICATIONS (VISITTRANSFER) statistics.',
-                ['Error Code' => 3]
-            );
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -154,10 +146,7 @@ class VisitTransferStatistics extends Command
             $this->log('Done. '.$count.' new applications');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update ACCEPTED APPLICATIONS (VISITTRANSFER) statistics.',
-                ['Error Code' => 3]
-            );
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -174,10 +163,7 @@ class VisitTransferStatistics extends Command
             $startPeriod = Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
-                ['Error Code' => 1]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($startPeriod->isFuture()) {
@@ -200,10 +186,7 @@ class VisitTransferStatistics extends Command
             $endPeriod = Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
-                ['Error Code' => 2]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($endPeriod->isFuture()) {

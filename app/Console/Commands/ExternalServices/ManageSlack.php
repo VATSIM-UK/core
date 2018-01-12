@@ -76,11 +76,6 @@ class ManageSlack extends Command
                 }
             } catch (Exception $e) {
                 Bugsnag::notifyException($e);
-
-                $this->sendSlackError('ServerException processing client.', [
-                    'id' => $slackUser->id,
-                    'error' => $e->getMessage(),
-                ]);
             }
         }
     }

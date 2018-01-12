@@ -6,6 +6,7 @@ use App\Console\Commands\Command;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Statistic;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
 
@@ -84,7 +85,7 @@ class MemberStatistics extends Command
             $membersNew = Account::where('created_at', 'LIKE', $currentPeriod->toDateString().'%')->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.new', $membersNew);
         } catch (\Exception $e) {
-            $this->sendSlackError('Unable to update NEW MEMBER statistics.', ['Error Code' => 3]);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -100,7 +101,7 @@ class MemberStatistics extends Command
                                      ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.current', $membersCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError('Unable to update CURRENT MEMBER statistics.', ['Error Code' => 3]);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -118,7 +119,7 @@ class MemberStatistics extends Command
                                  ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.new', $divisionCreated);
         } catch (\Exception $e) {
-            $this->sendSlackError('Unable to update NEW DIVISION MEMBER statistics.', ['Error Code' => 3]);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -136,7 +137,7 @@ class MemberStatistics extends Command
                                  ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.current', $divisionCurrent);
         } catch (\Exception $e) {
-            $this->sendSlackError('Unable to update CURRENT DIVISION MEMBER statistics.', ['Error Code' => 3]);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -152,10 +153,7 @@ class MemberStatistics extends Command
         try {
             $startPeriod = \Carbon\Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->sendSlackError(
-                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
-                ['Error Code' => 1]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($startPeriod->isFuture()) {
@@ -177,10 +175,7 @@ class MemberStatistics extends Command
         try {
             $endPeriod = \Carbon\Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
-            $this->sendSlackError(
-                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
-                ['Error Code' => 2]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($endPeriod->isFuture()) {
