@@ -46,7 +46,7 @@
         "vatsim/sso": "dev-develop",
         "vatsim/xml": "dev-master",
         "vluzrmos/slack-api": "dev-master",
-        "watson/rememberable": "^2.0"
+        "watson/rememberable": "2.0.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

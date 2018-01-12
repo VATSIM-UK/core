@@ -172,7 +172,7 @@
                             @endif
                         @endforeach
                         @foreach($_feedbackForms as $f)
-                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug))
+                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug) || $_account->hasPermission("adm/mship/feedback/configure/*"))
                             <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
                                     <i class="fa fa-cog"></i>
