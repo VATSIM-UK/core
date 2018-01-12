@@ -8,6 +8,18 @@
                     <h3 class="box-title">smartCARS Exercise</h3>
                 </div>
                 <div class="box-body">
+                    <div class="form-group">
+                        <label for="code">Code</label>
+                        <input type="text" id="code" name="code" class="form-control"
+                               value="{{ old('code') ?: $exercise->code }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flightnum">Flight #</label>
+                        <input type="text" id="flightnum" name="flightnum" class="form-control"
+                               value="{{ old('flightnum') ?: $exercise->flightnum }}">
+                    </div>
+
                     @if(!$exercise->exists)
                         {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.exercises.store'], 'files' => true]) !!}
                     @else
@@ -32,12 +44,6 @@
                     @endif
 
                     <div class="form-group">
-                        <label for="code">Code</label>
-                        <input type="text" id="code" name="code" class="form-control"
-                               value="{{ old('code') ?: $exercise->code }}">
-                    </div>
-
-                    <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" class="form-control"
                                value="{{ old('name') ?: $exercise->name }}">
@@ -56,12 +62,6 @@
                                        name="featured"{{ old('featured') || $exercise->featured ? ' checked' : '' }}>Featured
                             </label>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="flightnum">Flight #</label>
-                        <input type="text" id="flightnum" name="flightnum" class="form-control"
-                               value="{{ old('flightnum') ?: $exercise->flightnum }}">
                     </div>
 
                     <div class="form-group">

@@ -13,12 +13,12 @@
                     {{ $exercises->render() }}
                     <table class="table table-bordered table-striped">
                         <tr>
-                            <th>Image</th>
                             <th>Code</th>
+                            <th>Flight #</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Featured</th>
-                            <th>Flight #</th>
                             <th>Dep</th>
                             <th>Arr</th>
                             <th>Route</th>
@@ -33,6 +33,8 @@
                         </tr>
                         @foreach($exercises as $exercise)
                             <tr>
+                                <td>{{ $exercise->code }}</td>
+                                <td>{{ $exercise->flightnum }}</td>
                                 <td>
                                     @if($exercise->image)
                                         <a href="{{ $exercise->image->asset() }}">
@@ -40,11 +42,9 @@
                                         </a>
                                     @endif
                                 </td>
-                                <td>{{ $exercise->code }}</td>
                                 <td>{{ $exercise->name }}</td>
                                 <td>{{ $exercise->description }}</td>
                                 <td>{{ $exercise->featured ? 'Yes' : 'No' }}</td>
-                                <td>{{ $exercise->flightnum }}</td>
                                 <td>{{ $exercise->departure->icao }}</td>
                                 <td>{{ $exercise->arrival->icao }}</td>
                                 <td>{{ $exercise->route }}</td>
