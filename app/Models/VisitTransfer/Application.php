@@ -635,12 +635,14 @@ class Application extends Model
         //        $this->status = ($this->is_visit ? self::STATUS_COMPLETED : self::STATUS_PENDING_CERT);
         $this->save();
 
+        $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n";
+
         if ($staffComment) {
-            $noteContent = 'VT Application for '.$this->type_string.' '.$this->facility->name." was completed.\n".$staffComment;
-            $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
-            $this->notes()->save($note);
-            // TODO: Investigate why this is required!!!!
+            $noteContent .= $staffComment;
         }
+
+        $note = $this->account->addNote('visittransfer', $noteContent, $actor, $this);
+        $this->notes()->save($note);
 
         event(new ApplicationCompleted($this));
     }

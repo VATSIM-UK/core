@@ -27,6 +27,15 @@
                                                 "data-target" => "#modalApplicationAccept",
                                            ]) !!}
                             @endcan
+
+                            @can("complete", $application)
+                                {!! Button::success("Mark Application Complete")
+                                           ->withAttributes([
+                                                "class" => "pull-right",
+                                                "data-toggle" => "modal",
+                                                "data-target" => "#modalApplicationComplete",
+                                           ]) !!}
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -300,7 +309,7 @@
                                 </tbody>
                             </table>
 
-                            <br />
+                            <br/>
 
                             <table class="table table-bordered">
                                 <tr class="bg-info">
@@ -320,7 +329,8 @@
                                         @if($application->references_required < 1)
                                             References <strong class="text-danger">are not required</strong>.
                                         @elseif($application->is_pending_references)
-                                            Some references <strong class="text-danger">have not been submitted</strong>.
+                                            Some references <strong class="text-danger">have not been submitted</strong>
+                                            .
                                         @elseif($application->references_required != $application->references_accepted->count())
                                             Some references <strong class="text-danger">have not been accepted</strong>.
                                         @else
@@ -339,7 +349,8 @@
                                             Qualification awarded <strong class="text-danger">in excess</strong> of 90
                                             days prior to application submission.
                                         @elseif($application->check_outcome_90_day === null)
-                                            <strong class="text-danger">Data unavailable</strong> - manual check required.<br />
+                                            <strong class="text-danger">Data unavailable</strong> - manual check
+                                            required.<br/>
 
                                             @can("check-outcome", $application)
                                                 {!!
@@ -383,39 +394,42 @@
                                         @if(!$application->submitted_at)
                                             Application not submitted, so this cannot be checked.
                                         @elseif($application->check_outcome_50_hours === 1)
-                                            Applicant has <strong class="text-danger">in excess</strong> of 50 hours at their
+                                            Applicant has <strong class="text-danger">in excess</strong> of 50 hours at
+                                            their
                                             present qualified level and has ratified their rating.
                                         @elseif($application->check_outcome_50_hours === null)
-                                            <strong class="text-danger">Data unavailable</strong> - manual check required.<br />
+                                            <strong class="text-danger">Data unavailable</strong> - manual check
+                                            required.<br/>
 
-                                                {!!
-                                                Modal::named("outcome_50_hour_not_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
-                                                     ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                                !!}
+                                            {!!
+                                            Modal::named("outcome_50_hour_not_met")
+                                                 ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
+                                                 ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
+                                                 ->withFooter(
+                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
+                                                    Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
+                                                    Form::hidden("check", "50_hours").
+                                                    Form::close()
+                                                 )
+                                                 ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
+                                            !!}
 
-                                                {!!
-                                                Modal::named("outcome_50_hour_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                                !!}
+                                            {!!
+                                            Modal::named("outcome_50_hour_met")
+                                                 ->withTitle("Mark 50 Hour Check as 'MET'?")
+                                                 ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
+                                                 ->withFooter(
+                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
+                                                    Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
+                                                    Form::hidden("check", "50_hours").
+                                                    Form::close()
+                                                 )
+                                                 ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
+                                            !!}
 
                                         @elseif($application->check_outcome_50_hours === 0)
-                                            Applicant <strong class="text-danger">does not have in excess</strong> of 50 hours at their
+                                            Applicant <strong class="text-danger">does not have in excess</strong> of 50
+                                            hours at their
                                             present qualified level.
                                         @endif
                                     </th>
@@ -545,7 +559,47 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Accept Application - this cannot be undone</button>
+                        <button type="submit" class="btn btn-success">Accept Application - this cannot be undone
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {!! Form::close() !!}
+        </div>
+
+        <div class="modal fade" id="modalApplicationComplete" tabindex="-1" role="dialog"
+             aria-labelledby="Accept Application" aria-hidden="true">
+            {!! Form::open(array("url" => URL::route("visiting.admin.application.complete.post", $application->id))) !!}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Complete Application #{{ $application->public_id }}
+                            - {{ $application->type_string }} {{ $application->facility_name }}
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            It is important that you understand <strong class="text-danger">this action cannot be
+                                undone.</strong>
+                        </p>
+
+                        <p>
+                            You must write a staff note detailing why you have completed the application.
+                            <strong class="text-danger">The member will not be provided a copy of this information</strong>.
+                        </p>
+
+                        <div class="form-group">
+                            <label for="complete_staff_note">Staff Note (mandatory)</label>
+                            <textarea name="complete_staff_note" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Complete Application - this cannot be undone
+                        </button>
                     </div>
                 </div>
             </div>
