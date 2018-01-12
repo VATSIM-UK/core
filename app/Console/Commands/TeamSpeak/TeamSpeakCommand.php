@@ -7,6 +7,7 @@ use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -95,8 +96,6 @@ abstract class TeamSpeakCommand extends Command
             .PHP_EOL.'Error message: '.$e->getMessage().PHP_EOL;
         self::$command->log($message);
 
-        self::$command->sendSlackError('Exception processing client.', [
-            'name' => $description,
-        ]);
+        Bugsnag::notifyException($e);
     }
 }

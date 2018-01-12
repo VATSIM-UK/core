@@ -16,6 +16,7 @@ use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
@@ -407,7 +408,12 @@ class Account extends AdmController
             return Redirect::route('adm.mship.account.index');
         }
 
-        $period_finish = \Carbon\Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
+        $period_finish = Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
+        $max_timestamp = Carbon::create(2038, 1, 1, 0, 0, 0);
+        if ($period_finish->gt($max_timestamp)) {
+            $period_finish = $max_timestamp;
+        }
+
         if ($ban->period_finish->eq($period_finish)) {
             return Redirect::back()->withInput()->withError("You didn't change the ban period.");
         }
