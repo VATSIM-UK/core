@@ -244,34 +244,34 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
             abort(403, 'Unauthorized action.');
         }
         $form = Form::whereSlug($slug)->firstOrFail();
+
         return $this->viewMake('adm.mship.feedback.export')
                     ->with('form', $form);
     }
 
     public function postFormFeedbackExport(ExportFeedbackRequest $request, $slug)
     {
-      $form = Form::whereSlug($slug)->with('questions')->first();
+        $form = Form::whereSlug($slug)->with('questions')->first();
 
-      $from_date = new Carbon($request->input('from'));
-      $to_date = new Carbon($request->input('to'));
+        $from_date = new Carbon($request->input('from'));
+        $to_date = new Carbon($request->input('to'));
 
-      $query = $form->feedback()->with(['answers', 'account'])->whereBetween('created_at', [$from_date, $to_date]);
+        $query = $form->feedback()->with(['answers', 'account'])->whereBetween('created_at', [$from_date, $to_date]);
 
-      if(!($request->input('include_actioned') && $request->input('include_unactioned'))){
-        if($request->input('include_actioned')){
-          $query = $query->actioned();
+        if (!($request->input('include_actioned') && $request->input('include_unactioned'))) {
+            if ($request->input('include_actioned')) {
+                $query = $query->actioned();
+            }
+            if ($request->input('include_unactioned')) {
+                $query = $query->unactioned();
+            }
         }
-        if($request->input('include_unactioned')){
-          $query = $query->unactioned();
-        }
-      }
 
-      $query = $query->orderBy('created_at', 'desc')->get();
+        $query = $query->orderBy('created_at', 'desc')->get();
 
-      \Excel::create($form->name.' Export '.Carbon::now()->format('d-m-Y Hi'), function($excel) use($form, $query, $request, $from_date, $to_date) {
-        $excel->sheet('Sheet 1', function($sheet) use($form, $query, $request, $from_date, $to_date) {
-
-          $sheet->rows(
+        \Excel::create($form->name.' Export '.Carbon::now()->format('d-m-Y Hi'), function ($excel) use ($form, $query, $request, $from_date, $to_date) {
+            $excel->sheet('Sheet 1', function ($sheet) use ($form, $query, $request, $from_date, $to_date) {
+                $sheet->rows(
             [
               ['Feedback Form:', $form->name],
               ['From:', $from_date->format('d-m-Y')],
@@ -282,63 +282,61 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
               ['All times ZULU'],
               ['VATSIM UK'],
               [''],
-              ['']
+              [''],
             ]
           );
 
-          // Headings
-          $headings = [];
-          if($request->input('include_target') && $form->targeted){
-            $headings[] = 'Targeted ID';
-            $headings[] = 'Targeted Name';
-          }
-          $headings[] = 'Question';
-          $headings[] = 'Response';
-          $headings[] = 'Submitted At';
-
-          $sheet->appendRow($headings);
-
-          // Append Feedback
-
-          foreach ($query as $feedback) {
-            $prepend = [];
-
-            if($request->input('include_target') && $form->targeted){
-              $prepend[] = $feedback->account->id;
-              $prepend[] = $feedback->account->name;
-            }
-
-            $question_number = 1;
-
-            foreach ($feedback->answers as $response) {
-              if($response->question->type->name == "userlookup"){
-                continue;
-              }
-              if($question_number == 1){
-                $insert = $prepend;
-              }else{
-                $insert = [];
-                foreach ($prepend as $header) {
-                  $insert[] = '';
+                // Headings
+                $headings = [];
+                if ($request->input('include_target') && $form->targeted) {
+                    $headings[] = 'Targeted ID';
+                    $headings[] = 'Targeted Name';
                 }
+                $headings[] = 'Question';
+                $headings[] = 'Response';
+                $headings[] = 'Submitted At';
 
-              }
+                $sheet->appendRow($headings);
 
-              $insert[] = $response->question->question;
-              $insert[] = $response->response;
-              if($question_number == 1){
-                $insert[] = $feedback->created_at->format('Y-m-d H:i');
-              }
-              $sheet->appendRow($insert);
-              $question_number++;
-            }
-            $sheet->appendRow(['']);
-          }
+                // Append Feedback
 
+                foreach ($query as $feedback) {
+                    $prepend = [];
 
-        });
-      })->download('xls');
-      return Redirect::back();
+                    if ($request->input('include_target') && $form->targeted) {
+                        $prepend[] = $feedback->account->id;
+                        $prepend[] = $feedback->account->name;
+                    }
+
+                    $question_number = 1;
+
+                    foreach ($feedback->answers as $response) {
+                        if ($response->question->type->name == 'userlookup') {
+                            continue;
+                        }
+                        if ($question_number == 1) {
+                            $insert = $prepend;
+                        } else {
+                            $insert = [];
+                            foreach ($prepend as $header) {
+                                $insert[] = '';
+                            }
+                        }
+
+                        $insert[] = $response->question->question;
+                        $insert[] = $response->response;
+                        if ($question_number == 1) {
+                            $insert[] = $feedback->created_at->format('Y-m-d H:i');
+                        }
+                        $sheet->appendRow($insert);
+                        $question_number++;
+                    }
+                    $sheet->appendRow(['']);
+                }
+            });
+        })->download('xls');
+
+        return Redirect::back();
     }
 
     public function getViewFeedback(FeedbackModel $feedback)

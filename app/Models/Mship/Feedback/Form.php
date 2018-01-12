@@ -72,7 +72,7 @@ class Form extends Model
 
     public function feedback()
     {
-      return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
+        return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
     }
 
     public function contact()

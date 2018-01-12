@@ -17,12 +17,13 @@ class ExportFeedbackRequest extends FormRequest
     public function authorize()
     {
         $form = Form::whereSlug(Request::route('slug'))->first();
-        if(!$form){
-          return false;
+        if (!$form) {
+            return false;
         }
-        if(!Auth::user()->hasPermission('adm/mship/feedback/list/*') && !Auth::user()->hasPermission('adm/mship/feedback/list/'.$form->slug)){
-          return false;
+        if (!Auth::user()->hasPermission('adm/mship/feedback/list/*') && !Auth::user()->hasPermission('adm/mship/feedback/list/'.$form->slug)) {
+            return false;
         }
+
         return true;
     }
 
