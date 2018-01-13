@@ -69,7 +69,7 @@
                         <select id="departure_id" name="departure_id" class="form-control">
                             @foreach(\App\Models\Smartcars\Airport::all() as $airport)
                                 <option value="{{ $airport->id }}"
-                                        {{ old('departure_id') == $airport->id ? 'selected' : ''}}>
+                                        {{ (old('departure_id') ?: $exercise->departure_id) == $airport->id ? 'selected' : ''}}>
                                     {{ $airport->icao }}
                                 </option>
                             @endforeach
@@ -81,7 +81,7 @@
                         <select id="arrival_id" name="arrival_id" class="form-control">
                             @foreach(\App\Models\Smartcars\Airport::all() as $airport)
                                 <option value="{{ $airport->id }}"
-                                        {{ old('arrival_id') == $airport->id ? 'selected' : ''}}>
+                                        {{ (old('arrival_id') ?: $exercise->arrival_id) == $airport->id ? 'selected' : ''}}>
                                     {{ $airport->icao }}
                                 </option>
                             @endforeach
@@ -105,7 +105,7 @@
                         <select id="aircraft_id" name="aircraft_id" class="form-control">
                             @foreach(\App\Models\Smartcars\Aircraft::all() as $aircraft)
                                 <option value="{{ $aircraft->id }}"
-                                        {{ old('aircraft_id') == $aircraft->id ? 'selected' : ''}}>
+                                        {{ (old('aircraft_id') ?: $exercise->aircraft_id) == $aircraft->id ? 'selected' : ''}}>
                                     {{ $aircraft->icao }}
                                 </option>
                             @endforeach
