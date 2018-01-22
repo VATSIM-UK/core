@@ -62,10 +62,6 @@
                     <br/>
                     <div class="row">
                         <div class="col-xs-12">
-                            <b>Maximum Altitude:</b>
-                            {{ $flight->cruise_altitude }}ft
-                        </div>
-                        <div class="col-xs-12">
                             <b>Aircraft Type:</b>
                             {{ $flight->aircraft->fullname }} ({{ $flight->aircraft->icao }})
                         </div>
