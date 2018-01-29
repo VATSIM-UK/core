@@ -39,11 +39,13 @@
                       @foreach($feedback as $f)
                       <tr>
                           <td>{!! link_to_route('adm.mship.feedback.view', $f->id, [$f->id]) !!}</td>
-                          @if ($f->form->targeted)
-                            <td>{{ $f->account->real_name }}</td>
-                          @else
-                            <td>N/A</td>
-                          @endif
+                          <td>
+                            @if ($f->form->targeted)
+                              {{ $f->account->real_name }}
+                            @else
+                              N/A
+                            @endif
+                          </td>
                           <td>{{ $f->form->name }}</td>
                           <td>{{ $f->created_at->format("d-m-Y H:i A") }}</td>
                           <td>
