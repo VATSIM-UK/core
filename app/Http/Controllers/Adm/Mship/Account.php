@@ -8,6 +8,7 @@ use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Models\Mship\Account as AccountData;
+use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
@@ -323,6 +324,17 @@ class Account extends AdmController
 
         return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
             ->withSuccess('You have successfully banned this member.');
+    }
+
+    public function getBans(AccountData $account)
+    {
+        $bans = BanData::orderBy('created_at', 'DESC')
+            ->where('type', '80') //Only Show Local Bans
+            ->paginate(15);
+
+        return $this->viewMake('adm.mship.account.ban.index')
+            ->with('bans', $bans)
+            ->with('account', $account);
     }
 
     public function getBanRepeal(AccountData\Ban $ban)
