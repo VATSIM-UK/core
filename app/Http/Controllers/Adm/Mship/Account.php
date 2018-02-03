@@ -328,8 +328,8 @@ class Account extends AdmController
 
     public function getBans(AccountData $account)
     {
-        $bans = BanData::orderBy('created_at', 'DESC')
-            ->where('type', '80') //Only Show Local Bans
+        $bans = BanData::isLocal()
+            ->orderBy('created_at', 'DESC')
             ->paginate(15);
 
         return $this->viewMake('adm.mship.account.ban.index')
