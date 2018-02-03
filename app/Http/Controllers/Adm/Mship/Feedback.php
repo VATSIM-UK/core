@@ -354,8 +354,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
-        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
-        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
+        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {
             if ($condition) {
@@ -371,9 +370,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getUnActioned(FeedbackModel $feedback)
     {
         $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list');
-        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/atc') && $feedback->isATC() == true);
-        $conditions[] = ($this->account->hasChildPermission('adm/mship/feedback/list/pilot') && $feedback->isATC() == false);
+        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
+        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {
             if ($condition) {
