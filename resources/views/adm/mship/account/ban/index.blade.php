@@ -123,12 +123,4 @@
     @parent
     {!! HTML::script('/AdminLTE/js/plugins/datatables/jquery.dataTables.js') !!}
     {!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
-    <script type="text/javascript">
-        $('[data-toggle="popover"]').popover();
-    </script>
-    <script>
-        $(function() {
-            $('.tooltip-wrapper').tooltip({position: "bottom"});
-        });
-    </script>
 @stop
