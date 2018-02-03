@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="row">
+        @include('adm.layout.messages')
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
