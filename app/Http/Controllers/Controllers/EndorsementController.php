@@ -38,7 +38,6 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         return $this->viewMake('controllers.endorsements.gatwick_ground')
             ->with('groupone', $groupone)
             ->with('grouptwo', $grouptwo)
-            ->with('groupthree', $groupthree)
-            ->with('divisionmember', $this->account->primary_state->isDivision);
+            ->with('groupthree', $groupthree);
     }
 }
