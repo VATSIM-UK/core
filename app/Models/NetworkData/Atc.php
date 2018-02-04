@@ -143,6 +143,15 @@ class Atc extends Model
         return $query->where('callsign', 'LIKE', $callsign);
     }
 
+    public static function scopeWithCallsignIn($query, array $callsigns)
+    {
+        return $query->where(function($query) use($callsigns){
+            foreach($callsigns as $callsign){
+                $query->orWhere("callsign", "LIKE", $callsign);
+            }
+        });
+    }
+
     public static function scopeOnline($query)
     {
         return $query->whereNull('disconnected_at');

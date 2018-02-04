@@ -11,35 +11,22 @@ class EndorsementController extends \App\Http\Controllers\BaseController
     public function getGatwickGroundIndex()
     {
         $groupone = $this->account->networkDataAtc()
+            ->withCallsignIn(["EGPF_%","EGBB_%","EGGD_%","EGGW_%"])
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->where(function ($callsigns) {
-                $callsigns->where('callsign', 'like', 'EGCC_%')
-                    ->orWhere('callsign', 'like', 'EGPH_%')
-                    ->orWhere('callsign', 'like', 'EGSS_%')
-                    ->orWhere('callsign', 'like', 'EGGP_%');
-            })->get()
+            ->get()
             ->sum('minutes_online');
         $g1 = round($groupone / 60, 1);
 
         $grouptwo = $this->account->networkDataAtc()
-            ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->where(function ($callsigns) {
-                $callsigns->where('callsign', 'like', 'EGPF_%')
-                    ->orWhere('callsign', 'like', 'EGBB_%')
-                    ->orWhere('callsign', 'like', 'EGGD_%')
-                    ->orWhere('callsign', 'like', 'EGGW_%');
-            })->get()
+            ->withCallsignIn(["EGPF_%","EGBB_%","EGGD_%","EGGW_%"])
+            ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])->get()
             ->sum('minutes_online');
         $g2 = round($grouptwo / 60, 1);
 
         $groupthree = $this->account->networkDataAtc()
+            ->withCallsignIn(["EGJJ_%","EGAA_%","EGNT_%","EGNX_%"])
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->where(function ($callsigns) {
-                $callsigns->where('callsign', 'like', 'EGJJ_%')
-                    ->orWhere('callsign', 'like', 'EGAA_%')
-                    ->orWhere('callsign', 'like', 'EGNT_%')
-                    ->orWhere('callsign', 'like', 'EGNX_%');
-            })->get()
+            ->get()
             ->sum('minutes_online');
         $g3 = round($groupthree / 60, 1);
 
