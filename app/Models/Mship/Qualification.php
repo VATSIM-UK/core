@@ -123,5 +123,4 @@ class Qualification extends Model
     {
         return $this->code == 'C3';
     }
-
 }

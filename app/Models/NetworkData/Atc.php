@@ -145,9 +145,9 @@ class Atc extends Model
 
     public static function scopeWithCallsignIn($query, array $callsigns)
     {
-        return $query->where(function($query) use($callsigns){
-            foreach($callsigns as $callsign){
-                $query->orWhere("callsign", "LIKE", $callsign);
+        return $query->where(function ($query) use ($callsigns) {
+            foreach ($callsigns as $callsign) {
+                $query->orWhere('callsign', 'LIKE', $callsign);
             }
         });
     }
