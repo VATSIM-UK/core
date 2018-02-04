@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Redirect;
 
-class GatwickController extends \App\Http\Controllers\BaseController
+class EndorsementController extends \App\Http\Controllers\BaseController
 {
-    public function getIndex()
+    public function getGatwickGroundIndex()
     {
         $account = $this->account;
 
@@ -45,15 +45,15 @@ class GatwickController extends \App\Http\Controllers\BaseController
             ->sum('minutes_online');
         $g3 = round($groupthree / 60, 1);
 
-        if ($account->qualificationAtc->isOBS) {
+        if ($this->account->qualificationAtc->isOBS) {
             return Redirect::back()
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
-        } elseif(!$account->qualificationAtc->isS1) {
+        } elseif(!$this->account->qualificationAtc->isS1) {
             return Redirect::back()
                 ->withError('You hold a controller rating above S1 and do not require an endorsement to control at Gatwick.');
         }
 
-        return $this->viewMake('controllers.gatwick')
+        return $this->viewMake('controllers.endorsements.gatwick_ground')
             ->with('groupone', $g1)
             ->with('grouptwo', $g2)
             ->with('groupthree', $g3)

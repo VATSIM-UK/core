@@ -104,7 +104,7 @@
                             <li class="col-sm-12">
                                 <ul>
                                     <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.gatwick", "Gatwick Ground") !!}</li>
+                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
                                 </ul>
                             </li>
                         </ul>
