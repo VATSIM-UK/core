@@ -96,9 +96,7 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
 
 // Controllers
 Route::group(['middleware' => ['auth_full_group']], function () {
-
     Route::get('controllers/gatwick', 'Controllers\GatwickController@getIndex')->name('controllers.gatwick');
-
 });
 
 // Network data
