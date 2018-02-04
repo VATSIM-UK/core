@@ -45,8 +45,6 @@ class GatwickController extends \App\Http\Controllers\BaseController
             ->sum('minutes_online');
         $g3 = round($groupthree / 60, 1);
 
-        $divisionmember = $this->account->primary_state->name == 'Division';
-
         if ($account->qualificationAtc->isOBS) {
             return Redirect::back()
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
@@ -59,6 +57,6 @@ class GatwickController extends \App\Http\Controllers\BaseController
             ->with('groupone', $g1)
             ->with('grouptwo', $g2)
             ->with('groupthree', $g3)
-            ->with('divisionmember', $divisionmember);
+            ->with('divisionmember', $account->primary_state->isDivision);
     }
 }
