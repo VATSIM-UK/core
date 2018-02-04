@@ -10,8 +10,6 @@ class EndorsementController extends \App\Http\Controllers\BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $account = $this->account;
-
         $groupone = $this->account->networkDataAtc()
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
             ->where(function ($callsigns) {
@@ -57,6 +55,6 @@ class EndorsementController extends \App\Http\Controllers\BaseController
             ->with('groupone', $g1)
             ->with('grouptwo', $g2)
             ->with('groupthree', $g3)
-            ->with('divisionmember', $account->primary_state->isDivision);
+            ->with('divisionmember', $this->account->primary_state->isDivision);
     }
 }
