@@ -131,7 +131,7 @@
                                         <li class="divider"></li>
                                         <li>{!! link_to_route("mship.manage.email.add", "Add Email Address") !!}</li>
                                         <li>{!! link_to_route("mship.manage.email.assignments", "Email Assignments") !!}</li>
-                                        @if(Auth::guard('vatsim-sso')->check())
+                                        @if(Auth::check())
                                             <li class="divider"></li>
                                             <li>
                                                 <a href="{{ route('logout') }}"
