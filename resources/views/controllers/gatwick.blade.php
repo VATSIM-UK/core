@@ -41,12 +41,10 @@
                         <li>Liverpool (EGGP)</li>
                     </ul>
                     <div class="progress">
-                        @if($groupone == 0)
-                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="10"></div>
-                        @elseif($groupone > 10)
+                        @if($groupone > 10)
                             <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ $groupone }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ $groupone }} Hours</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupone > 0) ? $groupone.' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>
@@ -64,12 +62,10 @@
                         <li>Luton (EGGW)</li>
                     </ul>
                     <div class="progress">
-                        @if($grouptwo == 0)
-                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="10"></div>
-                        @elseif($grouptwo > 10)
+                        @if($grouptwo > 10)
                             <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ $grouptwo }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ $grouptwo }} Hours</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($grouptwo > 0) ? $grouptwo.' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>
@@ -87,12 +83,10 @@
                         <li>East Midlands (EGNX)</li>
                     </ul>
                     <div class="progress">
-                        @if($groupthree == 0)
-                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5"></div>
-                        @elseif($groupthree > 5)
+                        @if($groupthree > 5)
                             <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ $groupthree }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree*20 }}%" aria-valuemin="0" aria-valuemax="5">{{ $groupthree }} Hours</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupthree > 0) ? $groupthree.' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>
