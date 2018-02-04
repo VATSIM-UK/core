@@ -47,25 +47,18 @@ class GatwickController extends \App\Http\Controllers\BaseController
 
         $divisionmember = $this->account->primary_state->name == 'Division';
 
-        $rating = $this->account->qualifications()
-            ->where('type', 'atc')
-            ->orderBy('created_at', 'DESC')
-            ->first();
-
-        $s1 = $rating->name_long == 'Student 1';
-
-        if ($rating->name_long == 'Observer') {
+        if ($account->qualificationAtc->isOBS) {
             return Redirect::back()
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
-        } elseif ($rating->name_long == 'Student 1') {
-            return $this->viewMake('controllers.gatwick')
-                ->with('groupone', $g1)
-                ->with('grouptwo', $g2)
-                ->with('groupthree', $g3)
-                ->with('divisionmember', $divisionmember);
-        } else {
+        } elseif(!$account->qualificationAtc->isS1) {
             return Redirect::back()
                 ->withError('You hold a controller rating above S1 and do not require an endorsement to control at Gatwick.');
         }
+
+        return $this->viewMake('controllers.gatwick')
+            ->with('groupone', $g1)
+            ->with('grouptwo', $g2)
+            ->with('groupthree', $g3)
+            ->with('divisionmember', $divisionmember);
     }
 }

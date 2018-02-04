@@ -93,4 +93,35 @@ class Qualification extends Model
     {
         return $this->code;
     }
+
+    public function getIsOBSAttribute()
+    {
+        return $this->code == 'OBS';
+    }
+
+    public function getIsS1Attribute()
+    {
+        return $this->code == 'S1';
+    }
+
+    public function getIsS2Attribute()
+    {
+        return $this->code == 'S2';
+    }
+
+    public function getIsS3Attribute()
+    {
+        return $this->code == 'S3';
+    }
+
+    public function getIsC1Attribute()
+    {
+        return $this->code == 'C1';
+    }
+
+    public function getIsC3Attribute()
+    {
+        return $this->code == 'C3';
+    }
+
 }
