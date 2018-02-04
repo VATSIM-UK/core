@@ -33,20 +33,22 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group One Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>10 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>10 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
                     <ul>
                         <li>Manchester (EGCC)</li>
                         <li>Edinburgh (EGPH)</li>
                         <li>Stansted (EGSS)</li>
                         <li>Liverpool (EGGP)</li>
                     </ul>
-                    <div class="progress">
-                        @if($groupone > 10)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($groupone,1) }} Hours</div>
-                        @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupone > 0) ? (round($groupone,1)).' Hours' : '' }}</div>
-                        @endif
-                    </div>
+                    @foreach($groupone as $icao => $hours)
+                        <div class="progress">
+                            @if($hours > 5)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
+                            @else
+                                <div class="progress-bar" role="progressbar" style="width: {{ $hours*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($hours > 0) ? (round($hours,1)).' Hrs ('. $icao .')' : '' }}</div>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -54,20 +56,22 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Two Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>10 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>10 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
                     <ul>
                         <li>Glasgow (EGPF)</li>
                         <li>Birmingham (EGBB)</li>
                         <li>Bristol (EGGD)</li>
                         <li>Luton (EGGW)</li>
                     </ul>
-                    <div class="progress">
-                        @if($grouptwo > 10)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($grouptwo,1) }} Hours</div>
-                        @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($grouptwo > 0) ? (round($grouptwo,1)).' Hours' : '' }}</div>
-                        @endif
-                    </div>
+                    @foreach($grouptwo as $icao => $hours)
+                        <div class="progress">
+                            @if($hours > 5)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
+                            @else
+                                <div class="progress-bar" role="progressbar" style="width: {{ $hours*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($hours > 0) ? (round($hours,1)).' Hrs ('. $icao .')' : '' }}</div>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -75,20 +79,22 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Three Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>5 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>5 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
                     <ul>
                         <li>Jersey (EGJJ)</li>
                         <li>Belfast Aldergrove (EGAA)</li>
                         <li>Newcastle (EGNT)</li>
                         <li>East Midlands (EGNX)</li>
                     </ul>
-                    <div class="progress">
-                        @if($groupthree > 5)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($groupthree,1) }} Hours</div>
-                        @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupthree > 0) ? (round($groupthree,1)).' Hours' : '' }}</div>
-                        @endif
-                    </div>
+                    @foreach($groupthree as $icao => $hours)
+                        <div class="progress">
+                            @if($hours > 5)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
+                            @else
+                                <div class="progress-bar" role="progressbar" style="width: {{ $hours*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($hours > 0) ? (round($hours,1)).' Hrs ('. $icao .')' : '' }}</div>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -113,8 +119,8 @@
                 <div class="panel-body">
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>
-                    @if($_account->primary_state->isDivision && $groupthree > 5 && $grouptwo > 10 && $groupone > 10)
-                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($groupone,1) }} hours.%0AGroup%202%3A%20{{ round($grouptwo,1) }} hours.%0AGroup%203%3A%20{{ round($groupthree,1) }} hours.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
+                    @if($_account->primary_state->isDivision && $groupone->max() > 10 && $grouptwo->max() > 10 && $groupthree->max() > 5)
+                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($groupone->max(),1) }}%20hours%20on%20{{ $groupone->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%202%3A%20{{ round($grouptwo->max(),1) }}%20hours%20on%20{{ $grouptwo->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%203%3A%20{{ round($groupthree->max(),1) }}%20hours%20on%20{{ $groupthree->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
                             <button class="btn btn-success center-block">Request Moodle Course</button>
                         </a>
                     @else
