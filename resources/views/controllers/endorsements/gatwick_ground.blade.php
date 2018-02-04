@@ -42,9 +42,9 @@
                     </ul>
                     <div class="progress">
                         @if($groupone > 600)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($groupone/60,1) }} Hours</div>
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($groupone,1) }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone/60*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupone > 0) ? (round($groupone/60,1)).' Hours' : '' }}</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupone > 0) ? (round($groupone,1)).' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>
@@ -63,9 +63,9 @@
                     </ul>
                     <div class="progress">
                         @if($grouptwo > 600)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($grouptwo/60,1) }} Hours</div>
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ round($grouptwo,1) }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo/60*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($grouptwo > 0) ? (round($grouptwo/60,1)).' Hours' : '' }}</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($grouptwo > 0) ? (round($grouptwo,1)).' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>
@@ -84,9 +84,9 @@
                     </ul>
                     <div class="progress">
                         @if($groupthree > 300)
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($groupthree/60,1) }} Hours</div>
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($groupthree,1) }} Hours</div>
                         @else
-                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree/60*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupthree > 0) ? (round($groupthree/60,1)).' Hours' : '' }}</div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($groupthree > 0) ? (round($groupthree,1)).' Hours' : '' }}</div>
                         @endif
                     </div>
                 </div>

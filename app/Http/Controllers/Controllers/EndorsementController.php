@@ -14,18 +14,18 @@ class EndorsementController extends \App\Http\Controllers\BaseController
             ->withCallsignIn(['EGPF_%', 'EGBB_%', 'EGGD_%', 'EGGW_%'])
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
             ->get()
-            ->sum('minutes_online');
+            ->sum('minutes_online')/60;
 
         $grouptwo = $this->account->networkDataAtc()
             ->withCallsignIn(['EGPF_%', 'EGBB_%', 'EGGD_%', 'EGGW_%'])
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])->get()
-            ->sum('minutes_online');
+            ->sum('minutes_online')/60;
 
         $groupthree = $this->account->networkDataAtc()
             ->withCallsignIn(['EGJJ_%', 'EGAA_%', 'EGNT_%', 'EGNX_%'])
             ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
             ->get()
-            ->sum('minutes_online');
+            ->sum('minutes_online')/60;
 
         if ($this->account->qualificationAtc->isOBS) {
             return Redirect::back()
