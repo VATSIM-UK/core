@@ -59,7 +59,6 @@ class GatwickController extends \App\Http\Controllers\BaseController
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
         } elseif ($rating->name_long == 'Student 1') {
             return $this->viewMake('controllers.gatwick')
-                ->with('account', $account)
                 ->with('groupone', $g1)
                 ->with('grouptwo', $g2)
                 ->with('groupthree', $g3)
