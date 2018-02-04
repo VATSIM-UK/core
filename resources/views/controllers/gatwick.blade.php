@@ -1,0 +1,133 @@
+@extends('layout')
+
+@section('content')
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Gatwick Endorsement</div>
+                <div class="panel-body">
+                    Gatwick is one of the busiest airports on the VATSIM network. Before controlling it, we want to ensure you have the knowledge you need to provide a good service to pilots and get the most from your controlling session.<br>
+                    <br>
+                    <h4>Step One</h4>
+                    In order to control Gatwick Ground as an S1, you will need to first meet the requirements outlined on this page.<br>
+                    The requirements involve you completing a number of hours on various positions around the UK, being a home member of the UK and rated as an S1.<br>
+                    <br>
+                    <h4>Step Two</h4>
+                    You will be given access to the 'Gatwick ADC | S1 Endorsement' course. This Moodle course covers Gatwick specific procedures, radiotelephony, and local flight planning restrictions.
+                    There is a quiz at the end of the course with a pass mark of 80% - you must pass this quiz to proceed.
+                    If you do not pass the quiz on your first attempt, there is a study period of seven days for you to review the Moodle course and improve your knowledge before you try again.<br>
+                    When you have passed the quiz at the end of the Moodle course, you will be prompted to submit another ticket to ATC TRAINING.<br>
+                    <br>
+                    <h4>Step Three</h4>
+                    Your training now moves onto the live network. One of our S1 mentors will take you onto EGKK_GND for a 1h30 session, and offer you hints and tips as you control, answering any questions you may have.
+                    This is not a test, and you will not pass or fail, rather it is an opportunity for you to practically apply the skills and knowledge which you have learned through completing the Moodle course.<br>
+                    Once you have completed the session, your mentor will submit a request for you to be added to the special endorsement list. Once this has been processed, you will be able to control EGKK_DEL and EGKK_GND on the live network.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group One Controlling</div>
+                <div class="panel-body">
+                    Control a total of <strong>10 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    <ul>
+                        <li>Manchester (EGCC)</li>
+                        <li>Edinburgh (EGPH)</li>
+                        <li>Stansted (EGSS)</li>
+                        <li>Liverpool (EGGP)</li>
+                    </ul>
+                    <div class="progress">
+                        @if($groupone == 0)
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="10"></div>
+                        @elseif($groupone > 10)
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ $groupone }} Hours</div>
+                        @else
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupone*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ $groupone }} Hours</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Two Controlling</div>
+                <div class="panel-body">
+                    Control a total of <strong>10 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    <ul>
+                        <li>Glasgow (EGPF)</li>
+                        <li>Birmingham (EGBB)</li>
+                        <li>Bristol (EGGD)</li>
+                        <li>Luton (EGGW)</li>
+                    </ul>
+                    <div class="progress">
+                        @if($grouptwo == 0)
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="10"></div>
+                        @elseif($grouptwo > 10)
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="10">{{ $grouptwo }} Hours</div>
+                        @else
+                            <div class="progress-bar" role="progressbar" style="width: {{ $grouptwo*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ $grouptwo }} Hours</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Three Controlling</div>
+                <div class="panel-body">
+                    Control a total of <strong>5 hours</strong> across the following positions within the last <strong>3 months.</strong>
+                    <ul>
+                        <li>Jersey (EGJJ)</li>
+                        <li>Belfast Aldergrove (EGAA)</li>
+                        <li>Newcastle (EGNT)</li>
+                        <li>East Midlands (EGNX)</li>
+                    </ul>
+                    <div class="progress">
+                        @if($groupthree == 0)
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5"></div>
+                        @elseif($groupthree > 5)
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ $groupthree }} Hours</div>
+                        @else
+                            <div class="progress-bar" role="progressbar" style="width: {{ $groupthree*20 }}%" aria-valuemin="0" aria-valuemax="5">{{ $groupthree }} Hours</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Membership Status</div>
+                <div class="panel-body">
+                    @if($divisionmember == true)
+                        You are a home member of the UK and no further action is required.
+                    @else
+                        <p class="text-danger"><strong>You are not a home member of the UK Division. If you wish to hold a Gatwick endorsement, apply to transfer to the UK by {!! link_to_route("visiting.landing", "clicking here") !!}.</strong></p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Request Moodle Course</div>
+                <div class="panel-body">
+                    Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
+                    <br><br>
+                    @if($divisionmember == true && $groupthree > 5 && $grouptwo > 10 && $groupone > 10)
+                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ $groupone }} hours.%0AGroup%202%3A%20{{ $grouptwo }} hours.%0AGroup%203%3A%20{{ $groupthree }} hours.%0A%0AFull%20Name%3A%20{{ $account->name }}%0AVATSIM%20CID%3A%20{{ $account->id }}">
+                            <button class="btn btn-success center-block">Request Moodle Course</button>
+                        </a>
+                    @else
+                        <button class="btn btn-info center-block" disabled>Request Moodle Course</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@stop

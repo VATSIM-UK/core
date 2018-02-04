@@ -97,6 +97,20 @@
                     </li>
                 </ul>
 
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="dropdown-header">Endorsements</li>
+                                    <li>{!! link_to_route("controllers.gatwick", "Gatwick Ground") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
                 @if(Auth::check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
