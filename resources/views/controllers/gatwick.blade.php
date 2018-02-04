@@ -114,7 +114,7 @@
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>
                     @if($divisionmember == true && $groupthree > 5 && $grouptwo > 10 && $groupone > 10)
-                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ $groupone }} hours.%0AGroup%202%3A%20{{ $grouptwo }} hours.%0AGroup%203%3A%20{{ $groupthree }} hours.%0A%0AFull%20Name%3A%20{{ $account->name }}%0AVATSIM%20CID%3A%20{{ $account->id }}">
+                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ $groupone }} hours.%0AGroup%202%3A%20{{ $grouptwo }} hours.%0AGroup%203%3A%20{{ $groupthree }} hours.%0A%0AFull%20Name%3A%20{{ $account->name }}%0AVATSIM%20CID%3A%20{{ $account->id }}" style="text-decoration: none;">
                             <button class="btn btn-success center-block">Request Moodle Course</button>
                         </a>
                     @else
