@@ -41,7 +41,7 @@
                         <li>Liverpool (EGGP)</li>
                     </ul>
                     @foreach($groupone as $icao => $hours)
-                        <div class="progress">
+                        <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
                             @if($hours > 5)
                                 <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
@@ -64,7 +64,7 @@
                         <li>Luton (EGGW)</li>
                     </ul>
                     @foreach($grouptwo as $icao => $hours)
-                        <div class="progress">
+                        <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
                             @if($hours > 5)
                                 <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
@@ -87,11 +87,11 @@
                         <li>East Midlands (EGNX)</li>
                     </ul>
                     @foreach($groupthree as $icao => $hours)
-                        <div class="progress">
+                        <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
                             @if($hours > 5)
                                 <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="5">{{ round($hours,1) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ $hours*10 }}%" aria-valuemin="0" aria-valuemax="10">{{ ($hours > 0) ? (round($hours,1)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ $hours*10 }}%"aria-valuemin="0" aria-valuemax="10">{{ ($hours > 0) ? (round($hours,1)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -130,4 +130,10 @@
             </div>
         </div>
     </div>
+@stop
+
+@section('scripts')
+    <script>
+        $('[data-toggle="tooltip"]').tooltip();
+    </script>
 @stop
