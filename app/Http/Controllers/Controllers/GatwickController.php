@@ -63,8 +63,7 @@ class GatwickController extends \App\Http\Controllers\BaseController
                 ->with('groupone', $g1)
                 ->with('grouptwo', $g2)
                 ->with('groupthree', $g3)
-                ->with('divisionmember', $divisionmember)
-                ->with('s1', $s1);
+                ->with('divisionmember', $divisionmember);
         } else {
             return Redirect::back()
                 ->withError('You hold a controller rating above S1 and do not require an endorsement to control at Gatwick.');
