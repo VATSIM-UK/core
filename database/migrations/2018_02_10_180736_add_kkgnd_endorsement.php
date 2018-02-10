@@ -12,7 +12,7 @@ class AddKkgndEndorsement extends Migration
     public function up()
     {
         DB::table('endorsements')
-            ->insert(
+            ->insert([
                 [
                     'endorsement' => 'EGKK_GND',
                     'required_airfields' => '["EGCC_%","EGPH_%","EGSS_%","EGGP_%"]',
@@ -37,7 +37,7 @@ class AddKkgndEndorsement extends Migration
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now(),
                 ]
-            );
+            ]);
     }
 
     /**
