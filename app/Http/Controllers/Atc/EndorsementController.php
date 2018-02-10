@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Atc;
 
-use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Redirect;
 use DB;
