@@ -363,6 +363,7 @@ class Account extends AdmController
         $ban->repeal();
 
         $ban->account->notify(new BanRepealed($ban));
+        
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Ban has been repealed.');
     }
@@ -394,6 +395,7 @@ class Account extends AdmController
             Auth::getUser()
         );
         $ban->notes()->save($note);
+
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Your comment for this ban has been noted.');
     }
@@ -446,6 +448,7 @@ class Account extends AdmController
         $ban->save();
 
         $ban->account->notify(new BanModified($ban));
+
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('This ban has been modified.');
     }
