@@ -363,10 +363,8 @@ class Account extends AdmController
         $ban->repeal();
 
         $ban->account->notify(new BanRepealed($ban));
-
-        $return = $request->input('return');
-
-        return redirect::to($return)->withSuccess('Ban has been repealed.');
+        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
+            ->withSuccess('Ban has been repealed.');
     }
 
     public function getBanComment(AccountData\Ban $ban)
@@ -396,10 +394,8 @@ class Account extends AdmController
             Auth::getUser()
         );
         $ban->notes()->save($note);
-
-        $return = $request->input('return');
-
-        return redirect::to($return)->withSuccess('Your comment for this ban has been noted.');
+        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
+            ->withSuccess('Your comment for this ban has been noted.');
     }
 
     public function getBanModify(AccountData\Ban $ban)
@@ -450,10 +446,8 @@ class Account extends AdmController
         $ban->save();
 
         $ban->account->notify(new BanModified($ban));
-
-        $return = $request->input('return');
-
-        return redirect::to($return)->withSuccess('The ban has been modified.');
+        return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
+            ->withSuccess('This ban has been modified.');
     }
 
     public function postNoteCreate(AccountData $account)

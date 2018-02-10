@@ -26,7 +26,6 @@
                     </div>
 
                     <div class="btn-toolbar">
-                        <input type="hidden" value="{{ url()->previous() }}" name="return">
                         <div class="btn-group pull-left">
                             <a href="{{ url()->previous() }}" class="btn btn-danger">Cancel</a>
                         </div>
