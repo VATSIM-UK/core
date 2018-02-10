@@ -329,7 +329,7 @@ class Account extends AdmController
     public function getBans(AccountData $account)
     {
         $bans = BanData::isLocal()
-            ->orderBy('created_at', 'DESC')
+            ->orderByDesc('created_at')
             ->paginate(15);
 
         return $this->viewMake('adm.mship.account.ban.index')
@@ -364,7 +364,7 @@ class Account extends AdmController
 
         $ban->account->notify(new BanRepealed($ban));
 
-        $return = Input::get('return');
+        $return = $request->input('return');
 
         return redirect::to($return)->withSuccess('Ban has been repealed.');
     }
@@ -397,7 +397,7 @@ class Account extends AdmController
         );
         $ban->notes()->save($note);
 
-        $return = Input::get('return');
+        $return = $request->input('return');
 
         return redirect::to($return)->withSuccess('Your comment for this ban has been noted.');
     }
@@ -451,7 +451,7 @@ class Account extends AdmController
 
         $ban->account->notify(new BanModified($ban));
 
-        $return = Input::get('return');
+        $return = $request->input('return');
 
         return redirect::to($return)->withSuccess('The ban has been modified.');
     }
