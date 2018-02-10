@@ -97,7 +97,7 @@
                     </li>
                 </ul>
 
-                @if(Auth::check())
+                @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
@@ -165,7 +165,6 @@
                             </a>
                         </li>
                     </ul>
-                @elseif(Auth::check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
                         <li class="dropdown dropdown-large">
