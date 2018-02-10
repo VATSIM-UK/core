@@ -36,7 +36,7 @@ class AddKkgndEndorsement extends Migration
                     'hours_months' => '3',
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now(),
-                ]
+                ],
             ]);
     }
 

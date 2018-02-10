@@ -22,6 +22,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
                 })->transform(function ($item) {
                     return $item->sum();
                 });
+
             return $data;
         });
 
