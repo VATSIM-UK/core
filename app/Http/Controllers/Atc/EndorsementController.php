@@ -27,12 +27,9 @@ class EndorsementController extends \App\Http\Controllers\BaseController
             $outcomes->push([$r, $data]);
         }
 
-        if ($this->account->qualificationAtc->isOBS) {
+        if (!$this->account->qualificationAtc->isS1) {
             return Redirect::back()
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
-        } elseif (!$this->account->qualificationAtc->isS1) {
-            return Redirect::back()
-                ->withError('You hold a controller rating above S1 and do not require an endorsement to control at Gatwick.');
         }
 
         return $this->viewMake('controllers.endorsements.gatwick_ground')
