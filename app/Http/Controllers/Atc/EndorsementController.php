@@ -5,40 +5,27 @@ namespace App\Http\Controllers\Atc;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Redirect;
+use DB;
 
 class EndorsementController extends \App\Http\Controllers\BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $groupone = $this->account->networkDataAtc()
-            ->withCallsignIn(['EGCC_%', 'EGPH_%', 'EGSS_%', 'EGGP_%'])
-            ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->get(['minutes_online', 'callsign'])
-            ->mapToGroups(function ($item, $key) {
-                return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
-            })->transform(function ($item) {
-                return $item->sum();
-            });
+        $requirements = DB::table('endorsements')->where('endorsement', '=', 'EGKK_GND')->get();
+        $outcomes = collect([]);
 
-        $grouptwo = $this->account->networkDataAtc()
-            ->withCallsignIn(['EGPF_%', 'EGBB_%', 'EGGD_%', 'EGGW_%'])
-            ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->get(['minutes_online', 'callsign'])
-            ->mapToGroups(function ($item, $key) {
-                return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
-            })->transform(function ($item) {
-                return $item->sum();
-            });
-
-        $groupthree = $this->account->networkDataAtc()
-            ->withCallsignIn(['EGJJ_%', 'EGAA_%', 'EGNT_%', 'EGNX_%'])
-            ->whereBetween('connected_at', [Carbon::now()->subMonth(3), Carbon::now()])
-            ->get(['minutes_online', 'callsign'])
-            ->mapToGroups(function ($item, $key) {
-                return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
-            })->transform(function ($item) {
-                return $item->sum();
-            });
+        foreach($requirements as $r) {
+            $data = $this->account->networkDataAtc()
+                ->withCallsignIn(json_decode($r->required_airfields))
+                ->whereBetween('connected_at', [Carbon::now()->subMonth($r->hours_months), Carbon::now()])
+                ->get(['minutes_online', 'callsign'])
+                ->mapToGroups(function ($item, $key) {
+                    return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
+                })->transform(function ($item) {
+                    return $item->sum();
+                });
+            $outcomes->push([$r, $data]);
+        }
 
         if ($this->account->qualificationAtc->isOBS) {
             return Redirect::back()
@@ -49,8 +36,6 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         }
 
         return $this->viewMake('controllers.endorsements.gatwick_ground')
-            ->with('groupone', $groupone)
-            ->with('grouptwo', $grouptwo)
-            ->with('groupthree', $groupthree);
+            ->with('outcomes', $outcomes);
     }
 }
