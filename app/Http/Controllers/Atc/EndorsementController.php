@@ -14,7 +14,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         $requirements = DB::table('endorsements')->where('endorsement', '=', 'EGKK_GND')->get();
         $outcomes = collect([]);
 
-        foreach($requirements as $r) {
+        foreach ($requirements as $r) {
             $data = $this->account->networkDataAtc()
                 ->withCallsignIn(json_decode($r->required_airfields))
                 ->whereBetween('connected_at', [Carbon::now()->subMonth($r->hours_months), Carbon::now()])
