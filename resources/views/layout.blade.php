@@ -131,14 +131,12 @@
                                         <li class="divider"></li>
                                         <li>{!! link_to_route("mship.manage.email.add", "Add Email Address") !!}</li>
                                         <li>{!! link_to_route("mship.manage.email.assignments", "Email Assignments") !!}</li>
-                                        @if(Auth::check())
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a href="{{ route('logout') }}"
-                                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
-                                                    Out</a>
-                                            </li>
-                                        @endif
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="{{ route('logout') }}"
+                                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
+                                                Out</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
