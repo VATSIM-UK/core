@@ -97,7 +97,7 @@
                     </li>
                 </ul>
 
-                @if(Auth::check())
+                @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right account-dropdown">
                         <li class="dropdown dropdown-large">
@@ -131,14 +131,12 @@
                                         <li class="divider"></li>
                                         <li>{!! link_to_route("mship.manage.email.add", "Add Email Address") !!}</li>
                                         <li>{!! link_to_route("mship.manage.email.assignments", "Email Assignments") !!}</li>
-                                        @if(Auth::guard('vatsim-sso')->check())
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a href="{{ route('logout') }}"
-                                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
-                                                    Out</a>
-                                            </li>
-                                        @endif
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="{{ route('logout') }}"
+                                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
+                                                Out</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -165,7 +163,6 @@
                             </a>
                         </li>
                     </ul>
-                @elseif(Auth::guard('vatsim-sso')->check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                     <ul class="nav navbar-nav navcustom navbar-right">
                         <li class="dropdown dropdown-large">
