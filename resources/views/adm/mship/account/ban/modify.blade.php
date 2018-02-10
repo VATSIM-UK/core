@@ -57,7 +57,7 @@
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-left">
-                            <a href="{{ url()->previous() }}" class="btn btn-danger">Cancel</a>
+                            {!! link_to_route("adm.mship.account.details", "Cancel", [$ban->account_id, "bans", $ban->id], ["class" => "btn btn-info"]) !!}
                         </div>
                         <div class="btn-group pull-right">
                             {!! Form::submit("Modify Ban", ["class" => "btn btn-danger"]) !!}
