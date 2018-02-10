@@ -363,7 +363,7 @@ class Account extends AdmController
         $ban->repeal();
 
         $ban->account->notify(new BanRepealed($ban));
-        
+
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Ban has been repealed.');
     }
