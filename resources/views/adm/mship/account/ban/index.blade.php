@@ -20,13 +20,13 @@
                             <th>Ends</th>
                             <th>Type</th>
                             <th>Status</th>
-                            @if($_account->hasPermission("adm/mship/account/*/note/create"))
+                            @if($_account->hasPermission('adm/mship/account/*/note/create'))
                                 <th>Note</th>
                             @endif
-                            @if($_account->hasPermission("adm/mship/ban/*/modify"))
+                            @if($_account->hasPermission('adm/mship/ban/*/modify'))
                                 <th>Modify</th>
                             @endif
-                            @if($_account->hasPermission("adm/mship/ban/*/repeal"))
+                            @if($_account->hasPermission('adm/mship/ban/*/repeal'))
                                 <th>Repeal</th>
                             @endif
                         </tr>
@@ -35,10 +35,10 @@
                         @foreach($bans as $b)
                             <tr>
                                 <td>
-                                    {!! link_to_route("adm.mship.account.details", $b->account->name, [$b->account]) !!}
+                                    {!! link_to_route('adm.mship.account.details', $b->account->name, [$b->account]) !!}
                                 </td>
                                 <td>
-                                    {!! link_to_route("adm.mship.account.details", $b->banner, [$b->banned_by]) !!}
+                                    {!! link_to_route('adm.mship.account.details', $b->banner, [$b->banned_by]) !!}
                                 </td>
                                 <td>
                                     {{ $b->created_at->format('dS M Y') }}
@@ -69,33 +69,33 @@
                                         Unknown
                                     @endif
                                 </td>
-                                @if($_account->hasPermission("adm/mship/account/".$b->account->id."/note/create"))
+                                @if($_account->hasPermission('adm/mship/account/'.$b->account->id.'/note/create'))
                                     <td>
                                         <div class="btn-group">
                                             @if(!$b->is_repealed)
-                                                {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$b->id], ["class" => "btn btn-info"]) !!}
+                                                {!! link_to_route('adm.mship.ban.comment', 'Attach Note', [$b->id], ['class' => 'btn btn-info']) !!}
                                             @else
                                                 <button class="btn btn-info disabled">Attach Note</button>
                                             @endif
                                         </div>
                                     </td>
                                 @endif
-                                @if($_account->hasPermission("adm/mship/ban/".$b->id."/modify"))
+                                @if($_account->hasPermission('adm/mship/ban/'.$b->id.'/modify'))
                                     <td>
                                         <div class="btn-group">
                                             @if($b->is_active)
-                                                {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$b->id], ["class" => "btn btn-warning"]) !!}
+                                                {!! link_to_route('adm.mship.ban.modify', 'Modify Ban', [$b->id], ['class' => 'btn btn-warning']) !!}
                                             @else
                                                 <button class="btn btn-warning disabled">Modify Ban</button>
                                             @endif
                                         </div>
                                     </td>
                                 @endif
-                                @if($_account->hasPermission("adm/mship/ban/".$b->id."/repeal"))
+                                @if($_account->hasPermission('adm/mship/ban/'.$b->id.'/repeal'))
                                     <td>
-                                        <div class="btn-group">
+                                        <div class="'btn-group">
                                             @if(!$b->is_repealed)
-                                                {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$b->id], ["class" => "btn btn-danger"]) !!}
+                                                {!! link_to_route('adm.mship.ban.repeal', 'Repeal Ban', [$b->id], ['class' => 'btn btn-danger']) !!}
                                             @else
                                                 <button class="btn btn-danger disabled">Repeal Ban</button>
                                             @endif
