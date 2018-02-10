@@ -19,7 +19,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
                 ->withCallsignIn(json_decode($r->required_airfields))
                 ->whereBetween('connected_at', [Carbon::now()->subMonth($r->hours_months), Carbon::now()])
                 ->get(['minutes_online', 'callsign'])
-                ->mapToGroups(function ($item, $key) {
+                ->mapToGroups(function ($item) {
                     return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
                 })->transform(function ($item) {
                     return $item->sum();
