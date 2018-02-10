@@ -33,19 +33,19 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group One Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>10 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>{{ $requirements[0]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[0]->hours_months }} months.</strong>
                     <ul>
                         <li>Manchester (EGCC)</li>
                         <li>Edinburgh (EGPH)</li>
                         <li>Stansted (EGSS)</li>
                         <li>Liverpool (EGGP)</li>
                     </ul>
-                    @foreach($outcomes[0][1] as $icao => $hours)
+                    @foreach($hours[0] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hours > $outcomes[0][0]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $outcomes[0][0]->required_hours }}">{{ round($hours,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($hour > $requirements[0]->required_hours)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[0]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hours/$outcomes[0][0]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $outcomes[0][0]->required_hours }}">{{ ($hours > 0) ? (round($hours,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[0]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $requirements[0]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -56,19 +56,19 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Two Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>10 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>{{ $requirements[1]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[1]->hours_months }} months.</strong>
                     <ul>
                         <li>Glasgow (EGPF)</li>
                         <li>Birmingham (EGBB)</li>
                         <li>Bristol (EGGD)</li>
                         <li>Luton (EGGW)</li>
                     </ul>
-                    @foreach($outcomes[1][1] as $icao => $hours)
+                    @foreach($hours[1] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hours > $outcomes[1][0]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $outcomes[1][0]->required_hours }}">{{ round($hours,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($hour > $requirements[1]->required_hours)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[1]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hours/$outcomes[1][0]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $outcomes[1][0]->required_hours }}">{{ ($hours > 0) ? (round($hours,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[1]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $requirements[1]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -79,19 +79,19 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Three Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>5 hours</strong> on one of the following positions within the last <strong>3 months.</strong>
+                    Control a total of <strong>{{ $requirements[2]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[2]->hours_months }} months.</strong>
                     <ul>
                         <li>Jersey (EGJJ)</li>
                         <li>Belfast Aldergrove (EGAA)</li>
                         <li>Newcastle (EGNT)</li>
                         <li>East Midlands (EGNX)</li>
                     </ul>
-                    @foreach($outcomes[2][1] as $icao => $hours)
+                    @foreach($hours[2] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hours > $outcomes[2][0]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $outcomes[2][0]->required_hours }}">{{ round($hours,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($hour > $requirements[2]->required_hours)
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[2]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hours/$outcomes[2][0]->required_hours)*100 }}%"aria-valuemin="0" aria-valuemax="{{ $outcomes[2][0]->required_hours }}">{{ ($hours > 0) ? (round($hours,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[2]->required_hours)*100 }}%"aria-valuemin="0" aria-valuemax="{{ $requirements[2]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -119,8 +119,8 @@
                 <div class="panel-body">
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>
-                    @if($_account->primary_state->isDivision && $outcomes[0][1]->max() > 10 && $outcomes[1][1]->max() > 10 && $outcomes[2][1]->max() > 5)
-                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($outcomes[0][1]->max(),1) }}%20hours%20on%20{{ $outcomes[0][1]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%202%3A%20{{ round($outcomes[1][1]->max(),1) }}%20hours%20on%20{{ $outcomes[1][1]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%203%3A%20{{ round($outcomes[2][1]->max(),1) }}%20hours%20on%20{{ $outcomes[2][1]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
+                    @if($_account->primary_state->isDivision && $hours[0]->max() > $requirements[0]->required_hours && $hours[1]->max() > $requirements[1]->required_hours && $hours[2]->max() > $requirements[2]->required_hours)
+                        <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20Moodle%20course%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($hours[0]->max(),1) }}%20hours%20on%20{{ $hours[0]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%202%3A%20{{ round($hours[1]->max(),1) }}%20hours%20on%20{{ $hours[1]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%203%3A%20{{ round($hours[2]->max(),1) }}%20hours%20on%20{{ $hours[2]->sortByDesc('minute_online')->keys()->first() }}%20within%20the%20last%20three%20months.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
                             <button class="btn btn-success center-block">Request Moodle Course</button>
                         </a>
                     @else

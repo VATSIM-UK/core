@@ -11,9 +11,8 @@ class EndorsementController extends \App\Http\Controllers\BaseController
     public function getGatwickGroundIndex()
     {
         $requirements = DB::table('endorsements')->where('endorsement', '=', 'EGKK_GND')->get();
-        $outcomes = collect([]);
 
-        foreach ($requirements as $r) {
+        $hours = $requirements->map(function ($r) {
             $data = $this->account->networkDataAtc()
                 ->withCallsignIn(json_decode($r->required_airfields))
                 ->whereBetween('connected_at', [Carbon::now()->subMonth($r->hours_months), Carbon::now()])
@@ -23,8 +22,8 @@ class EndorsementController extends \App\Http\Controllers\BaseController
                 })->transform(function ($item) {
                     return $item->sum();
                 });
-            $outcomes->push([$r, $data]);
-        }
+            return $data;
+        });
 
         if (!$this->account->qualificationAtc->isS1) {
             return Redirect::back()
@@ -32,6 +31,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         }
 
         return $this->viewMake('controllers.endorsements.gatwick_ground')
-            ->with('outcomes', $outcomes);
+            ->with('requirements', $requirements)
+            ->with('hours', $hours->all());
     }
 }
