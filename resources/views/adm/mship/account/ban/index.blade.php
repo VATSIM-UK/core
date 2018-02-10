@@ -69,7 +69,7 @@
                                         Unknown
                                     @endif
                                 </td>
-                                @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create"))
+                                @if($_account->hasPermission("adm/mship/account/".$b->account->id."/note/create"))
                                     <td>
                                         <div class="btn-group">
                                             @if(!$b->is_repealed)

@@ -333,8 +333,7 @@ class Account extends AdmController
             ->paginate(15);
 
         return $this->viewMake('adm.mship.account.ban.index')
-            ->with('bans', $bans)
-            ->with('account', $account);
+            ->with('bans', $bans);
     }
 
     public function getBanRepeal(AccountData\Ban $ban)
