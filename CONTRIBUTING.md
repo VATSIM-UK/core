@@ -1,4 +1,4 @@
-# Welcome 
+# Welcome
 
 Welcome to the UK Core Web Services Repository, for all post Web Services in the UK!  Thank you for your interest in contributing to the project.  Full details and guidelines on how to ensure this project is managed well are included below.
 
@@ -151,7 +151,7 @@ If you would like to work on something in the admin panel (which includes some p
 
 To enable access to the panel:
 * Go to your database, and find the `mship_account_role` table. Set the `role_id` to `1` for your CID.
-* Navigate to `vukcore.localhost/adm/dashboard`. You should now be able to log into the admin panel. 
+* Navigate to `vukcore.localhost/adm/dashboard`. You should now be able to log into the admin panel.
 
 #### Relax
 
@@ -159,7 +159,7 @@ After all that setup, relax for 5 minutes!  If you've had any problems, come and
 
 ## Contributing to the code
 
-If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues marked with the "up-for-grabs" label.  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
+If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues [marked with the "up-for-grabs" label](https://vatsimuk.atlassian.net/browse/CORE-26?jql=project%20%3D%20CORE%20AND%20labels%20%3D%20up-for-grabs%20order%20by%20lastViewed%20DESC).  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
 
 If you're comfortable with contributing to Open Source projects on GitHub **please ensure you read our workflow**.
 
@@ -169,13 +169,11 @@ It is expected that you will follow the GitFlow Workflow for managing the reposi
 * On completion it should be merged **not rebased** with development
 * You may see us creating `release/<version>` branches - this is where final testing will occur.
 * Where an issue is **assigned** to somebody it means they're working on it.  Speak to them before trying to contribute.
-* Where an issue is marked as **acknowledged** then it's been agreed that it is required and can be produced.
- * We would advise against working on issues without an Acknowledged label.
- * If you want to start work on an issue, comment on the issue asking to work on it and it'll be assigned to you by a developer.
+* If you want to work on an issue. Comment on the issue asking to work on it and a member of the team will add you to the project as a Contributor. This will then allow you to work on the ticket and update it as you go.
 * Any code change **must** have an associated issue detailing (in full) why the change is being made
-* Commit messages **must** make use of the issue management commands
- * When resolving an issue via a commit `Fixes #123 - Added the user's profile picture to their profile.`
- * When addressing an issue via a commit `Restructured the user's profile page to make room for the badges in #456`
+* Commit messages **must** reference the ticket and we **recommend** using the smart commit commands available to update your JIRA issue as described [here](https://confluence.atlassian.com/bitbucket/processing-jira-software-issues-with-smart-commit-messages-298979931.html)
+ * e.g. To mark the issue for testing and to add a comment `CORE-33 #testing - #comment Added the user's profile picture to their profile.` This will update CORE-33 in JIRA with the status Testing and add the string as a comment to the issue.
+ * e.g. To resolve the isue and to add a comment `CORE-33 #done - #comment Added the user's profile picture to their profile.`
 * Commits should ideally be "atomic" in nature
  * A good article explaining atomic commits and their benefits can be viewed [here](https://www.freshconsulting.com/atomic-commits/)
  * Atomic commits allow project maintainers (and you!) to roll back small parts of changes made without having widespread knock-on effects, among other benefits
@@ -189,14 +187,7 @@ If you wish to test a new release, you can deploy either the `development` or `r
 
 ## Issue Tracking
 
-If you require **support** with the Web Services, please utilise our Slack channels for this purpose.  Issues regarding the features and functions of the Web Services or how to perform a specific task will not be handled.
-
-When submitting an issue, there's a few guidelines we'd ask you to respect to make it easier to manage (and for others to understand):
-
-* **Search the issue tracker** before you submit your issue - it may already be present.
-* When opening an issue, please provide as much information as necessary to ensure others are able to act upon the requests or bug report.
-* We measure our tasks in **time**.  If your issue is likely to be a **large job** then speak to us about making a milestone for it, and you can add multiple issues within one milestone. 
-* Please ensure you add screenshots or documentation references for bugs/changes so we can quickly ascertain if the request is suitable.
+See [Issue Tracking](ISSUE_TRACKING.md) for more information.
 
 ## Testing
 
@@ -206,9 +197,11 @@ There may be times that a test is already written - in these circumstances it is
 
 ## Merge Requests
 
-We welcome merge requests with fixes and improvements to the project.  The features we really would like public support on are marked with "up-for-grabs" but other improvements are also welcome - please ensure you read over the merge work-flow below.
+We welcome merge requests with fixes and improvements to the project.  The features we really would like public support on are marked with ["up-for-grabs"](https://vatsimuk.atlassian.net/browse/CORE-26?jql=project%20%3D%20CORE%20AND%20labels%20%3D%20up-for-grabs%20order%20by%20lastViewed%20DESC) but other improvements are also welcome - please ensure you read over the merge work-flow below.
 
-If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core Web Services Repository](https://github.com/vatsim-uk/core/issues).
+If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** in the [CORE project](https://vatsimuk.atlassian.net/projects/CORE/issues).
+
+**Note:** You will need to signup to create issues within the project. See [Issue Tracking](ISSUE_TRACKING.md) for more information.
 
 The work-flow for submitting a new merge request is designed to be simple, but also ensure consistency from **all** contributors:
 
@@ -216,18 +209,17 @@ The work-flow for submitting a new merge request is designed to be simple, but a
 * Create a new branch (with the name `<issue_number>-<name>`, replacing issue_number with the issue number you're resolving)
  * The exception to this is where an entire feature is being tackled, spanning multiple issues.  In this case you can create a `feature/<name>` branch.
 * Commit your changes
- * When writing commit messages, consider closing your issues via the commit message (by starting the message with "fix #22" or "fixes #22" and then your description.
-  * The issues will be referenced in the first instance and then closed once the MR is accepted.
-* **Add any important setps that must be followed on deployment to the README.md file**
+ * When writing commit messages, consider changing the state your issues via the commit message (by including the issue ID and the state name in your message `CORE-33 #testing #comment Fixed some stuff.`)
+* **Add any important steps that must be followed on deployment to the README.md file**
 * Push the commit(s) to your fork
-* Submit a merge request (MR) to **our** development branch
-* The MR title should describe the change that has been made
-* The MR description should confirm what changes have been made, how you know they're correct (with references)
+* Submit a Pull Request (PR) to **our** development branch
+* The PR title should describe the change that has been made and contain the issue ID. (`ISSUE_ID - SUMMARY`)
+* The PR description should confirm what changes have been made, how you know they're correct (with references)
  * It is expected that all submissions have associated test cases.
-* Ensure you link any relevant issues in the merge request (you can type hash and the issue ID, eg #275).  Comment on those issues linking back to the MR (you can reference MRs using the format !<MR_ID> for example !22).
-* Be prepared to answer any questions about your MR when it is reviewed for acceptance.
+* Ensure you link any relevant issues in the Pull Request by including the Issue ID in the title. This will automatically link the issue to the Pull Request.
+* Be prepared to answer any questions about your PR when it is reviewed for acceptance.
 
-**If you are actively working on a large change** consider creating the MR early but prefixing it with [WIP] as this will prevent it from being accepted *but* let other people know you're working on that issue.
+**If you are actively working on a large change** consider creating the PR early but prefixing it with [WIP] as this will prevent it from being accepted *but* let other people know you're working on that issue.
 
 # Expectations
 As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting merge requests or patches, and other activities.

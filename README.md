@@ -25,3 +25,5 @@ The following are the upgrade notes for deploying in production.
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.
+
+## Changes to Issue Tracking
