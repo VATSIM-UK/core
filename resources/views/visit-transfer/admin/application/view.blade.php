@@ -29,7 +29,7 @@
                             @endcan
 
                             @can("complete", $application)
-                                {!! Button::success("Mark Application Complete")
+                                {!! Button::info("Mark Application Complete")
                                            ->withAttributes([
                                                 "class" => "pull-right",
                                                 "data-toggle" => "modal",
