@@ -163,15 +163,6 @@
                             </a>
                         </li>
                     </ul>
-                    {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
-                    <ul class="nav navbar-nav navcustom navbar-right">
-                        <li class="dropdown dropdown-large">
-                            <a href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
-                                Out</a>
-                        </li>
-                    </ul>
-                    {!! Form::close() !!}
                 @endif
 
             </div>
