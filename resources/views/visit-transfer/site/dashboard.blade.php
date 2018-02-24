@@ -251,7 +251,12 @@
                                                 UTC</span>
                                         </td>
                                         <td class="text-center">
-                                            {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
+                                            @if ($reference->token)
+                                              {!! link_to_route("visiting.reference.complete", "Complete", [$reference->token->code]) !!}
+                                            @else
+                                              <i>This reference has expired</i>
+                                            @endif
+
                                         </td>
                                     </tr>
                                 @endforeach

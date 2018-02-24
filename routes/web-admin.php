@@ -33,6 +33,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         Route::post('/account/{mshipAccount}/security/change', ['as' => 'adm.mship.account.security.change', 'uses' => 'Account@postSecurityChange'])->where(['mshipAccount' => '\d+']);
         Route::post('/account/{mshipAccount}/impersonate', ['as' => 'adm.mship.account.impersonate', 'uses' => 'Account@postImpersonate'])->where(['mshipAccount' => '\d+']);
 
+        Route::get('/bans', ['as' => 'adm.mship.ban.index', 'uses' => 'Account@getBans']);
+
         Route::get('/ban/{ban}/repeal', ['as' => 'adm.mship.ban.repeal', 'uses' => 'Account@getBanRepeal'])->where(['ban' => '\d+']);
         Route::post('/ban/{ban}/repeal', ['as' => 'adm.mship.ban.repeal.post', 'uses' => 'Account@postBanRepeal'])->where(['ban' => '\d+']);
 
@@ -78,6 +80,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
             Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
             Route::get('list/{slug}', ['as' => 'form', 'uses' => 'Feedback@getFormFeedback']);
+            Route::get('list/{slug}/export', ['as' => 'form.export', 'uses' => 'Feedback@getFormFeedbackExport']);
+            Route::post('list/{slug}/export', ['as' => 'form.export.post', 'uses' => 'Feedback@postFormFeedbackExport']);
             Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
             Route::post('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@postActioned']);
             Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);
