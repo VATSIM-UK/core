@@ -92,7 +92,7 @@
                                             class="fa fa-angle-double-right"></i> Accounts List</a>
                             </li>
                         @endif
-                        @if($_account->hasChildPermission("adm/mship/bans"))
+                        @if($_account->hasChildPermission("adm/mship/account/*/bans"))
                             <li {!! (\Request::is('adm/mship/bans*') ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.ban.index") }}"><i
                                             class="fa fa-angle-double-right"></i> Bans List</a>
