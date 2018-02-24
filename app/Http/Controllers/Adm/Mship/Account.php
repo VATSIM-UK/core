@@ -7,6 +7,7 @@ use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Http\Requests\Request;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
@@ -18,6 +19,7 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
@@ -326,8 +328,12 @@ class Account extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
-    public function getBans()
+    public function getBans(\Illuminate\Http\Request $request)
     {
+        if (!$request->user()->hasPermission('adm/mship/account/*/bans')) {
+            throw new AuthorizationException();
+        }
+
         $bans = BanData::isLocal()
             ->orderByDesc('created_at')
             ->paginate(15);
