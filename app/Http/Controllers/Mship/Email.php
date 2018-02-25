@@ -17,7 +17,7 @@ class Email extends \App\Http\Controllers\BaseController
 {
     public function getEmail()
     {
-        return $this->viewMake('mship.email');
+        return $this->viewMake('mship.email.send');
     }
 
     protected function recipientErrors(Account $member)
