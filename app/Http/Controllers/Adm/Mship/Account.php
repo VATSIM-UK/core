@@ -7,7 +7,6 @@ use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
-use App\Http\Requests\Request;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
