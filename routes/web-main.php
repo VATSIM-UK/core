@@ -62,6 +62,7 @@ Route::group(['prefix' => 'mship', 'namespace' => 'Mship', 'middleware' => 'auth
     Route::get('/email', ['as' => 'mship.email', 'uses' => 'Email@getEmail']);
     Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
     Route::get('/email/recipient-search', ['as' => 'mship.email.recipient-search', 'uses' => 'Email@getRecipientSearch']);
+    Route::get('email/history', ['as' => 'mship.email.history', 'uses' => 'Email@getHistory']);
 });
 
 // TeamSpeak

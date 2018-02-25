@@ -100,6 +100,14 @@ class Email extends \App\Http\Controllers\BaseController
         }
     }
 
+    public function getHistory()
+    {
+
+        $threads = Participant::isOwner()->get();
+
+        return view('mship.email.history');
+    }
+
     protected function cidSearch($searchQuery)
     {
         try {
