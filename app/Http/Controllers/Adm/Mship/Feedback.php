@@ -334,7 +334,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
                     $sheet->appendRow(['']);
                 }
             });
-        })->download('xls');
+        })->download('xlsx');
 
         return Redirect::back();
     }

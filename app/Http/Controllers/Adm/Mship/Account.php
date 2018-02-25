@@ -18,6 +18,7 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
@@ -326,8 +327,12 @@ class Account extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
-    public function getBans()
+    public function getBans(\Illuminate\Http\Request $request)
     {
+        if (!$request->user()->hasPermission('adm/mship/account/*/bans')) {
+            throw new AuthorizationException();
+        }
+
         $bans = BanData::isLocal()
             ->orderByDesc('created_at')
             ->paginate(15);

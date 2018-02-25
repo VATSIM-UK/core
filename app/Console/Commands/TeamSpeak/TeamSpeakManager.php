@@ -42,10 +42,10 @@ class TeamSpeakManager extends TeamSpeakCommand
                     $member = TeamSpeak::checkClientRegistration($client);
                     $client = TeamSpeak::checkClientDescription($client, $member);
                     TeamSpeak::checkMemberStanding($client, $member);
+                    TeamSpeak::checkMemberMandatoryNotifications($client, $member);
+                    TeamSpeak::checkClientNickname($client, $member);
 
                     if (!TeamSpeak::clientIsProtected($client)) {
-                        TeamSpeak::checkMemberMandatoryNotifications($client, $member);
-                        TeamSpeak::checkClientNickname($client, $member);
                         TeamSpeak::checkClientServerGroups($client, $member);
                         TeamSpeak::checkClientChannelGroups($client, $member);
                         TeamSpeak::checkClientIdleTime($client, $member);
