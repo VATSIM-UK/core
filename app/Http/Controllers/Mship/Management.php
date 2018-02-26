@@ -16,7 +16,7 @@ class Management extends \App\Http\Controllers\BaseController
     {
         if (Auth::check()) {
             return redirect()->intended(route('mship.manage.dashboard'));
-        } else if (Auth::guard('vatsim-sso')->check()) {
+        } elseif (Auth::guard('vatsim-sso')->check()) {
             return redirect()->route('login');
         }
 
