@@ -137,7 +137,7 @@ class Role extends Model
             $perm_has = str_replace('/', '\/', $perm->name);
             // Replace wildcard
             $perm_has = str_replace('*', '[A-z0-9]+', $perm_has);
-            $perm_has = "/".$perm_has."$/";
+            $perm_has = '/'.$perm_has.'$/';
             if (preg_match($perm_has, $permission)) {
                 return true;
             }
