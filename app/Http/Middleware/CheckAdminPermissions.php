@@ -16,7 +16,7 @@ class CheckAdminPermissions
     public function handle($request, Closure $next)
     {
         if (!$request->user()->hasPermission($request->decodedPath())) {
-            abort(401);
+            abort(403);
         }
 
         return $next($request);
