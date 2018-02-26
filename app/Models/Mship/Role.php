@@ -128,7 +128,21 @@ class Role extends Model
         return !$this->permissions->filter(function ($perm) use ($permission) {
             $stripped = preg_replace("/[^A-Za-z0-9\/]/i", '', $perm->name);
 
-            return strcasecmp($perm->name, $permission) == 0 || strcasecmp($stripped, $permission) == 0 || $perm->name == '*';
+            if(strcasecmp($perm->name, $permission) == 0 || strcasecmp($stripped, $permission) == 0 || $perm->name == '*'){
+              return true;
+            }
+
+            // Secondary fallback - Mainly for non-numeric slugs
+            // Add slashes
+            $perm_has = str_replace('/', '\/', $perm->name);
+            // Replace wildcard
+            $perm_has = str_replace('*', '[A-z0-9]+', $perm_has);
+            $perm_has = "/" . $perm_has . "$/";
+            if(preg_match($perm_has, $permission)){
+              return true;
+            }
+
+            return false;
         })->isEmpty();
     }
 
