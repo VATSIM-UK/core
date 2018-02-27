@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use Bugsnag;
 use Cache;
 use Exception;
+use GuzzleHttp\Exception\ClientException;
 use SlackUser;
 
 class ManageSlack extends Command
@@ -52,8 +53,9 @@ class ManageSlack extends Command
         $this->slackUsers = SlackUser::lists();
 
         foreach ($this->slackUsers->members as $slackUser) {
+            start:
             try {
-                if ($slackUser->name == 'admin' || $slackUser->name == 'slackbot') {
+                if ($slackUser->deleted || $slackUser->is_bot || $slackUser->is_admin || $slackUser->name === 'slackbot') {
                     continue;
                 }
 
@@ -74,6 +76,14 @@ class ManageSlack extends Command
                 if (!$localUser->isValidDisplayName($slackUser->profile->real_name) && $this->userIsActive($slackUser)) {
                     $this->messageAskingForRealName($localUser, $slackUser);
                 }
+            } catch (ClientException $e) {
+                if ($e->getCode() === 429) {
+                    $retryAfter = (int) $e->getResponse()->getHeader('Retry-After')[0];
+                    sleep(++$retryAfter);
+                    goto start;
+                }
+
+                Bugsnag::notifyException($e);
             } catch (Exception $e) {
                 Bugsnag::notifyException($e);
             }
