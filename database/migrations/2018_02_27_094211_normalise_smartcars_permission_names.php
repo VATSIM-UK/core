@@ -18,7 +18,7 @@ class NormaliseSmartcarsPermissionNames extends Migration
             ->orWhere('name', 'LIKE', 'smartcars/%')
             ->update([
                 'name' => DB::raw("CONCAT('adm/', name)"),
-                'display_name' => DB::raw("CONCAT('Admin / ', name)")
+                'display_name' => DB::raw("CONCAT('Admin / ', display_name)")
             ]);
     }
 
