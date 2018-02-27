@@ -97,23 +97,25 @@
                     </li>
                 </ul>
 
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="dropdown-header">Flight Training Exercises</li>
-                                    <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
-                                    <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
-                                    {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
-                                    <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
-                                    <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                @if(\App\Models\Smartcars\Flight::enabled()->count() > 0)
+                    <ul class="nav navbar-nav navcustom">
+                        <li class="dropdown dropdown-large">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-12">
+                                    <ul>
+                                        <li class="dropdown-header">Flight Training Exercises</li>
+                                        <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
+                                        <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
+                                        {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
+                                        <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
+                                        <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                @endif
 
                 @if(Auth::check())
                     {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
