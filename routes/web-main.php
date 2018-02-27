@@ -152,14 +152,20 @@ Route::group([
 
 // SmartCARS
 Route::any('frame.php', function () {
-    \Log::info(\Request::method().'::'.\Request::fullUrl());
-    \Log::info(\Request::all());
+    if (config('app.debug_smartcars')) {
+        \Log::info(\Request::method().'::'.\Request::fullUrl());
+        \Log::info(json_encode(\Request::all()));
+    }
+
     if (\Request::method() == 'POST') {
         $return = \App::call(\App\Http\Controllers\Smartcars\Api\Router::class.'@postRoute', Request::all());
     } else {
         $return = \App::call(\App\Http\Controllers\Smartcars\Api\Router::class.'@getRoute', Request::all());
     }
-    \Log::info($return);
+
+    if (config('app.debug_smartcars')) {
+        \Log::info($return);
+    }
 
     return $return;
 });

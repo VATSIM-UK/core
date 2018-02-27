@@ -39,6 +39,7 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
+    'debug_smartcars' => env('APP_DEBUG_SMARTCARS', false),
 
     /*
     |--------------------------------------------------------------------------
