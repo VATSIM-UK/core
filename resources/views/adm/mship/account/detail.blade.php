@@ -453,8 +453,9 @@
                                         <div class="clearfix">&nbsp;</div>
 
                                         @if($_account->hasPermission("adm/mship/account/".$account->id."/note/view"))
+
                                             @foreach($account->notes as $note)
-                                                @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter")) > 0) OR count(Input::get("filter")) < 1)
+                                                @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter", [])) > 0) OR count(Input::get("filter", [])) < 1)
                                                     @include('adm.mship.account._note', ["note" => $note])
                                                 @endif
                                             @endforeach
