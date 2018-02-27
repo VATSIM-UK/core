@@ -8,7 +8,7 @@
                     <h3 class="box-title">{{ $flight->name }} - Create Resource</h3>
                 </div>
                 <div class="box-body">
-                    {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.resources.store', $flight], 'files' => true]) !!}
+                    {!! Form::open(['method'  => 'post', 'route' => ['adm.smartcars.exercises.resources.store', $flight], 'files' => true]) !!}
                     @include('adm.smartcars.exercise-resources.includes.form')
                     {!! Form::close() !!}
                 </div>

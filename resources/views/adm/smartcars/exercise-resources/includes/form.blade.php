@@ -46,4 +46,4 @@
 </div>
 
 <input class="btn btn-primary" type="submit" value="Submit">
-<a class="btn btn-default" href="{{ route('adm.smartcars.resources.index', $flight) }}">Cancel</a>
+<a class="btn btn-default" href="{{ route('adm.smartcars.exercises.resources.index', $flight) }}">Cancel</a>

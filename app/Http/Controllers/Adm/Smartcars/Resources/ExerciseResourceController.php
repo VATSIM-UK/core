@@ -27,26 +27,26 @@ class ExerciseResourceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Smartcars\Flight  $flight
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
      */
-    public function index(Flight $flight)
+    public function index(Flight $exercise)
     {
         return $this->viewMake('adm.smartcars.exercise-resources.index')
-            ->with('flight', $flight)
-            ->with('resources', $flight->resources);
+            ->with('flight', $exercise)
+            ->with('resources', $exercise->resources);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Smartcars\Flight  $flight
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
      */
-    public function create(Flight $flight)
+    public function create(Flight $exercise)
     {
         return $this->viewMake('adm.smartcars.exercise-resources.create')
-            ->with('flight', $flight)
+            ->with('flight', $exercise)
             ->with('resource', new FlightResource());
     }
 
@@ -54,10 +54,10 @@ class ExerciseResourceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Flight  $flight
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Flight $flight)
+    public function store(Request $request, Flight $exercise)
     {
         $request->validate([
             'display_name' => 'required|string|max:100',
@@ -67,27 +67,27 @@ class ExerciseResourceController extends Controller
         ]);
 
         $resource = new FlightResource($request->only('display_name', 'type'));
-        $resource->flight()->associate($flight);
+        $resource->flight()->associate($exercise);
         $resource->resource = $resource->type === 'file'
                             ? $request->file('file')->store('smartcars/exercises/resources', ['disk' => 'public'])
                             : $resource->resource = $request->input('uri');
         $resource->save();
 
-        return redirect(route('adm.smartcars.resources.index', $flight))
+        return redirect()->route('adm.smartcars.exercises.resources.index', $exercise)
             ->with('success', 'Resource added successfully.');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Smartcars\Flight $flight
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @param  \App\Models\Smartcars\FlightResource $resource
      * @return \Illuminate\Http\Response
      */
-    public function edit(Flight $flight, FlightResource $resource)
+    public function edit(Flight $exercise, FlightResource $resource)
     {
         return $this->viewMake('adm.smartcars.exercise-resources.edit')
-            ->with('flight', $flight)
+            ->with('flight', $exercise)
             ->with('resource', $resource);
     }
 
@@ -95,11 +95,11 @@ class ExerciseResourceController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Flight  $flight
+     * @param  \App\Models\Smartcars\Flight  $exercise
      * @param  \App\Models\Smartcars\FlightResource  $resource
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Flight $flight, FlightResource $resource)
+    public function update(Request $request, Flight $exercise, FlightResource $resource)
     {
         $request->validate([
             'display_name' => 'required|string|max:100',
@@ -116,19 +116,19 @@ class ExerciseResourceController extends Controller
 
         $resource->save();
 
-        return redirect(route('adm.smartcars.resources.index', $flight))
+        return redirect()->route('adm.smartcars.exercises.resources.index', $exercise)
             ->with('success', 'Resource edited successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Smartcars\Flight $flight
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @param  \App\Models\Smartcars\FlightResource $resource
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Flight $flight, FlightResource $resource)
+    public function destroy(Flight $exercise, FlightResource $resource)
     {
         if ($resource->type === 'file') {
             Storage::drive('public')->delete($resource->resource);
@@ -136,7 +136,7 @@ class ExerciseResourceController extends Controller
 
         $resource->delete();
 
-        return redirect(route('adm.smartcars.resources.index', $flight))
+        return redirect()->route('adm.smartcars.exercises.resources.index', $exercise)
             ->with('success', 'Resource deleted successfully.');
     }
 }

@@ -90,7 +90,7 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');
         Route::resource('configure/airports', 'Resources\AirportController')->except('show');
         Route::resource('configure/exercises', 'Resources\ExerciseController')->except('show');
-        Route::resource('configure/exercises/{flight}/resources', 'Resources\ExerciseResourceController')->except('show');
+        Route::resource('exercises.resources', 'Resources\ExerciseResourceController')->except('show');
         Route::resource('flights', 'Resources\FlightController')->only('index', 'edit', 'update');
     });
 });

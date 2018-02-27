@@ -6,7 +6,7 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">{{ $flight->name }} - Resources</h3>
-                    <a href="{{ route('adm.smartcars.resources.create', $flight) }}" class="btn btn-primary pull-right">
+                    <a href="{{ route('adm.smartcars.exercises.resources.create', $flight) }}" class="btn btn-primary pull-right">
                         <i class="fa fa-plus"></i> Create New
                     </a>
                 </div>
@@ -24,10 +24,10 @@
                                 <td>{{ $resource->display_name }}</td>
                                 <td><a href="{{ $resource->asset() }}">{{ $resource->resource }}</a></td>
                                 <td>
-                                    <a href="{{ route('adm.smartcars.resources.edit', [$flight, $resource]) }}" class="btn btn-xs btn-warning">Edit</a>
+                                    <a href="{{ route('adm.smartcars.exercises.resources.edit', [$flight, $resource]) }}" class="btn btn-xs btn-warning">Edit</a>
                                 </td>
                                 <td>
-                                    {!! Form::open(['id' => "delete-$resource->id", 'method'  => 'delete', 'route' => ['adm.smartcars.resources.destroy', $flight, $resource]]) !!}
+                                    {!! Form::open(['id' => "delete-$resource->id", 'method'  => 'delete', 'route' => ['adm.smartcars.exercises.resources.destroy', $flight, $resource]]) !!}
                                     <button class="btn btn-xs btn-danger" data-toggle="confirmation">Delete</button>
                                     {!! Form::close() !!}
                                 </td>

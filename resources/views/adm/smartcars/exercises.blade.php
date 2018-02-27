@@ -64,7 +64,7 @@
                                     {!! Form::close() !!}
                                 </td>
                                 <td>
-                                    <a href="{{ route('adm.smartcars.resources.index', $exercise) }}" class="btn btn-xs btn-primary">Resources</a>
+                                    <a href="{{ route('adm.smartcars.exercises.resources.index', $exercise) }}" class="btn btn-xs btn-primary">Resources</a>
                                 </td>
                             </tr>
                         @endforeach
