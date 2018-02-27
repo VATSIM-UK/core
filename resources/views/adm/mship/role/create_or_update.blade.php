@@ -22,7 +22,6 @@
                         {!! Form::text("name", null, ["class" => "form-control"]) !!}
                     </div>
 
-
                     @if($_account->hasPermission("adm/mship/role/default"))
                         <div class="form-group">
                             {!! Form::label("default", "Default?") !!}
@@ -36,12 +35,38 @@
 
                             <div class="radio">
                                 <label>
-                                    {!! Form::radio("default", 0) !!}
+                                    {!! Form::radio("default2", 0) !!}
                                     NO
                                 </label>
                             </div>
                         </div>
                     @endif
+
+                    <div class="form-group">
+                        <label for="mandatoryPassword" class="control-label">Mandatory Password</label>
+
+                        @php
+                            $mandatoryPassword = isset($role) && $role->hasMandatoryPassword();
+                        @endphp
+                        <div class="radio">
+                            <label class="radio-inline">
+                                <input name="password_mandatory" type="radio" value="1" id="mandatoryPassword"{{ $mandatoryPassword ? ' checked' : '' }}> Yes
+                            </label>
+                            <label class="radio-inline">
+                                <input name="password_mandatory" type="radio" value="0"{{ !$mandatoryPassword ? ' checked' : '' }}> No
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordLifetime">Password Lifetime (Days - for infinite, enter 0)</label>
+                        <input type="number" class="form-control" id="passwordLifetime" name="password_lifetime" required value="{{ isset($role) ? $role->password_lifetime : '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sessionTimeout">Session Timeout (Minutes - for infinite, leave blank)</label>
+                        <input type="number" class="form-control" id="sessionTimeout" name="session_timeout" value="{{ isset($role) ? $role->session_timeout : '' }}">
+                    </div>
 
                     @if($_account->hasPermission("adm/mship/permission/attach"))
                         <div class="form-group">
