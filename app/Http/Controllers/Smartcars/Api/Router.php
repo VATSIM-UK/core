@@ -16,7 +16,7 @@ class Router extends AdmController
     public function __construct()
     {
         $this->middleware(function ($request, Closure $next) {
-            /** @var \Illuminate\Http\Request $request */
+            /* @var \Illuminate\Http\Request $request */
             $this->pilot = Account::find($request->input('dbid'));
             $this->session = Session::findBySessionId($request->input('sessionid', null));
 

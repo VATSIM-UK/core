@@ -61,7 +61,8 @@ class SmartcarsController extends BaseController
             'account_id' => $this->account->id,
             'flight_id' => $exercise->id,
         ]);
-        $guideRoute = route("fte.guide");
+        $guideRoute = route('fte.guide');
+
         return redirect()->back()->with('success', 'Exercise booked successfully.<br>Make sure you have our flight tracking software, smartCars, setup!<br>Unsure? <a href="'.$guideRoute.'">Click here</a> to get started.');
     }
 
