@@ -18,7 +18,7 @@ The following are the upgrade notes for deploying in production.
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 3.4.0
+### 3.6.0
 
 * Run `php artisan storage:link`
 * Add `MAPS_API_KEY` in `.env`
