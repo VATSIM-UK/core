@@ -156,9 +156,47 @@ body, html {
   }
 }
 
+.panel-uk-success {
+  border: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  > .panel-heading {
+    background-color: #009700;
+    border-color: #006900;
+    color: white;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .panel-body .row-text-contain {
+    word-break: break-word;
+  }
+}
+
 .panel-group#unreadNotifications, .panel-group#readNotifications {
   padding: 10px;
   .panel {
     margin-bottom:15px;
+  }
+}
+
+.row-flex {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  margin-bottom: 35px;
+
+  .panel {
+    position: relative;
+    width: 100%;
+    height: calc(100% + 15px);
+
+    .panel-base {
+      position: absolute;
+      width: 100%;
+      bottom: 15px;
+      right: 15px;
+    }
   }
 }

@@ -112,6 +112,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Pirep[] $pireps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Qualification[] $qualifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Notification[] $readSystemNotifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Role[] $roles
@@ -295,6 +296,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
                     ->with('permissions')
                     ->withTimestamps();
+    }
+
+    public function pireps()
+    {
+        return $this->hasManyThrough(\App\Models\Smartcars\Pirep::class, \App\Models\Smartcars\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
     /**

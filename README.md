@@ -20,7 +20,8 @@ The following are the upgrade notes for deploying in production.
 
 ### 3.4.0
 
-* No additional steps required.
+* Run `php artisan storage:link`
+* Add `MAPS_API_KEY` in `.env`
 
 ### Older Versions
 

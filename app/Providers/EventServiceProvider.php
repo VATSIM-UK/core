@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\NetworkData\AtcSessionEnded;
+use App\Events\Smartcars\BidCompleted;
+use App\Listeners\Smartcars\EvaluateFlightCriteria;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -80,6 +82,10 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ReferenceDeleted::class => [
             \App\Listeners\VisitTransfer\NotifyRefereeOfReferenceDeletion::class,
+        ],
+
+        BidCompleted::class => [
+            EvaluateFlightCriteria::class,
         ],
     ];
 

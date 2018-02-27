@@ -89,6 +89,14 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
         Route::get('staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
     });
+
+    Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
+        Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');
+        Route::resource('configure/airports', 'Resources\AirportController')->except('show');
+        Route::resource('configure/exercises', 'Resources\ExerciseController')->except('show');
+        Route::resource('exercises.resources', 'Resources\ExerciseResourceController')->except('show');
+        Route::resource('flights', 'Resources\FlightController')->only('index', 'edit', 'update');
+    });
 });
 
 Route::group([

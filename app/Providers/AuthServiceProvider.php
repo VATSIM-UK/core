@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\Community\Membership;
+use App\Models\Community;
 use App\Models\Mship\Account;
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Reference;
+use App\Models\Smartcars;
+use App\Models\VisitTransfer;
 use App\Policies\MembershipPolicy;
 use App\Policies\PasswordPolicy;
+use App\Policies\Smartcars\ExercisePolicy;
+use App\Policies\Smartcars\PirepPolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
 use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
@@ -23,9 +25,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'password' => PasswordPolicy::class,
-        Membership::class => MembershipPolicy::class,
-        Application::class => ApplicationPolicy::class,
-        Reference::class => ReferencePolicy::class,
+        Community\Membership::class => MembershipPolicy::class,
+        Smartcars\Flight::class => ExercisePolicy::class,
+        Smartcars\Pirep::class => PirepPolicy::class,
+        VisitTransfer\Application::class => ApplicationPolicy::class,
+        VisitTransfer\Reference::class => ReferencePolicy::class,
     ];
 
     /**
@@ -44,6 +48,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         $this->registerPolicies();
+
+        Gate::define('use-permission', function ($user, $permission) {
+            return $user->hasPermission($permission);
+        });
 
         $this->serviceAccessGates();
     }
