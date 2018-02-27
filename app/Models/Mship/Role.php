@@ -134,12 +134,12 @@ class Role extends Model
 
             // Secondary fallback - Mainly for non-numeric slugs
             // Add slashes
-            $perm_has = str_replace('/', '\/', $perm->name);
+            $perm_has = preg_quote($perm->name, '/');
             // Replace wildcard
             $perm_has = str_replace('*', '[A-Za-z0-9]+', $perm_has);
             $perm_has = '/^'.$perm_has.'$/';
 
-            return (bool) preg_match($perm_has, $permission);
+            return (boola) preg_match($perm_has, $permission);
         })->isEmpty();
     }
 
