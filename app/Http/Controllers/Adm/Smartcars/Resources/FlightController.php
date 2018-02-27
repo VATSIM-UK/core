@@ -16,7 +16,7 @@ class FlightController extends Controller
      */
     public function index()
     {
-        $this->authorize('use-permission', 'smartcars/flights');
+        $this->authorize('use-permission', 'adm/smartcars/flights');
 
         $flights = Pirep::query()->orderByDesc('created_at')->paginate(50);
 
@@ -32,7 +32,7 @@ class FlightController extends Controller
      */
     public function edit(Pirep $flight)
     {
-        $this->authorize('use-permission', 'smartcars/flights/override');
+        $this->authorize('use-permission', 'adm/smartcars/flights/override');
 
         return $this->viewMake('adm.smartcars.flight-form')
             ->with('pirep', $flight)
@@ -51,7 +51,7 @@ class FlightController extends Controller
      */
     public function update(Request $request, Pirep $flight)
     {
-        $this->authorize('use-permission', 'smartcars/flights/override');
+        $this->authorize('use-permission', 'adm/smartcars/flights/override');
 
         $this->validate($request, [
             'passed' => 'required|boolean',

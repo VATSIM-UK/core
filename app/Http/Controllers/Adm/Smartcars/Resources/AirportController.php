@@ -42,7 +42,7 @@ class AirportController extends Controller
      */
     public function index()
     {
-        $this->authorize('use-permission', 'smartcars/airports');
+        $this->authorize('use-permission', 'adm/smartcars/airports');
 
         $airports = Airport::query()->orderBy('icao')->paginate(50);
 
@@ -57,7 +57,7 @@ class AirportController extends Controller
      */
     public function create()
     {
-        $this->authorize('use-permission', 'smartcars/airports/create');
+        $this->authorize('use-permission', 'adm/smartcars/airports/create');
 
         return $this->viewMake('adm.smartcars.airport-form')->with('airport', new Airport());
     }
@@ -71,7 +71,7 @@ class AirportController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('use-permission', 'smartcars/airports/create');
+        $this->authorize('use-permission', 'adm/smartcars/airports/create');
 
         $this->validate($request, $this->rules());
 
@@ -89,7 +89,7 @@ class AirportController extends Controller
      */
     public function edit(Airport $airport)
     {
-        $this->authorize('use-permission', 'smartcars/airports/update');
+        $this->authorize('use-permission', 'adm/smartcars/airports/update');
 
         return $this->viewMake('adm.smartcars.airport-form')->with('airport', $airport);
     }
@@ -104,7 +104,7 @@ class AirportController extends Controller
      */
     public function update(Request $request, Airport $airport)
     {
-        $this->authorize('use-permission', 'smartcars/airports/update');
+        $this->authorize('use-permission', 'adm/smartcars/airports/update');
 
         $this->validate($request, $this->rules());
 
@@ -123,7 +123,7 @@ class AirportController extends Controller
      */
     public function destroy(Airport $airport)
     {
-        $this->authorize('use-permission', 'smartcars/airports/delete');
+        $this->authorize('use-permission', 'adm/smartcars/airports/delete');
 
         $airport->delete();
 

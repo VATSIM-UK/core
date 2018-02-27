@@ -54,7 +54,7 @@ class AircraftController extends Controller
      */
     public function index()
     {
-        $this->authorize('use-permission', 'smartcars/aircraft');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft');
 
         $aircraft = Aircraft::orderBy('icao')->paginate(50);
 
@@ -69,7 +69,7 @@ class AircraftController extends Controller
      */
     public function create()
     {
-        $this->authorize('use-permission', 'smartcars/aircraft/create');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft/create');
 
         return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', new Aircraft());
     }
@@ -83,7 +83,7 @@ class AircraftController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('use-permission', 'smartcars/aircraft/create');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft/create');
 
         $this->validate($request, $this->rules());
 
@@ -101,7 +101,7 @@ class AircraftController extends Controller
      */
     public function edit(Aircraft $aircraft)
     {
-        $this->authorize('use-permission', 'smartcars/aircraft/update');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft/update');
 
         return $this->viewMake('adm.smartcars.aircraft-form')->with('aircraft', $aircraft);
     }
@@ -116,7 +116,7 @@ class AircraftController extends Controller
      */
     public function update(Request $request, Aircraft $aircraft)
     {
-        $this->authorize('use-permission', 'smartcars/aircraft/update');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft/update');
 
         $this->validate($request, $this->rules());
 
@@ -135,7 +135,7 @@ class AircraftController extends Controller
      */
     public function destroy(Aircraft $aircraft)
     {
-        $this->authorize('use-permission', 'smartcars/aircraft/delete');
+        $this->authorize('use-permission', 'adm/smartcars/aircraft/delete');
 
         $aircraft->delete();
 

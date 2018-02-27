@@ -54,7 +54,7 @@ class ExerciseController extends Controller
      */
     public function index()
     {
-        $this->authorize('use-permission', 'smartcars/exercises');
+        $this->authorize('use-permission', 'adm/smartcars/exercises');
 
         $exercises = Flight::orderBy('created_at')->with('departure', 'arrival', 'aircraft')->paginate(50);
 
@@ -69,7 +69,7 @@ class ExerciseController extends Controller
      */
     public function create()
     {
-        $this->authorize('use-permission', 'smartcars/exercises/create');
+        $this->authorize('use-permission', 'adm/smartcars/exercises/create');
 
         return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', new Flight());
     }
@@ -83,7 +83,7 @@ class ExerciseController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('use-permission', 'smartcars/exercises/create');
+        $this->authorize('use-permission', 'adm/smartcars/exercises/create');
 
         $this->validate($request, $this->rules());
 
@@ -110,7 +110,7 @@ class ExerciseController extends Controller
      */
     public function edit(Flight $exercise)
     {
-        $this->authorize('use-permission', 'smartcars/exercises/update');
+        $this->authorize('use-permission', 'adm/smartcars/exercises/update');
 
         return $this->viewMake('adm.smartcars.exercise-form')->with('exercise', $exercise);
     }
@@ -125,7 +125,7 @@ class ExerciseController extends Controller
      */
     public function update(Request $request, Flight $exercise)
     {
-        $this->authorize('use-permission', 'smartcars/exercises/update');
+        $this->authorize('use-permission', 'adm/smartcars/exercises/update');
 
         $this->validate($request, $this->rules());
 
@@ -152,7 +152,7 @@ class ExerciseController extends Controller
      */
     public function destroy(Flight $exercise)
     {
-        $this->authorize('use-permission', 'smartcars/exercises/delete');
+        $this->authorize('use-permission', 'adm/smartcars/exercises/delete');
 
         if ($exercise->image) {
             $exercise->image->delete();

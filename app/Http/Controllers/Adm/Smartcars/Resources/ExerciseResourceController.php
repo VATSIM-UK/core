@@ -18,7 +18,7 @@ class ExerciseResourceController extends Controller
         parent::__construct();
 
         $this->middleware(function ($request, $next) {
-            $this->authorize('use-permission', 'smartcars/exercises/update');
+            $this->authorize('use-permission', 'adm/smartcars/exercises/update');
 
             return $next($request);
         });
