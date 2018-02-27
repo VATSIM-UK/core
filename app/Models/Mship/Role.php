@@ -37,7 +37,7 @@ class Role extends Model
     protected $table = 'mship_role';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = ['name', 'default'];
+    protected $fillable = ['name', 'default', 'password_mandatory', 'session_timeout', 'password_lifetime'];
     protected $attributes = ['default' => 0];
     protected $rules = [
         'name' => 'required|between:4,40',
@@ -128,7 +128,18 @@ class Role extends Model
         return !$this->permissions->filter(function ($perm) use ($permission) {
             $stripped = preg_replace("/[^A-Za-z0-9\/]/i", '', $perm->name);
 
-            return strcasecmp($perm->name, $permission) == 0 || strcasecmp($stripped, $permission) == 0 || $perm->name == '*';
+            if (strcasecmp($perm->name, $permission) == 0 || strcasecmp($stripped, $permission) == 0 || $perm->name == '*') {
+                return true;
+            }
+
+            // Secondary fallback - Mainly for non-numeric slugs
+            // Add slashes
+            $perm_has = preg_quote($perm->name, '/');
+            // Replace wildcard
+            $perm_has = str_replace('*', '[A-Za-z0-9]+', $perm_has);
+            $perm_has = '/^'.$perm_has.'$/';
+
+            return (bool) preg_match($perm_has, $permission);
         })->isEmpty();
     }
 

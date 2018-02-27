@@ -166,8 +166,8 @@ class LoginController extends BaseController
     public function vSsoValidationSuccess($user, $request)
     {
         $account = Account::firstOrNew(['id' => $user->id]);
-        $account->name_first = $user->name_first;
-        $account->name_last = $user->name_last;
+        $account->name_first = utf8_decode($user->name_first);
+        $account->name_last = utf8_decode($user->name_last);
         $account->email = $user->email;
         $account->experience = $user->experience;
         $account->joined_at = $user->reg_date;
