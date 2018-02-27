@@ -139,7 +139,7 @@ class Role extends Model
             $perm_has = str_replace('*', '[A-Za-z0-9]+', $perm_has);
             $perm_has = '/^'.$perm_has.'$/';
 
-            return (boolean) preg_match($perm_has, $permission);
+            return (bool) preg_match($perm_has, $permission);
         })->isEmpty();
     }
 
