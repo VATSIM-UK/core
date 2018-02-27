@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Input;
+use Closure;
 use Request;
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Session;
@@ -11,11 +11,17 @@ use App\Http\Controllers\Adm\AdmController;
 class Router extends AdmController
 {
     private $pilot = null;
+    private $session = null;
 
     public function __construct()
     {
-        $this->pilot = Account::find(Input::get('dbid'));
-        $this->session = Session::findBySessionId(Input::get('sessionid', null));
+        $this->middleware(function ($request, Closure $next) {
+            /** @var \Illuminate\Http\Request $request */
+            $this->pilot = Account::find($request->input('dbid'));
+            $this->session = Session::findBySessionId($request->input('sessionid', null));
+
+            return $next($request);
+        });
     }
 
     private function verify()
