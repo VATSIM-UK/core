@@ -14,7 +14,7 @@ class Registration extends \App\Http\Controllers\BaseController
     // create new registration process
     public function getNew()
     {
-        if (count($this->account->teamspeakRegistrations) >= 3) {
+        if (count($this->account->teamspeakRegistrations) > 25) {
             return Redirect::route('mship.manage.dashboard');
         }
 
