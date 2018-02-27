@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class NormaliseSmartcarsPermissionNames extends Migration
@@ -18,7 +16,7 @@ class NormaliseSmartcarsPermissionNames extends Migration
             ->orWhere('name', 'LIKE', 'smartcars/%')
             ->update([
                 'name' => DB::raw("CONCAT('adm/', name)"),
-                'display_name' => DB::raw("CONCAT('Admin / ', display_name)")
+                'display_name' => DB::raw("CONCAT('Admin / ', display_name)"),
             ]);
     }
 
