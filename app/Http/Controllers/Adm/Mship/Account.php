@@ -8,6 +8,7 @@ use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
 use App\Models\Mship\Account as AccountData;
+use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
@@ -16,6 +17,8 @@ use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
@@ -324,6 +327,20 @@ class Account extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
+    public function getBans(\Illuminate\Http\Request $request)
+    {
+        if (!$request->user()->hasPermission('adm/mship/account/*/bans')) {
+            throw new AuthorizationException();
+        }
+
+        $bans = BanData::isLocal()
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return $this->viewMake('adm.mship.account.ban.index')
+            ->with('bans', $bans);
+    }
+
     public function getBanRepeal(AccountData\Ban $ban)
     {
         if (!$ban) {
@@ -407,7 +424,12 @@ class Account extends AdmController
             return Redirect::route('adm.mship.account.index');
         }
 
-        $period_finish = \Carbon\Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
+        $period_finish = Carbon::parse(Input::get('finish_date').' '.Input::get('finish_time'), 'UTC');
+        $max_timestamp = Carbon::create(2038, 1, 1, 0, 0, 0);
+        if ($period_finish->gt($max_timestamp)) {
+            $period_finish = $max_timestamp;
+        }
+
         if ($ban->period_finish->eq($period_finish)) {
             return Redirect::back()->withInput()->withError("You didn't change the ban period.");
         }
@@ -432,7 +454,7 @@ class Account extends AdmController
         $ban->account->notify(new BanModified($ban));
 
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
-            ->withSuccess('Your comment for this ban has been noted.');
+            ->withSuccess('This ban has been modified.');
     }
 
     public function postNoteCreate(AccountData $account)

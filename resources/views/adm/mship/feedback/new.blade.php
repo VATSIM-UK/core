@@ -137,10 +137,10 @@
                                             {{ Form::email('contact', null, ['placeholder' => 'Email to contact when a form is sent']) }}
                                             <br/>
                                             {{ Form::checkbox('targeted', '1', true) }}
-                                            This form is user specific.
+                                            This form requires a target member.
                                             <br/>
                                             {{ Form::checkbox('public', '1', true) }}
-                                            This form should be listed publically.
+                                            This form should be listed publicly.
                                             <br/><br/>
                                             {{ Form::submit("Create New Feedback Form", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
                                             <br/>

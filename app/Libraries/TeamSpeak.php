@@ -359,11 +359,6 @@ class TeamSpeak
             $maxIdleTime = 60;
         }
 
-        if ($client['cid'] == array_values($client->getParent()->channelList(['channel_flag_default' => 1]))[0]['cid']) {
-            // This is the default channel
-            $maxIdleTime = 10;
-        }
-
         $notified = Cache::has(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id']);
         if ($idleTime >= $maxIdleTime) {
             self::pokeClient($client, trans('teamspeak.idle.kick.poke.1', ['maxIdleTime' => $maxIdleTime]));
@@ -373,7 +368,7 @@ class TeamSpeak
         } elseif ($idleTime >= $maxIdleTime - 5 && !$notified) {
             self::pokeClient($client, trans('teamspeak.idle.poke', ['idleTime' => $idleTime]));
             Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5);
-        } elseif ($idleTime >= $maxIdleTime - 15 && !$notified) {
+        } elseif (($maxIdleTime - 15 > 0) && ($idleTime >= $maxIdleTime - 15 && !$notified)) {
             self::messageClient($client, trans('teamspeak.idle.message', ['idleTime' => $idleTime, 'maxIdleTime' => $maxIdleTime]));
             Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10);
         }

@@ -92,6 +92,12 @@
                                             class="fa fa-angle-double-right"></i> Accounts List</a>
                             </li>
                         @endif
+                        @if($_account->hasChildPermission("adm/mship/account/*/bans"))
+                            <li {!! (\Request::is('adm/mship/bans*') ? ' class="active"' : '') !!}>
+                                <a href="{{ URL::route("adm.mship.ban.index") }}"><i
+                                            class="fa fa-angle-double-right"></i> Bans List</a>
+                            </li>
+                        @endif
                         @if($_account->hasChildPermission("adm/mship/staff"))
                             <li {!! (\Request::is('adm/mship/staff*') ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.staff.index") }}"><i
@@ -154,7 +160,7 @@
                             </li>
                         @endif
                         @if($_account->hasPermission("adm/mship/feedback/list/*"))
-                          <li {!! (\Request::is('adm/mship/feedback/list/*') ? ' class="active"' : '') !!}>
+                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
                               <a href="{{ URL::route("adm.mship.feedback.all") }}">
                                 <i class="fa fa-bars"></i>
                                 <span>All Feedback</span>
@@ -172,7 +178,7 @@
                             @endif
                         @endforeach
                         @foreach($_feedbackForms as $f)
-                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug))
+                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug) || $_account->hasPermission("adm/mship/feedback/configure/*"))
                             <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
                                     <i class="fa fa-cog"></i>

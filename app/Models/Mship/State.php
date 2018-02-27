@@ -103,6 +103,11 @@ class State extends \App\Models\Model
         return $this->type == 'temp';
     }
 
+    public function getIsDivisionAttribute()
+    {
+        return $this->name == 'Division';
+    }
+
     public function __toString()
     {
         return '['.$this->code.'] '.$this->name;

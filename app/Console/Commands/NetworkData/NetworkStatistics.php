@@ -5,6 +5,7 @@ namespace App\Console\Commands\NetworkData;
 use App\Console\Commands\Command;
 use App\Models\NetworkData\Atc;
 use App\Models\Statistic;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Cache;
 use Carbon\Carbon;
 
@@ -77,10 +78,7 @@ class NetworkStatistics extends Command
             $this->log('Done. '.$count.' total ATC sessions.');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Unable to update TOTAL ATC SESSIONS (NETWORKDATA) statistics.',
-                ['Error Code' => 3]
-            );
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -97,10 +95,7 @@ class NetworkStatistics extends Command
             $startPeriod = Carbon::parse($this->argument('startPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Invalid startPeriod specified.  '.$this->argument('startPeriod').' is invalid.',
-                ['Error Code' => 1]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($startPeriod->isFuture()) {
@@ -123,10 +118,7 @@ class NetworkStatistics extends Command
             $endPeriod = Carbon::parse($this->argument('endPeriod'), 'UTC');
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage());
-            $this->sendSlackError(
-                'Invalid endPeriod specified.  '.$this->argument('endPeriod').' is invalid.',
-                ['Error Code' => 2]
-            );
+            Bugsnag::notifyException($e);
         }
 
         if ($endPeriod->isFuture()) {
