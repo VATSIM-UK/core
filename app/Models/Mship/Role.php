@@ -37,7 +37,7 @@ class Role extends Model
     protected $table = 'mship_role';
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = ['name', 'default'];
+    protected $fillable = ['name', 'default', 'password_mandatory', 'session_timeout', 'password_lifetime'];
     protected $attributes = ['default' => 0];
     protected $rules = [
         'name' => 'required|between:4,40',
