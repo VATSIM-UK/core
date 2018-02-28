@@ -159,18 +159,20 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>
-                                            Clicking confirm will log you in as this user <strong>on the user facing side</strong> and log you out (if you're logged in).
+                                            Clicking confirm will log you in as this user <strong>on the user facing side</strong> and log you out of your own account.
                                         </p>
                                         <p>
-                                            This access is provided on the proviso that you do not misuse this, and that it is for a valid purpose.  To that end, we
-                                            monitor these and request that you enter a reason in the box below.
+                                            This feature should only be used in rare and extreme circumstances. All impersonations are monitored,
+                                            and may be followed up. Use of this feature must be authorized by the Web Systems Director or Web Support
+                                            Director every time it is used.
                                         </p>
                                         <p>
+                                            <strong>You MUST include the Helpdesk ticket reference in your reason.</strong>
+                                        </p>
                                         <div class="form-group">
                                             {!! Form::Label("reason", "Reason") !!}
                                             {!! Form::textarea("reason", null, ["class" => "form-control"]) !!}
                                         </div>
-                                        </p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -415,8 +417,6 @@
                                             <label for="ban_note_content">Note<br /><small>This will *not* be sent to the member.</small></label>
                                             <textarea name="ban_note_content" class="form-control" rows="5">{{ old("ban_note_content") }}</textarea>
                                         </div>
-
-                                        </p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
