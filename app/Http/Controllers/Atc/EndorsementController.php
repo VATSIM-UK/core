@@ -27,7 +27,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
         });
 
         if (!$this->account->qualificationAtc->isS1) {
-            return Redirect::back()
+            return Redirect::route('mship.manage.dashboard')
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
         }
 
