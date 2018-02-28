@@ -136,7 +136,7 @@ class Role extends Model
             // Add slashes
             $perm_has = preg_quote($perm->name, '/');
             // Replace wildcard
-            $perm_has = str_replace('*', '[A-Za-z0-9]+', $perm_has);
+            $perm_has = str_replace('\*', '[A-Za-z0-9]+', $perm_has);
             $perm_has = '/^'.$perm_has.'$/';
 
             return (bool) preg_match($perm_has, $permission);
