@@ -18,10 +18,21 @@ The following are the upgrade notes for deploying in production.
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 3.4.0
+### 3.6.0
 
-* No additional steps required.
+* Run `php artisan storage:link`
+* Add `MAPS_API_KEY` in `.env`
 
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.
+
+---
+
+## Changes to Issue Tracking
+
+We are making changes to the way we are managing our issue tracking. We are moving away from GitHub Issues to Atlassian's JIRA.
+
+For details on how to continue contributing to CORE using the new issue tracker, see the updated [Contribution Guide](CONTRIBUTING.md) and the new [Issue Tracking Guide](ISSUE_TRACKING.md) (which explains some of the finer points of the new system).
+
+If you have any questions or problems with the new system, reach out to us via the #WebServices channel in the VATSIM UK Slack.

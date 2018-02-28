@@ -94,6 +94,11 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
     ])->where('default', '[default|true]');
 });
 
+// Controllers
+Route::group(['prefix' => 'controllers/', 'middleware' => ['auth_full_group']], function () {
+    Route::get('endorsements/gatwick', 'Atc\EndorsementController@getGatwickGroundIndex')->name('controllers.endorsements.gatwick_ground');
+});
+
 // Network data
 Route::group(['as' => 'networkdata.', 'namespace' => 'NetworkData', 'middleware' => 'auth_full_group'], function () {
     Route::get('network-data', function () {
@@ -149,3 +154,57 @@ Route::group([
         Route::post('complete/{token}/cancel', 'Reference@postCancel')->name('complete.cancel');
     });
 });
+
+// SmartCARS
+Route::any('frame.php', function () {
+    if (config('app.debug_smartcars')) {
+        \Log::info(\Request::method().'::'.\Request::fullUrl());
+        \Log::info(json_encode(\Request::all()));
+    }
+
+    if (\Request::method() == 'POST') {
+        $return = \App::call(\App\Http\Controllers\Smartcars\Api\Router::class.'@postRoute', Request::all());
+    } else {
+        $return = \App::call(\App\Http\Controllers\Smartcars\Api\Router::class.'@getRoute', Request::all());
+    }
+
+    if (config('app.debug_smartcars')) {
+        \Log::info($return);
+    }
+
+    return $return;
+});
+
+Route::group([
+    'as' => 'fte.',
+    'prefix' => 'fte',
+    'namespace' => 'Smartcars',
+    'middleware' => ['auth_full_group'],
+], function () {
+    Route::get('dashboard', 'SmartcarsController@getDashboard')->name('dashboard');
+    Route::get('map', 'SmartcarsController@getMap')->name('map');
+    Route::get('exercises/{exercise?}', 'SmartcarsController@getExercise')->name('exercises');
+    Route::post('exercises/{exercise}/book', 'SmartcarsController@bookExercise')->name('exercise.book');
+    Route::post('exercises/{exercise}/cancel', 'SmartcarsController@cancelExercise')->name('exercise.cancel');
+    Route::get('history/{pirep?}', 'SmartcarsController@getHistory')->name('history');
+    Route::get('guide', 'SmartcarsController@getGuide')->name('guide');
+});
+
+// Helpers
+
+Route::get('metar/{airportIcao}', function ($airportIcao) {
+    return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
+        $client = new GuzzleHttp\Client();
+
+        try {
+            $response = $client->get("http://metar.vatsim.net/metar.php?id=$airportIcao");
+
+            if ($response->getStatusCode() === 200) {
+                return (string) $response->getBody();
+            }
+        } catch (GuzzleHttp\Exception\TransferException $e) {
+        }
+
+        return 'METAR UNAVAILABLE';
+    });
+})->name('metar')->middleware(['auth']);

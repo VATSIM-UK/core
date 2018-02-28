@@ -145,7 +145,12 @@
         btnOkClass: "btn btn-xs btn-primary",
         btnCancelClass: "btn btn-xs",
         singleton: true,
+        onConfirm: function (event, element) {onConfirm(event, element)},
     });
+
+    // override this function to implement
+    function onConfirm(event, element) {}
+
 </script>
 
 <script>
