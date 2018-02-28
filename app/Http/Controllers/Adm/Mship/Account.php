@@ -7,6 +7,7 @@ use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Models\Contact;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
@@ -16,9 +17,11 @@ use App\Models\Mship\Role as RoleData;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
+use App\Notifications\Mship\UserImpersonated;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
@@ -499,13 +502,18 @@ class Account extends AdmController
         return Redirect::to(URL::route('adm.mship.account.details', [$account->id, 'notes']).'?'.$qs);
     }
 
-    public function postImpersonate(AccountData $account)
+    public function postImpersonate(Request $request, AccountData $account)
     {
         if (!$account) {
             return Redirect::route('adm.mship.account.index');
         }
 
-        // TODO: LOG.
+        $attributes = $this->validate($request, [
+            'reason' => 'required|string|min:5',
+        ]);
+
+        Contact::where('key', 'PRIVACC')->first()
+            ->notify(new UserImpersonated($account, $request->user(), $attributes['reason']));
 
         // Let's do the login!
         Auth::loginUsingId($account->id, false);
