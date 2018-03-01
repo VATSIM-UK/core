@@ -143,7 +143,7 @@
                                                     $i = 1;
                                                 @endphp
                                                 @foreach ($current_questions as $question)
-                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => 'template'])
+                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => $i])
                                                     @php
                                                         $i++;
                                                     @endphp

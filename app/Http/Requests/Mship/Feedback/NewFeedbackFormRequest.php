@@ -47,8 +47,8 @@ class NewFeedbackFormRequest extends Request
             'question.*.name.required' => 'Your question needs a question!',
             'question.*.name.min' => 'Your question must be more than 5 charecters long.',
 
-            'question.*.slug.required' => 'Please enter a short name for your question',
-            'question.*.slug.alpha_num' => "A question's short name can only be alphanumeric. (A-z0-9)",
+            'question.*.slug.required' => 'Please enter a slug for your question',
+            'question.*.slug.alpha_num' => "A question's slug can only be alphanumeric. (A-z0-9)",
 
             'question.*.type.required' => 'Your question needs a type!',
             'question.*.type.exists' => "Your question type doesn't seem to exist. Please try again.",
