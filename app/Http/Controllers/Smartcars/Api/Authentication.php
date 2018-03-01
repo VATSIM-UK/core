@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
+use App\Exceptions\Mship\InvalidCIDException;
 use Input;
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Session;
@@ -30,7 +31,11 @@ class Authentication extends AdmController
     {
         Session::deleteOldSessions();
 
-        $account = Account::findOrRetrieve(Input::get('userid'));
+        try {
+            $account = Account::findOrRetrieve(Input::get('userid'));
+        } catch (InvalidCIDException $e) {
+            return 'AUTH_FAILED';
+        }
 
         if ($account->is_banned) {
             return 'ACCOUNT_INACTIVE';
