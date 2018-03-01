@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Mship\Feedback;
 
 use App\Http\Requests\Request;
-use App\Models\Mship\Note\Type;
+use App\Models\Mship\Feedback\Question\Type;
 
 class UpdateFeedbackFormRequest extends Request
 {
@@ -55,6 +55,30 @@ class UpdateFeedbackFormRequest extends Request
             'question.*.required.required' => 'Please mark if this question is required or not.',
             'question.*.required.boolean' => 'There was an error with your question. Please try again.',
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+
+            foreach ($this->input('question') as $question) {
+              // Ensure questions that require values have values supplied
+              if (Type::findByName($question['type'])->requires_value) {
+                if(isset($question['options']['values'])){
+                    if($question['options']['values'] != '' && count(explode(',', $question['options']['values'])) > 0){
+                      continue;
+                    }
+                }
+                $validator->errors()->add($question['name'], 'The question "'.$question['name'].'" requires values!');
+              }
+            }
+        });
     }
 
     protected function getValidatorInstance()
