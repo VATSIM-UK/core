@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Closure;
-use Request;
+use App;
+use Debugbar;
+use Illuminate\Http\Request;
+use Log;
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Session;
 use App\Http\Controllers\Adm\AdmController;
 
 class Router extends AdmController
 {
-    private $pilot = null;
-    private $session = null;
+    protected $pilot;
+    protected $session;
 
     public function __construct()
     {
-        $this->middleware(function ($request, Closure $next) {
-            /* @var \Illuminate\Http\Request $request */
+        $this->middleware(function ($request, $next) {
+            /* @var Request $request */
             $this->pilot = Account::find($request->input('dbid'));
             $this->session = Session::findBySessionId($request->input('sessionid', null));
 
@@ -24,59 +26,71 @@ class Router extends AdmController
         });
     }
 
-    private function verify()
+    public function routeRequest(Request $request)
     {
-        if ($this->session->account_id != $this->pilot->id) {
-            return false;
+        Debugbar::disable();
+
+        if (config('app.debug_smartcars')) {
+            Log::info($request->method().'::'.$request->fullUrl());
+            Log::info(json_encode($request->all()));
         }
 
-        return true;
+        if ($request->method() == 'POST') {
+            $return = $this->postRoute($request);
+        } else {
+            $return = $this->getRoute($request);
+        }
+
+        if (config('app.debug_smartcars')) {
+            Log::info($return);
+        }
+
+        return $return;
     }
 
-    public function getRoute()
+    protected function getRoute(Request $request)
     {
-        \Debugbar::disable();
-        switch (Request::get('action')) {
+        switch ($request->get('action')) {
             case 'automaticlogin':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postAuto', Request::all());
+                return App::call(Authentication::class.'@postAuto');
 
             case 'verifysession':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postVerify', Request::all());
+                return App::call(Authentication::class.'@postVerify');
 
             case 'getpilotcenterdata':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getPilotInfo', Request::all());
+                return App::call(Data::class.'@getPilotInfo');
 
             case 'getairports':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getAirports', Request::all());
+                return App::call(Data::class.'@getAirports');
 
             case 'getaircraft':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Data::class.'@getAircraft', Request::all());
+                return App::call(Data::class.'@getAircraft');
 
             case 'searchflights':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getSearch', Request::all());
+                return App::call(Flight::class.'@getSearch');
 
             case 'getbidflights':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBids', Request::all());
+                return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBid', Request::all());
+                return App::call(Flight::class.'@getBid');
 
             case 'deletebidflight':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBidDelete', Request::all());
+                return App::call(Flight::class.'@getBidDelete');
 
             case 'searchpireps':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Pirep::class.'@getSearch', Request::all());
+                return App::call(Pirep::class.'@getSearch');
 
             case 'getpirepdata':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Pirep::class.'@getData', Request::all());
+                return App::call(Pirep::class.'@getData');
 
             case 'createflight':
                 return '';
@@ -89,18 +103,17 @@ class Router extends AdmController
         }
     }
 
-    public function postRoute()
+    protected function postRoute(Request $request)
     {
-        \Debugbar::disable();
-        switch (Request::get('action')) {
+        switch ($request->get('action')) {
             case 'manuallogin':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Authentication::class.'@postManual', Request::all());
+                return App::call(Authentication::class.'@postManual');
 
             case 'searchflights':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getSearch', Request::all());
+                return App::call(Flight::class.'@getSearch');
 
             case 'getbidflights':
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@getBids', Request::all());
+                return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
                 return '';
@@ -122,17 +135,26 @@ class Router extends AdmController
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@postPosition', Request::all());
+                return App::call(Flight::class.'@postPosition');
 
             case 'filepirep':
                 if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
-                return \App::call(\App\Http\Controllers\Smartcars\Api\Flight::class.'@postReport', Request::all());
+                return App::call(Flight::class.'@postReport');
 
             default:
                 return 'Script OK, Frame Version: VATSIM_UK_CUSTOM_1, Interface Version: VATSIM_UK_CUSTOM_1';
         }
+    }
+
+    protected function verify()
+    {
+        if ($this->session->account_id != $this->pilot->id) {
+            return false;
+        }
+
+        return true;
     }
 }
