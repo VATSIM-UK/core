@@ -8,7 +8,7 @@
             <div class="input-group">
               <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
               {{ Form::text('question['.$num.'][name]', $question->question, ['aria-describedby' => 'question-name-addon', 'size' => 50]) }}
-              <span class="input-group-addon">({{ isset($question->type->name) ? $question->type->name : "" }})</span>
+              <span class="input-group-addon">(<span class="question_type">{{ isset($question->type->name) ? $question->type->name : "" }}</span>)</span>
             </div>
 
 
@@ -45,7 +45,7 @@
             </td>
           </tr>
           @if ((isset($question->type->requires_value) && $question->type->requires_value) || isset($hideme))
-            <tr>
+            <tr class="question_valueinput">
               <th>{{ Form::label('question['.$num.'][options][values]', "Values") }}</th>
               <td>
                 {{ Form::text('question['.$num.'][options][values]', (($question->optionValues()) ? join(",", $question->optionValues()) : ""), ['placeholder' => 'e.g Good,Average,Bad']) }}
