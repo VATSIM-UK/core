@@ -3,7 +3,7 @@
     <div class="box" style="border: 1px solid;background-color:#4f798c;color:white">
       <div class="box-header">
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-8">
             <i onclick="$('#question_control_box_{{$num}}').slideToggle()" class="ion ion-levels" style="font-size:30px; color:white; cursor:pointer; float:left; margin-right: 10px;" data-toggle="dropdown" aria-expanded="false"></i>
             <div class="input-group">
               <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
@@ -16,12 +16,12 @@
               {{ Form::hidden('question['.$num.'][exists]', $question->id) }}
             @endif
           </div>
-          <div class="col-md-2 text-center">
-            <div class="btn-group" role="group" style="margin-bottom: 10px">
+          <div class="col-md-4 text-center">
+            <div class="btn-group role="group">
+              <button type=button class="btn btn-xs btn-danger question-delete-button">Delete</button>
               <button type="button" class="btn btn-xs questionButtonUp">Move Up</button>
               <button type="button" class="btn btn-xs questionButtonDown">Move Down</button>
             </div>
-            <button type=button class="question-delete-button btn btn-xs btn-danger">Delete</button>
           </div>
         </div>
       </div>
