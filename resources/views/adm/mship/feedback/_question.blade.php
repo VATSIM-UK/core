@@ -17,7 +17,7 @@
             @endif
           </div>
           <div class="col-md-4 text-center">
-            <div class="btn-group role="group">
+            <div class="btn-group" role="group">
               <button type=button class="btn btn-xs btn-danger question-delete-button">Delete</button>
               <button type="button" class="btn btn-xs questionButtonUp">Move Up</button>
               <button type="button" class="btn btn-xs questionButtonDown">Move Down</button>
@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body" style="display:none" id="question_control_box_{{$num}}">
+      <div class="box-body" style="display:none; background-color:#375665;" id="question_control_box_{{$num}}">
         {{ Form::hidden('question['.$num.'][type]', (isset($question->type->name) ? $question->type->name : ""), ['class' => 'question_type_field']) }}
         <table style="width:100%">
           <tr>
@@ -40,7 +40,7 @@
               @if ((isset($question->required) && !$question->required))
                 {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No'), 0) }}
               @else
-                {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No', 1)) }}
+                {{ Form::select('question['.$num.'][required]', array(1 => 'Yes', 0 => 'No'), 1) }}
               @endif
             </td>
           </tr>
