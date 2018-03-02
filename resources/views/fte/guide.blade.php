@@ -34,11 +34,11 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Download the smartCars application
+                            Download the smartCARS application
                             by {{ HTML::link('https://vats.im/smartcars', 'clicking here', array("target"=>"_blank")) }}.
                         </li>
                         <li>
-                            Install the smartCars application by following the simple on-screen instructions.
+                            Install the smartCARS application by following the simple on-screen instructions.
                         </li>
                         <li>
                             We need a way to authenticate you. To do this, setup a secondary password by
@@ -106,10 +106,10 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            Open the smartCars application.
+                            Open the smartCARS application.
                         </li>
                         <li>
-                            Login to the smartCars application using the following credentials.
+                            Login to the smartCARS application using the following credentials.
                             <ul>
                                 <li>Username: <strong>VATSIM CID</strong></li>
                                 <li>Password: <strong>Secondary Password</strong></li>
@@ -126,17 +126,17 @@
                         <li>
                             Load up at the departure aerodrome in your simulator of choice.
                             <ul>
-                                <li>Note that you must have FSUIPC (or equivalent) installed for smartCars to connect to your simulator.</li>
+                                <li>Note that you must have FSUIPC (or equivalent) installed for smartCARS to connect to your simulator.</li>
                             </ul>
                         </li>
                         <li>
-                            Click <strong>Start</strong> on the smartCars application.
+                            Click <strong>Start</strong> on the smartCARS application.
                         </li>
                         <li>
                             Complete your flight as per the instructions found within the exercise brief.
                         </li>
                         <li>
-                            When you have landed, apply your parking brakes, shutdown all engines and then click <strong>Finish</strong> and then <strong>File PIREP</strong> in smartCars.
+                            When you have landed, apply your parking brakes, shutdown all engines and then click <strong>Finish</strong> and then <strong>File PIREP</strong> in smartCARS.
                         </li>
                     </ol>
                 </div>
