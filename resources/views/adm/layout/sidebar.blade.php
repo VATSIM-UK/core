@@ -145,49 +145,10 @@
             @endif
 
             @if($_account->hasPermission("adm/mship/feedback"))
-                <li class="treeview {{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
-                    <a href="#">
+                <li class="{{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
+                    <a href="{{ URL::route("adm.mship.feedback.forms") }}">
                         <i class="ion ion-help"></i> <span>Member Feedback</span>
-                        <i class="fa fa-angle-left pull-right"></i>
                     </a>
-                    <ul class="treeview-menu">
-                        @if($_account->hasPermission("adm/mship/feedback/configure/*"))
-                            <li {!! (\Request::is('adm/mship/feedback/new') ? ' class="active"' : '') !!}>
-                                <a href="{{ URL::route("adm.mship.feedback.new") }}">
-                                    <i class="fa fa-plus"></i>
-                                    <span>Add Feedback Form</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if($_account->hasPermission("adm/mship/feedback/list/*"))
-                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
-                              <a href="{{ URL::route("adm.mship.feedback.all") }}">
-                                <i class="fa fa-bars"></i>
-                                <span>All Feedback</span>
-                              </a>
-                          </li>
-                        @endif
-                        @foreach($_feedbackForms as $f)
-                            @if($_account->hasPermission("adm/mship/feedback/list/".$f->slug) || $_account->hasPermission("adm/mship/feedback/list/*"))
-                                <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
-                                    <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
-                                        <i class="fa fa-bars"></i>
-                                        <span>{!! $f->name !!}</span>
-                                    </a>
-                                </li>
-                            @endif
-                        @endforeach
-                        @foreach($_feedbackForms as $f)
-                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug) || $_account->hasPermission("adm/mship/feedback/configure/*"))
-                            <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
-                                <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
-                                    <i class="fa fa-cog"></i>
-                                    <span>{!! $f->name !!} Settings</span>
-                                </a>
-                            </li>
-                            @endif
-                        @endforeach
-                    </ul>
                 </li>
             @endif
 

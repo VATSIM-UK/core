@@ -28,8 +28,6 @@ class AdmController extends \App\Http\Controllers\BaseController
     {
         $view = View::make($view);
 
-        $view->with('_feedbackForms', Form::whereDeletedAt(null)->orderBy('id', 'asc')->getModels());
-
         $view->with('_account', $this->account);
 
         $this->buildBreadcrumb('Administration Control Panel', '/adm/dashboard');

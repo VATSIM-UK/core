@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class IncreaseFormQuestionSlugLength extends Migration
+class FeedbackSlugLengthAndPermission extends Migration
 {
     /**
      * Run the migrations.
@@ -16,6 +16,13 @@ class IncreaseFormQuestionSlugLength extends Migration
         Schema::table('mship_feedback_questions', function (Blueprint $table) {
           $table->string('slug')->change();
         });
+
+        DB::table('mship_permission')->insert([
+                'name' => 'adm/mship/feedback',
+                'display_name' => 'Admin / Membership / Feedback (Access)',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ]);
     }
 
     /**
