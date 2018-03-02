@@ -148,6 +148,9 @@
                 <li class="{{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
                     <a href="{{ URL::route("adm.mship.feedback.forms") }}">
                         <i class="ion ion-help"></i> <span>Member Feedback</span>
+                        @if (isset($_unactioned_feedback))
+                          <small class="badge pull-right bg-green">New</small>
+                        @endif
                     </a>
                 </li>
             @endif
