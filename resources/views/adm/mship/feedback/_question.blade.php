@@ -1,10 +1,10 @@
 <li class="question-item" {{ isset($hideme) ? "style=display:none id=question_template" : "" }}>
   <div class="col-md-12 permanent">
-    <div class="box" style="border: 1px solid;background-color:#4f798c;color:white">
+    <div class="box">
       <div class="box-header">
         <div class="row">
           <div class="col-md-8">
-            <i onclick="$('#question_control_box_{{$num}}').slideToggle()" class="ion ion-levels" style="font-size:30px; color:white; cursor:pointer; float:left; margin-right: 10px;" data-toggle="dropdown" aria-expanded="false"></i>
+            <i onclick="$('#question_control_box_{{$num}}').slideToggle()" class="ion ion-levels" data-toggle="dropdown" aria-expanded="false"></i>
             <div class="input-group">
               <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
               {{ Form::text('question['.$num.'][name]', $question->question, ['aria-describedby' => 'question-name-addon', 'size' => 50]) }}
@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body" style="display:none; background-color:#375665;" id="question_control_box_{{$num}}">
+      <div class="box-body" id="question_control_box_{{$num}}">
         {{ Form::hidden('question['.$num.'][type]', (isset($question->type->name) ? $question->type->name : ""), ['class' => 'question_type_field']) }}
         <table style="width:100%">
           <tr>

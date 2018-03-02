@@ -10,3 +10,41 @@
 @import "~admin-lte/build/less/skins/skin-black";
 
 @boxed-layout-bg-image-path: "../../dist/img/boxed-bg.jpg";
+
+.feedback-form-config {
+  body.dragging, body.dragging * {
+      cursor: move !important;
+  }
+
+  .dragged {
+      position: absolute;
+      opacity: 0.5;
+      z-index: 2000;
+  }
+  ol.simple_connected_list{
+      display: inline;
+  }
+
+  ol.simple_connected_list li {
+      list-style: none;
+  }
+
+  .question-item {
+    .box {
+      border: 1px solid;
+      background-color:#4f798c;
+      color:white;
+    }
+    .box-body {
+      display:none;
+      background-color:#375665;
+    }
+    .ion {
+      font-size:30px;
+      color:white;
+      cursor:pointer;
+      float:left;
+      margin-right: 10px;
+    }
+  }
+}
