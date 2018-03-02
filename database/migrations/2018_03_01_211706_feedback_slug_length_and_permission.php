@@ -16,6 +16,13 @@ class FeedbackSlugLengthAndPermission extends Migration
         Schema::table('mship_feedback_questions', function (Blueprint $table) {
           $table->string('slug')->change();
         });
+
+        DB::table('mship_permission')->insert([
+                'name' => 'adm/mship/feedback/new',
+                'display_name' => 'Admin / Membership / Feedback / Create Form',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ]);
     }
 
     /**
