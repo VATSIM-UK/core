@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Mship\Feedback;
 
 use App\Http\Requests\Request;
-use App\Models\Mship\Note\Type;
+use App\Models\Mship\Feedback\Question\Type;
 
 class NewFeedbackFormRequest extends Request
 {
