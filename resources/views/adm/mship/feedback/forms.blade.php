@@ -17,6 +17,7 @@
                       <th>Form Name</th>
                       <th>Submissions</th>
                       <th>Number un-actioned</th>
+                      <th></th>
                     </tr>
                     @foreach ($forms as $form)
                       <tr>
