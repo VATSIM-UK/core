@@ -109,10 +109,29 @@
                                 <div class="box-header">
                                     <h4 class="box-title" style="font-size:1.5em">
                                         Form Questions
-                                    </h4>
+                                    </h4></br>
+                                    <small><b>Note:</b> You do NOT need to add a 'userlookup' question if the form is targeted. It is added automatically</small>
                                 </div>
                                 <div class="box-body feedback-form-config">
                                     <div class="row">
+                                        @if ($form->targeted)
+                                          <div class="col-md-12 permanent question-item">
+                                            <div class="box">
+                                              <div class="box-header">
+                                                <div class="row">
+                                                  <div class="col-md-8">
+                                                    <div class="input-group">
+                                                      <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
+                                                      {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
+                                                      <span class="input-group-addon">(Permanent)</span>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        @endif
                                         <ol class='simple_connected_list' id="feedback-form-questions">
                                             @if (old('old_data') != null)
                                                 {!! old('old_data') !!}
