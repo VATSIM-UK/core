@@ -372,6 +372,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         foreach ($conditions as $condition) {
             if ($condition) {
                 $feedback->markActioned(\Auth::user(), $request->input('comment'));
+                \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
 
                 return Redirect::back()
                               ->withSuccess('Feedback marked as actioned!');
