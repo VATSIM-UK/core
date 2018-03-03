@@ -51,13 +51,11 @@
                 // Quickly number the arrays
                 var count = 1;
                 $("#feedback-form-questions").children(".question-item").each(function () {
-                    console.log(count)
-                    console.log(this)
                     $(this).html($(this).html().replace(/template/g, count))
                     count = count + 1;
                 })
                 $('#old_data_input').val($('#feedback-form-questions').html())
-                //event.preventDefault()
+
             });
 
             // Detect change in input values so that they are preserved if form submission fails
@@ -83,6 +81,13 @@
             $("#feedback-form-questions").on("click", ".question-delete-button", function () {
                 $(this).closest('.question-item').remove();
             });
+
+            // Question accordion control
+            $("#feedback-form-questions").on( 'click', '.question-settings-control', function () {
+                $(this).closest('.box').children('.box-body').slideToggle()
+            });
+
+
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
