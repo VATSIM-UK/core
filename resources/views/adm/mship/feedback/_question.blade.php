@@ -4,7 +4,7 @@
       <div class="box-header">
         <div class="row">
           <div class="col-md-8">
-            <i onclick="$('#question_control_box_{{$num}}').slideToggle()" class="ion ion-levels" data-toggle="dropdown" aria-expanded="false"></i>
+            <i onclick="$('#question_control_box_{{$num}}').slideToggle()" class="ion ion-gear-b" data-toggle="dropdown" aria-expanded="false"></i>
             <div class="input-group">
               <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
               {{ Form::text('question['.$num.'][name]', $question->question, ['aria-describedby' => 'question-name-addon', 'size' => 50]) }}
