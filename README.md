@@ -1,6 +1,9 @@
-[![StyleCI](https://styleci.io/repos/75443611/shield?branch=development&style=flat)](https://styleci.io/repos/75443611)
-[![Code Climate](https://codeclimate.com/github/VATSIM-UK/core/badges/gpa.svg)](https://codeclimate.com/github/VATSIM-UK/core)
-[![Build Status](https://travis-ci.org/VATSIM-UK/core.svg?branch=production)](https://travis-ci.org/VATSIM-UK/core)
+<p align="center">
+  <a href="https://travis-ci.org/VATSIM-UK/core"><img src="https://travis-ci.org/VATSIM-UK/core.svg" alt="Build Status"></a>
+  <a href="https://styleci.io/repos/75443611"><img src="https://styleci.io/repos/75443611/shield?style=flat" alt="Style Status"></a>
+  <a href="https://codeclimate.com/github/VATSIM-UK/core/maintainability"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/maintainability" alt="Maintainability"></a>
+  <a href="https://codeclimate.com/github/VATSIM-UK/core/test_coverage"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/test_coverage" alt="Test Coverage"></a>
+</p>
 
 ## Upgrade Notes
 
