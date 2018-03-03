@@ -29,6 +29,8 @@ class AdmController extends \App\Http\Controllers\BaseController
     {
         $view = View::make($view);
 
+        $view->with('_feedbackForms', Form::whereDeletedAt(null)->orderBy('id', 'asc')->getModels());
+
         $view->with('_account', $this->account);
 
         $this->buildBreadcrumb('Administration Control Panel', '/adm/dashboard');
@@ -36,17 +38,22 @@ class AdmController extends \App\Http\Controllers\BaseController
         $view->with('_breadcrumb', $this->breadcrumb);
 
         $_account = $this->account;
-        $forms_with_unactioned = Cache::remember($_account->id.'.adm.mship.unactioned-forms', 2, function () use($_account) {
+        $forms_with_unactioned = Cache::remember($_account->id.'.adm.mship.feedback.unactioned-count', 2, function () use($_account) {
             $forms = Form::orderBy('id', 'asc')->get(['id']);
-            return $forms->filter(function ($form, $key) use ($_account) {
+            return $forms->transform(function ($form, $key) use ($_account) {
                 $hasWildcard = $_account->hasPermission("adm/mship/feedback/list/*") || $_account->hasPermission("adm/mship/feedback/configure/*");
                 $hasSpecific = $_account->hasPermission("adm/mship/feedback/list/".$form->slug) || $_account->hasPermission("adm/mship/feedback/configure/".$form->slug);
-                return ($hasWildcard || $hasSpecific) && $form->feedback()->unActioned()->count() > 0;
-            })->count();
+
+                if($hasWildcard || $hasSpecific){
+
+                  return $form->feedback()->unActioned()->count();
+                }
+                return 0;
+            })->sum();
         });
 
         if($forms_with_unactioned > 0){
-          $view->with('_unactioned_feedback', true);
+          $view->with('_unactioned_feedback', $forms_with_unactioned);
         }
 
         $view->with('_pageTitle', $this->getTitle());

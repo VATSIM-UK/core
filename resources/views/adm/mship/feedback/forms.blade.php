@@ -32,9 +32,9 @@
                             @if ($_account->hasPermission("adm/mship/feedback/configure/*") || $_account->hasPermission("adm/mship/feedback/configure/".$form->slug))
                               <a type="button" href="{{ URL::route("adm.mship.feedback.config", [$form->slug]) }}" class="btn btn-warning"><i class="ion ion-gear-a"></i> Edit form</a>
                             @endif
-                            @if ($_account->hasPermission("adm/mship/feedback/list/*") || $_account->hasPermission("adm/mship/feedback/list/".$form->slug))
+                            {{-- @if ($_account->hasPermission("adm/mship/feedback/list/*") || $_account->hasPermission("adm/mship/feedback/list/".$form->slug))
                               <a type="button" href="{{ URL::route("adm.mship.feedback.form", [$form->slug]) }}" class="btn btn-success"><i class="ion ion-search"></i> View Submissions</a>
-                            @endif
+                            @endif --}}
                           </div>
                         </td>
                       </tr>
