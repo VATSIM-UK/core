@@ -17,7 +17,7 @@ class Email extends \App\Http\Controllers\BaseController
 {
     public function getEmail()
     {
-        return $this->viewMake('mship.email');
+        return $this->viewMake('mship.email.send');
     }
 
     protected function recipientErrors(Account $member)
@@ -98,6 +98,14 @@ class Email extends \App\Http\Controllers\BaseController
         } else {
             return JsonResponse::create(['error' => ['Unknown search type.']], 422);
         }
+    }
+
+    public function getHistory()
+    {
+
+        $threads = Participant::isOwner()->get();
+
+        return view('mship.email.history');
     }
 
     protected function cidSearch($searchQuery)
