@@ -107,8 +107,6 @@
                 // Quickly number the arrays
                 var count = 1;
                 $("#feedback-form-questions").children(".question-item").each(function () {
-                    console.log(count)
-                    console.log(this)
                     $(this).html($(this).html().replace(/template/g, count))
                     count = count + 1;
                 })
