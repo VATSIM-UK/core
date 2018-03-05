@@ -99,7 +99,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                 $rules[] = 'required';
             }
             if (count($rules) > 0) {
-                $ruleset[$question->slug] = join($rules, '|');
+                $ruleset[$question->slug] = implode($rules, '|');
             }
 
             // Process errors

@@ -3,9 +3,9 @@
 namespace App\Console\Commands\ExternalServices;
 
 use App\Console\Commands\Command;
-use Exception;
 use App\Models\Mship\Account;
 use DB;
+use Exception;
 
 class SyncCommunity extends Command
 {

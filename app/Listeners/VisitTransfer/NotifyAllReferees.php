@@ -2,12 +2,12 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Carbon\Carbon;
-use App\Models\VisitTransfer\Reference;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Notifications\ApplicationReferenceRequest;
 use App\Events\VisitTransfer\ApplicationSubmitted;
+use App\Models\VisitTransfer\Reference;
+use App\Notifications\ApplicationReferenceRequest;
+use Carbon\Carbon;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class NotifyAllReferees implements ShouldQueue
 {

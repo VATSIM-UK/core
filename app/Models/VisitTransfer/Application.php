@@ -20,11 +20,11 @@ use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
 use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Malahierba\PublicId\PublicId;
 
