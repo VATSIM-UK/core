@@ -51,8 +51,6 @@
                 // Quickly number the arrays
                 var count = 1;
                 $("#feedback-form-questions").children(".question-item").each(function () {
-                    console.log(count)
-                    console.log(this)
                     $(this).html($(this).html().replace(/template/g, count))
                     count = count + 1;
                 })
@@ -83,6 +81,12 @@
             $("#feedback-form-questions").on("click", ".question-delete-button", function () {
                 $(this).closest('.question-item').remove();
             });
+
+
+            // Question accordion control
+            $("#feedback-form-questions").on( 'click', '.question-settings-control', function () {
+                $(this).closest('.box').children('.box-body').slideToggle()
+            });
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
@@ -109,9 +113,10 @@
                                 <div class="box-header">
                                     <h4 class="box-title" style="font-size:1.5em">
                                         Form Questions
-                                    </h4>
+                                      </h4></br>
+                                      <small><b>Note:</b> You do NOT need to add a 'userlookup' question if the form is targeted. It is added automatically</small>
                                 </div>
-                                <div class="box-body">
+                                <div class="box-body feedback-form-config">
                                     <div class="row">
                                         <ol class='simple_connected_list' id="feedback-form-questions">
                                             @if (old('old_data') != null)

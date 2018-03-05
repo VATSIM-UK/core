@@ -101,8 +101,4 @@ class Question extends Model
         return false;
     }
 
-    public function getSlugAttribute($value)
-    {
-        return substr($value, 0, -1);
-    }
 }

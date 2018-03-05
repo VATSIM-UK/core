@@ -1,27 +1,5 @@
 @extends('adm.layout')
 
-@section('styles')
-<style>
-    /* JQuery Sortable Styling */
-    body.dragging, body.dragging * {
-        cursor: move !important;
-    }
-
-    .dragged {
-        position: absolute;
-        opacity: 0.5;
-        z-index: 2000;
-    }
-    ol.simple_connected_list{
-        display: inline;
-    }
-
-    ol.simple_connected_list li {
-        list-style: none;
-    }
-</style>
-@endsection
-
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"
             integrity="sha384-mwD0+87SDVjJjyfTMQHNVV+IyWDM38MhzdCFZ+SRefmD75v+M5K0R3naFNLnZf1L"
@@ -73,13 +51,11 @@
                 // Quickly number the arrays
                 var count = 1;
                 $("#feedback-form-questions").children(".question-item").each(function () {
-                    console.log(count)
-                    console.log(this)
                     $(this).html($(this).html().replace(/template/g, count))
                     count = count + 1;
                 })
                 $('#old_data_input').val($('#feedback-form-questions').html())
-                //event.preventDefault()
+
             });
 
             // Detect change in input values so that they are preserved if form submission fails
@@ -105,6 +81,13 @@
             $("#feedback-form-questions").on("click", ".question-delete-button", function () {
                 $(this).closest('.question-item').remove();
             });
+
+            // Question accordion control
+            $("#feedback-form-questions").on( 'click', '.question-settings-control', function () {
+                $(this).closest('.box').children('.box-body').slideToggle()
+            });
+
+
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
@@ -131,10 +114,29 @@
                                 <div class="box-header">
                                     <h4 class="box-title" style="font-size:1.5em">
                                         Form Questions
-                                    </h4>
+                                    </h4></br>
+                                    <small><b>Note:</b> You do NOT need to add a 'userlookup' question if the form is targeted. It is added automatically</small>
                                 </div>
-                                <div class="box-body">
+                                <div class="box-body feedback-form-config">
                                     <div class="row">
+                                        @if ($form->targeted)
+                                          <div class="col-md-12 permanent question-item">
+                                            <div class="box">
+                                              <div class="box-header">
+                                                <div class="row">
+                                                  <div class="col-md-8">
+                                                    <div class="input-group">
+                                                      <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
+                                                      {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
+                                                      <span class="input-group-addon">(Permanent)</span>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        @endif
                                         <ol class='simple_connected_list' id="feedback-form-questions">
                                             @if (old('old_data') != null)
                                                 {!! old('old_data') !!}
@@ -143,7 +145,7 @@
                                                     $i = 1;
                                                 @endphp
                                                 @foreach ($current_questions as $question)
-                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => 'template'])
+                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => $i])
                                                     @php
                                                         $i++;
                                                     @endphp

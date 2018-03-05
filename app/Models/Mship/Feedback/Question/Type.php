@@ -40,6 +40,11 @@ class Type extends Model
      'requires_value' => 'boolean',
     ];
 
+    public function scopeFindByName($query, $name)
+    {
+      return $query->where('name', $name)->firstOrFail();
+    }
+
     public function questions()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
