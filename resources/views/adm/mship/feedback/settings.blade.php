@@ -1,32 +1,76 @@
 @extends('adm.layout')
 
-@section('styles')
-<style>
-    /* JQuery Sortable Styling */
-    body.dragging, body.dragging * {
-        cursor: move !important;
-    }
-
-    .dragged {
-        position: absolute;
-        opacity: 0.5;
-        z-index: 2000;
-    }
-    ol.simple_connected_list{
-        display: inline;
-    }
-
-    ol.simple_connected_list li {
-        list-style: none;
-    }
-</style>
+@section('content')
+    <div class="row">
+        {!! Form::open(["id" => "form-questions-form", "route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
+        {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h4 class="box-title" style="font-size:1.5em">
+                        Form Questions
+                    </h4>
+                    <br>
+                    <small><strong>Note:</strong>
+                        You do NOT need to add a 'userlookup' question if the form is targeted. This is added
+                        automatically.
+                    </small>
+                </div>
+                <div class="box-body feedback-form-config">
+                    @if ($form->targeted)
+                        <div class="permanent question-item">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
+                                {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
+                                <span class="input-group-addon">(Permanent)</span>
+                            </div>
+                        </div>
+                    @endif
+                    <ol class="simple_connected_list" id="feedback-form-questions">
+                        @if (old('old_data') != null)
+                            {!! old('old_data') !!}
+                        @else
+                            @for ($i = 0; $i < $current_questions->count(); $i++)
+                                @include('adm.mship.feedback._question', ['question' => $current_questions[$i], 'num' => $i+1])
+                            @endfor
+                        @endif
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h4 class="box-title">Form Controls</h4>
+                </div>
+                <div class="box-body text-center">
+                    {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
+                    {{ Form::close() }}<br><br>
+                    <div class="btn-group">
+                        <a class="btn{{ $form->enabled ? ' btn-danger' : ' btn-success' }}" style="color:white;"
+                           href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">{{ $form->enabled ? 'Disable' : 'Enable' }}
+                            Form</a>
+                        <a class="btn{{ $form->public ? ' btn-danger' : ' btn-success' }}" style="color:white;"
+                           href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make {{ $form->public ? 'Unlisted' : 'Listed' }}</a>
+                    </div>
+                    <div style="word-break: break-word;">
+                        Form Link:
+                        {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
+                    </div>
+                </div>
+            </div>
+            @include('adm.mship.feedback._types')
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"
             integrity="sha384-mwD0+87SDVjJjyfTMQHNVV+IyWDM38MhzdCFZ+SRefmD75v+M5K0R3naFNLnZf1L"
             crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js" integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"
+            integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i"
+            crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(function () {
             var count = $("#feedback-form-questions li").length;
@@ -73,13 +117,11 @@
                 // Quickly number the arrays
                 var count = 1;
                 $("#feedback-form-questions").children(".question-item").each(function () {
-                    console.log(count)
-                    console.log(this)
                     $(this).html($(this).html().replace(/template/g, count))
                     count = count + 1;
                 })
                 $('#old_data_input').val($('#feedback-form-questions').html())
-                //event.preventDefault()
+
             });
 
             // Detect change in input values so that they are preserved if form submission fails
@@ -105,112 +147,14 @@
             $("#feedback-form-questions").on("click", ".question-delete-button", function () {
                 $(this).closest('.question-item').remove();
             });
+
+            // Question accordion control
+            $("#feedback-form-questions").on('click', '.question-settings-control', function () {
+                $(this).closest('.box').children('.box-body').slideToggle()
+            });
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
         });
     </script>
 @endsection
-
-@section('content')
-    <!-- Main row -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title ">
-                        Customize the Feedback Form</br>
-                    </h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
-                        {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
-                        <div class="col-md-9">
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <h4 class="box-title" style="font-size:1.5em">
-                                        Form Questions
-                                    </h4>
-                                </div>
-                                <div class="box-body">
-                                    <div class="row">
-                                        <ol class='simple_connected_list' id="feedback-form-questions">
-                                            @if (old('old_data') != null)
-                                                {!! old('old_data') !!}
-                                            @else
-                                                @php
-                                                    $i = 1;
-                                                @endphp
-                                                @foreach ($current_questions as $question)
-                                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => 'template'])
-                                                    @php
-                                                        $i++;
-                                                    @endphp
-                                                @endforeach
-
-
-                                            @endif
-                                        </ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="box box-danger">
-                                        <div class="box-header">
-                                          <h4 class="box-title">Form Controls</h4>
-                                        </div>
-                                        <div class="box-body text-center">
-                                          <div class="col-md-12">
-                                            {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
-                                            {{ Form::close() }}</br></br>
-                                            <div class="btn-group">
-                                              @if($form->enabled)
-                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Disable Form</a>
-                                              @else
-                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Enable Form</a>
-                                              @endif
-                                              @if($form->public)
-                                                <a class="btn btn-danger" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Unlisted</a>
-                                              @else
-                                              <a class="btn btn-success" style="color:white;" href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make Listed</a>
-                                              @endif
-                                            </div>
-                                          </div>
-                                          <div class="col-md-12" style="word-break: break-word;">
-                                            Form Link: {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
-                                          </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @include('adm.mship.feedback._question', ['question' => $new_question, 'hideme' => true, 'num' => 'template'])
-                                <div class="col-md-12">
-                                    <div class="box box-warning">
-                                        <div class="box-header">
-                                            <h4 class="box-title" style="font-size:1.5em">
-                                                Input Types</br>
-                                                <small>Click and drag these types across</small>
-                                            </h4>
-                                        </div>
-                                        <div class="box-body">
-                                            <div class="row">
-                                                <ol class='simple_connected_list' id="question-types-box">
-                                                    @foreach ($question_types as $type)
-                                                        @include('adm.mship.feedback._type', ['type' => $type])
-                                                    @endforeach
-                                                </ol>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- /.row (main row) -->
-@stop

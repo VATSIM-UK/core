@@ -56,7 +56,7 @@
               </h3>
           </div><!-- /.box-header -->
           <div class="box-body">
-              <div class="col-md-3">
+              <div class="col-lg-2 col-md-6">
                 <b> Status:</b></br>
                 @if ($feedback->actioned_at)
                   {!! HTML::img("tick_mark_circle", "png", 24, 32) !!}
@@ -65,20 +65,20 @@
                 @endif
               </div>
               @if ($feedback->actioned_at)
-              <div class="col-md-3">
+              <div class="col-lg-3 col-md-6">
                 <b>Marked actioned at:</b></br>
                 {{ $feedback->actioned_at->format("d-m-Y H:i A") }}
               </div>
-              <div class="col-md-3">
+              <div class="col-lg-3 col-md-6">
                 <b>Marked actioned by:</b></br>
                 {{ $feedback->actioner->real_name }}
               </div>
                 @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
-                <div class="col-md-3">
-                  <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-danger']) }}</a>
+                <div class="col-lg-4 col-md-6">
+                  <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-block btn-danger', 'style' => 'font-size: 9pt;']) }}</a>
                 </div>
                 @endif
-              <div class="col-md-12">
+              <div class="col-lg-12 col-md-12">
                 <b>Actioned Comment:</b></br>
                 {{ $feedback->actioned_comment }}
               </div>

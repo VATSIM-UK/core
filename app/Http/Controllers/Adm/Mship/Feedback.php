@@ -16,6 +16,19 @@ use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
+    public function getListForms()
+    {
+      $forms = Form::orderBy('id', 'asc')->get();
+      $_account = $this->account;
+      $forms = $forms->filter(function ($form, $key) use ($_account) {
+          $hasWildcard = $_account->hasPermission("adm/mship/feedback/list/*") || $_account->hasPermission("adm/mship/feedback/configure/*");
+          $hasSpecific = $_account->hasPermission("adm/mship/feedback/list/".$form->slug) || $_account->hasPermission("adm/mship/feedback/configure/".$form->slug);
+          return $hasWildcard || $hasSpecific;
+      })->all();
+      return $this->viewMake('adm.mship.feedback.forms')
+          ->with('forms', $forms);
+    }
+
     public function getNewForm()
     {
         $question_types = Type::all();
@@ -93,7 +106,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
                 // We will update it instead
                 $exisiting_question->required = $question['required'];
-                $exisiting_question->slug = $question['slug'].$i;
+                $exisiting_question->slug = $question['slug'];
                 $exisiting_question->sequence = $i;
                 if (isset($question['options']['values'])) {
                     $question['options']['values'] = explode(',', $question['options']['values']);
@@ -359,6 +372,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         foreach ($conditions as $condition) {
             if ($condition) {
                 $feedback->markActioned(\Auth::user(), $request->input('comment'));
+                \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
 
                 return Redirect::back()
                               ->withSuccess('Feedback marked as actioned!');

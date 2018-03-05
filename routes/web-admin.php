@@ -70,6 +70,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         });
 
         Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
+            Route::get('', ['as' => 'forms', 'uses' => 'Feedback@getListForms']);
+
             Route::get('new', ['as' => 'new', 'uses' => 'Feedback@getNewForm']);
             Route::post('new', ['as' => 'new.create', 'uses' => 'Feedback@postNewForm']);
 
