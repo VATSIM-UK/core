@@ -34,19 +34,13 @@
                                 </div>
                             </div>
                         @endif
-                        <ol class='simple_connected_list' id="feedback-form-questions">
+                        <ol class="simple_connected_list" id="feedback-form-questions">
                             @if (old('old_data') != null)
                                 {!! old('old_data') !!}
                             @else
-                                @php
-                                    $i = 1;
-                                @endphp
-                                @foreach ($current_questions as $question)
-                                    @include('adm.mship.feedback._question', ['question' => $question, 'num' => $i])
-                                    @php
-                                        $i++;
-                                    @endphp
-                                @endforeach
+                                @for ($i = 0; $i < $current_questions->count(); $i++)
+                                    @include('adm.mship.feedback._question', ['question' => $current_questions[$i], 'num' => $i+1])
+                                @endfor
                             @endif
                         </ol>
                     </div>
