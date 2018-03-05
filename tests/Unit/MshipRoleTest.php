@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\BrowserKitTestCase;
 use Tests\TestCase;
 
 class MshipRoleTest extends TestCase
@@ -15,15 +14,15 @@ class MshipRoleTest extends TestCase
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
 
-        $this->assertDatabaseHas("mship_role", [
-            "id" => $role->id,
+        $this->assertDatabaseHas('mship_role', [
+            'id' => $role->id,
         ]);
     }
 
     /** @test * */
     public function itCorrectlyDeterminesIfThePasswordIsMandatory()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create(["password_mandatory" => true]);
+        $role = factory(\App\Models\Mship\Role::class)->create(['password_mandatory' => true]);
 
         $this->assertTrue($role->hasMandatoryPassword());
     }
@@ -31,7 +30,7 @@ class MshipRoleTest extends TestCase
     /** @test * */
     public function itCorrectlyDeterminesIfAPasswordLifetimeExists()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create(["password_lifetime" => 30]);
+        $role = factory(\App\Models\Mship\Role::class)->create(['password_lifetime' => 30]);
 
         $this->assertTrue($role->hasPasswordLifetime());
     }
@@ -39,20 +38,20 @@ class MshipRoleTest extends TestCase
     /** @test * */
     public function itCorrectlyDeterminesThatTheRoleHasASessionTimeout()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create(["session_timeout" => 60]);
+        $role = factory(\App\Models\Mship\Role::class)->create(['session_timeout' => 60]);
 
         $this->assertTrue($role->hasSessionTimeout());
 
-        $this->assertDatabaseHas("mship_role", [
-            "id"              => $role->id,
-            "session_timeout" => 60,
+        $this->assertDatabaseHas('mship_role', [
+            'id'              => $role->id,
+            'session_timeout' => 60,
         ]);
     }
 
     /** @test * */
     public function itCorrectlyLoadsTheDefaultRole()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create(["default" => true]);
+        $role = factory(\App\Models\Mship\Role::class)->create(['default' => true]);
 
         $defaultRole = \App\Models\Mship\Role::findDefault();
 
@@ -62,7 +61,7 @@ class MshipRoleTest extends TestCase
     /** @test * */
     public function itCorrectlyRemovesTheDefaultStatusFromTheOldDefaultRoleWhenCreatingANewDefaultRole()
     {
-        $roleOriginalDefault = factory(\App\Models\Mship\Role::class)->create(["default" => true]);
+        $roleOriginalDefault = factory(\App\Models\Mship\Role::class)->create(['default' => true]);
 
         $roleNewDefault = factory(\App\Models\Mship\Role::class)->create();
         $roleNewDefault->default = 1;
@@ -76,13 +75,13 @@ class MshipRoleTest extends TestCase
     public function itCorrectlyDeterminesThatThisRoleHasASpecificPermission()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
-        $permission = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
+        $permission = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
 
         $role->attachPermission($permission);
 
-        $this->assertDatabaseHas("mship_permission_role", [
-            "role_id"       => $role->id,
-            "permission_id" => $permission->id,
+        $this->assertDatabaseHas('mship_permission_role', [
+            'role_id'       => $role->id,
+            'permission_id' => $permission->id,
         ]);
 
         $this->assertTrue($role->fresh()->hasPermission($permission));
@@ -93,19 +92,19 @@ class MshipRoleTest extends TestCase
     public function itCorrectlyDeterminesThatThisRoleDoesNotHaveASpecificPermission()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
-        $permissionA = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
-        $permissionB = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/elsewhere"]);
+        $permissionA = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
+        $permissionB = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/elsewhere']);
 
         $role->attachPermission($permissionA);
 
-        $this->assertDatabaseHas("mship_permission_role", [
-            "role_id"       => $role->id,
-            "permission_id" => $permissionA->id,
+        $this->assertDatabaseHas('mship_permission_role', [
+            'role_id'       => $role->id,
+            'permission_id' => $permissionA->id,
         ]);
 
-        $this->assertDatabaseMissing("mship_permission_role", [
-            "role_id"       => $role->id,
-            "permission_id" => $permissionB->id,
+        $this->assertDatabaseMissing('mship_permission_role', [
+            'role_id'       => $role->id,
+            'permission_id' => $permissionB->id,
         ]);
 
         $this->assertTrue($role->fresh()->hasPermission($permissionA));
@@ -118,25 +117,25 @@ class MshipRoleTest extends TestCase
     public function itCorrectlyDeterminesThatThisRoleHasASpecificPermissionByAlphaOnlyName()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
-        $permission = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
+        $permission = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
 
         $role->attachPermission($permission);
 
-        $this->assertTrue($role->fresh()->hasPermission("adm/visittransfer/dashboard"));
+        $this->assertTrue($role->fresh()->hasPermission('adm/visittransfer/dashboard'));
     }
 
     /** @test */
     public function itCorrectlyDeterminesThatThisRoleDoesNotHaveASpecificPermissionByAlphaOnlyName()
     {
         $role = factory(\App\Models\Mship\Role::class)->create();
-        $permissionA = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/dashboard"]);
-        $permissionB = factory(\App\Models\Mship\Permission::class)->create(["name" => "adm/visit-transfer/elsewhere"]);
-        $permissionC = factory(\App\Models\Mship\Permission::class)->create(["name" => "teamspeak/idle-allowed"]);
+        $permissionA = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/dashboard']);
+        $permissionB = factory(\App\Models\Mship\Permission::class)->create(['name' => 'adm/visit-transfer/elsewhere']);
+        $permissionC = factory(\App\Models\Mship\Permission::class)->create(['name' => 'teamspeak/idle-allowed']);
 
         $role->attachPermission($permissionA);
 
-        $this->assertTrue($role->fresh()->hasPermission("adm/visittransfer/dashboard"));
-        $this->assertFalse($role->fresh()->hasPermission("adm/visittransfer/elsewhere"));
-        $this->assertFalse($role->fresh()->hasPermission("teamspeak/server-admin"));
+        $this->assertTrue($role->fresh()->hasPermission('adm/visittransfer/dashboard'));
+        $this->assertFalse($role->fresh()->hasPermission('adm/visittransfer/elsewhere'));
+        $this->assertFalse($role->fresh()->hasPermission('teamspeak/server-admin'));
     }
 }

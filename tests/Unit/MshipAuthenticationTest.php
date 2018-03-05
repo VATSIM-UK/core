@@ -6,9 +6,6 @@ use App\Models\Mship\Account;
 use Auth;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
-use Carbon\Carbon;
-use Mockery;
-use Tests\BrowserKitTestCase;
 use Tests\TestCase;
 
 class MshipAuthenticationTest extends TestCase
@@ -35,9 +32,9 @@ class MshipAuthenticationTest extends TestCase
         parent::setUp();
         $this->authenticationInstance = new \App\Http\Controllers\Auth\LoginController();
         $this->account = factory(Account::class)->create([
-            "name_first" => "John",
-            "name_last" => "Doe",
-            "email" => "no-reply@vatsim.uk",
+            'name_first' => 'John',
+            'name_last' => 'Doe',
+            'email' => 'no-reply@vatsim.uk',
         ]);
         Session::flush();
     }

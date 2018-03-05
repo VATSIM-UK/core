@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm;
 
-use View;
-use Cache;
 use App\Models\Mship\Feedback\Form;
+use Cache;
+use View;
 
 class AdmController extends \App\Http\Controllers\BaseController
 {

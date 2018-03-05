@@ -13,14 +13,13 @@ function outputPosition($position, $all_positions)
             $output_string .= "<span class='label label-danger'>Vacant</span>";
         } else {
             foreach ($position->filledBy as $staff) {
-                $output_string .= $staff->name_first . ' ' . $staff->name_last;
+                $output_string .= $staff->name_first.' '.$staff->name_last;
             }
         }
         $output_string .= '</div>';
     }
 
     return $output_string;
-
 }
 
 ?>

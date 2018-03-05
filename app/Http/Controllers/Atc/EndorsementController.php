@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Atc;
 
 use Carbon\Carbon;
-use Redirect;
 use DB;
+use Redirect;
 
 class EndorsementController extends \App\Http\Controllers\BaseController
 {

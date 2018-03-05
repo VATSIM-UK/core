@@ -2,11 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Models\Messages\Thread\Participant;
 use App\Models\Messages\Thread\Post;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\BrowserKitTestCase;
 use Tests\TestCase;
 
 class MessageTest extends TestCase
@@ -22,12 +20,12 @@ class MessageTest extends TestCase
         $this->thread = factory(\App\Models\Messages\Thread::class)->create();
         factory(Account::class, 2)
             ->create()
-            ->each(function($participant) {
+            ->each(function ($participant) {
                 $this->thread->participants()->save($participant);
             });
         factory(Post::class, 2)
             ->make()
-            ->each(function($post) {
+            ->each(function ($post) {
                 $this->thread->posts()->save($post);
             });
     }

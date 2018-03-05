@@ -9,10 +9,10 @@ use App\Events\VisitTransfer\ReferenceRejected;
 use App\Events\VisitTransfer\ReferenceUnderReview;
 use App\Exceptions\VisitTransfer\Reference\ReferenceAlreadySubmittedException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Sys\Token;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 

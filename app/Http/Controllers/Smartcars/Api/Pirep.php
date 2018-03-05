@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Input;
-use App\Models\Smartcars\Bid;
-use App\Models\Smartcars\Airport;
-use App\Models\Smartcars\Aircraft;
 use App\Http\Controllers\Adm\AdmController;
+use App\Models\Smartcars\Aircraft;
+use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Pirep as PirepData;
+use Input;
 
 class Pirep extends AdmController
 {

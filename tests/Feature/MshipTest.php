@@ -4,13 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\Sys\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\BrowserKitTestCase;
 use Tests\TestCase;
 
 class MshipTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
     public function testItLoadsSuccessfully()
     {
         $response = $this->get('/');

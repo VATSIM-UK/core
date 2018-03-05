@@ -54,7 +54,7 @@ class Qualification extends Model
 
     public static function parseVatsimATCQualification($network)
     {
-        $network = intval($network);
+        $network = (int) $network;
         if ($network < 1) {
             return;
         } elseif ($network >= 8 and $network <= 10) {
