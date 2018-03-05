@@ -83,6 +83,11 @@
             $("#feedback-form-questions").on("click", ".question-delete-button", function () {
                 $(this).closest('.question-item').remove();
             });
+
+            // Question accordion control
+            $("#feedback-form-questions").on('click', '.question-settings-control', function () {
+                $(this).closest('.box').children('.box-body').slideToggle()
+            });
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
