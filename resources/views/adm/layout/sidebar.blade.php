@@ -148,10 +148,7 @@
                 <li class="treeview {{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
                     <a href="#">
                         <i class="ion ion-help"></i> <span>Member Feedback</span>
-                        @if (isset($_unactioned_feedback))
-                          <small class="badge bg-green">{{$_unactioned_feedback}} new</small>
-                        @endif
-                        <i class="fa fa-angle-left"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
                        @if($_account->hasPermission("adm/mship/feedback/list/*"))
