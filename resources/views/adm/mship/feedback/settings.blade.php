@@ -9,9 +9,11 @@
                 <div class="box-header">
                     <h4 class="box-title" style="font-size:1.5em">
                         Form Questions
-                    </h4><br>
-                    <small><b>Note:</b> You do NOT need to add a 'userlookup' question if the form is targeted.
-                        It is added automatically
+                    </h4>
+                    <br>
+                    <small><strong>Note:</strong>
+                        You do NOT need to add a 'userlookup' question if the form is targeted. This is added
+                        automatically.
                     </small>
                 </div>
                 <div class="box-body feedback-form-config">
@@ -57,20 +59,7 @@
                     </div>
                 </div>
             </div>
-            @include('adm.mship.feedback._question', ['question' => $new_question, 'hideme' => true, 'num' => 'template'])
-            <div class="box box-warning">
-                <div class="box-header">
-                    <h4 class="box-title" style="font-size:1.5em">
-                        Input Types<br>
-                        <small>Click and drag these types across</small>
-                    </h4>
-                </div>
-            </div>
-            <ol class="simple_connected_list" id="question-types-box" style="list-style: none; padding: 0;">
-                @foreach ($question_types as $type)
-                    @include('adm.mship.feedback._type', ['type' => $type])
-                @endforeach
-            </ol>
+            @include('adm.mship.feedback._types')
         </div>
     </div>
 @endsection
