@@ -18,14 +18,16 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
     public function getListForms()
     {
-      $forms = Form::orderBy('id', 'asc')->get();
-      $_account = $this->account;
-      $forms = $forms->filter(function ($form, $key) use ($_account) {
-          $hasWildcard = $_account->hasPermission("adm/mship/feedback/list/*") || $_account->hasPermission("adm/mship/feedback/configure/*");
-          $hasSpecific = $_account->hasPermission("adm/mship/feedback/list/".$form->slug) || $_account->hasPermission("adm/mship/feedback/configure/".$form->slug);
-          return $hasWildcard || $hasSpecific;
-      })->all();
-      return $this->viewMake('adm.mship.feedback.forms')
+        $forms = Form::orderBy('id', 'asc')->get();
+        $_account = $this->account;
+        $forms = $forms->filter(function ($form, $key) use ($_account) {
+            $hasWildcard = $_account->hasPermission('adm/mship/feedback/list/*') || $_account->hasPermission('adm/mship/feedback/configure/*');
+            $hasSpecific = $_account->hasPermission('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermission('adm/mship/feedback/configure/'.$form->slug);
+
+            return $hasWildcard || $hasSpecific;
+        })->all();
+
+        return $this->viewMake('adm.mship.feedback.forms')
           ->with('forms', $forms);
     }
 
