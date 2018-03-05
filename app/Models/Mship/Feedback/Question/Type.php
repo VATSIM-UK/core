@@ -42,7 +42,7 @@ class Type extends Model
 
     public function scopeFindByName($query, $name)
     {
-      return $query->where('name', $name)->firstOrFail();
+        return $query->where('name', $name)->firstOrFail();
     }
 
     public function questions()

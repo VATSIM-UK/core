@@ -14,7 +14,7 @@ class FeedbackSlugLengthAndPermission extends Migration
     public function up()
     {
         Schema::table('mship_feedback_questions', function (Blueprint $table) {
-          $table->string('slug')->change();
+            $table->string('slug')->change();
         });
 
         DB::table('mship_permission')->insert([
@@ -33,7 +33,7 @@ class FeedbackSlugLengthAndPermission extends Migration
     public function down()
     {
         Schema::table('mship_feedback_questions', function (Blueprint $table) {
-          $table->string('slug', 20)->change();
+            $table->string('slug', 20)->change();
         });
     }
 }

@@ -69,17 +69,16 @@ class NewFeedbackFormRequest extends Request
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-
             foreach ($this->input('question') as $question) {
-              // Ensure questions that require values have values supplied
-              if (Type::findByName($question['type'])->requires_value) {
-                if(isset($question['options']['values'])){
-                    if($question['options']['values'] != '' && count(explode(',', $question['options']['values'])) > 0){
-                      continue;
+                // Ensure questions that require values have values supplied
+                if (Type::findByName($question['type'])->requires_value) {
+                    if (isset($question['options']['values'])) {
+                        if ($question['options']['values'] != '' && count(explode(',', $question['options']['values'])) > 0) {
+                            continue;
+                        }
                     }
+                    $validator->errors()->add($question['name'], 'The question "'.$question['name'].'" requires values!');
                 }
-                $validator->errors()->add($question['name'], 'The question "'.$question['name'].'" requires values!');
-              }
             }
         });
     }
