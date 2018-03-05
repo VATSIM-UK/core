@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        {!! Form::open(["id" => "form-questions-form","route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
+        {!! Form::open(["id" => "form-questions-form", "route" => ["adm.mship.feedback.config.save", $form->slug]]) !!}
         {{ Form::hidden("old_data", "", ['id' => 'old_data_input'])}}
         <div class="col-md-9">
             <div class="box box-primary">
@@ -15,35 +15,24 @@
                     </small>
                 </div>
                 <div class="box-body feedback-form-config">
-                    <div class="row">
-                        @if ($form->targeted)
-                            <div class="col-md-12 permanent question-item">
-                                <div class="box">
-                                    <div class="box-header">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"
-                                                          id="question-name-addon"><b>Question</b></span>
-                                                    {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
-                                                    <span class="input-group-addon">(Permanent)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    @if ($form->targeted)
+                        <div class="permanent question-item">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
+                                {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
+                                <span class="input-group-addon">(Permanent)</span>
                             </div>
+                        </div>
+                    @endif
+                    <ol class="simple_connected_list" id="feedback-form-questions">
+                        @if (old('old_data') != null)
+                            {!! old('old_data') !!}
+                        @else
+                            @for ($i = 0; $i < $current_questions->count(); $i++)
+                                @include('adm.mship.feedback._question', ['question' => $current_questions[$i], 'num' => $i+1])
+                            @endfor
                         @endif
-                        <ol class="simple_connected_list" id="feedback-form-questions">
-                            @if (old('old_data') != null)
-                                {!! old('old_data') !!}
-                            @else
-                                @for ($i = 0; $i < $current_questions->count(); $i++)
-                                    @include('adm.mship.feedback._question', ['question' => $current_questions[$i], 'num' => $i+1])
-                                @endfor
-                            @endif
-                        </ol>
-                    </div>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -56,28 +45,15 @@
                     {{ Form::submit("Save Changes", ['class' => 'btn btn-success', 'style' => 'color:white;']) }}
                     {{ Form::close() }}<br><br>
                     <div class="btn-group">
-                        @if($form->enabled)
-                            <a class="btn btn-danger" style="color:white;"
-                               href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Disable
-                                Form</a>
-                        @else
-                            <a class="btn btn-success" style="color:white;"
-                               href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">Enable
-                                Form</a>
-                        @endif
-                        @if($form->public)
-                            <a class="btn btn-danger" style="color:white;"
-                               href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make
-                                Unlisted</a>
-                        @else
-                            <a class="btn btn-success" style="color:white;"
-                               href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make
-                                Listed</a>
-                        @endif
+                        <a class="btn{{ $form->enabled ? ' btn-danger' : ' btn-success' }}" style="color:white;"
+                           href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">{{ $form->enabled ? 'Disable' : 'Enable' }}
+                            Form</a>
+                        <a class="btn{{ $form->public ? ' btn-danger' : ' btn-success' }}" style="color:white;"
+                           href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make {{ $form->public ? 'Unlisted' : 'Listed' }}</a>
                     </div>
                     <div style="word-break: break-word;">
-                        Form
-                        Link: {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
+                        Form Link:
+                        {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
                     </div>
                 </div>
             </div>
@@ -187,8 +163,6 @@
             $("#feedback-form-questions").on('click', '.question-settings-control', function () {
                 $(this).closest('.box').children('.box-body').slideToggle()
             });
-
-
         });
         $(document).ready(function () {
             $('.datetimepickercustom').datetimepicker();
