@@ -89,14 +89,12 @@
                         <small>Click and drag these types across</small>
                     </h4>
                 </div>
-                <div class="box-body">
-                    <ol class='simple_connected_list' id="question-types-box">
-                        @foreach ($question_types as $type)
-                            @include('adm.mship.feedback._type', ['type' => $type])
-                        @endforeach
-                    </ol>
-                </div>
             </div>
+            <ol class="simple_connected_list" id="question-types-box" style="list-style: none; padding: 0;">
+                @foreach ($question_types as $type)
+                    @include('adm.mship.feedback._type', ['type' => $type])
+                @endforeach
+            </ol>
         </div>
     </div>
 @endsection
