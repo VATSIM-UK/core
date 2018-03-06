@@ -109,7 +109,8 @@ use Watson\Rememberable\Rememberable;
  * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[]
+ *     $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Pirep[] $pireps
@@ -122,7 +123,8 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[]
+ *     $visitTransferApplications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account onlyTrashed()
@@ -256,7 +258,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function messageThreads()
     {
         return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
-                    ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
+            ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
     }
 
     public function messagePosts()
@@ -267,13 +269,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function bansAsInstigator()
     {
         return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'banned_by')
-                    ->orderBy('created_at', 'DESC');
+            ->orderBy('created_at', 'DESC');
     }
 
     public function notes()
     {
         return $this->hasMany(\App\Models\Mship\Account\Note::class, 'account_id')
-                    ->orderBy('created_at', 'DESC');
+            ->orderBy('created_at', 'DESC');
     }
 
     public function noteWriter()
@@ -294,8 +296,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function roles()
     {
         return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
-                    ->with('permissions')
-                    ->withTimestamps();
+            ->with('permissions')
+            ->withTimestamps();
     }
 
     public function pireps()

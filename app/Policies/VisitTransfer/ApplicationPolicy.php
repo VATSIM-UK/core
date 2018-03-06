@@ -29,8 +29,8 @@ class ApplicationPolicy
 
         // If they currently HAVE an application open, then they are not authorised.
         $countCurrentApplications = $user->visitTransferApplications()
-                                         ->open()
-                                         ->count();
+            ->open()
+            ->count();
 
         if ($countCurrentApplications > 0) {
             return false;

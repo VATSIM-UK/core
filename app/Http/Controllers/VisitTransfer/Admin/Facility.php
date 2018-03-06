@@ -13,7 +13,7 @@ class Facility extends AdmController
         $faciilites = \App\Models\VisitTransfer\Facility::all();
 
         return $this->viewMake('visit-transfer.admin.facility.list')
-                    ->with('facilities', $faciilites);
+            ->with('facilities', $faciilites);
     }
 
     public function getCreate()
@@ -21,8 +21,8 @@ class Facility extends AdmController
         $emails = collect();
 
         return $this->viewMake('visit-transfer.admin.facility.create_or_update')
-                    ->with('facility', new \App\Models\VisitTransfer\Facility)
-                    ->with('emails', $emails);
+            ->with('facility', new \App\Models\VisitTransfer\Facility)
+            ->with('emails', $emails);
     }
 
     public function postCreate(FacilityCreateUpdateRequest $request)
@@ -37,8 +37,8 @@ class Facility extends AdmController
         $emails = $facility->emails()->get();
 
         return $this->viewMake('visit-transfer.admin.facility.create_or_update')
-                    ->with('facility', $facility)
-                    ->with('emails', $emails);
+            ->with('facility', $facility)
+            ->with('emails', $emails);
     }
 
     public function postUpdate(FacilityCreateUpdateRequest $request, \App\Models\VisitTransfer\Facility $facility)

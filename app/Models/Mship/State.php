@@ -70,7 +70,7 @@ class State extends \App\Models\Model
     public function account()
     {
         return $this->belongsToMany(Account::class, 'mship_account_state', 'state_id', 'account_id')
-                    ->withPivot(['region', 'division', 'start_at', 'end_at']);
+            ->withPivot(['region', 'division', 'start_at', 'end_at']);
     }
 
     public function setDivisionAttribute(array $division)

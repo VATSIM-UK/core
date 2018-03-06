@@ -74,7 +74,7 @@ class VisitTransferStatistics extends Command
 
         try {
             $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
-                                            ->count();
+                ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.total', $count);
 
@@ -96,7 +96,7 @@ class VisitTransferStatistics extends Command
 
         try {
             $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
-                                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
+                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_OPEN)->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.open', $count);
 
@@ -118,7 +118,7 @@ class VisitTransferStatistics extends Command
 
         try {
             $count = Application::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
-                                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
+                ->statusIn(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'visittransfer::applications.closed', $count);
 

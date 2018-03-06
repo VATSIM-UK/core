@@ -33,8 +33,8 @@ class Feedback extends \App\Http\Controllers\BaseController
         ]);
         if ($validator->fails()) {
             return Redirect::back()
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         return Redirect::route('mship.feedback.new.form', [$request->input('feedback_type')]);
@@ -115,15 +115,15 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             // Add the answer to the array, ready for inserting
             $answerdata[] = new Answer([
-              'question_id' => $question->id,
-              'response' => $request->input($question->slug),
+                'question_id' => $question->id,
+                'response' => $request->input($question->slug),
             ]);
         }
 
         $validator = Validator::make($request->all(), $ruleset, $errormessages);
         if ($validator->fails()) {
             return back()->withErrors($validator)
-                        ->withInput();
+                ->withInput();
         }
 
         $account = null;
@@ -135,7 +135,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         } else {
             // No one specified a user lookup field!
             return Redirect::route('mship.manage.dashboard')
-                    ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
+                ->withError("Sorry, we can't process your feedback at the moment. Please check back later.");
         }
 
         // Make new feedback
@@ -149,7 +149,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         event(new NewFeedbackEvent($feedback));
 
         return Redirect::route('mship.manage.dashboard')
-                ->withSuccess('Your feedback has been recorded. Thank you!');
+            ->withSuccess('Your feedback has been recorded. Thank you!');
     }
 
     public function getUserSearch($name, Request $request)
@@ -170,10 +170,10 @@ class Feedback extends \App\Http\Controllers\BaseController
             }
 
             $this->returnList->push(collect([
-            'cid' => $user->id,
-            'name' => $user->real_name,
-            'status' => $user->state,
-          ]));
+                'cid' => $user->id,
+                'name' => $user->real_name,
+                'status' => $user->state,
+            ]));
 
             return $user;
         });

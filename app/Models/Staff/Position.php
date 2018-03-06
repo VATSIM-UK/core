@@ -70,8 +70,8 @@ class Position extends Model
      * possible, a collection of all positions should be provided, especially
      * when making repeated calls to this function.
      *
-     * @param  \App\Models\Staff\Position                    $position
-     * @param  \Illuminate\Database\Eloquent\Collection  $all_positions
+     * @param  \App\Models\Staff\Position $position
+     * @param  \Illuminate\Database\Eloquent\Collection $all_positions
      * @return int
      */
     public static function totalParents($position, $all_positions = null)

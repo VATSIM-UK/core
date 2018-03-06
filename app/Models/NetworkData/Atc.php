@@ -178,13 +178,13 @@ class Atc extends Model
     {
         return $query->where(function ($subQuery) {
             return $subQuery->where('callsign', 'LIKE', 'EG%')
-                            ->orWhere('callsign', 'LIKE', "SCO\_%")
-                            ->orWhere('callsign', 'LIKE', "STC\_%")
-                            ->orWhere('callsign', 'LIKE', "LON\_%")
-                            ->orWhere('callsign', 'LIKE', "LTC\_%")
-                            ->orWhere('callsign', 'LIKE', 'EGGX%')
-                            ->orWhere('callsign', 'LIKE', 'EGTT%')
-                            ->orWhere('callsign', 'LIKE', 'EGPX%');
+                ->orWhere('callsign', 'LIKE', "SCO\_%")
+                ->orWhere('callsign', 'LIKE', "STC\_%")
+                ->orWhere('callsign', 'LIKE', "LON\_%")
+                ->orWhere('callsign', 'LIKE', "LTC\_%")
+                ->orWhere('callsign', 'LIKE', 'EGGX%')
+                ->orWhere('callsign', 'LIKE', 'EGTT%')
+                ->orWhere('callsign', 'LIKE', 'EGPX%');
         });
     }
 

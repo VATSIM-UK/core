@@ -66,13 +66,13 @@ class Management extends \App\Http\Controllers\BaseController
 
         if ($validator->fails()) {
             return Redirect::route('mship.manage.email.add')
-                           ->withError('You have entered an invalid email address.');
+                ->withError('You have entered an invalid email address.');
         }
 
         // Check they match!
         if (strcasecmp($email, $email2) != 0) {
             return Redirect::route('mship.manage.email.add')
-                           ->withError('Emails entered are different.  You need to enter the same email, twice.');
+                ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
         if (!$this->account->hasEmail($email)) {
@@ -83,7 +83,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return Redirect::route('mship.manage.dashboard')
-                       ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
+            ->withSuccess('Your new email ('.$email.') has been added successfully! You will be sent a verification link to activate this email address.');
     }
 
     public function getEmailDelete(AccountEmail $email)
@@ -94,8 +94,8 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return $this->viewMake('mship.management.email.delete')
-                    ->with('email', $email)
-                    ->with('assignments', $email->ssoEmails);
+            ->with('email', $email)
+            ->with('assignments', $email->ssoEmails);
     }
 
     public function postEmailDelete(AccountEmail $email)
@@ -109,7 +109,7 @@ class Management extends \App\Http\Controllers\BaseController
         $email->delete();
 
         return Redirect::route('mship.manage.dashboard')
-                       ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
+            ->withSuccess('Your secondary email ('.$email->email.') has been removed!');
     }
 
     public function getEmailAssignments()
@@ -146,9 +146,9 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         return $this->viewMake('mship.management.email.assignments')
-                    ->with('userPrimaryEmail', $userPrimaryEmail)
-                    ->with('userSecondaryVerified', $userVerifiedEmails)
-                    ->with('userMatrix', $userMatrix);
+            ->with('userPrimaryEmail', $userPrimaryEmail)
+            ->with('userSecondaryVerified', $userVerifiedEmails)
+            ->with('userMatrix', $userMatrix);
     }
 
     public function postEmailAssignments()

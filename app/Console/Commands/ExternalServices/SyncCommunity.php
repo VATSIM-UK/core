@@ -113,7 +113,7 @@ class SyncCommunity extends Command
             }
 
             $changesPending = $changeEmail || $changeName || $changeState || $changeCID
-                              || $changeARating || $changePRating || $changeBan;
+                || $changeARating || $changePRating || $changeBan;
 
             if ($verbose) {
                 $this->output->write(' // ID: '.$member_core->id);

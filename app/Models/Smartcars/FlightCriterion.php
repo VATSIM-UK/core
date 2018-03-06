@@ -25,9 +25,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereFlightId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion
+ *     whereMaxGroundspeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion
+ *     whereMinGroundspeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Latitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Longitude($value)
@@ -66,8 +68,8 @@ class FlightCriterion extends Model
      *
      * Based on https://github.com/substack/point-in-polygon/blob/master/index.js
      *
-     * @param float $latitude   The latitude of the point (vertical, y)
-     * @param float $longitude  The longitude of the point (horizontal, x)
+     * @param float $latitude The latitude of the point (vertical, y)
+     * @param float $longitude The longitude of the point (horizontal, x)
      * @return bool
      */
     public function hasPoint($latitude, $longitude)

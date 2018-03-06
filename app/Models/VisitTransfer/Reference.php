@@ -42,7 +42,8 @@ use Illuminate\Notifications\Notifiable;
  * @property-read mixed $status_string
  * @property-read mixed $token
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[]
+ *     $notifications
  * @property-read \App\Models\Sys\Token $tokens
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference draft()
@@ -275,11 +276,11 @@ class Reference extends Model
 
         $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n".'Applicant not known to referee';
         $note = $this->application->account->addNote(
-          Type::isShortCode('visittransfer')->first(),
-          $noteContent,
-          null,
-          $this
-      );
+            Type::isShortCode('visittransfer')->first(),
+            $noteContent,
+            null,
+            $this
+        );
         $this->notes()->save($note);
 
         event(new ReferenceCancelled($this));

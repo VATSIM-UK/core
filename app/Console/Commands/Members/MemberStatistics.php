@@ -98,7 +98,7 @@ class MemberStatistics extends Command
     {
         try {
             $membersCurrent = Account::where('created_at', '<=', $currentPeriod->toDateString().' 23:59:59')
-                                     ->count();
+                ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.current', $membersCurrent);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
@@ -114,9 +114,9 @@ class MemberStatistics extends Command
     {
         try {
             $divisionCreated = DB::table('mship_account_state')
-                                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
-                                 ->where('start_at', 'LIKE', $currentPeriod->toDateString().'%')
-                                 ->count();
+                ->where('state_id', '=', State::findByCode('DIVISION')->id)
+                ->where('start_at', 'LIKE', $currentPeriod->toDateString().'%')
+                ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.new', $divisionCreated);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
@@ -132,9 +132,9 @@ class MemberStatistics extends Command
     {
         try {
             $divisionCurrent = DB::table('mship_account_state')
-                                 ->where('state_id', '=', State::findByCode('DIVISION')->id)
-                                 ->where('start_at', '<=', $currentPeriod->toDateString().' 23:59:59')
-                                 ->count();
+                ->where('state_id', '=', State::findByCode('DIVISION')->id)
+                ->where('start_at', '<=', $currentPeriod->toDateString().' 23:59:59')
+                ->count();
             Statistic::setStatistic($currentPeriod->toDateString(), 'members.division.current', $divisionCurrent);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
