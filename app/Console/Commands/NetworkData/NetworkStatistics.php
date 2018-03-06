@@ -70,8 +70,8 @@ class NetworkStatistics extends Command
 
         try {
             $count = Atc::where('connected_at', 'LIKE', $currentPeriod->toDateString().' %')
-                                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
-                                ->count();
+                ->where('disconnected_at', 'LIKE', $currentPeriod->toDateString().' %')
+                ->count();
 
             Statistic::setStatistic($currentPeriod->toDateString(), 'networkdata::atc.global.total', $count);
 

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\VisitTransfer\Admin;
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\ReferenceAcceptRequest;
 use App\Http\Requests\VisitTransfer\ReferenceRejectRequest;
-use App\Models\Mship\Account;
-use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference as ReferenceModel;
 use Auth;
 use Input;
@@ -20,8 +18,8 @@ class Reference extends AdmController
         $scope = ($scope != null && in_array($scope, $permittedScope)) ? $scope : 'all';
 
         $references = ReferenceModel::with('application')
-                                    ->with('application.account')
-                                    ->with('account');
+            ->with('application.account')
+            ->with('account');
 
         switch ($scope) {
             case 'pending-submission':
@@ -52,7 +50,7 @@ class Reference extends AdmController
         $references = $references->paginate(50);
 
         return $this->viewMake('visit-transfer.admin.reference.list')
-                    ->with('references', $references);
+            ->with('references', $references);
     }
 
     public function postReject(ReferenceRejectRequest $request, ReferenceModel $reference)

@@ -18,13 +18,8 @@ trait HasBans
         );
     }
 
-    public function addBan(
-        Reason $banReason,
-        $banExtraReason = null,
-        $banNote = null,
-        $writerId = null,
-        $type = Ban::TYPE_LOCAL
-    ) {
+    public function addBan(Reason $banReason, $banExtraReason = null, $banNote = null, $writerId = null, $type = Ban::TYPE_LOCAL)
+    {
         if ($writerId == null) {
             $writerId = 0;
         } elseif (is_object($writerId)) {

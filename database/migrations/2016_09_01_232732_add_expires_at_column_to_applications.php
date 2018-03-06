@@ -17,10 +17,10 @@ class AddExpiresAtColumnToApplications extends Migration
         });
 
         DB::table('vt_application')
-          ->where('status', '=', 10)
-          ->update([
-              'expires_at' => DB::raw('DATE_ADD(`created_at`, INTERVAL 1 HOUR)'),
-          ]);
+            ->where('status', '=', 10)
+            ->update([
+                'expires_at' => DB::raw('DATE_ADD(`created_at`, INTERVAL 1 HOUR)'),
+            ]);
     }
 
     /**

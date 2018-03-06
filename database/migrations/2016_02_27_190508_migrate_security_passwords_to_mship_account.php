@@ -20,17 +20,17 @@ class MigrateSecurityPasswordsToMshipAccount extends Migration
         });
 
         $activePasswords = DB::table('mship_account_security')
-                             ->whereNull('deleted_at')
-                             ->get();
+            ->whereNull('deleted_at')
+            ->get();
 
         foreach ($activePasswords as $password) {
             DB::table('mship_account')
-              ->where('id', '=', $password->account_id)
-              ->update([
-                  'password' => $password->value,
-                  'password_set_at' => $password->created_at,
-                  'password_expires_at' => $password->expires_at,
-              ]);
+                ->where('id', '=', $password->account_id)
+                ->update([
+                    'password' => $password->value,
+                    'password_set_at' => $password->created_at,
+                    'password_expires_at' => $password->expires_at,
+                ]);
         }
 
         Schema::table('mship_role', function (Blueprint $table) {
@@ -82,9 +82,9 @@ class MigrateSecurityPasswordsToMshipAccount extends Migration
         ]);
 
         $passwords = DB::table('mship_account')
-                       ->select(['id', 'password', 'password_set_at', 'password_expires_at'])
-                       ->whereNotNull('password')
-                       ->get();
+            ->select(['id', 'password', 'password_set_at', 'password_expires_at'])
+            ->whereNotNull('password')
+            ->get();
 
         $defaultId = DB::table('mship_security')->where('default', '=', 1)->first()->security_id;
 

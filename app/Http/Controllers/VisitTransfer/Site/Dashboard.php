@@ -20,9 +20,9 @@ class Dashboard extends BaseController
         });
 
         return $this->viewMake('visit-transfer.site.dashboard')
-                    ->with('allApplications', $allApplications)
-                    ->with('currentVisitApplication', $currentVisitApplication)
-                    ->with('currentTransferApplication', $currentTransferApplication)
-                    ->with('pendingReferences', $pendingReferences);
+            ->with('allApplications', $allApplications)
+            ->with('currentVisitApplication', $currentVisitApplication)
+            ->with('currentTransferApplication', $currentTransferApplication)
+            ->with('pendingReferences', $pendingReferences);
     }
 }

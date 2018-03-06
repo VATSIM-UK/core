@@ -14,13 +14,13 @@ class Note extends AdmController
         $types = NoteType::orderBy('name', 'ASC')->get();
 
         return $this->viewMake('adm.mship.note.type.index')
-                    ->with('types', $types);
+            ->with('types', $types);
     }
 
     public function getTypeCreate()
     {
         return $this->viewMake('adm.mship.note.type.create_or_update')
-                    ->with('colourCodes', NoteType::getNoteColourCodes());
+            ->with('colourCodes', NoteType::getNoteColourCodes());
     }
 
     public function postTypeCreate(CreateEditNoteType $request)
@@ -40,8 +40,8 @@ class Note extends AdmController
         }
 
         return $this->viewMake('adm.mship.note.type.create_or_update')
-                    ->with('noteType', $noteType)
-                    ->with('colourCodes', NoteType::getNoteColourCodes());
+            ->with('noteType', $noteType)
+            ->with('colourCodes', NoteType::getNoteColourCodes());
     }
 
     public function postTypeUpdate(CreateEditNoteType $request, NoteType $noteType)

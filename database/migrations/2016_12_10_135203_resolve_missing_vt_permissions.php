@@ -12,37 +12,37 @@ class ResolveMissingVtPermissions extends Migration
     public function up()
     {
         DB::table('mship_permission')
-          ->where('name', '=', 'adm/visit-transfer/create')
-          ->update(['name' => 'adm/visit-transfer/facility/create']);
+            ->where('name', '=', 'adm/visit-transfer/create')
+            ->update(['name' => 'adm/visit-transfer/facility/create']);
 
         $checkPermission = DB::table('mship_permission')
-                             ->where('name', '=', 'adm/visit-transfer/facility/*/update')
-                             ->count() > 0;
+                ->where('name', '=', 'adm/visit-transfer/facility/*/update')
+                ->count() > 0;
         if ($checkPermission) {
             DB::table('mship_permission')
-              ->insert([
-                  [
-                      'name' => 'adm/visit-trasnfer/facility/*/update',
-                      'display_name' => 'Admin / Visit &amp; Transfer / Facility / Update',
-                      'created_at' => \Carbon\Carbon::now(),
-                      'updated_at' => \Carbon\Carbon::now(),
-                  ],
-              ]);
+                ->insert([
+                    [
+                        'name' => 'adm/visit-trasnfer/facility/*/update',
+                        'display_name' => 'Admin / Visit &amp; Transfer / Facility / Update',
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now(),
+                    ],
+                ]);
         }
 
         $checkPermission = DB::table('mship_permission')
-                             ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
-                             ->count() > 0;
+                ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
+                ->count() > 0;
         if ($checkPermission) {
             DB::table('mship_permission')
-              ->insert([
-                  [
-                      'name' => 'adm/visit-trasnfer/facility/*/check/met',
-                      'display_name' => 'Admin / Visit &amp; Transfer / Facility / Check / Met',
-                      'created_at' => \Carbon\Carbon::now(),
-                      'updated_at' => \Carbon\Carbon::now(),
-                  ],
-              ]);
+                ->insert([
+                    [
+                        'name' => 'adm/visit-trasnfer/facility/*/check/met',
+                        'display_name' => 'Admin / Visit &amp; Transfer / Facility / Check / Met',
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now(),
+                    ],
+                ]);
         }
     }
 
@@ -54,15 +54,15 @@ class ResolveMissingVtPermissions extends Migration
     public function down()
     {
         DB::table('mship_permission')
-          ->where('name', '=', 'adm/visit-transfer/facility/create')
-          ->update(['name' => 'adm/visit-transfer/create']);
+            ->where('name', '=', 'adm/visit-transfer/facility/create')
+            ->update(['name' => 'adm/visit-transfer/create']);
 
         DB::table('mship_permission')
-          ->where('name', '=', 'adm/visit-transfer/facility/*/update')
-          ->delete();
+            ->where('name', '=', 'adm/visit-transfer/facility/*/update')
+            ->delete();
 
         DB::table('mship_permission')
-          ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
-          ->delete();
+            ->where('name', '=', 'adm/visit-transfer/facility/*/check/met')
+            ->delete();
     }
 }

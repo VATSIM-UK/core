@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $groundspeed
  * @property int $distance_remaining
  * @property int $phase
- * @property string $time_departure
- * @property string $time_remaining
- * @property string $time_arrival
+ * @property string|null $time_departure
+ * @property string|null $time_remaining
+ * @property string|null $time_arrival
  * @property string $network
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at

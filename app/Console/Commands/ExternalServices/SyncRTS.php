@@ -41,10 +41,10 @@ class SyncRTS extends Command
         $members = DB::table("{$this->ctsDB}.members");
         if ($this->option('force')) {
             $members->where('cid', '=', $this->option('force'))
-                    ->where('deleted', '=', '0');
+                ->where('deleted', '=', '0');
         } else {
             $members->where('deleted', '=', '0')
-                    ->orderBy('cid');
+                ->orderBy('cid');
         }
 
         $members = $members->get();

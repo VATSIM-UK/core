@@ -14,8 +14,8 @@ class Staff extends \App\Http\Controllers\Adm\AdmController
         $this->expandPosition($positions->first(), $positions);
 
         return $this->viewMake('adm.mship.staff.index')
-                    ->with('positions', $positions)
-                    ->with('ordered_positions', $this->ordered_positions);
+            ->with('positions', $positions)
+            ->with('ordered_positions', $this->ordered_positions);
     }
 
     protected function expandPosition($position, $all_positions)

@@ -36,7 +36,7 @@ class Flight extends AdmController
 
         if (Input::get('mintime', '') != '' && Input::get('maxtime', '') != '') {
             $flights->where('flight_time', '>=', Input::get('mintime'))
-                    ->where('flight_time', '<=', Input::get('maxtime'));
+                ->where('flight_time', '<=', Input::get('maxtime'));
         }
 
         $flights = $flights->get();

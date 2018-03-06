@@ -214,7 +214,7 @@ class Facility extends Model
     {
         return $query->where(function ($query) {
             $query->where('training_spaces', '>', 0)
-                               ->orWhereNull('training_spaces');
+                ->orWhereNull('training_spaces');
         });
     }
 
@@ -245,8 +245,8 @@ class Facility extends Model
     private function guardAgainstDuplicateFacilityName($proposedName, $excludeCurrent = false)
     {
         if ($excludeCurrent && self::where('id', '!=', $excludeCurrent)
-                                       ->where('name', 'LIKE', $proposedName)
-                                       ->count() > 0
+                ->where('name', 'LIKE', $proposedName)
+                ->count() > 0
         ) {
             throw new DuplicateFacilityNameException($proposedName);
         }

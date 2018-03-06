@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $route
  * @property string $flight_time
  * @property int $landing_rate
- * @property string $comments
+ * @property string|null $comments
  * @property float $fuel_used
  * @property string $log
  * @property int $status

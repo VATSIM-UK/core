@@ -18,9 +18,9 @@ class Membership extends BaseController
         $groups = Group::notDefault()->inRandomOrder()->get();
 
         return $this->viewMake('community.site.membership.deploy')
-                    ->with('defaultGroup', $defaultGroup)
-                    ->with('isDefaultGroupMember', $defaultGroup->hasMember(\Auth::user()))
-                    ->with('groups', $groups);
+            ->with('defaultGroup', $defaultGroup)
+            ->with('isDefaultGroupMember', $defaultGroup->hasMember(\Auth::user()))
+            ->with('groups', $groups);
     }
 
     public function postDeploy(DeployToCommunityGroupRequest $request)

@@ -55,7 +55,7 @@ class Dashboard extends AdmController
         });
 
         return $this->viewMake('visit-transfer.admin.dashboard')
-                    ->with('statisticsRaw', $statisticsRaw)
-                    ->with('statisticsGraph', $statisticsGraph);
+            ->with('statisticsRaw', $statisticsRaw)
+            ->with('statisticsGraph', $statisticsGraph);
     }
 }

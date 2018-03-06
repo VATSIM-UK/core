@@ -10,10 +10,10 @@ class Feed extends BaseController
     public function getOnline()
     {
         $atcSessions = Atc::remember(2)
-                          ->online()
-                          ->onFrequency()
-                          ->isUK()
-                          ->get();
+            ->online()
+            ->onFrequency()
+            ->isUK()
+            ->get();
 
         return response()->json($atcSessions->toArray());
     }

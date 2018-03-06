@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Contact|null $contact
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Feedback[] $feedback
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Question[] $questions
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Feedback\Form onlyTrashed()

@@ -18,11 +18,11 @@ class FeedbackSlugLengthAndPermission extends Migration
         });
 
         DB::table('mship_permission')->insert([
-                'name' => 'adm/mship/feedback/new',
-                'display_name' => 'Admin / Membership / Feedback / Create Form',
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
-            ]);
+            'name' => 'adm/mship/feedback/new',
+            'display_name' => 'Admin / Membership / Feedback / Create Form',
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
     }
 
     /**

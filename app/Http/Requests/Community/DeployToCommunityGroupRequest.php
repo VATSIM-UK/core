@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Community;
 
-use App\Models\Community\Group;
 use App\Models\Community\Membership;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;

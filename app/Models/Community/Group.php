@@ -45,8 +45,8 @@ class Group extends Model
     public function accounts()
     {
         return $this->belongsToMany(\App\Models\Mship\Account::class, 'community_membership', 'group_id', 'account_id')
-                    ->withTimestamps()
-                    ->wherePivot('deleted_at', null);
+            ->withTimestamps()
+            ->wherePivot('deleted_at', null);
     }
 
     public static function scopeIsDefault($query)

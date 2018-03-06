@@ -39,9 +39,9 @@ class Application extends BaseController
         }
 
         return $this->viewMake('visit-transfer.site.application.terms')
-                    ->with('applicationType', $applicationType)
-                    ->with('trainingTeam', $trainingTeam)
-                    ->with('application', new \App\Models\VisitTransfer\Application);
+            ->with('applicationType', $applicationType)
+            ->with('trainingTeam', $trainingTeam)
+            ->with('application', new \App\Models\VisitTransfer\Application);
     }
 
     public function postStart(ApplicationStartRequest $request)
@@ -93,8 +93,8 @@ class Application extends BaseController
         $this->authorize('select-facility', $this->getCurrentOpenApplicationForUser());
 
         return $this->viewMake('visit-transfer.site.application.facility')
-                    ->with('application', $this->getCurrentOpenApplicationForUser())
-                    ->with('facilities', $this->getCurrentOpenApplicationForUser()->potential_facilities);
+            ->with('application', $this->getCurrentOpenApplicationForUser())
+            ->with('facilities', $this->getCurrentOpenApplicationForUser()->potential_facilities);
     }
 
     public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
@@ -105,14 +105,14 @@ class Application extends BaseController
 
         if ($validator->fails()) {
             return Redirect::back()
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
         $facility = Facility::findByPublicID(Request::input('facility-code'));
         if (!$facility) {
             return Redirect::back()
-                    ->withError('That facility code is invalid.')
-                    ->withInput();
+                ->withError('That facility code is invalid.')
+                ->withInput();
         }
 
         try {
@@ -142,7 +142,7 @@ class Application extends BaseController
         $application->load('facility');
 
         return $this->viewMake('visit-transfer.site.application.statement')
-                    ->with('application', $application);
+            ->with('application', $application);
     }
 
     public function postStatement(ApplicationStatementSubmitRequest $request, \App\Models\VisitTransfer\Application $application)
@@ -163,7 +163,7 @@ class Application extends BaseController
         $application->load('referees.account');
 
         return $this->viewMake('visit-transfer.site.application.referees')
-                    ->with('application', $application);
+            ->with('application', $application);
     }
 
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
@@ -174,8 +174,8 @@ class Application extends BaseController
         try {
             if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
                 return Redirect::back()
-                                ->withError('Your referee must be in your home region.')
-                                ->withInput();
+                    ->withError('Your referee must be in your home region.')
+                    ->withInput();
             }
         } catch (ErrorException $e) {
             // If we don't have this data, we shouldn't penalise the applicant at this point.
@@ -212,7 +212,7 @@ class Application extends BaseController
         $this->authorize('submit-application', $application);
 
         return $this->viewMake('visit-transfer.site.application.submission')
-                    ->with('application', $application);
+            ->with('application', $application);
     }
 
     public function postSubmit(ApplicationSubmitRequest $request, \App\Models\VisitTransfer\Application $application)
@@ -231,7 +231,7 @@ class Application extends BaseController
         $this->authorize('withdraw-application', $application);
 
         return $this->viewMake('visit-transfer.site.application.withdraw')
-                    ->with('application', $application);
+            ->with('application', $application);
     }
 
     public function postWithdraw(ApplicationWithdrawRequest $request, \App\Models\VisitTransfer\Application $application)
@@ -252,7 +252,7 @@ class Application extends BaseController
         $application->load('facility')->load('referees.account');
 
         return $this->viewMake('visit-transfer.site.application.view')
-                    ->with('application', $application);
+            ->with('application', $application);
     }
 
     private function getCurrentOpenApplicationForUser()
