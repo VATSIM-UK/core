@@ -125,7 +125,7 @@ class ApplicationPolicy
 
     public function withdrawApplication(Account $user, Application $application)
     {
-        if (!$application->is_in_progress) {
+        if (!$application->is_editable) {
             return false;
         }
 

@@ -800,7 +800,7 @@ class Application extends Model
 
     private function guardAgainstInvalidWithdrawal()
     {
-        if ($this->is_in_progress) {
+        if ($this->is_editable) {
             return;
         }
 
