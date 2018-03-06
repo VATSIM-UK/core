@@ -165,6 +165,7 @@ class Application extends Model
 
     public static $APPLICATION_IS_CONSIDERED_EDITABLE = [
         self::STATUS_IN_PROGRESS,
+        self::STATUS_SUBMITTED,
     ];
 
     public static $APPLICATION_IS_CONSIDERED_OPEN = [
