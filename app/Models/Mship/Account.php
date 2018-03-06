@@ -107,10 +107,10 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
  * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Pilot[] $networkDataPilot
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[]
- *     $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $oAuthClients
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $oAuthTokens
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\Pirep[] $pireps
@@ -123,8 +123,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\State[] $statesHistory
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TeamSpeak\Registration[] $teamspeakRegistrations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Token[] $tokens
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[]
- *     $visitTransferApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Application[] $visitTransferApplications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VisitTransfer\Reference[] $visitTransferReferee
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Mship\Account onlyTrashed()

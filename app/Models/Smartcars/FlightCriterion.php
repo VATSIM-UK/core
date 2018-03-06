@@ -25,11 +25,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereFlightId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion
- *     whereMaxGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMaxGroundspeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinAltitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion
- *     whereMinGroundspeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereMinGroundspeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Latitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\FlightCriterion whereP1Longitude($value)

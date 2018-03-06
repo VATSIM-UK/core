@@ -27,10 +27,10 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $reference
  * @property int $status
  * @property string|null $status_note
- * @property string|null $contacted_at
- * @property string|null $reminded_at
- * @property string|null $submitted_at
- * @property string|null $deleted_at
+ * @property \Carbon\Carbon|null $contacted_at
+ * @property \Carbon\Carbon|null $reminded_at
+ * @property \Carbon\Carbon|null $submitted_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\VisitTransfer\Application $application
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
@@ -42,8 +42,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read mixed $status_string
  * @property-read mixed $token
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[]
- *     $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Sys\Token $tokens
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Reference draft()

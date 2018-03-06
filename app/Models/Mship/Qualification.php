@@ -16,6 +16,12 @@ use App\Models\Model;
  * @property int $vatsim
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account[] $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read mixed $is_c1
+ * @property-read mixed $is_c3
+ * @property-read mixed $is_o_b_s
+ * @property-read mixed $is_s1
+ * @property-read mixed $is_s2
+ * @property-read mixed $is_s3
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification networkValue($networkValue)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification ofType($type)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Qualification whereCode($value)

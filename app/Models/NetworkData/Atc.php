@@ -29,6 +29,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read mixed $account_name
+ * @property-read mixed $human_duration
  * @property-read mixed $is_online
  * @property-read string $public_id
  * @property-read mixed $type
@@ -56,6 +57,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereQualificationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsign($callsign)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
  * @mixin \Eloquent

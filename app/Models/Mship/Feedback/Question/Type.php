@@ -15,12 +15,12 @@ use App\Models\Model;
  * @property bool $requires_value
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Feedback\Question[] $questions
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type findByName($name)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereMaxUses($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type
- *     whereRequiresValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRequiresValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Question\Type whereRules($value)
  * @mixin \Eloquent
  */
