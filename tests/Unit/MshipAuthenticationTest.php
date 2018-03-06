@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use Auth;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
@@ -61,7 +60,7 @@ class MshipAuthenticationTest extends TestCase
         $this->assertInstanceOf(\App\Http\Controllers\Auth\LoginController::class, $this->authenticationInstance);
     }
 
-    /** @test **/
+    /** @test */
     public function itRedirectsToLoginIfNoAuth()
     {
         // In this test, we assert that we're getting a redirect to the login page if no auth at all
