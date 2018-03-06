@@ -20,7 +20,6 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Flight Training Exercises
                 </div>
                 <div class="panel-body">
-                    <div class="">
                         Fancy something different? VATSIM UK is proud to announce the launch of Flight Training Exercises –
                         the new
                         way to learn and have fun!<br/><br/>
@@ -29,7 +28,6 @@
                         To get started check out {!! link_to_route('fte.guide', 'our guide here') !!}.<br/><br/>
                         If you have any questions please contact the Pilot Training Department via the Helpdesk
                         ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).
-                    </div>
                 </div>
             </div>
         </div>
