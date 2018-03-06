@@ -70,6 +70,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $is_submitted
  * @property-read mixed $is_transfer
  * @property-read mixed $is_under_review
+ * @property-read mixed $is_withdrawable
  * @property-read mixed $is_visit
  * @property-read mixed $number_references_required_relative
  * @property-read mixed $potential_facilities
@@ -165,7 +166,6 @@ class Application extends Model
 
     public static $APPLICATION_IS_CONSIDERED_EDITABLE = [
         self::STATUS_IN_PROGRESS,
-        self::STATUS_SUBMITTED,
     ];
 
     public static $APPLICATION_IS_CONSIDERED_OPEN = [
@@ -186,6 +186,11 @@ class Application extends Model
 
     public static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
+    ];
+
+    public static $APPLICATION_IS_CONSIDERED_WITHDRAWABLE = [
+        self::STATUS_IN_PROGRESS,
+        self::STATUS_SUBMITTED,
     ];
 
     public function __construct(array $attributes = [])
@@ -328,6 +333,11 @@ class Application extends Model
     public function getIsClosedAttribute()
     {
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_CLOSED);
+    }
+
+    public function getIsWithdrawableAttribute()
+    {
+        return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_WITHDRAWABLE);
     }
 
     public function getIsInProgressAttribute()
@@ -800,7 +810,7 @@ class Application extends Model
 
     private function guardAgainstInvalidWithdrawal()
     {
-        if ($this->is_editable) {
+        if ($this->is_withdrawable) {
             return;
         }
 
