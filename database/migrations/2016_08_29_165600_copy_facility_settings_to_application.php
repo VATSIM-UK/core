@@ -26,14 +26,14 @@ class CopyFacilitySettingsToApplication extends Migration
                 $facility = DB::table('vt_facility')->where('id', '=', $application->facility_id)->first();
 
                 DB::table('vt_application')
-                  ->where('id', '=', $application->id)
-                  ->update([
-                    'training_required' => $facility->training_required,
-                    'statement_required' => $facility->stage_statement_enabled,
-                    'references_required' => ($facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0),
-                    'should_perform_checks' => $facility->stage_checks,
-                    'will_auto_accept' => $facility->auto_acceptance,
-                  ]);
+                    ->where('id', '=', $application->id)
+                    ->update([
+                        'training_required' => $facility->training_required,
+                        'statement_required' => $facility->stage_statement_enabled,
+                        'references_required' => ($facility->stage_reference_enabled ? $facility->stage_reference_quantity : 0),
+                        'should_perform_checks' => $facility->stage_checks,
+                        'will_auto_accept' => $facility->auto_acceptance,
+                    ]);
             }
         });
     }
