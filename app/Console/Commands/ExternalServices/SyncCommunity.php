@@ -99,7 +99,7 @@ class SyncCommunity extends Command
             $pBanned = $member_core->is_banned;
 
             // Community Groups
-            $groups = $member_core->communityGroups()->notDefault()->get('name');
+            $groups = $member_core->communityGroups()->notDefault()->get(['name']);
 
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
@@ -169,7 +169,6 @@ class SyncCommunity extends Command
 
             // Load & Map IPB Groups
             $ips_clubs = \IPS\Db::i()->select( 'id,name', 'core_clubs');
-            $member_clubs = $ips_member->clubs();
             $club_map = [];
             for ($i = 0; $i < $ips_clubs->total(); $i++) {
               $ips_clubs->next();
@@ -177,16 +176,32 @@ class SyncCommunity extends Command
               $club_map[$club['id']] = $club['name'];
             }
 
+            // Proccess core group membership.
             foreach ($groups as $group) {
               $ips_club_id = array_search($group->name, $club_map);
               if($ips_club_id !== FALSE){
-                // Check if the user is already in it
-                if(array_search($ips_club_id, array_column($member_clubs, 'club_id')) === FALSE){
-                  $club = \IPS\Member\Club::load($ips_club_id);
+                $club = \IPS\Member\Club::load($ips_club_id);
+
+                // Only add the user if not in already
+                if($club->memberStatus($ips_member) === NULL){
                   $club->addMember($ips_member);
                 }
               }
             }
+
+            // Proccess member's IPB-side Club membership.
+            foreach ($ips_member->clubs() as $ips_member_club) {
+              $name = $club_map[$ips_member_club['club_id']];
+
+              if(!$groups->pluck('name')->search($name)){
+                $club = \IPS\Member\Club::load($ips_member_club['club_id']);
+                if($ips_member_club['status'] != \IPS\Member\Club::STATUS_MODERATOR || $ips_member_club['status'] != \IPS\Member\Club::STATUS_LEADER){
+                  $club->removeMember($ips_member);
+                }
+              }
+            }
+
+
 
         }
 
