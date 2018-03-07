@@ -182,14 +182,8 @@ class SyncCommunity extends Command
               if($ips_club_id !== FALSE){
                 // Check if the user is already in it
                 if(array_search($ips_club_id, array_column($member_clubs, 'club_id')) === FALSE){
-                  \IPS\Db::i()->insert( 'core_clubs_memberships', array(
-            				'club_id'	=> $ips_club_id,
-            				'member_id'	=> $ips_member['id'],
-            				'joined'	=> time(),
-            				'status'	=> 'member',
-            				'added_by'	=> NULL,
-            				'invited_by'=> NULL
-            			) );
+                  $club = \IPS\Member\Club::load($ips_club_id);
+                  $club->addMember($ips_member);
                 }
               }
             }
