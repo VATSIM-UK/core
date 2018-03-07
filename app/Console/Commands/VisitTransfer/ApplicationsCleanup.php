@@ -5,6 +5,7 @@ namespace App\Console\Commands\VisitTransfer;
 use App\Console\Commands\Command;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 use App\Models\VisitTransfer\Application;
+use Carbon\Carbon;
 
 class ApplicationsCleanup extends Command
 {
@@ -47,6 +48,20 @@ class ApplicationsCleanup extends Command
                 try {
                     $application->expire();
                 } catch (ApplicationCannotBeExpiredException $e) {
+                    continue;
+                }
+            }
+        }
+
+        /* @var Application[] $applications */
+        $applications = Application::status(Application::STATUS_SUBMITTED)
+            ->where('references_required', '!=', 0)
+            ->with('referees')
+            ->get();
+        foreach ($applications as $application) {
+            foreach ($application->referees as $referee) {
+                if (!$referee->is_submitted && $referee->contacted_at->addDays(14)->lt(new Carbon)) {
+                    $application->lapse();
                     continue;
                 }
             }

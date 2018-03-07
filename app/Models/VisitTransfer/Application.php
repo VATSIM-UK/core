@@ -547,6 +547,24 @@ class Application extends Model
         }
     }
 
+    public function lapse()
+    {
+        $this->status = self::STATUS_LAPSED;
+        $this->save();
+
+        if ($this->facility) {
+            $this->facility->addTrainingSpace();
+        }
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
+        }
+
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
+    }
+
     public function submit()
     {
         $this->guardAgainstInvalidSubmission();
