@@ -39,6 +39,7 @@ class SyncCommunity extends Command
 
         require_once config('services.community.init_file');
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
+        require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select(
@@ -97,6 +98,9 @@ class SyncCommunity extends Command
             $pRatingString = $member_core->qualifications_pilot_string;
             $pBanned = $member_core->is_banned;
 
+            // Community Groups
+            $groups = $member_core->communityGroups()->notDefault()->get('name');
+
             // Check for changes
             $changeEmail = strcasecmp($member['email'], $email);
             $changeName = strcmp($member['name'], $member_core->name_first.' '.$member_core->name_last);
@@ -122,12 +126,14 @@ class SyncCommunity extends Command
                 $this->output->write(' // State: '.$state.($changeState ? '(changed)' : ''));
                 $this->output->write(' // ATC rating: '.$aRatingString);
                 $this->output->write(' // Pilot ratings: '.$pRatingString);
+                $this->output->write(' // Community groups: '.$groups->implode('name', ','));
             }
+
+            $ips_member = \IPS\Member::load($member['member_id']);
 
             if ($changesPending) {
                 try {
                     // ActiveRecord / Member fields
-                    $ips_member = \IPS\Member::load($member['member_id']);
                     $ips_member->name = $member_core->name_first.' '.$member_core->name_last;
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
@@ -158,6 +164,36 @@ class SyncCommunity extends Command
             } elseif ($verbose) {
                 $this->output->writeln(' // No changes required.');
             }
+
+            // Sync Community Group
+
+            // Load & Map IPB Groups
+            $ips_clubs = \IPS\Db::i()->select( 'id,name', 'core_clubs');
+            $member_clubs = $ips_member->clubs();
+            $club_map = [];
+            for ($i = 0; $i < $ips_clubs->total(); $i++) {
+              $ips_clubs->next();
+              $club = $ips_clubs->current();
+              $club_map[$club['id']] = $club['name'];
+            }
+
+            foreach ($groups as $group) {
+              $ips_club_id = array_search($group->name, $club_map);
+              if($ips_club_id !== FALSE){
+                // Check if the user is already in it
+                if(array_search($ips_club_id, array_column($member_clubs, 'club_id')) === FALSE){
+                  \IPS\Db::i()->insert( 'core_clubs_memberships', array(
+            				'club_id'	=> $ips_club_id,
+            				'member_id'	=> $ips_member['id'],
+            				'joined'	=> time(),
+            				'status'	=> 'member',
+            				'added_by'	=> NULL,
+            				'invited_by'=> NULL
+            			) );
+                }
+              }
+            }
+
         }
 
         if ($verbose) {
