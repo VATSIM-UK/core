@@ -476,7 +476,7 @@ class Application extends Model
 
     public function isStatusIn($stati)
     {
-        return in_array($this->attributes['status'], $stati);
+        return in_array($this->status, $stati);
     }
 
     public function isStatusNotIn($stati)
