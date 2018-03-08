@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Input;
-use App\Models\Mship\Account;
-use App\Models\Smartcars\Airport;
-use App\Models\Smartcars\Aircraft;
 use App\Http\Controllers\Adm\AdmController;
+use App\Models\Mship\Account;
+use App\Models\Smartcars\Aircraft;
+use App\Models\Smartcars\Airport;
+use Input;
 
 class Data extends AdmController
 {

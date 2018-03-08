@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
 use App\Http\Controllers\Adm\AdmController as Controller;
-use App\Models\Smartcars\FlightResource;
 use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\FlightResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

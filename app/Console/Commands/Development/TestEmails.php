@@ -22,8 +22,8 @@ use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use App\Notifications\Mship\EmailVerification;
 use App\Notifications\Mship\FeedbackReceived;
-use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\Mship\ForgottenPasswordLink;
+use App\Notifications\Mship\S1TrainingOpportunities;
 use App\Notifications\Mship\SlackInvitation;
 use App\Notifications\Mship\WelcomeMember;
 

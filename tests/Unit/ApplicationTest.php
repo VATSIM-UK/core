@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;

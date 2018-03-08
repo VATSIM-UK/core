@@ -78,12 +78,12 @@ Route::get('user', function (\Illuminate\Http\Request $request) {
     $return['account_state'] = $account->states;
     $return['account_state_current'] = $account->primary_state->name;
     $return['account_status'] = $account->status;
-    $return['is_invisible'] = boolval($account->is_invisible);
+    $return['is_invisible'] = (bool) ($account->is_invisible);
 
-    $return['is_banned'] = boolval($account->is_banned);
+    $return['is_banned'] = (bool) ($account->is_banned);
     $return['ban_info'] = ($account->is_banned ? $account->bans->first() : null);
 
-    $return['is_inactive'] = boolval($account->is_inactive);
+    $return['is_inactive'] = (bool) ($account->is_inactive);
     $return['experience'] = $account->experience;
     $return['reg_date'] = $account->joined_at->toDateTimeString();
     $return['impersonation'] = Session::get('auth_override', false);

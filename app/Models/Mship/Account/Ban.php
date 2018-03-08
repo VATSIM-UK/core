@@ -168,7 +168,7 @@ class Ban extends Model
     public function getPeriodAmountStringAttribute()
     {
         if (!$this->period_finish) {
-            return null;
+            return;
         }
 
         return human_diff_string($this->period_start, $this->period_finish);
@@ -177,7 +177,7 @@ class Ban extends Model
     public function getPeriodLeftAttribute()
     {
         if (!$this->period_finish) {
-            return null;
+            return;
         }
 
         return Carbon::now()->diffInSeconds($this->period_finish, true);

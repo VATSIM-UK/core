@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Tests\BrowserKitTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
