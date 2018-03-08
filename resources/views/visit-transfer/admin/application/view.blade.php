@@ -60,7 +60,11 @@
                                 <tr>
                                     <th class="col-md-2">Current Rating</th>
                                     <td>
-                                        @include("mship.partials._qualification", ["qualification" => $application->account->qualification_atc])
+                                        @empty($application->account->qualification_atc)
+                                            Unknown ATC
+                                        @else
+                                            @include("mship.partials._qualification", ["qualification" => $application->account->qualification_atc])
+                                        @endempty
                                         /
                                         {{ $application->account->qualifications_pilot_string }}
                                     </td>
@@ -140,7 +144,11 @@
                                     <tr>
                                         <th>Referee Rating</th>
                                         <td>
-                                            @include("mship.partials._qualification", ["qualification" => $reference->account->qualification_atc])
+                                            @empty($reference->account->qualification_atc)
+                                                Unknown
+                                            @else
+                                                @include("mship.partials._qualification", ["qualification" => $reference->account->qualification_atc])
+                                            @endempty
                                         </td>
                                     </tr>
                                     <tr>
@@ -588,7 +596,8 @@
 
                         <p>
                             You must write a staff note detailing why you have completed the application.
-                            <strong class="text-danger">The member will not be provided a copy of this information</strong>.
+                            <strong class="text-danger">The member will not be provided a copy of this
+                                information</strong>.
                         </p>
 
                         <div class="form-group">

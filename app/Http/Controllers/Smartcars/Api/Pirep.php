@@ -23,7 +23,9 @@ class Pirep extends AdmController
                 return 'NONE';
             }
 
-            $pireps->where('departure_id', '=', $departure->id);
+            $pireps->whereHas('bid.flight', function ($query) use ($departure) {
+                $query->where('departure_id', $departure->id);
+            });
         }
 
         $arrival = Airport::findByIcao(Input::get('arrivalicao'));
@@ -32,10 +34,16 @@ class Pirep extends AdmController
                 return 'NONE';
             }
 
-            $pireps->where('arrival_id', '=', $arrival->id);
+            $pireps->whereHas('bid.flight', function ($query) use ($arrival) {
+                $query->where('arrival_id', $arrival->id);
+            });
         }
 
         $pireps = $pireps->get();
+
+        if ($pireps->isEmpty()) {
+            return 'NONE';
+        }
 
         $return = '';
         foreach ($pireps as $p) {

@@ -109,8 +109,8 @@ class Flight extends AdmController
         $posrep->altitude = Input::get('altitude');
         $posrep->heading_mag = Input::get('magneticheading');
         $posrep->heading_true = Input::get('trueheading');
-        $posrep->latitude = Input::get('latitude');
-        $posrep->longitude = Input::get('longitude');
+        $posrep->latitude = str_replace(',', '.', Input::get('latitude'));
+        $posrep->longitude = str_replace(',', '.', Input::get('longitude'));
         $posrep->groundspeed = Input::get('groundspeed');
         $posrep->distance_remaining = Input::get('distanceremaining');
         $posrep->phase = Input::get('phase');
