@@ -1,6 +1,6 @@
 <ul class="timeline">
 
-    <?php $date = ""; $colours = ['red', 'blue', 'green', 'orange', 'fuchsia', 'maroon']; ?>
+    <?php $date = ''; $colours = ['red', 'blue', 'green', 'orange', 'fuchsia', 'maroon']; ?>
 
     @foreach($activities as $activity)
         @if($date != \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $activity->created_at)->toFormattedDateString())

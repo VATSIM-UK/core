@@ -32,8 +32,6 @@ class FlightImage
         if ($image) {
             return new self($image);
         }
-
-        return null;
     }
 
     public function asset()

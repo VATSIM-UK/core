@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Input;
+use App\Http\Controllers\Adm\AdmController;
+use App\Models\Smartcars\Aircraft;
+use App\Models\Smartcars\Airport;
 use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Posrep;
-use App\Models\Smartcars\Airport;
-use App\Models\Smartcars\Aircraft;
-use App\Http\Controllers\Adm\AdmController;
+use Input;
 
 class Flight extends AdmController
 {

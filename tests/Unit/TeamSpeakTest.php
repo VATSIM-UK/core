@@ -5,17 +5,16 @@ namespace Tests\Unit;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\ServerGroup;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\BrowserKitTestCase;
 use Tests\TestCase;
 
 class TeamSpeakTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $channel, $channelGroups, $serverGroups;
+    protected $channel;
+    protected $channelGroups;
+    protected $serverGroups;
 
     public function setUp()
     {
@@ -33,9 +32,9 @@ class TeamSpeakTest extends TestCase
         $this->channelGroups = factory(\App\Models\TeamSpeak\ChannelGroup::class, 5)->create();
 
         $this->account = factory(\App\Models\Mship\Account::class)->create([
-            "name_first" => "John",
-            "name_last" => "Doe",
-            "email" => "i_sleep@gmail.com",
+            'name_first' => 'John',
+            'name_last' => 'Doe',
+            'email' => 'i_sleep@gmail.com',
         ]);
     }
 
@@ -101,27 +100,28 @@ class TeamSpeakTest extends TestCase
     public function testValidDisplayName()
     {
         $account = $this->account;
-        $validDisplayName = "John Doe";
+        $validDisplayName = 'John Doe';
         $this->assertEquals(true, $account->isValidDisplayName($validDisplayName));
     }
+
     public function testInvalidDisplayName()
     {
         $account = $this->account;
-        $invalidDisplayName = "John Do";
+        $invalidDisplayName = 'John Do';
         $this->assertEquals(false, $account->isValidDisplayName($invalidDisplayName));
     }
 
     public function testPartiallyValidDisplayName()
     {
         $account = $this->account;
-        $validDisplayName = "John Doe - EGKK_TWR";
+        $validDisplayName = 'John Doe - EGKK_TWR';
         $this->assertEquals(true, $account->isPartiallyValidDisplayName($validDisplayName));
     }
 
     public function testNotPartiallyValidDisplayName()
     {
         $account = $this->account;
-        $validDisplayName = "John Do - EGKK_TWR";
+        $validDisplayName = 'John Do - EGKK_TWR';
         $this->assertEquals(false, $account->isPartiallyValidDisplayName($validDisplayName));
     }
 

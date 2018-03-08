@@ -82,7 +82,7 @@ class FlightCriterion extends Model
         ];
 
         $inside = false;
-        for ($i = 0, $j = sizeof($vs) - 1; $i < sizeof($vs); $j = $i++) {
+        for ($i = 0, $j = count($vs) - 1; $i < count($vs); $j = $i++) {
             $xi = $vs[$i][0];
             $yi = $vs[$i][1];
             $xj = $vs[$j][0];

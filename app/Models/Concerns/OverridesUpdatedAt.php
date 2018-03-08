@@ -14,6 +14,5 @@ trait OverridesUpdatedAt
 
     public function getUpdatedAtColumn()
     {
-        return null;
     }
 }

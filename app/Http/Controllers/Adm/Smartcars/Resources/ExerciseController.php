@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
+use App\Http\Controllers\Adm\AdmController as Controller;
 use App\Models\Smartcars\Flight;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Adm\AdmController as Controller;
 use Storage;
 
 class ExerciseController extends Controller
