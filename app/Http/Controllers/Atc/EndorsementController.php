@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Atc;
 
-use Carbon\Carbon;
 use DB;
 use Redirect;
+use Carbon\Carbon;
+use App\Models\Atc\Endorsement;
 
 class EndorsementController extends \App\Http\Controllers\BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $requirements = DB::table('endorsements')->where('endorsement', '=', 'EGKK_GND')->get();
+        $requirements = Endorsement::where('endorsement', '=', 'EGKK_GND')->get();
 
         $hours = $requirements->map(function ($r) {
             $data = $this->account->networkDataAtc()
