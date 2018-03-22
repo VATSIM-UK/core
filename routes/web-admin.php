@@ -93,7 +93,6 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
     });
 
     Route::get('atc/endorsement', ['as' => 'adm.atc.endorsement.index', 'uses' => 'Atc\Endorsement@getIndex']);
-    Route::post('atc/endorsement', ['as' => 'adm.atc.endorsement.index.post', 'uses' => 'Atc\Endorsement@postIndex']);
 
     Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
         Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');

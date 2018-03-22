@@ -20,7 +20,7 @@
                             <tr>
                                 <td>{{ $endorsement }}</td>
                                 <td>
-                                    {{ Form::open(['method' => 'POST', 'route' => ['adm.atc.endorsement.index.post']]) }}
+                                    {{ Form::open(['method' => 'GET', 'route' => ['adm.atc.endorsement.index']]) }}
                                     <div class="input-group">
                                         {{ Form::hidden('endorsement', $endorsement) }}
                                         {{ Form::text('cid', null, ['class' => 'form-control', 'placeholder' => "Enter the user's CID here"]) }}
@@ -40,4 +40,3 @@
         </div>
     </div>
 @endsection
-

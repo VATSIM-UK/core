@@ -11,27 +11,24 @@ use App\Http\Controllers\Adm\AdmController;
 
 class Endorsement extends AdmController
 {
-    public function getIndex() {
-        $endorsements = EndorsementModel::get(['endorsement'])->pluck('endorsement')->unique();
+    public function getIndex(Request $request) {
+      $validator = Validator::make($request->all(), [
+          'endorsement' => 'required',
+          'cid' => 'required|integer',
+      ]);
+
+      if (!$validator->fails()) {
+          return $this->getUserEndorsement($request);
+      }
+
+      $endorsements = EndorsementModel::get(['endorsement'])->pluck('endorsement')->unique();
 
 
-        return $this->viewMake('adm.atc.endorsement.index')
-                    ->with('endorsements', $endorsements);
+      return $this->viewMake('adm.atc.endorsement.index')
+                  ->with('endorsements', $endorsements);
     }
 
-    public function postIndex(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'endorsement' => 'required',
-            'cid' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()
-                ->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
+    public function getUserEndorsement(Request $request) {
         $requirements = EndorsementModel::where('endorsement', $request->input('endorsement'))->get();
         $user = Account::find($request->input('cid'));
         if(!$user){

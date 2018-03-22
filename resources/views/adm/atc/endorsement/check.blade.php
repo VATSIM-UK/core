@@ -6,7 +6,7 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title ">
-                        Endorsement Status: {{$account->full_name}} for {{ $endorsement }}
+                        Endorsement Status: <b>{{$account->full_name}}</b> for {{ $endorsement }}
                     </h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -32,9 +32,13 @@
                                     <td>{{implode(", ", $c->requirements->required_airfields)}}</td>
                                     <td><strong>{{$c->requirements->required_hours}} hours</strong> within the last <strong>{{$c->requirements->hours_months}} months</strong> on <strong>any single airport</strong></td>
                                     <td>
-                                        @foreach($c->hours as $key => $hour)
-                                            {{$key}} ({{round($hour,1)}} hours)</br>
-                                        @endforeach
+                                        @if ($c->hours->count() == 0)
+                                          None
+                                        @else
+                                          @foreach($c->hours as $key => $hour)
+                                              {{$key}} ({{round($hour,1)}} hours)</br>
+                                          @endforeach
+                                        @endif
                                     </td>
                                     <td>
                                         @if ($c->met)
@@ -52,4 +56,3 @@
         </div>
     </div>
 @endsection
-
