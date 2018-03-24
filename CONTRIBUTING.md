@@ -1,87 +1,3 @@
-# Welcome
-
-Welcome to the UK Core Web Services Repository, for all post Web Services in the UK!  Thank you for your interest in contributing to the project.  Full details and guidelines on how to ensure this project is managed well are included below.
-
-## Contributor license agreement
-By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the upkeep, maintenance and deployment of UK Web Services and that the ownership of your submissions transfers to VATSIM UK in their entirety.
-
-## Helping others
-Please help other UK Core WS contributors wherever you can (everybody starts somewhere).  If you require assistance (or wish to provide additional assistance) you can find our contributors in the VATSIM UK slack team.
-
-To access Slack, you can visit https://core.vatsim.uk and follow the registration instructions.  Once you've logged in, find the channel "WebServices"
-
-# I want to contribute!
-
-If you wish to contribute to the UK Core Web Services project, there's many ways in which you can help out.
-
-## Pulling & Deploying Locally
-
-Whilst this document will provide a _rough_ outline of the steps required to utilise the tools required for deployment, there is an assumption that you have a basic appreciation for `W/L/MAMP`, `Git`, `Composer`, `PHP` and `MySQL`.
-
-### Setup an environment
-
-TL;DR: You need a local stack with `PHP 5.6`, `MySQL 5.5`, `Git`, `Composer`, `PHPUnit`, `Npm` and `gulp`.  The assumption is you're using Apache.
-
-#### W/L/MAMP
-
-If you don't already have a local development stack then you should get one!  I'd really recommend [WampServer version 3.0](http://www.wampserver.com/en/) however it's important that you then download the [MySQL 5.5.50 release for your OS](https://sourceforge.net/projects/wampserver/files/WampServer%203/WampServer%203.0.0/Addons/Mysql/).  Unfortunately I can't advise on Mac alternatives, however you Linux users get a life of luxury when it comes to installing these things!
-
-Setting up WampServer is really simple - follow the installer instructions.  Any problems, come and find us in the Slack channel.
-
-#### MySQL
-
-Create a new database within MySQL called `vuk_core` (or something appropriate) along with a user with full rights.
-
-#### Register for MailTrap.io
-
-[MailTrap.io](https://MailTrap.io) is a fantastic free service - it acts like an SMTP server, but it just catches all mail and displays it to you.  Really useful to avoid setting people _actual_ emails.
-
-#### Adding things to your Environment Path (this is important and dangerous)
-
-**Warning: Do not proceed if you're not comfortable**
-
-To make using the software we're installing **far** easier, it'd be a good idea to add a few things to your Environment Path.
-
-There's a really good guide on [the PHP.net website](https://secure.php.net/manual/en/faq.installation.php#faq.installation.addtopath) - if you're using WampServer then your PHP Directory will be (by default) `C:\wamp\bin\php\php5.6.16`.  Remember how to do this as there are recommendations further on of other things to add to your path.
-
-#### Git
-
-You can either be hardcore and download the [Git-SCM Bash Tools](https://git-scm.com/) and use the command line, or download the Git-SCM Bash Tools and install something like [SourceTree](https://www.sourcetreeapp.com/download/) on top to make your experience a little more pleasant.
-
-Add the Git `bin` directory to your Path. **Warning, this is dangerous.**
-
-#### Composer
-
-You'll need to make use of Composer a lot for the UK Web Services.  Head on over to [the Composer website](https://getcomposer.org/download/) who can offer far better support for installing their software than I can.  Just remember **to install it globally**.
-
-#### PHPUnit
-
-We make use of UnitTesting (and it'll be expected that you do too, if you're contributing code).  Head on over to the [PHPUnit testing](https://phpunit.de/manual/current/en/installation.html) website to see how to set this up on your machine.
-
-#### Node.js and NPM
-
-You'll need to throw NPM onto your machine.  [Dave McFarland does a great job of detailing how this should happen](http://blog.teamtreehouse.com/install-node-js-npm-windows).
-
-_We'll warn you now, NPM can be a bit of a pain._
-
-### Pulling the Code
-
-TL;DR: Fork our [GitHub Repository](https://github.com/vatsim-uk/core), and pull the code to your `C:\wamp\www\vukcore` directory.
-
-Some good tutorials on _how to use Git_:
-* [CodeAcademy](https://www.codecademy.com/learn/learn-git)
-* [RogerDudler](https://rogerdudler.github.io/git-guide/)
-* [Try.GitHub.Io](https://try.github.io/levels/1/challenges/1)
-* [Laracasts](https://laracasts.com/series/git-me-some-version-control) - premium, but the best $9 you'll spend a month.
-
-If you're going to be contributing code to the repository then you'll need to visit [our repository](https://github.com/vatsim-uk/core) and click the button that says `Fork`.  This will create a personal copy of the repository (one that you can write to), since you won't have write permissions on our repository.
-
-With that done, open up your chosen Git tool and checkout **your** repository into `C:\wamp\www` (or wherver you installed WampServer).
-
-### Adding some Virtual Hosts
-
-Once your environment has been setup, you'll need to define some [virtual hosts](http://www.coderomeos.org/how-to-set-up-virtual-host-on-wamp-server) - you'll need something along the lines of `vukcore.localhost` and `vt.vukcore.localhost`.  Whenever we add a new server, it'll prefix `vukcore` with the identifier.  These VirtualHosts should **both** point to the `public` directory within the `core` directory.
-
 ### Deploying
 
 TL;DR: A standard Laravel deployment process - install Composer Dependancies, edit the .env directory, run migrations, run gulp for production.
@@ -153,10 +69,6 @@ To enable access to the panel:
 * Go to your database, and find the `mship_account_role` table. Set the `role_id` to `1` for your CID.
 * Navigate to `vukcore.localhost/adm/dashboard`. You should now be able to log into the admin panel.
 
-#### Relax
-
-After all that setup, relax for 5 minutes!  If you've had any problems, come and find someone in the Slack team.
-
 ## Contributing to the code
 
 If you're just getting started with GitHub (and project contributions) then we suggest you take a look at issues [marked with the "up-for-grabs" label](https://vatsimuk.atlassian.net/browse/CORE-26?jql=project%20%3D%20CORE%20AND%20labels%20%3D%20up-for-grabs%20order%20by%20lastViewed%20DESC).  These issues will be of reasonable size and challenge, for anyone to start contributing to the project.  [This was inspired by an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.wior7p101).
@@ -177,14 +89,6 @@ It is expected that you will follow the GitFlow Workflow for managing the reposi
  * Each task that needs completing should go into a separate commit
  * For example, if you're fixing a bug and making a layout change in one branch, you would do the layout change in one commit and the bug fix in another
  * Ideally, you should only commit when a particular task is completed, though this may not happen for perfectly valid reasons. More commits are preferable to less.
-
-## Testing a new release
-
-If you wish to test a new release, you can deploy either the `development` or `release/*` branches to a local machine, following the installation instructions in the README, and test a release.
-
-## Issue Tracking
-
-See [Issue Tracking](ISSUE_TRACKING.md) for more information.
 
 ## Testing
 
@@ -216,12 +120,3 @@ The work-flow for submitting a new merge request is designed to be simple, but a
 * Be prepared to answer any questions about your PR when it is reviewed for acceptance.
 
 **If you are actively working on a large change** consider creating the PR early but prefixing it with [WIP] as this will prevent it from being accepted *but* let other people know you're working on that issue.
-
-# Expectations
-As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting merge requests or patches, and other activities.
-
-We are committed to making participation in this project a harassment-free experience for everyone, regardless of level of experience, gender, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, or favourite aircraft.
-
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues and other contributions that are not aligned to this Code of Conduct.
-
-This code of conduct applies both within this project space and public spaces when an individual is representing the project or its community.
