@@ -66,7 +66,7 @@ class ImportMembers extends Command
     protected function processMember($member)
     {
         if (array_get($this->member_list, $member['cid'], 'unknown') != 'unknown') {
-            if (strcasecmp($this->member_list[$member['cid']], $member['email']) == 0) {
+            if (strcasecmp($this->member_list[$member['cid']], $member['email']) !== 0) {
                 $this->updateMember($member);
                 $this->log('updated member');
                 $this->count_emails++;
