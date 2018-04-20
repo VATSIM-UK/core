@@ -25,22 +25,22 @@ class EvaluateFlightCriteria implements ShouldQueue
 
             foreach ($criteria as $criterion) {
 
-                if (!$posrep->isPositionValid($criterion)) {
-                    $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.");
-                    $pirep->save();
-
-                    return;
-                }
-
-                if (!$posrep->isAltitudeValid($criterion)) {
-                    $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.");
-                    $pirep->save();
-
-                    return;
-                }
+//                if (!$posrep->isPositionValid($criterion)) {
+//                    $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.", $posrep->id);
+//                    $pirep->save();
+//
+//                    return;
+//                }
+//
+//                if (!$posrep->isAltitudeValid($criterion)) {
+//                    $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.", $posrep->id);
+//                    $pirep->save();
+//
+//                    return;
+//                }
 
                 if (!$posrep->isSpeedValid($criterion)) {
-                    $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.");
+                    $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.", $posrep->id);
                     $pirep->save();
 
                     return;

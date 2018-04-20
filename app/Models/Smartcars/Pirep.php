@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $status
  * @property bool $passed
  * @property string|null $pass_reason
+ * @property int|null $failed_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Bid $bid
@@ -65,19 +66,20 @@ class Pirep extends Model
         });
     }
 
-    public function mark($passed, $reason)
+    public function mark($passed, $reason, $failed_at)
     {
         $this->passed = $passed;
         $this->pass_reason = $reason;
+        $this->failed_at = $failed_at;
     }
 
     public function markPassed($reason = 'Flight passed all criteria.')
     {
-        $this->mark(true, $reason);
+        $this->mark(true, $reason, NULL);
     }
 
-    public function markFailed($reason = 'Flight failed at least one of the required criteria.')
+    public function markFailed($reason = 'Flight failed at least one of the required criteria.', $failed_at)
     {
-        $this->mark(false, $reason);
+        $this->mark(false, $reason, $failed_at);
     }
 }
