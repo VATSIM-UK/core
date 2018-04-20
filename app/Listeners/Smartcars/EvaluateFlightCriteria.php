@@ -22,22 +22,31 @@ class EvaluateFlightCriteria implements ShouldQueue
         $posreps = $bid->posreps->sortBy('created_at');
 
         foreach ($posreps as $posrep) {
-            $matchesCriteria = false;
-            foreach ($criteria as $criterion) {
-                if ($posrep->isValid($criterion)) {
-                    $matchesCriteria = true;
 
-                    break;
+            foreach ($criteria as $criterion) {
+
+                if (!$posrep->isPositionValid($criterion)) {
+                    $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.");
+                    $pirep->save();
+
+                    return;
+                }
+
+                if (!$posrep->isAltitudeValid($criterion)) {
+                    $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.");
+                    $pirep->save();
+
+                    return;
+                }
+
+                if (!$posrep->isSpeedValid($criterion)) {
+                    $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.");
+                    $pirep->save();
+
+                    return;
                 }
             }
 
-            if (!$matchesCriteria) {
-                // posrep didn't match any criteria
-                $pirep->markFailed("Failed: Posrep #{$posrep->id} didn't match any of the available criteria");
-                $pirep->save();
-
-                return;
-            }
         }
 
         if (str_contains($pirep->log, 'Simulation rate set to')) {
