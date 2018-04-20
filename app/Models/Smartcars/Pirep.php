@@ -82,4 +82,9 @@ class Pirep extends Model
     {
         $this->mark(false, $reason, $failed_at);
     }
+
+    public function failedAt()
+    {
+        return $this->hasOne(Posrep::class, 'id', 'failed_at');
+    }
 }

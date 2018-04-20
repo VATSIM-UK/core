@@ -14,7 +14,8 @@ class AddFailedPosrepColumn extends Migration
     public function up()
     {
         Schema::table('smartcars_pirep', function (Blueprint $table) {
-            $table->integer('failed_at')->after('pass_reason')->nullable();
+            $table->unsignedInteger('failed_at')->after('pass_reason')->nullable();
+            $table->foreign('failed_at')->references('id')->on('smartcars_posrep');
         });
     }
 
@@ -26,6 +27,7 @@ class AddFailedPosrepColumn extends Migration
     public function down()
     {
         Schema::table('smartcars_pirep', function (Blueprint $table) {
+            $table->dropForeign('failed_at');
             $table->dropColumn('failed_at');
         });
     }
