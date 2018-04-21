@@ -27,7 +27,7 @@ class AddFailedPosrepColumn extends Migration
     public function down()
     {
         Schema::table('smartcars_pirep', function (Blueprint $table) {
-            $table->dropForeign('failed_at');
+            $table->dropForeign('smartcars_pirep_failed_at_foreign');
             $table->dropColumn('failed_at');
         });
     }
