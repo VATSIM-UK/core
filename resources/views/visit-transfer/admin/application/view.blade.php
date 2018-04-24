@@ -451,7 +451,7 @@
                                         @elseif($application->check_outcome_50_hours === 0)
                                             Applicant <strong class="text-danger">does not have in excess</strong> of 50
                                             hours at their
-                                            present qualified level.
+                                            present qualified level.<br />
 
                                             {!!
                                             Modal::named("outcome_50_hour_met")
