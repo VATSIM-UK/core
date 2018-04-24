@@ -393,7 +393,7 @@
                                                 {!!
                                                 Modal::named("outcome_90_day_met")
                                                      ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member received their current qualification in ecess of 90 days prior to the submission date, you can mark it as 'NOT MET'.")
+                                                     ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
                                                      ->withFooter(
                                                         Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
                                                         Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
@@ -412,7 +412,7 @@
                                             {!!
                                             Modal::named("outcome_90_day_met")
                                                  ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
-                                                 ->withBody("Once you have manually verified that this member received their current qualification in ecess of 90 days prior to the submission date, you can mark it as 'NOT MET'.")
+                                                 ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
                                                  ->withFooter(
                                                     Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
                                                     Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
