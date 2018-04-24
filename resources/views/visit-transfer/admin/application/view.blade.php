@@ -425,7 +425,7 @@
                                             {!!
                                             Modal::named("outcome_50_hour_met")
                                                  ->withTitle("Mark 50 Hour Check as 'MET'?")
-                                                 ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
+                                                 ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.")
                                                  ->withFooter(
                                                     Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
                                                     Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
