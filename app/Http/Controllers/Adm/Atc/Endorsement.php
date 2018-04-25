@@ -2,42 +2,43 @@
 
 namespace App\Http\Controllers\Adm\Atc;
 
-use Validator;
+use App\Http\Controllers\Adm\AdmController;
+use App\Models\Atc\Endorsement as EndorsementModel;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Mship\Account;
-use App\Models\Atc\Endorsement as EndorsementModel;
-use App\Http\Controllers\Adm\AdmController;
+use Validator;
 
 class Endorsement extends AdmController
 {
-    public function getIndex(Request $request) {
-      $validator = Validator::make($request->all(), [
+    public function getIndex(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
           'endorsement' => 'required',
           'cid' => 'required|integer',
       ]);
 
-      if (!$validator->fails()) {
-          return $this->getUserEndorsement($request);
-      }
+        if (!$validator->fails()) {
+            return $this->getUserEndorsement($request);
+        }
 
-      $endorsements = EndorsementModel::get(['endorsement'])->pluck('endorsement')->unique();
+        $endorsements = EndorsementModel::get(['endorsement'])->pluck('endorsement')->unique();
 
-
-      return $this->viewMake('adm.atc.endorsement.index')
+        return $this->viewMake('adm.atc.endorsement.index')
                   ->with('endorsements', $endorsements);
     }
 
-    public function getUserEndorsement(Request $request) {
+    public function getUserEndorsement(Request $request)
+    {
         $requirements = EndorsementModel::where('endorsement', $request->input('endorsement'))->get();
         $user = Account::find($request->input('cid'));
-        if(!$user){
+        if (!$user) {
             return redirect()
                     ->back()
                     ->withErrors(['That CID does not exist!']);
         }
 
-        if($requirements->count() < 1){
+        if ($requirements->count() < 1) {
             abort(404);
         }
 
@@ -52,10 +53,8 @@ class Endorsement extends AdmController
                     return $item->sum();
                 });
 
-
-
             // Make critera human-friendly
-            $r->required_airfields = str_replace("%", "XXX", json_decode($r->required_airfields));
+            $r->required_airfields = str_replace('%', 'XXX', json_decode($r->required_airfields));
 
             return (object) ['requirements' => $r, 'hours' => $data, 'met' => ($data->max() >= $r->required_hours)];
         });

@@ -14,5 +14,4 @@ class Endorsement extends Model
         'hours_months',
     ];
     public $timestamps = true;
-
 }
