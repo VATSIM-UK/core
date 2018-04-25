@@ -37,6 +37,10 @@ class Authentication extends AdmController
             return 'AUTH_FAILED';
         }
 
+        if ($account == null) {
+            return 'AUTH_FAILED';
+        }
+
         if ($account->is_banned) {
             return 'ACCOUNT_INACTIVE';
         }
