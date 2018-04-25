@@ -47,7 +47,7 @@ class Authentication extends AdmController
 
         $passwordOK = $account->verifyPassword(Input::get('password'));
 
-        if ($account && $account->hasPassword() && $passwordOK) {
+        if ($account->hasPassword() && $passwordOK) {
             $session = Session::create(['account_id' => $account->id, 'session_id' => Input::get('sessionid')]);
 
             return response()->csv($this->preparePilotInfo($session->account, $session));
