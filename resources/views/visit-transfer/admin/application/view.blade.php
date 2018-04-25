@@ -355,7 +355,23 @@
                                             Application not submitted, so this cannot be checked.
                                         @elseif($application->check_outcome_90_day === 1)
                                             Qualification awarded <strong class="text-danger">in excess</strong> of 90
-                                            days prior to application submission.
+                                            days prior to application submission.<br />
+
+                                            @can("check-outcome", $application)
+                                                {!!
+                                                Modal::named("outcome_90_day_not_met")
+                                                     ->withTitle("Mark 90 Day Qualification Check as 'NOT MET'?")
+                                                     ->withBody("Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
+                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::hidden("check", "90_day").
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
+                                                !!}
+                                            @endcan
+
                                         @elseif($application->check_outcome_90_day === null)
                                             <strong class="text-danger">Data unavailable</strong> - manual check
                                             required.<br/>
@@ -377,7 +393,7 @@
                                                 {!!
                                                 Modal::named("outcome_90_day_met")
                                                      ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member received their current qualification in ecess of 90 days prior to the submission date, you can mark it as 'NOT MET'.")
+                                                     ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
                                                      ->withFooter(
                                                         Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
                                                         Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
@@ -390,7 +406,22 @@
 
                                         @elseif($application->check_outcome_90_day === 0)
                                             Qualification awarded <strong class="text-danger">within</strong> 90 days
-                                            prior to application submission.
+                                            prior to application submission.<br/>
+
+                                            @can("check-outcome", $application)
+                                            {!!
+                                            Modal::named("outcome_90_day_met")
+                                                 ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
+                                                 ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
+                                                 ->withFooter(
+                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
+                                                    Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
+                                                    Form::hidden("check", "90_day").
+                                                    Form::close()
+                                                 )
+                                                 ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
+                                            !!}
+                                            @endcan
                                         @endif
                                     </th>
                                 </tr>
@@ -404,41 +435,74 @@
                                         @elseif($application->check_outcome_50_hours === 1)
                                             Applicant has <strong class="text-danger">in excess</strong> of 50 hours at
                                             their
-                                            present qualified level and has ratified their rating.
+                                            present qualified level and has ratified their rating.<br />
+
+                                            @can("check-outcome", $application)
+                                                {!!
+                                                Modal::named("outcome_50_hour_not_met")
+                                                     ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
+                                                     ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
+                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::hidden("check", "50_hours").
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
+                                                !!}
+                                            @endcan
                                         @elseif($application->check_outcome_50_hours === null)
                                             <strong class="text-danger">Data unavailable</strong> - manual check
                                             required.<br/>
 
-                                            {!!
-                                            Modal::named("outcome_50_hour_not_met")
-                                                 ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
-                                                 ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                 ->withFooter(
-                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                    Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                    Form::hidden("check", "50_hours").
-                                                    Form::close()
-                                                 )
-                                                 ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                            !!}
+                                            @can("check-outcome", $application)
+                                                {!!
+                                                Modal::named("outcome_50_hour_not_met")
+                                                     ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
+                                                     ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
+                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::hidden("check", "50_hours").
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
+                                                !!}
 
-                                            {!!
-                                            Modal::named("outcome_50_hour_met")
-                                                 ->withTitle("Mark 50 Hour Check as 'MET'?")
-                                                 ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                 ->withFooter(
-                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                    Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                    Form::hidden("check", "50_hours").
-                                                    Form::close()
-                                                 )
-                                                 ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                            !!}
+                                                {!!
+                                                Modal::named("outcome_50_hour_met")
+                                                     ->withTitle("Mark 50 Hour Check as 'MET'?")
+                                                     ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
+                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::hidden("check", "50_hours").
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
+                                                !!}
+                                            @endcan
 
                                         @elseif($application->check_outcome_50_hours === 0)
                                             Applicant <strong class="text-danger">does not have in excess</strong> of 50
                                             hours at their
-                                            present qualified level.
+                                            present qualified level.<br />
+
+                                            @can("check-outcome", $application)
+                                                {!!
+                                                Modal::named("outcome_50_hour_met")
+                                                     ->withTitle("Mark 50 Hour Check as 'MET'?")
+                                                     ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.")
+                                                     ->withFooter(
+                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
+                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
+                                                        Form::hidden("check", "50_hours").
+                                                        Form::close()
+                                                     )
+                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
+                                                !!}
+                                            @endcan
+
                                         @endif
                                     </th>
                                 </tr>
