@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddEndorsementPermission extends Migration
@@ -25,7 +23,7 @@ class AddEndorsementPermission extends Migration
                 'display_name' => 'Admin / ATC / Endorsements',
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
-            ]
+            ],
         ]);
     }
 
