@@ -43,21 +43,21 @@ class EvaluateFlightCriteria implements ShouldQueue
             }
 
             if (!$positionValid) {
-                $pirep->markFailed('Failed, position', $posrep->id);
+                $pirep->markFailed('Failed: You went off track at posrep #{$posrep->id}.', $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
             if (!$altitudeValid) {
-                $pirep->markFailed('Failed, altitude', $posrep->id);
+                $pirep->markFailed('Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.', $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
             if (!$speedValid) {
-                $pirep->markFailed('Failed, speed', $posrep->id);
+                $pirep->markFailed('Failed: You went outside of the speed restriction at posrep #{$posrep->id}.', $posrep->id);
                 $pirep->save();
 
                 return;
