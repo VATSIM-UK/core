@@ -23,30 +23,45 @@ class EvaluateFlightCriteria implements ShouldQueue
 
         foreach ($posreps as $posrep) {
 
+            $positionValid = false;
+            $altitudeValid = false;
+            $speedValid = false;
+
             foreach ($criteria as $criterion) {
 
-                if (!$posrep->isPositionValid($criterion)) {
-                    $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.", $posrep->id);
-                    $pirep->save();
+                if ($posrep->isPositionValid($criterion)) {
+                    $positionValid = true;
 
-                    return;
-                }
+                    if ($posrep->isAltitudeValid($criterion)) {
+                        $altitudeValid = true;
 
-                if (!$posrep->isAltitudeValid($criterion)) {
-                    $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.", $posrep->id);
-                    $pirep->save();
-
-                    return;
-                }
-
-                if (!$posrep->isSpeedValid($criterion)) {
-                    $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.", $posrep->id);
-                    $pirep->save();
-
-                    return;
+                        if ($posrep->isSpeedValid($criterion)) {
+                            $speedValid = true;
+                        }
+                    }
                 }
             }
 
+            if (!$positionValid) {
+                $pirep->markFailed('Failed, position', $posrep->id);
+                $pirep->save();
+
+                return;
+            }
+
+            if (!$altitudeValid) {
+                $pirep->markFailed('Failed, altitude', $posrep->id);
+                $pirep->save();
+
+                return;
+            }
+
+            if (!$speedValid) {
+                $pirep->markFailed('Failed, speed', $posrep->id);
+                $pirep->save();
+
+                return;
+            }
         }
 
         if (str_contains($pirep->log, 'Simulation rate set to')) {
