@@ -37,13 +37,17 @@ class Authentication extends AdmController
             return 'AUTH_FAILED';
         }
 
+        if ($account == null) {
+            return 'AUTH_FAILED';
+        }
+
         if ($account->is_banned) {
             return 'ACCOUNT_INACTIVE';
         }
 
         $passwordOK = $account->verifyPassword(Input::get('password'));
 
-        if ($account && $account->hasPassword() && $passwordOK) {
+        if ($account->hasPassword() && $passwordOK) {
             $session = Session::create(['account_id' => $account->id, 'session_id' => Input::get('sessionid')]);
 
             return response()->csv($this->preparePilotInfo($session->account, $session));
