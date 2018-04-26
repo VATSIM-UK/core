@@ -77,7 +77,7 @@ class Posrep extends Model
      * @param FlightCriterion $criterion
      * @return bool
      */
-    public function isPositionValid(FlightCriterion $criterion)
+    public function positionIsValid(FlightCriterion $criterion)
     {
         // location
         if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
@@ -87,7 +87,7 @@ class Posrep extends Model
         return true;
     }
 
-    public function isSpeedValid(FlightCriterion $criterion)
+    public function speedIsValid(FlightCriterion $criterion)
     {
         // groundspeed
         if ($criterion->min_groundspeed !== null && $this->groundspeed < $criterion->min_groundspeed) {
@@ -101,7 +101,7 @@ class Posrep extends Model
         return true;
     }
 
-    public function isAltitudeValid(FlightCriterion $criterion)
+    public function altitudeIsValid(FlightCriterion $criterion)
     {
         // altitude
         if ($criterion->min_altitude !== null && $this->altitude < $criterion->min_altitude) {

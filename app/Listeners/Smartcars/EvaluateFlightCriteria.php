@@ -29,13 +29,13 @@ class EvaluateFlightCriteria implements ShouldQueue
 
             foreach ($criteria as $criterion) {
 
-                if ($posrep->isPositionValid($criterion)) {
+                if ($posrep->positionIsValid($criterion)) {
                     $positionValid = true;
 
-                    if ($posrep->isAltitudeValid($criterion)) {
+                    if ($posrep->altitudeIsValid($criterion)) {
                         $altitudeValid = true;
 
-                        if ($posrep->isSpeedValid($criterion)) {
+                        if ($posrep->speedIsValid($criterion)) {
                             $speedValid = true;
                         }
                     }
