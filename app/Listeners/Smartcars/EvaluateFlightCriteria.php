@@ -75,7 +75,7 @@ class EvaluateFlightCriteria implements ShouldQueue
         $pirep->save();
     }
 
-    public function minutes($time)
+    protected function minutes($time)
     {
         $time = explode(':', $time);
         return ($time[0]*60) + ($time[1]) + ($time[2]/60);
