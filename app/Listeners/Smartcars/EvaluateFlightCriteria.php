@@ -4,7 +4,7 @@ namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\DB;
+use App\Models\NetworkData\Pilot as NetworkData;
 
 class EvaluateFlightCriteria implements ShouldQueue
 {
@@ -60,9 +60,7 @@ class EvaluateFlightCriteria implements ShouldQueue
 
         $pirepTime = $this->minutes($pirep->flight_time);
 
-        $networkTime = DB::table('networkdata_pilots')
-            ->where('account_id', '=', $bid->account_id)
-            ->where('disconnected_at', '>', $posreps->first()->created_at)
+        $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
             ->where('connected_at', '<', $posreps->last()->created_at)
             ->sum('minutes_online');
 
