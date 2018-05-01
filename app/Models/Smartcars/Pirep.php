@@ -75,10 +75,10 @@ class Pirep extends Model
 
     public function markPassed($reason = 'Flight passed all criteria.')
     {
-        $this->mark(true, $reason, NULL);
+        $this->mark(true, $reason, null);
     }
 
-    public function markFailed($reason = 'Flight failed at least one of the required criteria.', $failed_at)
+    public function markFailed($reason, $failed_at)
     {
         $this->mark(false, $reason, $failed_at);
     }
