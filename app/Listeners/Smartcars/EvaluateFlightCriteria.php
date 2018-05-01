@@ -4,6 +4,7 @@ namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\NetworkData\Pilot as NetworkData;
 
 class EvaluateFlightCriteria implements ShouldQueue
 {
@@ -72,7 +73,26 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
+        $pirepTime = $this->minutes($pirep->flight_time);
+
+        $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
+            ->where('connected_at', '<', $posreps->last()->created_at)
+            ->sum('minutes_online');
+
+        if ((($networkTime / $pirepTime) * 100 ) < 90) {
+            $pirep->markFailed('Failed: You were not connected to the VATSIM network.', null);
+            $pirep->save();
+
+            return;
+        }
+
         $pirep->markPassed('Success: Flight passed all required checks');
         $pirep->save();
+    }
+
+    protected function minutes($time)
+    {
+        $time = explode(':', $time);
+        return ($time[0]*60) + ($time[1]) + ($time[2]/60);
     }
 }
