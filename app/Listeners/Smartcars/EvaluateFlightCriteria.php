@@ -3,8 +3,8 @@
 namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\NetworkData\Pilot as NetworkData;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EvaluateFlightCriteria implements ShouldQueue
 {
@@ -23,13 +23,11 @@ class EvaluateFlightCriteria implements ShouldQueue
         $posreps = $bid->posreps->sortBy('created_at');
 
         foreach ($posreps as $posrep) {
-
             $positionValid = false;
             $altitudeValid = false;
             $speedValid = false;
 
             foreach ($criteria as $criterion) {
-
                 if ($posrep->positionIsValid($criterion)) {
                     $positionValid = true;
 
@@ -79,7 +77,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             ->where('connected_at', '<', $posreps->last()->created_at)
             ->sum('minutes_online');
 
-        if ((($networkTime / $pirepTime) * 100 ) < 90) {
+        if ((($networkTime / $pirepTime) * 100) < 90) {
             $pirep->markFailed('Failed: You were not connected to the VATSIM network.', null);
             $pirep->save();
 
@@ -93,6 +91,7 @@ class EvaluateFlightCriteria implements ShouldQueue
     protected function minutes($time)
     {
         $time = explode(':', $time);
-        return ($time[0]*60) + ($time[1]) + ($time[2]/60);
+
+        return ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
     }
 }
