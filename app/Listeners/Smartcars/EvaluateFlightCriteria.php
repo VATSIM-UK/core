@@ -65,7 +65,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             ->sum('minutes_online');
 
         if ((($networkTime / $pirepTime) * 100 ) < 90) {
-            $pirep->markFailed('You were not connected to the VATSIM network.', null);
+            $pirep->markFailed('Failed: You were not connected to the VATSIM network.', null);
             $pirep->save();
 
             return;
