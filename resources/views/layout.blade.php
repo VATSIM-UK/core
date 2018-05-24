@@ -86,7 +86,6 @@
                                 <ul>
                                     <li class="dropdown-header">Membership</li>
                                     <li>{!! link_to_route("visiting.landing", "Visit/Transfer") !!}</li>
-                                    <li>{!! link_to_route("mship.email", "Email a Member") !!}</li>
                                     <li class="divider"></li>
                                     <li class="dropdown-header">Third-Party Services</li>
                                     <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
