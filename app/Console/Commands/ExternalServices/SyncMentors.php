@@ -64,7 +64,9 @@ class SyncMentors extends Command
         foreach (DB::table(config('services.cts.database').'.rts')->get(['id', 'name']) as $rts) {
             $this->rtsIDs[snake_case($rts->name)] = $rts->id;
         }
-        $this->memberForumIDs = DB::table("{$this->communityDB}.ibf_core_members")->pluck('member_id', 'vatsim_cid');
+        $this->memberForumIDs = DB::table("{$this->communityDB}.ibf_core_members")
+            ->join("{$this->communityDB}.ibf_core_login_links", 'ibf_core_members.member_id', '=', 'ibf_core_login_links.token_member')
+            ->pluck('member_id', 'token_identifier');
         $this->forumGroupIDs = DB::table("{$this->communityDB}.ibf_core_groups AS g")
             ->join("{$this->communityDB}.ibf_core_sys_lang_words AS w", DB::raw('CONCAT("core_group_", g.g_id)'), '=', 'w.word_key')
             ->pluck('word_default', 'g_id');

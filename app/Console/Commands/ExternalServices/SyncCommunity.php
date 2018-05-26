@@ -42,9 +42,10 @@ class SyncCommunity extends Command
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select(
-            'm.member_id, m.vatsim_cid, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
+            'm.member_id, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
             ['core_members', 'm']
-        )->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
+        )->join(['core_login_links', 'l'], 'm.member_id = l.token_member')
+            ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
 
         $countTotal = $members->count();
         $countSuccess = 0;
@@ -56,7 +57,7 @@ class SyncCommunity extends Command
 
             $member = $members->current();
 
-            if (empty($member['vatsim_cid']) || !is_numeric($member['vatsim_cid'])) {
+            if (empty($member['token_identifier']) || !is_numeric($member['token_identifier'])) {
                 if ($verbose) {
                     $this->output->writeln('<error>FAILURE: '.$member['member_id'].' has no valid CID.</error>');
                 }
@@ -65,10 +66,10 @@ class SyncCommunity extends Command
             }
 
             if ($verbose) {
-                $this->output->write($member['member_id'].' // '.$member['vatsim_cid']);
+                $this->output->write($member['member_id'].' // '.$member['token_identifier']);
             }
 
-            $member_core = Account::where('id', $member['vatsim_cid'])->with('states', 'qualifications')->first();
+            $member_core = Account::where('id', $member['token_identifier'])->with('states', 'qualifications')->first();
             if ($member_core === null) {
                 if ($verbose) {
                     $this->output->writeln(' // <error>FAILURE: cannot retrieve member '.$member['member_id'].' from Core.</error>');
