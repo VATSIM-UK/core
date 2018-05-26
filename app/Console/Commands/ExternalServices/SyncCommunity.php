@@ -42,7 +42,7 @@ class SyncCommunity extends Command
         require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
         $members = \IPS\Db::i()->select(
-            'm.member_id, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
+            'm.member_id, m.temp_ban, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
             ['core_members', 'm']
         )->join(['core_login_links', 'l'], 'm.member_id = l.token_member')
             ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
