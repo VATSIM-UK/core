@@ -107,6 +107,7 @@ class SyncCommunity extends Command
             $changePRating = strcmp($member['field_14'], $pRatingString);
 
             // Ban Status Change
+            $changeBan = false;
             if ($pBanned && ($member['temp_ban'] != -1)) {
                 $changeBan = true;
             } elseif (!$pBanned && ($member['temp_ban'] != 0)) {
