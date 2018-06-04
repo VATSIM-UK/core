@@ -191,11 +191,11 @@ class SyncCommunity extends Command
 
             // Proccess member's IPB-side Club membership.
             foreach ($ips_member->clubs() as $ips_member_club) {
-              $name = $club_map[$ips_member_club['club_id']];
+              $name = $club_map[$ips_member_club];
 
               if(!$groups->pluck('name')->search($name)){
-                $club = \IPS\Member\Club::load($ips_member_club['club_id']);
-                if($ips_member_club['status'] != \IPS\Member\Club::STATUS_MODERATOR || $ips_member_club['status'] != \IPS\Member\Club::STATUS_LEADER){
+                $club = \IPS\Member\Club::load($ips_member_club);
+                if(!$ips_member_club->isLeader($ips_member) && !$ips_member_club->isModerator($ips_member)){
                   $club->removeMember($ips_member);
                 }
               }
