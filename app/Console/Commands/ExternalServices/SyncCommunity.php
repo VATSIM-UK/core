@@ -170,7 +170,7 @@ class SyncCommunity extends Command
             // Load & Map IPB Groups
             $ips_clubs = \IPS\Db::i()->select( 'id,name', 'core_clubs');
             $club_map = [];
-            for ($i = 0; $i < $ips_clubs->total(); $i++) {
+            for ($i = 0; $i < $ips_clubs->count(); $i++) {
               $ips_clubs->next();
               $club = $ips_clubs->current();
               $club_map[$club['id']] = $club['name'];
