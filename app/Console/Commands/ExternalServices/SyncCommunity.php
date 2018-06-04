@@ -194,9 +194,9 @@ class SyncCommunity extends Command
               $name = $club_map[$ips_member_club];
 
               if(!$groups->pluck('name')->search($name)){
-                $club = \IPS\Member\Club::load($ips_member_club);
+                $ips_member_club = \IPS\Member\Club::load($ips_member_club);
                 if(!$ips_member_club->isLeader($ips_member) && !$ips_member_club->isModerator($ips_member)){
-                  $club->removeMember($ips_member);
+                  $ips_member_club->removeMember($ips_member);
                 }
               }
             }
