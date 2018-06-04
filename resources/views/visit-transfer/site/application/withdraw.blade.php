@@ -6,17 +6,9 @@
             {!! HTML::panelOpen("Withdraw", ["type" => "fa", "key" => "tick"]) !!}
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-
                     <p>
-                        You may withdraw your application <strong>prior to it being submitted</strong> with no penalty.  To do so, please click the button below.
+                        You may withdraw your application with no penalty.  To do so, please click the button below.<br>
                         You <strong>will</strong> be able to open another application following this.
-                    </p>
-
-                    <p>
-                        If you submit your application, you <strong>must</strong> contact the Community Department to process your cancellation request and <strong>may</strong>
-                        be penalised.
-                    </p>
-
                 </div>
 
                 {!! Form::horizontal(["route" => ["visiting.application.withdraw.post", $application->public_id], "method" => "POST"]) !!}

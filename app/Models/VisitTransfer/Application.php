@@ -70,6 +70,7 @@ use Malahierba\PublicId\PublicId;
  * @property-read mixed $is_submitted
  * @property-read mixed $is_transfer
  * @property-read mixed $is_under_review
+ * @property-read mixed $is_withdrawable
  * @property-read mixed $is_visit
  * @property-read mixed $number_references_required_relative
  * @property-read mixed $potential_facilities
@@ -185,6 +186,11 @@ class Application extends Model
 
     public static $APPLICATION_REQUIRES_ACTION = [
         self::STATUS_IN_PROGRESS,
+    ];
+
+    public static $APPLICATION_IS_CONSIDERED_WITHDRAWABLE = [
+        self::STATUS_IN_PROGRESS,
+        self::STATUS_SUBMITTED,
     ];
 
     public function __construct(array $attributes = [])
@@ -329,6 +335,11 @@ class Application extends Model
         return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_CLOSED);
     }
 
+    public function getIsWithdrawableAttribute()
+    {
+        return $this->isStatusIn(self::$APPLICATION_IS_CONSIDERED_WITHDRAWABLE);
+    }
+
     public function getIsInProgressAttribute()
     {
         return $this->isStatus(self::STATUS_IN_PROGRESS);
@@ -465,7 +476,7 @@ class Application extends Model
 
     public function isStatusIn($stati)
     {
-        return in_array($this->attributes['status'], $stati);
+        return in_array($this->status, $stati);
     }
 
     public function isStatusNotIn($stati)
@@ -533,6 +544,24 @@ class Application extends Model
         $this->save();
 
         event(new ApplicationExpired($this));
+
+        if ($this->facility) {
+            $this->facility->addTrainingSpace();
+        }
+
+        if ($this->is_transfer) {
+            $this->account->removeState(State::findByCode('TRANSFERRING'));
+        }
+
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
+    }
+
+    public function lapse()
+    {
+        $this->status = self::STATUS_LAPSED;
+        $this->save();
 
         if ($this->facility) {
             $this->facility->addTrainingSpace();
@@ -799,7 +828,7 @@ class Application extends Model
 
     private function guardAgainstInvalidWithdrawal()
     {
-        if ($this->is_in_progress) {
+        if ($this->is_withdrawable) {
             return;
         }
 
