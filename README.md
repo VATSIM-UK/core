@@ -5,7 +5,15 @@
   <a href="https://codeclimate.com/github/VATSIM-UK/core/test_coverage"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/test_coverage" alt="Test Coverage"></a>
 </p>
 
-## Upgrade Notes
+# About
+
+Core is the flagship application of VATSIM UK. Originally designed to handle Single Sign-On (SSO) for our other applications, it now serves as the main hub for all member information and any new features we introduce.
+
+# Issue Tracking
+
+To find out how to track and manage issues, please visit [https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues](https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues).
+
+# Upgrade Notes
 
 The following are the upgrade notes for deploying in production.
 
@@ -29,13 +37,3 @@ The following are the upgrade notes for deploying in production.
 ### Older Versions
 
 To upgrade from older versions, check the `README.md` file for that release.
-
----
-
-## Changes to Issue Tracking
-
-We are making changes to the way we are managing our issue tracking. We are moving away from GitHub Issues to Atlassian's JIRA.
-
-For details on how to continue contributing to CORE using the new issue tracker, see the updated [Contribution Guide](CONTRIBUTING.md) and the new [Issue Tracking Guide](ISSUE_TRACKING.md) (which explains some of the finer points of the new system).
-
-If you have any questions or problems with the new system, reach out to us via the #WebServices channel in the VATSIM UK Slack.
