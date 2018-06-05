@@ -170,41 +170,38 @@ class SyncCommunity extends Command
             // Sync Community Group
 
             // Load & Map IPB Groups
-            $ips_clubs = \IPS\Db::i()->select( 'id,name', 'core_clubs');
+            $ips_clubs = \IPS\Db::i()->select('id,name', 'core_clubs');
             $club_map = [];
             for ($i = 0; $i < $ips_clubs->count(); $i++) {
-              $ips_clubs->next();
-              $club = $ips_clubs->current();
-              $club_map[$club['id']] = $club['name'];
+                $ips_clubs->next();
+                $club = $ips_clubs->current();
+                $club_map[$club['id']] = $club['name'];
             }
 
             // Proccess core group membership.
             foreach ($groups as $group) {
-              $ips_club_id = array_search($group->name, $club_map);
-              if($ips_club_id !== FALSE){
-                $club = \IPS\Member\Club::load($ips_club_id);
+                $ips_club_id = array_search($group->name, $club_map);
+                if ($ips_club_id !== false) {
+                    $club = \IPS\Member\Club::load($ips_club_id);
 
-                // Only add the user if not in already
-                if($club->memberStatus($ips_member) === NULL){
-                  $club->addMember($ips_member);
+                    // Only add the user if not in already
+                    if ($club->memberStatus($ips_member) === null) {
+                        $club->addMember($ips_member);
+                    }
                 }
-              }
             }
 
             // Proccess member's IPB-side Club membership.
             foreach ($ips_member->clubs() as $ips_member_club) {
-              $name = $club_map[$ips_member_club];
+                $name = $club_map[$ips_member_club];
 
-              if($groups->pluck('name')->search($name) === false){
-                $ips_member_club = \IPS\Member\Club::load($ips_member_club);
-                if(!$ips_member_club->isLeader($ips_member) && !$ips_member_club->isModerator($ips_member)){
-                  $ips_member_club->removeMember($ips_member);
+                if ($groups->pluck('name')->search($name) === false) {
+                    $ips_member_club = \IPS\Member\Club::load($ips_member_club);
+                    if (!$ips_member_club->isLeader($ips_member) && !$ips_member_club->isModerator($ips_member)) {
+                        $ips_member_club->removeMember($ips_member);
+                    }
                 }
-              }
             }
-
-
-
         }
 
         if ($verbose) {
