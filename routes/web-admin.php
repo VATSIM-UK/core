@@ -70,6 +70,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
         });
 
         Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
+            Route::get('', ['as' => 'forms', 'uses' => 'Feedback@getListForms']);
+
             Route::get('new', ['as' => 'new', 'uses' => 'Feedback@getNewForm']);
             Route::post('new', ['as' => 'new.create', 'uses' => 'Feedback@postNewForm']);
 
@@ -89,6 +91,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
         Route::get('staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
     });
+
+    Route::get('atc/endorsement', ['as' => 'adm.atc.endorsement.index', 'uses' => 'Atc\Endorsement@getIndex']);
 
     Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
         Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');

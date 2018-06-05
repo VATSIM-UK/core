@@ -13,11 +13,11 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
     {
         // ORM it all!
         $permissions = PermissionData::orderBy('name', 'ASC')
-                                     ->with('roles')
-                                     ->paginate(20);
+            ->with('roles')
+            ->paginate(20);
 
         return $this->viewMake('adm.mship.permission.index')
-                        ->with('permissions', $permissions);
+            ->with('permissions', $permissions);
     }
 
     public function getCreate()
@@ -25,7 +25,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
         $roles = RoleData::orderBy('name', 'ASC')->get();
 
         return $this->viewMake('adm.mship.permission.create_or_update')
-                        ->with('roles', $roles);
+            ->with('roles', $roles);
     }
 
     public function postCreate()
@@ -52,11 +52,11 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
         $permission->load('roles');
 
         $roles = RoleData::orderBy('name', 'ASC')
-                         ->get();
+            ->get();
 
         return $this->viewMake('adm.mship.permission.create_or_update')
-                        ->with('permission', $permission)
-                        ->with('roles', $roles);
+            ->with('permission', $permission)
+            ->with('roles', $roles);
     }
 
     public function postUpdate(PermissionData $permission)

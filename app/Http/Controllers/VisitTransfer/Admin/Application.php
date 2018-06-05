@@ -8,7 +8,6 @@ use App\Http\Requests\VisitTransfer\ApplicationCheckOutcomeRequest;
 use App\Http\Requests\VisitTransfer\ApplicationCompleteRequest;
 use App\Http\Requests\VisitTransfer\ApplicationRejectRequest;
 use App\Http\Requests\VisitTransfer\ApplicationSettingToggleRequest;
-use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application as ApplicationModel;
 use App\Models\VisitTransfer\Reference as ReferenceModel;
 use Auth;
@@ -30,9 +29,9 @@ class Application extends AdmController
         $sortDir = in_array(Input::get('sort_dir'), ['ASC', 'DESC']) ? Input::get('sort_dir') : 'DESC';
 
         $applications = ApplicationModel::orderBy($sortBy, $sortDir)
-                                        ->with('account')
-                                        ->with('facility')
-                                        ->with('referees');
+            ->with('account')
+            ->with('facility')
+            ->with('referees');
 
         switch ($scope) {
             case 'open':
@@ -59,10 +58,10 @@ class Application extends AdmController
         $applications = $applications->paginate(50);
 
         return $this->viewMake('visit-transfer.admin.application.list')
-                    ->with('applications', $applications)
-                    ->with('sortBy', $sortBy)
-                    ->with('sortDir', $sortDir)
-                    ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
+            ->with('applications', $applications)
+            ->with('sortBy', $sortBy)
+            ->with('sortDir', $sortDir)
+            ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
     }
 
     public function getView(ApplicationModel $application)
@@ -74,8 +73,8 @@ class Application extends AdmController
         });
 
         return $this->viewMake('visit-transfer.admin.application.view')
-                    ->with('application', $application)
-                    ->with('unacceptedReferences', $unacceptedReferences);
+            ->with('application', $application)
+            ->with('unacceptedReferences', $unacceptedReferences);
     }
 
     public function postReject(ApplicationRejectRequest $request, ApplicationModel $application)
@@ -97,7 +96,7 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-                       ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' rejected &amp; candidate notified.');
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' rejected &amp; candidate notified.');
     }
 
     public function postAccept(ApplicationAcceptRequest $request, ApplicationModel $application)
@@ -109,7 +108,7 @@ class Application extends AdmController
         }
 
         return Redirect::back()
-                       ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' accepted &amp; candidate notified.');
+            ->withSuccess('Application #'.$application->public_id.' - '.$application->account->name.' accepted &amp; candidate notified.');
     }
 
     public function postComplete(ApplicationCompleteRequest $request, ApplicationModel $application)
@@ -133,10 +132,10 @@ class Application extends AdmController
         }
 
         return Redirect::route('visiting.admin.application.view', $application->id)->withSuccess(str_replace(
-            '_',
-            ' ',
-            Input::get('check', null)
-        )." check was marked as 'MET'!");
+                '_',
+                ' ',
+                Input::get('check', null)
+            )." check was marked as 'MET'!");
     }
 
     public function postCheckNotMet(ApplicationCheckOutcomeRequest $request, ApplicationModel $application)
@@ -148,10 +147,10 @@ class Application extends AdmController
         }
 
         return Redirect::route('visiting.admin.application.view', $application->id)->withSuccess(str_replace(
-            '_',
-            ' ',
-            Input::get('check', null)
-        )." check was marked as 'NOT MET'!");
+                '_',
+                ' ',
+                Input::get('check', null)
+            )." check was marked as 'NOT MET'!");
     }
 
     public function postSettingToggle(ApplicationSettingToggleRequest $request, ApplicationModel $application)

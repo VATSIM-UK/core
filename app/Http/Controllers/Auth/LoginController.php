@@ -49,7 +49,7 @@ class LoginController extends BaseController
     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function loginMain(Request $request)
@@ -130,7 +130,7 @@ class LoginController extends BaseController
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     protected function credentials(Request $request)
@@ -141,7 +141,7 @@ class LoginController extends BaseController
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return void
      */
     protected function validateLogin(Request $request)

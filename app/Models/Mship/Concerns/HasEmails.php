@@ -26,8 +26,8 @@ trait HasEmails
     /**
      * Determine if the current account has the given email attached to it.
      *
-     * @param string $email        The email to check is attached to this account.
-     * @param bool   $checkPrimary Whether to also check the primary email address.
+     * @param string $email The email to check is attached to this account.
+     * @param bool $checkPrimary Whether to also check the primary email address.
      *
      * @return bool
      */
@@ -85,7 +85,7 @@ trait HasEmails
      * Attach a new secondary email to this user account.
      *
      * @param string $newEmail The new email address to add to this account.
-     * @param bool   $verified Set to TRUE if the email should be automatically verified.
+     * @param bool $verified Set to TRUE if the email should be automatically verified.
      *
      * @return \Illuminate\Database\Eloquent\Model|Email|false
      */

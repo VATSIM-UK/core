@@ -57,7 +57,7 @@ class Slack
      *
      * @param        $author
      * @param string $message The message to send to Slack.
-     * @param array  $fields
+     * @param array $fields
      */
     public static function sendError($author, $message = '', $fields = [])
     {
@@ -69,7 +69,7 @@ class Slack
      *
      * @param        $author
      * @param string $message The message to send.
-     * @param array  $fields
+     * @param array $fields
      */
     public static function sendSuccess($author, $message = '', $fields = [])
     {
@@ -81,7 +81,7 @@ class Slack
      *
      * @param        $author
      * @param string $message
-     * @param array  $fields
+     * @param array $fields
      */
     public static function sendMessage($author, $message = '', $fields = [])
     {

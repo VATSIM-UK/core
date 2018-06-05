@@ -80,7 +80,7 @@
             </ul>
         </li>--> --}}
             @if($_account->hasChildPermission("adm/mship"))
-                <li class="treeview {{ (\Request::is('adm/mship*') ? 'active' : '') }}">
+                <li class="treeview {{ ((\Request::is('adm/mship*') && !\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
                     <a href="#">
                         <i class="ion ion-person-stalker"></i> <span>Membership</span>
                         <i class="fa fa-angle-left pull-right"></i>
@@ -151,42 +151,59 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        @if($_account->hasPermission("adm/mship/feedback/configure/*"))
-                            <li {!! (\Request::is('adm/mship/feedback/new') ? ' class="active"' : '') !!}>
-                                <a href="{{ URL::route("adm.mship.feedback.new") }}">
-                                    <i class="fa fa-plus"></i>
-                                    <span>Add Feedback Form</span>
+                       @if($_account->hasPermission("adm/mship/feedback/list/*"))
+                         <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
+                             <a href="{{ URL::route("adm.mship.feedback.all") }}">
+                               <i class="fa fa-bars"></i>
+                               <span>All Feedback</span>
+                             </a>
+                         </li>
+                       @endif
+                       <li class="treeview {{ Request::is('adm/mship/feedback/list*') ? 'active' : '' }}">
+                         <a href="#">
+                           <i class="fa fa-bars"></i>
+                           <span>Feedback Forms</span>
+                           <i class="fa fa-angle-left"></i>
+                         </a>
+                          <ul class="treeview-menu">
+                            @foreach($_feedbackForms as $f)
+                                @if($_account->hasPermission("adm/mship/feedback/list/".$f->slug) || $_account->hasPermission("adm/mship/feedback/list/*"))
+                                    <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
+                                        <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
+                                            <i class="fa fa-bars"></i>
+                                            <span>{!! $f->name !!}</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                          </ul>
+                       </li>
+
+                       <li {!! ((\Request::is('adm/mship/feedback/configure*') || \Request::is('adm/mship/feedback')) ? ' class="active"' : '') !!}>
+                           <a href="{{ URL::route("adm.mship.feedback.forms") }}">
+                               <i class="fa fa-cog"></i>
+                               <span>Configure Forms</span>
+                           </a>
+                       </li>
+                   </ul>
+                </li>
+            @endif
+
+            @if($_account->hasPermission("adm/atc"))
+                <li class="treeview {{ ((\Request::is('adm/atc*')) ? 'active' : '') }}">
+                    <a href="#">
+                        <i class="ion ion-radio-waves"></i> <span>ATC</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if($_account->hasPermission("adm/atc/endorsement"))
+                            <li {!! (\Request::is('adm/atc/endorsement*') ? ' class="active"' : '') !!}>
+                                <a href="{{ URL::route("adm.atc.endorsement.index") }}">
+                                    <i class="ion ion-document-text"></i>
+                                    <span>Endorsements</span>
                                 </a>
                             </li>
                         @endif
-                        @if($_account->hasPermission("adm/mship/feedback/list/*"))
-                          <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
-                              <a href="{{ URL::route("adm.mship.feedback.all") }}">
-                                <i class="fa fa-bars"></i>
-                                <span>All Feedback</span>
-                              </a>
-                          </li>
-                        @endif
-                        @foreach($_feedbackForms as $f)
-                            @if($_account->hasPermission("adm/mship/feedback/list/".$f->slug) || $_account->hasPermission("adm/mship/feedback/list/*"))
-                                <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
-                                    <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
-                                        <i class="fa fa-bars"></i>
-                                        <span>{!! $f->name !!}</span>
-                                    </a>
-                                </li>
-                            @endif
-                        @endforeach
-                        @foreach($_feedbackForms as $f)
-                          @if($_account->hasPermission("adm/mship/feedback/configure/".$f->slug) || $_account->hasPermission("adm/mship/feedback/configure/*"))
-                            <li {!! (\Request::is('adm/mship/feedback/configure/'.$f->slug) ? ' class="active"' : '') !!}>
-                                <a href="{{ URL::route("adm.mship.feedback.config", [$f->slug]) }}">
-                                    <i class="fa fa-cog"></i>
-                                    <span>{!! $f->name !!} Settings</span>
-                                </a>
-                            </li>
-                            @endif
-                        @endforeach
                     </ul>
                 </li>
             @endif

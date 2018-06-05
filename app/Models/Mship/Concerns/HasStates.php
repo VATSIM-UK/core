@@ -107,8 +107,8 @@ trait HasStates
     /**
      * Set the account's current state to the given value.
      *
-     * @param State       $state    The state to set.
-     * @param string|null $region   Member's region
+     * @param State $state The state to set.
+     * @param string|null $region Member's region
      * @param string|null $division Member's division
      *
      * @return mixed

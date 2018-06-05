@@ -51,7 +51,7 @@ class Notification extends Model
     public function scopePublished($query)
     {
         return $query->where('status', '!=', self::STATUS_UNPUBLISHED)
-                     ->where('effective_at', '<=', \Carbon\Carbon::now());
+            ->where('effective_at', '<=', \Carbon\Carbon::now());
     }
 
     public function scopeWithStatus($query, $status)

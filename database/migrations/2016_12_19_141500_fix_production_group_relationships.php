@@ -20,19 +20,19 @@ class FixProductionGroupRelationships extends Migration
         });
 
         DB::table('community_membership')
-          ->update([
-              'tmp_account_id' => DB::raw('`group_id`'),
-          ]);
+            ->update([
+                'tmp_account_id' => DB::raw('`group_id`'),
+            ]);
 
         DB::table('community_membership')
-          ->update([
-              'group_id' => DB::raw('`account_id`'),
-          ]);
+            ->update([
+                'group_id' => DB::raw('`account_id`'),
+            ]);
 
         DB::table('community_membership')
-          ->update([
-              'account_id' => DB::raw('`tmp_account_id`'),
-          ]);
+            ->update([
+                'account_id' => DB::raw('`tmp_account_id`'),
+            ]);
 
         Schema::table('community_membership', function (Blueprint $table) {
             $table->dropColumn('tmp_account_id');
@@ -51,19 +51,19 @@ class FixProductionGroupRelationships extends Migration
         });
 
         DB::table('community_membership')
-          ->update([
-              'tmp_account_id' => DB::raw('`account_id`'),
-          ]);
+            ->update([
+                'tmp_account_id' => DB::raw('`account_id`'),
+            ]);
 
         DB::table('community_membership')
-          ->update([
-              'account_id' => DB::raw('`group_id`'),
-          ]);
+            ->update([
+                'account_id' => DB::raw('`group_id`'),
+            ]);
 
         DB::table('community_membership')
-          ->update([
-              'group_id' => DB::raw('`tmp_account_id`'),
-          ]);
+            ->update([
+                'group_id' => DB::raw('`tmp_account_id`'),
+            ]);
 
         Schema::table('community_membership', function (Blueprint $table) {
             $table->dropColumn('tmp_account_id');

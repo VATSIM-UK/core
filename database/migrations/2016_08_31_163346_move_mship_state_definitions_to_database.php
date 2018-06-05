@@ -122,12 +122,12 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
 
         foreach ($stateIds as $oldId => $newId) {
             DB::table('mship_account_state')
-              ->where('state', '=', $oldId)
-              ->update([
-                  'state_id' => $newId,
-                  'start_at' => DB::raw('`created_at`'),
-                  'end_at' => DB::raw('`deleted_at`'),
-              ]);
+                ->where('state', '=', $oldId)
+                ->update([
+                    'state_id' => $newId,
+                    'start_at' => DB::raw('`created_at`'),
+                    'end_at' => DB::raw('`deleted_at`'),
+                ]);
         }
     }
 
@@ -142,13 +142,13 @@ class MoveMshipStateDefinitionsToDatabase extends Migration
 
         foreach ($stateIds as $oldId => $newId) {
             DB::table('mship_account_state')
-              ->where('state_id', '=', $oldId)
-              ->update([
-                  'state' => $newId,
-                  'created_at' => DB::raw('`start_at`'),
-                  'updated_at' => DB::raw('`start_at`'),
-                  'deleted_at' => DB::raw('`end_at`'),
-              ]);
+                ->where('state_id', '=', $oldId)
+                ->update([
+                    'state' => $newId,
+                    'created_at' => DB::raw('`start_at`'),
+                    'updated_at' => DB::raw('`start_at`'),
+                    'deleted_at' => DB::raw('`end_at`'),
+                ]);
         }
     }
 

@@ -53,7 +53,9 @@ class GenerateFeedbackSummary extends Command
 
         foreach ($groupedFeedback as $feedback) {
             $contact = $feedback->first()->form->contact;
-            $contact->notify(new FeedbackSummary($feedbackStart, $feedback));
+            if ($contact) {
+                $contact->notify(new FeedbackSummary($feedbackStart, $feedback));
+            }
         }
     }
 }

@@ -12,11 +12,11 @@ class AddMshipBansPermission extends Migration
     public function up()
     {
         DB::table('mship_permission')->insert([
-                'name' => 'adm/mship/bans',
-                'display_name' => 'Admin / Membership / Bans',
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
-            ]);
+            'name' => 'adm/mship/bans',
+            'display_name' => 'Admin / Membership / Bans',
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
     }
 
     /**

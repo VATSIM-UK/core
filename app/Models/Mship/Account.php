@@ -107,6 +107,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messages\Thread[] $messageThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Atc[] $networkDataAtc
  * @property-read \App\Models\NetworkData\Atc $networkDataAtcCurrent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NetworkData\Pilot[] $networkDataPilot
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $noteWriter
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Mship\Account\Note[] $notes
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -256,7 +257,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function messageThreads()
     {
         return $this->belongsToMany(\App\Models\Messages\Thread::class, 'messages_thread_participant', 'thread_id')
-                    ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
+            ->withPivot('display_as', 'read_at', 'status')->withTimestamps();
     }
 
     public function messagePosts()
@@ -267,13 +268,13 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function bansAsInstigator()
     {
         return $this->hasMany(\App\Models\Mship\Account\Ban::class, 'banned_by')
-                    ->orderBy('created_at', 'DESC');
+            ->orderBy('created_at', 'DESC');
     }
 
     public function notes()
     {
         return $this->hasMany(\App\Models\Mship\Account\Note::class, 'account_id')
-                    ->orderBy('created_at', 'DESC');
+            ->orderBy('created_at', 'DESC');
     }
 
     public function noteWriter()
@@ -294,8 +295,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function roles()
     {
         return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
-                    ->with('permissions')
-                    ->withTimestamps();
+            ->with('permissions')
+            ->withTimestamps();
     }
 
     public function pireps()

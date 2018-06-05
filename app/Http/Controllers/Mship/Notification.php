@@ -31,8 +31,8 @@ class Notification extends \App\Http\Controllers\BaseController
         $readNotifications = $this->account->readSystemNotifications;
 
         return $this->viewMake('mship.notification.list')
-                    ->with('unreadNotifications', $unreadNotifications)
-                    ->with('readNotifications', $readNotifications)
-                    ->with('allowedToLeave', (!Session::has('force_notification_read_return_url') or (!Auth::user()->has_unread_important_notifications and !Auth::user()->get_unread_must_read_notifications)));
+            ->with('unreadNotifications', $unreadNotifications)
+            ->with('readNotifications', $readNotifications)
+            ->with('allowedToLeave', (!Session::has('force_notification_read_return_url') or (!Auth::user()->has_unread_important_notifications and !Auth::user()->get_unread_must_read_notifications)));
     }
 }

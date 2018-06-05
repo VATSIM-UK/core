@@ -108,7 +108,7 @@ trait TracksChanges
     /**
      * Set the trackable attributes for the model.
      *
-     * @param  array  $tracked
+     * @param  array $tracked
      * @return $this
      */
     public function tracked(array $tracked)
@@ -131,7 +131,7 @@ trait TracksChanges
     /**
      * Set the untrackable attributes for the model.
      *
-     * @param  array  $untracked
+     * @param  array $untracked
      * @return $this
      */
     public function untracked(array $untracked)
@@ -154,7 +154,7 @@ trait TracksChanges
     /**
      * Determine if the given attribute is tracked.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function isTrackable($key)
@@ -184,7 +184,7 @@ trait TracksChanges
     /**
      * Determine if the given key is untracked.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function isUntracked($key)
@@ -205,7 +205,7 @@ trait TracksChanges
     /**
      * Get the trackable attributes of a given array.
      *
-     * @param  array  $attributes
+     * @param  array $attributes
      * @return array
      */
     protected function trackableFromArray(array $attributes)

@@ -141,6 +141,6 @@ class ImportMembers extends Command
     protected function getMemberIdAndEmail()
     {
         return DB::table('mship_account')
-                 ->pluck('email', 'id');
+            ->pluck('email', 'id');
     }
 }
