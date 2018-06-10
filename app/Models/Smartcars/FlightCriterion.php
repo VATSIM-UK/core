@@ -66,8 +66,8 @@ class FlightCriterion extends Model
      *
      * Based on https://github.com/substack/point-in-polygon/blob/master/index.js
      *
-     * @param float $latitude   The latitude of the point (vertical, y)
-     * @param float $longitude  The longitude of the point (horizontal, x)
+     * @param float $latitude The latitude of the point (vertical, y)
+     * @param float $longitude The longitude of the point (horizontal, x)
      * @return bool
      */
     public function hasPoint($latitude, $longitude)

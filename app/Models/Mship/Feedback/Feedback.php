@@ -26,7 +26,9 @@ use Illuminate\Notifications\Notifiable;
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\Models\Mship\Account $submitter
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback aTC()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback actioned()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback pilot()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback unActioned()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereActionedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback whereActionedById($value)

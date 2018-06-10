@@ -106,8 +106,10 @@
                                     <div id="collapse<?=$notice->id?>" class="panel-collapse collapse" role="tabpanel"
                                          aria-labelledby="heading<?=$notice->id?>">
                                         <div class="panel-body">
+                                            @if ($notice->pivot->created_at)
                                             <div class="text-right"><em>You first read this notification
                                                     on {{ $notice->pivot->created_at }}</em></div>
+                                            @endif
                                             {!! nl2br($notice->content) !!}
                                         </div>
                                     </div>

@@ -68,8 +68,8 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
         });
 
         return $this->viewMake('adm.dashboard')
-                        ->with('statistics', $statistics)
-                        ->with('membershipStats', $membershipStats);
+            ->with('statistics', $statistics)
+            ->with('membershipStats', $membershipStats);
     }
 
     public function anySearch($searchQuery = null)
@@ -104,7 +104,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
         $this->setTitle('Global Search Results: '.$searchQuery);
 
         return $this->viewMake('adm.search')
-                        ->with('members', $members)
-                        ->with('emails', $emails);
+            ->with('members', $members)
+            ->with('emails', $emails);
     }
 }

@@ -27,7 +27,7 @@ class ExerciseResourceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
      */
     public function index(Flight $exercise)
@@ -40,7 +40,7 @@ class ExerciseResourceController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
      */
     public function create(Flight $exercise)
@@ -53,8 +53,8 @@ class ExerciseResourceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Flight  $exercise
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Smartcars\Flight $exercise
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Flight $exercise)
@@ -69,8 +69,8 @@ class ExerciseResourceController extends Controller
         $resource = new FlightResource($request->only('display_name', 'type'));
         $resource->flight()->associate($exercise);
         $resource->resource = $resource->type === 'file'
-                            ? $request->file('file')->store('smartcars/exercises/resources', ['disk' => 'public'])
-                            : $resource->resource = $request->input('uri');
+            ? $request->file('file')->store('smartcars/exercises/resources', ['disk' => 'public'])
+            : $resource->resource = $request->input('uri');
         $resource->save();
 
         return redirect()->route('adm.smartcars.exercises.resources.index', $exercise)
@@ -94,9 +94,9 @@ class ExerciseResourceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Smartcars\Flight  $exercise
-     * @param  \App\Models\Smartcars\FlightResource  $resource
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Smartcars\Flight $exercise
+     * @param  \App\Models\Smartcars\FlightResource $resource
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Flight $exercise, FlightResource $resource)

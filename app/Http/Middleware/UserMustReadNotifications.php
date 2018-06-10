@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Traits\Middleware\RedirectsOnFailure;
 use Auth;
-use Redirect;
 
 class UserMustReadNotifications
 {

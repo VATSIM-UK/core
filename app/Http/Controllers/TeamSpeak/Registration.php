@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\TeamSpeak;
 
-use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
 use Redirect;
@@ -40,9 +39,9 @@ class Registration extends \App\Http\Controllers\BaseController
 
         $this->pageTitle = 'New Registration';
         $view = $this->viewMake('teamspeak.new')
-                     ->withRegistration($registration)
-                     ->withConfirmation($confirmation)
-                     ->with('auto_url', $autoURL);
+            ->withRegistration($registration)
+            ->withConfirmation($confirmation)
+            ->with('auto_url', $autoURL);
 
         return $view;
     }
@@ -91,8 +90,8 @@ class Registration extends \App\Http\Controllers\BaseController
         $_confirmation = new ConfirmationModel();
         $_confirmation->registration_id = $registrationID;
         $_confirmation->privilege_key = \App\Libraries\TeamSpeak::run()
-                                      ->serverGroupGetByName('New')
-                                      ->privilegeKeyCreate($key_description, $key_custominfo);
+            ->serverGroupGetByName('New')
+            ->privilegeKeyCreate($key_description, $key_custominfo);
         $_confirmation->save();
 
         return $_confirmation;

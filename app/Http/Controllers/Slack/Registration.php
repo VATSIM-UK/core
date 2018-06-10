@@ -48,7 +48,7 @@ class Registration extends \App\Http\Controllers\BaseController
         $this->pageTitle = 'New Slack Registration';
 
         return $this->viewMake('slack.new')
-                    ->with('slackToken', $_slackToken);
+            ->with('slackToken', $_slackToken);
     }
 
     public function getConfirmed()

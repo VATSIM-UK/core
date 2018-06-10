@@ -13,11 +13,11 @@ class Role extends \App\Http\Controllers\Adm\AdmController
     {
         // ORM it all!
         $roles = RoleData::orderBy('name', 'ASC')
-                         ->with('permissions')
-                         ->get();
+            ->with('permissions')
+            ->get();
 
         return $this->viewMake('adm.mship.role.index')
-                    ->with('roles', $roles);
+            ->with('roles', $roles);
     }
 
     public function getCreate()
@@ -25,7 +25,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         $permissions = PermissionData::orderBy('name', 'ASC')->get();
 
         return $this->viewMake('adm.mship.role.create_or_update')
-                    ->with('permissions', $permissions);
+            ->with('permissions', $permissions);
     }
 
     public function postCreate()
@@ -55,11 +55,11 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         }
 
         $permissions = PermissionData::orderBy('name', 'ASC')
-                                     ->get();
+            ->get();
 
         return $this->viewMake('adm.mship.role.create_or_update')
-                    ->with('role', $role)
-                    ->with('permissions', $permissions);
+            ->with('role', $role)
+            ->with('permissions', $permissions);
     }
 
     public function postUpdate(RoleData $role)

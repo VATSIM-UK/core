@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Smartcars\Api;
 
 use App\Http\Controllers\Adm\AdmController;
-use App\Models\Smartcars\Aircraft;
 use App\Models\Smartcars\Airport;
-use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Pirep as PirepData;
 use Input;
 
@@ -14,10 +12,10 @@ class Pirep extends AdmController
     public function getSearch()
     {
         $pireps = PirepData::with('bid.flight')
-                           ->with('bid.flight.departure')
-                           ->with('bid.flight.arrival')
-                           ->with('bid.flight.aircraft')
-                           ->belongsTo(Input::get('dbid'));
+            ->with('bid.flight.departure')
+            ->with('bid.flight.arrival')
+            ->with('bid.flight.aircraft')
+            ->belongsTo(Input::get('dbid'));
 
         $departure = Airport::findByIcao(Input::get('departureicao'));
         if (Input::get('departureicao', null) != null) {

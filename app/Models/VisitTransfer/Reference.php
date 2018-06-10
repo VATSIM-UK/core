@@ -27,10 +27,10 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $reference
  * @property int $status
  * @property string|null $status_note
- * @property string|null $contacted_at
- * @property string|null $reminded_at
- * @property string|null $submitted_at
- * @property string|null $deleted_at
+ * @property \Carbon\Carbon|null $contacted_at
+ * @property \Carbon\Carbon|null $reminded_at
+ * @property \Carbon\Carbon|null $submitted_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \App\Models\VisitTransfer\Application $application
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
@@ -275,11 +275,11 @@ class Reference extends Model
 
         $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n".'Applicant not known to referee';
         $note = $this->application->account->addNote(
-          Type::isShortCode('visittransfer')->first(),
-          $noteContent,
-          null,
-          $this
-      );
+            Type::isShortCode('visittransfer')->first(),
+            $noteContent,
+            null,
+            $this
+        );
         $this->notes()->save($note);
 
         event(new ReferenceCancelled($this));

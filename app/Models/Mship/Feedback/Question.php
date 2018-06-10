@@ -62,9 +62,9 @@ class Question extends Model
         'required',
     ];
     protected $casts = [
-     'required' => 'boolean',
-     'options' => 'array',
-     'permanent' => 'boolean',
+        'required' => 'boolean',
+        'options' => 'array',
+        'permanent' => 'boolean',
     ];
 
     public function scopeNotPermanent($query)
@@ -99,10 +99,5 @@ class Question extends Model
         }
 
         return false;
-    }
-
-    public function getSlugAttribute($value)
-    {
-        return substr($value, 0, -1);
     }
 }

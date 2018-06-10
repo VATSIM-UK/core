@@ -7,6 +7,9 @@ use Carbon\Carbon;
 
 trait HasNotifications
 {
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function readSystemNotifications()
     {
         return $this->belongsToMany(
@@ -14,9 +17,9 @@ trait HasNotifications
             'sys_notification_read',
             'account_id',
             'notification_id'
-        )
-            ->orderBy('status', 'DESC')
-            ->orderBy('effective_at', 'DESC');
+        )->orderBy('status', 'DESC')
+            ->orderBy('effective_at', 'DESC')
+            ->withPivot(['created_at']);
     }
 
     public function getUnreadNotificationsAttribute()

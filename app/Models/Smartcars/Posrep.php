@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $groundspeed
  * @property int $distance_remaining
  * @property int $phase
- * @property string $time_departure
- * @property string $time_remaining
- * @property string $time_arrival
+ * @property string|null $time_departure
+ * @property string|null $time_remaining
+ * @property string|null $time_arrival
  * @property string $network
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -77,28 +77,38 @@ class Posrep extends Model
      * @param FlightCriterion $criterion
      * @return bool
      */
-    public function isValid(FlightCriterion $criterion)
+    public function positionIsValid(FlightCriterion $criterion)
     {
         // location
         if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
             return false;
         }
 
-        // altitude
-        if ($criterion->min_altitude !== null && $this->altitude < $criterion->min_altitude) {
-            return false;
-        }
+        return true;
+    }
 
-        if ($criterion->max_altitude !== null && $this->altitude > $criterion->max_altitude) {
-            return false;
-        }
-
+    public function speedIsValid(FlightCriterion $criterion)
+    {
         // groundspeed
         if ($criterion->min_groundspeed !== null && $this->groundspeed < $criterion->min_groundspeed) {
             return false;
         }
 
         if ($criterion->max_groundspeed !== null && $this->groundspeed > $criterion->max_groundspeed) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function altitudeIsValid(FlightCriterion $criterion)
+    {
+        // altitude
+        if ($criterion->min_altitude !== null && $this->altitude < $criterion->min_altitude) {
+            return false;
+        }
+
+        if ($criterion->max_altitude !== null && $this->altitude > $criterion->max_altitude) {
             return false;
         }
 

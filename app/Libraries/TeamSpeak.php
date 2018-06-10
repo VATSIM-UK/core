@@ -36,7 +36,7 @@ class TeamSpeak
      * Connect to the TeamSpeak server.
      *
      * @param string $nickname
-     * @param bool   $nonBlocking
+     * @param bool $nonBlocking
      * @return \TeamSpeak3_Node_Server
      */
     public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false)
@@ -174,7 +174,7 @@ class TeamSpeak
      * Check a client's description is correct.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param Account                $member
+     * @param Account $member
      * @return TeamSpeak3_Node_Client
      */
     public static function checkClientDescription(TeamSpeak3_Node_Client $client, Account $member)
@@ -218,7 +218,7 @@ class TeamSpeak
      * Check a member has accepted any necessary notifications.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param Account                $member
+     * @param Account $member
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkMemberMandatoryNotifications(TeamSpeak3_Node_Client $client, Account $member)
@@ -251,7 +251,7 @@ class TeamSpeak
      * Check the client's nickname is correct.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param Account                $member
+     * @param Account $member
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientNickname(TeamSpeak3_Node_Client $client, Account $member)
@@ -313,7 +313,7 @@ class TeamSpeak
      * Check the client is in the appropriate channel groups.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param Account                $member
+     * @param Account $member
      * @throws \TeamSpeak3_Adapter_ServerQuery_Exception
      */
     public static function checkClientChannelGroups(TeamSpeak3_Node_Client $client, Account $member)
@@ -344,7 +344,7 @@ class TeamSpeak
      * Check the client's (allowed) idle time.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param Account                $member
+     * @param Account $member
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function checkClientIdleTime(TeamSpeak3_Node_Client $client, Account $member)
@@ -452,7 +452,7 @@ class TeamSpeak
      * Removes the client from the server and deletes them from the database.
      *
      * @param TeamSpeak3_Node_Client $client
-     * @param string                 $reason
+     * @param string $reason
      * @throws \App\Exceptions\TeamSpeak\ClientKickedFromServerException
      */
     public static function deactivateClient(TeamSpeak3_Node_Client $client, $reason)

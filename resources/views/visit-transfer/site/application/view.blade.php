@@ -146,6 +146,13 @@
                 </div>
 
             </div>
+                @can("withdraw-application", $application)
+                <div class="col-md-10 col-md-offset-1">
+                    <h3>Withdraw Application</h3>
+                    <p>If you wish to withdraw your application, please click below.</p>
+                    {{ link_to_route("visiting.application.withdraw", "Withdraw Application", [$application->public_id], ["class" => "label label-danger label-md"]) }}
+                </div>
+                @endif
             {!! HTML::panelClose() !!}
     </div>
 @stop

@@ -34,6 +34,7 @@ use Watson\Rememberable\Rememberable;
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
+ * @property-read mixed $human_duration
  * @property-read \App\Models\Mship\Qualification $qualification
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot offline()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Pilot online()

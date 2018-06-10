@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use App\Models\VisitTransfer\Application;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;

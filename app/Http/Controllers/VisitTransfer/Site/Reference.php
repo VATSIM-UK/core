@@ -18,9 +18,9 @@ class Reference extends BaseController
         $this->authorize('complete', $reference);
 
         return $this->viewMake('visit-transfer.site.reference.complete')
-                    ->with('token', $token)
-                    ->with('reference', $reference)
-                    ->with('application', $reference->application);
+            ->with('token', $token)
+            ->with('reference', $reference)
+            ->with('application', $reference->application);
     }
 
     public function postComplete(ReferenceSubmitRequest $request, Token $token)

@@ -20,7 +20,6 @@
                 <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Flight Training Exercises
                 </div>
                 <div class="panel-body">
-                    <div class="">
                         Fancy something different? VATSIM UK is proud to announce the launch of Flight Training Exercises –
                         the new
                         way to learn and have fun!<br/><br/>
@@ -28,8 +27,8 @@
                         and much more.<br>
                         To get started check out {!! link_to_route('fte.guide', 'our guide here') !!}.<br/><br/>
                         If you have any questions please contact the Pilot Training Department via the Helpdesk
-                        ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).
-                    </div>
+                        ({{ HTML::link('https://helpdesk.vatsim.uk/','click here',array("target"=>"_blank")) }}).<br><br>
+                        <button type="button" id="restart_tour" class="btn btn-success center-block">Take a Tour</button>
                 </div>
             </div>
         </div>
@@ -134,6 +133,9 @@
 
         tour.init();
         tour.start();
+        $("#restart_tour").click(function(){
+            tour.restart();
+        });
     </script>
 @stop
 @endif

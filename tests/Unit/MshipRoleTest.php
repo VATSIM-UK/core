@@ -43,7 +43,7 @@ class MshipRoleTest extends TestCase
         $this->assertTrue($role->hasSessionTimeout());
 
         $this->assertDatabaseHas('mship_role', [
-            'id'              => $role->id,
+            'id' => $role->id,
             'session_timeout' => 60,
         ]);
     }
@@ -80,7 +80,7 @@ class MshipRoleTest extends TestCase
         $role->attachPermission($permission);
 
         $this->assertDatabaseHas('mship_permission_role', [
-            'role_id'       => $role->id,
+            'role_id' => $role->id,
             'permission_id' => $permission->id,
         ]);
 
@@ -98,12 +98,12 @@ class MshipRoleTest extends TestCase
         $role->attachPermission($permissionA);
 
         $this->assertDatabaseHas('mship_permission_role', [
-            'role_id'       => $role->id,
+            'role_id' => $role->id,
             'permission_id' => $permissionA->id,
         ]);
 
         $this->assertDatabaseMissing('mship_permission_role', [
-            'role_id'       => $role->id,
+            'role_id' => $role->id,
             'permission_id' => $permissionB->id,
         ]);
 

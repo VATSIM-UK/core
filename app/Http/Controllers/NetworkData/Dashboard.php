@@ -40,7 +40,7 @@ class Dashboard extends AdmController
         });
 
         return $this->viewMake('network-data.admin.dashboard')
-                    ->with('statisticsRaw', $statisticsRaw)
-                    ->with('statisticsGraph', $statisticsGraph);
+            ->with('statisticsRaw', $statisticsRaw)
+            ->with('statisticsGraph', $statisticsGraph);
     }
 }

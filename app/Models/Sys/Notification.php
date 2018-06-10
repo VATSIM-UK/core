@@ -51,7 +51,7 @@ class Notification extends Model
     public function scopePublished($query)
     {
         return $query->where('status', '!=', self::STATUS_UNPUBLISHED)
-                     ->where('effective_at', '<=', \Carbon\Carbon::now());
+            ->where('effective_at', '<=', \Carbon\Carbon::now());
     }
 
     public function scopeWithStatus($query, $status)
@@ -95,6 +95,7 @@ class Notification extends Model
 
     public function readBy()
     {
-        return $this->belongsToMany(\App\Models\Mship\Account::class, 'sys_notification_read', 'notification_id');
+        return $this->belongsToMany(\App\Models\Mship\Account::class, 'sys_notification_read', 'notification_id')
+            ->with('created_at');
     }
 }

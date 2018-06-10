@@ -14,8 +14,8 @@ abstract class Command extends BaseCommand
      * If STDOUT is piped/redirected, styling is removed.
      *
      * @param string $message The string to output.
-     * @param null   $style   The styling to output.
-     * @param bool   $newline If a new line should be returned at the end.
+     * @param null $style The styling to output.
+     * @param bool $newline If a new line should be returned at the end.
      */
     protected function log($message, $style = null, $newline = true)
     {
@@ -56,8 +56,8 @@ abstract class Command extends BaseCommand
     /**
      * Send a direct message to a Slack user.
      *
-     * @param Account|string $to    Either the local Account or the SlackUserID to send a message to.
-     * @param string         $message The message to send to the user
+     * @param Account|string $to Either the local Account or the SlackUserID to send a message to.
+     * @param string $message The message to send to the user
      */
     protected function sendSlackMessagePlain($to, $message, $from = null)
     {
@@ -106,7 +106,7 @@ abstract class Command extends BaseCommand
      * Send an error message to Slack.
      *
      * @param string $message The message to send to Slack.
-     * @param array  $fields
+     * @param array $fields
      */
     protected function sendSlackError($message, $fields = [])
     {
@@ -152,7 +152,7 @@ abstract class Command extends BaseCommand
      * Send a success message to Slack.
      *
      * @param string $message The message to send.
-     * @param array  $fields
+     * @param array $fields
      */
     protected function sendSlackSuccess($message = 'Command has run successfully.', $fields = [])
     {
