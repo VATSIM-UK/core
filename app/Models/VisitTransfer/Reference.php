@@ -149,15 +149,6 @@ class Reference extends Model
         return $query->status(self::STATUS_REJECTED);
     }
 
-    public function delete()
-    {
-        $deleted = parent::delete();
-
-        if ($deleted === true) {
-            event(new ReferenceDeleted($this));
-        }
-    }
-
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class);
@@ -314,5 +305,15 @@ class Reference extends Model
         if ($this->status != self::STATUS_UNDER_REVIEW) {
             throw new ReferenceNotUnderReviewException($this);
         }
+    }
+
+    public static function boot ()
+    {
+        parent::boot();
+
+        static::deleting(function (Reference $reference) {
+            $reference->tokens()->delete();
+            event(new ReferenceDeleted($reference));
+        });
     }
 }

@@ -529,6 +529,11 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_WITHDRAWN;
         $this->save();
 
+        // Delete references
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
+
         event(new ApplicationWithdrawn($this));
 
         if ($this->facility) {
@@ -543,6 +548,11 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_EXPIRED;
         $this->save();
 
+        // Delete references
+        foreach ($this->referees as $reference) {
+            $reference->delete();
+        }
+
         event(new ApplicationExpired($this));
 
         if ($this->facility) {
@@ -551,10 +561,6 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->removeState(State::findByCode('TRANSFERRING'));
-        }
-
-        foreach ($this->referees as $reference) {
-            $reference->delete();
         }
     }
 
