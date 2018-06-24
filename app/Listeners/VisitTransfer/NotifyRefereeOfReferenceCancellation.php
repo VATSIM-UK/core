@@ -3,10 +3,10 @@
 namespace App\Listeners\VisitTransfer;
 
 use App\Events\VisitTransfer\ReferenceCancelled;
-use App\Notifications\ApplicationReferenceCancelled;
+use App\Notifications\ApplicationReferenceNoLongerNeeded;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyApplicantOfReferenceCancellation implements ShouldQueue
+class NotifyRefereeOfReferenceCancellation implements ShouldQueue
 {
     public function __construct()
     {
@@ -15,7 +15,6 @@ class NotifyApplicantOfReferenceCancellation implements ShouldQueue
 
     public function handle(ReferenceCancelled $event)
     {
-        $reference = $event->reference;
-        $reference->application->account->notify(new ApplicationReferenceCancelled($reference));
+        $event->reference->notify(new ApplicationReferenceNoLongerNeeded($event->reference));
     }
 }

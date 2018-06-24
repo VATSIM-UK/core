@@ -70,5 +70,9 @@
                 visiting status will be revoked.
             </p>
         @endif
+    @elseif($application->is_withdrawn)
+        <p>
+            Your application will not be processed any further and no further action will be taken. Your referee(s) have been notified that their reference is no longer required.
+        </p>
     @endif
 @stop

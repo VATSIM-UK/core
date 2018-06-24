@@ -125,9 +125,11 @@
                                     Reference {{ $count+1 }} - {{ $reference->account->name }}
 
                                     @if($reference->is_rejected)
-                                        REJECTED
+                                        - REJECTED
                                     @elseif($reference->is_accepted)
-                                        ACCEPTED
+                                        - ACCEPTED
+                                    @elseif($reference->is_cancelled)
+                                        - CANCELLED
                                     @endif
 
                                     <small>DBID: {{ $reference->id }}</small>

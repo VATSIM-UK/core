@@ -4,6 +4,8 @@ namespace App\Http\Controllers\VisitTransfer\Site;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ReferenceSubmitRequest;
+use App\Notifications\ApplicationReferenceCancelledByReferee;
+use App\Models\Mship\Note\Type;
 use App\Models\Sys\Token;
 use Exception;
 use Input;
@@ -42,8 +44,16 @@ class Reference extends BaseController
     public function postCancel(Token $token)
     {
         $reference = $token->related;
-        $reference->cancel();
+        $noteContent = 'VT Reference from '.$reference->account->name." was cancelled.\n".'Applicant not known to referee';
+        $note = $reference->application->account->addNote(
+            Type::isShortCode('visittransfer')->first(),
+            $noteContent,
+            null,
+            $this
+        );
+        $reference->notes()->save($note);
 
+        $reference->application->account->notify(new ApplicationReferenceCancelledByReferee($reference));
         $reference->application->markAsUnderReview();
 
         return Redirect::route('visiting.landing')->withSuccess('You have canceled your reference for '.$reference->application->account->name.'.  Thank you.');

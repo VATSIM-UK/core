@@ -98,6 +98,11 @@ class Reference extends Model
     const STATUS_REJECTED = 95;
     const STATUS_CANCELLED = 100;
 
+    public static $REFERENCE_IS_PENDING = [
+        self::STATUS_DRAFT,
+        self::STATUS_REQUESTED,
+    ];
+
     public static $REFERENCE_IS_SUBMITTED = [
         self::STATUS_UNDER_REVIEW,
         self::STATUS_ACCEPTED,
@@ -199,6 +204,11 @@ class Reference extends Model
         return $this->status == self::STATUS_REJECTED;
     }
 
+    public function getIsCancelledAttribute()
+    {
+        return $this->status == self::STATUS_CANCELLED;
+    }
+
     public function getStatusStringAttribute()
     {
         switch ($this->attributes['status']) {
@@ -215,6 +225,11 @@ class Reference extends Model
             case self::STATUS_REJECTED:
                 return 'Rejected';
         }
+    }
+
+    public function isStatusIn($stati)
+    {
+        return in_array($this->status, $stati);
     }
 
     public function generateToken()
@@ -261,17 +276,12 @@ class Reference extends Model
 
     public function cancel()
     {
+        if($this->isStatusIn(self::$REFERENCE_IS_PENDING) === false) {
+            return;
+        }
         $this->status = self::STATUS_CANCELLED;
         $this->save();
-
-        $noteContent = 'VT Reference from '.$this->account->name." was cancelled.\n".'Applicant not known to referee';
-        $note = $this->application->account->addNote(
-            Type::isShortCode('visittransfer')->first(),
-            $noteContent,
-            null,
-            $this
-        );
-        $this->notes()->save($note);
+        $this->tokens()->delete();
 
         event(new ReferenceCancelled($this));
     }
