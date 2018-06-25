@@ -39,7 +39,6 @@
         "maatwebsite/excel": "~2.1.0",
         "maknz/slack": "@dev",
         "malahierba-lab/public-id": "dev-master",
-        "patricktalmadge/bootstrapper": "~5",
         "planetteamspeak/ts3-php-framework": "dev-master",
         "pusher/pusher-php-server": "~3.0",
         "skymeyer/vatsimphp": "1.0.*",
