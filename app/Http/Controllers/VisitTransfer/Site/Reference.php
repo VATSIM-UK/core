@@ -44,14 +44,7 @@ class Reference extends BaseController
     public function postCancel(Token $token)
     {
         $reference = $token->related;
-        $noteContent = 'VT Reference from '.$reference->account->name." was cancelled.\n".'Applicant not known to referee';
-        $note = $reference->application->account->addNote(
-            Type::isShortCode('visittransfer')->first(),
-            $noteContent,
-            null,
-            $this
-        );
-        $reference->notes()->save($note);
+        $reference->status_note = 'Referee reported that applicant is not known to them';
         $reference->cancel();
 
         $reference->application->account->notify(new ApplicationReferenceCancelledByReferee($reference));
