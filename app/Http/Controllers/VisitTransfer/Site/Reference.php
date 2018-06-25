@@ -52,6 +52,7 @@ class Reference extends BaseController
             $this
         );
         $reference->notes()->save($note);
+        $reference->cancel();
 
         $reference->application->account->notify(new ApplicationReferenceCancelledByReferee($reference));
         $reference->application->markAsUnderReview();
