@@ -350,6 +350,11 @@ class Application extends Model
         return $this->isStatus(self::STATUS_SUBMITTED);
     }
 
+    public function getIsWithdrawnAttribute()
+    {
+        return $this->isStatus(self::STATUS_WITHDRAWN);
+    }
+
     public function getIsPendingReferencesAttribute()
     {
         return $this->references_not_written->count() > 0;
@@ -529,6 +534,11 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_WITHDRAWN;
         $this->save();
 
+        // Cancel references
+        foreach ($this->referees as $reference) {
+            $reference->cancel();
+        }
+
         event(new ApplicationWithdrawn($this));
 
         if ($this->facility) {
@@ -543,6 +553,11 @@ class Application extends Model
         $this->attributes['status'] = self::STATUS_EXPIRED;
         $this->save();
 
+        // Cancel references
+        foreach ($this->referees as $reference) {
+            $reference->cancel();
+        }
+
         event(new ApplicationExpired($this));
 
         if ($this->facility) {
@@ -551,10 +566,6 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->removeState(State::findByCode('TRANSFERRING'));
-        }
-
-        foreach ($this->referees as $reference) {
-            $reference->delete();
         }
     }
 
@@ -619,6 +630,11 @@ class Application extends Model
             // TODO: Investigate why this is required!!!!
         }
 
+        // Cancel any outstanding references
+        foreach ($this->referees as $reference) {
+            $reference->cancel();
+        }
+
         event(new ApplicationRejected($this));
 
         if ($this->is_transfer) {
@@ -649,6 +665,11 @@ class Application extends Model
 
         if ($this->is_transfer) {
             $this->account->addState(State::findByCode('TRANSFERRING'));
+        }
+
+        // Cancel any outstanding references
+        foreach ($this->referees as $reference) {
+            $reference->cancel();
         }
 
         $this->account->notify((new SlackInvitation())->delay(Carbon::now()->addDays(3)));

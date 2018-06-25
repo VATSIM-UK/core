@@ -2,7 +2,7 @@
 
 @section('body')
 <p>
-    There has been a change in circumstances with {{ $application->account->name }}'s {{ $application->type_string }} application to VATSIM United Kingdom.
+    There has been a change in circumstances with {{ $application->account->name }}'s {{ $application->type_string }} application to VATSIM United Kingdom, or you have decided to cancel your reference for them.
 </p>
 
 <p>

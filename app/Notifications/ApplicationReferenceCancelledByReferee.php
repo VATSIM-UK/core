@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApplicationReferenceCancelled extends Notification implements ShouldQueue
+class ApplicationReferenceCancelledByReferee extends Notification implements ShouldQueue
 {
     use Queueable;
 
