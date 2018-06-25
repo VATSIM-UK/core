@@ -16,8 +16,8 @@ class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 
     public function handle(ApplicationUnderReview $event)
     {
-        // TODO: Use the staff services feature to choose recipient
-        $account = Account::find(1002707);
-        $account->notify(new ApplicationReview($event->application));
+        // Disabled pending better implementation
+        // $account = Account::find(1002707);
+        // $account->notify(new ApplicationReview($event->application));
     }
 }
