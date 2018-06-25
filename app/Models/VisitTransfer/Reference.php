@@ -276,7 +276,7 @@ class Reference extends Model
 
     public function cancel()
     {
-        if($this->isStatusIn(self::$REFERENCE_IS_PENDING) === false) {
+        if ($this->isStatusIn(self::$REFERENCE_IS_PENDING) === false) {
             return;
         }
         $this->status = self::STATUS_CANCELLED;
