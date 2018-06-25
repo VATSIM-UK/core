@@ -90,13 +90,13 @@
 
 @section('styles')
 @parent
-{!! HTML::style('/AdminLTE/css/datatables/jquery.dataTables.modified.css') !!}
+<link rel="stylesheet" href="/AdminLTE/css/datatables/jquery.dataTables.modified.css">
 @stop
 
 @section('scripts')
 @parent
-{!! HTML::script('/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js') !!}
-{!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
+<script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js'></script>
+<script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
 <script type="text/javascript">
   $(document).ready(function(){
     $('#mship-accounts').DataTable({

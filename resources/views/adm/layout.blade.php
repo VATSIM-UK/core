@@ -109,34 +109,34 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Morris.js charts -->
-{!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js') !!}
-{!! HTML::script('/AdminLTE/js/plugins/morris/morris.min.js') !!}
+<script src='//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js'></script>
+<script src='/AdminLTE/js/plugins/morris/morris.min.js'></script>
 <!-- Sparkline -->
-{!! HTML::script('/AdminLTE/js/plugins/sparkline/jquery.sparkline.min.js') !!}
+<script src='/AdminLTE/js/plugins/sparkline/jquery.sparkline.min.js'></script>
 <!-- jvectormap -->
-{!! HTML::script('/AdminLTE/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') !!}
-{!! HTML::script('/AdminLTE/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') !!}
+<script src='/AdminLTE/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'></script>
+<script src='/AdminLTE/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'></script>
 <!-- jQuery Knob Chart -->
-{!! HTML::script('/AdminLTE/js/plugins/knob/jquery.knob.js') !!}
+<script src='/AdminLTE/js/plugins/knob/jquery.knob.js'></script>
 <!-- daterangepicker -->
-{!! HTML::script('/AdminLTE/js/plugins/daterangepicker/moment.js') !!}
-{!! HTML::script('/AdminLTE/js/plugins/daterangepicker/daterangepicker.js') !!}
+<script src='/AdminLTE/js/plugins/daterangepicker/moment.js'></script>
+<script src='/AdminLTE/js/plugins/daterangepicker/daterangepicker.js'></script>
 <!-- datepicker -->
-{!! HTML::script('/AdminLTE/js/plugins/datepicker/bootstrap-datepicker.js') !!}
+<script src='/AdminLTE/js/plugins/datepicker/bootstrap-datepicker.js'></script>
 <!-- timepicker -->
-{!! HTML::script('/AdminLTE/js/plugins/timepicker/bootstrap-timepicker.min.js') !!}
+<script src='/AdminLTE/js/plugins/timepicker/bootstrap-timepicker.min.js'></script>
 <!-- Bootstrap WYSIHTML5 -->
-{!! HTML::script('/AdminLTE/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') !!}
+<script src='/AdminLTE/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'></script>
 <!-- BootstrapSwitch -->
-{!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js') !!}
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js'></script>
 <!-- BootstrapSelect -->
-{!! HTML::script('//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.js') !!}
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.js'></script>
 <!-- BootstrapConfirmation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js" integrity="sha384-vMMciU9KnFBubM1yw+Q+6f68+ZHeeD0LPvydPm6xdw75vMiYRB03L7+4K5gGoh5w" crossorigin="anonymous"></script><!-- iCheck -->
-{!! HTML::script('/AdminLTE/js/plugins/iCheck/icheck.min.js') !!}
+<script src='/AdminLTE/js/plugins/iCheck/icheck.min.js'></script>
 
 {{--<!-- AdminLTE App -->--}}
-{!! HTML::script('/AdminLTE/js/app.min.js') !!}
+<script src='/AdminLTE/js/app.min.js'></script>
 
 <script language="javascript" type="text/javascript">
     $('.selectpicker').selectpicker();
