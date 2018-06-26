@@ -678,7 +678,7 @@ class Application extends Model
 
     public function setCheckOutcome($check, $outcome)
     {
-        $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
+        // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
         $columnName = 'check_outcome_'.$check;
 
