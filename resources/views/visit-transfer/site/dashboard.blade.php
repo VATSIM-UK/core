@@ -30,7 +30,9 @@
                                 @elseif($currentTransferApplication)
                                     <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.xfer_open') }}</button>
                                 @else
-                                    <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
+                                    <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">
+                                        <button class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
+                                    </a>
                                 @endif
                             @else
                                 <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.unable')}}</button>
@@ -68,9 +70,13 @@
                             <button class="btn btn-danger" disabled="disabled">THERE ARE NO VISITING PILOT PLACES</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
-                                <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">START PILOT APPLICATION</button>
+                                <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
+                                    <button class="btn btn-success">START PILOT APPLICATION</button>
+                                </a>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentVisitApplicatioon->public_id]) }}">CONTINUE APPLICATION</button>
+                                <a href="{{ route('visiting.application.continue', [$currentVisitApplicatioon->public_id]) }}">
+                                    <button class="btn btn-primary" href="">CONTINUE APPLICATION</button>
+                                </a>
                             @elseif($currentTransferApplication)
                                 <button class="btn btn-danger" disabled="disabled">You current have a transfer application open.</button>
                             @else
@@ -110,9 +116,13 @@
                         <button class="btn btn-danger" disabled="disabled">THERE ARE NO TRANSFER PLACES</button>
                     @else
                         @can("create", new \App\Models\VisitTransfer\Application)
-                            <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">START ATC APPLICATION</button>
+                            <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
+                                <button class="btn btn-success" href="">START ATC APPLICATION</button>
+                            </a>
                         @elseif($currentTransferApplication)
-                            <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">CONTINUE APPLICATION</button>
+                            <a href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">
+                                <button class="btn btn-primary">CONTINUE APPLICATION</button>
+                            </a>
                         @elseif($currentVisitApplication)
                             <button class="btn btn-danger" disabled="disabled">You current have a visit application open.</button>
                         @else
