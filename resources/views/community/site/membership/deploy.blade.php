@@ -23,16 +23,14 @@
                     </p>
 
                     <div class="col-md-12">
-                        {!! ControlGroup::generate(
-                            Form::label("group","Group"),
-                            Form::select("group", ["x" => "Please select a group..."] + $groups->pluck("name", "id")->toArray())
-                            )->withAttributes(["id" => "refereePositionHelp"]) !!}
+                        <div class="form-group" id="refereePositionHelp">
+                            {!! Form::label("group","Group", ['class' => 'control-label']),
+                                Form::select("group", ["x" => "Please select a group..."] + $groups->pluck("name", "id")->toArray(), 'x', ['class' => 'form-control']) !!}
+                        </div>
                     </div>
 
                     <div class="text-center" style="padding-top: 27px;">
-                        {!! Button::danger(trans("membership.deploy.button.invalid"))
-                                  ->withAttributes(["id" => "confirm", "disabled" => "disabled"])
-                                  ->submit() !!}
+                        <button type="submit" class="btn btn-danger" id="confirm" disabled="disabled">INVALID GROUP SELECTED</button>
                     </div>
 
                     {!! Form::close() !!}
@@ -43,25 +41,16 @@
                     <p>
                         {!! trans("membership.deploy.uk.info") !!}
                     </p>
-
-                    @if($isDefaultGroupMember)
-                        <div class="text-center" style="padding-top: 27px;">
-                            {!! Button::danger(trans("membership.deploy.uk.button"))
-                                      ->withAttributes(["id" => "ukonly"])
-                                      ->asLinkTo(URL::previous(route("mship.manage.dashboard"))) !!}
-                        </div>
-                    @else
                         {!! Form::open(["route" => ["community.membership.deploy.post"], "method" => "POST"]) !!}
                         {!! Form::hidden("group", $defaultGroup->id) !!}
 
                         <div class="text-center" style="padding-top: 27px;">
-                            {!! Button::danger(trans("membership.deploy.uk.button"))
-                                      ->withAttributes(["id" => "ukonly"])
-                                      ->submit() !!}
+                            <button type="submit" class="btn btn-danger" id="ukonly">
+                                I do not wish to join any region-based community group at this time.
+                            </button>
                         </div>
 
                         {!! Form::close() !!}
-                    @endif
                 </div>
 
             </div>
