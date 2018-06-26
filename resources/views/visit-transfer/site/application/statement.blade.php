@@ -4,7 +4,7 @@
     <div class="row" id="statementHelp">
         <div class="col-md-12">
             {!! HTML::panelOpen("Choose your Facility", ["type" => "fa", "key" => "question"]) !!}
-            {!! Form::horizontal(["route" => ["visiting.application.statement.post", $application->public_id], "method" => "POST"]) !!}
+            {!! Form::open(["route" => ["visiting.application.statement.post", $application->public_id], "method" => "POST"]) !!}
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
 
@@ -17,14 +17,14 @@
                 <div class="clear-both"></div>
 
                 <div class="col-md-10 col-md-offset-1">
-                    {!! Form::textarea("statement", $application->statement) !!}
+                    {!! Form::textarea("statement", $application->statement, ['class' => 'form-control']) !!}
                 </div>
 
                 <div class="clear-both"></div>
 
                 <div class="col-md-12 text-center">
                     <br />
-                    {!! Button::success("SUBMIT SUPPORTING STATEMENT")->submit() !!}
+                    <button type="submit" class="btn btn-success">SUBMIT SUPPORTING STATEMENT</button>
                 </div>
 
             </div>
