@@ -192,17 +192,26 @@
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)
-                                            {!!
-                                                Modal::named("withdraw_application")
-                                                     ->withTitle("Withdraw Application")
-                                                     ->withBody("If you wish to withdraw your application (without penalty) you can do so by clicking the button below.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))).
-                                                        Button::danger("WITHDRAW APPLICATION - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("WITHDRAW")->extraSmall())
-                                            !!}
+                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#withdrawModal">
+                                                WITHDRAW
+                                            </button>
+                                            <div class="modal fade" role="dialog" id="withdrawModal">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            Withdraw Application
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            If you wish to withdraw your application (without penalty) you can do so by clicking the button below.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {{ Form::open(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))) }}
+                                                            <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION - THIS CANNOT BE UNDONE</button>
+                                                            {{ Form::close() }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @else
                                             -
                                         @endif
