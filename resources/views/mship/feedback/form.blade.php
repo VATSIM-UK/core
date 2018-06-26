@@ -74,7 +74,7 @@
         <div class="row">
             <div class="col-md-12">
               {{ Form::label('name', 'Member\'s Name') }}
-              {{ Form::text('name', null, ['id' => 'member-search-name']) }}
+              {{ Form::text('name', null, ['id' => 'member-search-name', 'class' => 'form-control']) }}
             </div>
         </div>
         <hr>
@@ -110,8 +110,8 @@
         @if (!isset($form))
           {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
             {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
-            {{Form::select('feedback_type', $feedbackForms)}}
-            {{Form::submit("Next")}}
+            {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
+            <button type="submit" class="btn btn-default">Next</button>
           {!! Form::close() !!}
         @else
           {!! Form::open(["route" => ["mship.feedback.new.form.post", $form->slug]]) !!}
@@ -151,7 +151,7 @@
             </div>
   				@endforeach
           <div class="form-group">
-            {{ Form::submit() }}
+            <button type="submit" class="btn btn-default">Submit</button>
           </div>
           {!! Form::close() !!}
         @endif
