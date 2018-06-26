@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="col-md-6 hidden-xs hidden-sm">
-                        {!! Image::rounded(asset('images/ts_connect.png'), 'Connection Screenshot')->responsive() !!}
+                        <img src="{{ asset('images/ts_connect.png') }}" alt="Connection Screenshot" class="img-responsive img-rounded"/>
                     </div>
                 </div>
             {!! HTML::panelClose() !!}
