@@ -8,10 +8,9 @@
             To successfully register, your current IP address must be identical to the one you used to create this registration. <strong>{!! link_to_route('teamspeak.delete', 'Click here', [$registration->id], ['class' => 'alert-link']) !!}</strong> to start a new registration.</div>
     @endif
 
-    {!! Alert::warning(
-            "Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues."
-        )->withAttributes(["id" => "helpmessage", "style" => "display:none"]) !!}
-
+    <div class="alert alert-danger" role="alert" id="helpmessage" style="display:none">
+        Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues.
+    </div>
 
         <div class="col-md-8 col-md-offset-2">
             {!! HTML::panelOpen("Automatic Registration", ["type" => "fa", "key" => "phone"]) !!}
