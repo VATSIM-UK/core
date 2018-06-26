@@ -21,19 +21,19 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
-                            {!! Button::danger(trans("application.dashboard.apply.atc.visit.no_places"))->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
 
                                 @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                    {!! Button::primary("X".trans("application.dashboard.continue"))->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
+                                    <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">{{ "X".trans('application.continue') }}</button>
                                 @elseif($currentTransferApplication)
-                                    {!! Button::danger(trans("application.dashboard.apply.atc.visit.xfer_open"))->disable() !!}
+                                    <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.xfer_open') }}</button>
                                 @else
-                                    {!! Button::success(trans("application.dashboard.apply.atc.visit.start"))->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"])) !!}
+                                    <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
                                 @endif
                             @else
-                                {!! Button::danger(trans("application.dashboard.apply.atc.visit.unable"))->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.unable')}}</button>
                             @endcan
                         @endif
                     </div>
@@ -65,16 +65,16 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
-                            {!! Button::danger("THERE ARE NO VISITING PILOT PLACES")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">THERE ARE NO VISITING PILOT PLACES</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
-                                {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_VISIT, "pilot"])) !!}
+                                <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">START PILOT APPLICATION</button>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
+                                <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentVisitApplicatioon->public_id]) }}">CONTINUE APPLICATION</button>
                             @elseif($currentTransferApplication)
-                                {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">You current have a transfer application open.</button>
                             @else
-                                {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">You are not able to apply to visit at this time.</button>
                             @endcan
                         @endif
                     </div>
@@ -107,16 +107,16 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     @if(!\App\Models\VisitTransfer\Facility::isPossibleToTransfer())
-                        {!! Button::danger("THERE ARE NO TRANSFER PLACES")->disable() !!}
+                        <button class="btn btn-danger" disabled="disabled">THERE ARE NO TRANSFER PLACES</button>
                     @else
                         @can("create", new \App\Models\VisitTransfer\Application)
-                            {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc'])) !!}
+                            <button class="btn btn-success" href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">START ATC APPLICATION</button>
                         @elseif($currentTransferApplication)
-                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentTransferApplication->public_id])) !!}
+                            <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">CONTINUE APPLICATION</button>
                         @elseif($currentVisitApplication)
-                            {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">You current have a visit application open.</button>
                         @else
-                            {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">You are not able to apply to transfer at this time.</button>
                         @endcan
                     @endif
                 </div>
