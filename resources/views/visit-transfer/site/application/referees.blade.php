@@ -37,6 +37,7 @@
                                 <div id="refereeCidHelp">
                                     {!! Form::label("referee_cid","Referee CID"),
                                     Form::text("referee_cid", '', ['class' => 'form-control']) !!}
+                                    <small class="form-text text-muted">Please ensure this is correct.</small>
                                 </div>
 
                                 <div id="refereePositionHelp">
@@ -61,6 +62,7 @@
                                 <div id="refereeEmail">
                                     {!! Form::label("referee_email", "Email Address"),
                                     Form::text("referee_email", '', ['class' => 'form-control']) !!}
+                                    <small class="form-text text-muted">This should be the member's staff email address.</small>
                                 </div>
 
                                 <div class="text-center" style="padding-top: 27px;">
