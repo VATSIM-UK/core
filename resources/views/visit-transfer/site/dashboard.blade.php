@@ -26,7 +26,9 @@
                             @can("create", new \App\Models\VisitTransfer\Application)
 
                                 @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                    <button class="btn btn-primary" href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">{{ "X".trans('application.continue') }}</button>
+                                    <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
+                                        <button class="btn btn-primary" href="">{{ "X".trans('application.continue') }}</button>
+                                    </a>
                                 @elseif($currentTransferApplication)
                                     <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.xfer_open') }}</button>
                                 @else
