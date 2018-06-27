@@ -63,6 +63,24 @@ class ManageSlack extends Command
 
                 if (!$localUser) {
                     if ($this->userIsActive($slackUser)) {
+                        // Try to find matching account - 1st their primary email
+                        $matchAccount = Account::where('email', $slackUser->profile->email)->where('slack_id', null)->first();
+                        if($matchAccount){
+                            $matchAccount->slack_id = $slackUser->id;
+                            $matchAccount->save();
+                            $this->messageUserAdvisingofAutomaticRegistration($slackUser);
+                            continue;
+                        }
+                        // Check secondary emails
+                        $matchAccount = Account::whereHas('secondaryEmails', function ($query) use ($slackUser){
+                            $query->where('email', $slackUser->profile->email);
+                        })->first();
+                        if($matchAccount){
+                            $matchAccount->slack_id = $slackUser->id;
+                            $matchAccount->save();
+                            $this->messageUserAdvisingofAutomaticRegistration($slackUser);
+                            continue;
+                        }
                         $this->messageUserAdvisingOfRegistration($slackUser);
                     }
 
@@ -119,6 +137,16 @@ class ManageSlack extends Command
         $this->sendSlackMessagePlain($slackUser->id, 'Your VATSIM UK and Slack accounts are not currently linked.', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
+    }
+
+    private function messageUserAdvisingofAutomaticRegistration($slackUser)
+    {
+        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Hi '.$slackUser->real_name.',', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'We have found an account matching your email on VATSIM UK Core.', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'As such, we have automatically linked this slack account to core for you', 'VATSIM UK Slack Bot');
+        $this->sendSlackMessagePlain($slackUser->id, 'Please let us know via the helpdesk if this has occurred erroneously', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 }
