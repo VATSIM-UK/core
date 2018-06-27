@@ -113,6 +113,6 @@
 
 @section('scripts')
 @parent
-{!! HTML::script('/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js') !!}
-{!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
+<script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js'></script>
+<script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
 @stop

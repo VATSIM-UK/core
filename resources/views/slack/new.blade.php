@@ -3,10 +3,9 @@
 @section('content')
 
     <div class="row">
-        {!! Alert::warning(
-            "Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues."
-        )->withAttributes(["id" => "helpmessage", "style" => "display:none"]) !!}
-
+        <div class="alert alert-danger" role="alert" id="helpmessage" style="display:none">
+            Having trouble with your registration? Please feel free to <a href='https://helpdesk.vatsim.uk' class='alert-link'>contact us</a> with any queries or issues.
+        </div>
 
         <div class="col-md-8 col-md-offset-2">
             {!! HTML::panelOpen("Slack Registration", ["type" => "fa", "key" => "slack"]) !!}

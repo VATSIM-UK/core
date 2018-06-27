@@ -34,37 +34,39 @@
                             {!! Form::open(["route" => ["visiting.application.referees.post", $application->public_id], "method" => "POST"]) !!}
 
                             <div class="col-md-6">
-                                {!! ControlGroup::generate(
-                                    Form::label("referee_cid","Referee CID"),
-                                    Form::text("referee_cid"),
-                                    Form::help("Please ensure this is correct.")
-                                )->withAttributes(["id" => "refereeCidHelp"]) !!}
+                                <div id="refereeCidHelp">
+                                    {!! Form::label("referee_cid","Referee CID"),
+                                    Form::text("referee_cid", '', ['class' => 'form-control']) !!}
+                                    <small class="form-text text-muted">Please ensure this is correct.</small>
+                                </div>
 
-                                {!! ControlGroup::generate(
-                                    Form::label("referee_relationship","Staff Position"),
-                                    Form::select("referee_relationship", [
-                                        "Region Director"               => "Region Director",
-                                        "Region Staff"                  => "Region Staff",
+                                <div id="refereePositionHelp">
+                                    {!! Form::label("referee_relationship","Staff Position"),
+                                        Form::select("referee_relationship", [
+                                            "Region Director"               => "Region Director",
+                                            "Region Staff"                  => "Region Staff",
 
-                                        "Division Director"             => "Division Director",
-                                        "Division Training Director"    => "Division Training Director",
-                                        "Division Staff"                => "Division Staff",
+                                            "Division Director"             => "Division Director",
+                                            "Division Training Director"    => "Division Training Director",
+                                            "Division Staff"                => "Division Staff",
 
-                                        "VACC/ARTCC Director"           => "VACC/ARTCC Director",
-                                        "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
-                                        "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
-                                    ])
-                                )->withAttributes(["id" => "refereePositionHelp"]) !!}
+                                            "VACC/ARTCC Director"           => "VACC/ARTCC Director",
+                                            "VACC/ARTCC Training Director"  => "VACC/ARTCC Training Director",
+                                            "VACC/ARTCC Staff"              => "VACC/ARTCC Staff",
+                                        ], '', ['class' => 'form-control']) !!}
+                                </div>
+
                             </div>
 
                             <div class="col-md-6">
-                                {!! ControlGroup::generate(
-                                    Form::label("referee_email", "Email Address"),
-                                    Form::text("referee_email"),
-                                    Form::help("This should be the member's staff email address.")
-                                )->withAttributes(["id" => "refereeEmail"]) !!}
+                                <div id="refereeEmail">
+                                    {!! Form::label("referee_email", "Email Address"),
+                                    Form::text("referee_email", '', ['class' => 'form-control']) !!}
+                                    <small class="form-text text-muted">This should be the member's staff email address.</small>
+                                </div>
+
                                 <div class="text-center" style="padding-top: 27px;">
-                                    {!! Button::primary("ADD REFEREE")->submit() !!}
+                                    <button type="submit" class="btn btn-primary">ADD REFEREE</button>
                                 </div>
                             </div>
 
@@ -97,7 +99,7 @@
                                 <td>{{ $referee->relationship }}</td>
                                 <td>
                                     {!! Form::open(["route" => ["visiting.application.referees.delete.post", $application->public_id, $referee->id], "method" => "POST"]) !!}
-                                    {!! Button::danger("DELETE")->extraSmall()->submit() !!}
+                                    <button type="submit" class="btn btn-danger btn-xs">DELETE</button>
                                     {!! Form::close() !!}
                                 </td>
                             </tr>

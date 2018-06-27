@@ -25,16 +25,13 @@
               {{Form::open(['route' => ['adm.mship.feedback.form.export.post', $form->slug], 'method' => 'post'])}}
               <div class="row">
                 <div class="col-xs-6 col-md-4">
-                  {!! ControlGroup::generate(
-                      Form::label("from","From"),
-                      Form::text("from")
-                  ) !!}
+                      {!! Form::label("from","From",['class' => 'control-label']),
+                      Form::text("from", '', ['class' => 'form-control']) !!}
+
                 </div>
                 <div class="col-xs-6 col-md-4">
-                  {!! ControlGroup::generate(
-                      Form::label("to","To"),
-                      Form::text("to")
-                  ) !!}
+                        {!! Form::label("to","To",['class' => 'control-label']),
+                        Form::text("to", '', ['class' => 'form-control']) !!}
                 </div>
                 <div class="col-xs-6 col-md-4">
                   <b>Include:</b>
@@ -45,7 +42,7 @@
                   </div>
                 </div>
                 <div class="col-xs-12 text-center">
-                  {!!Button::primary("Export")->submit() !!}
+                    <button type="submit" class="btn btn-primary">Export</button>
                 </div>
               {{Form::close()}}
             </div>

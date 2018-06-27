@@ -11,9 +11,9 @@
                         You <strong>will</strong> be able to open another application following this.
                 </div>
 
-                {!! Form::horizontal(["route" => ["visiting.application.withdraw.post", $application->public_id], "method" => "POST"]) !!}
+                {!! Form::open(["route" => ["visiting.application.withdraw.post", $application->public_id], "method" => "POST"]) !!}
                     <div class="col-md-6 col-md-offset-3 text-center">
-                        {!! Button::danger("WITHDRAW APPLICATION")->submit() !!}
+                        <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION</button>
                     </div>
                 {!! Form::close() !!}
 

@@ -28,9 +28,12 @@
                                 <td>{{ $m['version'] }}</td>
                                 <td align="center">
                                     @if($m['enabled'])
-                                        {!! Button::success("Active")->extraSmall()->asLinkTo(route("adm.sys.module.disable", [$m['slug']])) !!}
+                                            <button class="btn btn-success btn-xs">Active</button>
+                                        </a>
                                     @else
-                                        {!! Button::danger("Disabled")->extraSmall()->asLinkTo(route("adm.sys.module.enable", [$m['slug']])) !!}
+                                        <a href="{{ route('adm.sys.module.enable', [$m['slug']]) }}">
+                                            <button class="btn btn-danger btn-xs">Disabled</button>
+                                        </a>
                                     @endif
                                 </td>
                             </tr>
@@ -45,6 +48,6 @@
 
 @section('scripts')
     @parent
-    {!! HTML::script('/AdminLTE/js/plugins/datatables/jquery.dataTables.js') !!}
-    {!! HTML::script('/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js') !!}
+    <script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.js'></script>
+    <script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
 @stop

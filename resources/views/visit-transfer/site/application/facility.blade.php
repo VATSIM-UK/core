@@ -53,7 +53,7 @@
                         <div class="form-group">
                           {!! Form::text("facility-code") !!}
                         </div>
-                        {!! Button::primary("Submit")->submit() !!}
+                    <button type="submit" class="btn btn-primary">Submit</button>
                       {!! Form::close() !!}
                     </p>
 
@@ -87,9 +87,9 @@
 
                         <p class="text-center">
                             @if($facility->training_spaces > 0 || $facility->training_spaces === null || !$facility->training_required)
-                                {!! Button::primary("APPLY TO THIS FACILITY")->submit() !!}
+                                <button type="submit" class="btn btn-primary">APPLY TO THIS FACILITY</button>
                             @else
-                                {!! Button::danger("NO PLACES AVAILABLE")->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">NO PLACES AVAILABLE</button>
                             @endif
                         </p>
 

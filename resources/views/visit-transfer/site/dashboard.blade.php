@@ -21,19 +21,23 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
-                            {!! Button::danger(trans("application.dashboard.apply.atc.visit.no_places"))->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">{{ trans("application.dashboard.apply.atc.visit.no_places") }}</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
 
                                 @if($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_atc)
-                                    {!! Button::primary("X".trans("application.dashboard.continue"))->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
+                                    <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
+                                        <button class="btn btn-primary" href="">{{ "X".trans('application.continue') }}</button>
+                                    </a>
                                 @elseif($currentTransferApplication)
-                                    {!! Button::danger(trans("application.dashboard.apply.atc.visit.xfer_open"))->disable() !!}
+                                    <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.xfer_open') }}</button>
                                 @else
-                                    {!! Button::success(trans("application.dashboard.apply.atc.visit.start"))->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"])) !!}
+                                    <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">
+                                        <button class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
+                                    </a>
                                 @endif
                             @else
-                                {!! Button::danger(trans("application.dashboard.apply.atc.visit.unable"))->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.unable')}}</button>
                             @endcan
                         @endif
                     </div>
@@ -65,16 +69,20 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
-                            {!! Button::danger("THERE ARE NO VISITING PILOT PLACES")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">THERE ARE NO VISITING PILOT PLACES</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
-                                {!! Button::success("START PILOT APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_VISIT, "pilot"])) !!}
+                                <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
+                                    <button class="btn btn-success">START PILOT APPLICATION</button>
+                                </a>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                    {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentVisitApplication->public_id])) !!}
+                                <a href="{{ route('visiting.application.continue', [$currentVisitApplicatioon->public_id]) }}">
+                                    <button class="btn btn-primary" href="">CONTINUE APPLICATION</button>
+                                </a>
                             @elseif($currentTransferApplication)
-                                {!! Button::danger("You currently have a transfer application open.")->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">You currently have a transfer application open.</button>
                             @else
-                                {!! Button::danger("You are not able to apply to visit at this time.")->disable() !!}
+                                <button class="btn btn-danger" disabled="disabled">You are not able to apply to visit at this time.</button>
                             @endcan
                         @endif
                     </div>
@@ -107,16 +115,20 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     @if(!\App\Models\VisitTransfer\Facility::isPossibleToTransfer())
-                        {!! Button::danger("THERE ARE NO TRANSFER PLACES")->disable() !!}
+                        <button class="btn btn-danger" disabled="disabled">THERE ARE NO TRANSFER PLACES</button>
                     @else
                         @can("create", new \App\Models\VisitTransfer\Application)
-                            {!! Button::success("START ATC APPLICATION")->asLinkTo(route("visiting.application.start", [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc'])) !!}
+                            <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
+                                <button class="btn btn-success" href="">START ATC APPLICATION</button>
+                            </a>
                         @elseif($currentTransferApplication)
-                            {!! Button::primary("CONTINUE APPLICATION")->asLinkTo(route("visiting.application.continue", [$currentTransferApplication->public_id])) !!}
+                            <a href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">
+                                <button class="btn btn-primary">CONTINUE APPLICATION</button>
+                            </a>
                         @elseif($currentVisitApplication)
-                            {!! Button::danger("You currently have a visit application open.")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">You currently have a visit application open.</button>
                         @else
-                            {!! Button::danger("You are not able to apply to transfer at this time.")->disable() !!}
+                            <button class="btn btn-danger" disabled="disabled">You are not able to apply to transfer at this time.</button>
                         @endcan
                     @endif
                 </div>
@@ -182,17 +194,26 @@
                                     </td>
                                     <td class="text-center">
                                         @if($application->is_in_progress)
-                                            {!!
-                                                Modal::named("withdraw_application")
-                                                     ->withTitle("Withdraw Application")
-                                                     ->withBody("If you wish to withdraw your application (without penalty) you can do so by clicking the button below.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))).
-                                                        Button::danger("WITHDRAW APPLICATION - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("WITHDRAW")->extraSmall())
-                                            !!}
+                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#withdrawModal">
+                                                WITHDRAW
+                                            </button>
+                                            <div class="modal fade" role="dialog" id="withdrawModal">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            Withdraw Application
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            If you wish to withdraw your application (without penalty) you can do so by clicking the button below.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {{ Form::open(array("url" => URL::route("visiting.application.withdraw.post", [$application->public_id]))) }}
+                                                            <button type="submit" class="btn btn-danger">WITHDRAW APPLICATION - THIS CANNOT BE UNDONE</button>
+                                                            {{ Form::close() }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @else
                                             -
                                         @endif

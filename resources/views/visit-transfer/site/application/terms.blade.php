@@ -3,7 +3,7 @@
 @section('vt-content')
     <div class="row" id="termsBoxHelp">
         <div class="col-md-12">
-            {!! HTML::panelOpen("Terms &amp; Conditions", ["type" => "fa", "key" => "list"]) !!}
+            {!! HTML::panelOpen("Terms & Conditions", ["type" => "fa", "key" => "list"]) !!}
             <div class="hidden-xs">
                     <p>
                         Before you can start your application, you must first read and agree to the terms and conditions of the
@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="col-md-6 col-md-offset-3 text-center">
-                        {!! Button::success("START APPLICATION")->submit() !!}
+                        <button type="submit" class="btn btn-success">Submit</button>
                     </div>
 
                 {!! Form::hidden("application_type", $applicationType) !!}

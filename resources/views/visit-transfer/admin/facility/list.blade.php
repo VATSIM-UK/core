@@ -39,21 +39,21 @@
                                 <td>{{ $f->name }}</td>
                                 <td class="text-center">
                                     @if($f->can_visit && $f->can_transfer)
-                                        {!! Label::success("VISIT & TRANSFER") !!}
+                                        <span class="label label-success">VISIT & TRANSFER</span>
                                     @elseif($f->can_visit)
-                                        {!! Label::warning("VISIT ONLY") !!}
+                                        <span class="label label-warning">VISIT ONLY</span>
                                     @elseif($f->can_transfer)
-                                        {!! Label::warning("TRANSFER ONLY") !!}
+                                        <span class="label label-warning">TRANSFER ONLY</span>
                                     @else
-                                        {!! Label::danger("NEITHER") !!}
+                                        <span class="label label-danger">NEITHER</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->training_required)
-                                        {!! Label::success("YES") !!}
-                                        {!! Label::info(( $f->training_spaces === null ? "&infin;" : $f->training_spaces) . " available") !!}
+                                        <span class="label label-success">YES</span>
+                                        <span class="label label-info">{{ ( $f->training_spaces === null ? "&infin;" : $f->training_spaces) . " available" }}</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
@@ -61,45 +61,45 @@
                                 </td>
                                 <td align="center">
                                     @if($f->stage_statement_enabled)
-                                        {!! Label::success("YES") !!}
+                                        <span class="label label-success">YES</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->stage_reference_enabled)
-                                        {!! Label::success("YES") !!}
-                                        {!! Label::info($f->stage_reference_quantity . " required") !!}
+                                        <span class="label label-success">YES</span>
+                                        <span class="label label-info">{{ $f->stage_reference_quantity . "required" }}</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->stage_checks)
-                                        {!! Label::success("YES") !!}
+                                        <span class="label label-success">YES</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->auto_acceptance)
-                                        {!! Label::success("YES") !!}
+                                        <span class="label label-success">YES</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->open)
-                                        {!! Label::success("YES") !!}
+                                        <span class="label label-success">YES</span>
                                     @else
-                                        {!! Label::danger("NO") !!}
+                                        <span class="label label-danger">NO</span>
                                     @endif
                                 </td>
                                 <td align="center">
                                     @if($f->public)
-                                        {!! Label::success("PUBLIC") !!}
+                                        <span class="label label-success">PUBLIC</span>
                                     @else
-                                        {!! Label::danger("PRIVATE") !!}
+                                        <span class="label label-danger">PRIVATE</span>
                                     @endif
                                 </td>
                             </tr>

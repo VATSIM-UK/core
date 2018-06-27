@@ -11,30 +11,15 @@
                     <div class="row">
                         <div class="col-md-12">
                             @can("reject", $application)
-                                {!! Button::danger("Reject Application")
-                                           ->withAttributes([
-                                                "class" => "pull-left",
-                                                "data-toggle" => "modal",
-                                                "data-target" => "#modalApplicationReject",
-                                           ]) !!}
+                                <button class="btn btn-danger pull-left" data-toggle="modal" data-target="#modalApplicationReject">Reject Application</button>
                             @endcan
 
                             @can("accept", $application)
-                                {!! Button::success("Accept Application")
-                                           ->withAttributes([
-                                                "class" => "pull-right",
-                                                "data-toggle" => "modal",
-                                                "data-target" => "#modalApplicationAccept",
-                                           ]) !!}
+                                 <button class="btn btn-success pull-right" data-toggle="modal" data-target="#modalApplicationAccept">Accept Application</button>
                             @endcan
 
                             @can("complete", $application)
-                                {!! Button::info("Mark Application Complete")
-                                           ->withAttributes([
-                                                "class" => "pull-right",
-                                                "data-toggle" => "modal",
-                                                "data-target" => "#modalApplicationComplete",
-                                           ]) !!}
+                                <button class="btn btn-info pull-right" data-toggle="modal" data-target="#modalApplicationComplete">Mark Application Complete</button>
                             @endcan
                         </div>
                     </div>
@@ -174,20 +159,9 @@
                                     <tr>
                                         <td colspan="2" class="text-center">
                                             @if($reference->status == \App\Models\VisitTransfer\Reference::STATUS_UNDER_REVIEW)
-                                                {!! Button::danger("Reject Reference")
-                                                           ->withAttributes([
-                                                                "class" => "pull-left",
-                                                                "data-toggle" => "modal",
-                                                                "data-target" => "#modalReferenceReject".$reference->id,
-                                                           ]) !!}
+                                                <button class="btn btn-danger pull-left" data-toggle="modal" data-target="{{ "#modalReferenceReject" . $reference->id }}">Reject Reference</button>
 
-
-                                                {!! Button::success("Accept Reference")
-                                                           ->withAttributes([
-                                                                "class" => "pull-right",
-                                                                "data-toggle" => "modal",
-                                                                "data-target" => "#modalReferenceAccept".$reference->id,
-                                                           ]) !!}
+                                                <button class="btn btn-success pull-right" data-toggle="modal" data-target="{{ "#modalReferenceAccept" . $reference->id }}">Accept Reference</button>
                                             @else
                                                 <strong>Status Note</strong>
                                                 : {{ $reference->status_note ? $reference->status_note : "No note added" }}
@@ -286,31 +260,31 @@
                                         </td>
                                         <td class="text-center">
                                             {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
-                                            {!! Button::warning("Toggle")->submit()->extraSmall() !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "training_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
                                             {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
-                                            {!! Button::warning("Toggle")->submit()->extraSmall() !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "statement_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
                                             {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
-                                            {!! Button::warning("Toggle")->submit()->extraSmall() !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "references_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
                                             {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
-                                            {!! Button::warning("Toggle")->submit()->extraSmall() !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "should_perform_checks") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
                                             {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
-                                            {!! Button::warning("Toggle")->submit()->extraSmall() !!}
+                                            <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "will_auto_accept") !!}
                                             {!! Form::close() !!}
                                         </td>
@@ -360,18 +334,27 @@
                                             days prior to application submission.<br />
 
                                             @can("check-outcome", $application)
-                                                {!!
-                                                Modal::named("outcome_90_day_not_met")
-                                                     ->withTitle("Mark 90 Day Qualification Check as 'NOT MET'?")
-                                                     ->withBody("Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "90_day").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
+                                                    MARK THIS CHECK AS 'NOT MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="90DayNotMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 90 Day Qualification Check as 'NOT MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "90_day") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
 
                                         @elseif($application->check_outcome_90_day === null)
@@ -379,31 +362,49 @@
                                             required.<br/>
 
                                             @can("check-outcome", $application)
-                                                {!!
-                                                Modal::named("outcome_90_day_not_met")
-                                                     ->withTitle("Mark 90 Day Qualification Check as 'NOT MET'?")
-                                                     ->withBody("Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "90_day").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#90DayNotMet">
+                                                    MARK THIS CHECK AS 'NOT MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="90DayNotMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 90 Day Qualification Check as 'NOT MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "90_day") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                {!!
-                                                Modal::named("outcome_90_day_met")
-                                                     ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "90_day").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#90DayMet">
+                                                    MARK THIS CHECK AS 'MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="90DayMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 90 Day Qualification Check as 'MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "90_day") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
 
                                         @elseif($application->check_outcome_90_day === 0)
@@ -411,18 +412,27 @@
                                             prior to application submission.<br/>
 
                                             @can("check-outcome", $application)
-                                            {!!
-                                            Modal::named("outcome_90_day_met")
-                                                 ->withTitle("Mark 90 Day Qualification Check as 'MET'?")
-                                                 ->withBody("Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.")
-                                                 ->withFooter(
-                                                    Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                    Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                    Form::hidden("check", "90_day").
-                                                    Form::close()
-                                                 )
-                                                 ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                            !!}
+                                                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#90DayMet">
+                                                    MARK THIS CHECK AS 'MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="90DayMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 90 Day Qualification Check as 'MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "90_day") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
                                         @endif
                                     </th>
@@ -440,49 +450,76 @@
                                             present qualified level and has ratified their rating.<br />
 
                                             @can("check-outcome", $application)
-                                                {!!
-                                                Modal::named("outcome_50_hour_not_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
-                                                     ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#50HourNotMet">
+                                                    MARK THIS CHECK AS 'NOT MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="50HourNotMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 50 Hour Check as 'NOT MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "50_hours") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
                                         @elseif($application->check_outcome_50_hours === null)
                                             <strong class="text-danger">Data unavailable</strong> - manual check
                                             required.<br/>
 
                                             @can("check-outcome", $application)
-                                                {!!
-                                                Modal::named("outcome_50_hour_not_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'NOT MET'?")
-                                                     ->withBody("Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))).
-                                                        Button::danger("MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::danger("MARK THIS CHECK AS 'NOT MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#50HourNotMet">
+                                                    MARK THIS CHECK AS 'NOT MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="50HourNotMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 50 Hour Check as 'NOT MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "50_hours") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                {!!
-                                                Modal::named("outcome_50_hour_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#50HourMet">
+                                                    MARK THIS CHECK AS 'MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="50HourMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 50 Hour Check as 'MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "50_hours") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
 
                                         @elseif($application->check_outcome_50_hours === 0)
@@ -491,18 +528,27 @@
                                             present qualified level.<br />
 
                                             @can("check-outcome", $application)
-                                                {!!
-                                                Modal::named("outcome_50_hour_met")
-                                                     ->withTitle("Mark 50 Hour Check as 'MET'?")
-                                                     ->withBody("Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.")
-                                                     ->withFooter(
-                                                        Form::horizontal(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))).
-                                                        Button::success("MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE")->submit().
-                                                        Form::hidden("check", "50_hours").
-                                                        Form::close()
-                                                     )
-                                                     ->withButton(Button::success("MARK THIS CHECK AS 'MET'")->extraSmall())
-                                                !!}
+                                                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#50HourMet">
+                                                    MARK THIS CHECK AS 'MET'
+                                                </button>
+                                                <div class="modal fade" role="dialog" id="50HourMet">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                Mark 50 Hour Check as 'MET'?
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
+                                                                {{ Form::hidden("check", "50_hours") }}
+                                                                {{ Form::close() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endcan
 
                                         @endif
