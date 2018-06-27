@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
+use Illuminate\Support\Carbon;
 use Redirect;
 use Session;
 
@@ -12,7 +13,8 @@ class Notification extends \App\Http\Controllers\BaseController
 
     public function postAcknowledge($notification)
     {
-        $this->account->readSystemNotifications()->syncWithoutDetaching([$notification->id]);
+        $this->account->readSystemNotifications()
+            ->attach($notification->id, ['created_at' => Carbon::now()]);
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if (Session::has('force_notification_read_return_url')) {
