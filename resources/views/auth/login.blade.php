@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="col-md-8 col-md-offset-2">
-                    {!! Form::horizontal(["route" => 'auth-secondary.post', "method" => "POST"]) !!}
+                    {!! Form::open(["route" => 'auth-secondary.post', "method" => "POST", 'class' => 'form-horizontal']) !!}
                     <input name="remember" type="hidden" value="true">
 
                     <div class='form-group'>
