@@ -80,7 +80,7 @@
                                     <button class="btn btn-primary" href="">CONTINUE APPLICATION</button>
                                 </a>
                             @elseif($currentTransferApplication)
-                                <button class="btn btn-danger" disabled="disabled">You current have a transfer application open.</button>
+                                <button class="btn btn-danger" disabled="disabled">You currently have a transfer application open.</button>
                             @else
                                 <button class="btn btn-danger" disabled="disabled">You are not able to apply to visit at this time.</button>
                             @endcan
@@ -126,7 +126,7 @@
                                 <button class="btn btn-primary">CONTINUE APPLICATION</button>
                             </a>
                         @elseif($currentVisitApplication)
-                            <button class="btn btn-danger" disabled="disabled">You current have a visit application open.</button>
+                            <button class="btn btn-danger" disabled="disabled">You currently have a visit application open.</button>
                         @else
                             <button class="btn btn-danger" disabled="disabled">You are not able to apply to transfer at this time.</button>
                         @endcan
