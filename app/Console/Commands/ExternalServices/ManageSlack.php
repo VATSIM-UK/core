@@ -68,17 +68,17 @@ class ManageSlack extends Command
                         if($matchAccount){
                             $matchAccount->slack_id = $slackUser->id;
                             $matchAccount->save();
-                            $this->messageUserAdvisingofAutomaticRegistration($slackUser);
+                            $this->messageUserAdvisingOfAutomaticRegistration($slackUser);
                             continue;
                         }
                         // Check secondary emails
                         $matchAccount = Account::whereHas('secondaryEmails', function ($query) use ($slackUser){
                             $query->where('email', $slackUser->profile->email);
-                        })->first();
+                        })->where('slack_id', null)->first();
                         if($matchAccount){
                             $matchAccount->slack_id = $slackUser->id;
                             $matchAccount->save();
-                            $this->messageUserAdvisingofAutomaticRegistration($slackUser);
+                            $this->messageUserAdvisingOfAutomaticRegistration($slackUser);
                             continue;
                         }
                         $this->messageUserAdvisingOfRegistration($slackUser);
@@ -140,7 +140,7 @@ class ManageSlack extends Command
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
     }
 
-    private function messageUserAdvisingofAutomaticRegistration($slackUser)
+    private function messageUserAdvisingOfAutomaticRegistration($slackUser)
     {
         $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
         $this->sendSlackMessagePlain($slackUser->id, 'Hi '.$slackUser->real_name.',', 'VATSIM UK Slack Bot');
