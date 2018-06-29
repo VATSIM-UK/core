@@ -64,15 +64,7 @@ class ManageSlack extends Command
                 if (!$localUser) {
                     if ($this->userIsActive($slackUser)) {
                         // Try to find matching account - 1st their primary email
-                        $matchAccount = Account::where('email', $slackUser->profile->email)->where('slack_id', null)->first();
-                        if($matchAccount){
-                            $matchAccount->slack_id = $slackUser->id;
-                            $matchAccount->save();
-                            $this->messageUserAdvisingOfAutomaticRegistration($slackUser);
-                            continue;
-                        }
-                        // Check secondary emails
-                        $matchAccount = Account::whereHas('secondaryEmails', function ($query) use ($slackUser){
+                        $matchAccount = Account::where('email', $slackUser->profile->email)->orWhereHas('secondaryEmails', function ($query) use ($slackUser){
                             $query->where('email', $slackUser->profile->email);
                         })->where('slack_id', null)->first();
                         if($matchAccount){
@@ -117,11 +109,15 @@ class ManageSlack extends Command
 
     private function messageAskingForRealName($localUser, $slackUser)
     {
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'Your current name does not match your VATSIM profile.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "Please set your Slack name to '{$localUser->name}'.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, "You can change your profile settings by clicking the 'Profile & Account' menu option.", 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
+        $messages = [
+            '****************************************************',
+            'Your current name does not match your VATSIM profile.',
+            "Please set your Slack name to '{$localUser->name}'.",
+            "You can change your profile settings by clicking the 'Profile & Account' menu option.",
+            '****************************************************',
+        ];
+
+        $this->sendMessagesToUser($messages, $slackUser);
     }
 
     private function messageDsgAdvisingOfBannedUser($localUser, $slackUser)
@@ -133,20 +129,35 @@ class ManageSlack extends Command
 
     private function messageUserAdvisingOfRegistration($slackUser)
     {
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'Your VATSIM UK and Slack accounts are not currently linked.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
+        $messages = [
+            '****************************************************',
+            'Your VATSIM UK and Slack accounts are not currently linked.',
+            'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.',
+            'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk',
+            '****************************************************',
+        ];
+
+        $this->sendMessagesToUser($messages, $slackUser);
     }
 
     private function messageUserAdvisingOfAutomaticRegistration($slackUser)
     {
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'Hi '.$slackUser->real_name.',', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'We have found an account matching your email on VATSIM UK Core.', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'As such, we have automatically linked this slack account to core for you', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, 'Please let us know via the helpdesk if this has occurred erroneously', 'VATSIM UK Slack Bot');
-        $this->sendSlackMessagePlain($slackUser->id, '****************************************************', 'VATSIM UK Slack Bot');
+        $messages = [
+            '****************************************************',
+            'Hi '.$slackUser->real_name.',',
+            'We have found an account matching your email on VATSIM UK Core.',
+            'As such, we have automatically linked this slack account to core for you',
+            'Please let us know via the helpdesk if this has occurred erroneously',
+            '****************************************************',
+        ];
+
+        $this->sendMessagesToUser($messages, $slackUser);
+    }
+
+    private function sendMessagesToUser($messages, $slackUser)
+    {
+        foreach ($messages as $message) {
+            $this->sendSlackMessagePlain($slackUser->id, $message, 'VATSIM UK Slack Bot');
+        }
     }
 }
