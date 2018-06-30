@@ -94,6 +94,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
 
     Route::get('atc/endorsement', ['as' => 'adm.atc.endorsement.index', 'uses' => 'Atc\Endorsement@getIndex']);
 
+    Route::get('ops/qstats', ['as' => 'adm.ops.qstats.index', 'uses' => 'Operations\QuarterlyStats@getIndex']);
+
     Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
         Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');
         Route::resource('configure/airports', 'Resources\AirportController')->except('show');
