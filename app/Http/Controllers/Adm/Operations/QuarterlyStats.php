@@ -67,10 +67,10 @@ class QuarterlyStats extends AdmController
             ->where('state_id', '=', 3)
             ->whereNull('end_at')
             ->whereBetween('start_at', [$startDate, $endDate])
-            ->whereIn('account_id', function($startDate, $endDate, $states) {
+            ->whereIn('account_id', function($states) use ($startDate, $endDate) {
                 $states->select('account_id') // too few variables exception thrown
                     ->from('mship_account_state')
-                    ->whereBetween('end_at', $startDate, $endDate);
+                    ->whereBetween('end_at', [$startDate, $endDate]);
             })
             ->whereIn('account_id', function($quals) {
                 $quals->select('account_id')
