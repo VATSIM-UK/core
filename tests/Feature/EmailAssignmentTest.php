@@ -24,7 +24,7 @@ class EmailAssignmentTest extends TestCase
     {
         $data = [
             'new_email' => 'not_an_email.com',
-            'new_email2' => 'not_an_email.com'
+            'new_email2' => 'not_an_email.com',
         ];
 
         $this->actingAs($this->account)->post(route('mship.manage.email.add.post'), $data)
@@ -37,7 +37,7 @@ class EmailAssignmentTest extends TestCase
     {
         $data = [
             'new_email' => 'matching.email@example.com',
-            'new_email2' => 'not.matching.email@example.com'
+            'new_email2' => 'not.matching.email@example.com',
         ];
 
         $this->actingAs($this->account)->post(route('mship.manage.email.add.post'), $data)
@@ -60,9 +60,8 @@ class EmailAssignmentTest extends TestCase
         $this->actingAs($this->account->fresh())->post(route('mship.manage.email.delete.post', $account), $data)
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
-
     }
-    
+
     /** @test **/
     public function testSuccessfulSecondaryEmailAddViaGetHasRelevantData()
     {
@@ -78,9 +77,9 @@ class EmailAssignmentTest extends TestCase
             ->assertViewIs('mship.management.email.delete')
             ->assertViewHas(['email' => $account->email]);
     }
-    
+
     /** @test **/
-    public function testAssignmentsPrimaryEmailISelectedCorrectly() 
+    public function testAssignmentsPrimaryEmailISelectedCorrectly()
     {
         $email = $this->account->fresh();
 
@@ -88,5 +87,4 @@ class EmailAssignmentTest extends TestCase
             ->assertViewIs('mship.management.email.assignments')
             ->assertViewHas(['userPrimaryEmail' => $email]);
     }
-
 }
