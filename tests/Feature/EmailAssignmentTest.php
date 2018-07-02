@@ -16,7 +16,17 @@ class EmailAssignmentTest extends TestCase
     {
         parent::setUp();
 
+        // fakes notifications for the entire test class
+        Notification::fake();
+
         $this->account = factory(\App\Models\Mship\Account::class)->create();
+    }
+
+    /** @test **/
+    public function testUserCanAccessEmailAddForm()
+    {
+        $this->actingAs($this->account)->get(route('mship.manage.email.add'))
+            ->assertSuccessful();
     }
 
     /** @test * */
@@ -45,11 +55,37 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('error', 'Emails entered are different.  You need to enter the same email, twice.');
     }
 
+    /** @test * */
+    public function testSuccessfulPostEmail()
+    {
+        $data = [
+            'new_email' => 'email@example.com',
+            'new_email2' => 'email@example.com',
+        ];
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.add.post'), $data)
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success');
+    }
+
     /** @test **/
+    public function testDuplicateEmailOnPost()
+    {
+        $account = $this->account->secondaryEmails()->create(['email' => 'email2@example.com']);
+
+        $data = [
+            'new_email' => 'email2@example.com',
+            'new_email2' => 'email2@example.com',
+        ];
+
+        $this->actingAs($this->account->fresh())->post(route('mship.manage.email.add.post'), $data)
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('error', 'This email has already been added to your account.');
+    }
+
+    /** @test * */
     public function testRedirectOnSecondaryEmailDeleted()
     {
-        // prevents email being sent.
-        Notification::fake();
 
         $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
@@ -59,14 +95,12 @@ class EmailAssignmentTest extends TestCase
 
         $this->actingAs($this->account->fresh())->post(route('mship.manage.email.delete.post', $account), $data)
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
+            ->assertSessionHas('success', 'Your secondary email (' . $account->email . ') has been removed!');
     }
 
-    /** @test **/
+    /** @test * */
     public function testSuccessfulSecondaryEmailAddViaGetHasRelevantData()
     {
-        Notification::fake();
-
         $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
         $data = [
@@ -78,13 +112,46 @@ class EmailAssignmentTest extends TestCase
             ->assertViewHas(['email' => $account->email]);
     }
 
-    /** @test **/
-    public function testAssignmentsPrimaryEmailISelectedCorrectly()
+    /** @test * */
+    public function testAssignmentsEmailsPassedToView()
     {
-        $email = $this->account->fresh();
 
-        $this->actingAs($this->account)->get(route('mship.manage.dashboard'))
+
+        $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
+
+        $email = $this->account->fresh()->email;
+
+        $this->actingAs($this->account)->get(route('mship.manage.email.assignments'))
             ->assertViewIs('mship.management.email.assignments')
-            ->assertViewHas(['userPrimaryEmail' => $email]);
+            ->assertViewHas([
+                'userPrimaryEmail' => $email,
+                'userSecondaryVerified' => $this->account->verified_secondary_emails
+            ]);
+    }
+    
+    /** @test **/
+    public function testUserCannotDeleteOtherUsersEmail() 
+    {
+        $otherEmail = 'email@otheruser.co.uk';
+
+        $accountOther = factory(\App\Models\Mship\Account::class)->create();
+
+        $emailInstance = $accountOther->secondaryEmails()->create(['email' => $otherEmail]);
+
+        $this->actingAs($this->account)->get(route('mship.manage.email.delete', $emailInstance))
+            ->assertRedirect(route('mship.manage.dashboard'));
+    }
+
+    /** @test **/
+    public function testUserCannotDeleteOtherUsersEmailOnPost()
+    {
+        $otherEmail = 'email@otheruser2.co.uk';
+
+        $accountOther = factory(\App\Models\Mship\Account::class)->create();
+
+        $emailInstance = $accountOther->secondaryEmails()->create(['email' => $otherEmail]);
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.delete.post', $emailInstance))
+            ->assertRedirect(route('mship.manage.dashboard'));
     }
 }
