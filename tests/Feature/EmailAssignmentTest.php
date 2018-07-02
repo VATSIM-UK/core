@@ -62,4 +62,31 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
 
     }
+    
+    /** @test **/
+    public function testSuccessfulSecondaryEmailAddViaGetHasRelevantData()
+    {
+        Notification::fake();
+
+        $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
+
+        $data = [
+            'id' => $account->id,
+        ];
+
+        $this->actingAs($this->account->fresh())->get(route('mship.manage.email.delete.post', $account), $data)
+            ->assertViewIs('mship.management.email.delete')
+            ->assertViewHas(['email' => $account->email]);
+    }
+    
+    /** @test **/
+    public function testAssignmentsPrimaryEmailISelectedCorrectly() 
+    {
+        $email = $this->account->fresh();
+
+        $this->actingAs($this->account)->get(route('mship.manage.dashboard'))
+            ->assertViewIs('mship.management.email.assignments')
+            ->assertViewHas(['userPrimaryEmail' => $email]);
+    }
+
 }
