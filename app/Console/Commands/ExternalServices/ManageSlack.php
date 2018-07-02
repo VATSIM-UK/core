@@ -64,10 +64,10 @@ class ManageSlack extends Command
                 if (!$localUser) {
                     if ($this->userIsActive($slackUser)) {
                         // Try to find matching account - 1st their primary email
-                        $matchAccount = Account::where('email', $slackUser->profile->email)->orWhereHas('secondaryEmails', function ($query) use ($slackUser){
+                        $matchAccount = Account::where('email', $slackUser->profile->email)->orWhereHas('secondaryEmails', function ($query) use ($slackUser) {
                             $query->where('email', $slackUser->profile->email);
                         })->where('slack_id', null)->first();
-                        if($matchAccount){
+                        if ($matchAccount) {
                             $matchAccount->slack_id = $slackUser->id;
                             $matchAccount->save();
                             $this->messageUserAdvisingOfAutomaticRegistration($slackUser);
