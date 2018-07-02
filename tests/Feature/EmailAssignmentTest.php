@@ -86,7 +86,6 @@ class EmailAssignmentTest extends TestCase
     /** @test * */
     public function testRedirectOnSecondaryEmailDeleted()
     {
-
         $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
         $data = [
@@ -95,7 +94,7 @@ class EmailAssignmentTest extends TestCase
 
         $this->actingAs($this->account->fresh())->post(route('mship.manage.email.delete.post', $account), $data)
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('success', 'Your secondary email (' . $account->email . ') has been removed!');
+            ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
     }
 
     /** @test * */
@@ -115,8 +114,6 @@ class EmailAssignmentTest extends TestCase
     /** @test * */
     public function testAssignmentsEmailsPassedToView()
     {
-
-
         $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
 
         $email = $this->account->fresh()->email;
@@ -125,12 +122,12 @@ class EmailAssignmentTest extends TestCase
             ->assertViewIs('mship.management.email.assignments')
             ->assertViewHas([
                 'userPrimaryEmail' => $email,
-                'userSecondaryVerified' => $this->account->verified_secondary_emails
+                'userSecondaryVerified' => $this->account->verified_secondary_emails,
             ]);
     }
-    
+
     /** @test **/
-    public function testUserCannotDeleteOtherUsersEmail() 
+    public function testUserCannotDeleteOtherUsersEmail()
     {
         $otherEmail = 'email@otheruser.co.uk';
 
