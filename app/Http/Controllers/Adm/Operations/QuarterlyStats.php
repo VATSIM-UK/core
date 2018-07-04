@@ -88,7 +88,8 @@ class QuarterlyStats extends AdmController
         return $query;
     }
 
-    private function visitingControllersAboveS1($startDate, $endDate) {
+    private function visitingControllersAboveS1($startDate, $endDate)
+    {
         $query = DB::table('mship_account_state')
             ->where('state_id', '=', 2)
             ->where('start_at', [$startDate, $endDate])
