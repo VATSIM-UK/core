@@ -22,7 +22,7 @@ class EmailAssignmentTest extends TestCase
         $this->account = factory(\App\Models\Mship\Account::class)->create();
     }
 
-    /** @test **/
+    /** @test * */
     public function testUserCanAccessEmailAddForm()
     {
         $this->actingAs($this->account)->get(route('mship.manage.email.add'))
@@ -68,7 +68,7 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success');
     }
 
-    /** @test **/
+    /** @test * */
     public function testDuplicateEmailOnPost()
     {
         $account = $this->account->secondaryEmails()->create(['email' => 'email2@example.com']);
@@ -94,7 +94,7 @@ class EmailAssignmentTest extends TestCase
 
         $this->actingAs($this->account->fresh())->post(route('mship.manage.email.delete.post', $account), $data)
             ->assertRedirect(route('mship.manage.dashboard'))
-            ->assertSessionHas('success', 'Your secondary email ('.$account->email.') has been removed!');
+            ->assertSessionHas('success', 'Your secondary email (' . $account->email . ') has been removed!');
     }
 
     /** @test * */
@@ -126,7 +126,7 @@ class EmailAssignmentTest extends TestCase
             ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function testUserCannotDeleteOtherUsersEmail()
     {
         $otherEmail = 'email@otheruser.co.uk';
@@ -139,7 +139,7 @@ class EmailAssignmentTest extends TestCase
             ->assertRedirect(route('mship.manage.dashboard'));
     }
 
-    /** @test **/
+    /** @test * */
     public function testUserCannotDeleteOtherUsersEmailOnPost()
     {
         $otherEmail = 'email@otheruser2.co.uk';
@@ -150,5 +150,27 @@ class EmailAssignmentTest extends TestCase
 
         $this->actingAs($this->account)->post(route('mship.manage.email.delete.post', $emailInstance))
             ->assertRedirect(route('mship.manage.dashboard'));
+    }
+
+    /** @test * */
+    public function testExistingAuthenticatedUserCanVerifyEmailViaGet()
+    {
+        // as the create() factory method uses save, this should generate a token automatically
+        $email = factory(\App\Models\Mship\Account\Email::class)->states('unverified')->create();
+
+        $this->actingAs($this->account)->get(route('mship.manage.email.verify', $email->tokens->first()))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success', 'Your new email address (' . $email->email . ') has been verified!');
+    }
+
+    /** @test * */
+    public function testExistingUnAuthenticatedUserCanVerifyEmailViaGet()
+    {
+        $email = factory(\App\Models\Mship\Account\Email::class)->states('unverified')->create();
+
+        // ensures request is not sent by an authenticated user.
+        $this->withoutMiddleware()->get(route('mship.manage.email.verify', $email->tokens->first()))
+            ->assertViewIs('mship.management.email.verify')
+            ->assertViewHas('success', 'Your new email address (' . $email->email . ') has been verified!');
     }
 }
