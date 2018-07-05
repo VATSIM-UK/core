@@ -10,17 +10,6 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
     ];
 });
 
-$factory->define(App\Models\Mship\Account\Email::class, function (Faker\Generator $faker) {
-    return [
-        'id' => $faker->numberBetween(1, 100000),
-        'account_id' => factory(\App\Models\Mship\Account::class)->create()->id,
-        'email' => $faker->email,
-        'verified_at' => $faker->dateTime(),
-        'created_at' => $faker->dateTime(),
-        'updated_at' => $faker->dateTime(),
-    ];
-});
-
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
         'code' => $faker->bothify('?##'),
