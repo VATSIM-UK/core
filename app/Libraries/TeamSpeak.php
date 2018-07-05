@@ -323,7 +323,15 @@ class TeamSpeak
 
         foreach ($map as $permission) {
             try {
-                $currentGroup = $client->getParent()->channelGroupClientList(null, $permission->channel_id, $client['client_database_id'])[0]['cgid'];
+
+                $current = $client->getParent()->channelGroupClientList(null, $permission->channel_id, $client['client_database_id']);
+
+                if($current === []) {
+                    $currentGroup = null;
+                } else {
+                    $currentGroup = $current[0]['cgid'];
+                }
+
             } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                 if ($e->getCode() == self::DATABASE_EMPTY_RESULT_SET) {
                     $currentGroup = $defaultGroup->dbid;
