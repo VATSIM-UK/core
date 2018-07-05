@@ -2988,11 +2988,11 @@
         },
         {
             "name": "planetteamspeak/ts3-php-framework",
-            "version": "dev-master",
+            "version": "1.1.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/planetteamspeak/ts3phpframework.git",
-                "reference": "ac85f166aad75e1304fd72830f6efa7ff149a7f3"
+                "reference": "6af8373f26ddbc35a3fff2fc2aba2df2e307463f"
             },
             "dist": {
                 "type": "zip",
