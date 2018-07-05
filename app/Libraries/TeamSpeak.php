@@ -43,8 +43,8 @@ class TeamSpeak
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
-            urlencode(env("TS_USER")),
-            urlencode(env("TS_PASS")),
+            urlencode(env('TS_USER')),
+            urlencode(env('TS_PASS')),
             env('TS_HOST'),
             env('TS_QUERY_PORT'),
             urlencode($nickname),
