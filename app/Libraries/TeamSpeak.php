@@ -340,7 +340,7 @@ class TeamSpeak
 
             if ($member->hasPermission($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
+            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }
