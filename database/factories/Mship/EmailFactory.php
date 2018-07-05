@@ -5,7 +5,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Mship\Account\Email::class, function (Faker $faker) {
     return [
         'id' => $faker->numberBetween(1, 100000),
-        'account_id' => function() {
+        'account_id' => function () {
             return factory(\App\Models\Mship\Account::class)->create()->id;
         },
         'email' => $faker->email,
@@ -21,7 +21,7 @@ $factory->state(\App\Models\Mship\Account\Email::class, 'unverified', function (
     ];
 });
 
-$factory->state(\App\Models\Mship\Account\Email::class, 'verified', function() {
+$factory->state(\App\Models\Mship\Account\Email::class, 'verified', function () {
     return [
         'verified_at' => now(),
     ];
