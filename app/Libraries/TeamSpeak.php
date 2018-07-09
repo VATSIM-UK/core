@@ -43,8 +43,8 @@ class TeamSpeak
     {
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
-            env('TS_USER'),
-            env('TS_PASS'),
+            urlencode(env('TS_USER')),
+            urlencode(env('TS_PASS')),
             env('TS_HOST'),
             env('TS_QUERY_PORT'),
             urlencode($nickname),
@@ -323,7 +323,13 @@ class TeamSpeak
 
         foreach ($map as $permission) {
             try {
-                $currentGroup = $client->getParent()->channelGroupClientList(null, $permission->channel_id, $client['client_database_id'])[0]['cgid'];
+                $current = $client->getParent()->channelGroupClientList(null, $permission->channel_id, $client['client_database_id']);
+
+                if ($current === []) {
+                    $currentGroup = null;
+                } else {
+                    $currentGroup = $current[0]['cgid'];
+                }
             } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                 if ($e->getCode() == self::DATABASE_EMPTY_RESULT_SET) {
                     $currentGroup = $defaultGroup->dbid;
@@ -334,7 +340,7 @@ class TeamSpeak
 
             if ($member->hasPermission($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != $defaultGroup->dbid) {
+            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }

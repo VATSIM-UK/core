@@ -20,7 +20,7 @@
 
         clearTimeout(timeout);
         timeout = window.setTimeout(function(){
-          $.get('{{route('mship.feedback.usersearch', /* error */ null)}}/' + $('#member-search-name').val(), function(response){
+          $.get('{{route('mship.feedback.usersearch', null)}}/' + $('#member-search-name').val(), function(response){
               $('#memberSearchSpinner').hide();
               if(response == ""){
                 $('#memberSearchNoResults').show();
