@@ -8,7 +8,7 @@
         @foreach($feedback as $item)
             <b>Type: </b> {{ $item->form->name }}<br />
 			<b>Feedback Left: </b> {{ $item->created_at->format('d M Y') }}<br />
-			@if($item->comment)
+			@if($item->sent_comment)
 			<b>Comment: </b> {{ $item->sent_comment }}<br />
 			<b>Comment By: </b> {{ $item->sender->real_name }}
 			@else
