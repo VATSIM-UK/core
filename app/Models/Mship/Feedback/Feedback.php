@@ -16,6 +16,9 @@ use Illuminate\Notifications\Notifiable;
  * @property \Carbon\Carbon|null $actioned_at
  * @property string|null $actioned_comment
  * @property int|null $actioned_by_id
+ * @property \Carbon\Carbon|null $sent_at
+ * @property string|null $sent_comment
+ * @property int|null $sent_by_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Mship\Account $account
@@ -49,6 +52,7 @@ class Feedback extends Model
         'created_at',
         'updated_at',
         'actioned_at',
+        'sent_at',
     ];
     protected $fillable = [
         'account_id',
@@ -112,6 +116,11 @@ class Feedback extends Model
         return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'actioned_by_id');
     }
 
+    public function sender()
+    {
+        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'sent_by_id');
+    }
+
     public function isATC()
     {
         if ($this->formSlug() == 'atc') {
@@ -148,6 +157,14 @@ class Feedback extends Model
         $this->actioned_at = null;
         $this->actioned_comment = null;
         $this->actioned_by_id = null;
+        $this->save();
+    }
+
+    public function markSent($sender, $comment = null)
+    {
+        $this->sent_at = Carbon::now();
+        $this->sent_comment = $comment;
+        $this->sent_by_id = $sender->id;
         $this->save();
     }
 
