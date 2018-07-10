@@ -120,8 +120,6 @@ class EmailAssignmentTest extends TestCase
     /** @test * */
     public function testAssignmentsEmailsPassedToView()
     {
-        $account = $this->account->secondaryEmails()->create(['email' => 'secondary.email@example.com']);
-
         $email = $this->account->fresh()->email;
 
         $this->actingAs($this->account)->get(route('mship.manage.email.assignments'))
