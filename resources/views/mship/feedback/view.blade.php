@@ -10,7 +10,7 @@
 			<b>Feedback Left: </b> {{ $item->created_at->format('d M Y') }}<br />
 			@if($item->sent_comment)
 			<b>Comment: </b> {{ $item->sent_comment }}<br />
-			<b>Comment By: </b> {{ $item->sender->real_name }}
+			<b>Comment By: </b> {{ $item->sender->real_name }} ({{ $item->sender->id }})<br /><br />
 			@else
 			<b>Comment: </b> The training department wanted to make you aware of some positive feedback that was left for you.<br /><br />
 			@endif
