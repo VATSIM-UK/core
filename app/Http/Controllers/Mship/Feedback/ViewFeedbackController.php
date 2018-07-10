@@ -6,12 +6,11 @@ use Redirect;
 
 class ViewFeedbackController extends \App\Http\Controllers\BaseController
 {
-
-    public function show() {
-
+    public function show()
+    {
         $feedback = $this->account->feedback()->sent()->get();
 
-        if(!isset($feedback)) {
+        if (!isset($feedback)) {
             return Redirect::route('mship.manage.dashboard')->withError('You have no feedback available to view at this time.');
         }
 
