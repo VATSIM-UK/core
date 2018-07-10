@@ -29,7 +29,7 @@ class AddFeedbackSent extends Migration
     public function down()
     {
         Schema::table('mship_feedback', function (Blueprint $table) {
-            $table->dropForeign('sent_by_id_foreign');
+            $table->dropForeign('mship_feedback_sent_by_id_foreign');
             $table->dropColumn('sent_at');
             $table->dropColumn('sent_comment');
             $table->dropColumn('sent_by_id');
