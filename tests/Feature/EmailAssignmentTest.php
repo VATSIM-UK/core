@@ -11,6 +11,8 @@ class EmailAssignmentTest extends TestCase
     use DatabaseTransactions;
 
     private $account;
+    private $accountOther;
+    private $emailOther;
 
     public function setUp()
     {
@@ -20,6 +22,10 @@ class EmailAssignmentTest extends TestCase
         Notification::fake();
 
         $this->account = factory(\App\Models\Mship\Account::class)->create();
+
+        $this->accountOther = factory(\App\Models\Mship\Account::class)->create();
+
+        $this->emailOther = 'email@otheruser.co.uk';
     }
 
     /** @test * */
@@ -129,11 +135,7 @@ class EmailAssignmentTest extends TestCase
     /** @test * */
     public function testUserCannotDeleteOtherUsersEmail()
     {
-        $otherEmail = 'email@otheruser.co.uk';
-
-        $accountOther = factory(\App\Models\Mship\Account::class)->create();
-
-        $emailInstance = $accountOther->secondaryEmails()->create(['email' => $otherEmail]);
+        $emailInstance = $this->accountOther->secondaryEmails()->create(['email' => $this->emailOther]);
 
         $this->actingAs($this->account)->get(route('mship.manage.email.delete', $emailInstance))
             ->assertRedirect(route('mship.manage.dashboard'));
@@ -142,11 +144,7 @@ class EmailAssignmentTest extends TestCase
     /** @test * */
     public function testUserCannotDeleteOtherUsersEmailOnPost()
     {
-        $otherEmail = 'email@otheruser2.co.uk';
-
-        $accountOther = factory(\App\Models\Mship\Account::class)->create();
-
-        $emailInstance = $accountOther->secondaryEmails()->create(['email' => $otherEmail]);
+        $emailInstance = $this->accountOther->secondaryEmails()->create(['email' => $this->emailOther]);
 
         $this->actingAs($this->account)->post(route('mship.manage.email.delete.post', $emailInstance))
             ->assertRedirect(route('mship.manage.dashboard'));
