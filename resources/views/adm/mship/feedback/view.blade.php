@@ -92,6 +92,8 @@
                                     {{ Form::textarea('comment', null, ['rows' => 1, "cols"=> 10, "class" => "form-control"]) }}
                                 </p>
                                 {{ Form::submit('Mark Actioned', ['class' => 'btn btn-warning']) }}
+
+                                {{ Form::close() }}
                             </div>
                         @endif
                     @endif
