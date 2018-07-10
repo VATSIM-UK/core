@@ -4,6 +4,7 @@
 <div class="panel panel-ukblue">
 	<div class="panel-heading"> My Feedback</div>
 	<div class="panel-body">
+		<p>Here, you can view feedback that has been sent to you by the VATSIM UK training departments.</p>
         @foreach($feedback as $item)
             <b>Type: </b> {{ $item->form->name }}<br />
 			<b>Feedback Left: </b> {{ $item->created_at->format('d M Y') }}<br />
