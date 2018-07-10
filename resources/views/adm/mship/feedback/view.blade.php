@@ -125,7 +125,7 @@
                                     </p>
                                     {{ Form::submit('Send To User', ['class' => 'btn btn-warning']) }}
                                 </div>
-                                { Form::close() }}
+                                {{ Form::close() }}
                                 @else
                                     <div class="col-md-12">
                                         <p>Feedback was sent to {{ $feedback->account->real_name }} on <strong>{{ $feedback->sent_at->format("dS F Y") }}</strong> by <strong>{{ $feedback->sender->real_name }}</strong>.</p>
