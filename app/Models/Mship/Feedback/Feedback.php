@@ -86,6 +86,11 @@ class Feedback extends Model
         return $query->where('actioned_at', null);
     }
 
+    public function scopeSent($query)
+    {
+        return $query->where('sent_at', '!=', null);
+    }
+
     public function form()
     {
         return $this->belongsTo(\App\Models\Mship\Feedback\Form::class);
