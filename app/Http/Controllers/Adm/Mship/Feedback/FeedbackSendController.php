@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Adm\Mship\Feedback;
 
-use Illuminate\Http\Request;
 use App\Models\Mship\Feedback\Feedback as FeedbackModel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
 
 class FeedbackSendController extends \App\Http\Controllers\BaseController
 {
-    public function store(FeedbackModel $feedback, Request $request) {
+    public function store(FeedbackModel $feedback, Request $request)
+    {
         // dd("Hit Controller");
 
         $conditions = [];
