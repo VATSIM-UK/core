@@ -10,8 +10,6 @@ class FeedbackSendController extends \App\Http\Controllers\BaseController
 {
     public function store(FeedbackModel $feedback, Request $request)
     {
-        // dd("Hit Controller");
-
         $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
         $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
