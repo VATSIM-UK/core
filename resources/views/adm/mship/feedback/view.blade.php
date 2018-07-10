@@ -102,6 +102,50 @@
         </div>
     </div>
 
+    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title ">
+                            Send To User
+                        </h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @if (!$feedback->sent_at)
+                                {{ Form::open(['route' => ['adm.mship.feedback.send', $feedback->id]]) }}
+                                <div class="col-md-12 text-center">
+                                    <p>
+                                        {{ Form::label('Comment To User')}}
+                                        {{ Form::textarea('comment', null, ['rows' => 4, "cols"=> 10, "class" => "form-control"]) }}
+                                    </p>
+                                    {{ Form::submit('Send To User', ['class' => 'btn btn-warning']) }}
+                                </div>
+                                { Form::close() }}
+                                @else
+                                    <div class="col-md-12">
+                                        <p>Feedback was sent to {{ $feedback->account->real_name }} on <strong>{{ $feedback->sent_at->format("dS F Y") }}</strong> by <strong>{{ $feedback->sender->real_name }}</strong>.</p>
+
+                                        @if($feedback->sent_comment)
+                                            <b>Comment</b> <br />
+                                            <em>{{ $feedback->sent_comment }}</em>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    @endif
+
     <!-- Main row -->
     <div class="row">
         <!-- Left col -->
