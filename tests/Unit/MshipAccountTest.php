@@ -484,32 +484,32 @@ class MshipAccountTest extends TestCase
     }
 
     /** @test * */
-    public function itSetsAUsersActiveStatus()
-    {
-    }
+//    public function itSetsAUsersActiveStatus()
+//    {
+//    }
 
     /** @test * */
-    public function itReturnsAUsersActiveStatus()
-    {
-    }
+//    public function itReturnsAUsersActiveStatus()
+//    {
+//    }
 
     /** @test * */
-    public function itSetsAUsersInactiveStatus()
-    {
-    }
+//    public function itSetsAUsersInactiveStatus()
+//    {
+//    }
 
     /** @test * */
-    public function itReturnsAUsersInactiveStatus()
-    {
-    }
+//    public function itReturnsAUsersInactiveStatus()
+//    {
+//    }
 
     /** @test * */
-    public function itSetsAUsersLockedStatus()
-    {
-    }
+//    public function itSetsAUsersLockedStatus()
+//    {
+//    }
 
     /** @test * */
-    public function itReturnsAUsersLockedStatus()
-    {
-    }
+//    public function itReturnsAUsersLockedStatus()
+//    {
+//    }
 }

@@ -179,10 +179,10 @@ class MshipStateTest extends TestCase
     }
 
     /** @test */
-    public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
-    {
-        $regionState = \App\Models\Mship\State::findByCode('REGION');
-
-        $this->account->fresh()->removeState($regionState);
-    }
+//    public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
+//    {
+//        $regionState = \App\Models\Mship\State::findByCode('REGION');
+//
+//        $this->account->fresh()->removeState($regionState);
+//    }
 }
