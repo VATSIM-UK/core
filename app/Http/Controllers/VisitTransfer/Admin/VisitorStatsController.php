@@ -17,7 +17,7 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 
         $this->accounts = $accounts;
     }
-    
+
     public function index($startDate = null, $endDate = null)
     {
         $accounts = $this->accounts->with(['networkDataAtc', 'qualifications', 'states'])
