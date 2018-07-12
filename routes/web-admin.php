@@ -210,4 +210,9 @@ Route::group([
         'as' => 'application.list',
         'uses' => 'Application@getList',
     ])->where('scope', "\w+");
+
+    Route::get('/hours', [
+        'as' => 'hours.index',
+        'uses' => 'VisitorStatsController@index'
+    ]);
 });
