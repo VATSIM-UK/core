@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use App\Models\Mship\Role as RoleData;
 
 class AdmFeedbackSendTest extends TestCase
 {
