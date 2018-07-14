@@ -213,6 +213,6 @@ Route::group([
 
     Route::get('/hours/{startDate?}/{endDate?}', [
         'as' => 'hours.index',
-        'uses' => 'VisitorStatsController@index'
+        'uses' => 'VisitorStatsController@index',
     ]);
 });
