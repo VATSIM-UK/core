@@ -6,6 +6,8 @@
             <div class="box box-warning">
                 <div class="box-header">
                     <div class="box-title">Visiting Controllers Monitoring</div>
+                    <div class="box-body">
+                        <span>Date Range:</span> {{ $startDate->toDateString() }} -> {{ $endDate->toDateString() }}</div>
                 </div>
             </div>
 
@@ -21,7 +23,7 @@
                             <th class="col-md-2">First Name / Last Name</th>
                             <th class="col-md-1">ATC Rating</th>
                             <th class="col-md-1">Region / Division</th>
-                            <th></th>
+                            <th class="col-md-2">Overall Controlling Time / Controlling Time (UK)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,6 +33,8 @@
                                     <td>{{ $account->name }}</td>
                                     <td>{{ $account->qualificationAtc }}</td>
                                     <td>{{ $account->primaryState->pivot->region }} / {{ $account->primaryState->pivot->division }} </td>
+                                    <td>{{ date("H:i", mktime(0, $account->networkDataAtc->sum('minutes_online'))) }} /
+                                        {{ date("H:i", mktime(0, $account->networkDataAtc()->isUk()->sum('minutes_online'))) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
