@@ -2,7 +2,7 @@
 
 $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $faker) {
     return [
-        'id' => rand(10000000, 99999999),
+        'id' => rand(810000, 1500000),
         'name_first' => $faker->name,
         'name_last' => $faker->name,
         'email' => $faker->email,
