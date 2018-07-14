@@ -1,13 +1,14 @@
 @php
     $flag = false;
+    $percentage = 0;
 
     $ukHours = $account->networkDataAtc->filter(function($value, $key) {
             return $value->uk_session;
-    })->sum('minutes_online')
+    })->sum('minutes_online');
 
-    $overallHours = $account->networkDataAtc->sum('minutes_online') * 100;
+    $overallHours = $account->networkDataAtc->sum('minutes_online');
 
-    if (!($ukHours || $overallHours == 0)) {
+    if ($overallHours != 0) {
         $percentage = $ukHours / $overallHours * 100;
     }
 
