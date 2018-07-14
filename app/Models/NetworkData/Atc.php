@@ -100,6 +100,7 @@ class Atc extends Model
     protected $appends = [
         'publicId' => 'public_id',
         'accountName' => 'account_name',
+        'ukSession' => 'uk_session'
     ];
 
     const TYPE_OBS = 1;
@@ -250,6 +251,11 @@ class Atc extends Model
     public function getHumanDurationAttribute()
     {
         return \Carbon\Carbon::now()->subMinutes($this->minutes_online)->diffForHumans(null, true);
+    }
+
+    public function getUkSessionAttribute()
+    {
+        return $this::isUK()->get()->contains($this);
     }
 
     /**

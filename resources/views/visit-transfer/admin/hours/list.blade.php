@@ -7,7 +7,10 @@
                 <div class="box-header">
                     <div class="box-title">Visiting Controllers Monitoring</div>
                     <div class="box-body">
-                        <span>Date Range:</span> {{ $startDate->toDateString() }} -> {{ $endDate->toDateString() }}</div>
+                        <span>Date Range:</span> {{ $startDate }} -> {{ $endDate }}</div>
+
+                    {!! link_to_route('visiting.admin.hours.index', 'January 2018',
+                            [\Carbon\Carbon::parse('first day of january')->toDateString(), \Carbon\Carbon::parse('last day of january')->toDateString()]) !!}
                 </div>
             </div>
 
@@ -23,7 +26,7 @@
                             <th class="col-md-2">First Name / Last Name</th>
                             <th class="col-md-1">ATC Rating</th>
                             <th class="col-md-1">Region / Division</th>
-                            <th class="col-md-2">Overall Controlling Time / Controlling Time (UK)</th>
+                            <th class="col-md-2">Controlling Time / Controlling Time (UK)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,7 +37,10 @@
                                     <td>{{ $account->qualificationAtc }}</td>
                                     <td>{{ $account->primaryState->pivot->region }} / {{ $account->primaryState->pivot->division }} </td>
                                     <td>{{ date("H:i", mktime(0, $account->networkDataAtc->sum('minutes_online'))) }} /
-                                        {{ date("H:i", mktime(0, $account->networkDataAtc()->isUk()->sum('minutes_online'))) }}</td>
+                                        {{--{{ date("H:i", mktime(0, )) }}</td>--}}
+                                        {{ date("H:i", mktime(0, $account->networkDataAtc->filter(function($value, $key) {
+                                            return $value->uk_session;
+                                        })->sum('minutes_online'))) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
