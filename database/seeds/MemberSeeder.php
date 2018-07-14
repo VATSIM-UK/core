@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class MemberSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,10 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $this->call([
-            MemberSeeder::class,
-            FeedbackSeeder::class,
-        ]);
+        factory(\App\Models\Mship\Account::class, 50)->create();
 
     }
 }
