@@ -18,7 +18,7 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 
         $this->accounts = $accounts;
     }
-    
+
     public function index(Carbon $startDate = null, Carbon $endDate = null)
     {
         if (!isset($startDate)) {
@@ -29,7 +29,7 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
             $endDate = Carbon::parse('last day of this month');
         }
 
-        $accounts = $this->accounts->with(['networkDataAtc' => function($query) use ($startDate, $endDate) {
+        $accounts = $this->accounts->with(['networkDataAtc' => function ($query) use ($startDate, $endDate) {
             $query->where('disconnected_at', '>', $startDate);
         }, 'qualifications', 'states'])
         ->whereHas('states', function ($query) {
