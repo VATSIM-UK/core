@@ -100,7 +100,7 @@ class Atc extends Model
     protected $appends = [
         'publicId' => 'public_id',
         'accountName' => 'account_name',
-        'ukSession' => 'uk_session'
+        'ukSession' => 'uk_session',
     ];
 
     const TYPE_OBS = 1;
