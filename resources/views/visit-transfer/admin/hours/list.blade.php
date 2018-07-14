@@ -17,7 +17,7 @@
             <div class="box box-primary">
                 <div class="box-body">
                     <div align="center">
-
+                        {{ $accounts->render() }}
                     </div>
                     <table id="visit-transfer-accounts" class="table table-bordered">
                         <thead>
@@ -33,6 +33,9 @@
                             @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
                         </tbody>
                     </table>
+                    <div align="center">
+                        {{ $accounts->render() }}
+                    </div>
                 </div>
             </div>
         </div>
