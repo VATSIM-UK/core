@@ -19,7 +19,7 @@
                     <div align="center">
 
                     </div>
-                    <table id="visit-transfer-accounts" class="table table-bordered table-striped">
+                    <table id="visit-transfer-accounts" class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="col-md-1">CID</th>
@@ -30,19 +30,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($accounts as $account)
-                                <tr>
-                                    <td>{{ $account->id  }}</td>
-                                    <td>{{ $account->name }}</td>
-                                    <td>{{ $account->qualificationAtc }}</td>
-                                    <td>{{ $account->primaryState->pivot->region }} / {{ $account->primaryState->pivot->division }} </td>
-                                    <td>{{ date("H:i", mktime(0, $account->networkDataAtc->sum('minutes_online'))) }} /
-                                        {{--{{ date("H:i", mktime(0, )) }}</td>--}}
-                                        {{ date("H:i", mktime(0, $account->networkDataAtc->filter(function($value, $key) {
-                                            return $value->uk_session;
-                                        })->sum('minutes_online'))) }}</td>
-                                </tr>
-                            @endforeach
+                            @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
                         </tbody>
                     </table>
                 </div>
