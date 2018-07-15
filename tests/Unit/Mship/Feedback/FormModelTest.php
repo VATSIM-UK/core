@@ -7,7 +7,7 @@ use App\Models\Mship\Feedback\Question;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
-class FeedbackModelTest extends TestCase
+class FormModelTest extends TestCase
 {
     use DatabaseTransactions;
 
