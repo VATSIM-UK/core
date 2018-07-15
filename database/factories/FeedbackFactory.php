@@ -41,7 +41,6 @@ $factory->define(App\Models\Mship\Feedback\Feedback::class, function (Faker $fak
 });
 
 $factory->define(App\Models\Mship\Feedback\Answer::class, function (Faker $faker) {
-
     $feedback = factory(App\Models\Mship\Feedback\Feedback::class)->create();
 
     return [
