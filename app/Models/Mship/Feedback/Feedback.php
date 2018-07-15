@@ -171,7 +171,7 @@ class Feedback extends Model
         $this->sent_comment = $comment;
         $this->sent_by_id = $sender->id;
         $this->actioned_at = Carbon::now();
-        $this->actioned_comment = "Feedback automatically marked as actioned by sending feedback to member.";
+        $this->actioned_comment = 'Feedback automatically marked as actioned by sending feedback to member.';
         $this->actioned_by_id = $sender->id;
         $this->save();
     }
