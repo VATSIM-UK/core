@@ -22,8 +22,8 @@ $factory->define(App\Models\Mship\Feedback\Question\Type::class, function (Faker
 
 $factory->define(App\Models\Mship\Feedback\Question::class, function (Faker $faker) {
     return [
-        'type_id' => factory(App\Models\Mship\Feedback\Question\Type::class)->create(),
-        'form_id' => factory(App\Models\Mship\Feedback\Form::class)->create(),
+        'type_id' => factory(App\Models\Mship\Feedback\Question\Type::class)->create()->id,
+        'form_id' => factory(App\Models\Mship\Feedback\Form::class)->create()->id,
         'slug' => $faker->word,
         'question' => $faker->sentence,
         'required' => 0,
