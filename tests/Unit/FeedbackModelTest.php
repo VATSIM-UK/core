@@ -4,8 +4,8 @@ namespace Tests\Unit;
 
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class FeedbackModelTest extends TestCase
 {
