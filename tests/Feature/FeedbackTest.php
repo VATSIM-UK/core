@@ -9,7 +9,7 @@ use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question\Type;
 use App\Models\Mship\Feedback\Question;
 
-class FeedbackSendTest extends TestCase
+class FeedbackTest extends TestCase
 {
     use DatabaseTransactions;
 
