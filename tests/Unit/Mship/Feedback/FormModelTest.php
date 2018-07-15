@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Contact;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -29,10 +30,31 @@ class FormModelTest extends TestCase
     }
 
     /** @test * */
+    public function itReturnsThePublicScope()
+    {
+        $notPublic = factory(Form::class)->create([
+            'public' => 0,
+        ]);
+
+        $isPublic = factory(Form::class)->create([
+            'public' => 1,
+        ]);
+
+        // Perform assertion
+    }
+
+    /** @test * */
     public function itReturnsAContactForAForm()
     {
-        $form = factory(Form::class)->create();
+        $contact = factory(Contact::class)->create([
+            'key' => 'KEY_DEPARTMENT',
+            'name' => 'Department',
+            'email' => 'department@vatsim.uk',
+        ]);
+        $form = factory(Form::class)->create([
+            'contact_id' => $contact->id,
+        ]);
 
-        $this->assertEquals('Privileged Access', $form->contact->name);
+        $this->assertEquals('Department', $form->contact->name);
     }
 }
