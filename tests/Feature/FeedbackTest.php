@@ -70,6 +70,18 @@ class FeedbackTest extends TestCase
     }
 
     /** @test * */
+    public function itSavesTheQuestionsForAForm()
+    {
+        $form = factory(Form::class)->create();
+
+        $questions = factory(Question::class, 3)->create();
+
+        $form->questions()->saveMany($questions);
+
+        // Perform assertion
+    }
+
+    /** @test * */
     public function itAllowsSubmission()
     {
         //
