@@ -74,7 +74,7 @@
                             <b>Marked actioned by:</b></br>
                             {{ $feedback->actioner->real_name }}
                         </div>
-                        @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction'))
+                        @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction') && !$feedback->sent_at)
                             <div class="col-lg-4 col-md-6">
                                 <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-block btn-danger', 'style' => 'font-size: 9pt;']) }}</a>
                             </div>
