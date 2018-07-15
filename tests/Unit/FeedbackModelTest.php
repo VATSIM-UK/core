@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
 
-class FeedbackTest extends TestCase
+class FeedbackModelTest extends TestCase
 {
     use DatabaseTransactions;
 
