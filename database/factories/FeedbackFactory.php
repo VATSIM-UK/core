@@ -31,3 +31,24 @@ $factory->define(App\Models\Mship\Feedback\Question::class, function (Faker $fak
         'permanent' => 1,
     ];
 });
+
+$factory->define(App\Models\Mship\Feedback\Feedback::class, function (Faker $faker) {
+    return [
+        'form_id' => factory(App\Models\Mship\Feedback\Form::class)->create()->id,
+        'account_id' => factory(App\Models\Mship\Account::class)->create()->id,
+        'submitter_account_id' => factory(App\Models\Mship\Account::class)->create()->fresh()->id,
+    ];
+});
+
+$factory->define(App\Models\Mship\Feedback\Answer::class, function (Faker $faker) {
+
+    $feedback = factory(App\Models\Mship\Feedback\Feedback::class)->create();
+
+    return [
+        'feedback_id' => $feedback->id,
+        'question_id' => factory(App\Models\Mship\Feedback\Question::class)->create([
+            'form_id' => $feedback->id,
+        ])->id,
+        'response' => $faker->sentence,
+    ];
+});

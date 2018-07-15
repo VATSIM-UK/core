@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\Contact;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
+use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -57,5 +58,17 @@ class FormModelTest extends TestCase
         ]);
 
         $this->assertEquals('Department', $form->contact->name);
+    }
+
+    /** @test * */
+    public function itReturnsResponsesToForms()
+    {
+        $form = factory(Form::class)->create();
+
+        factory(Feedback::class, 3)->create([
+            'form_id' => $form->id,
+        ]);
+
+        $this->assertEquals(3, $form->feedback->count());
     }
 }
