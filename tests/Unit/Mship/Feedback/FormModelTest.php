@@ -27,4 +27,12 @@ class FormModelTest extends TestCase
 
         $this->assertEquals(3, $form->questions->count());
     }
+
+    /** @test * */
+    public function itReturnsAContactForAForm()
+    {
+        $form = factory(Form::class)->create();
+
+        $this->assertEquals('Privileged Access', $form->contact->name);
+    }
 }
