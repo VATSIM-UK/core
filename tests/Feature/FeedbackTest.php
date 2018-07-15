@@ -74,11 +74,11 @@ class FeedbackTest extends TestCase
     {
         $form = factory(Form::class)->create();
 
-        $questions = factory(Question::class, 3)->create();
+        factory(Question::class, 3)->create([
+            "form_id" => $form->id,
+        ]);
 
-        $form->questions()->saveMany($questions);
-
-        // Perform assertion
+        $this->assertEquals(3, $form->questions->count());
     }
 
     /** @test * */
