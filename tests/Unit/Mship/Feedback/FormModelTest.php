@@ -40,7 +40,8 @@ class FormModelTest extends TestCase
             'public' => 1,
         ]);
 
-        // Perform assertion
+        $this->assertTrue(Form::public()->get()->contains($isPublic));
+        $this->assertFalse(Form::public()->get()->contains($notPublic));
     }
 
     /** @test * */
