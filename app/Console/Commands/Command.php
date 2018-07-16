@@ -217,7 +217,7 @@ abstract class Command extends BaseCommand
         }
     }
 
-    private function handleSlackException ($e)
+    private function handleSlackException($e)
     {
         switch (get_class($e)) {
             case ClientException::class:
@@ -244,8 +244,5 @@ abstract class Command extends BaseCommand
                 Bugsnag::notifyException($e);
                 break;
         }
-
-
-
     }
 }

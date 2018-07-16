@@ -106,10 +106,11 @@ class ManageSlack extends Command
         return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
             try {
                 $user = SlackUser::getPresence($slackUser->id);
-                if(!$presence){
+                if (!$presence) {
                     // Most likely a slack error.
                     return 'active';
                 }
+
                 return $user->presence;
             } catch (ServerException $e) {
                 // Server exception - not our fault. We will assume they are active.
