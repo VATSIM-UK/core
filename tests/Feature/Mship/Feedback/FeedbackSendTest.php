@@ -51,7 +51,8 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itRedirectsMemberIfThereIsNoSentFeedback()
     {
-        //
+        $this->actingAs($this->member)->get(route('mship.feedback.view'))
+            ->assertRedirect(route('mship.manage.dashboard'));
     }
 
     /** @test * */
