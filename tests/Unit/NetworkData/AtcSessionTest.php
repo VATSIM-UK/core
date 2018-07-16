@@ -5,8 +5,6 @@ namespace Tests\Unit\NetworkData;
 use App\Models\NetworkData\Atc;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AtcSessionTest extends TestCase
 {
@@ -22,7 +20,7 @@ class AtcSessionTest extends TestCase
     }
 
     /** @test **/
-    public function itReturnsAMessageForAFacility() 
+    public function itReturnsAMessageForAFacility()
     {
         tap(factory(Atc::class)->make(['facility_type' => 1]), function ($model) {
             $this->assertEquals('Observer', $model->type);
@@ -56,7 +54,7 @@ class AtcSessionTest extends TestCase
             $this->assertEquals('Unknown', $model->type);
         });
     }
-    
+
     /** @test **/
     public function itDetectsWhetherASessionIsWithinTheUK()
     {
