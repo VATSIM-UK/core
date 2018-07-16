@@ -34,7 +34,7 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
         }, 'qualifications', 'states'])
         ->whereHas('states', function ($query) {
             $query->where('code', '=', 'VISITING');
-        })->orderBy('id', 'desc')->paginate(25);
+        })->orderBy('id', 'asc')->paginate(25);
 
         return $this->viewMake('visit-transfer.admin.hours.list')
                 ->with('accounts', $accounts)
