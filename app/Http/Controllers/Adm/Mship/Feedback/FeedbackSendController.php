@@ -22,7 +22,5 @@ class FeedbackSendController extends \App\Http\Controllers\BaseController
                     ->withSuccess('Feedback sent to user!');
             }
         }
-
-        abort(403, 'Unauthorized action.');
     }
 }
