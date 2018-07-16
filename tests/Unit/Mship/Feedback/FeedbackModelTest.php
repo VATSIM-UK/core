@@ -78,4 +78,9 @@ class FeedbackModelTest extends TestCase
         $this->assertEquals($this->admin->id, $feedback->actioned_by_id);
     }
 
+    /** @test * */
+    public function itReturnsOptionsInJson()
+    {
+        //
+    }
 }
