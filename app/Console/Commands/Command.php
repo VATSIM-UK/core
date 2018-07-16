@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App;
 use Illuminate\Console\Command as BaseCommand;
 use Slack;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends BaseCommand
@@ -40,17 +41,12 @@ abstract class Command extends BaseCommand
      *
      * Method must be called for each message sent, to avoid message stacking/overlap.
      *
+     * @param string $to
      * @return mixed
      */
-    protected function slack()
+    protected function slack($to = 'web_alerts')
     {
-        if (App::environment('production')) {
-            $channel = 'wslogging';
-        } else {
-            $channel = 'wslogging_dev';
-        }
-
-        return Slack::setUsername('Cron Notifications')->to($channel);
+        return Slack::setUsername('Cron Notifications')->to($to);
     }
 
     /**
@@ -65,7 +61,7 @@ abstract class Command extends BaseCommand
             $to = $to->slack_id;
         }
 
-        $slack = $this->slack()->to($to);
+        $slack = $this->slack($to);
 
         if ($from != null) {
             $slack = $slack->from($from);
@@ -93,13 +89,22 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $slack = $this->slack()->to($to);
+        $slack = $this->slack($to);
 
         if ($from != null) {
             $slack = $slack->from($from);
         }
 
-        $slack->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (ClientException $e) {
+            if ($e->getCode() === 410) {
+                \Log::error("Unable to send message to '".$to."' via slack: ".$message);
+            }else{
+                Bugsnag::notifyException($e);
+            }
+
+        }
     }
 
     /**
@@ -145,7 +150,17 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $this->slack()->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (ClientException $e) {
+            if ($e->getCode() === 410) {
+                \Log::error("Unable to report error to slack: ".$message);
+            }else{
+                Bugsnag::notifyException($e);
+            }
+
+        }
+
     }
 
     /**
@@ -192,7 +207,16 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $this->slack()->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (ClientException $e) {
+            if ($e->getCode() === 410) {
+                \Log::error("Unable to report success to slack: ".$message);
+            }else{
+                Bugsnag::notifyException($e);
+            }
+
+        }
     }
 
     protected function getAuthorLink()
