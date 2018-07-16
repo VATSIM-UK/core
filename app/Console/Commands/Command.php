@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App;
+use Bugsnag;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Console\Command as BaseCommand;
 use Slack;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +46,7 @@ abstract class Command extends BaseCommand
      * @param string $to
      * @return mixed
      */
-    protected function slack($to = 'web_alerts')
+    protected function slack($to = 'web_alertss')
     {
         return Slack::setUsername('Cron Notifications')->to($to);
     }
@@ -97,12 +99,8 @@ abstract class Command extends BaseCommand
 
         try {
             $this->slack()->attach($attachment)->send();
-        } catch (ClientException $e) {
-            if ($e->getCode() === 410) {
-                \Log::error("Unable to send message to '".$to."' via slack: ".$message);
-            } else {
-                Bugsnag::notifyException($e);
-            }
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
         }
     }
 
@@ -151,12 +149,8 @@ abstract class Command extends BaseCommand
 
         try {
             $this->slack()->attach($attachment)->send();
-        } catch (ClientException $e) {
-            if ($e->getCode() === 410) {
-                \Log::error('Unable to report error to slack: '.$message);
-            } else {
-                Bugsnag::notifyException($e);
-            }
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
         }
     }
 
@@ -206,12 +200,8 @@ abstract class Command extends BaseCommand
 
         try {
             $this->slack()->attach($attachment)->send();
-        } catch (ClientException $e) {
-            if ($e->getCode() === 410) {
-                \Log::error('Unable to report success to slack: '.$message);
-            } else {
-                Bugsnag::notifyException($e);
-            }
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
         }
     }
 
@@ -225,5 +215,37 @@ abstract class Command extends BaseCommand
         } else {
             return 'https://gitlab.com/vatsim-uk/core/blob/development'.$directory;
         }
+    }
+
+    private function handleSlackException ($e)
+    {
+        switch (get_class($e)) {
+            case ClientException::class:
+                switch ($e->getCode()) {
+                    case 408:
+                        // Timeout. Do nothing
+                        break;
+                    default:
+                        Bugsnag::notifyException($e);
+                        break;
+                }
+                break;
+            case ServerException::class:
+                switch ($e->getCode()) {
+                    case 504:
+                        // Timeout. Do nothing
+                        break;
+                    default:
+                        Bugsnag::notifyException($e);
+                        break;
+                }
+                break;
+            default:
+                Bugsnag::notifyException($e);
+                break;
+        }
+
+
+
     }
 }
