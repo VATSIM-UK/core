@@ -77,4 +77,5 @@ class FeedbackModelTest extends TestCase
         $this->assertNotNull($feedback->actioned_comment);
         $this->assertEquals($this->admin->id, $feedback->actioned_by_id);
     }
+
 }
