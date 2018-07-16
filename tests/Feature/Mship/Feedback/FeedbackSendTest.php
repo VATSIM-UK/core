@@ -49,24 +49,17 @@ class FeedbackSendTest extends TestCase
     }
 
     /** @test * */
-    public function itOnlyShowsSentFeedbackToMember()
-    {
-        $unsentForm = $this->feedback;
-
-        $sentForm = factory(Feedback::class)->create([
-            'account_id' => $this->member->id,
-        ]);
-        $sentForm->markSent($this->admin);
-
-        $this->actingAs($this->member)->get(route('mship.feedback.view'))
-            ->assertSuccessful();
-
-        // Need to assertVisible and assertNotVisible
-    }
-
-    /** @test * */
     public function itRedirectsMemberIfThereIsNoSentFeedback()
     {
         //
+    }
+
+    /** @test * */
+    public function itOnlyShowsSentFeedbackToMember()
+    {
+        $this->feedback->markSent($this->admin);
+
+        $this->actingAs($this->member)->get(route('mship.feedback.view'))
+            ->assertSuccessful();
     }
 }
