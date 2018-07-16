@@ -83,6 +83,10 @@ class FeedbackModelTest extends TestCase
     /** @test * */
     public function itReturnsTheSender()
     {
-        //
+        $feedback = factory(Feedback::class)->create([
+            'sent_by_id' => $this->admin->id,
+        ]);
+
+        $this->assertEquals($this->admin->id, $feedback->sender->id);
     }
 }
