@@ -46,7 +46,7 @@ abstract class Command extends BaseCommand
      * @param string $to
      * @return mixed
      */
-    protected function slack($to = 'web_alertss')
+    protected function slack($to = 'web_alerts')
     {
         return Slack::setUsername('Cron Notifications')->to($to);
     }
