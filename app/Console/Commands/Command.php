@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\Command as BaseCommand;
 use Slack;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends BaseCommand
@@ -100,10 +100,9 @@ abstract class Command extends BaseCommand
         } catch (ClientException $e) {
             if ($e->getCode() === 410) {
                 \Log::error("Unable to send message to '".$to."' via slack: ".$message);
-            }else{
+            } else {
                 Bugsnag::notifyException($e);
             }
-
         }
     }
 
@@ -154,13 +153,11 @@ abstract class Command extends BaseCommand
             $this->slack()->attach($attachment)->send();
         } catch (ClientException $e) {
             if ($e->getCode() === 410) {
-                \Log::error("Unable to report error to slack: ".$message);
-            }else{
+                \Log::error('Unable to report error to slack: '.$message);
+            } else {
                 Bugsnag::notifyException($e);
             }
-
         }
-
     }
 
     /**
@@ -211,11 +208,10 @@ abstract class Command extends BaseCommand
             $this->slack()->attach($attachment)->send();
         } catch (ClientException $e) {
             if ($e->getCode() === 410) {
-                \Log::error("Unable to report success to slack: ".$message);
-            }else{
+                \Log::error('Unable to report success to slack: '.$message);
+            } else {
                 Bugsnag::notifyException($e);
             }
-
         }
     }
 
