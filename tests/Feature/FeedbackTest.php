@@ -31,7 +31,9 @@ class FeedbackTest extends TestCase
         $this->member = factory(Account::class)->create();
         $this->member->addState(State::findByCode('DIVISION'));
 
-        $this->feedback = factory(Feedback::class)->create();
+        $this->feedback = factory(Feedback::class)->create([
+            'account_id' => $this->member->id,
+        ]);
     }
 
     /** @test * */
@@ -126,13 +128,23 @@ class FeedbackTest extends TestCase
     }
 
     /** @test * */
-    public function itShowsSentFormsToMember()
+    public function itOnlyShowsSentFeedbackToMember()
     {
-        //
+        $unsentForm = $this->feedback;
+
+        $sentForm = factory(Feedback::class)->create([
+            'account_id' => $this->member->id,
+        ]);
+        $sentForm->markSent($this->admin);
+
+        $this->actingAs($this->member)->get(route('mship.feedback.view'))
+            ->assertSuccessful();
+
+        // Need to assertVisible and assertNotVisible
     }
 
     /** @test * */
-    public function itDoesNotShowUnsentFormsToMember()
+    public function itRedirectsMemberIfThereIsNoSentFeedback()
     {
         //
     }
