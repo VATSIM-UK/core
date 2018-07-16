@@ -19,6 +19,12 @@
             </a>
         </li>
 
+        <li {!! (\Request::is('adm/visit-transfer/hours') ? 'class="active"' : '') !!}>
+            <a href="{{ URL::route("visiting.admin.hours.index") }}">
+                <i class="ion ion-ios-clock"></i> <span> Hours Monitoring</span>
+            </a>
+        </li>
+
         <li class="treeview {{ (\Request::is('adm/visit-transfer/application*') ? 'active' : '') }}">
             <a href="#">
                 <i class="ion ion-briefcase"></i>
