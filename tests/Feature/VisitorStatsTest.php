@@ -29,18 +29,8 @@ class VisitorStatsTest extends TestCase
     /** @test **/
     public function testOnlyVisitingControllersAreSelected()
     {
-        $startDate = Carbon::parse('first day of this month');
-
-        $endDate = Carbon::parse('last day of this month');
-
-        $accounts = Account::with(['networkDataAtc' => function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('disconnected_at', [$startDate, $endDate]);
-        }, 'qualifications', 'states'])
-        ->whereHas('states', function ($query) {
-            $query->where('code', '=', 'VISITING');
-        })->orderBy('id', 'asc')->paginate(25);
-
         $this->actingAs($this->account)->get(route('visiting.admin.hours.index'))
-            ->assertViewIs('visit-transfer.admin.hours.list');
+            ->assertViewIs('visit-transfer.admin.hours.list')
+            ->assertViewHas(['accounts', 'startDate', 'endDate']);
     }
 }
