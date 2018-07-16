@@ -89,4 +89,15 @@ class FeedbackModelTest extends TestCase
 
         $this->assertEquals($this->admin->id, $feedback->sender->id);
     }
+
+    /** @test * */
+    public function itCorrectlyReturnsSentScope()
+    {
+        $this->feedback->markSent($this->admin);
+
+        $unsentFeedback = factory(Feedback::class)->create();
+
+        $this->assertTrue(Feedback::sent()->get()->contains($this->feedback));
+        $this->assertFalse(Feedback::sent()->get()->contains($unsentFeedback));
+    }
 }
