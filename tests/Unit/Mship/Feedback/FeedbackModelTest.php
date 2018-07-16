@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Mship\Feedback;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
