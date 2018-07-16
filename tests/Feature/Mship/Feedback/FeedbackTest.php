@@ -16,24 +16,9 @@ class FeedbackTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $admin;
-    private $member;
-    private $feedback;
-
     public function setUp()
     {
         parent::setUp();
-
-        $this->admin = factory(Account::class)->create();
-        $this->admin->roles()->attach(Role::find(1));
-        $this->admin->addState(State::findByCode('DIVISION'));
-
-        $this->member = factory(Account::class)->create();
-        $this->member->addState(State::findByCode('DIVISION'));
-
-        $this->feedback = factory(Feedback::class)->create([
-            'account_id' => $this->member->id,
-        ]);
     }
 
     /** @test * */
