@@ -5,7 +5,6 @@ namespace Tests\Feature\Mship\Feedback;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Role;
-use App\Models\Mship\State;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -23,10 +22,8 @@ class FeedbackSendTest extends TestCase
 
         $this->admin = factory(Account::class)->create();
         $this->admin->roles()->attach(Role::find(1));
-        $this->admin->addState(State::findByCode('DIVISION'));
 
         $this->member = factory(Account::class)->create();
-        $this->member->addState(State::findByCode('DIVISION'));
 
         $this->feedback = factory(Feedback::class)->create([
             'account_id' => $this->member->id,
