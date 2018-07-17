@@ -7,10 +7,31 @@
                 <div class="box-header">
                     <div class="box-title">Visiting Controllers Monitoring</div>
                     <div class="box-body">
-                        <span>Date Range:</span> {{ $startDate }} -> {{ $endDate }}</div>
+                        <strong>Date Range:</strong> {{ $startDate->toFormattedDateString() }} -> {{ $endDate->toFormattedDateString() }}</div>
+                    {!! Form::open(['route' => 'visiting.admin.hours.index', 'method' => 'get', 'autocomplete' => 'off']) !!}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="startDate">Finish Date:</label>
+                                    <input type="text" class="form-control datepicker" name="endDate">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="startDate">Start Date:</label>
+                                    <input type="text" class="form-control datepicker" name="startDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+                                </div>
+                            </div>
+                        </div>
 
-                    {!! link_to_route('visiting.admin.hours.index', 'January 2018',
-                            [\Carbon\Carbon::parse('first day of january')->toDateString(), \Carbon\Carbon::parse('last day of january')->toDateString()]) !!}
+                    {!! Form::close() !!}
                 </div>
             </div>
 
@@ -46,4 +67,11 @@
     @parent
     <script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js'></script>
     <script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
+
+    <script language="JavaScript" type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+        });
+    </script>
 @stop

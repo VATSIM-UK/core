@@ -4,6 +4,7 @@ namespace App\Http\Controllers\VisitTransfer\Admin;
 
 use App\Models\Mship\Account as Accounts;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Input;
 
 class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 {
@@ -19,15 +20,14 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
         $this->accounts = $accounts;
     }
 
-    public function index($startDate = null, $endDate = null)
+    public function index()
     {
-        if (!isset($startDate)) {
-            $startDate = Carbon::parse('first day of this month');
-        }
+        $inputStartDate = Input::get('startDate');
+        $inputEndDate = Input::get('endDate');
 
-        if (!isset($endDate)) {
-            $endDate = Carbon::parse('last day of this month');
-        }
+        $startDate = $inputStartDate != null ? Carbon::parse($inputStartDate) : Carbon::parse('first day of this month');
+
+        $endDate = $inputEndDate != null ? Carbon::parse($inputEndDate) : Carbon::parse('last day of this month');
 
         $accounts = $this->accounts->with(['networkDataAtc' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('disconnected_at', [$startDate, $endDate]);
