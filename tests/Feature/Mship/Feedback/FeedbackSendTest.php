@@ -34,21 +34,6 @@ class FeedbackSendTest extends TestCase
     }
 
     /** @test * */
-    public function itAllowsSendingWithPermission()
-    {
-        $this->actingAs($this->admin)->post(route('adm.mship.feedback.send', $this->feedback->id))
-            ->assertRedirect()
-            ->assertSessionHas('success');
-    }
-
-    /** @test * */
-    public function itDoesNotAllowSendingWithoutPermission()
-    {
-        $this->actingAs($this->member)->post(route('adm.mship.feedback.send', $this->feedback->id))
-            ->assertStatus(403);
-    }
-
-    /** @test * */
     public function itRedirectsMemberIfThereIsNoSentFeedback()
     {
         $this->actingAs($this->member)->get(route('mship.feedback.view'))
