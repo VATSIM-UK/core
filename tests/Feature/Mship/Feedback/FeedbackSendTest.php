@@ -38,7 +38,7 @@ class FeedbackSendTest extends TestCase
     }
 
     /** @test * */
-    public function itOnlyShowsSentFeedbackToMember()
+    public function itAllowsViewingIfThereIsSentFeedback()
     {
         $this->feedback->markSent($this->admin);
 
