@@ -21,16 +21,16 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="startDate">Start Date:</label>
-                                    <!-- $startDate datetimepicker here -->
+                                    {!! Form::label("startDate","Start Date",['class' => 'control-label']),
+                                    Form::text("startDate", '', ['class' => 'form-control', 'id' => 'startDate']) !!}
                                 </div>
                             </div>
                         </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="endDate">Finish Date:</label>
-                                        <!-- $endDate datetimepicker here -->
+                                        {!! Form::label("endDate","End Date",['class' => 'control-label']),
+                                        Form::text("endDate", '', ['class' => 'form-control', 'id' => 'endDate']) !!}
                                     </div>
                                 </div>
                             </div>
@@ -79,4 +79,14 @@
     @parent
     <script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js'></script>
     <script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js" integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#startDate, #endDate').datetimepicker({
+                timepicker:false,
+                format: 'Y-m-d'
+            });
+        });
+    </script>
 @stop
