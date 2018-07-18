@@ -7,31 +7,41 @@
                 <div class="box-header">
                     <div class="box-title">Visiting Controllers Monitoring</div>
                     <div class="box-body">
-                        <strong>Date Range:</strong> {{ $startDate->toFormattedDateString() }} -> {{ $endDate->toFormattedDateString() }}</div>
+                        <strong>Date Range:</strong> {{ $startDate->toFormattedDateString() }}
+                        -> {{ $endDate->toFormattedDateString() }}</div>
                     {!! Form::open(['route' => 'visiting.admin.hours.index', 'method' => 'get', 'autocomplete' => 'off']) !!}
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="startDate">Finish Date:</label>
-                                    <input type="text" class="form-control datepicker" name="endDate">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="startDate">Start Date:</label>
-                                    <input type="text" class="form-control datepicker" name="startDate">
-                                </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">Finish Date:</label>
+                                <input type="text" class="form-control datepicker" name="endDate">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
-                                </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">Start Date:</label>
+                                <input type="text" class="form-control datepicker" name="startDate">
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+                            </div>
+                        </div>
+                    </div>
 
                     {!! Form::close() !!}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Here, you can review the controlling hours completed by visiting members within a given
+                                date range. This will allow you to ensure that they are compliant with the rules
+                                stipulated in the Visiting & Transferring Policy. If the row is displayed in red, it
+                                means that the member has controlled more than 49% of their hours for that specific date
+                                range in the UK, rather than in their home division.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -51,7 +61,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
+                        @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
                         </tbody>
                     </table>
                     <div align="center">
