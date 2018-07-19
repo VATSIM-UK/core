@@ -46,9 +46,9 @@ abstract class Command extends BaseCommand
      * @param string $to
      * @return mixed
      */
-    protected function slack($destination_channel = 'web_alerts')
+    protected function slack($destinationChannel = 'web_alerts')
     {
-        return Slack::setUsername('Cron Notifications')->to($destination_channel);
+        return Slack::setUsername('Cron Notifications')->to($destinationChannel);
     }
 
     /**
@@ -219,10 +219,10 @@ abstract class Command extends BaseCommand
 
     private function handleSlackException($e)
     {
-        $error_class = get_class($e);
-        $error_code = $e->getCode();
-        if ($error_class == ClientException::class) {
-            switch ($error_code) {
+        $errorClass = get_class($e);
+        $errorCode = $e->getCode();
+        if ($errorClass == ClientException::class) {
+            switch ($errorCode) {
                 case 408:
                     // Timeout. Do nothing
                     break;
@@ -230,8 +230,9 @@ abstract class Command extends BaseCommand
                     Bugsnag::notifyException($e);
                     break;
             }
-        } elseif ($error_class == ServerException::class) {
-            switch ($error_code) {
+            return;
+        } elseif ($errorClass == ServerException::class) {
+            switch ($errorCode) {
                 case 504:
                     // Timeout. Do nothing
                     break;
@@ -239,8 +240,9 @@ abstract class Command extends BaseCommand
                     Bugsnag::notifyException($e);
                     break;
             }
-        } else {
-            Bugsnag::notifyException($e);
+            return;
         }
+
+        Bugsnag::notifyException($e);
     }
 }
