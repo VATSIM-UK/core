@@ -17,15 +17,8 @@ class FeedbackUserSearchTest extends TestCase
     {
         parent::setUp();
 
-        $this->member = factory(Account::class)->create([
-            'name_first' => 'John',
-            'name_last' => 'Doe',
-        ]);
-
-        $this->otherMember = factory(Account::class)->create([
-            'name_first' => 'Brad',
-            'name_last' => 'Pitt',
-        ]);
+        $this->member = factory(Account::class)->create();
+        $this->otherMember = factory(Account::class)->create();
     }
 
     /** @test * */
