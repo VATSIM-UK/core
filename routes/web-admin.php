@@ -211,8 +211,13 @@ Route::group([
         'uses' => 'Application@getList',
     ])->where('scope', "\w+");
 
-    Route::get('/hours/{startDate?}/{endDate?}', [
-        'as' => 'hours.index',
+    Route::get('/hours/', [
+        'as' => 'hours.create',
+        'uses' => 'VisitorStatsController@create',
+    ]);
+
+    Route::post('/hours/', [
+        'as' => 'hours.post',
         'uses' => 'VisitorStatsController@index',
     ]);
 });

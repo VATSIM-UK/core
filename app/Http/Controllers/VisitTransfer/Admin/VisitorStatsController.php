@@ -4,6 +4,7 @@ namespace App\Http\Controllers\VisitTransfer\Admin;
 
 use App\Models\Mship\Account as Accounts;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
 class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
@@ -20,14 +21,15 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
         $this->accounts = $accounts;
     }
 
-    public function index()
+    public function create()
     {
-        $inputStartDate = Input::get('startDate');
-        $inputEndDate = Input::get('endDate');
+        return $this->viewMake('visit-transfer.admin.hours.index');
+    }
 
-        $startDate = $inputStartDate != null ? Carbon::parse($inputStartDate) : Carbon::parse('first day of this month');
-
-        $endDate = $inputEndDate != null ? Carbon::parse($inputEndDate) : Carbon::parse('last day of this month');
+    public function index(Request $request)
+    {
+        $startDate = new Carbon($request->get('startDate'));
+        $endDate = new Carbon($request->get('endDate'));
 
         $accounts = $this->accounts->with(['networkDataAtc' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('disconnected_at', [$startDate, $endDate]);
@@ -38,7 +40,7 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 
         return $this->viewMake('visit-transfer.admin.hours.list')
                 ->with('accounts', $accounts)
-                ->with('startDate', $startDate)
-                ->with('endDate', $endDate);
+                ->with('startDate', $startDate->toDateString())
+                ->with('endDate', $endDate->toDateString());
     }
 }
