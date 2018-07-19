@@ -114,7 +114,7 @@ class ManageSlack extends Command
         return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
             try {
                 $user = SlackUser::getPresence($slackUser->id);
-                if (!$user) {
+                if (!$user || !$user->ok) {
                     // Most likely a slack error.
                     return 'active';
                 }
