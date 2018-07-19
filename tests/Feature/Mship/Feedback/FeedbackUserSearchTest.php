@@ -29,6 +29,8 @@ class FeedbackUserSearchTest extends TestCase
                             ->getContent();
 
         $this->assertNotContains($this->member->real_name, $searchQuery);
+        $this->assertNotContains($this->member->id, $searchQuery);
+        /* need to assert does not contain state */
     }
 
     /** @test * */
@@ -39,5 +41,7 @@ class FeedbackUserSearchTest extends TestCase
                             ->getContent();
 
         $this->assertContains($this->otherMember->real_name, $searchQuery);
+        $this->assertContains(strval($this->otherMember->id), $searchQuery);
+        /* need to assert contains state */
     }
 }
