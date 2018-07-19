@@ -230,6 +230,7 @@ abstract class Command extends BaseCommand
                     Bugsnag::notifyException($e);
                     break;
             }
+
             return;
         } elseif ($errorClass == ServerException::class) {
             switch ($errorCode) {
@@ -240,6 +241,7 @@ abstract class Command extends BaseCommand
                     Bugsnag::notifyException($e);
                     break;
             }
+
             return;
         }
 
