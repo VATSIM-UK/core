@@ -230,7 +230,7 @@ abstract class Command extends BaseCommand
                     Bugsnag::notifyException($e);
                     break;
             }
-        } else if ($error_class == ServerException::class) {
+        } elseif ($error_class == ServerException::class) {
             switch ($error_code) {
                 case 504:
                     // Timeout. Do nothing

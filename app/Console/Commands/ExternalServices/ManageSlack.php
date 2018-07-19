@@ -53,10 +53,11 @@ class ManageSlack extends Command
     {
         $this->slackUsers = SlackUser::lists();
 
-        if ($this->slackUsers->ok == false && $this->slackUsers->error = "invalid_auth") {
+        if ($this->slackUsers->ok == false && $this->slackUsers->error = 'invalid_auth') {
             // Incorrect server credentials
-            \Log::error("Slack credentials invalid!");
+            \Log::error('Slack credentials invalid!');
             $this->error('Slack credentials invalid!');
+
             return;
         }
 
