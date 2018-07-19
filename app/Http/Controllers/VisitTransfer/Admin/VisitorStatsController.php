@@ -5,7 +5,6 @@ namespace App\Http\Controllers\VisitTransfer\Admin;
 use App\Models\Mship\Account as Accounts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 {
