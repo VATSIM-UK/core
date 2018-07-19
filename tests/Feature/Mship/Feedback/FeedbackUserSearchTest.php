@@ -31,7 +31,9 @@ class FeedbackUserSearchTest extends TestCase
     /** @test * */
     public function testItDoesNotReturnCurrentUser()
     {
-        $searchQuery = $this->actingAs($this->member)->get(route('mship.feedback.usersearch', $this->member->real_name))->getContent();
+        $searchQuery = $this->actingAs($this->member)
+                            ->get(route('mship.feedback.usersearch', $this->member->real_name))
+                            ->getContent();
 
         $this->assertNotContains($this->member->real_name, $searchQuery);
     }
@@ -39,7 +41,9 @@ class FeedbackUserSearchTest extends TestCase
     /** @test * */
     public function testItReturnsAnotherUser()
     {
-        $searchQuery = $this->actingAs($this->member)->get(route('mship.feedback.usersearch', $this->otherMember->real_name))->getContent();
+        $searchQuery = $this->actingAs($this->member)
+                            ->get(route('mship.feedback.usersearch', $this->otherMember->real_name))
+                            ->getContent();
 
         $this->assertContains($this->otherMember->real_name, $searchQuery);
     }
