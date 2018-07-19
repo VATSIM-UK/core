@@ -20,7 +20,7 @@
         </li>
 
         <li {!! (\Request::is('adm/visit-transfer/hours') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("visiting.admin.hours.index") }}">
+            <a href="{{ URL::route("visiting.admin.hours.create") }}">
                 <i class="ion ion-ios-clock"></i> <span> Hours Monitoring</span>
             </a>
         </li>
