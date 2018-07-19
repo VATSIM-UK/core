@@ -53,6 +53,13 @@ class ManageSlack extends Command
     {
         $this->slackUsers = SlackUser::lists();
 
+        if ($this->slackUsers->ok == false && $this->slackUsers->error = "invalid_auth") {
+            // Incorrect server credentials
+            \Log::error("Slack credentials invalid!");
+            $this->error('Slack credentials invalid!');
+            return;
+        }
+
         foreach ($this->slackUsers->members as $slackUser) {
             start:
             try {
@@ -106,7 +113,7 @@ class ManageSlack extends Command
         return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
             try {
                 $user = SlackUser::getPresence($slackUser->id);
-                if (!$presence) {
+                if (!$user) {
                     // Most likely a slack error.
                     return 'active';
                 }

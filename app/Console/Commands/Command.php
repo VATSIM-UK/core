@@ -46,9 +46,9 @@ abstract class Command extends BaseCommand
      * @param string $to
      * @return mixed
      */
-    protected function slack($to = 'web_alerts')
+    protected function slack($destination_channel = 'web_alerts')
     {
-        return Slack::setUsername('Cron Notifications')->to($to);
+        return Slack::setUsername('Cron Notifications')->to($destination_channel);
     }
 
     /**
@@ -219,30 +219,28 @@ abstract class Command extends BaseCommand
 
     private function handleSlackException($e)
     {
-        switch (get_class($e)) {
-            case ClientException::class:
-                switch ($e->getCode()) {
-                    case 408:
-                        // Timeout. Do nothing
-                        break;
-                    default:
-                        Bugsnag::notifyException($e);
-                        break;
-                }
-                break;
-            case ServerException::class:
-                switch ($e->getCode()) {
-                    case 504:
-                        // Timeout. Do nothing
-                        break;
-                    default:
-                        Bugsnag::notifyException($e);
-                        break;
-                }
-                break;
-            default:
-                Bugsnag::notifyException($e);
-                break;
+        $error_class = get_class($e);
+        $error_code = $e->getCode();
+        if ($error_class == ClientException::class) {
+            switch ($error_code) {
+                case 408:
+                    // Timeout. Do nothing
+                    break;
+                default:
+                    Bugsnag::notifyException($e);
+                    break;
+            }
+        } else if ($error_class == ServerException::class) {
+            switch ($error_code) {
+                case 504:
+                    // Timeout. Do nothing
+                    break;
+                default:
+                    Bugsnag::notifyException($e);
+                    break;
+            }
+        } else {
+            Bugsnag::notifyException($e);
         }
     }
 }
