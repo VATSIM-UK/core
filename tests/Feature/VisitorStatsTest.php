@@ -25,10 +25,18 @@ class VisitorStatsTest extends TestCase
         $this->account->addState(State::findByCode('DIVISION'));
     }
 
-    /** @test **/
+    /** @test * */
+    public function testNoHoursArePulledOnGet()
+    {
+        $this->actingAs($this->account)->get(route('visiting.admin.hours.create'))
+            ->assertViewIs('visit-transfer.admin.hours.index')
+            ->assertViewMissing('accounts');
+    }
+
+    /** @test * */
     public function testOnlyVisitingControllersAreSelected()
     {
-        $this->actingAs($this->account)->get(route('visiting.admin.hours.index'))
+        $this->actingAs($this->account)->post(route('visiting.admin.hours.post'))
             ->assertViewIs('visit-transfer.admin.hours.list')
             ->assertViewHas(['accounts', 'startDate', 'endDate']);
     }
