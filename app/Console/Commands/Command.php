@@ -3,11 +3,10 @@
 namespace App\Console\Commands;
 
 use App;
-use Bugsnag;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
-use Illuminate\Console\Command as BaseCommand;
 use Slack;
+use Bugsnag;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Console\Command as BaseCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends BaseCommand
@@ -220,20 +219,12 @@ abstract class Command extends BaseCommand
     private function handleSlackException($e)
     {
         $errorClass = get_class($e);
-        $errorCode = $e->getCode();
-        if ($errorClass == ClientException::class) {
+        if ($errorClass == BadResponseException::class) {
+            $errorCode = $e->getCode();
             switch ($errorCode) {
                 case 408:
                     // Timeout. Do nothing
                     break;
-                default:
-                    Bugsnag::notifyException($e);
-                    break;
-            }
-
-            return;
-        } elseif ($errorClass == ServerException::class) {
-            switch ($errorCode) {
                 case 504:
                     // Timeout. Do nothing
                     break;
@@ -244,7 +235,6 @@ abstract class Command extends BaseCommand
 
             return;
         }
-
         Bugsnag::notifyException($e);
     }
 }
