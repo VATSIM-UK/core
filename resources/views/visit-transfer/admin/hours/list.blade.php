@@ -22,7 +22,7 @@
                                 <th class="col-md-2">Name</th>
                                 <th class="col-md-1">ATC Rating</th>
                                 <th class="col-md-1">Region / Division</th>
-                                <th class="col-md-2">Controlling Time / Controlling Time (UK)</th>
+                                <th class="col-md-2">Controlling Time (UK) / Controlling Time</th>
                             </tr>
                             </thead>
                             <tbody>
