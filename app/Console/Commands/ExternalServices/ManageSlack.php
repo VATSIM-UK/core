@@ -8,6 +8,7 @@ use Bugsnag;
 use Cache;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use SlackUser;
 
 class ManageSlack extends Command
@@ -51,6 +52,14 @@ class ManageSlack extends Command
     public function handle()
     {
         $this->slackUsers = SlackUser::lists();
+
+        if ($this->slackUsers->ok == false && $this->slackUsers->error = 'invalid_auth') {
+            // Incorrect server credentials
+            \Log::error('Slack credentials invalid!');
+            $this->error('Slack credentials invalid!');
+
+            return;
+        }
 
         foreach ($this->slackUsers->members as $slackUser) {
             start:
@@ -103,7 +112,18 @@ class ManageSlack extends Command
     private function userIsActive($slackUser)
     {
         return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
-            return SlackUser::getPresence($slackUser->id)->presence;
+            try {
+                $user = SlackUser::getPresence($slackUser->id);
+                if (!$user || !$user->ok) {
+                    // Most likely a slack error.
+                    return 'active';
+                }
+
+                return $user->presence;
+            } catch (ServerException $e) {
+                // Server exception - not our fault. We will assume they are active.
+                return 'active';
+            }
         }) == 'active';
     }
 

@@ -483,32 +483,32 @@ class MshipAccountTest extends TestCase
         $this->assertEquals(10, $this->account->fresh()->session_timeout);
     }
 
-//    /* @test * */
+//    /** @test * */
 //    public function itSetsAUsersActiveStatus()
 //    {
 //    }
 //
-//    /* @test * */
+//    /** @test * */
 //    public function itReturnsAUsersActiveStatus()
 //    {
 //    }
 //
-//    /* @test * */
+//    /** @test * */
 //    public function itSetsAUsersInactiveStatus()
 //    {
 //    }
 //
-//    /* @test * */
+//    /** @test * */
 //    public function itReturnsAUsersInactiveStatus()
 //    {
 //    }
 //
-//    /* @test * */
+//    /** @test * */
 //    public function itSetsAUsersLockedStatus()
 //    {
 //    }
 //
-//    /* @test * */
+//    /** @test * */
 //    public function itReturnsAUsersLockedStatus()
 //    {
 //    }
