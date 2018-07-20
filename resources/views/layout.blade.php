@@ -56,7 +56,15 @@
 
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
-                        {!! link_to_route("mship.feedback.new", "Feedback") !!}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li>{!! link_to_route("mship.feedback.new", "Submit Feedback") !!}</li>
+                                    <li>{!! link_to_route("mship.feedback.view", "View My Feedback") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 
