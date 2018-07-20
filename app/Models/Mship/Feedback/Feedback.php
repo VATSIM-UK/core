@@ -78,17 +78,17 @@ class Feedback extends Model
 
     public function scopeActioned($query)
     {
-        return $query->where('actioned_at', '!=', null);
+        return $query->whereNotNull('actioned_at');
     }
 
     public function scopeUnActioned($query)
     {
-        return $query->where('actioned_at', null);
+        return $query->whereNull('actioned_at');
     }
 
     public function scopeSent($query)
     {
-        return $query->where('sent_at', '!=', null);
+        return $query->whereNotNull('sent_at');
     }
 
     public function form()
