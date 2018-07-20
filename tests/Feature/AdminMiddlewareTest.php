@@ -28,10 +28,17 @@ class AdminMiddlewareTest extends TestCase
         $this->superUser->roles()->attach(Role::find(1));
     }
 
+    private function createRoleWithPermissionId(int $permission, $user)
+    {
+        $role = factory(Role::class)->create();
+        $role->permissions()->attach(Permission::find($permission));
+        $user->roles()->attach($role);
+    }
+
     /** @test * */
     public function testAUserWithPermissionCanAccessAnExplicitEndPoint()
     {
-        $this->createRoleWithPermissionId(2, $this->user);
+        $this->createRoleWithPermissionId(2, $this->user); // GET adm/dashboard
 
         $this->actingAs($this->user, 'web')->get(route('adm.dashboard'))->assertSuccessful();
         $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
@@ -40,7 +47,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAUserWithPermissionCanAccessAWildcardEndpoint()
     {
-        $this->createRoleWithPermissionId(6, $this->user);
+        $this->createRoleWithPermissionId(6, $this->user); // GET adm/mship/account/*
 
         $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
             $this->user))->assertSuccessful();
@@ -66,12 +73,5 @@ class AdminMiddlewareTest extends TestCase
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
         $this->actingAs($this->user, 'web')->get(route('adm.mship.feedback.new'))->assertForbidden();
-    }
-
-    private function createRoleWithPermissionId(int $permission, $user)
-    {
-        $role = factory(Role::class)->create();
-        $role->permissions()->attach(Permission::find($permission)); // GET adm/mship/account/*
-        $user->roles()->attach($role);
     }
 }
