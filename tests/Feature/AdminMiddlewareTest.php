@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Mship\Permission;
 use App\Models\Mship\Account;
+use App\Models\Mship\Permission;
 use App\Models\Mship\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
