@@ -12,6 +12,7 @@ class AdminMiddlewareTest extends TestCase
     use DatabaseTransactions;
 
     private $user;
+    private $otherUser;
     private $superUser;
 
     public function setUp()
@@ -20,6 +21,8 @@ class AdminMiddlewareTest extends TestCase
 
         $this->user = factory(\App\Models\Mship\Account::class)->create();
 
+        $this->otherUser = factory(\App\Models\Mship\Account::class)->create();
+
         $this->superUser = factory(\App\Models\Mship\Account::class)->create();
         $this->superUser->roles()->attach(\App\Models\Mship\Role::find(1));
     }
@@ -27,9 +30,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAUserWithPermissionCanAccessAnExplicitEndPoint()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create();
-        $role->permissions()->attach(Permission::find(2)); // GET adm/dashboard
-        $this->user->roles()->attach($role);
+        $this->createRoleWithPermissionId(2, $this->user);
 
         $this->actingAs($this->user, 'web')->get(route('adm.dashboard'))->assertSuccessful();
         $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
@@ -38,9 +39,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAUserWithPermissionCanAccessAWildcardEndpoint()
     {
-        $role = factory(\App\Models\Mship\Role::class)->create();
-        $role->permissions()->attach(Permission::find(6)); // GET adm/mship/account/*
-        $this->user->roles()->attach($role);
+        $this->createRoleWithPermissionId(6, $this->user);
 
         $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
             $this->user))->assertSuccessful();
@@ -51,21 +50,27 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAUserWithAnExplicitPermissionCanAccessEndpoint()
     {
-        $testAccount = factory(\App\Models\Mship\Account::class)->create();
-        $permission = factory(\App\Models\Mship\Permission::class)->create(['name' => "adm/mship/account/{$testAccount->id}/"]);
+        $permission = factory(\App\Models\Mship\Permission::class)->create(['name' => "adm/mship/account/{$this->otherUser->id}/"]);
         $role = factory(\App\Models\Mship\Role::class)->create();
         $role->permissions()->attach($permission->first());
         $this->user->roles()->attach($role);
 
         $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
-            $testAccount))->assertSuccessful();
+            $this->otherUser))->assertSuccessful();
         $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
-            $testAccount))->assertSuccessful();
+            $this->otherUser))->assertSuccessful();
     }
 
     /** @test * */
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
         $this->actingAs($this->user, 'web')->get(route('adm.mship.feedback.new'))->assertForbidden();
+    }
+
+    private function createRoleWithPermissionId(int $permission, $user)
+    {
+        $role = factory(\App\Models\Mship\Role::class)->create();
+        $role->permissions()->attach(Permission::find($permission)); // GET adm/mship/account/*
+        $user->roles()->attach($role);
     }
 }
