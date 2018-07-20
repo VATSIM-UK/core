@@ -13,7 +13,7 @@ class ViewFeedbackController extends \App\Http\Controllers\BaseController
             ->get()
             ->reverse();
 
-        if ($feedback->count() === 0) {
+        if ($feedback->isEmpty()) {
             return Redirect::route('mship.manage.dashboard')->withError('You have no feedback available to view at this time.');
         }
 
