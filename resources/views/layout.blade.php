@@ -104,20 +104,22 @@
                         </ul>
                     </li>
                 </ul>
-                
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+
+                @if(\Auth::user()->qualificationAtc->isS1)
+                    <ul class="nav navbar-nav navcustom">
+                        <li class="dropdown dropdown-large">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-12">
+                                    <ul>
+                                        <li class="dropdown-header">Endorsements</li>
+                                        <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                @endif
 
                 @if(\App\Models\Smartcars\Flight::enabled()->count() > 0)
                     <ul class="nav navbar-nav navcustom">
