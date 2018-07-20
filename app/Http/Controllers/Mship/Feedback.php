@@ -89,8 +89,8 @@ class Feedback extends \App\Http\Controllers\BaseController
                 $cidfield = $question->slug;
 
                 if ($request->input($question->slug) == \Auth::user()->id) {
-                   return Redirect::back()
-                       ->withError("You cannot leave feedback about yourself")
+                    return Redirect::back()
+                       ->withError('You cannot leave feedback about yourself')
                        ->withInput();
                 }
             }
