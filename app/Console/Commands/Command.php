@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App;
+use Bugsnag;
+use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Console\Command as BaseCommand;
 use Slack;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,17 +42,12 @@ abstract class Command extends BaseCommand
      *
      * Method must be called for each message sent, to avoid message stacking/overlap.
      *
+     * @param string $to
      * @return mixed
      */
-    protected function slack()
+    protected function slack($destinationChannel = 'web_alerts')
     {
-        if (App::environment('production')) {
-            $channel = 'wslogging';
-        } else {
-            $channel = 'wslogging_dev';
-        }
-
-        return Slack::setUsername('Cron Notifications')->to($channel);
+        return Slack::setUsername('Cron Notifications')->to($destinationChannel);
     }
 
     /**
@@ -65,7 +62,7 @@ abstract class Command extends BaseCommand
             $to = $to->slack_id;
         }
 
-        $slack = $this->slack()->to($to);
+        $slack = $this->slack($to);
 
         if ($from != null) {
             $slack = $slack->from($from);
@@ -93,13 +90,17 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $slack = $this->slack()->to($to);
+        $slack = $this->slack($to);
 
         if ($from != null) {
             $slack = $slack->from($from);
         }
 
-        $slack->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
+        }
     }
 
     /**
@@ -145,7 +146,11 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $this->slack()->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
+        }
     }
 
     /**
@@ -192,7 +197,11 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $this->slack()->attach($attachment)->send();
+        try {
+            $this->slack()->attach($attachment)->send();
+        } catch (\Exception $e) {
+            $this->handleSlackException($e);
+        }
     }
 
     protected function getAuthorLink()
@@ -205,5 +214,27 @@ abstract class Command extends BaseCommand
         } else {
             return 'https://gitlab.com/vatsim-uk/core/blob/development'.$directory;
         }
+    }
+
+    private function handleSlackException($e)
+    {
+        $errorClass = get_class($e);
+        if ($errorClass == BadResponseException::class) {
+            $errorCode = $e->getCode();
+            switch ($errorCode) {
+                case 408:
+                    // Timeout. Do nothing
+                    break;
+                case 504:
+                    // Timeout. Do nothing
+                    break;
+                default:
+                    Bugsnag::notifyException($e);
+                    break;
+            }
+
+            return;
+        }
+        Bugsnag::notifyException($e);
     }
 }
