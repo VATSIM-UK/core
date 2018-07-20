@@ -87,6 +87,12 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             if ($question->type->name == 'userlookup') {
                 $cidfield = $question->slug;
+
+                if ($request->input($question->slug) == \Auth::user()->id) {
+                   return Redirect::back()
+                       ->withError("You cannot leave feedback about yourself")
+                       ->withInput();
+                }
             }
 
             // Proccess rules
