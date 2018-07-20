@@ -24,7 +24,6 @@ coverage:
         flags: notifications
     patch:
       target: 100%
-      threshold: 20
       only_pulls: true
       flags: events_jobs_queues, exceptions, http, models, notifications
 
