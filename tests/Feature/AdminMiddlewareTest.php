@@ -13,6 +13,7 @@ class AdminMiddlewareTest extends TestCase
 
     private $normalAccount;
     private $nothingAccount;
+    private $superUser;
 
     public function setUp()
     {
@@ -23,6 +24,10 @@ class AdminMiddlewareTest extends TestCase
         $this->normalAccount->addState(State::findByCode('DIVISION'));
 
         $this->nothingAccount = factory(\App\Models\Mship\Account::class)->create();
+
+        $this->superUser = factory(\App\Models\Mship\Account::class)->create();
+
+        $this->superUser->roles()->attach(\App\Models\Mship\Role::find(1));
     }
 
     /** @test * */
@@ -36,6 +41,8 @@ class AdminMiddlewareTest extends TestCase
         $this->normalAccount->roles()->attach($role);
 
         $this->actingAs($this->normalAccount, 'web')->get(route('adm.dashboard'))->assertSuccessful();
+
+        $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
 
         $this->actingAs($this->nothingAccount, 'web')->get(route('adm.dashboard'))->assertForbidden();
     }
@@ -51,6 +58,9 @@ class AdminMiddlewareTest extends TestCase
         $this->normalAccount->roles()->attach($role);
 
         $this->actingAs($this->normalAccount, 'web')->get(route('adm.mship.account.details',
+            $this->normalAccount))->assertSuccessful();
+
+        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
             $this->normalAccount))->assertSuccessful();
 
         $this->actingAs($this->nothingAccount, 'web')->get(route('adm.mship.account.details',
@@ -71,6 +81,9 @@ class AdminMiddlewareTest extends TestCase
         $this->normalAccount->roles()->attach($role);
 
         $this->actingAs($this->normalAccount, 'web')->get(route('adm.mship.account.details',
+            $testAccount))->assertSuccessful();
+
+        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
             $testAccount))->assertSuccessful();
     }
 
