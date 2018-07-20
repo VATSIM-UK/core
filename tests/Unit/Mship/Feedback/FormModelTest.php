@@ -72,9 +72,9 @@ class FormModelTest extends TestCase
         $this->assertEquals(3, $form->feedback->count());
     }
 
-    /** @test * */
-    public function itReturnsARouteKeyName()
-    {
-        // assert routekeyname() works
-    }
+//    /** @test * */
+//    public function itReturnsARouteKeyName()
+//    {
+//        // assert routekeyname() works
+//    }
 }

@@ -70,27 +70,27 @@ class FeedbackTest extends TestCase
         $this->assertDatabaseHas('mship_feedback_questions', $question);
     }
 
-    /** @test * */
-    public function itAllowsSubmission()
-    {
-        //
-    }
-
-    /** @test * */
-    public function itAllowsCreationOfFormWithPermission()
-    {
-        //
-    }
-
-    /** @test * */
-    public function itAllowsViewingOfSubmissionWithPermission()
-    {
-        //
-    }
-
-    /** @test * */
-    public function itDoesNotAllowViewingOfSubmissionWithoutPermission()
-    {
-        //
-    }
+//    /** @test * */
+//    public function itAllowsSubmission()
+//    {
+//        //
+//    }
+//
+//    /** @test * */
+//    public function itAllowsCreationOfFormWithPermission()
+//    {
+//        //
+//    }
+//
+//    /** @test * */
+//    public function itAllowsViewingOfSubmissionWithPermission()
+//    {
+//        //
+//    }
+//
+//    /** @test * */
+//    public function itDoesNotAllowViewingOfSubmissionWithoutPermission()
+//    {
+//        //
+//    }
 }
