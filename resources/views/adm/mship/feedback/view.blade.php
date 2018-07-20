@@ -121,7 +121,7 @@
                                 <div class="col-md-12 text-center">
                                     <p>
                                         {{ Form::label('Comment To User')}}
-                                        {{ Form::textarea('comment', null, ['rows' => 4, "cols"=> 10, "class" => "form-control"]) }}
+                                        {{ Form::textarea('comment', null, ['rows' => 4, "cols"=> 10, "class" => "form-control", 'placeholder' => 'If no comment is provided, the system will provide a default comment that implies the feedback is positive.']) }}<br />
                                     </p>
                                     {{ Form::submit('Send To User', ['class' => 'btn btn-warning']) }}
                                 </div>
