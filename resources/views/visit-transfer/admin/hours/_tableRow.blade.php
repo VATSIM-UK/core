@@ -18,7 +18,7 @@
 
 @endphp
 
-<tr @if ($flag === true) class="bg-danger" @endif>
+<tr @if ($flag) class="bg-danger" @endif>
     <td>{!! link_to_route('adm.mship.account.details', $account->id, $account->id) !!}</td>
     <td>{{ $account->name }}</td>
     <td>{{ $account->qualificationAtc }}</td>
