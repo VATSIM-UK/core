@@ -41,6 +41,8 @@ class Type extends Model
         'requires_value' => 'boolean',
     ];
 
+    public $timestamps = false;
+
     public function scopeFindByName($query, $name)
     {
         return $query->where('name', $name)->firstOrFail();

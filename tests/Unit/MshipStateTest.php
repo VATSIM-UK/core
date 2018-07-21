@@ -178,11 +178,13 @@ class MshipStateTest extends TestCase
         $this->assertEquals($transferringState->id, $this->account->fresh()->primary_state->id);
     }
 
-    /** @test */
+    /* @test */
     public function itRemainsIdempotentWhenTryingToRemoveAStateThatIsntSet()
     {
         $regionState = \App\Models\Mship\State::findByCode('REGION');
 
         $this->account->fresh()->removeState($regionState);
+
+        $this->assertFalse($this->account->fresh()->states->contains($regionState));
     }
 }

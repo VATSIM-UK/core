@@ -87,6 +87,8 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
             Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
             Route::post('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@postActioned']);
             Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);
+
+            Route::post('view/{feedback}/send', ['as' => 'send', 'uses' => 'Feedback\FeedbackSendController@store']);
         });
 
         Route::get('staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);

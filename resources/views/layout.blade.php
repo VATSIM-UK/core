@@ -56,7 +56,15 @@
 
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
-                        {!! link_to_route("mship.feedback.new", "Feedback") !!}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li>{!! link_to_route("mship.feedback.new", "Submit Feedback") !!}</li>
+                                    <li>{!! link_to_route("mship.feedback.view", "View My Feedback") !!}</li>
+                                </ul>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 
@@ -96,20 +104,22 @@
                         </ul>
                     </li>
                 </ul>
-                
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+
+                @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc->isS1)
+                    <ul class="nav navbar-nav navcustom">
+                        <li class="dropdown dropdown-large">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-12">
+                                    <ul>
+                                        <li class="dropdown-header">Endorsements</li>
+                                        <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                @endif
 
                 @if(\App\Models\Smartcars\Flight::enabled()->count() > 0)
                     <ul class="nav navbar-nav navcustom">
