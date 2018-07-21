@@ -10,7 +10,8 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p>Here, you can generate statistics that are used for the quarterly report to VATEUR.</p>
+                                    <p>Here, you can generate statistics that are used for the quarterly report to
+                                        VATEUR.</p>
                                 </div>
                             </div>
                             {!! Form::open(['route' => 'adm.ops.qstats.generate', 'method' => 'post', 'autocomplete' => 'off']) !!}
