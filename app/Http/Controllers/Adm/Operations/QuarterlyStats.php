@@ -6,6 +6,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class QuarterlyStats extends AdmController
 {
@@ -16,6 +17,8 @@ class QuarterlyStats extends AdmController
 
     public function generate(Request $request)
     {
+        $this->generateValidation($request);
+
         $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
         $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(4);
 
@@ -32,6 +35,17 @@ class QuarterlyStats extends AdmController
                 ->with('stats', $stats)
                 ->with('quarter', $startDate->quarter)
                 ->with('year', $startDate->year);
+    }
+
+    private function generateValidation(Request $request)
+    {
+        return $request->validate([
+            'quarter' => [
+                'required',
+                Rule::in(['01-01', '04-01', '07-01', '10-01'])
+            ],
+            'year' => 'required|numeric|min:2016|max:'.Carbon::now()->year
+        ]);
     }
 
     private function membersLeftDivision($startDate, $endDate)
