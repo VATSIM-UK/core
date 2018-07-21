@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Adm\Operations;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class QuarterlyStats extends AdmController
@@ -28,7 +28,7 @@ class QuarterlyStats extends AdmController
             ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
             ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
             ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
-            ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)]
+            ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)],
         ]);
 
         return $this->viewMake('adm.ops.qstats')
@@ -42,9 +42,9 @@ class QuarterlyStats extends AdmController
         return $request->validate([
             'quarter' => [
                 'required',
-                Rule::in(['01-01', '04-01', '07-01', '10-01'])
+                Rule::in(['01-01', '04-01', '07-01', '10-01']),
             ],
-            'year' => 'required|numeric|min:2016|max:'.Carbon::now()->year
+            'year' => 'required|numeric|min:2016|max:'.Carbon::now()->year,
         ]);
     }
 
