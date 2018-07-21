@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\NetworkData;
 
+use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -64,6 +65,15 @@ class AtcSessionTest extends TestCase
 
         tap(factory(Atc::class)->create(['callsign' => 'EISN_CTR']), function ($model) {
             $this->assertEquals(false, $model->uk_session);
+        });
+    }
+    
+    /** @test **/
+    public function itOnlyReturnsUkSessionDataOnRelationship() 
+    {
+        tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
+            factory(Atc::class)->create(['callsign' => 'LFMN_APP', 'account_id' => $model->account_id]);
+            $this->assertCount(1, Account::find($model->account_id)->networkDataAtcUk()->get());
         });
     }
 }
