@@ -19,7 +19,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         {!! Form::label("quarter" ,"Quarter",['class' => 'control-label']),
-                                        Form::select("quarter", ['01-01' => 'Q1', '04-01' => 'Q2', '07-01' => 'Q3', '10-01' => 'Q4'],'Q1', ['class' => 'form-control', 'id' => 'quarter']) !!}
+                                        Form::select("quarter", ['01-01' => 'Q1', '04-01' => 'Q2', '07-01' => 'Q3', '10-01' => 'Q4'], '', ['class' => 'form-control', 'id' => 'quarter', 'placeholder' => 'Please Select Quarter']) !!}
                                     </div>
                                 </div>
                             </div>
@@ -27,7 +27,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         {!! Form::label("year","Year",['class' => 'control-label']),
-                                        Form::number("year", \Carbon\Carbon::now()->year, ['class' => 'form-control', 'id' => 'year']) !!}
+                                        Form::number("year", '', ['class' => 'form-control', 'id' => 'year']) !!}
                                     </div>
                                 </div>
                             </div>
