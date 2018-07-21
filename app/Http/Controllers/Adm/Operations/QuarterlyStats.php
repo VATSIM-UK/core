@@ -6,6 +6,7 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class QuarterlyStats extends AdmController
@@ -20,7 +21,7 @@ class QuarterlyStats extends AdmController
         $this->generateValidation($request);
 
         $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
-        $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(4);
+        $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(3);
 
         $stats = collect([
             ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
@@ -32,9 +33,9 @@ class QuarterlyStats extends AdmController
         ]);
 
         return $this->viewMake('adm.ops.qstats')
-                ->with('stats', $stats)
-                ->with('quarter', $startDate->quarter)
-                ->with('year', $startDate->year);
+            ->with('stats', $stats)
+            ->with('quarter', $startDate->quarter)
+            ->with('year', $startDate->year);
     }
 
     private function generateValidation(Request $request)
@@ -50,9 +51,10 @@ class QuarterlyStats extends AdmController
 
     private function membersLeftDivision($startDate, $endDate)
     {
-        return Account::whereHas('statesHistory', function ($q) use ($startDate, $endDate) {
-            $q->where('code', 'DIVISION')->whereBetween('end_at', [$startDate, $endDate]);
-        })->count();
+        return DB::table('mship_account_state')
+            ->where('state_id', '=', 3)
+            ->whereBetween('end_at', [$startDate, $endDate])
+            ->count();
     }
 
     private function pilotsVisiting($startDate, $endDate)
@@ -64,31 +66,44 @@ class QuarterlyStats extends AdmController
 
     private function newJoinersAsFirstDivision($startDate, $endDate)
     {
-        return Account::whereHas('statesHistory', function ($q) use ($startDate, $endDate) {
-            $q->whereBetween('start_at', [$startDate, $endDate])->whereColumn('mship_account.created_at', 'start_at')->where('mship_state.id', 3);
-        })->whereBetween('joined_at', [$startDate, $endDate])->count();
+        return DB::table('mship_account_state')
+            ->leftJoin('mship_account', 'mship_account.id', '=', 'mship_account_state.account_id')
+            ->where('state_id', '=', 3)
+            ->whereBetween('start_at', [$startDate, $endDate])
+            ->whereColumn('created_at', 'start_at')
+            ->whereBetween('joined_at', [$startDate, $endDate])
+            ->count();
     }
 
     private function membersBecomingInactive($startDate, $endDate)
     {
-        return Account::whereHas('statesHistory', function ($q) use ($startDate, $endDate) {
-            $q->where('mship_state.id', 3)->where(function ($query) use ($startDate, $endDate) {
-                $query->whereNotBetween('end_at', [$startDate, $endDate])->orWhere('end_at', null);
-            });
-        })->whereHas('datachanges', function ($q) use ($startDate, $endDate) {
-            $q->where('data_key', 'inactive')->where('data_new', 1)->whereBetween('created_at', [$startDate, $endDate]);
-        })->count();
+        return DB::table('mship_account_state')
+            ->leftJoin('sys_data_change', 'mship_account_state.account_id', '=', 'sys_data_change.model_id')
+            ->where('state_id', '=', 3)
+            ->whereRaw('(mship_account_state.end_at > sys_data_change.created_at OR end_at is null)')
+            ->where('data_key', '=', 'inactive')
+            ->where('data_new', '=', 1)
+            ->whereBetween('sys_data_change.created_at', [$startDate, $endDate])
+            ->count();
     }
 
     private function completedTransfersExObs($startDate, $endDate)
     {
-        return Account::whereHas('statesHistory', function ($q) use ($startDate, $endDate) {
-            $q->where('mship_state.id', 3)->whereNull('end_at')->whereBetween('start_at', [$startDate, $endDate]);
-        })->whereHas('statesHistory', function ($q) use ($startDate, $endDate) {
-            $q->where('mship_state.id', '!=', 3)->whereBetween('end_at', [$startDate, $endDate]);
-        })->whereHas('qualifications', function ($q) {
-            $q->whereBetween('mship_qualification.id', [3, 10]);
-        })->count();
+        return DB::table('mship_account_state')
+            ->where('state_id', '=', 3)
+            ->whereNull('end_at')
+            ->whereBetween('start_at', [$startDate, $endDate])
+            ->whereIn('account_id', function ($states) use ($startDate, $endDate) {
+                $states->select('account_id')
+                    ->from('mship_account_state')
+                    ->whereBetween('end_at', [$startDate, $endDate]);
+            })
+            ->whereIn('account_id', function ($quals) {
+                $quals->select('account_id')
+                    ->from('mship_account_qualification')
+                    ->whereBetween('qualification_id', [2, 10]);
+            })
+            ->count();
     }
 
     private function visitingControllersAboveS1($startDate, $endDate)
