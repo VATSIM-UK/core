@@ -20,16 +20,18 @@ class QuarterlyStats extends AdmController
         $endDate = $startDate->addMonths(4);
 
         $stats = collect([
-            'leftDivision' => $this->membersLeftDivision($startDate, $endDate),
-            'pilotsVisiting' => $this->pilotsVisiting($startDate, $endDate),
-            'newJoinersAsFirstDivision' => $this->newJoinersAsFirstDivision($startDate, $endDate),
-            'membersBecomingInactive' => $this->membersBecomingInactive($startDate, $endDate),
-            'visitingControllersAboveS1' => $this->visitingControllersAboveS1($startDate, $endDate),
-            'completedTransfersExObs' => $this->completedTransfersExObs($startDate, $endDate),
+            ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
+            ['name' => 'Pilots Visiting', 'value' => $this->pilotsVisiting($startDate, $endDate)],
+            ['name' => 'New Joiners as First Division', 'value' => $this->newJoinersAsFirstDivision($startDate, $endDate)],
+            ['name' => 'Members Becoming Inactive', 'value' => $this->membersBecomingInactive($startDate, $endDate)],
+            ['name' => 'Visiting Controllers Above S1', 'value' => $this->visitingControllersAboveS1($startDate, $endDate)],
+            ['name' => 'Completed Transfer (Ex OBS)', 'value' => $this->completedTransfersExObs($startDate, $endDate)]
         ]);
 
         return $this->viewMake('adm.ops.qstats')
-                ->with('stats', $stats);
+                ->with('stats', $stats)
+                ->with('quarter', $startDate->quarter)
+                ->with('year', $startDate->year);
     }
 
     private function membersLeftDivision($startDate, $endDate)

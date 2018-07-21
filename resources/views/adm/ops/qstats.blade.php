@@ -44,5 +44,43 @@
                 </div>
             </div>
         </div>
+
+        @isset($stats)
+            <div class="row">
+                <div class="col xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <div class="box-title">Results</div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>These are the stastics for <strong>Q{{ $quarter }}</strong> of <strong>{{ $year }}</strong>.</p>
+                                </div>
+                            </div>
+                            <table id="quarterly-stats" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="col-md-1">Statistic</th>
+                                    <th class="col-md-2">Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                @foreach($stats as $stat)
+                                    <tr>
+                                        <td>{{ $stat['name'] }}</td>
+                                        <td>{{ $stat['value'] }}</td>
+                                    </tr>
+                                @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </section>
 @stop
