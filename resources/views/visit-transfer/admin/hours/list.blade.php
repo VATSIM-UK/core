@@ -18,7 +18,7 @@
                         </div>
                         <div class="box-body">
                             <div align="center">
-                                {{ $accounts->render() }}
+                                {{ $accounts->appends(['startDate' => $startDate, 'endDate' => $endDate])->render() }}
                             </div>
                             <table id="visit-transfer-accounts" class="table table-bordered">
                                 <thead>
@@ -38,7 +38,7 @@
                                 </tbody>
                             </table>
                             <div align="center">
-                                {{ $accounts->render() }}
+                                {{ $accounts->appends(['startDate' => $startDate, 'endDate' => $endDate])->render() }}
                             </div>
                         </div>
                     </div>
