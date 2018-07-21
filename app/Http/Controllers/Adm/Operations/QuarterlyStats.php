@@ -10,8 +10,8 @@ class QuarterlyStats extends AdmController
 {
     public function getIndex()
     {
-        $start_date = Carbon::now()->subMonths(6); // Must be lower than end date
-        $end_date = Carbon::now(); // Will change to post request
+        $start_date = Carbon::now()->subMonths(6);
+        $end_date = Carbon::now();
 
         $leftDivsion = $this->membersLeftDivision($start_date, $end_date);
         $pilotsVisiting = $this->pilotsVisiting($start_date, $end_date);
@@ -19,7 +19,6 @@ class QuarterlyStats extends AdmController
         $membersBecomingInactive = $this->membersBecomingInactive($start_date, $end_date);
         $visitingControllersAboveS1 = $this->visitingControllersAboveS1($start_date, $end_date);
         $completedTransfersExObs = $this->completedTransfersExObs($start_date, $end_date);
-        dd($newJoinersAsFirstDivision);
     }
 
     private function membersLeftDivision($startDate, $endDate)
