@@ -17,7 +17,7 @@ class QuarterlyStats extends AdmController
     public function generate(Request $request)
     {
         $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
-        $endDate = $startDate->addMonths(4);
+        $endDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'))->addMonths(4);
 
         $stats = collect([
             ['name' => 'Left Division', 'value' => $this->membersLeftDivision($startDate, $endDate)],
