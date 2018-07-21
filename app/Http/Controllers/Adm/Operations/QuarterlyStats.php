@@ -6,8 +6,8 @@ use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class QuarterlyStats extends AdmController
 {
@@ -93,12 +93,12 @@ class QuarterlyStats extends AdmController
             ->where('state_id', '=', 3)
             ->whereNull('end_at')
             ->whereBetween('start_at', [$startDate, $endDate])
-            ->whereIn('account_id', function($states) use ($startDate, $endDate) {
+            ->whereIn('account_id', function ($states) use ($startDate, $endDate) {
                 $states->select('account_id')
                     ->from('mship_account_state')
                     ->whereBetween('end_at', [$startDate, $endDate]);
             })
-            ->whereIn('account_id', function($quals) {
+            ->whereIn('account_id', function ($quals) {
                 $quals->select('account_id')
                     ->from('mship_account_qualification')
                     ->whereBetween('qualification_id', [2, 10]);
