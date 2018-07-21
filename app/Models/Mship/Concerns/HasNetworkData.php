@@ -15,6 +15,16 @@ trait HasNetworkData
     }
 
     /**
+     * Fetch all ATC Sessions from within the UK.
+     *
+     * @return mixed
+     */
+    public function networkDataAtcUk()
+    {
+        return $this->networkDataAtc()->isUk();
+    }
+
+    /**
      * Get the member's current ATC session, if connected.
      *
      * @return \App\Models\NetworkData\Atc
