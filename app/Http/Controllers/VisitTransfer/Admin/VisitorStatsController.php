@@ -32,10 +32,13 @@ class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 
         $accounts = $this->accounts->with(['networkDataAtc' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('disconnected_at', [$startDate, $endDate]);
-        }, 'qualifications', 'states'])
-        ->whereHas('states', function ($query) {
+        }, 'networkDataAtcUk' => function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('disconnected_at', [$startDate, $endDate]);
+        }])->whereHas('states', function ($query) {
             $query->where('code', '=', 'VISITING');
         })->orderBy('id', 'asc')->paginate(25);
+
+        $accounts->load('qualifications');
 
         return $this->viewMake('visit-transfer.admin.hours.list')
                 ->with('accounts', $accounts)
