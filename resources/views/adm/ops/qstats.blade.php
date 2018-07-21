@@ -27,7 +27,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         {!! Form::label("year","Year",['class' => 'control-label']),
-                                        Form::number("year", '', ['class' => 'form-control', 'id' => 'year']) !!}
+                                        Form::selectRange("year", \Carbon\Carbon::now()->year, 2016, '', ['class' => 'form-control', 'id' => 'year', 'placeholder' => 'Please Select Year']) !!}
                                     </div>
                                 </div>
                             </div>
