@@ -32,9 +32,9 @@ class QuarterlyStats extends AdmController
         ]);
 
         return $this->viewMake('adm.ops.qstats')
-                ->with('stats', $stats)
-                ->with('quarter', $startDate->quarter)
-                ->with('year', $startDate->year);
+            ->with('stats', $stats)
+            ->with('quarter', $startDate->quarter)
+            ->with('year', $startDate->year);
     }
 
     private function generateValidation(Request $request)
