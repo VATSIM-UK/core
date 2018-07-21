@@ -36,7 +36,7 @@ class VisitorStatsTest extends TestCase
     /** @test * */
     public function testOnlyVisitingControllersAreSelected()
     {
-        $this->actingAs($this->account)->post(route('visiting.admin.hours.post'))
+        $this->actingAs($this->account)->get(route('visiting.admin.hours.search'))
             ->assertViewIs('visit-transfer.admin.hours.list')
             ->assertViewHas(['accounts', 'startDate', 'endDate']);
     }

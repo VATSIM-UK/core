@@ -218,8 +218,8 @@ Route::group([
         'uses' => 'VisitorStatsController@create',
     ]);
 
-    Route::post('/hours/', [
-        'as' => 'hours.post',
+    Route::get('/hours/search', [
+        'as' => 'hours.search',
         'uses' => 'VisitorStatsController@index',
     ]);
 });
