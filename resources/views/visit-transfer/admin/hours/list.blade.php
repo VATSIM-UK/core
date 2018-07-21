@@ -10,30 +10,35 @@
                     @include('visit-transfer.admin.hours._searchForm')
                 </div>
 
-                <div class="box box-primary">
-                    <div class="box-body">
-                        <div align="center">
-                            {{ $accounts->render() }}
+                <div class="col xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <div class="box-title">Results</div>
                         </div>
-                        <table id="visit-transfer-accounts" class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th class="col-md-1">CID</th>
-                                <th class="col-md-2">Name</th>
-                                <th class="col-md-1">ATC Rating</th>
-                                <th class="col-md-1">Region / Division</th>
-                                <th class="col-md-2">Controlling Time (UK) / Controlling Time</th>
-                                <th class="col-md-2">Percentage UK</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @if($startDate != null)
-                                @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
-                            @endif
-                            </tbody>
-                        </table>
-                        <div align="center">
-                            {{ $accounts->render() }}
+                        <div class="box-body">
+                            <div align="center">
+                                {{ $accounts->render() }}
+                            </div>
+                            <table id="visit-transfer-accounts" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="col-md-1">CID</th>
+                                    <th class="col-md-2">Name</th>
+                                    <th class="col-md-1">ATC Rating</th>
+                                    <th class="col-md-1">Region / Division</th>
+                                    <th class="col-md-2">Controlling Time (UK) / Controlling Time</th>
+                                    <th class="col-md-2">Percentage UK</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($startDate != null)
+                                    @each('visit-transfer.admin.hours._tableRow', $accounts, 'account')
+                                @endif
+                                </tbody>
+                            </table>
+                            <div align="center">
+                                {{ $accounts->render() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,10 +53,12 @@
     <script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js" integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous"></script>
+            integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i"
+            crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#startDate, #endDate').datetimepicker({
-                timepicker:false,
+                timepicker: false,
                 format: 'Y-m-d'
             });
         });
