@@ -67,9 +67,9 @@ class AtcSessionTest extends TestCase
             $this->assertEquals(false, $model->uk_session);
         });
     }
-    
+
     /** @test **/
-    public function itOnlyReturnsUkSessionDataOnRelationship() 
+    public function itOnlyReturnsUkSessionDataOnRelationship()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
             factory(Atc::class)->create(['callsign' => 'LFMN_APP', 'account_id' => $model->account_id]);

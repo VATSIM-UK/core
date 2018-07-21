@@ -174,5 +174,5 @@ function minutesToHours($minutes)
 {
     $seconds = $minutes * 60;
 
-    return sprintf( "%02.2d:%02.2d", floor( $seconds / 3600 ), $seconds / 60 % 60 );
+    return sprintf('%02.2d:%02.2d', floor($seconds / 3600), $seconds / 60 % 60);
 }
