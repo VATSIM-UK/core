@@ -5,20 +5,31 @@ namespace App\Http\Controllers\Adm\Operations;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 
 class QuarterlyStats extends AdmController
 {
-    public function getIndex()
+    public function get()
     {
-        $start_date = Carbon::now()->subMonths(6);
-        $end_date = Carbon::now();
+        return $this->viewMake('adm.ops.qstats');
+    }
 
-        $leftDivsion = $this->membersLeftDivision($start_date, $end_date);
-        $pilotsVisiting = $this->pilotsVisiting($start_date, $end_date);
-        $newJoinersAsFirstDivision = $this->newJoinersAsFirstDivision($start_date, $end_date);
-        $membersBecomingInactive = $this->membersBecomingInactive($start_date, $end_date);
-        $visitingControllersAboveS1 = $this->visitingControllersAboveS1($start_date, $end_date);
-        $completedTransfersExObs = $this->completedTransfersExObs($start_date, $end_date);
+    public function generate(Request $request)
+    {
+        $startDate = Carbon::parse($request->get('year').'-'.$request->get('quarter'));
+        $endDate = $startDate->addMonths(4);
+
+        $stats = collect([
+            'leftDivision' => $this->membersLeftDivision($startDate, $endDate),
+            'pilotsVisiting' => $this->pilotsVisiting($startDate, $endDate),
+            'newJoinersAsFirstDivision' => $this->newJoinersAsFirstDivision($startDate, $endDate),
+            'membersBecomingInactive' => $this->membersBecomingInactive($startDate, $endDate),
+            'visitingControllersAboveS1' => $this->visitingControllersAboveS1($startDate, $endDate),
+            'completedTransfersExObs' => $this->completedTransfersExObs($startDate, $endDate),
+        ]);
+
+        return $this->viewMake('adm.ops.qstats')
+                ->with('stats', $stats);
     }
 
     private function membersLeftDivision($startDate, $endDate)
@@ -70,6 +81,6 @@ class QuarterlyStats extends AdmController
             $q->where('mship_state.id', 2)->whereBetween('start_at', [$startDate, $endDate]);
         })->whereHas('qualifications', function ($q) {
             $q->whereBetween('mship_qualification.id', [3, 10]);
-        })->get();
+        })->count();
     }
 }
