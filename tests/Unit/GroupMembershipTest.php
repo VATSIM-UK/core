@@ -94,6 +94,8 @@ class GroupMembershipTest extends TestCase
 
         $member->fresh()->addCommunityGroup($tier1);
         $member->fresh()->addCommunityGroup($tier2);
+
+        $this->assertTrue($member->fresh()->communityGroups->contains($tier1) && $member->fresh()->communityGroups->contains($tier2));
     }
 
     /** @test */
