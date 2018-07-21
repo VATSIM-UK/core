@@ -23,6 +23,7 @@
                                 <th class="col-md-1">ATC Rating</th>
                                 <th class="col-md-1">Region / Division</th>
                                 <th class="col-md-2">Controlling Time (UK) / Controlling Time</th>
+                                <th class="col-md-2">Percentage UK</th>
                             </tr>
                             </thead>
                             <tbody>
