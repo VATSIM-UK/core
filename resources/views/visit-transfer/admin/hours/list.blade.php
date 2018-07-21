@@ -7,7 +7,8 @@
                 <div class="box box-warning">
                     <div class="box-header">
                         <div class="box-title">Visiting Controllers Monitoring</div>
-                    @include('visit-transfer.admin.hours._searchForm')
+                        @include('visit-transfer.admin.hours._searchForm')
+                    </div>
                 </div>
 
                 <div class="col xs-12">
@@ -52,7 +53,7 @@
     <script src='/AdminLTE/js/plugins/datatables/jquery.dataTables.min.js'></script>
     <script src='/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js'></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js" integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"
             integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i"
             crossorigin="anonymous"></script>
     <script type="text/javascript">
