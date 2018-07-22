@@ -22,7 +22,7 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 | Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core)  | ![code_climate_maintainability] |
 | Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
 
-#Environments
+# Environments
 
 |     Env    |              URL              |        Status        |
 |------------|-------------------------------|----------------------|
