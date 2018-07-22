@@ -45,15 +45,23 @@ The following are the upgrade notes for deploying in production.
 
 ### Steps
 
-1. Stop the queue and TeamSpeak daemon
-2. Disable cronjobs
-3. Run `composer install --optimize-autoloader --no-dev`
-4. Run `php artisan migrate --step --force --no-interaction`
-6. Run `npm install`
-7. Run `npm run prod`
+1. Stop the queue (`sudo systemctl stop core-queue`)
+2. Stop the TeamSpeak daemon (`sudo systemctl stop teamspeak-daemon`)
+3. Take application offline (`php artisan down`)
+3. Disable cronjobs
+4. Install dependencies (`composer install --optimize-autoloader --no-dev`)
+5. Migrate databases (`php artisan migrate --step --force -n`)
+6. Install assets (`apt-get update && apy-get install nasm && npm install`)
+7. Compile assets (`npm run prod`)
+6. Clear views (`php artisan view:clear`)
+7. Link storage (`php artisan storage:link`)
+8. Move logs (``mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true`)
 8. **Perform version-specific upgrade steps (below)**
-9. Enable all cronjobs
-10. Restart the queue and TeamSpeak daemon
+9. Bring application online (`php artisan up`)
+9. Enable cronjobs
+10. Notify Bugsnag (`php artisan bugsnag:deploy --branch="%BRANCH%" --revision="%REVISION%" --repository="%REPO_NAME%"`)
+10. Start the queue (`sudo systemctl start core-queue`)
+11. Start the TeamSpeak daemon (`sudo systemctl start teamspeak-daemon`)
 
 ### Version Specific Upgrade Steps
 
