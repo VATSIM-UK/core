@@ -43,7 +43,7 @@ To start work on an issue, post a comment on the issue requesting it be assigned
 
 The following are the upgrade notes for deploying in production.
 
-### All Versions
+### Steps
 
 1. Stop the queue and TeamSpeak daemon
 2. Disable cronjobs
@@ -55,6 +55,6 @@ The following are the upgrade notes for deploying in production.
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
 
-### 3.9.0
+### Version Specific Upgrade Steps
 
 * N/A
