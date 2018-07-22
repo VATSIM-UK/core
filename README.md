@@ -39,30 +39,6 @@ When submitting an issue, please:
 
 To start work on an issue, post a comment on the issue requesting it be assigned to you. Once it has been assigned, you are free to start work on it.
 
-# Upgrade Notes
+# Version Notes
 
-The following are the upgrade notes for deploying in production.
-
-### Steps
-
-1. Stop the queue (`sudo systemctl stop core-queue`)
-2. Stop the TeamSpeak daemon (`sudo systemctl stop teamspeak-daemon`)
-3. Take application offline (`php artisan down`)
-3. Disable cronjobs
-4. Install dependencies (`composer install --optimize-autoloader --no-dev`)
-5. Migrate databases (`php artisan migrate --step --force -n`)
-6. Install assets (`apt-get update && apy-get install nasm && npm install`)
-7. Compile assets (`npm run prod`)
-6. Clear views (`php artisan view:clear`)
-7. Link storage (`php artisan storage:link`)
-8. Move logs (``mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true``)
-8. **Perform version-specific upgrade steps (below)**
-9. Bring application online (`php artisan up`)
-9. Enable cronjobs
-10. Notify Bugsnag (`php artisan bugsnag:deploy --branch="%BRANCH%" --revision="%REVISION%" --repository="%REPO_NAME%"`)
-10. Start the queue (`sudo systemctl start core-queue`)
-11. Start the TeamSpeak daemon (`sudo systemctl start teamspeak-daemon`)
-
-### Version Specific Upgrade Steps
-
-* N/A
+There are no additional steps required to deploy this version of Core.
