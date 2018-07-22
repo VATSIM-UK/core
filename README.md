@@ -31,7 +31,13 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 # Issue Tracking
 
-To find out how to track and manage issues, please visit [https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues](https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues).
+Development tasks (new features, technical tasks, bugs, etc.) should be tracked and actioned using JIRA, at [https://vatsimuk.atlassian.net/browse/CORE](https://vatsimuk.atlassian.net/browse/CORE). All current issues are publicly visible, however in order to create issues, you will need to [sign up](https://vatsimuk.atlassian.net/login).
+
+When submitting an issue, please:
+* Search the issue tracker before you submit your issue, as it may already be present.
+* Provide as much information as possible, to ensure others are able to understand and act upon the information you provide.
+
+To start work on an issue, post a comment on the issue requesting it be assigned to you. Once it has been assigned, you are free to start work on it.
 
 # Upgrade Notes
 
