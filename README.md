@@ -55,7 +55,7 @@ The following are the upgrade notes for deploying in production.
 7. Compile assets (`npm run prod`)
 6. Clear views (`php artisan view:clear`)
 7. Link storage (`php artisan storage:link`)
-8. Move logs (``mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true`)
+8. Move logs (``mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true``)
 8. **Perform version-specific upgrade steps (below)**
 9. Bring application online (`php artisan up`)
 9. Enable cronjobs
