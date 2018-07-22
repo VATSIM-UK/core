@@ -1,13 +1,24 @@
+[master_build_status]: https://travis-ci.com/VATSIM-UK/core.svg?branch=master
+[master_style_ci_status]: https://github.styleci.io/repos/75443611/shield?branch=master
+[code_climate_maintainability]: https://api.codeclimate.com/v1/badges/6a47acbf3b7798883e7e/maintainability
+[master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
+[staging_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
+[production_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/93858.png
 <p align="center">
-  <a href="https://travis-ci.org/VATSIM-UK/core"><img src="https://travis-ci.org/VATSIM-UK/core.svg" alt="Build Status"></a>
-  <a href="https://styleci.io/repos/75443611"><img src="https://styleci.io/repos/75443611/shield?style=flat" alt="Style Status"></a>
-  <a href="https://codeclimate.com/github/VATSIM-UK/core/maintainability"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/maintainability" alt="Maintainability"></a>
-  <a href="https://codeclimate.com/github/VATSIM-UK/core/test_coverage"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/test_coverage" alt="Test Coverage"></a>
 </p>
 
 # About
 
 Core is the flagship application of VATSIM UK. Originally designed to handle Single Sign-On (SSO) for our other applications, it now serves as the main hub for all member information and any new features we introduce.
+
+# Status
+
+|      Check      |                            Provider                           |              Status             |
+|-----------------|---------------------------------------------------------------|---------------------------------|
+| Build           | [TravisCI](https://travis-ci.com/VATSIM-UK/core)              | ![master_build_status]          |
+| Code Style      | [StyleCI](https://github.styleci.io/repos/75443611)           | ![master_style_ci_status]       |
+| Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core)  | ![code_climate_maintainability] |
+| Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
 
 # Issue Tracking
 
