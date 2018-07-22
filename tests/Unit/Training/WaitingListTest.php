@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\Training;
 
-use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\Training\WaitingList;
+use App\Models\Mship\Account;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
@@ -45,7 +46,7 @@ class WaitingListTest extends TestCase
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
     }
 
-    /** @test **/
+    /** @test * */
     public function itCanRemoveUsers()
     {
         $account = factory(Account::class)->make();
@@ -59,5 +60,15 @@ class WaitingListTest extends TestCase
 
         $this->assertDatabaseMissing('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
+    }
+
+    /** @test * */
+    public function itCanScopeActiveLists()
+    {
+        $nonActiveList = factory(WaitingList::class)->create(['active' => false]);
+
+        $this->assertEquals(1, $this->waitingList->active()->count());
+
+        $this->assertEquals(2, $this->waitingList->all()->count());
     }
 }
