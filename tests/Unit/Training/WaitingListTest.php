@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Training;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Models\Training\WaitingList;
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
