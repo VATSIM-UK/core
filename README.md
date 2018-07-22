@@ -59,7 +59,3 @@ The following are the upgrade notes for deploying in production.
 
 * Run `php artisan storage:link`
 * Add `MAPS_API_KEY` in `.env`
-
-### Older Versions
-
-To upgrade from older versions, check the `README.md` file for that release.
