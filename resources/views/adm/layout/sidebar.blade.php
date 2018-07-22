@@ -1,16 +1,4 @@
-<!-- sidebar: style can be found in sidebar.less -->
 <section class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel">
-        <div class="pull-left image">
-            {!! HTML::image("images/default_avatar.png", "User Image", ["class" => "img-circle", "style" => "background: #FFFFFF;"]) !!}
-        </div>
-        <div class="pull-left info">
-            <p>Hello, {{ $_account->name_first }}</p>
-
-            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
-    </div>
 
     {!! Form::open(["url" => URL::route("adm.search"), "method" => "GET", "class" => "sidebar-form"]) !!}
         <div class="input-group">
@@ -42,5 +30,5 @@
         @include('adm.layout.sidebar.system')
 
     </ul>
+
 </section>
-<!-- /.sidebar -->
