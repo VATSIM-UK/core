@@ -44,7 +44,6 @@
 
     <header class="main-header">
 
-        <!-- Logo -->
         <a href="{{ URL::route("adm.dashboard") }}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>V</b>UK</span>
@@ -52,29 +51,23 @@
             <span class="logo-lg"><b>VATSIM</b>UK</span>
         </a>
 
-        <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
-            <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
             </a>
 
-            <div class="navbar-custom-menu">
-                @include('adm.layout.navbar')
-            </div>
+            @include('adm.layout.logout')
         </nav>
+
     </header>
 
-    <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
         @include('adm.layout.sidebar')
     </aside>
 
-    <!-- Right side column. Contains the navbar and content of the page -->
     <div class="content-wrapper">
     @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
 
-    <!-- Main content -->
         <section class="content">
 
             @if(Session::has('error') OR isset($error))
@@ -101,9 +94,9 @@
             @endif
 
             @yield('content')
-        </section><!-- /.content -->
-    </div><!-- /.right-side -->
-</div><!-- ./wrapper -->
+        </section>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -135,7 +128,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js" integrity="sha384-vMMciU9KnFBubM1yw+Q+6f68+ZHeeD0LPvydPm6xdw75vMiYRB03L7+4K5gGoh5w" crossorigin="anonymous"></script><!-- iCheck -->
 <script src='/AdminLTE/js/plugins/iCheck/icheck.min.js'></script>
 
-{{--<!-- AdminLTE App -->--}}
+<!-- AdminLTE App -->
 <script src='/AdminLTE/js/app.min.js'></script>
 
 <script language="javascript" type="text/javascript">
