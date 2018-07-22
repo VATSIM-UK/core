@@ -47,10 +47,10 @@ The following are the upgrade notes for deploying in production.
 
 1. Stop the queue and TeamSpeak daemon
 2. Disable cronjobs
-3. Run `composer install --optimize-autoloader --no-dev` (dev: `composer install`)
+3. Run `composer install --optimize-autoloader --no-dev`
 4. Run `php artisan migrate --step --force --no-interaction`
 6. Run `npm install`
-7. Run `npm run prod` (dev: `npm run dev`)
+7. Run `npm run prod`
 8. **Perform version-specific upgrade steps (below)**
 9. Enable all cronjobs
 10. Restart the queue and TeamSpeak daemon
