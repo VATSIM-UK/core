@@ -25,7 +25,7 @@ class AddWaitingListTable extends Migration
         Schema::create('training_waiting_list_account', function (Blueprint $table) {
             $table->unsignedInteger('list_id');
             $table->unsignedInteger('account_id');
-            $table->unsignedInteger('status_id')->nullable();;
+            $table->unsignedInteger('status_id')->nullable();
             $table->integer('position')->nullable();
             $table->primary(['list_id', 'account_id']);
             $table->timestamps();

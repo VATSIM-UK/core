@@ -2,8 +2,8 @@
 
 namespace App\Models\Training;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingListStatus extends Model
 {
@@ -14,8 +14,6 @@ class WaitingListStatus extends Model
     protected $casts = [
         'default' => 'boolean',
     ];
-
-
 
     public function waitingListAccount()
     {
