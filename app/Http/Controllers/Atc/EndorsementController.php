@@ -23,7 +23,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
                     return $item->sum();
                 });
 
-            if($requirements) {
+            if ($requirements) {
                 die();
             }
 
