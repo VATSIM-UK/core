@@ -23,11 +23,11 @@ class AddWaitingListTable extends Migration
         });
 
         Schema::create('training_waiting_list_account', function (Blueprint $table) {
-            $table->increments('id');
             $table->unsignedInteger('list_id');
             $table->unsignedInteger('account_id');
-            $table->unsignedInteger('status_id');
+            $table->unsignedInteger('status_id')->nullable();;
             $table->integer('position')->nullable();
+            $table->primary(['list_id', 'account_id']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -43,8 +43,17 @@ class AddWaitingListTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->boolean('retains_position')->default(1);
+            $table->boolean('default')->default(0);
             $table->timestamps();
         });
+
+        DB::table('training_waiting_list_status')->insert([
+            'name' => 'Active',
+            'retains_position' => true,
+            'default' => true,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
     }
 
     /**
