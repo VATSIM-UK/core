@@ -21,8 +21,7 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-    @section('styles')
-    @show
+    @yield('styles')
 
     {{-- BugSnag --}}
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
