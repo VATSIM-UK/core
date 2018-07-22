@@ -22,6 +22,12 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 | Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core)  | ![code_climate_maintainability] |
 | Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
 
+#Environments
+|     Env    |              URL              |        Status        |
+|------------|-------------------------------|----------------------|
+| Production | https://core.vatsim.uk        | ![production_status] |
+| Staging    | https://beta.core.vatsim.uk   | ![staging_status]    |
+
 # Issue Tracking
 
 To find out how to track and manage issues, please visit [https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues](https://github.com/VATSIM-UK/core/wiki/Reporting-and-Tracking-Issues).
