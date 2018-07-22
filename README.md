@@ -4,7 +4,9 @@
 [master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
 [staging_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
 [production_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/93858.png
+
 <p align="center">
+    <a href="https://www.vatsim.uk"><img src="https://vatsim.uk/system/view/images/logo.png" width="250px" /></a>
 </p>
 
 # About
