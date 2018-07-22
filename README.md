@@ -24,10 +24,10 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 # Environments
 
-|     Env    |                                       URL                                     |        Status        |
-|------------|-------------------------------------------------------------------------------|----------------------|
-| Production | [https://core.vatsim.uk]https://core.vatsim.uk{:target="_blank"}              | ![production_status] |
-| Staging    | [https://beta.core.vatsim.uk]https://beta.core.vatsim.uk{:target="_blank"}    | ![staging_status]    |
+|     Env    |                        URL                       |        Status        |
+|------------|--------------------------------------------------|----------------------|
+| Production | https://core.vatsim.uk{:target="_blank"}         | ![production_status] |
+| Staging    | https://beta.core.vatsim.uk{:target="_blank"}    | ![staging_status]    |
 
 # Issue Tracking
 
