@@ -80,8 +80,5 @@
 
 @include('adm.layout.scripts')
 
-@section('scripts')
-@show
-
 </body>
 </html>
