@@ -15,19 +15,19 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 # Status
 
-|      Check      |                            Provider                           |              Status             |
-|-----------------|---------------------------------------------------------------|---------------------------------|
-| Build           | [TravisCI](https://travis-ci.com/VATSIM-UK/core)              | ![master_build_status]          |
-| Code Style      | [StyleCI](https://github.styleci.io/repos/75443611)           | ![master_style_ci_status]       |
-| Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core)  | ![code_climate_maintainability] |
-| Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master) | ![master_codecov_status]        |
+|      Check      |                                     Provider                                    |              Status             |
+|-----------------|---------------------------------------------------------------------------------|---------------------------------|
+| Build           | [TravisCI](https://travis-ci.com/VATSIM-UK/core){:target="_blank"}              | ![master_build_status]          |
+| Code Style      | [StyleCI](https://github.styleci.io/repos/75443611){:target="_blank"}           | ![master_style_ci_status]       |
+| Maintainability | [CodeClimate](https://codeclimate.com/github/VATSIM-UK/core){:target="_blank"}  | ![code_climate_maintainability] |
+| Coverage        | [CodeCov](https://codecov.io/gh/VATSIM-UK/core/branch/master){:target="_blank"} | ![master_codecov_status]        |
 
 # Environments
 
-|     Env    |              URL              |        Status        |
-|------------|-------------------------------|----------------------|
-| Production | https://core.vatsim.uk        | ![production_status] |
-| Staging    | https://beta.core.vatsim.uk   | ![staging_status]    |
+|     Env    |                        URL                       |        Status        |
+|------------|--------------------------------------------------|----------------------|
+| Production | https://core.vatsim.uk{:target="_blank"}         | ![production_status] |
+| Staging    | https://beta.core.vatsim.uk{:target="_blank"}    | ![staging_status]    |
 
 # Issue Tracking
 
