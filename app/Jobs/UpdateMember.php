@@ -34,15 +34,15 @@ class UpdateMember extends Job implements ShouldQueue
      */
     public function handle()
     {
-
         try {
             $this->data = VatsimXML::getData($this->accountID, 'idstatusint');
         } catch (\Exception $e) {
-            if(strpos($e->getMessage(), 'Name or service not known') !== false) {
+            if (strpos($e->getMessage(), 'Name or service not known') !== false) {
                 // CERT unavailable. Not our fault, so will ignore.
                 return;
             }
             Bugsnag::notifyException($e);
+
             return;
         }
         DB::beginTransaction();
