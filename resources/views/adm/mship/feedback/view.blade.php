@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
+    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/send'))
 
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
