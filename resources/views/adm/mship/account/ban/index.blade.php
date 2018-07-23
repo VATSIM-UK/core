@@ -106,7 +106,7 @@
                         @endforeach
                         @if(count($bans) < 1)
                             <tr>
-                                <td colspan="6" align="center">No bans to display :(</td>
+                                <td colspan="10" align="center">No bans to display :(</td>
                             </tr>
                         @endif
                         </tbody>
