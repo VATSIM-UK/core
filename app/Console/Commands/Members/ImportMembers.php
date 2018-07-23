@@ -8,6 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use DB;
+use Exception;
 use VatsimXML;
 
 /**
@@ -102,7 +103,16 @@ class ImportMembers extends Command
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data['rating_atc'] >= 8) {
-            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            try {
+                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            } catch (Exception $e) {
+                if (strpos($e->getMessage(), 'Name or service not known') !== false) {
+                    // CERT unavailable. Not our fault, so will ignore.
+                    return;
+                }
+                Bugsnag::notifyException($e);
+                return;
+            }
 
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);

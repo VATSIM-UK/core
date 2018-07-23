@@ -6,6 +6,7 @@ use App\Events\Mship\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
 use VatsimXML;
+use Exception;
 
 trait HasQualifications
 {
@@ -71,7 +72,14 @@ trait HasQualifications
         }
 
         if ($atcRating >= 8) {
-            $info = VatsimXML::getData($this->id, 'idstatusprat');
+            try {
+                $info = VatsimXML::getData($this->id, 'idstatusprat');
+            } catch (Exception $e) {
+                if (strpos($e->getMessage(), 'Name or service not known') === false) {
+                    Bugsnag::notifyException($e);
+                }
+            }
+
             if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
                 $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
             }
