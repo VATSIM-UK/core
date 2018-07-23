@@ -2,8 +2,8 @@
 
 namespace App\Libraries;
 
-use Cache;
 use Bugsnag;
+use Cache;
 use Exception;
 use League\Csv\Reader;
 
@@ -31,7 +31,6 @@ class AutoTools
         $cacheLength = $withTimestamp ? 118 : 60 * 12;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {
-
             try {
                 $data = file_get_contents($url);
             } catch (Exception $e) {
@@ -40,6 +39,7 @@ class AutoTools
                     return collect();
                 }
                 Bugsnag::notifyException($e);
+
                 return collect();
             }
 

@@ -5,8 +5,8 @@ namespace App\Models\Mship\Concerns;
 use App\Events\Mship\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
-use VatsimXML;
 use Exception;
+use VatsimXML;
 
 trait HasQualifications
 {

@@ -111,6 +111,7 @@ class ImportMembers extends Command
                     return;
                 }
                 Bugsnag::notifyException($e);
+
                 return;
             }
 
