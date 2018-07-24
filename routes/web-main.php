@@ -14,13 +14,13 @@ Route::post('logout')->uses('Auth\LoginController@logout')->name('logout');
 // Password
 Route::group([
     'as' => 'password.',
-    'prefix' => 'password'
-], function() {
+    'prefix' => 'password',
+], function () {
 
     // Reset
     Route::group([
         'middleware' => 'auth:vatsim-sso',
-    ], function() {
+    ], function () {
         Route::post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('email');
         Route::get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('reset');
         Route::post('reset')->uses('Auth\ResetPasswordController@reset')->name('request');
@@ -29,7 +29,7 @@ Route::group([
     // Change
     Route::group([
         'middleware' => 'auth_full_group',
-    ], function() {
+    ], function () {
         Route::get('create')->uses('Auth\ChangePasswordController@showCreateForm')->name('create');
         Route::post('create')->uses('Auth\ChangePasswordController@create');
         Route::get('change')->uses('Auth\ChangePasswordController@showChangeForm')->name('change');
@@ -37,14 +37,13 @@ Route::group([
         Route::get('delete', 'Auth\ChangePasswordController@showDeleteForm')->name('delete');
         Route::post('delete')->uses('Auth\ChangePasswordController@delete');
     });
-
 });
 
 // Webhooks
 Route::group([
     'as' => 'webhook.',
     'prefix' => 'webhook',
-    'namespace' => 'Webhook'
+    'namespace' => 'Webhook',
 ], function () {
     Route::get('dropbox')->uses('Dropbox@getDropbox')->name('dropbox');
     Route::post('dropbox')->uses('Dropbox@postDropbox');
@@ -60,14 +59,14 @@ Route::group([
     'prefix' => 'mship',
     'as' => 'mship.',
     'namespace' => 'Mship',
-    'middleware' => 'auth_full_group'
-], function() {
+    'middleware' => 'auth_full_group',
+], function () {
 
     // Manage
     Route::group([
         'as' => 'manage.',
-        'prefix' => 'manage'
-    ], function() {
+        'prefix' => 'manage',
+    ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
         Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
@@ -81,8 +80,8 @@ Route::group([
     // Feedback
     Route::group([
         'as' => 'feedback.',
-        'prefix' => 'feedback'
-    ], function() {
+        'prefix' => 'feedback',
+    ], function () {
         Route::get('new')->uses('Feedback@getFeedbackFormSelect')->name('new');
         Route::post('new')->uses('Feedback@postFeedbackFormSelect')->name('new.post');
         Route::get('new/{form}')->uses('Feedback@getFeedback')->name('new.form');
@@ -93,7 +92,7 @@ Route::group([
 
     // Other
     Route::group([
-    ], function() {
+    ], function () {
         Route::post('auth/invisibility')->uses('Management@postInvisibility')->name('auth.invisibility');
 
         Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
@@ -103,14 +102,13 @@ Route::group([
         // Route::post('/email')->uses('Email@postEmail')->name('mship.email.post');
         // Route::get('/email/recipient-search')->uses('Email@getRecipientSearch')->name('mship.email.recipient-search');
     });
-
 });
 
 // TeamSpeak
 Route::group([
     'prefix' => 'mship/manage/teamspeak',
     'namespace' => 'TeamSpeak',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
@@ -131,7 +129,7 @@ Route::group([
     'as' => 'community.membership.',
     'prefix' => 'community/membership',
     'namespace' => 'Community',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
     Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
@@ -143,7 +141,7 @@ Route::group([
     'as' => 'controllers.',
     'prefix' => 'controllers/',
     'namespace' => 'Atc',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
 });
@@ -153,7 +151,7 @@ Route::group([
     'as' => 'networkdata.',
     'prefix' => 'network-data',
     'namespace' => 'NetworkData',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', function () {
         return redirect()->route('networkdata.online');
@@ -172,15 +170,14 @@ Route::group([
     'as' => 'visiting.',
     'prefix' => 'visit-transfer',
     'namespace' => 'VisitTransfer\Site',
-    'middleware' => 'auth_full_group'
+    'middleware' => 'auth_full_group',
 ], function () {
-
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
 
     // Application
     Route::group([
         'as' => 'application.',
-        'prefix' => 'application'
+        'prefix' => 'application',
     ], function () {
         Route::get('/', function () {
             return redirect()->route('visiting.landing');
@@ -192,7 +189,7 @@ Route::group([
 
         // Continue
         Route::group([
-            'prefix' => '{applicationByPublicId}'
+            'prefix' => '{applicationByPublicId}',
         ], function () {
             Route::get('/')->uses('Application@getView')->name('view');
             Route::get('continue')->uses('Application@getContinue')->name('continue');
@@ -214,13 +211,12 @@ Route::group([
     // References
     Route::group([
         'as' => 'reference.',
-        'prefix' => 'reference'
+        'prefix' => 'reference',
     ], function () {
         Route::get('complete/{token}')->uses('Reference@getComplete')->name('complete');
         Route::post('complete/{token}')->uses('Reference@postComplete')->name('complete.post');
         Route::post('complete/{token}/cancel')->uses('Reference@postCancel')->name('complete.cancel');
     });
-
 });
 
 // SmartCARS
