@@ -17,7 +17,7 @@ class WaitingListTest extends TestCase
     {
         parent::setUp();
 
-        $this->waitingList = factory(\App\Models\Training\WaitingList::class)->create();
+        $this->waitingList = factory(WaitingList::class)->create();
     }
 
     /** @test * */
@@ -40,7 +40,7 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->addToWaitingList($account);
 
-        $this->assertCount(1, $this->waitingList->students);
+        $this->assertCount(1, $this->waitingList->accounts);
 
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);

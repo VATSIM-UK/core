@@ -2,9 +2,9 @@
 
 namespace App\Models\Training;
 
-use App\Models\Mship\Account;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Mship\Account;
 
 class WaitingList extends Model
 {
@@ -26,10 +26,15 @@ class WaitingList extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function students()
+    public function accounts()
     {
         return $this->belongsToMany(Account::class, 'training_waiting_list_account',
-            'list_id')->using(WaitingListAccount::class);
+            'list_id')->using(WaitingListAccount::class)->withTimestamps();
+    }
+
+    public function studentsStatus()
+    {
+        return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
     }
 
     /**
@@ -39,7 +44,7 @@ class WaitingList extends Model
      */
     public function addToWaitingList(Account $account)
     {
-        return $this->students()->attach($account);
+        $this->accounts()->attach($account);
     }
 
     /**
@@ -50,7 +55,7 @@ class WaitingList extends Model
      */
     public function removeFromWaitingList(Account $account)
     {
-        return $this->students()->detach($account);
+        return $this->accounts()->detach($account);
     }
 
     /**
