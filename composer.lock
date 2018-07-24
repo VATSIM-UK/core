@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09b9f9ab0832153d1300b2f616b6cc17",
+    "content-hash": "44b1bf58e8a546d836ebc4580a263f17",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -1237,6 +1237,55 @@
                 "parser"
             ],
             "time": "2018-03-08T01:11:30+00:00"
+        },
+        {
+            "name": "fico7489/laravel-pivot",
+            "version": "2.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fico7489/laravel-pivot.git",
+                "reference": "6c374f0c9d62891aafa75b70ed663943f326299a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fico7489/laravel-pivot/zipball/6c374f0c9d62891aafa75b70ed663943f326299a",
+                "reference": "6c374f0c9d62891aafa75b70ed663943f326299a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.6.*"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fico7489\\Laravel\\Pivot\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Filip Horvat",
+                    "email": "filip.horvat@am2studio.hr",
+                    "homepage": "http://am2studio.hr",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
+            "homepage": "https://github.com/fico7489/laravel-pivot",
+            "keywords": [
+                "eloquent events",
+                "eloquent extra events",
+                "laravel BelongsToMany events",
+                "laravel pivot events",
+                "laravel sync events"
+            ],
+            "time": "2018-03-08T16:03:54+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2996,19 +3045,15 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/ac85f166aad75e1304fd72830f6efa7ff149a7f3",
-                "reference": "ac85f166aad75e1304fd72830f6efa7ff149a7f3",
+                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
+                "reference": "6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0.0",
-                "phpunit/phpunit": "^4.8.35 || ^5.4.3 || ^6.0 || ^7.0",
-                "react/socket": "^0.8.5",
-                "satooshi/php-coveralls": "^1.1 || ^2.0",
-                "symfony/yaml": "~2.1|~3.0|~4.0"
+                "phpunit/phpunit": "5.7.*"
             },
             "type": "library",
             "autoload": {
@@ -3038,7 +3083,7 @@
                 "teamspeak",
                 "ts3"
             ],
-            "time": "2018-05-07T18:25:32+00:00"
+            "time": "2017-12-06T16:53:01+00:00"
         },
         {
             "name": "psr/container",
@@ -6839,7 +6884,6 @@
         "alawrence/laravel-ipboard": 20,
         "maknz/slack": 20,
         "malahierba-lab/public-id": 20,
-        "planetteamspeak/ts3-php-framework": 20,
         "vatsim/sso": 20,
         "vatsim/xml": 20,
         "vluzrmos/slack-api": 20

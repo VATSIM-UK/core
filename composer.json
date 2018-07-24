@@ -29,6 +29,7 @@
         "barryvdh/laravel-ide-helper": "^2.1",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "~2.5",
+        "fico7489/laravel-pivot": "*",
         "guzzlehttp/guzzle": "~6.0",
         "laravel/browser-kit-testing": "^1.0",
         "laravel/framework": "5.6.*",
