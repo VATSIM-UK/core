@@ -26,17 +26,4 @@ class WaitingListStatusTest extends TestCase
     {
         $this->assertEquals(1, $this->waitingListStatus->default()->id);
     }
-
-    /** @test * */
-    public function itAssignsAStatusOnAttach()
-    {
-        $waitingList = factory(WaitingList::class)->create();
-
-        $account = factory(Account::class)->create();
-
-        $waitingList->addToWaitingList($account);
-
-        $this->assertDatabaseHas('training_waiting_list_account',
-            ['list_id' => $waitingList->id, 'status_id' => $this->waitingListStatus->id]);
-    }
 }
