@@ -2,13 +2,16 @@
 
 namespace App\Models\Training;
 
+use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, PivotEventTrait;
 
     public $table = 'training_waiting_list';
 
