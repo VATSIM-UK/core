@@ -71,9 +71,9 @@ class WaitingListTest extends TestCase
 
         $this->assertEquals(2, $this->waitingList->all()->count());
     }
-    
+
     /** @test **/
-    public function itCanHaveMultipleAccountsAssociatedWithIt() 
+    public function itCanHaveMultipleAccountsAssociatedWithIt()
     {
         $accounts = factory(Account::class, 3)->create();
 
