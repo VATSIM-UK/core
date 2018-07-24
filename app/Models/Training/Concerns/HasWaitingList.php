@@ -12,9 +12,4 @@ trait HasWaitingList
         return $this->belongsToMany(WaitingList::class, 'training_waiting_list_account',
             'account_id', 'list_id')->using(WaitingListAccount::class);
     }
-
-    public function addToWaitingList(WaitingList $waitingList)
-    {
-        return $this->waitingList()->attach($waitingList);
-    }
 }
