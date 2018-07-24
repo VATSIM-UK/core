@@ -5,8 +5,6 @@ namespace App\Models\Training;
 use App\Models\Mship\Account;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
@@ -35,7 +33,7 @@ class WaitingList extends Model
             'list_id')->using(WaitingListAccount::class)->withTimestamps();
     }
 
-    public function studentsStatus()
+    public function accountsStatus()
     {
         return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
     }
