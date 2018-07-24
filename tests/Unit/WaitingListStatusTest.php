@@ -2,8 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Models\Mship\Account;
-use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
