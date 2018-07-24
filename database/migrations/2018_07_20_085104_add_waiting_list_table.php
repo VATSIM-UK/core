@@ -23,12 +23,20 @@ class AddWaitingListTable extends Migration
         });
 
         Schema::create('training_waiting_list_account', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('list_id');
             $table->unsignedInteger('account_id');
-            $table->unsignedInteger('status_id')->nullable();
             $table->integer('position')->nullable();
-            $table->primary(['list_id', 'account_id']);
             $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('training_waiting_list_account_status', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('waiting_list_account_id');
+            $table->unsignedInteger('status_id');
+            $table->timestamp('start_at')->nullable();;
+            $table->timestamp('end_at')->nullable();;
             $table->softDeletes();
         });
 
@@ -65,6 +73,7 @@ class AddWaitingListTable extends Migration
     {
         Schema::dropIfExists('training_waiting_list');
         Schema::dropIfExists('training_waiting_list_account');
+        Schema::dropIfExists('training_waiting_list_account_status');
         Schema::dropIfExists('training_waiting_list_staff');
         Schema::dropIfExists('training_waiting_list_status');
     }
