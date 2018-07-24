@@ -4,7 +4,6 @@ namespace App\Models\Training\Concerns;
 
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListAccount;
-use App\Models\Training\WaitingListStatus;
 
 trait HasWaitingList
 {

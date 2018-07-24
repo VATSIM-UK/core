@@ -35,8 +35,8 @@ class AddWaitingListTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('waiting_list_account_id');
             $table->unsignedInteger('status_id');
-            $table->timestamp('start_at')->nullable();;
-            $table->timestamp('end_at')->nullable();;
+            $table->timestamp('start_at')->nullable();
+            $table->timestamp('end_at')->nullable();
             $table->softDeletes();
         });
 

@@ -2,9 +2,9 @@
 
 namespace App\Models\Training;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Mship\Account;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
 {
