@@ -97,8 +97,15 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
 });
 
 // Controllers
-Route::group(['prefix' => 'controllers/', 'middleware' => ['auth_full_group']], function () {
-    Route::get('endorsements/gatwick', 'Atc\EndorsementController@getGatwickGroundIndex')->name('controllers.endorsements.gatwick_ground');
+
+Route::group([
+    'as' => 'controllers.',
+    'prefix' => 'controllers/',
+    'namespace' => 'Atc',
+], function () {
+    Route::get('/', 'ATCIndexController')->name('landing');
+    Route::get('/new', 'ATCNewControllersController')->name('newControllers');
+    Route::get('endorsements/gatwick', 'EndorsementController@getGatwickGroundIndex')->middleware('auth_full_group')->name('endorsements.gatwick_ground');
 });
 
 // Network data
