@@ -223,3 +223,13 @@ Route::group([
         'uses' => 'VisitorStatsController@index',
     ]);
 });
+
+Route::group([
+    'as' => 'training.waitingList.',
+    'namespace' => 'Adm\Training',
+    'prefix' => 'adm/training/waiting-list',
+    'middleware' => ['auth_full_group']
+], function () {
+    Route::get('/', ['as' => 'index', 'uses' => 'WaitingListManagementController@index']);
+    Route::get('/manage/{waitingList}', ['as' => 'show', 'uses' => 'WaitingListManagementController@show']);
+});

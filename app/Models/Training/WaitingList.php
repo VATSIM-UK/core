@@ -20,6 +20,22 @@ class WaitingList extends Model
         return 'slug';
     }
 
+    public function accountsStatus()
+    {
+        return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
+    }
+
+    /**
+     * A Waiting List can be managed by many Staff Members (Accounts)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function staff()
+    {
+        return $this->belongsToMany(Account::class, 'training_waiting_list_staff', 'list_id',
+            'account_id')->withTimestamps();
+    }
+
     /**
      * Many WaitingLists can have many Accounts (pivot).
      *
@@ -28,14 +44,9 @@ class WaitingList extends Model
     public function accounts()
     {
         return $this->belongsToMany(Account::class, 'training_waiting_list_account',
-            'list_id')->using(WaitingListAccount::class)->withTimestamps();
+            'list_id')->using(WaitingListAccount::class)->withPivot(['position'])->withTimestamps();
     }
-
-    public function accountsStatus()
-    {
-        return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
-    }
-
+    
     /**
      * Add an Account to a waiting list.
      *
@@ -58,11 +69,29 @@ class WaitingList extends Model
     }
 
     /**
-     * Retrieve all active waiting lists.
+     * Add a Manager to a WaitingList
+     *
+     * @param Account $account | Collection
+     */
+    public function addManager($account)
+    {
+        return $this->staff()->attach($account);
+    }
+
+
+    /**
+     * Retrieve all staff assigned to a waiting list.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeStaff($query)
     {
+        return $query->whereHas('staff');
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
