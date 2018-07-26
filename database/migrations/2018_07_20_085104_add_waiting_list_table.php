@@ -52,6 +52,7 @@ class AddWaitingListTable extends Migration
             $table->boolean('retains_position')->default(1);
             $table->boolean('default')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         DB::table('training_waiting_list_status')->insert([
