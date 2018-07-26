@@ -29,7 +29,7 @@ class WaitingListManagementController extends AdmController
             ->with('waitingList', $waitingList->with([
                 'accounts' => function ($query) {
                     $query->orderBy('position');
-                }
+                },
             ])->first());
     }
 }
