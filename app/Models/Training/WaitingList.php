@@ -15,8 +15,6 @@ class WaitingList extends Model
 
     protected $dates = ['deleted_at'];
 
-    protected $casts = ['active' => 'boolean'];
-
     public function getRouteKeyName()
     {
         return 'slug';
@@ -65,8 +63,6 @@ class WaitingList extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
     {
-        return $query->where('active', true);
     }
 }

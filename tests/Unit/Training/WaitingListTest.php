@@ -62,16 +62,6 @@ class WaitingListTest extends TestCase
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
     }
 
-    /** @test * */
-    public function itCanScopeActiveLists()
-    {
-        $nonActiveList = factory(WaitingList::class)->create(['active' => false]);
-
-        $this->assertEquals(1, $this->waitingList->active()->count());
-
-        $this->assertEquals(2, $this->waitingList->all()->count());
-    }
-
     /** @test **/
     public function itCanHaveMultipleAccountsAssociatedWithIt()
     {
