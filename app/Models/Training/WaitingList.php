@@ -46,7 +46,7 @@ class WaitingList extends Model
         return $this->belongsToMany(Account::class, 'training_waiting_list_account',
             'list_id')->using(WaitingListAccount::class)->withPivot(['position'])->withTimestamps();
     }
-    
+
     /**
      * Add an Account to a waiting list.
      *
@@ -77,7 +77,6 @@ class WaitingList extends Model
     {
         return $this->staff()->attach($account);
     }
-
 
     /**
      * Retrieve all staff assigned to a waiting list.
