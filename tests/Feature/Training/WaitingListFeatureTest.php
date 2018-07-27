@@ -4,8 +4,8 @@ namespace Tests\Feature\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Models\Training\WaitingList;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
