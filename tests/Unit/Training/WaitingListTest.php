@@ -84,13 +84,13 @@ class WaitingListTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
             'account_id' => $account->id,
-            'position' => 1
+            'position' => 1,
         ]);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
             'account_id' => $accountSecond->id,
-            'position' => 2
+            'position' => 2,
         ]);
     }
 }
