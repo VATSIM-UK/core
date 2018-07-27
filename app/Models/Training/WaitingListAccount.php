@@ -12,11 +12,11 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    protected static function boot()
-    {
-        parent::boot();
+    public $fillable = ['position'];
 
-        self::created([get_called_class(), 'assignStatus']);
+    public function setPositionAttribute($value)
+    {
+        $this->attributes['position'] = (int) $value;
     }
 
     public function assignStatus()
