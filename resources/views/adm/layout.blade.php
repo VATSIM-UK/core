@@ -64,6 +64,11 @@
     </aside>
 
     <div class="content-wrapper">
+    @if (!App::environment('production'))
+        <div class="dev_environment_notification">
+            You are in a <b>NON-PRODUCTION</b> environment
+        </div>
+    @endif
     @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
 
         <section class="content">
