@@ -54,7 +54,7 @@ class WaitingList extends Model
      */
     public function addToWaitingList($account)
     {
-        $this->accounts()->attach($account);
+        $this->accounts()->attach($account, ['position' => $this->nextPosition()]);
     }
 
     /**
@@ -76,6 +76,18 @@ class WaitingList extends Model
     public function addManager($account)
     {
         return $this->staff()->attach($account);
+    }
+
+    /**
+     * Get the next position in the waiting list.
+     *
+     * @return int
+     */
+    private function nextPosition()
+    {
+        $size = $this->accounts()->count();
+
+        return $size + 1;
     }
 
     /**

@@ -71,4 +71,26 @@ class WaitingListTest extends TestCase
 
         $this->assertEquals(3, $this->waitingList->accounts->count());
     }
+
+    /** @test */
+    public function itAssignsTheNextPositionByDefault()
+    {
+        $account = factory(Account::class)->create();
+        $accountSecond = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account);
+        $this->waitingList->addToWaitingList($accountSecond);
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'list_id' => $this->waitingList->id,
+            'account_id' => $account->id,
+            'position' => 1
+        ]);
+
+        $this->assertDatabaseHas('training_waiting_list_account', [
+            'list_id' => $this->waitingList->id,
+            'account_id' => $accountSecond->id,
+            'position' => 2
+        ]);
+    }
 }
