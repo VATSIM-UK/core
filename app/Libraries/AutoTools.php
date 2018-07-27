@@ -39,6 +39,7 @@ class AutoTools
                     return collect();
                 }
                 Bugsnag::notifyException($e);
+
                 return collect();
             }
 
