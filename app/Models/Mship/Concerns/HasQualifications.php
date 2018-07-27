@@ -74,14 +74,13 @@ trait HasQualifications
         if ($atcRating >= 8) {
             try {
                 $info = VatsimXML::getData($this->id, 'idstatusprat');
+                if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
+                    $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
+                }
             } catch (Exception $e) {
                 if (strpos($e->getMessage(), 'Name or service not known') === false) {
                     Bugsnag::notifyException($e);
                 }
-            }
-
-            if (isset($info->PreviousRatingInt) && $info->PreviousRatingInt > 0) {
-                $qualifications[] = Qualification::parseVatsimATCQualification($info->PreviousRatingInt);
             }
         }
 
