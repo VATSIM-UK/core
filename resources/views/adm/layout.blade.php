@@ -38,10 +38,14 @@
 
 </head>
 <body class="hold-transition skin-black sidebar-mini">
+
 <div class="wrapper">
-
     <header class="main-header">
-
+        @if (!App::environment('production'))
+            <div class="dev_environment_notification">
+                You are in a <b>NON-PRODUCTION</b> environment
+            </div>
+        @endif
         <a href="{{ URL::route("adm.dashboard") }}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>V</b>UK</span>
@@ -59,16 +63,11 @@
 
     </header>
 
-    <aside class="main-sidebar">
+    <aside class="main-sidebar" style="{{!App::environment('production')?"padding-top:70px":""}}">
         @include('adm.layout.sidebar')
     </aside>
 
     <div class="content-wrapper">
-    @if (!App::environment('production'))
-        <div class="dev_environment_notification">
-            You are in a <b>NON-PRODUCTION</b> environment
-        </div>
-    @endif
     @include('adm.layout.breadcrumb', array('breadcrumb' => $_breadcrumb, 'title' => $_pageTitle, 'subTitle' => $_pageSubTitle))
 
         <section class="content">

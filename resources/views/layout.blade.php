@@ -34,6 +34,11 @@
 
     <div class="header_container">
         <div class="navbar-fixed-top">
+            @if (!App::environment('production'))
+                <div class="dev_environment_notification">
+                    You are in a <b>NON-PRODUCTION</b> environment
+                </div>
+            @endif
             <div class="nav_upper_container navbar-toggleable-md">
                 <div class="logo_container">
                     <a href="{{ route("default") }}">
@@ -210,13 +215,7 @@
                     @endif
 
                 </div>
-
             </div>
-            @if (!App::environment('production'))
-                <div class="dev_environment_notification">
-                    You are in a <b>NON-PRODUCTION</b> environment
-                </div>
-            @endif
         </div>
 
         <div class="banner hidden-xs hidden-sm">
