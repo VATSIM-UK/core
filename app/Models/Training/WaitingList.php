@@ -2,10 +2,10 @@
 
 namespace App\Models\Training;
 
-use App\Models\Mship\Account;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Mship\Account;
 
 class WaitingList extends Model
 {
@@ -51,10 +51,11 @@ class WaitingList extends Model
      * Add an Account to a waiting list.
      *
      * @param Account $account | Collection
+     * @param Account $staffAccount
      */
-    public function addToWaitingList($account)
+    public function addToWaitingList($account, Account $staffAccount)
     {
-        $this->accounts()->attach($account, ['position' => $this->nextPosition()]);
+        $this->accounts()->attach($account, ['position' => $this->nextPosition(), 'added_by' => $staffAccount->id]);
     }
 
     /**
@@ -65,7 +66,15 @@ class WaitingList extends Model
      */
     public function removeFromWaitingList(Account $account)
     {
-        return $this->accounts()->detach($account);
+        $position = $this->accounts()->where('account_id', $account->id)->first()->pivot->position;
+
+        $this->accounts->transform(function ($item, $key) use ($position) {
+            if ($item->pivot->position > $position) {
+                return $item->pivot->decrementPosition();
+            }
+        });
+
+        $this->accounts()->detach($account);
     }
 
     /**

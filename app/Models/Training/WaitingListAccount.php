@@ -29,5 +29,11 @@ class WaitingListAccount extends Pivot
     public function status()
     {
         return $this->belongsTo(WaitingListStatus::class);
+    public function decrementPosition()
+    {
+        $this->position -= 1;
+        $this->save();
+
+        return $this->position;
     }
 }
