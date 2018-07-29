@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Adm\Training;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\Adm\AdmController;
-use Illuminate\Support\Facades\Redirect;
-use App\Models\Training\WaitingList;
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class WaitingListManagementController extends AdmController
 {
@@ -33,7 +33,7 @@ class WaitingListManagementController extends AdmController
             ->with('waitingList', $waitingList->with([
                 'accounts' => function ($query) {
                     $query->orderBy('position');
-                }, 
+                },
                 'accounts.qualifications',
             ])->first());
     }
