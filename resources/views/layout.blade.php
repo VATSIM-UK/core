@@ -34,7 +34,7 @@
 
     <div class="header_container">
         <div class="navbar-fixed-top">
-            @if (!App::environment('production'))
+            @if (is_local_environment())
                 <div class="dev_environment_notification">
                     You are in a <b>NON-PRODUCTION</b> environment
                 </div>

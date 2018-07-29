@@ -41,7 +41,7 @@
 
 <div class="wrapper">
     <header class="main-header">
-        @if (!App::environment('production'))
+        @if (is_local_environment())
             <div class="dev_environment_notification">
                 You are in a <b>NON-PRODUCTION</b> environment
             </div>
@@ -63,7 +63,7 @@
 
     </header>
 
-    <aside class="main-sidebar" style="{{!App::environment('production')?"padding-top:70px":""}}">
+    <aside class="main-sidebar" style="{{is_local_environment()?"padding-top:70px":""}}">
         @include('adm.layout.sidebar')
     </aside>
 
