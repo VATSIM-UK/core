@@ -99,9 +99,9 @@ class WaitingListTest extends TestCase
             'position' => 2,
         ]);
     }
-    
+
     /** @test **/
-    public function itUpdatesPositionsOnWaitingListRemoval() 
+    public function itUpdatesPositionsOnWaitingListRemoval()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
             $this->waitingList->addToWaitingList($account, $this->staffUser);
