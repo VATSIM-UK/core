@@ -179,5 +179,5 @@ function minutesToHours($minutes)
 
 function is_local_environment()
 {
-    return env('APP_IS_LOCAL') == 'true' || App::environment('staging');
+    return env('APP_IS_LOCAL') == 'true';
 }
