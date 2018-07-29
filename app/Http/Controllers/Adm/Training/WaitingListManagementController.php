@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Adm\Training;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account;
-use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Adm\AdmController;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Training\WaitingList;
+use App\Models\Mship\Account;
+use Illuminate\Http\Request;
 
 class WaitingListManagementController extends AdmController
 {
@@ -33,14 +33,9 @@ class WaitingListManagementController extends AdmController
             ->with('waitingList', $waitingList->with([
                 'accounts' => function ($query) {
                     $query->orderBy('position');
-                },
+                }, 
+                'accounts.qualifications',
             ])->first());
-    }
-
-    public function create(WaitingList $waitingList, Request $request)
-    {
-        return $this->viewMake('adm.training.create')
-            ->with('waitingList', $waitingList);
     }
 
     public function store(WaitingList $waitingList, Request $request)
@@ -52,7 +47,7 @@ class WaitingListManagementController extends AdmController
                 ->withError('Account Not Found.');
         }
 
-        $waitingList->addToWaitingList($user);
+        $waitingList->addToWaitingList($user, $request->user());
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Account Added to Waiting List');
