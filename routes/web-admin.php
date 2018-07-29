@@ -232,5 +232,5 @@ Route::group([
 ], function () {
     Route::get('/', ['as' => 'index', 'uses' => 'WaitingListManagementController@index']);
     Route::get('/manage/{waitingList}', ['as' => 'show', 'uses' => 'WaitingListManagementController@show']);
-    Route::post('/addAccount/{waitingList}', ['as' => 'store', 'uses' => 'WaitingListManagementController@store']);
+    Route::post('/add/{waitingList}', ['as' => 'store', 'uses' => 'WaitingListManagementController@store']);
 });
