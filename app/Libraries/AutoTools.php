@@ -2,7 +2,9 @@
 
 namespace App\Libraries;
 
+use Bugsnag;
 use Cache;
+use Exception;
 use League\Csv\Reader;
 
 class AutoTools
@@ -29,7 +31,19 @@ class AutoTools
         $cacheLength = $withTimestamp ? 118 : 60 * 12;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {
-            \Storage::put('autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv', file_get_contents($url));
+            try {
+                $data = file_get_contents($url);
+            } catch (Exception $e) {
+                if (strpos($e->getMessage(), 'Name or service not known') !== false) {
+                    // CERT unavailable. Not our fault, so will ignore.
+                    return collect();
+                }
+                Bugsnag::notifyException($e);
+
+                return collect();
+            }
+
+            \Storage::put('autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv', $data);
 
             $reader = Reader::createFromPath(storage_path('app'.DIRECTORY_SEPARATOR.'autotools'.DIRECTORY_SEPARATOR.'divdbfullwpilot.csv'), 'r');
 
