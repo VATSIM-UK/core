@@ -33,6 +33,16 @@ class WaitingListFeatureTest extends TestCase
 
         $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList));
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('success', 'Account Added to Waiting List');
+    }
+
+    /** @test **/
+    public function testRedirectOnUnknownAccountId()
+    {
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+            'account_id' => 12345678,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('error', 'Account Not Found.');
     }
 }
