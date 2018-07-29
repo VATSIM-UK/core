@@ -16,7 +16,7 @@ class WaitingListAccount extends Pivot
 
     public function setPositionAttribute($value)
     {
-        $this->attributes['position'] = (int)$value;
+        $this->attributes['position'] = (int) $value;
     }
 
     public function decrementPosition()
