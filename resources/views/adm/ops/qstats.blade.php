@@ -56,7 +56,7 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p>These are the stastics for <strong>Q{{ $quarter }}</strong> of <strong>{{ $year }}</strong>.</p>
+                                    <p>These are the statistics for <strong>Q{{ $quarter }}</strong> of <strong>{{ $year }}</strong>.</p>
                                 </div>
                             </div>
                             <table id="quarterly-stats" class="table table-bordered">
