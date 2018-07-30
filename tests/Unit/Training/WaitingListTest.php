@@ -136,7 +136,7 @@ class WaitingListTest extends TestCase
 
         $this->assertEquals(1, $this->waitingList->staff()->get()->count());
     }
-    
+
     /** @test **/
     public function itCanPromoteUsersWithinTheListByOne()
     {
@@ -179,5 +179,4 @@ class WaitingListTest extends TestCase
         $this->assertEquals(1, $accounts[0]->fresh()->waitingList->find($this->waitingList)->pivot->position);
         $this->assertEquals(2, $accounts[2]->fresh()->waitingList->find($this->waitingList)->pivot->position);
     }
-
 }
