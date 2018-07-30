@@ -136,4 +136,48 @@ class WaitingListTest extends TestCase
 
         $this->assertEquals(1, $this->waitingList->staff()->get()->count());
     }
+    
+    /** @test **/
+    public function itCanPromoteUsersWithinTheListByOne()
+    {
+        $accounts = factory(Account::class, 3)->create()->each(function ($account) {
+            $this->waitingList->addToWaitingList($account, $this->staffUser);
+        });
+
+        $this->waitingList->promote($accounts[1], 1);
+
+        $this->assertEquals(1, $accounts[1]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(2, $accounts[0]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(3, $accounts[2]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+    }
+
+    /** @test **/
+    public function itCanPromoteUsersWithinTheListByMoreThanOne()
+    {
+        $accounts = factory(Account::class, 10)->create()->each(function ($account) {
+            $this->waitingList->addToWaitingList($account, $this->staffUser);
+        });
+
+        $this->waitingList->promote($accounts[9], 9);
+
+        $this->assertEquals(1, $accounts[9]->waitingList->first()->pivot->position);
+        $this->assertEquals(3, $accounts[1]->fresh()->waitingList->first()->pivot->position);
+        $this->assertEquals(2, $accounts[0]->fresh()->waitingList->first()->pivot->position);
+        $this->assertEquals(4, $accounts[2]->fresh()->waitingList->first()->pivot->position);
+    }
+
+    /** @test */
+    public function itCanDemoteUsersWithinTheListByOne()
+    {
+        $accounts = factory(Account::class, 3)->create()->each(function ($account) {
+            $this->waitingList->addToWaitingList($account, $this->staffUser);
+        });
+
+        $this->waitingList->demote($accounts[1], 1);
+
+        $this->assertEquals(3, $accounts[1]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(1, $accounts[0]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(2, $accounts[2]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+    }
+
 }

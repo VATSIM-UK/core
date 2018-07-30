@@ -5,6 +5,7 @@ namespace App\Models\Training;
 use App\Models\Mship\Account;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
@@ -62,7 +63,7 @@ class WaitingList extends Model
      * Remove an Account from a waiting list.
      *
      * @param Account $account
-     * @return int
+     * @return void
      */
     public function removeFromWaitingList(Account $account)
     {
@@ -75,6 +76,58 @@ class WaitingList extends Model
         });
 
         $this->accounts()->detach($account);
+    }
+
+    /**
+     * Promote an Accounts' position within a WaitingList by the number passed.
+     *
+     * @param Account $account
+     * @param int $position
+     */
+    public function promote(Account $account, $position = 1)
+    {
+        if (!$this->accounts->contains($account)) {
+            throw new ModelNotFoundException($this);
+        } else {
+            $entry = $this->accounts()->where('account_id', $account->id)->first();
+
+            // current position before promotion
+            $oldPosition = $entry->pivot->position;
+
+            // deals with the actual promoted record; returns that new position
+            $newPosition = $entry->pivot->decrementPosition($position);
+
+            $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
+                if ($item->pivot->position < $oldPosition) {
+                    return $item->pivot->incrementPosition();
+                }
+            });
+        }
+    }
+
+    /**
+     * Demote an Accounts' position within a WaitingList by the number passed.
+     *
+     * @param Account $account
+     * @param int $position
+     */
+    public function demote(Account $account, $position = 1)
+    {
+        if (!$this->accounts->contains($account)) {
+            throw new ModelNotFoundException($this);
+        } else {
+            $entry = $this->accounts()->where('account_id', $account->id)->first();
+
+            $oldPosition = $entry->pivot->position;
+
+            $newPosition = $entry->pivot->incrementPosition($position);
+
+            $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
+                if ($item->pivot->position > $oldPosition) {
+                    return $item->pivot->decrementPosition();
+                }
+            });
+        }
     }
 
     /**
