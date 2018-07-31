@@ -166,16 +166,16 @@ Route::group([
         Route::get('staff')->uses('Staff@getIndex')->name('staff.index');
     });
 
-Route::group([
-    'as' => 'networkdata.admin.',
-    'namespace' => 'NetworkData',
-    'prefix' => 'adm/network-data',
-    'middleware' => ['auth_full_group'],
-], function () {
-    Route::get('/', [
-        'as' => 'dashboard',
-        'uses' => 'Dashboard@getDashboard',
-    ]);
+    // Network Data
+    Route::group([
+        'as' => 'networkdata.',
+        'namespace' => 'NetworkData',
+        'prefix' => 'network-data',
+        'middleware' => 'auth_full_group',
+    ], function () {
+        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
+    });
+
 });
 
 Route::group([
