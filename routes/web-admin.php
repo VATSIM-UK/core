@@ -62,6 +62,16 @@ Route::group([
         Route::post('qstats')->uses('QuarterlyStats@generate')->name('qstats.generate');
     });
 
+    // Network Data
+    Route::group([
+        'as' => 'networkdata.',
+        'namespace' => 'NetworkData',
+        'prefix' => 'network-data',
+        'middleware' => 'auth_full_group',
+    ], function () {
+        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
+    });
+
     // Members
     Route::group([
         'prefix' => 'mship',
@@ -164,16 +174,6 @@ Route::group([
 
         // Other
         Route::get('staff')->uses('Staff@getIndex')->name('staff.index');
-    });
-
-    // Network Data
-    Route::group([
-        'as' => 'networkdata.',
-        'namespace' => 'NetworkData',
-        'prefix' => 'network-data',
-        'middleware' => 'auth_full_group',
-    ], function () {
-        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
     });
 
     // Visiting/Transferring
