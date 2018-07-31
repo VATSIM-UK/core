@@ -5,7 +5,7 @@ Route::group([
     'prefix' => 'adm',
     'namespace' => 'Adm',
     'middleware' => 'auth_full_group',
-    'as' => 'adm.'
+    'as' => 'adm.',
 ], function () {
 
     // Index
@@ -21,7 +21,7 @@ Route::group([
     Route::group([
         'as' => 'sys.',
         'prefix' => 'system',
-        'namespace' => 'Sys'
+        'namespace' => 'Sys',
     ], function () {
         Route::get('/activity')->uses('Activity@getIndex')->name('activity.list');
 
@@ -34,7 +34,7 @@ Route::group([
     Route::group([
         'prefix' => 'smartcars',
         'namespace' => 'Smartcars\Resources',
-        'as' => 'smartcars.'
+        'as' => 'smartcars.',
     ], function () {
         Route::resource('configure/aircraft', 'AircraftController')->except('show');
         Route::resource('configure/airports', 'AirportController')->except('show');
@@ -47,7 +47,7 @@ Route::group([
     Route::group([
         'prefix' => 'atc',
         'namespace' => 'Atc',
-        'as' => 'atc.'
+        'as' => 'atc.',
     ], function () {
         Route::get('endorsement')->uses('Endorsement@getIndex')->name('endorsement.index');
     });
@@ -56,7 +56,7 @@ Route::group([
     Route::group([
         'prefix' => 'ops',
         'namespace' => 'Operations',
-        'as' => 'ops.'
+        'as' => 'ops.',
     ], function () {
         Route::get('qstats')->uses('QuarterlyStats@get')->name('qstats.index');
         Route::post('qstats')->uses('QuarterlyStats@generate')->name('qstats.generate');
@@ -76,13 +76,13 @@ Route::group([
     Route::group([
         'prefix' => 'mship',
         'as' => 'mship.',
-        'namespace' => 'Mship'
+        'namespace' => 'Mship',
     ], function () {
 
         // Account
         Route::group([
             'prefix' => 'account/',
-            'as' => 'account.'
+            'as' => 'account.',
         ], function () {
             Route::get('/account/{scope?}')->where(['scope' => '\w+'])->uses('Account@getIndex')->name('index');
             Route::get('{mshipAccount}/{tab?}/{tabid?}')->where(['mshipAccount' => '\d+'])->uses('Account@getDetail')->name('details');
@@ -100,7 +100,7 @@ Route::group([
         // Bans
         Route::group([
             'prefix' => 'ban',
-            'as' => 'ban.'
+            'as' => 'ban.',
         ], function () {
             Route::get('/')->uses('Account@getBans')->name('index');
             Route::get('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account@getBanRepeal')->name('repeal');
@@ -114,7 +114,7 @@ Route::group([
         // Roles
         Route::group([
             'prefix' => 'role',
-            'as' => 'role.'
+            'as' => 'role.',
         ], function () {
             Route::get('/')->uses('Role@getIndex')->name('index');
             Route::get('/create')->uses('Role@getCreate')->name('create');
@@ -127,7 +127,7 @@ Route::group([
         // Permissions
         Route::group([
             'prefix' => 'permission',
-            'as' => 'permission.'
+            'as' => 'permission.',
         ], function () {
             Route::get('/')->uses('Permission@getIndex')->name('index');
             Route::get('/create')->uses('Permission@getCreate')->name('create');
@@ -140,7 +140,7 @@ Route::group([
         // Notes
         Route::group([
             'prefix' => 'note/type',
-            'as' => 'note.type.'
+            'as' => 'note.type.',
         ], function () {
             Route::get('')->uses('Note@getTypeIndex')->name('index');
             Route::get('/create')->uses('Note@getTypeCreate')->name('create');
@@ -153,13 +153,13 @@ Route::group([
         // Feedback
         Route::group([
             'prefix' => 'feedback',
-            'as' => 'feedback.'
+            'as' => 'feedback.',
         ], function () {
             Route::get('/')->uses('Feedback@getListForms')->name('forms');
             Route::get('new')->uses('Feedback@getNewForm')->name('new');
             Route::post('new')->uses('Feedback@postNewForm')->name('new.create');
             Route::get('configure/{form}')->uses('Feedback@getConfigure')->name('config');
-            Route::post('configure/{form}')->uses( 'Feedback@postConfigure')->name('config.save');
+            Route::post('configure/{form}')->uses('Feedback@postConfigure')->name('config.save');
             Route::get('configure/{form}/toggle')->uses('Feedback@getEnableDisableForm')->name('config.toggle');
             Route::get('configure/{form}/visibility')->uses('Feedback@getFormVisibility')->name('config.visibility');
             Route::get('list')->uses('Feedback@getAllFeedback')->name('all');
@@ -169,7 +169,7 @@ Route::group([
             Route::get('view/{feedback}')->uses('Feedback@getViewFeedback')->name('view');
             Route::post('view/{feedback}/action')->uses('Feedback@postActioned')->name('action');
             Route::get('view/{feedback}/unaction')->uses('Feedback@getUnActioned')->name('unaction');
-            Route::post('view/{feedback}/send')->uses('Feedback\FeedbackSendController@store')->name( 'send');
+            Route::post('view/{feedback}/send')->uses('Feedback\FeedbackSendController@store')->name('send');
         });
 
         // Other
@@ -183,6 +183,7 @@ Route::group([
         'namespace' => 'VisitTransfer'
     ], function () {
         Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
+<<<<<<< HEAD
         Route::get('/facility')->uses('Facility@getList')->name('facility');
         Route::get('/facility/create')->uses('Facility@getCreate')->name('facility.create');
         Route::post('/facility/create')->uses('Facility@postCreate')->name('facility.create.post');
@@ -205,4 +206,35 @@ Route::group([
 
     });
 
+=======
+    });
+});
+
+Route::group([
+    'as' => 'adm.visiting.',
+    'prefix' => 'adm/visit-transfer',
+    'namespace' => 'VisitTransfer\Admin',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('/', ['as' => 'dashboard', 'uses' => 'Dashboard@getDashboard']);
+    Route::get('/facility', ['as' => 'facility', 'uses' => 'Facility@getList']);
+    Route::get('/facility/create', ['as' => 'facility.create', 'uses' => 'Facility@getCreate']);
+    Route::post('/facility/create', ['as' => 'facility.create.post', 'uses' => 'Facility@postCreate']);
+    Route::get('/facility/{facility}/update', ['as' => 'facility.update', 'uses' => 'Facility@getUpdate'])->where('facility', "\d+");
+    Route::post('/facility/{facility}/update', ['as' => 'facility.update.post', 'uses' => 'Facility@postUpdate'])->where('facility', "\d+");
+    Route::get('/reference/{reference}', ['as' => 'reference.view', 'uses' => 'Reference@getView'])->where('reference', "\d+");
+    Route::post('/reference/{reference}/reject', ['as' => 'reference.reject.post', 'uses' => 'Reference@postReject'])->where('reference', "\d+");
+    Route::post('/reference/{reference}/accept', ['as' => 'reference.accept.post', 'uses' => 'Reference@postAccept'])->where('reference', "\d+");
+    Route::get('/reference/{scope?}', ['as' => 'reference.list', 'uses' => 'Reference@getList'])->where('scope', '[a-zA-Z-]+');
+    Route::get('/application/{application}', ['as' => 'application.view', 'uses' => 'Application@getView'])->where('application', "\d+");
+    Route::post('/application/{application}/check/met', ['as' => 'application.check.met.post', 'uses' => 'Application@postCheckMet']);
+    Route::post('/application/{application}/check/not-met', ['as' => 'application.check.notmet.post', 'uses' => 'Application@postCheckNotMet']);
+    Route::post('/application/{application}/setting/toggle', ['as' => 'application.setting.toggle.post', 'uses' => 'Application@postSettingToggle']);
+    Route::post('/application/{application}/accept', ['as' => 'application.accept.post', 'uses' => 'Application@postAccept'])->where('application', "\d+");
+    Route::post('/application/{application}/reject', ['as' => 'application.reject.post', 'uses' => 'Application@postReject'])->where('application', "\d+");
+    Route::post('/application/{application}/complete', ['as' => 'application.complete.post', 'uses' => 'Application@postComplete'])->where('application', "\d+");
+    Route::get('/application/{scope?}', ['as' => 'application.list', 'uses' => 'Application@getList'])->where('scope', "\w+");
+    Route::get('/hours/', ['as' => 'hours.create', 'uses' => 'VisitorStatsController@create']);
+    Route::get('/hours/search', ['as' => 'hours.search', 'uses' => 'VisitorStatsController@index']);
+>>>>>>> 8544bc5ae0a0aa0149f1214917b60abed62eff59
 });
