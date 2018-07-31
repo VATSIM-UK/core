@@ -29,7 +29,7 @@ class Facility extends AdmController
     {
         $facility = \App\Models\VisitTransfer\Facility::create($this->getFacilityInputData());
 
-        return Redirect::route('visiting.admin.facility')->withSuccess($facility->name.' has been created.');
+        return Redirect::route('adm.visiting.facility')->withSuccess($facility->name.' has been created.');
     }
 
     public function getUpdate(\App\Models\VisitTransfer\Facility $facility)
@@ -45,7 +45,7 @@ class Facility extends AdmController
     {
         $facility->update($this->getFacilityInputData());
 
-        return Redirect::route('visiting.admin.facility')->withSuccess($facility->name.' has been updated.');
+        return Redirect::route('adm.visiting.facility')->withSuccess($facility->name.' has been updated.');
     }
 
     private function getFacilityInputData()

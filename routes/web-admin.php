@@ -180,108 +180,30 @@ Route::group([
 });
 
 Route::group([
-    'as' => 'visiting.admin.',
+    'as' => 'adm.visiting.',
     'prefix' => 'adm/visit-transfer',
     'namespace' => 'VisitTransfer\Admin',
-    'middleware' => ['auth_full_group'],
+    'middleware' => 'auth_full_group',
 ], function () {
-    Route::get('/', [
-        'as' => 'dashboard',
-        'uses' => 'Dashboard@getDashboard',
-    ]);
+    Route::get('/', ['as' => 'dashboard', 'uses' => 'Dashboard@getDashboard',]);
+    Route::get('/facility', ['as' => 'facility', 'uses' => 'Facility@getList']);
+    Route::get('/facility/create', ['as' => 'facility.create', 'uses' => 'Facility@getCreate']);
+    Route::post('/facility/create', ['as' => 'facility.create.post', 'uses' => 'Facility@postCreate']);
+    Route::get('/facility/{facility}/update', ['as' => 'facility.update', 'uses' => 'Facility@getUpdate'])->where('facility', "\d+");
+    Route::post('/facility/{facility}/update', ['as' => 'facility.update.post','uses' => 'Facility@postUpdate'])->where('facility', "\d+");
+    Route::get('/reference/{reference}', ['as' => 'reference.view', 'uses' => 'Reference@getView'])->where('reference', "\d+");
+    Route::post('/reference/{reference}/reject', ['as' => 'reference.reject.post','uses' => 'Reference@postReject'])->where('reference', "\d+");
+    Route::post('/reference/{reference}/accept', ['as' => 'reference.accept.post', 'uses' => 'Reference@postAccept'])->where('reference', "\d+");
+    Route::get('/reference/{scope?}', ['as' => 'reference.list', 'uses' => 'Reference@getList'])->where('scope', '[a-zA-Z-]+');
+    Route::get('/application/{application}', ['as' => 'application.view', 'uses' => 'Application@getView',])->where('application', "\d+");
+    Route::post('/application/{application}/check/met', ['as' => 'application.check.met.post', 'uses' => 'Application@postCheckMet']);
+    Route::post('/application/{application}/check/not-met', ['as' => 'application.check.notmet.post', 'uses' => 'Application@postCheckNotMet']);
+    Route::post('/application/{application}/setting/toggle', ['as' => 'application.setting.toggle.post', 'uses' => 'Application@postSettingToggle',]);
+    Route::post('/application/{application}/accept', ['as' => 'application.accept.post', 'uses' => 'Application@postAccept'])->where('application', "\d+");
+    Route::post('/application/{application}/reject', ['as' => 'application.reject.post', 'uses' => 'Application@postReject'])->where('application', "\d+");
+    Route::post('/application/{application}/complete', ['as' => 'application.complete.post', 'uses' => 'Application@postComplete'])->where('application', "\d+");
+    Route::get('/application/{scope?}', ['as' => 'application.list', 'uses' => 'Application@getList'])->where('scope', "\w+");
+    Route::get('/hours/', ['as' => 'hours.create', 'uses' => 'VisitorStatsController@create']);
+    Route::get('/hours/search', ['as' => 'hours.search', 'uses' => 'VisitorStatsController@index']);
 
-    Route::get('/facility', [
-        'as' => 'facility',
-        'uses' => 'Facility@getList',
-    ]);
-
-    Route::get('/facility/create', [
-        'as' => 'facility.create',
-        'uses' => 'Facility@getCreate',
-    ]);
-
-    Route::post('/facility/create', [
-        'as' => 'facility.create.post',
-        'uses' => 'Facility@postCreate',
-    ]);
-
-    Route::get('/facility/{facility}/update', [
-        'as' => 'facility.update',
-        'uses' => 'Facility@getUpdate',
-    ])->where('facility', "\d+");
-
-    Route::post('/facility/{facility}/update', [
-        'as' => 'facility.update.post',
-        'uses' => 'Facility@postUpdate',
-    ])->where('facility', "\d+");
-
-    Route::get('/reference/{reference}', [
-        'as' => 'reference.view',
-        'uses' => 'Reference@getView',
-    ])->where('reference', "\d+");
-
-    Route::post('/reference/{reference}/reject', [
-        'as' => 'reference.reject.post',
-        'uses' => 'Reference@postReject',
-    ])->where('reference', "\d+");
-
-    Route::post('/reference/{reference}/accept', [
-        'as' => 'reference.accept.post',
-        'uses' => 'Reference@postAccept',
-    ])->where('reference', "\d+");
-
-    Route::get('/reference/{scope?}', [
-        'as' => 'reference.list',
-        'uses' => 'Reference@getList',
-    ])->where('scope', '[a-zA-Z-]+');
-
-    Route::get('/application/{application}', [
-        'as' => 'application.view',
-        'uses' => 'Application@getView',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/check/met', [
-        'as' => 'application.check.met.post',
-        'uses' => 'Application@postCheckMet',
-    ]);
-
-    Route::post('/application/{application}/check/not-met', [
-        'as' => 'application.check.notmet.post',
-        'uses' => 'Application@postCheckNotMet',
-    ]);
-
-    Route::post('/application/{application}/setting/toggle', [
-        'as' => 'application.setting.toggle.post',
-        'uses' => 'Application@postSettingToggle',
-    ]);
-
-    Route::post('/application/{application}/accept', [
-        'as' => 'application.accept.post',
-        'uses' => 'Application@postAccept',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/reject', [
-        'as' => 'application.reject.post',
-        'uses' => 'Application@postReject',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/complete', [
-        'as' => 'application.complete.post',
-        'uses' => 'Application@postComplete',
-    ])->where('application', "\d+");
-
-    Route::get('/application/{scope?}', [
-        'as' => 'application.list',
-        'uses' => 'Application@getList',
-    ])->where('scope', "\w+");
-
-    Route::get('/hours/', [
-        'as' => 'hours.create',
-        'uses' => 'VisitorStatsController@create',
-    ]);
-
-    Route::get('/hours/search', [
-        'as' => 'hours.search',
-        'uses' => 'VisitorStatsController@index',
-    ]);
 });
