@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\VisitTransfer;
 
-use Artisan;
+    use Artisan;
     use Carbon\Carbon;
-    use Illuminate\Foundation\Testing\DatabaseTransactions;
     use Tests\TestCase;
+    use Illuminate\Foundation\Testing\DatabaseTransactions;
 
     class VisitTransferCleanupTest extends TestCase
     {
-        // use DatabaseTransactions;
+        use DatabaseTransactions;
 
         public $newApplication;
         public $oldApplication;
