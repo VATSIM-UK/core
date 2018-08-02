@@ -49,6 +49,7 @@ class VisitTransferCleanupTest extends TestCase
         $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_IN_PROGRESS, $this->newApplication->fresh()->status);
     }
 
+    /** @test */
     public function testItLapsesApplicationsForOldContactedReferees()
     {
         $application = factory(\App\Models\VisitTransfer\Application::class)->create([
@@ -70,6 +71,7 @@ class VisitTransferCleanupTest extends TestCase
         $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_LAPSED, $application->fresh()->status);
     }
 
+    /** @test */
     public function testItWontLapseIncorrectApplications()
     {
         $application1 = factory(\App\Models\VisitTransfer\Application::class)->create([
