@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\VisitTransfer;
 
-    use Artisan;
+use Artisan;
     use Carbon\Carbon;
-    use Tests\TestCase;
     use Illuminate\Foundation\Testing\DatabaseTransactions;
+    use Tests\TestCase;
 
     class VisitTransferCleanupTest extends TestCase
     {
