@@ -69,4 +69,38 @@ use Artisan;
             Artisan::call('visit-transfer:cleanup');
             $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_LAPSED, $application->fresh()->status);
         }
+
+        public function testItWontLapseIncorrectApplications()
+        {
+            $application1 = factory(\App\Models\VisitTransfer\Application::class)->create([
+                'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+                'facility_id' => $this->facility->id,
+                'status' => \App\Models\VisitTransfer\Application::STATUS_SUBMITTED,
+                'references_required' => 1,
+                'submitted_at' => Carbon::now(),
+            ]);
+            Carbon::setTestNow(Carbon::now()->subDays(12));
+            factory(\App\Models\VisitTransfer\Reference::class)->create([
+                'status' => \App\Models\VisitTransfer\Reference::STATUS_REQUESTED,
+                'contacted_at' => Carbon::now(),
+                'application_id' => $application1->id,
+            ]);
+            Carbon::setTestNow();
+
+            $application2 = factory(\App\Models\VisitTransfer\Application::class)->create([
+                'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
+                'facility_id' => $this->facility->id,
+                'status' => \App\Models\VisitTransfer\Application::STATUS_SUBMITTED,
+                'references_required' => 1,
+                'submitted_at' => Carbon::now(),
+            ]);
+            factory(\App\Models\VisitTransfer\Reference::class)->create([
+                'status' => \App\Models\VisitTransfer\Reference::STATUS_REQUESTED,
+                'application_id' => $application2->id,
+            ]);
+
+            Artisan::call('visit-transfer:cleanup');
+            $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_SUBMITTED, $application1->fresh()->status);
+            $this->assertEquals(\App\Models\VisitTransfer\Application::STATUS_SUBMITTED, $application2->fresh()->status);
+        }
     }
