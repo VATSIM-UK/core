@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class QuarterlyStatsTest extends TestCase
 {
@@ -30,7 +30,7 @@ class QuarterlyStatsTest extends TestCase
     {
         $stats = [
             'quarter' => '01-01',
-            'year' => '2016'
+            'year' => '2016',
         ];
 
         $this->actingAs($this->admin, 'web')->post(route('adm.ops.qstats.generate', $stats))->assertSuccessful();
