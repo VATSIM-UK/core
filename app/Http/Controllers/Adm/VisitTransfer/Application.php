@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\VisitTransfer\Admin;
+namespace App\Http\Controllers\Adm\VisitTransfer;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\ApplicationAcceptRequest;
@@ -131,7 +131,7 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route('visiting.admin.application.view', $application->id)->withSuccess(str_replace(
+        return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
                 '_',
                 ' ',
                 Input::get('check', null)
@@ -146,7 +146,7 @@ class Application extends AdmController
             return Redirect::back()->withError($e->getMessage());
         }
 
-        return Redirect::route('visiting.admin.application.view', $application->id)->withSuccess(str_replace(
+        return Redirect::route('adm.visiting.application.view', $application->id)->withSuccess(str_replace(
                 '_',
                 ' ',
                 Input::get('check', null)
