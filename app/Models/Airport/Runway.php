@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models\Airport;
+namespace App\Models\Airport;
 
-    use App\Models\Airport;
+use App\Models\Airport;
     use Illuminate\Database\Eloquent\Model;
 
     class Runway extends Model
@@ -35,15 +35,15 @@
         {
             switch ($type) {
                 case self::SURFACE_TYPE_ASPHALT:
-                    return "Asphalt";
+                    return 'Asphalt';
                 case self::SURFACE_TYPE_GRASS:
-                    return "Grass";
+                    return 'Grass';
                 case self::SURFACE_TYPE_CONCRETE:
-                    return "Concrete";
+                    return 'Concrete';
                 case self::SURFACE_TYPE_SAND:
-                    return "Sand";
+                    return 'Sand';
                 default:
-                    return "Unknown";
+                    return 'Unknown';
             }
         }
     }

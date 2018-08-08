@@ -72,11 +72,11 @@ class Airport extends Model
     {
         switch ($fir) {
             case self::FIR_TYPE_EGTT:
-                return "EGTT";
+                return 'EGTT';
             case self::FIR_TYPE_EGPX:
-                return "EGPX";
+                return 'EGPX';
             default:
-                return "";
+                return '';
         }
     }
 

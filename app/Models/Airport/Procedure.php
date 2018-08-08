@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models\Airport;
+namespace App\Models\Airport;
 
-    use App\Models\Airport;
+use App\Models\Airport;
     use Illuminate\Database\Eloquent\Model;
 
     class Procedure extends Model
@@ -34,11 +34,11 @@
         {
             switch ($type) {
                 case self::PROCEDURE_TYPE_SID:
-                    return "SID";
+                    return 'SID';
                 case self::PROCEDURE_TYPE_STAR:
-                    return "STAR";
+                    return 'STAR';
                 default:
-                    return "";
+                    return '';
             }
         }
     }

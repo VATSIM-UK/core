@@ -25,7 +25,7 @@
                 $table->text('other_information')->nullable();
                 $table->timestamps();
             });
-            
+
             Schema::create('airport_navaids', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('airport_id');
