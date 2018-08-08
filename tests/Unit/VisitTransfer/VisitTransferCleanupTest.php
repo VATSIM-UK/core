@@ -19,6 +19,7 @@ class VisitTransferCleanupTest extends TestCase
     {
         parent::setUp();
 
+        // A draft application that has just been started
         $account = factory(\App\Models\Mship\Account::class)->create();
         $this->facility = factory(\App\Models\VisitTransfer\Facility::class, 'atc_visit')->create([
                 'stage_reference_enabled' => 1,
@@ -30,6 +31,7 @@ class VisitTransferCleanupTest extends TestCase
             ]);
         $this->newApplication = $application->fresh();
 
+        // A draft application that was started 3 hours ago
         Carbon::setTestNow(Carbon::now()->subHours(3));
         $account = factory(\App\Models\Mship\Account::class)->create();
         $application = $account->createVisitingTransferApplication([
@@ -41,7 +43,7 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function testItOnlyCancelsOldApplications()
+    public function itOnlyCancelsOldApplications()
     {
         Artisan::call('visit-transfer:cleanup');
 
@@ -50,8 +52,9 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function testItLapsesApplicationsForOldContactedReferees()
+    public function itLapsesApplicationsForOldContactedReferees()
     {
+        // A submitted application with a pending reference that has expired
         $application = factory(\App\Models\VisitTransfer\Application::class)->create([
                 'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
                 'facility_id' => $this->facility->id,
@@ -72,8 +75,9 @@ class VisitTransferCleanupTest extends TestCase
     }
 
     /** @test */
-    public function testItWontLapseIncorrectApplications()
+    public function itWontIncorrectlyLapseApplications()
     {
+        // A submitted application with a requested (contacted & pending) reference that is not old
         $application1 = factory(\App\Models\VisitTransfer\Application::class)->create([
                 'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
                 'facility_id' => $this->facility->id,
@@ -89,6 +93,7 @@ class VisitTransferCleanupTest extends TestCase
             ]);
         Carbon::setTestNow();
 
+        // A submitted application with a requested (pending - not contacted) reference that is not old
         $application2 = factory(\App\Models\VisitTransfer\Application::class)->create([
                 'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
                 'facility_id' => $this->facility->id,
