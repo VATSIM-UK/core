@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Airport\Navaid;
+use App\Models\Airport\Procedure;
+use App\Models\Airport\Runway;
+
 /**
  * App\Models\Airport
  *
@@ -21,7 +25,60 @@ namespace App\Models;
 class Airport extends Model
 {
     public $table = 'airports';
-    public $timestamps = false;
+    protected $fillable = [
+        'icao',
+        'iata',
+        'name',
+        'fir_type',
+        'latitude',
+        'longitude',
+        'elevation',
+        'description',
+        'departure_procedures',
+        'arrival_procedures',
+        'vfr_procedures',
+        'other_information',
+    ];
+
+    const FIR_TYPE_EGTT = 1;
+    const FIR_TYPE_EGPX = 2;
+
+    public function scopeUK($query)
+    {
+        return $query->whereNotNull('fir_type');
+    }
+
+    public function navaids()
+    {
+        return $this->hasMany(Navaid::class);
+    }
+
+    public function procedures()
+    {
+        return $this->hasMany(Procedure::class);
+    }
+
+    public function runways()
+    {
+        return $this->hasMany(Runway::class);
+    }
+
+    public function stations()
+    {
+        return $this->belongsToMany(Station::class, 'airport_stations');
+    }
+
+    public function getFirTypeAttribute($fir)
+    {
+        switch ($fir) {
+            case self::FIR_TYPE_EGTT:
+                return "EGTT";
+            case self::FIR_TYPE_EGPX:
+                return "EGPX";
+            default:
+                return "";
+        }
+    }
 
     /**
      * Determines whether a set of given decimal coordinates are close to the airport.

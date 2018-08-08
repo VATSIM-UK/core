@@ -134,7 +134,7 @@ class Pilot extends Model
         }
 
         $location = $airport->containsCoordinates($this->current_latitude, $this->current_longitude);
-        $altitude = $this->current_altitude < $airport->altitude + 500;
+        $altitude = $this->current_altitude < $airport->elevation + 500;
 
         return $location && $altitude;
     }

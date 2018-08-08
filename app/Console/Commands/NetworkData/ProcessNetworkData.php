@@ -255,7 +255,7 @@ class ProcessNetworkData extends Command
     private function getAirport(string $ident)
     {
         return Cache::remember('airport_'.$ident, 720, function () use ($ident) {
-            return Airport::where('ident', $ident)->first();
+            return Airport::where('icao', $ident)->first();
         });
     }
 }

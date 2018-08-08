@@ -14,56 +14,60 @@
         public function up()
         {
             Schema::table('airports', function (Blueprint $table) {
-                $table->dropColumn('ident');
-                $table->string('icao', 4);
-                $table->string('iata', 3);
-                $table->string('name');
-                $table->string('fir', 4);
-                $table->text('description')->nullable();
+                $table->renameColumn('ident', 'icao');
+                $table->unsignedTinyInteger('fir_type')->nullable()->after('ident');
+                $table->string('name')->nullable()->after('ident');
+                $table->string('iata', 3)->nullable()->after('ident');
+                $table->text('description')->nullable()->after('elevation');
                 $table->text('departure_procedures')->nullable();
                 $table->text('arrival_procedures')->nullable();
                 $table->text('vfr_procedures')->nullable();
                 $table->text('other_information')->nullable();
+                $table->timestamps();
             });
-
+            
             Schema::create('airport_navaids', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('airfield_id');
-                $table->unsignedSmallInteger('type');
+                $table->unsignedInteger('airport_id');
+                $table->unsignedTinyInteger('type');
                 $table->string('name')->nullable();
                 $table->string('heading', 3)->nullable();
                 $table->string('ident', 5);
                 $table->decimal('frequency', 6, 3);
                 $table->unsignedSmallInteger('frequency_band');
                 $table->string('remarks')->nullable();
+                $table->timestamps();
             });
 
             Schema::create('airport_runways', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('airfield_id');
+                $table->unsignedInteger('airport_id');
                 $table->string('ident', 3);
                 $table->string('heading', 3);
                 $table->unsignedInteger('width');
                 $table->unsignedInteger('length');
                 $table->unsignedSmallInteger('surface_type');
+                $table->timestamps();
             });
 
             Schema::create('airport_procedures', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('airfield_id');
+                $table->unsignedInteger('airport_id');
                 $table->unsignedInteger('runway_id')->nullable();
-                $table->unsignedSmallInteger('procedure_type');
+                $table->unsignedTinyInteger('procedure_type');
                 $table->string('ident');
                 $table->string('initial_fix')->nullable();
                 $table->integer('initial_altitude')->nullable();
                 $table->integer('final_altitude')->nullable();
                 $table->string('remarks')->nullable();
+                $table->timestamps();
             });
 
             Schema::create('airport_stations', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('airport_id')->unsigned();
                 $table->integer('station_id')->unsigned();
+                $table->timestamps();
             });
 
             Schema::create('stations', function (Blueprint $table) {
@@ -71,7 +75,8 @@
                 $table->string('callsign', 10);
                 $table->string('name');
                 $table->decimal('frequency', 6, 3);
-                $table->unsignedSmallInteger('type');
+                $table->unsignedTinyInteger('type');
+                $table->timestamps();
             });
         }
 
@@ -83,16 +88,16 @@
         public function down()
         {
             Schema::table('airports', function (Blueprint $table) {
-                $table->string('ident', 15)->nullable()->unique();
-                $table->dropColumn('icao');
+                $table->renameColumn('icao', 'ident');
                 $table->dropColumn('iata');
                 $table->dropColumn('name');
-                $table->dropColumn('fir');
+                $table->dropColumn('fir_type');
                 $table->dropColumn('description');
                 $table->dropColumn('departure_procedures');
                 $table->dropColumn('arrival_procedures');
                 $table->dropColumn('vfr_procedures');
                 $table->dropColumn('other_information');
+                $table->dropTimestamps();
             });
             Schema::dropIfExists('airport_navaids');
             Schema::dropIfExists('airport_runways');
