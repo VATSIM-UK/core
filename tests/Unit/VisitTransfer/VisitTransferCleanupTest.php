@@ -5,6 +5,7 @@ namespace Tests\Unit\VisitTransfer;
 use Artisan;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class VisitTransferCleanupTest extends TestCase
@@ -54,6 +55,8 @@ class VisitTransferCleanupTest extends TestCase
     /** @test */
     public function itLapsesApplicationsForOldContactedReferees()
     {
+        Mail::fake();
+
         // A submitted application with a pending reference that has expired
         $application = factory(\App\Models\VisitTransfer\Application::class)->create([
                 'type' => \App\Models\VisitTransfer\Application::TYPE_VISIT,
