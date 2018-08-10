@@ -3,12 +3,12 @@
 namespace App\Models\Airport;
 
 use App\Models\Airport;
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
-    class Runway extends Model
-    {
-        protected $table = 'airport_runways';
-        protected $fillable = [
+class Runway extends Model
+{
+    protected $table = 'airport_runways';
+    protected $fillable = [
             'ident',
             'heading',
             'width',
@@ -16,25 +16,25 @@ use App\Models\Airport;
             'surface_type',
         ];
 
-        const SURFACE_TYPE_ASPHALT = 1;
-        const SURFACE_TYPE_GRASS = 2;
-        const SURFACE_TYPE_CONCRETE = 3;
-        const SURFACE_TYPE_SAND = 4;
-        const SURFACE_TYPE_GRE = 5;
+    const SURFACE_TYPE_ASPHALT = 1;
+    const SURFACE_TYPE_GRASS = 2;
+    const SURFACE_TYPE_CONCRETE = 3;
+    const SURFACE_TYPE_SAND = 4;
+    const SURFACE_TYPE_GRE = 5;
 
-        public function airport()
-        {
-            return $this->belongsTo(Airport::class);
-        }
+    public function airport()
+    {
+        return $this->belongsTo(Airport::class);
+    }
 
-        public function procedures()
-        {
-            return $this->hasMany(Procedure::class);
-        }
+    public function procedures()
+    {
+        return $this->hasMany(Procedure::class);
+    }
 
-        public function getSurfaceTypeAttribute($type)
-        {
-            switch ($type) {
+    public function getSurfaceTypeAttribute($type)
+    {
+        switch ($type) {
                 case self::SURFACE_TYPE_ASPHALT:
                     return 'Asphalt';
                 case self::SURFACE_TYPE_GRASS:
@@ -42,11 +42,11 @@ use App\Models\Airport;
                 case self::SURFACE_TYPE_CONCRETE:
                     return 'Concrete';
                 case self::SURFACE_TYPE_SAND:
-                    return "Sand";
+                    return 'Sand';
                 case self::SURFACE_TYPE_GRE:
-                    return "Graded/Rolled Earth";
+                    return 'Graded/Rolled Earth';
                 default:
                     return 'Unknown';
             }
-        }
     }
+}

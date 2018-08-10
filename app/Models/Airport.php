@@ -77,9 +77,10 @@ class Airport extends Model
 
     public function getControllersAttribute()
     {
-        if($this->stations->count() > 0){
+        if ($this->stations->count() > 0) {
             return Atc::withCallsignIn(['%'.$this->icao.'%', $this->stations->pluck('callsign')])->online()->get();
         }
+
         return Atc::withCallsign('%'.$this->icao.'%')->online()->get();
     }
 
