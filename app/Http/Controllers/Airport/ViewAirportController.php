@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Http\Controllers\Airport;
+namespace App\Http\Controllers\Airport;
 
-    use App\Http\Controllers\BaseController;
+use App\Http\Controllers\BaseController;
     use App\Models\Airport;
 
     class ViewAirportController extends BaseController
