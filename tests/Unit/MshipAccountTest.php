@@ -6,7 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\Role;
 use App\Notifications\Mship\EmailVerification;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -14,7 +14,7 @@ use Tests\TestCase;
  */
 class MshipAccountTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @var Account $account */
     private $account;
