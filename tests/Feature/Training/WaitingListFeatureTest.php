@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Training;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Listeners\Training\WaitingListEventSubscriber;
 use App\Events\Training\AccountAddedToWaitingList;
-use Illuminate\Support\Facades\Event;
-use App\Models\Training\WaitingList;
+use App\Listeners\Training\WaitingListEventSubscriber;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
+use App\Models\Training\WaitingList;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
