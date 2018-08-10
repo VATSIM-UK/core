@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models\Airport;
+namespace App\Models\Airport;
 
-    use App\Models\Airport;
+use App\Models\Airport;
     use Illuminate\Database\Eloquent\Model;
 
     class Navaid extends Model
@@ -54,11 +54,11 @@
         {
             switch ($band) {
                 case self::FREQUENCY_BAND_MHZ:
-                    return "MHz";
+                    return 'MHz';
                 case self::FREQUENCY_BAND_KHZ:
-                    return "KHz";
+                    return 'KHz';
                 default:
-                    return "";
+                    return '';
             }
         }
     }

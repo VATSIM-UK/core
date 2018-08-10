@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models;
+namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
     class Station extends Model
     {
@@ -32,23 +32,23 @@
         {
             switch ($type) {
                 case self::TYPE_ATIS:
-                    return "ATIS";
+                    return 'ATIS';
                 case self::TYPE_DELIVERY:
-                    return "Delivery";
+                    return 'Delivery';
                 case self::TYPE_GROUND:
-                    return "Ground";
+                    return 'Ground';
                 case self::TYPE_TOWER:
-                    return "Tower";
+                    return 'Tower';
                 case self::TYPE_APPROACH:
-                    return "Approach/Radar";
+                    return 'Approach/Radar';
                 case self::TYPE_ENROUTE:
-                    return "Enroute";
+                    return 'Enroute';
                 case self::TYPE_TERMINAL:
-                    return "Terminal Control";
+                    return 'Terminal Control';
                 case self::TYPE_FSS:
-                    return "Flight Service Stations";
+                    return 'Flight Service Stations';
                 default:
-                    return "Unknown";
+                    return 'Unknown';
             }
         }
     }
