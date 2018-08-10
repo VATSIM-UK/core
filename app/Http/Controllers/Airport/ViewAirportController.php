@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Airport;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Airport;
-use Illuminate\Support\Facades\DB;
 
 class ViewAirportController extends BaseController
 {
