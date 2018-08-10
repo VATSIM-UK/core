@@ -7,7 +7,25 @@
 
 @section('scripts')
     <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap">
+    </script>
     <script>
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('banner'), {
+                mapTypeId: 'satellite',
+                disableDefaultUI: true,
+                gestureHandling: 'none',
+                zoomControl: false,
+                center: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}},
+                zoom: 13
+            });
+
+            var marker = new google.maps.Marker({
+                map: map,
+                position: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}}
+            });
+        }
         $(document).ready( function () {
             @if ($airport->controllers->count() > 10)
                 $('#online-controllers').DataTable();
@@ -378,26 +396,3 @@
         </div>
     </div>
 @stop
-
-@section('scripts')
-    <script>
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('banner'), {
-                mapTypeId: 'satellite',
-                disableDefaultUI: true,
-                gestureHandling: 'none',
-                zoomControl: false,
-                center: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}},
-                zoom: 13
-            });
-
-            var marker = new google.maps.Marker({
-                map: map,
-                position: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}}
-            });
-        }
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap">
-    </script>
-@endsection

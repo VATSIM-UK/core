@@ -1,5 +1,6 @@
 <?php
 
+    use Carbon\Carbon;
     use Illuminate\Database\Migrations\Migration;
     use Illuminate\Database\Schema\Blueprint;
     use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@
         {
             Schema::table('airports', function (Blueprint $table) {
                 $table->renameColumn('ident', 'icao');
+                $table->boolean('major')->default(false)->after('ident');
                 $table->unsignedTinyInteger('fir_type')->nullable()->after('ident');
                 $table->string('name')->nullable()->after('ident');
                 $table->string('iata', 3)->nullable()->after('ident');
@@ -25,6 +27,8 @@
                 $table->text('other_information')->nullable();
                 $table->timestamps();
             });
+
+            DB::table('airports')->update(['created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
 
             Schema::create('airport_navaids', function (Blueprint $table) {
                 $table->increments('id');
@@ -92,6 +96,7 @@
                 $table->dropColumn('iata');
                 $table->dropColumn('name');
                 $table->dropColumn('fir_type');
+                $table->dropColumn('major');
                 $table->dropColumn('description');
                 $table->dropColumn('departure_procedures');
                 $table->dropColumn('arrival_procedures');

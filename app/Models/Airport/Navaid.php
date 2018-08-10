@@ -22,10 +22,11 @@ class Navaid extends Model
     const FREQUENCY_BAND_KHZ = 2;
 
     const TYPE_NDB = 1;
-    const TYPE_VORDME = 2;
-    const TYPE_DME = 3;
-    const TYPE_ILS = 4;
-    const TYPE_TACAN = 5;
+    const TYPE_VOR = 2;
+    const TYPE_VORDME = 3;
+    const TYPE_DME = 4;
+    const TYPE_ILS = 5;
+    const TYPE_TACAN = 6;
 
     public function airport()
     {
@@ -37,6 +38,8 @@ class Navaid extends Model
         switch ($type) {
                 case self::TYPE_NDB:
                     return 'NDB';
+                case self::TYPE_VOR:
+                    return 'VOR';
                 case self::TYPE_VORDME:
                     return 'VOR/DME';
                 case self::TYPE_DME:
