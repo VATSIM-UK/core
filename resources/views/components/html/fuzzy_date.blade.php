@@ -1,5 +1,5 @@
 @if($timestamp)
-    <a class="tooltip_displays" href="#" data-toggle="tooltip" title="{{ $timestamp }}">
+    <span class="fuzzy_date tooltip_displays" data-toggle="tooltip" title="{{ $timestamp }}">
         {{ $timestamp->diffForHumans() }}
-    </a>
+    </span>
 @endif

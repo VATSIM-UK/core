@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Airport\Navaid;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
+use App\Models\NetworkData\Atc;
+use App\Models\NetworkData\Pilot;
 
 /**
  * App\Models\Airport
@@ -48,6 +50,11 @@ class Airport extends Model
         return $query->whereNotNull('fir_type');
     }
 
+    public function scopeICAO($query, $icao)
+    {
+        return $query->where('icao', $icao);
+    }
+
     public function navaids()
     {
         return $this->hasMany(Navaid::class);
@@ -68,6 +75,19 @@ class Airport extends Model
         return $this->belongsToMany(Station::class, 'airport_stations');
     }
 
+    public function getControllersAttribute()
+    {
+        if($this->stations->count() > 0){
+            return Atc::withCallsignIn(['%'.$this->icao.'%', $this->stations->pluck('callsign')])->online()->get();
+        }
+        return Atc::withCallsign('%'.$this->icao.'%')->online()->get();
+    }
+
+    public function getPilotsAttribute()
+    {
+        return Pilot::withinAirport($this->icao)->online()->get();
+    }
+
     public function getFirTypeAttribute($fir)
     {
         switch ($fir) {
@@ -78,6 +98,11 @@ class Airport extends Model
             default:
                 return "";
         }
+    }
+
+    public function hasProcedures()
+    {
+        return $this->departure_procedures || $this->arrival_procedures || $this->vfr_procedures;
     }
 
     /**

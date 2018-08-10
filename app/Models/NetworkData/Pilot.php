@@ -112,6 +112,14 @@ class Pilot extends Model
         });
     }
 
+    public static function scopeWithinAirport($query, $icao)
+    {
+        return $query->where(function ($subQuery) use ($icao) {
+            return $subQuery->where('departure_airport', $icao)
+                ->orWhere('arrival_airport', $icao);
+        });
+    }
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');

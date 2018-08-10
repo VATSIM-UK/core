@@ -213,7 +213,7 @@
 
         </div>
 
-        <div class="banner hidden-xs hidden-sm">
+        <div id="banner" class="banner hidden-xs hidden-sm">
         </div>
 
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">

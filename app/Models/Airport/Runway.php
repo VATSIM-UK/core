@@ -20,6 +20,7 @@
         const SURFACE_TYPE_GRASS = 2;
         const SURFACE_TYPE_CONCRETE = 3;
         const SURFACE_TYPE_SAND = 4;
+        const SURFACE_TYPE_GRE = 5;
 
         public function airport()
         {
@@ -42,6 +43,8 @@
                     return "Concrete";
                 case self::SURFACE_TYPE_SAND:
                     return "Sand";
+                case self::SURFACE_TYPE_GRE:
+                    return "Graded/Rolled Earth";
                 default:
                     return "Unknown";
             }

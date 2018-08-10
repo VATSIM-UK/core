@@ -54,12 +54,12 @@
                 $table->increments('id');
                 $table->unsignedInteger('airport_id');
                 $table->unsignedInteger('runway_id')->nullable();
-                $table->unsignedTinyInteger('procedure_type');
+                $table->unsignedTinyInteger('type');
                 $table->string('ident');
                 $table->string('initial_fix')->nullable();
                 $table->integer('initial_altitude')->nullable();
                 $table->integer('final_altitude')->nullable();
-                $table->string('remarks')->nullable();
+                $table->text('remarks')->nullable();
                 $table->timestamps();
             });
 
