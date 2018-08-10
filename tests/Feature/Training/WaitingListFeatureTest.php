@@ -2,10 +2,13 @@
 
 namespace Tests\Feature\Training;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Listeners\Training\WaitingListEventSubscriber;
+use App\Events\Training\AccountAddedToWaitingList;
+use Illuminate\Support\Facades\Event;
+use App\Models\Training\WaitingList;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
-use App\Models\Training\WaitingList;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
@@ -29,12 +32,19 @@ class WaitingListFeatureTest extends TestCase
     /** @test **/
     public function testStudentCanBeAddedToWaitingList()
     {
+        Event::fake();
+
         $account = factory(Account::class)->create();
 
         $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Account Added to Waiting List');
+
+        Event::assertDispatched(AccountAddedToWaitingList::class);
+
+        $listener = \Mockery::mock(WaitingListEventSubscriber::class);
+        $listener->shouldReceive('userAdded');
     }
 
     /** @test **/

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adm\Training;
 
+use App\Events\Training\AccountAddedToWaitingList;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
@@ -48,6 +49,8 @@ class WaitingListManagementController extends AdmController
         }
 
         $waitingList->addToWaitingList($user, $request->user());
+
+        event(new AccountAddedToWaitingList($user, $waitingList));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Account Added to Waiting List');
