@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Adm\Training;
 
 use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountPromotedInWaitingList;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Controllers\Adm\Mship\Account;
+use App\Models\Training\WaitingList;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\Training\WaitingList;
 
 class WaitingListPositionController extends AdmController
 {
@@ -29,7 +29,6 @@ class WaitingListPositionController extends AdmController
         try {
             $waitingList->promote($account, $request->get('position'));
         } catch (ModelNotFoundException $e) {
-
         }
 
         event(new AccountDemotedInWaitingList($account, $waitingList));
@@ -45,7 +44,6 @@ class WaitingListPositionController extends AdmController
         try {
             $waitingList->promote($account, $request->get('position'));
         } catch (ModelNotFoundException $e) {
-
         }
 
         event(new AccountPromotedInWaitingList($account, $waitingList));
