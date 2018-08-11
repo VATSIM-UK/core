@@ -8,7 +8,6 @@ use App\Http\Requests\Training\WaitingListAccountRequest;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class WaitingListManagementController extends AdmController

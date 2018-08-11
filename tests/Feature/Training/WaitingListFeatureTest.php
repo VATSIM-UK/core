@@ -55,9 +55,9 @@ class WaitingListFeatureTest extends TestCase
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('error', 'Account Not Found.');
     }
-    
+
     /** @test **/
-    public function testAStudentCanOnlyBeInAListOnce() 
+    public function testAStudentCanOnlyBeInAListOnce()
     {
         $account = factory(Account::class)->create();
 

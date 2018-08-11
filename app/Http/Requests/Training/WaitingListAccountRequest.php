@@ -20,7 +20,7 @@ class WaitingListAccountRequest extends FormRequest
     public function messages()
     {
         return [
-            'account_id.unique' => 'That account is already in this waiting list'
+            'account_id.unique' => 'That account is already in this waiting list',
         ];
     }
 
@@ -34,9 +34,9 @@ class WaitingListAccountRequest extends FormRequest
         return [
             'account_id' => ['required',
                 Rule::unique('training_waiting_list_account')->where(function ($query) {
-                $query->where('list_id', $this->route('waitingList')->id);
-                })
-            ]
+                    $query->where('list_id', $this->route('waitingList')->id);
+                }),
+            ],
         ];
     }
 }
