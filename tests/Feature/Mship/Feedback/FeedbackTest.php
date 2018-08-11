@@ -6,12 +6,12 @@ use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Question\Type;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class FeedbackTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public function setUp()
     {
