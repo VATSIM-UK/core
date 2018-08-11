@@ -27,8 +27,8 @@ class ViewAirportController extends BaseController
         })->collapse();
 
         $stand_status = null;
-        if(File::exists(resource_path().'/assets/data/stands/'.$airport->icao.'.csv')){
-            $stand_status = (new StandStatus($airport->icao,resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
+        if (File::exists(resource_path().'/assets/data/stands/'.$airport->icao.'.csv')) {
+            $stand_status = (new StandStatus($airport->icao, resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }
 
         return view('airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);

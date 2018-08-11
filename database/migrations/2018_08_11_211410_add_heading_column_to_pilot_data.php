@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddHeadingColumnToPilotData extends Migration
 {
@@ -14,7 +14,7 @@ class AddHeadingColumnToPilotData extends Migration
     public function up()
     {
         Schema::table('networkdata_pilots', function (Blueprint $table) {
-           $table->unsignedSmallInteger('current_heading')->nullable()->after('current_groundspeed');
+            $table->unsignedSmallInteger('current_heading')->nullable()->after('current_groundspeed');
         });
     }
 
