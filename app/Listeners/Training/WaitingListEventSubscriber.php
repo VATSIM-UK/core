@@ -8,7 +8,7 @@ class WaitingListEventSubscriber
 {
     public function accountAdded($event)
     {
-        return Log::stack(['training'], "Account {$event->account} ({$event->account->id}) was added to {$event->waitingList}");
+        return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList}");
     }
 
     public function accountPromoted()
@@ -25,17 +25,17 @@ class WaitingListEventSubscriber
     {
         $events->listen(
             'App\Events\Training\AccountAddedToWaitingList',
-            'App\Listeners\WaitingListEventSubscriber@accountAdded'
+            'App\Listeners\Training\WaitingListEventSubscriber@accountAdded'
         );
 
         $events->listen(
             'App\Events\Training\AccountPromotedInWaitingList',
-            'App\Listeners\WaitingListEventSubscriber@accountPromoted'
+            'App\Listeners\Training\WaitingListEventSubscriber@accountPromoted'
         );
 
         $events->listen(
             'App\Events\Training\AccountDemotedInWaitingList',
-            'App\Listeners\WaitingListEventSubscriber@accountDemoted'
+            'App\Listeners\Training\WaitingListEventSubscriber@accountDemoted'
         );
     }
 }
