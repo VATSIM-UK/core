@@ -116,7 +116,7 @@ class WaitingList extends Model
         if (!$this->accounts->contains($account)) {
             throw new ModelNotFoundException($this);
         }
-        
+
         $entry = $this->accounts()->where('account_id', $account->id)->first();
 
         $oldPosition = $entry->pivot->position;
