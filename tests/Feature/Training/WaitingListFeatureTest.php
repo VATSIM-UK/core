@@ -22,6 +22,8 @@ class WaitingListFeatureTest extends TestCase
     {
         parent::setUp();
 
+        Event::fake();
+
         $this->waitingList = factory(WaitingList::class)->create();
 
         $this->staffAccount = factory(Account::class)->create();
@@ -32,8 +34,6 @@ class WaitingListFeatureTest extends TestCase
     /** @test **/
     public function testStudentCanBeAddedToWaitingList()
     {
-        Event::fake();
-
         $account = factory(Account::class)->create();
 
         $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
@@ -54,5 +54,20 @@ class WaitingListFeatureTest extends TestCase
             'account_id' => 12345678,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('error', 'Account Not Found.');
+    }
+    
+    /** @test **/
+    public function testAStudentCanOnlyBeInAListOnce() 
+    {
+        $account = factory(Account::class)->create();
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+            'account_id' => $account->id,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('success', 'Account Added to Waiting List');
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+            'account_id' => $account->id,
+        ])->assertSessionHasErrors('account_id', 'That account is already in this waiting list');
     }
 }

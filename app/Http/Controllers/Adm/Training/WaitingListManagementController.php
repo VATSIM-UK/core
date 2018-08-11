@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adm\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Http\Controllers\Adm\AdmController;
+use App\Http\Requests\Training\WaitingListAccountRequest;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -39,7 +40,7 @@ class WaitingListManagementController extends AdmController
             ])->first());
     }
 
-    public function store(WaitingList $waitingList, Request $request)
+    public function store(WaitingList $waitingList, WaitingListAccountRequest $request)
     {
         try {
             $user = Account::findOrFail($request->get('account_id'));
