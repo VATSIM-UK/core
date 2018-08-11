@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\VisitTransfer;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ApplicationTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** Unit Testing */
 
