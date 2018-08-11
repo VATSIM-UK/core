@@ -23,7 +23,7 @@ class MshipTest extends TestCase
 
         $this->actingAs($account);
 
-        $response = $this->get('/');
+        $response = $this->get(route('dashboard'));
         $response->assertRedirect(route('mship.manage.dashboard'));
     }
 
