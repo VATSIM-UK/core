@@ -176,3 +176,8 @@ function minutesToHours($minutes)
 
     return sprintf('%02.2d:%02.2d', floor($seconds / 3600), $seconds / 60 % 60);
 }
+
+function is_local_environment()
+{
+    return env('APP_IS_LOCAL') == 'true';
+}
