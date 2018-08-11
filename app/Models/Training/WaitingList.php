@@ -88,21 +88,21 @@ class WaitingList extends Model
     {
         if (!$this->accounts->contains($account)) {
             throw new ModelNotFoundException($this);
-        } else {
-            $entry = $this->accounts()->where('account_id', $account->id)->first();
-
-            // current position before promotion
-            $oldPosition = $entry->pivot->position;
-
-            // deals with the actual promoted record; returns that new position
-            $newPosition = $entry->pivot->decrementPosition($position);
-
-            $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
-                if ($item->pivot->position < $oldPosition) {
-                    return $item->pivot->incrementPosition();
-                }
-            });
         }
+
+        $entry = $this->accounts()->where('account_id', $account->id)->first();
+
+        // current position before promotion
+        $oldPosition = $entry->pivot->position;
+
+        // deals with the actual promoted record; returns that new position
+        $newPosition = $entry->pivot->decrementPosition($position);
+
+        $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
+            if ($item->pivot->position < $oldPosition) {
+                return $item->pivot->incrementPosition();
+            }
+        });
     }
 
     /**
@@ -115,19 +115,19 @@ class WaitingList extends Model
     {
         if (!$this->accounts->contains($account)) {
             throw new ModelNotFoundException($this);
-        } else {
-            $entry = $this->accounts()->where('account_id', $account->id)->first();
-
-            $oldPosition = $entry->pivot->position;
-
-            $newPosition = $entry->pivot->incrementPosition($position);
-
-            $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
-                if ($item->pivot->position > $oldPosition) {
-                    return $item->pivot->decrementPosition();
-                }
-            });
         }
+        
+        $entry = $this->accounts()->where('account_id', $account->id)->first();
+
+        $oldPosition = $entry->pivot->position;
+
+        $newPosition = $entry->pivot->incrementPosition($position);
+
+        $this->accounts->transform(function ($item, $key) use ($oldPosition, $newPosition) {
+            if ($item->pivot->position > $oldPosition) {
+                return $item->pivot->decrementPosition();
+            }
+        });
     }
 
     /**
