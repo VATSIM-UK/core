@@ -10,7 +10,7 @@
                     </div>
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-xs-12">Select a Waiting List to Manage {{ $lists }}</div>
+                            <div class="col-xs-12">Select a Waiting List to Manage</div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12">

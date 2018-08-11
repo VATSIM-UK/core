@@ -34,21 +34,23 @@
                     <div class="box-body">
                         <table id="accounts-table" class="table table-bordered">
                             <thead>
-                            <tr>
-                                <th>Account CID</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Added On</th>
-                                <td>Actions</td>
-                            </tr>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Account CID</th>
+                                    <th>Name</th>
+                                    <th>ATC Rating</th>
+                                    <th>Added On</th>
+                                    <td>Actions</td>
+                                </tr>
                             </thead>
                             <tbody>
                                 @forelse($waitingList->accounts as $account)
                                         <tr>
+                                            <td><strong>{{ $account->pivot->position }}</strong></td>
                                             <td>{!! link_to_route('adm.mship.account.details', $account->id, $account->id) !!}</td>
                                             <td>{{ $account }}</td>
-                                            <td>{{ $account->pivot->position }}</td>
-                                            <td>{{ $account->created_at }}</td>
+                                            <td>{{ $account->qualificationAtc }}</td>
+                                            <td>{{ $account->pivot->created_at }}</td>
                                             <td></td>
                                         </tr>
                                     @empty
