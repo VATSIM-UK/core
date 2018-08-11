@@ -1,15 +1,24 @@
 @extends('layout')
 
 @section('styles')
-    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-
+    <link media="all" type="text/css" rel="stylesheet"
+          href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <style type="text/css">
+        #accordion .panel-heading-link:hover, #accordion .panel-heading-link:focus {
+            color: white;
+        }
+        #accordion .panel-heading {
+            color: white;
+            background-size: cover;
+            background-position: center;
+            min-height: 100px;
+        }
+    </style>
 @endsection
 
 @section('scripts')
     <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap">
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap"></script>
     <script>
         function initMap() {
             map = new google.maps.Map(document.getElementById('banner'), {
@@ -26,15 +35,16 @@
                 position: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}}
             });
         }
-        $(document).ready( function () {
-            @if ($airport->controllers->count() > 10)
+
+        $(document).ready(function () {
+            @if (($controllers = $airport->controllers)->count() > 10)
                 $('#online-controllers').DataTable();
             @endif
-            @if ($airport->pilots->count() > 10)
+            @if (($pilots = $airport->pilots)->count() > 10)
                 $('#online-pilots').DataTable();
             @endif
 
-        } );
+        });
         $.get('{{ route('metar', $airport->icao) }}', function (data) {
             $('#metar').fadeOut(400, function () {
                 $('#metar').html(data);
@@ -110,25 +120,20 @@
         @if($airport->hasProcedures())
             <div class="col-md-8">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading">
-                        <i class="fa fa-check"></i> Procedures
-                    </div>
+                    <div class="panel-heading"><i class="fa fa-check"></i> Procedures</div>
                     <div class="panel-body">
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             @if($airport->departure_procedures)
                                 <div class="panel panel-ukblue">
-                                    <div class="panel-heading" role="tab" id="headingOne"
-                                         style="background-image:url({{asset('images/slice_departure.jpg')}});background-size: cover;min-height: 100px;">
-                                        <h4 class="panel-title">
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                               href="#collapseOne"
-                                               aria-expanded="false" aria-controls="collapseOne">
-                                                Departure Procedures
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
-                                         aria-labelledby="headingOne">
+                                    <a class="collapsed panel-heading-link" role="button" data-toggle="collapse" data-parent="#accordion"
+                                       href="#departureProcedures"
+                                       aria-expanded="false" aria-controls="departureProcedures">
+                                        <div class="panel-heading" role="tab"
+                                             style="background-image:url({{asset('images/slice_departure.jpg')}});">
+                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Departure Procedures</h4>
+                                        </div>
+                                    </a>
+                                    <div id="departureProcedures" class="panel-collapse collapse" role="tabpanel">
                                         <div class="panel-body">
                                             {!! $airport->departure_procedures !!}
                                         </div>
@@ -137,17 +142,16 @@
                             @endif
                             @if($airport->arrival_procedures)
                                 <div class="panel panel-ukblue">
-                                    <div class="panel-heading" role="tab" id="headingTwo">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse"
-                                               data-parent="#accordion"
-                                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                Arrival Procedures
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
-                                         aria-labelledby="headingTwo">
+                                    <a class="collapsed panel-heading-link" role="button" data-toggle="collapse"
+                                       data-parent="#accordion"
+                                       href="#arrivalProcedures" aria-expanded="false"
+                                       aria-controls="arrivalProcedures">
+                                        <div class="panel-heading" role="tab"
+                                             style="background-image:url({{asset('images/slice_arrival.jpg')}});">
+                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Arrival Procedures</h4>
+                                        </div>
+                                    </a>
+                                    <div id="arrivalProcedures" class="panel-collapse collapse" role="tabpanel">
                                         <div class="panel-body">
                                             {!! $airport->arrival_procedures !!}
                                         </div>
@@ -156,18 +160,16 @@
                             @endif
                             @if($airport->vfr_procedures)
                                 <div class="panel panel-ukblue">
-                                    <div class="panel-heading" role="tab" id="headingThree">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse"
-                                               data-parent="#accordion"
-                                               href="#collapseThree" aria-expanded="false"
-                                               aria-controls="collapseThree">
-                                                VFR Procedures
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                         aria-labelledby="headingThree">
+                                    <a class="collapsed panel-heading-link" role="button" data-toggle="collapse"
+                                       data-parent="#accordion"
+                                       href="#vfrProcedures" aria-expanded="false"
+                                       aria-controls="vfrProcedures">
+                                        <div class="panel-heading" role="tab"
+                                             style="background-image:url({{asset('images/slice_vfr.jpg')}});">
+                                            <h4 class="panel-title"><span class="glyphicon glyphicon-plus"></span> VFR Procedures</h4>
+                                        </div>
+                                    </a>
+                                    <div id="vfrProcedures" class="panel-collapse collapse" role="tabpanel">
                                         <div class="panel-body">
                                             {!! $airport->vfr_procedures !!}
                                         </div>
@@ -211,7 +213,7 @@
                                         <td class="col-md-3">{{$navaid->type}} {{$navaid->name}}</td>
                                         <td class="col-md-2">{{$navaid->ident}}</td>
                                         <td class="col-md-3">{{$navaid->frequency}} {{$navaid->frequency_band}}</td>
-                                        <td class="col-md-4">{{$navaid->remarks}}</td>
+                                        <td class="col-md-4">{!! $navaid->remarks !!}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -258,15 +260,18 @@
                             <th>Frequency</th>
                             </thead>
                             <tbody>
-                            @foreach($airport->stations->groupBy('type') as $groupedStations)
-                                @foreach($groupedStations as $station)
+                                @foreach($stations as $station)
                                     <tr>
-                                        <td>{{$station->callsign}}</td>
+                                        <td>@if(!$station->sub_station)
+                                                <strong>{{$station->callsign}}</strong>
+                                            @else
+                                                {{$station->callsign}}
+                                            @endif
+                                        </td>
                                         <td>{{$station->name}}</td>
                                         <td>{{$station->frequency}}</td>
                                     </tr>
                                 @endforeach
-                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -290,7 +295,7 @@
                             <tbody>
                             @foreach($procedures as $procedure)
                                 <tr>
-                                    <td>{{$procedure->ident}}</td>
+                                    <td><strong>{{$procedure->ident}}</strong></td>
                                     <td>{{$procedure->runway ? $procedure->runway->ident : ""}}</td>
                                     <td>{{$procedure->final_altitude}}ft</td>
                                     <td>{{$procedure->remarks}}</td>
@@ -316,8 +321,8 @@
                             <tbody>
                             @foreach($procedures as $procedure)
                                 <tr>
-                                    <td>{{$procedure->ident}}</td>
-                                    <td>{{$procedure->inital_fix}}</td>
+                                    <td><strong>{{$procedure->ident}}</strong></td>
+                                    <td>{{$procedure->initial_fix}}</td>
                                     <td>{{$procedure->remarks}}</td>
                                 </tr>
                             @endforeach
@@ -342,7 +347,7 @@
                         <th>Time Online</th>
                         </thead>
                         <tbody>
-                        @foreach($airport->controllers as $controller)
+                        @foreach($controllers as $controller)
                             <tr>
                                 <td>{{$controller->callsign}}</td>
                                 <td>{{$controller->account->real_name}}</td>
@@ -350,7 +355,7 @@
                                 <td>{{ HTML::fuzzyDate($controller->connected_at) }}</td>
                             </tr>
                         @endforeach
-                        @if($airport->controllers->count() == 0)
+                        @if($controllers->count() == 0)
                             <tr>
                                 <th colspan="4" class="text-center">No Controllers Online</th>
                             </tr>
@@ -374,7 +379,7 @@
                         <th>Connected</th>
                         </thead>
                         <tbody>
-                        @foreach($airport->pilots as $pilot)
+                        @foreach($pilots as $pilot)
                             <tr>
                                 <td>{{$pilot->callsign}}</td>
                                 <td>{{$pilot->aircraft}}</td>
@@ -384,9 +389,9 @@
                                 <td>{{ HTML::fuzzyDate($pilot->connected_at) }}</td>
                             </tr>
                         @endforeach
-                        @if($airport->pilots->count() == 0)
+                        @if($pilots->count() == 0)
                             <tr>
-                                <th colspan="4" class="text-center">No Pilots Flying Here</th>
+                                <th colspan="6" class="text-center">No Pilots Flying Here</th>
                             </tr>
                         @endif
                         </tbody>

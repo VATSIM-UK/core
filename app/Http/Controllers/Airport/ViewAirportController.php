@@ -16,8 +16,14 @@ class ViewAirportController extends BaseController
 
     public function show(Airport $airport)
     {
-        $airport->load(['navaids', 'runways', 'procedures', 'stations']);
+        $airport->load(['navaids', 'runways', 'procedures', 'procedures.runway']);
 
-        return view('airport.view')->with('airport', $airport);
+        $stations = $airport->stations()->orderByDesc('type')->get()->groupBy('type')->transform(function ($group) {
+            return $group->sortBy(function ($station){
+                return strlen($station->callsign)*($station->sub_station ? 2 : 1);
+            });
+        })->collapse();
+
+        return view('airport.view')->with('airport', $airport)->with('stations', $stations);
     }
 }

@@ -32,6 +32,7 @@ class Airport extends Model
         'iata',
         'name',
         'fir_type',
+        'major',
         'latitude',
         'longitude',
         'elevation',
@@ -40,6 +41,10 @@ class Airport extends Model
         'arrival_procedures',
         'vfr_procedures',
         'other_information',
+    ];
+
+    protected $casts = [
+        'major' => 'boolean',
     ];
 
     const FIR_TYPE_EGTT = 1;
@@ -78,15 +83,15 @@ class Airport extends Model
     public function getControllersAttribute()
     {
         if ($this->stations->count() > 0) {
-            return Atc::withCallsignIn(['%'.$this->icao.'%', $this->stations->pluck('callsign')])->online()->get();
+            return Atc::withCallsignIn(['%'.$this->icao.'%', $this->stations->pluck('callsign')])->online()->with('account')->get();
         }
 
-        return Atc::withCallsign('%'.$this->icao.'%')->online()->get();
+        return Atc::withCallsign('%'.$this->icao.'%')->online()->with('account')->get();
     }
 
     public function getPilotsAttribute()
     {
-        return Pilot::withinAirport($this->icao)->online()->get();
+        return Pilot::withinAirport($this->icao)->online()->with('account')->get();
     }
 
     public function getFirTypeAttribute($fir)

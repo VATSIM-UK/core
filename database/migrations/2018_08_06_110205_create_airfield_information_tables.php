@@ -71,7 +71,6 @@
                 $table->increments('id');
                 $table->integer('airport_id')->unsigned();
                 $table->integer('station_id')->unsigned();
-                $table->timestamps();
             });
 
             Schema::create('stations', function (Blueprint $table) {
@@ -80,6 +79,7 @@
                 $table->string('name');
                 $table->decimal('frequency', 6, 3);
                 $table->unsignedTinyInteger('type');
+                $table->boolean('sub_station')->default(false);
                 $table->timestamps();
             });
         }

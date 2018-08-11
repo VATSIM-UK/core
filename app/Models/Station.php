@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\Model;
             'name',
             'frequency',
             'type',
+            'sub_station',
+        ];
+        protected $casts = [
+            'sub_station' => 'boolean',
         ];
 
         const TYPE_ATIS = 1;
