@@ -254,3 +254,13 @@ Route::get('metar/{airportIcao}', function ($airportIcao) {
         return 'METAR UNAVAILABLE';
     });
 })->middleware(['auth'])->name('metar');
+
+// Support Core Sub Domain
+Route::domain('core.vukcore.test')->group(function () {
+    Route::get('/', function () {return Redirect::route('default');});
+    Route::any('/{a}', function () {return Redirect::to("http://".env('APP_URL')."/".Request::decodedPath());});
+    Route::any('/{a}/{b}', function () {return Redirect::to("http://".env('APP_URL')."/".Request::decodedPath());});
+    Route::any('/{a}/{b}/{c}', function () {return Redirect::to("http://".env('APP_URL')."/".Request::decodedPath());});
+    Route::any('/{a}/{b}/{c}/{d}', function () {return Redirect::to("http://".env('APP_URL')."/".Request::decodedPath());});
+    Route::any('/{a}/{b}/{c}/{d}/{e}', function () {return Redirect::to("http://".env('APP_URL')."/".Request::decodedPath());});
+});
