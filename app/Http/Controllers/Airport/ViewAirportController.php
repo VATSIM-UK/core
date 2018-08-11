@@ -19,8 +19,8 @@ class ViewAirportController extends BaseController
         $airport->load(['navaids', 'runways', 'procedures', 'procedures.runway']);
 
         $stations = $airport->stations()->orderByDesc('type')->get()->groupBy('type')->transform(function ($group) {
-            return $group->sortBy(function ($station){
-                return strlen($station->callsign)*($station->sub_station ? 2 : 1);
+            return $group->sortBy(function ($station) {
+                return strlen($station->callsign) * ($station->sub_station ? 2 : 1);
             });
         })->collapse();
 
