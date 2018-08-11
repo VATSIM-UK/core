@@ -58,67 +58,7 @@
                             {!! link_to_route("default", "Home") !!}
                         </li>
                     </ul>
-
-            <div class="collapse navbar-collapse js-navbar-collapse" id="nav">
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        {!! link_to_route("default", "Home") !!}
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li>{!! link_to_route("mship.feedback.new", "Submit Feedback") !!}</li>
-                                    <li>{!! link_to_route("mship.feedback.view", "View My Feedback") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
-                                    <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
-                                    <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
-                                    <li>{!! link_to_route("airports", "UK Airfields") !!}</li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Network Statistics</li>
-                                    <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
-                                    <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="dropdown-header">Membership</li>
-                                    <li>{!! link_to_route("visiting.landing", "Visit/Transfer") !!}</li>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Third-Party Services</li>
-                                    <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
-                                    <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc->isS1)
+                                                       
                     <ul class="nav navbar-nav navcustom">
                         <li class="dropdown dropdown-large">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
@@ -142,6 +82,7 @@
                                         <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
                                         <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
                                         <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
+                                        <li>{!! link_to_route("airports", "UK Airfields") !!}</li>
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Network Statistics</li>
                                         <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
