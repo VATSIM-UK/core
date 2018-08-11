@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Airport;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Airport;
+use CobaltGrid\VatsimStandStatus\StandStatus;
+use Illuminate\Support\Facades\File;
 
 class ViewAirportController extends BaseController
 {
@@ -24,6 +26,11 @@ class ViewAirportController extends BaseController
             });
         })->collapse();
 
-        return view('airport.view')->with('airport', $airport)->with('stations', $stations);
+        $stand_status = null;
+        if(File::exists(resource_path().'/assets/data/stands/'.$airport->icao.'.csv')){
+            $stand_status = (new StandStatus($airport->icao,resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
+        }
+
+        return view('airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
     }
 }

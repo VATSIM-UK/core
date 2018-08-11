@@ -28,6 +28,7 @@
         "barryvdh/laravel-debugbar": "~3.0",
         "barryvdh/laravel-ide-helper": "^2.1",
         "bugsnag/bugsnag-laravel": "^2.0",
+        "cobaltgrid/vatsim-stand-status": "^1.0",
         "doctrine/dbal": "~2.5",
         "guzzlehttp/guzzle": "~6.0",
         "laravel/browser-kit-testing": "^1.0",

@@ -20,28 +20,12 @@
     <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.jsapi') }}&callback=initMap"></script>
     <script>
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('banner'), {
-                mapTypeId: 'satellite',
-                disableDefaultUI: true,
-                gestureHandling: 'none',
-                zoomControl: false,
-                center: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}},
-                zoom: 13
-            });
-
-            var marker = new google.maps.Marker({
-                map: map,
-                position: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}}
-            });
-        }
-
         $(document).ready(function () {
             @if (($controllers = $airport->controllers)->count() > 10)
-                $('#online-controllers').DataTable();
+            $('#online-controllers').DataTable();
             @endif
             @if (($pilots = $airport->pilots)->count() > 10)
-                $('#online-pilots').DataTable();
+            $('#online-pilots').DataTable();
             @endif
 
         });
@@ -51,6 +35,59 @@
                 $(this).fadeIn();
             });
         });
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('banner'), {
+                mapTypeId: 'satellite',
+                disableDefaultUI: true,
+                center: {lat: {{$airport->latitude}}, lng: {{$airport->longitude}}},
+                zoom: 13
+            });
+
+            @foreach($pilots->where('current_heading','!=',null) as $pilot)
+                new google.maps.Marker({
+                    position: {lat: {{$pilot->current_latitude}}, lng: {{$pilot->current_longitude}}},
+                    map: map,
+                    draggable: false,
+                    icon: {
+                        path: "M24 19.999l-5.713-5.713 13.713-10.286-4-4-17.141 6.858-5.397-5.397c-1.556-1.556-3.728-1.928-4.828-0.828s-0.727 3.273 0.828 4.828l5.396 5.396-6.858 17.143 4 4 10.287-13.715 5.713 5.713v7.999h4l2-6 6-2v-4l-7.999 0z",
+                        fillColor: '#fff',
+                        fillOpacity: 1,
+                        anchor: new google.maps.Point(0,0),
+                        strokeWeight: 0,
+                        scale: 0.5,
+                        rotation: 45 + {{$pilot->current_heading}},
+                    },
+                    zIndex : -20
+                });
+            @endforeach
+            @if ($stands)
+                @foreach($stands->occupiedStands() as $stand)
+                    new google.maps.Circle({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35,
+                        map: map,
+                        center: { lat:{{$stand['latcoord']}}, lng: {{$stand['longcoord']}}},
+                        radius: 30
+                    });
+                @endforeach
+                @foreach(collect($stands->allStands())->where('occupied',null) as $stand)
+                new google.maps.Circle({
+                    strokeColor: '#32cd32',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#32cd32',
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: { lat:{{$stand['latcoord']}}, lng: {{$stand['longcoord']}}},
+                    radius: 30
+                });
+                @endforeach
+            @endif
+        }
     </script>
 @endsection
 
@@ -280,7 +317,7 @@
         @endif
     </div>
     <div class="row">
-        @if(($procedures = $airport->procedures->sortBy('ident')->where('type', \App\Models\Airport\Procedure::TYPE_SID))->count() > 0)
+        @if(($procedures = $airport->procedures->sortBy('ident')->where('type', \App\Models\Airport\Procedure::TYPE_SID)->groupBy('runway_id')->collapse())->count() > 0)
             <div class="col-md-6">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-arrow-up"></i> Standard Instrument Departures</div>

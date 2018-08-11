@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09b9f9ab0832153d1300b2f616b6cc17",
+    "content-hash": "b61f007dfbdae8ea366a59b771aecc3c",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -455,6 +455,50 @@
                 "tracking"
             ],
             "time": "2018-02-16T16:51:45+00:00"
+        },
+        {
+            "name": "cobaltgrid/vatsim-stand-status",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atoff/vatsim-stand-status.git",
+                "reference": "809126e4e903ad912b66f02f4f409f238b5f0ab0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atoff/vatsim-stand-status/zipball/809126e4e903ad912b66f02f4f409f238b5f0ab0",
+                "reference": "809126e4e903ad912b66f02f4f409f238b5f0ab0",
+                "shasum": ""
+            },
+            "require": {
+                "skymeyer/vatsimphp": "1.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CobaltGrid\\VatsimStandStatus\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Toff",
+                    "email": "admin@cobaltgrid.com",
+                    "homepage": "https://www.cobaltgrid.com"
+                }
+            ],
+            "description": "A PHP library to access the status of aircraft stands on VATSIM",
+            "homepage": "https://github.com/atoff/vatsim-stand-status",
+            "keywords": [
+                "flight simulator",
+                "stand",
+                "stands",
+                "vatsim"
+            ],
+            "time": "2018-08-11T20:18:25+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -2996,8 +3040,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/ac85f166aad75e1304fd72830f6efa7ff149a7f3",
-                "reference": "ac85f166aad75e1304fd72830f6efa7ff149a7f3",
+                "url": "https://api.github.com/repos/planetteamspeak/ts3phpframework/zipball/6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
+                "reference": "6af8373f26ddbc35a3fff2fc2aba2df2e307463f",
                 "shasum": ""
             },
             "require": {
@@ -6839,7 +6883,6 @@
         "alawrence/laravel-ipboard": 20,
         "maknz/slack": 20,
         "malahierba-lab/public-id": 20,
-        "planetteamspeak/ts3-php-framework": 20,
         "vatsim/sso": 20,
         "vatsim/xml": 20,
         "vluzrmos/slack-api": 20

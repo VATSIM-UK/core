@@ -87,6 +87,11 @@ class Pilot extends Model
         'cruise_tas',
         'route',
         'remarks',
+        'current_latitude',
+        'current_longitude',
+        'current_altitude',
+        'current_groundspeed',
+        'current_heading',
     ];
 
     public static function scopeOnline($query)
