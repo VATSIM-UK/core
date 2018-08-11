@@ -21,7 +21,7 @@
                         <div class="permanent question-item">
                             <div class="input-group">
                                 <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
-                                {{ Form::text('', 'CID of the member you are leaving feedback for.', ['aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
+                                {{ Form::text('', 'CID of the member you are leaving feedback for.', ['class' => 'form-control', 'aria-describedby' => 'question-name-addon', 'size' => 50, 'disabled']) }}
                                 <span class="input-group-addon">(Permanent)</span>
                             </div>
                         </div>

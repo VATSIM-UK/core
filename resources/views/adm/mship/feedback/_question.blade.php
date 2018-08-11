@@ -7,7 +7,7 @@
             <div class="input-group">
                 <span class="input-group-addon"><i class="ion ion-gear-b question-settings-control"></i></span>
                 <span class="input-group-addon" id="question-name-addon"><b>Question</b></span>
-                {{ Form::text('question[template][name]', $question->question, ['aria-describedby' => 'question-name-addon', 'size' => 50]) }}
+                {{ Form::text('question[template][name]', $question->question, ['aria-describedby' => 'question-name-addon', 'size' => 50, 'class' => 'form-control']) }}
                 <span class="input-group-addon">(<span
                             class="question_type">{{ isset($question->type->name) ? trans('feedback.type.'.$question->type->name) : "" }}</span>)</span>
                 <span class="input-group-addon">
