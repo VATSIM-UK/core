@@ -9,6 +9,7 @@ use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
@@ -41,10 +42,9 @@ class WaitingListFeatureTest extends TestCase
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Account Added to Waiting List');
 
-        Event::assertDispatched(AccountAddedToWaitingList::class);
-
-        $listener = \Mockery::mock(WaitingListEventSubscriber::class);
-        $listener->shouldReceive('userAdded');
+        Event::assertDispatched(AccountAddedToWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
     }
 
     /** @test **/
