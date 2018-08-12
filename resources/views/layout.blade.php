@@ -4,7 +4,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+    @if($_pageTitle)
+    <title>VATSIM UK | {{ $_pageTitle }}</title>
+    @else
     <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
+    @endif
 
     <!--BugSnagScript-->
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
