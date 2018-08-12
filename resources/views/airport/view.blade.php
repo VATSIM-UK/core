@@ -47,7 +47,7 @@
             });
 
             @foreach($pilots->where('current_heading','!=',null) as $pilot)
-                {{--@if ($pilot->isAtAirport($airport))--}}
+                @if ($pilot->isAtAirport($airport))
                     new google.maps.Marker({
                         position: {lat: {{$pilot->current_latitude}}, lng: {{$pilot->current_longitude}}},
                         map: map,
@@ -63,7 +63,7 @@
                         },
                         zIndex : -20
                     });
-                {{--@endif--}}
+                @endif
             @endforeach
             @if ($stands)
                 @foreach($stands->occupiedStands() as $stand)
