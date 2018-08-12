@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Site;
 
 class ATCPagesController extends \App\Http\Controllers\BaseController
 {
-
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -15,6 +14,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
     public function viewLanding()
     {
         $this->setTitle('ATC Training');
+
         return $this->viewMake('site.atc.landing');
     }
 
@@ -22,6 +22,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
     {
         $this->setTitle('New Controller');
         $this->addBreadcrumb('New Controller', route('site.atc.newController'));
+
         return $this->viewMake('site.atc.newcontroller');
     }
 
@@ -29,6 +30,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
     {
         $this->setTitle('ATC Progression Guide');
         $this->addBreadcrumb('Progression Guide', route('site.atc.progression'));
+
         return $this->viewMake('site.atc.progression');
     }
 
@@ -36,6 +38,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
     {
         $this->setTitle('ATC Endorsements');
         $this->addBreadcrumb('Endorsements', route('site.atc.endorsements'));
+
         return $this->viewMake('site.atc.endorsements');
     }
 
@@ -43,6 +46,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
     {
         $this->setTitle('Becoming a Mentor');
         $this->addBreadcrumb('Becoming a Mentor', route('site.atc.mentor'));
+
         return $this->viewMake('site.atc.mentor');
     }
 }

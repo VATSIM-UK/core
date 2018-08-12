@@ -142,6 +142,7 @@ class BaseController extends \Illuminate\Routing\Controller
 
         if ($first) {
             $this->breadcrumb->prepend($element);
+
             return;
         }
 
