@@ -14,9 +14,9 @@ class AccountDemotedInWaitingList
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $account;
+    public $account;
 
-    protected $waitingList;
+    public $waitingList;
 
     /**
      * Create a new event instance.

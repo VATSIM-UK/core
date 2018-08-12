@@ -3,6 +3,8 @@
 namespace Tests\Feature\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\AccountDemotedInWaitingList;
+use App\Events\Training\AccountPromotedInWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
@@ -79,6 +81,10 @@ class WaitingListFeatureTest extends TestCase
             'position' => 1,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Waiting list positions changed.');
+
+        Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
     }
 
     /** @test * */
@@ -91,5 +97,9 @@ class WaitingListFeatureTest extends TestCase
             'position' => 1,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Waiting list positions changed.');
+
+        Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
     }
 }

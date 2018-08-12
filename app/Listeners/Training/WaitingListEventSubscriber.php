@@ -11,14 +11,14 @@ class WaitingListEventSubscriber
         return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList}");
     }
 
-    public function accountPromoted()
+    public function accountPromoted($event)
     {
-        // TODO: Implement proper logging.
+        return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was promoted within {$event->waitingList}");
     }
 
-    public function accountDemoted()
+    public function accountDemoted($event)
     {
-        // TODO: Implement proper logging.
+        return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was demoted within {$event->waitingList}");
     }
 
     public function subscribe($events)
