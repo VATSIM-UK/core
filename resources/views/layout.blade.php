@@ -235,7 +235,10 @@
                     @endif
                 </div>
                 <div class="breadcrumb_content_right">
-                    <a href="#">VATSIM UK</a> / Home
+                    VATSIM UK /
+                    @foreach($_breadcrumb as $bread)
+                        <a href="{{ $bread['uri'] }}">{{ $bread['name'] }}</a> /
+                    @endforeach
                 </div>
             </div>
         </div>
