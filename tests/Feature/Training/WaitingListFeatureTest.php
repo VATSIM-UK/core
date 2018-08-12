@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Training;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Events\Training\AccountAddedToWaitingList;
-use App\Listeners\Training\WaitingListEventSubscriber;
+use Illuminate\Support\Facades\Event;
+use App\Models\Training\WaitingList;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
-use App\Models\Training\WaitingList;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
@@ -32,7 +30,7 @@ class WaitingListFeatureTest extends TestCase
         $this->staffAccount->roles()->attach(Role::find(1));
     }
 
-    /** @test **/
+    /** @test * */
     public function testStudentCanBeAddedToWaitingList()
     {
         $account = factory(Account::class)->create();
@@ -47,7 +45,7 @@ class WaitingListFeatureTest extends TestCase
         });
     }
 
-    /** @test **/
+    /** @test * */
     public function testRedirectOnUnknownAccountId()
     {
         $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
@@ -56,7 +54,7 @@ class WaitingListFeatureTest extends TestCase
             ->assertSessionHas('error', 'Account Not Found.');
     }
 
-    /** @test **/
+    /** @test * */
     public function testAStudentCanOnlyBeInAListOnce()
     {
         $account = factory(Account::class)->create();
@@ -69,5 +67,29 @@ class WaitingListFeatureTest extends TestCase
         $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertSessionHasErrors('account_id', 'That account is already in this waiting list');
+    }
+
+    /** @test * */
+    public function testAStudentCanBePromoted()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.manage.promote', $this->waitingList), [
+            'account_id' => $account->id,
+            'position' => 1,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('success', 'Waiting list positions changed.');
+    }
+
+    /** @test * */
+    public function testAStudentCanBeDemoted()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.manage.demote', $this->waitingList), [
+            'account_id' => $account->id,
+            'position' => 1,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('success', 'Waiting list positions changed.');
     }
 }

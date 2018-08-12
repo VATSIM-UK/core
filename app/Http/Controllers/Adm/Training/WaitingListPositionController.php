@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Adm\Training;
 use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountPromotedInWaitingList;
 use App\Http\Controllers\Adm\AdmController;
-use App\Http\Controllers\Adm\Mship\Account;
+use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -22,22 +22,14 @@ class WaitingListPositionController extends AdmController
         $this->waitingList = $waitingList;
     }
 
+    /**
+     * Promote Account within WaitingList.
+     *
+     * @param WaitingList $waitingList
+     * @param Request $request
+     * @return mixed
+     */
     public function store(WaitingList $waitingList, Request $request)
-    {
-        $account = Account::findOrFail($request->get('account_id'));
-
-        try {
-            $waitingList->promote($account, $request->get('position'));
-        } catch (ModelNotFoundException $e) {
-        }
-
-        event(new AccountDemotedInWaitingList($account, $waitingList));
-
-        return Redirect::route(route('training.waitingList.show', $waitingList))
-            ->withSuccess('Waiting list positions changed!');
-    }
-
-    public function update(WaitingList $waitingList, Request $request)
     {
         $account = Account::findOrFail($request->get('account_id'));
 
@@ -48,7 +40,29 @@ class WaitingListPositionController extends AdmController
 
         event(new AccountPromotedInWaitingList($account, $waitingList));
 
-        return Redirect::route(route('training.waitingList.show', $waitingList))
+        return Redirect::route('training.waitingList.show', $waitingList)
+            ->withSuccess('Waiting list positions changed!');
+    }
+
+    /**
+     * Demote Account within WaitingList.
+     *
+     * @param WaitingList $waitingList
+     * @param Request $request
+     * @return mixed
+     */
+    public function update(WaitingList $waitingList, Request $request)
+    {
+        $account = Account::findOrFail($request->get('account_id'));
+
+        try {
+            $waitingList->demote($account, $request->get('position'));
+        } catch (ModelNotFoundException $e) {
+        }
+
+        event(new AccountDemotedInWaitingList($account, $waitingList));
+
+        return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Waiting list positions changed.');
     }
 }
