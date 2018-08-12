@@ -27,7 +27,9 @@
             @if (($pilots = $airport->pilots)->count() > 10)
             $('#online-pilots').DataTable();
             @endif
-
+            @if($stands)
+                $('#stands').DataTable();
+            @endif
         });
         $.get('{{ route('metar', $airport->icao) }}', function (data) {
             $('#metar').fadeOut(400, function () {
@@ -45,21 +47,23 @@
             });
 
             @foreach($pilots->where('current_heading','!=',null) as $pilot)
-                new google.maps.Marker({
-                    position: {lat: {{$pilot->current_latitude}}, lng: {{$pilot->current_longitude}}},
-                    map: map,
-                    draggable: false,
-                    icon: {
-                        path: "M24 19.999l-5.713-5.713 13.713-10.286-4-4-17.141 6.858-5.397-5.397c-1.556-1.556-3.728-1.928-4.828-0.828s-0.727 3.273 0.828 4.828l5.396 5.396-6.858 17.143 4 4 10.287-13.715 5.713 5.713v7.999h4l2-6 6-2v-4l-7.999 0z",
-                        fillColor: '#fff',
-                        fillOpacity: 1,
-                        anchor: new google.maps.Point(0,0),
-                        strokeWeight: 0,
-                        scale: 0.5,
-                        rotation: 45 + {{$pilot->current_heading}},
-                    },
-                    zIndex : -20
-                });
+                {{--@if ($pilot->isAtAirport($airport))--}}
+                    new google.maps.Marker({
+                        position: {lat: {{$pilot->current_latitude}}, lng: {{$pilot->current_longitude}}},
+                        map: map,
+                        draggable: false,
+                        icon: {
+                            path: "M24 19.999l-5.713-5.713 13.713-10.286-4-4-17.141 6.858-5.397-5.397c-1.556-1.556-3.728-1.928-4.828-0.828s-0.727 3.273 0.828 4.828l5.396 5.396-6.858 17.143 4 4 10.287-13.715 5.713 5.713v7.999h4l2-6 6-2v-4l-7.999 0z",
+                            fillColor: '#fff',
+                            fillOpacity: 1,
+                            anchor: new google.maps.Point(0,0),
+                            strokeWeight: 0,
+                            scale: 0.5,
+                            rotation: 45 + {{$pilot->current_heading}},
+                        },
+                        zIndex : -20
+                    });
+                {{--@endif--}}
             @endforeach
             @if ($stands)
                 @foreach($stands->occupiedStands() as $stand)
@@ -372,7 +376,7 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-6">
+        <div class="@if($stands) col-md-3 @else col-md-6 @endif">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="fa fa-wifi"></i> Online Controllers</div>
                 <div class="panel-body table-responsive">
@@ -436,5 +440,34 @@
                 </div>
             </div>
         </div>
+        @if($stands)
+        <div class="col-md-3">
+            <div class="panel panel-ukblue">
+                <div class="panel-heading"><i class="fa fa-wifi"></i> Stands</div>
+                <div class="panel-body table-responsive">
+                    <table id="stands" class="table">
+                        <thead>
+                        <th>Stand</th>
+                        <th>Status</th>
+                        </thead>
+                        <tbody>
+                            @foreach($stands->allStands() as $stand)
+                                <tr>
+                                    <td>{{$stand['id']}}</td>
+                                    <td>
+                                        @if(isset($stand['occupied']))
+                                            <span style="color:red">Occupied by {{$stand['occupied']['callsign']}}</span>
+                                        @else
+                                            <span style="color:green">Free</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 @stop
