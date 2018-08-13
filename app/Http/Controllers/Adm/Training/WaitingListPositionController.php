@@ -31,6 +31,8 @@ class WaitingListPositionController extends AdmController
      */
     public function store(WaitingList $waitingList, Request $request)
     {
+        $this->authorize('promoteAccount', $waitingList);
+
         $account = Account::findOrFail($request->get('account_id'));
 
         try {
@@ -53,6 +55,8 @@ class WaitingListPositionController extends AdmController
      */
     public function update(WaitingList $waitingList, Request $request)
     {
+        $this->authorize('demoteAccount', $waitingList);
+
         $account = Account::findOrFail($request->get('account_id'));
 
         try {

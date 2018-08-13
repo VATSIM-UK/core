@@ -11,6 +11,7 @@ use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\UnauthorizedException;
 
 class WaitingListManagementController extends AdmController
 {
@@ -43,6 +44,8 @@ class WaitingListManagementController extends AdmController
 
     public function store(WaitingList $waitingList, WaitingListAccountRequest $request)
     {
+        $this->authorize('addAccount', $waitingList);
+
         try {
             $user = Account::findOrFail($request->get('account_id'));
         } catch (ModelNotFoundException $e) {
@@ -60,6 +63,8 @@ class WaitingListManagementController extends AdmController
 
     public function destroy(WaitingList $waitingList, Request $request)
     {
+        $this->authorize('removeAccount', $waitingList);
+
         try {
             $user = Account::findOrFail($request->get('account_id'));
         } catch (ModelNotFoundException $e) {
