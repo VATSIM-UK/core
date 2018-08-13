@@ -21,6 +21,11 @@ class WaitingListEventSubscriber
         return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was demoted within {$event->waitingList}");
     }
 
+    public function accountRemoved($event)
+    {
+        return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was removed from {$event->waitingList}");
+    }
+
     public function subscribe($events)
     {
         $events->listen(
@@ -36,6 +41,11 @@ class WaitingListEventSubscriber
         $events->listen(
             'App\Events\Training\AccountDemotedInWaitingList',
             'App\Listeners\Training\WaitingListEventSubscriber@accountDemoted'
+        );
+
+        $events->listen(
+            'App\Events\Training\AccountRemovedFromWaitingList',
+            'App\Listeners\Training\WaitingListEventSubscriber@accountRemoved'
         );
     }
 }

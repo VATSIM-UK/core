@@ -5,6 +5,7 @@ namespace Tests\Feature\Training;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountPromotedInWaitingList;
+use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
@@ -54,6 +55,11 @@ class WaitingListFeatureTest extends TestCase
             'account_id' => 12345678,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('error', 'Account Not Found.');
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.remove', $this->waitingList), [
+            'account_id' => 12345678,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('error', 'Account Not Found.');
     }
 
     /** @test * */
@@ -99,6 +105,23 @@ class WaitingListFeatureTest extends TestCase
             ->assertSessionHas('success', 'Waiting list positions changed.');
 
         Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
+    }
+
+    /** @test **/
+    public function testAStudentCanBeRemoved()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->staffAccount);
+
+        $this->actingAs($this->staffAccount)->post(route('training.waitingList.remove', $this->waitingList), [
+            'account_id' => $account->id,
+        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+            ->assertSessionHas('success', 'Student removed from Waiting List');
+
+        Event::assertDispatched(AccountRemovedFromWaitingList::class, function ($event) use ($account) {
             return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
         });
     }
