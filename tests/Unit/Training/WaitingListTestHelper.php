@@ -18,7 +18,7 @@ trait WaitingListTestHelper
 
         $waitingListAccounts = factory(Account::class, $accounts)->create($overrides);
 
-        $waitingListAccounts->each(function($account) use ($waitingList) {
+        $waitingListAccounts->each(function ($account) use ($waitingList) {
             $waitingList->addToWaitingList($account, $this->createAdminAccount());
         });
 

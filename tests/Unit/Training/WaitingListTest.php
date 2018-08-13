@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Training;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
@@ -30,9 +30,9 @@ class WaitingListTest extends TestCase
     {
         $this->assertEquals('slug', $this->waitingList->getRouteKeyName());
     }
-    
+
     /** @test **/
-    public function itDisplaysNameOnToString() 
+    public function itDisplaysNameOnToString()
     {
         $this->assertEquals($this->waitingList->name, $this->waitingList);
     }
