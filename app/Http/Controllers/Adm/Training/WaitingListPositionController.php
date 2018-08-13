@@ -41,7 +41,7 @@ class WaitingListPositionController extends AdmController
         event(new AccountPromotedInWaitingList($account, $waitingList));
 
         return Redirect::route('training.waitingList.show', $waitingList)
-            ->withSuccess('Waiting list positions changed!');
+            ->withSuccess('Waiting list positions changed.');
     }
 
     /**
