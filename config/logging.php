@@ -33,6 +33,10 @@ return [
             'driver' => 'stack',
             'channels' => ['single', 'training'],
         ],
+        'training' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/training.log'),
+        ],
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
