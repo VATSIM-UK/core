@@ -11,7 +11,6 @@ use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\UnauthorizedException;
 
 class WaitingListManagementController extends AdmController
 {

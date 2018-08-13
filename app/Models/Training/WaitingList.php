@@ -140,7 +140,6 @@ class WaitingList extends Model
         return $this->staff()->attach($account);
     }
 
-
     /**
      * Remove a Manager from a WaitingList
      * @param $account
