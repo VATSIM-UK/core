@@ -40,7 +40,7 @@ class WaitingListPositionController extends AdmController
         } catch (ModelNotFoundException $e) {
         }
 
-        event(new AccountPromotedInWaitingList($account, $waitingList));
+        event(new AccountPromotedInWaitingList($account, $waitingList, $request->user()));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Waiting list positions changed.');
@@ -64,7 +64,7 @@ class WaitingListPositionController extends AdmController
         } catch (ModelNotFoundException $e) {
         }
 
-        event(new AccountDemotedInWaitingList($account, $waitingList));
+        event(new AccountDemotedInWaitingList($account, $waitingList, $request->user()));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Waiting list positions changed.');

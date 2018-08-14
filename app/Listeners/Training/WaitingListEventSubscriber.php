@@ -8,22 +8,26 @@ class WaitingListEventSubscriber
 {
     public function accountAdded($event)
     {
-        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList}");
+        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was added to 
+                {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
     public function accountPromoted($event)
     {
-        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was promoted within {$event->waitingList}");
+        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was promoted
+                within {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
     public function accountDemoted($event)
     {
-        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was demoted within {$event->waitingList}");
+        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was demoted 
+                within {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
     public function accountRemoved($event)
     {
-        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was removed from {$event->waitingList}");
+        return Log::channel('training')->info("Account {$event->account} ({$event->account->id}) was removed 
+                from {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
     public function subscribe($events)

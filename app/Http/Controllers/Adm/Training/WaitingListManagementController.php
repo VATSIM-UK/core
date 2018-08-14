@@ -54,7 +54,7 @@ class WaitingListManagementController extends AdmController
 
         $waitingList->addToWaitingList($user, $request->user());
 
-        event(new AccountAddedToWaitingList($user, $waitingList));
+        event(new AccountAddedToWaitingList($user, $waitingList, $request->user()));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Account Added to Waiting List');
@@ -73,7 +73,7 @@ class WaitingListManagementController extends AdmController
 
         $waitingList->removeFromWaitingList($user);
 
-        event(new AccountRemovedFromWaitingList($user, $waitingList));
+        event(new AccountRemovedFromWaitingList($user, $waitingList, $request->user()));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Student removed from Waiting List');
