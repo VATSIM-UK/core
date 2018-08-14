@@ -14,7 +14,7 @@ $factory->define(\App\Models\Airport\Procedure::class, function (Faker $faker) {
         },
         'type' => $faker->randomElement([1, 2]),
         'ident' => strtoupper($faker->word).$faker->numberBetween(0, 100),
-        'initial_fix' => $faker->optional(0.5)->strtoupper($faker->word),
+        'initial_fix' => $faker->optional(0.5)->passthrough(strtoupper($faker->word)),
         'initial_altitude' => $faker->optional(0.5)->numberBetween(100, 10000),
         'final_altitude' => $faker->optional(0.5)->numberBetween(100, 10000),
         'remarks' => $faker->optional(0.5)->text(),

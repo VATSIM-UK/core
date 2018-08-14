@@ -40,9 +40,9 @@ class Procedure extends Model
         return $this->belongsTo(Runway::class);
     }
 
-    public function getProcedureTypeAttribute($type)
+    public function getProcedureTypeAttribute()
     {
-        switch ($type) {
+        switch ($this->type) {
                 case self::TYPE_SID:
                     return 'SID';
                 case self::TYPE_STAR:
