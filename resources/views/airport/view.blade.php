@@ -385,7 +385,7 @@
                         <th>Position</th>
                         <th>Controller</th>
                         <th>Frequency</th>
-                        <th>Time Online</th>
+                        <th>Connected</th>
                         </thead>
                         <tbody>
                         @foreach($controllers as $controller)
@@ -443,7 +443,7 @@
         @if($stands)
         <div class="col-md-3">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-wifi"></i> Stands</div>
+                <div class="panel-heading"><i class="fa fa-window-close-o"></i> Stands</div>
                 <div class="panel-body table-responsive">
                     <table id="stands" class="table">
                         <thead>
