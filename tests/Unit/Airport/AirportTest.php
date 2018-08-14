@@ -1,10 +1,10 @@
 <?php
 
-    namespace Tests\Unit\Airport;
+namespace Tests\Unit\Airport;
 
-    use App\Models\Airport;
-    use Tests\TestCase;
+use App\Models\Airport;
     use Illuminate\Foundation\Testing\RefreshDatabase;
+    use Tests\TestCase;
 
     class AirportTest extends TestCase
     {
@@ -22,7 +22,7 @@
         public function itReturnsFirType()
         {
             $airport = factory(Airport::class)->create(['fir_type' => Airport::FIR_TYPE_EGTT]);
-            $this->assertEquals("EGTT", $airport->fir_type);
+            $this->assertEquals('EGTT', $airport->fir_type);
         }
 
         /** @test */
@@ -30,10 +30,8 @@
         {
             $airport = factory(Airport::class)->create(['departure_procedures' => null, 'arrival_procedures' => null, 'vfr_procedures' => null]);
             $this->assertFalse($airport->hasProcedures());
-            $airport->departure_procedures = "Procedure here";
+            $airport->departure_procedures = 'Procedure here';
             $airport->save();
             $this->assertTrue($airport->fresh()->hasProcedures());
         }
-
-
     }

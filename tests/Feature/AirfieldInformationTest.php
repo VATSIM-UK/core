@@ -4,12 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Airport;
 use App\Models\Mship\Account;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AirfieldInformationTest extends TestCase
 {
-
     use RefreshDatabase;
 
     private $account;

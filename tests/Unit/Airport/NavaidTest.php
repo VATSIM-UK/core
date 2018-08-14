@@ -1,12 +1,11 @@
 <?php
 
-    namespace Tests\Unit\Airport;
+namespace Tests\Unit\Airport;
 
-    use App\Models\Airport;
+use App\Models\Airport;
     use App\Models\Airport\Navaid;
-    use Tests\TestCase;
-    use Illuminate\Foundation\Testing\WithFaker;
     use Illuminate\Foundation\Testing\RefreshDatabase;
+    use Tests\TestCase;
 
     class NavaidTest extends TestCase
     {
@@ -24,7 +23,7 @@
         public function itReturnsNavaidType()
         {
             $navaid = factory(Navaid::class)->create(['type' => Navaid::TYPE_ILS]);
-            $this->assertEquals("ILS", $navaid->type);
+            $this->assertEquals('ILS', $navaid->type);
         }
 
         /** @test */
