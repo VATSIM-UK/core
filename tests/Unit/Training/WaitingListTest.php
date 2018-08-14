@@ -4,12 +4,12 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
 {
-    use DatabaseTransactions, WaitingListTestHelper;
+    use RefreshDatabase, WaitingListTestHelper;
 
     private $waitingList;
     private $staffUser;
