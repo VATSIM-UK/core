@@ -23,6 +23,38 @@ use App\Models\NetworkData\Pilot;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereLongitude($value)
  * @mixin \Eloquent
+ * @property string|null $icao
+ * @property string|null $iata
+ * @property string|null $name
+ * @property int|null $fir_type
+ * @property bool $major
+ * @property string|null $description
+ * @property string|null $departure_procedures
+ * @property string|null $arrival_procedures
+ * @property string|null $vfr_procedures
+ * @property string|null $other_information
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read mixed $controllers
+ * @property-read mixed $pilots
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Navaid[] $navaids
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Procedure[] $procedures
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Airport\Runway[] $runways
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Station[] $stations
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport iCAO($icao)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport uK()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereArrivalProcedures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereDepartureProcedures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereFirType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereIcao($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereMajor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereOtherInformation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport whereVfrProcedures($value)
  */
 class Airport extends Model
 {
@@ -60,21 +92,33 @@ class Airport extends Model
         return $query->where('icao', $icao);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function navaids()
     {
         return $this->hasMany(Navaid::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function procedures()
     {
         return $this->hasMany(Procedure::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function runways()
     {
         return $this->hasMany(Runway::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function stations()
     {
         return $this->belongsToMany(Station::class, 'airport_stations');
@@ -106,6 +150,9 @@ class Airport extends Model
         }
     }
 
+    /**
+     * @return bool
+     */
     public function hasProcedures()
     {
         return $this->departure_procedures || $this->arrival_procedures || $this->vfr_procedures;

@@ -5,6 +5,34 @@ namespace App\Models\Airport;
 use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Airport\Navaid
+ *
+ * @property int $id
+ * @property int $airport_id
+ * @property int $type
+ * @property string|null $name
+ * @property string|null $heading
+ * @property string $ident
+ * @property float $frequency
+ * @property int $frequency_band
+ * @property string|null $remarks
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Airport $airport
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereAirportId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereFrequencyBand($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereHeading($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereIdent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Airport\Navaid whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Navaid extends Model
 {
     protected $table = 'airport_navaids';
@@ -28,6 +56,9 @@ class Navaid extends Model
     const TYPE_ILS = 5;
     const TYPE_TACAN = 6;
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function airport()
     {
         return $this->belongsTo(Airport::class);
