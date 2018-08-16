@@ -87,7 +87,7 @@ class ImportMembers extends Command
 
     protected function createNewMember($member_data)
     {
-        if(!is_int($member_data['cid'])){
+        if (!is_int($member_data['cid'])) {
             // Incorrectly formatted response from CERT
             return;
         }
