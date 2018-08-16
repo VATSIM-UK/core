@@ -8,6 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use DB;
+use Illuminate\Support\Facades\Validator;
 use VatsimXML;
 
 /**
@@ -87,7 +88,16 @@ class ImportMembers extends Command
 
     protected function createNewMember($member_data)
     {
-        if (!is_int($member_data['cid'])) {
+        $validator = Validator::make($member_data, [
+            'cid' => 'required|integer',
+            'name_first' => 'required|string',
+            'name_last' => 'required|string',
+            'email' => 'required|email',
+            'reg_date' => 'required|date',
+            'rating_atc' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
             // Incorrectly formatted response from CERT
             return;
         }
