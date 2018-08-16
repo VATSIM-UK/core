@@ -8,8 +8,8 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use DB;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 use VatsimXML;
 
 /**
