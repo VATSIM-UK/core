@@ -5,12 +5,12 @@ namespace Tests\Feature\Mship\Feedback;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Role;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class FeedbackSendTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $admin;
     private $member;

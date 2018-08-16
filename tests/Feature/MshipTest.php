@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Sys\Notification;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MshipTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public function testItLoadsSuccessfully()
     {

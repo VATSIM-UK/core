@@ -4,12 +4,12 @@ namespace Tests\Unit;
 
 use App\Models\Messages\Thread\Post;
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MessageTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected $thread;
 

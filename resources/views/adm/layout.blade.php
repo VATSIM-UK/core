@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>VATSIM UK :: Administration Panel</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -38,10 +39,14 @@
 
 </head>
 <body class="hold-transition skin-black sidebar-mini">
+
 <div class="wrapper">
-
     <header class="main-header">
-
+        @if (is_local_environment())
+            <div class="dev_environment_notification">
+                You are in a <b>NON-PRODUCTION</b> environment
+            </div>
+        @endif
         <a href="{{ URL::route("adm.dashboard") }}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>V</b>UK</span>
@@ -59,7 +64,7 @@
 
     </header>
 
-    <aside class="main-sidebar">
+    <aside class="main-sidebar" style="{{is_local_environment()?"padding-top:70px":""}}">
         @include('adm.layout.sidebar')
     </aside>
 
