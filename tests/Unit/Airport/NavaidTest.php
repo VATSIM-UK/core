@@ -6,6 +6,7 @@ use App\Models\Airport;
 use App\Models\Airport\Navaid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+
 class NavaidTest extends TestCase
 {
     use RefreshDatabase;
