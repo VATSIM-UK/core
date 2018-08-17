@@ -26,7 +26,10 @@
                                 <div class="d-flex">
                                     @include('adm.layout.messages')
                                     <div class="h4 p-2">Students</div>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalWaitingListAdd">Add Account</button>
+                                        @can('addAccount', $waitingList)
+                                            <button type="button" class="btn btn-primary"
+                                                    data-toggle="modal" data-target="#modalWaitingListAdd">Add Account</button>
+                                        @endcan
                                 </div>
                             </div>
                         </div>
@@ -51,7 +54,46 @@
                                             <td>{{ $account }}</td>
                                             <td>{{ $account->qualificationAtc }}</td>
                                             <td>{{ $account->pivot->created_at }}</td>
-                                            <td></td>
+                                            <td>
+                                                <div style="display: flex; justify-content: center">
+                                                    @can('promoteAccount', $waitingList)
+                                                        <div class="p-2 flex-fill" id="promote-button">
+                                                            @if($account->id != $waitingList->accounts->first()->id)
+                                                                {!! Form::open(['route' => ['training.waitingList.manage.promote', $waitingList], 'method' => 'POST']) !!}
+                                                                    {!! Form::hidden('account_id', $account->id) !!}
+                                                                    {!! Form::hidden('position', 1) !!}
+                                                                    <button class="blank-button" type="submit">
+                                                                        <i class="fa fa-arrow-up text-success promote" data-toggle="tooltip" data-placement="top" title="Promote Student"></i>
+                                                                    </button>
+                                                                {!! Form::close() !!}
+                                                            @endif
+                                                        </div>
+                                                    @endcan
+                                                    @can('demoteAccount', $waitingList)
+                                                        <div class="flex-fill" id="demote-button">
+                                                            @if($account->id != $waitingList->accounts->last()->id)
+                                                                {!! Form::open(['route' => ['training.waitingList.manage.demote', $waitingList], 'method' => 'POST']) !!}
+                                                                {!! Form::hidden('account_id', $account->id) !!}
+                                                                {!! Form::hidden('position', 1) !!}
+                                                                <button class="blank-button" type="submit">
+                                                                    <i class="fa fa-arrow-down text-primary promote" data-toggle="tooltip" data-placement="top" title="Demote Student"></i>
+                                                                </button>
+                                                                {!! Form::close() !!}
+                                                            @endif
+                                                        </div>
+                                                    @endcan
+                                                    @can('removeAccount', $waitingList)
+                                                        <div class="flex-fill" id="remove-button">
+                                                            {!! Form::open(['route' => ['training.waitingList.remove', $waitingList], 'method' => 'POST']) !!}
+                                                                {!! Form::hidden('account_id', $account->id) !!}
+                                                                <button class="blank-button" type="submit">
+                                                                    <i class="fa fa-times text-danger" data-toggle="tooltip" data-placement="top" title="Remove Student"></i>
+                                                                </button>
+                                                            {!! Form::close() !!}
+                                                        </div>
+                                                    @endcan
+                                                </div>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -87,4 +129,11 @@
             </div>
         </div>
     </section>
+@stop
+
+@section('scripts')
+    @parent
+    <script type="text/javascript">
+
+    </script>
 @stop

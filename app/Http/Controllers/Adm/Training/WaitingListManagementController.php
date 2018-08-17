@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Adm\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\Training\WaitingListAccountRequest;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class WaitingListManagementController extends AdmController
@@ -41,6 +43,8 @@ class WaitingListManagementController extends AdmController
 
     public function store(WaitingList $waitingList, WaitingListAccountRequest $request)
     {
+        $this->authorize('addAccount', $waitingList);
+
         try {
             $user = Account::findOrFail($request->get('account_id'));
         } catch (ModelNotFoundException $e) {
@@ -50,9 +54,28 @@ class WaitingListManagementController extends AdmController
 
         $waitingList->addToWaitingList($user, $request->user());
 
-        event(new AccountAddedToWaitingList($user, $waitingList));
+        event(new AccountAddedToWaitingList($user, $waitingList, $request->user()));
 
         return Redirect::route('training.waitingList.show', $waitingList)
             ->withSuccess('Account Added to Waiting List');
+    }
+
+    public function destroy(WaitingList $waitingList, Request $request)
+    {
+        $this->authorize('removeAccount', $waitingList);
+
+        try {
+            $user = Account::findOrFail($request->get('account_id'));
+        } catch (ModelNotFoundException $e) {
+            return Redirect::route('training.waitingList.show', $waitingList)
+                ->withError('Account Not Found.');
+        }
+
+        $waitingList->removeFromWaitingList($user);
+
+        event(new AccountRemovedFromWaitingList($user, $waitingList, $request->user()));
+
+        return Redirect::route('training.waitingList.show', $waitingList)
+            ->withSuccess('Student removed from Waiting List');
     }
 }

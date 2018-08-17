@@ -4,13 +4,12 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
-use App\Models\Training\WaitingList;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class WaitingListTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase, WaitingListTestHelper;
 
     private $waitingList;
     private $staffUser;
@@ -19,7 +18,7 @@ class WaitingListTest extends TestCase
     {
         parent::setUp();
 
-        $this->waitingList = factory(WaitingList::class)->create();
+        $this->waitingList = $this->createList();
 
         $this->staffUser = factory(Account::class)->create();
 
@@ -30,6 +29,12 @@ class WaitingListTest extends TestCase
     public function itHasASlugRouteKey()
     {
         $this->assertEquals('slug', $this->waitingList->getRouteKeyName());
+    }
+
+    /** @test **/
+    public function itDisplaysNameOnToString()
+    {
+        $this->assertEquals($this->waitingList->name, $this->waitingList);
     }
 
     /** @test * */
@@ -138,7 +143,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test **/
-    public function itCanPromoteUsersWithinTheListByOne()
+    public function itCanPromoteStudentsWithinTheListByOne()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
             $this->waitingList->addToWaitingList($account, $this->staffUser);
@@ -152,7 +157,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test **/
-    public function itCanPromoteUsersWithinTheListByMoreThanOne()
+    public function itCanPromoteStudentsWithinTheListByMoreThanOne()
     {
         $accounts = factory(Account::class, 10)->create()->each(function ($account) {
             $this->waitingList->addToWaitingList($account, $this->staffUser);
@@ -167,7 +172,7 @@ class WaitingListTest extends TestCase
     }
 
     /** @test */
-    public function itCanDemoteUsersWithinTheListByOne()
+    public function itCanDemoteStudentsWithinTheListByOne()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
             $this->waitingList->addToWaitingList($account, $this->staffUser);

@@ -8,17 +8,26 @@ class WaitingListEventSubscriber
 {
     public function accountAdded($event)
     {
-        return Log::channel('stack')->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList}");
+        return Log::channel('training')
+            ->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
-    public function accountPromoted()
+    public function accountPromoted($event)
     {
-        // TODO: Implement proper logging.
+        return Log::channel('training')
+            ->info("Account {$event->account} ({$event->account->id}) was promoted within {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
-    public function accountDemoted()
+    public function accountDemoted($event)
     {
-        // TODO: Implement proper logging.
+        return Log::channel('training')
+            ->info("Account {$event->account} ({$event->account->id}) was demoted within {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
+    }
+
+    public function accountRemoved($event)
+    {
+        return Log::channel('training')
+            ->info("Account {$event->account} ({$event->account->id}) was removed from {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
     public function subscribe($events)
@@ -36,6 +45,11 @@ class WaitingListEventSubscriber
         $events->listen(
             'App\Events\Training\AccountDemotedInWaitingList',
             'App\Listeners\Training\WaitingListEventSubscriber@accountDemoted'
+        );
+
+        $events->listen(
+            'App\Events\Training\AccountRemovedFromWaitingList',
+            'App\Listeners\Training\WaitingListEventSubscriber@accountRemoved'
         );
     }
 }

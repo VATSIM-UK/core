@@ -141,6 +141,15 @@ class WaitingList extends Model
     }
 
     /**
+     * Remove a Manager from a WaitingList
+     * @param $account
+     */
+    public function removeManager($account)
+    {
+        return $this->staff()->attach($account);
+    }
+
+    /**
      * Get the next position in the waiting list.
      *
      * @return int
