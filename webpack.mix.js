@@ -27,5 +27,10 @@ mix.less('resources/assets/less/admin.less', 'public/css/admin-all.css');
 mix.sass('resources/assets/sass/app.scss', 'public/css/app-all.css');
 mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
 
+// homepage
+mix.sass('resources/assets/sass/home.scss', 'public/css/home.css');
+mix.js('resources/assets/js/home.js', 'public/js/home.js');
+mix.js('resources/assets/js/home2.js', 'public/js/home2.js');
+
 // general
 mix.version();
