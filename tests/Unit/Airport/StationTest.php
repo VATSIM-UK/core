@@ -24,7 +24,7 @@ class StationTest extends TestCase
         $station = factory(Station::class)->create();
         $airport1 = factory(Airport::class)->create();
         $airport2 = factory(Airport::class)->create();
-        $station->airports()->attach([$airport1->id,$airport2->id]);
+        $station->airports()->attach([$airport1->id, $airport2->id]);
         $station = $station->fresh();
         $this->assertInstanceOf(Airport::class, $station->airports->first());
         $this->assertCount(2, $station->airports);

@@ -54,7 +54,7 @@ class Station extends Model
      */
     public function airports()
     {
-        return $this->belongsToMany(Airport::class,  'airport_stations');
+        return $this->belongsToMany(Airport::class, 'airport_stations');
     }
 
     public function getTypeAttribute($type)
