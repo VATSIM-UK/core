@@ -19,3 +19,4 @@ sites:
 
 databases:
     - vukcore
+    - vukcore_testing
