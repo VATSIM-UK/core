@@ -3,6 +3,10 @@
 namespace Tests\Unit\Airport;
 
 use App\Models\Airport;
+use App\Models\Airport\Navaid;
+use App\Models\Airport\Procedure;
+use App\Models\Airport\Runway;
+use App\Models\Station;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,7 +19,52 @@ class AirportTest extends TestCase
     {
         $airport = factory(Airport::class)->create();
         $this->assertInstanceOf(Airport::class, $airport);
-        $this->assertNotNull(Airport::find($airport->id));
+        $this->assertInstanceOf(Airport::class, Airport::find($airport->id));
+    }
+
+    /** @test */
+    public function itHasWorkingNavaidsRelationship()
+    {
+        $airport = factory(Airport::class)->create();
+        $this->assertCount(0, $airport->navaids);
+        factory(Navaid::class)->create(['airport_id' => $airport->id]);
+        factory(Navaid::class)->create(['airport_id' => $airport->id]);
+        $this->assertInstanceOf(Navaid::class, $airport->fresh()->navaids->first());
+        $this->assertCount(2, $airport->fresh()->navaids);
+    }
+
+    /** @test */
+    public function itHasWorkingProceduresRelationship()
+    {
+        $airport = factory(Airport::class)->create();
+        $this->assertCount(0, $airport->procedures);
+        factory(Procedure::class)->create(['airport_id' => $airport->id]);
+        factory(Procedure::class)->create(['airport_id' => $airport->id]);
+        $this->assertInstanceOf(Procedure::class, $airport->fresh()->procedures->first());
+        $this->assertCount(2, $airport->fresh()->procedures);
+    }
+
+    /** @test */
+    public function itHasWorkingRunwaysRelationship()
+    {
+        $airport = factory(Airport::class)->create();
+        $this->assertCount(0, $airport->runways);
+        factory(Runway::class)->create(['airport_id' => $airport->id]);
+        factory(Runway::class)->create(['airport_id' => $airport->id]);
+        $this->assertInstanceOf(Runway::class, $airport->fresh()->runways->first());
+        $this->assertCount(2, $airport->fresh()->runways);
+    }
+
+    /** @test */
+    public function itHasWorkingStationsRelationship()
+    {
+        $airport = factory(Airport::class)->create();
+        $station1 = factory(Station::class)->create();
+        $station2 = factory(Station::class)->create();
+        $airport->stations()->attach([$station1->id, $station2->id]);
+        $airport = $airport->fresh();
+        $this->assertInstanceOf(Station::class, $airport->stations->first());
+        $this->assertCount(2, $airport->stations);
     }
 
     /** @test */

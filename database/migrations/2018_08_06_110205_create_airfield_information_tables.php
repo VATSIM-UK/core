@@ -75,7 +75,7 @@
 
             Schema::create('stations', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('callsign', 10);
+                $table->string('callsign');
                 $table->string('name');
                 $table->decimal('frequency', 6, 3);
                 $table->unsignedTinyInteger('type');

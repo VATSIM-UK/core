@@ -17,7 +17,7 @@ class ProcedureTest extends TestCase
     {
         $procedure = factory(Procedure::class)->create();
         $this->assertInstanceOf(Procedure::class, $procedure);
-        $this->assertNotNull(Procedure::find($procedure->id));
+        $this->assertInstanceOf(Procedure::class, Procedure::find($procedure->id));
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class ProcedureTest extends TestCase
     /** @test */
     public function itReturnsProcedureType()
     {
-        $procedure = factory(Procedure::class)->create(['type' => 1]);
+        $procedure = factory(Procedure::class)->create(['type' => Procedure::TYPE_SID]);
         $this->assertEquals('SID', $procedure->procedure_type);
     }
 }

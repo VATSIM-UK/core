@@ -16,7 +16,7 @@ class NavaidTest extends TestCase
     {
         $navaid = factory(Navaid::class)->create();
         $this->assertInstanceOf(Navaid::class, $navaid);
-        $this->assertNotNull(Navaid::find($navaid->id));
+        $this->assertInstanceOf(Navaid::class, Navaid::find($navaid->id));
     }
 
     /** @test */
