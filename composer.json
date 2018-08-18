@@ -43,7 +43,7 @@
         "planetteamspeak/ts3-php-framework": "1.1.28",
         "pusher/pusher-php-server": "~3.0",
         "skymeyer/vatsimphp": "1.0.*",
-        "vatsim/sso": "dev-develop#eb40b1bff91f7f07076d7548db1f6054d62d08f6",
+        "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
         "vatsim/xml": "dev-master",
         "vluzrmos/slack-api": "dev-master",
         "watson/rememberable": "2.0.3"
