@@ -1,3 +1,3 @@
-# Overview
+# Code of Conduct
 
-This is the code of conduct.
+Coming soon.
