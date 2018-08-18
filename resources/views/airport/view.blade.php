@@ -388,7 +388,7 @@
                         <th>Connected</th>
                         </thead>
                         <tbody>
-                        @foreach($controllers as $controller)
+                        @foreach($controllers->sortByDesc('callsign') as $controller)
                             <tr>
                                 <td>{{$controller->callsign}}</td>
                                 <td>{{$controller->account->real_name}}</td>
