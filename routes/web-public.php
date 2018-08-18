@@ -1,5 +1,8 @@
 <?php
 
+    Route::get('/airports')->uses('Airport\ViewAirportController@index')->name('airports');
+    Route::get('/airports/{ukAirportByICAO}')->uses('Airport\ViewAirportController@show')->name('airport.view');
+
     // Helpers
     Route::get('metar/{airportIcao}', function ($airportIcao) {
         return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
@@ -17,6 +20,3 @@
             return 'METAR UNAVAILABLE';
         });
     })->name('metar');
-
-    Route::get('/airports')->uses('Airport\ViewAirportController@index')->name('airports');
-    Route::get('/airports/{ukAirportByICAO}')->uses('Airport\ViewAirportController@show')->name('airport.view');
