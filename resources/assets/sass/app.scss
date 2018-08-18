@@ -57,7 +57,7 @@ body, html {
 .fuzzy_date {
   color: #337ab7;
   text-decoration: none;
-  :hover{
+  &:hover{
     cursor:pointer;
   }
 }
