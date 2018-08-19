@@ -111,21 +111,21 @@
         }
 
         /** @test * */
-        public function itRedirectsFromBidAsGuest()
+        public function itRedirectsFromPirepAsGuest()
         {
             $this->get(route('fte.history', $this->pirep->id))
                 ->assertRedirect(route('login'));
         }
 
         /** @test * */
-        public function itLoadsBid()
+        public function itLoadsPirep()
         {
             $this->actingAs($this->pirep->bid->account, 'web')->get(route('fte.history', $this->pirep->id))
                 ->assertSuccessful();
         }
 
         /** @test * */
-        public function itDoesntLoadBidForWrongUser()
+        public function itDoesntLoadPirepForWrongUser()
         {
             $this->actingAs($this->account, 'web')->get(route('fte.history', $this->pirep->id))
                 ->assertForbidden();
