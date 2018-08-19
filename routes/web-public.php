@@ -18,7 +18,7 @@ Route::group([
             Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
             Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
        });
-    });
+
 });
 
 // Helpers

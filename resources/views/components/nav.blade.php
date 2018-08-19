@@ -1,6 +1,6 @@
 <div class="nav_upper_container navbar-toggleable-md">
     <div class="logo_container">
-        <a href="{{ route("default") }}">
+        <a href="{{ route("dashboard") }}">
             {!! HTML::image("images/vatsim_uk_logo.png", "UK Logo") !!}
         </a>
     </div>
@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse js-navbar-collapse" id="nav">
         <ul class="nav navbar-nav navcustom">
             <li class="dropdown dropdown-large">
-                {!! link_to_route("default", "Home") !!}
+                {!! link_to_route("dashboard", "Home") !!}
             </li>
         </ul>
 
