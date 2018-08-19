@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SmartcarsTest extends TestCase
 {
