@@ -7,8 +7,8 @@ Route::group([
     Route::get('/')->uses('HomePageController')->name('home');
     Route::get('/airports')->uses('AirportController@index')->name('airports');
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
-  
-       Route::group([
+
+    Route::group([
            'as' => 'atc.',
            'prefix' => 'atc',
         ], function () {
@@ -17,8 +17,7 @@ Route::group([
             Route::get('/progression-guide')->uses('ATCPagesController@viewProgressionGuide')->name('progression');
             Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
             Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
-       });
-
+        });
 });
 
 // Helpers
