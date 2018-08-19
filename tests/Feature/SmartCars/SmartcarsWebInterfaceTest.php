@@ -1,9 +1,8 @@
 <?php
 
-    namespace Tests\Feature\SmartCars;
+namespace Tests\Feature\SmartCars;
 
-    use App\Models\Mship\Account;
-    use App\Models\Smartcars\Bid;
+use App\Models\Mship\Account;
     use App\Models\Smartcars\Flight;
     use App\Models\Smartcars\Pirep;
     use Illuminate\Foundation\Testing\RefreshDatabase;
