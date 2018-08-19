@@ -4,7 +4,7 @@ Route::group([
     'as' => 'site.',
     'namespace' => 'Site',
 ], function () {
-    Route::get('/')->uses('HomePageController@view')->name('home');
+    Route::get('/')->uses('HomePageController')->name('home');
     Route::get('/airports')->uses('AirportController@index')->name('airports');
     Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
 });
