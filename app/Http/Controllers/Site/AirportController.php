@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Airport;
+namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Airport;
 use CobaltGrid\VatsimStandStatus\StandStatus;
 use Illuminate\Support\Facades\File;
 
-class ViewAirportController extends BaseController
+class AirportController extends BaseController
 {
     public function index()
     {
         $airports = Airport::uk()->orderBy('name')->get()->split(2);
 
-        return view('airport.index')->with('airports', $airports);
+        return view('site.airport.index')->with('airports', $airports);
     }
 
     public function show(Airport $airport)
@@ -31,6 +31,6 @@ class ViewAirportController extends BaseController
             $stand_status = (new StandStatus($airport->icao, resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }
 
-        return view('airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
+        return view('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
     }
 }

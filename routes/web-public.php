@@ -5,10 +5,9 @@ Route::group([
     'namespace' => 'Site',
 ], function () {
     Route::get('/')->uses('HomePageController@view')->name('home');
+    Route::get('/airports')->uses('AirportController@index')->name('airports');
+    Route::get('/airports/{ukAirportByICAO}')->uses('AirportController@show')->name('airport.view');
 });
-
-Route::get('/airports')->uses('Airport\ViewAirportController@index')->name('airports');
-Route::get('/airports/{ukAirportByICAO}')->uses('Airport\ViewAirportController@show')->name('airport.view');
 
 // Helpers
 Route::get('metar/{airportIcao}', function ($airportIcao) {
