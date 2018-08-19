@@ -1,7 +1,7 @@
 <?php
 
-// Index
-Route::get('/')->uses('Mship\Management@getLanding')->name('default');
+// Dashboard
+Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
 // Authentication
 Route::get('login')->uses('Auth\LoginController@getLogin');

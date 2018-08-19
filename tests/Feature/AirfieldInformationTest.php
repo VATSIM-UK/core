@@ -24,7 +24,7 @@ class AirfieldInformationTest extends TestCase
     public function itLoadsTheAirportPageAsGuestOrLoggedInUser()
     {
         $airport = factory(Airport::class)->create();
-        $this->actingAs($this->account)->get(route('airport.view', $airport->icao))->assertSuccessful();
-        $this->get(route('airport.view', $airport->icao))->assertSuccessful();
+        $this->actingAs($this->account)->get(route('site.airport.view', $airport->icao))->assertSuccessful();
+        $this->get(route('site.airport.view', $airport->icao))->assertSuccessful();
     }
 }
