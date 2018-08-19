@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
     return [
-        'code' => strtoupper($faker->randomLetter) . $faker->numberBetween(0,50),
+        'code' => strtoupper($faker->randomLetter).$faker->numberBetween(0, 50),
         'name' => $faker->words(3, true),
         'description' => $faker->paragraph,
         'featured' => $faker->optional(0.1, 0)->passthrough(1),
@@ -20,9 +20,9 @@ $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
         'aircraft_id' => function () {
             return factory(\App\Models\Smartcars\Aircraft::class)->create()->id;
         },
-        'cruise_altitude' => $faker->numberBetween(1000,30000),
-        'distance' => $faker->randomFloat(2, 10,160),
-        'flight_time' => $faker->randomFloat(2, 0,5),
+        'cruise_altitude' => $faker->numberBetween(1000, 30000),
+        'distance' => $faker->randomFloat(2, 10, 160),
+        'flight_time' => $faker->randomFloat(2, 0, 5),
         'notes' => $faker->paragraph,
         'enabled' => 1,
         'created_at' => \Carbon\Carbon::now(),
