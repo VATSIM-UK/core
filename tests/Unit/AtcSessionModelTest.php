@@ -3,12 +3,12 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Qualification;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AtcSessionModelTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function itCanCreateAnAtcSession()

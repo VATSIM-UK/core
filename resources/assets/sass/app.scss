@@ -45,9 +45,20 @@ body, html {
   height: 350px;
   background: url('../../../public/images/banner_slide_generic_1.jpg') no-repeat 50%;
   background-size: cover;
+  transform-style: preserve-3d;
+  transform: perspective(auto) translateZ(-30vw) scale(1.4);
+  perspective: 1000;
   img {
     margin-top: 90px;
     height: 260px;
+  }
+}
+
+.fuzzy_date {
+  color: #337ab7;
+  text-decoration: none;
+  &:hover{
+    cursor:pointer;
   }
 }
 
@@ -140,6 +151,24 @@ body, html {
     color: white;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
+    .panel-heading-lg {
+      color: white;
+      letter-spacing: 2px;
+      font-size: 2em;
+      padding: 10px;
+    }
+
+    .panel-heading-lg-secondary {
+      background-color: #00b0f0;
+      color: white;
+      font-size: 2em;
+      padding: 5px;
+    }
+
+    > .panel-title a {
+      color: white;
+    }
   }
   .panel-body .row-text-contain {
     word-break: break-word;

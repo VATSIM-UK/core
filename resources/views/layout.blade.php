@@ -58,7 +58,7 @@
                             {!! link_to_route("dashboard", "Home") !!}
                         </li>
                     </ul>
-
+                                                       
                     <ul class="nav navbar-nav navcustom">
                         <li class="dropdown dropdown-large">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
@@ -82,6 +82,7 @@
                                         <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
                                         <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
                                         <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
+                                        <li>{!! link_to_route("airports", "UK Airfields") !!}</li>
                                         <li class="divider"></li>
                                         <li class="dropdown-header">Network Statistics</li>
                                         <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
@@ -218,7 +219,7 @@
             </div>
         </div>
 
-        <div class="banner hidden-xs hidden-sm">
+        <div id="banner" class="banner hidden-xs hidden-sm">
         </div>
 
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">

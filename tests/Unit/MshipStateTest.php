@@ -2,12 +2,12 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MshipStateTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $account;
 

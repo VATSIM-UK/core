@@ -4,12 +4,12 @@ namespace Tests\Unit\NetworkData;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AtcSessionTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $atcSession;
 
