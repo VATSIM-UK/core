@@ -1,7 +1,7 @@
 <?php
 
-// Index
-Route::get('/')->uses('Mship\Management@getLanding')->name('default');
+// Dashboard
+Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
 // Authentication
 Route::get('login')->uses('Auth\LoginController@getLogin');
@@ -236,21 +236,3 @@ Route::group([
     Route::get('history/{pirep?}')->uses('SmartcarsController@getHistory')->name('history');
     Route::get('guide')->uses('SmartcarsController@getGuide')->name('guide');
 });
-
-// Helpers
-Route::get('metar/{airportIcao}', function ($airportIcao) {
-    return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
-        $client = new GuzzleHttp\Client();
-
-        try {
-            $response = $client->get("http://metar.vatsim.net/metar.php?id=$airportIcao");
-
-            if ($response->getStatusCode() === 200) {
-                return (string) $response->getBody();
-            }
-        } catch (GuzzleHttp\Exception\TransferException $e) {
-        }
-
-        return 'METAR UNAVAILABLE';
-    });
-})->middleware(['auth'])->name('metar');

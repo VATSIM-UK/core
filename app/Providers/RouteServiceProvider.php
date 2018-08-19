@@ -54,6 +54,10 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('applicationByPublicId', function ($value) {
             return \App\Models\VisitTransfer\Application::findByPublicId($value);
         });
+
+        Route::bind('ukAirportByICAO', function ($value) {
+            return \App\Models\Airport::uk()->icao($value)->first() ?? abort(404);
+        });
     }
 
     /**
