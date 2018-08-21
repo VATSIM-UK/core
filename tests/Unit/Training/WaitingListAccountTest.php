@@ -4,9 +4,8 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingListStatus;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
 {
@@ -25,7 +24,7 @@ class WaitingListAccountTest extends TestCase
     }
 
     /** @test **/
-    public function itCanHaveAStatusAssociatedWithIt() 
+    public function itCanHaveAStatusAssociatedWithIt()
     {
         $status = factory(WaitingListStatus::class)->create();
 

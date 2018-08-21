@@ -4,7 +4,6 @@ namespace App\Models\Training;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Training\WaitingListAccount;
 
 class WaitingListStatus extends Model
 {

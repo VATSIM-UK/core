@@ -2,8 +2,6 @@
 
 namespace App\Models\Training;
 
-use App\Models\Training\WaitingListAccountStatus;
-use App\Models\Training\WaitingListStatus;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -49,7 +47,7 @@ class WaitingListAccount extends Pivot
 
     public function setPositionAttribute($value)
     {
-        $this->attributes['position'] = (int)$value;
+        $this->attributes['position'] = (int) $value;
     }
 
     public function decrementPosition($value = 1)
