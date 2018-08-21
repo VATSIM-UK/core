@@ -20,7 +20,7 @@
 
         clearTimeout(timeout);
         timeout = window.setTimeout(function(){
-          $.get('{{route('mship.feedback.usersearch', null)}}/' + $('#member-search-name').val(), function(response){
+          $.get('{{route('mship.feedback.usersearch', "")}}/' + $('#member-search-name').val(), function(response){
               $('#memberSearchSpinner').hide();
               if(response == ""){
                 $('#memberSearchNoResults').show();
@@ -48,6 +48,12 @@
               });
           });
         }, 2000);
+
+        if ($('#member-search-name').val() == "") {
+            clearTimeout(timeout);
+            $('#memberSearchSpinner').hide();
+            $('#memberSearchResults').hide();
+        }
        }
      );
 
@@ -100,7 +106,7 @@
 </div>
 
 <div class="panel panel-ukblue">
-	<div class="panel-heading"> Submit Member Feedback</div>
+	<div class="panel-heading">Submit Feedback</div>
 	<div class="panel-body">
 		<!-- Content Of Panel [START] -->
 		<!-- Top Row [START] -->
@@ -109,9 +115,13 @@
 			<div class="col-md-7 col-md-offset-2">
         @if (!isset($form))
           {!! Form::open(["route" => ["mship.feedback.new"]]) !!}
-            {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
-            {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
-            <button type="submit" class="btn btn-default">Next</button>
+            <p>
+                {{Form::label('feedback_type', 'What kind of feedback would you like to leave?')}}
+                {{Form::select('feedback_type', $feedbackForms, [], ['class' => 'form-control']) }}
+            </p>
+            <p class="text-center">
+                <button type="submit" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
+            </p>
           {!! Form::close() !!}
         @else
           {!! Form::open(["route" => ["mship.feedback.new.form.post", $form->slug]]) !!}
@@ -151,7 +161,7 @@
             </div>
   				@endforeach
           <div class="form-group">
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-success">Submit</button>
           </div>
           {!! Form::close() !!}
         @endif

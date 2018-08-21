@@ -57,7 +57,7 @@ Route::group(['prefix' => 'mship', 'namespace' => 'Mship', 'middleware' => 'auth
     Route::post('feedback/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedbackFormSelect']);
     Route::get('feedback/new/{form}', ['as' => 'mship.feedback.new.form', 'uses' => 'Feedback@getFeedback']);
     Route::post('feedback/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
-    Route::get('feedback/users/search/{name?}', ['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
+    Route::get('feedback/users/search/{name}', ['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
 
     Route::get('feedback/view', ['as' => 'mship.feedback.view', 'uses' => 'Feedback\ViewFeedbackController@show']);
 

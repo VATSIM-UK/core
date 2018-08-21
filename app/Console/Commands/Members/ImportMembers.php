@@ -8,6 +8,8 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use DB;
+use Exception;
+use Illuminate\Support\Facades\Validator;
 use VatsimXML;
 
 /**
@@ -87,6 +89,20 @@ class ImportMembers extends Command
 
     protected function createNewMember($member_data)
     {
+        $validator = Validator::make($member_data, [
+            'cid' => 'required|integer',
+            'name_first' => 'required|string',
+            'name_last' => 'required|string',
+            'email' => 'required|email',
+            'reg_date' => 'required|date',
+            'rating_atc' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            // Incorrectly formatted response from CERT
+            return;
+        }
+
         $member = new Account([
             'id' => $member_data['cid'],
             'name_first' => $member_data['name_first'],
@@ -102,7 +118,17 @@ class ImportMembers extends Command
         // if they have an extra rating, log their previous rating first,
         // regardless of whether it will be overwritten
         if ($member_data['rating_atc'] >= 8) {
-            $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            try {
+                $_prevRat = VatsimXML::getData($member->id, 'idstatusprat');
+            } catch (Exception $e) {
+                if (strpos($e->getMessage(), 'Name or service not known') !== false) {
+                    // CERT unavailable. Not our fault, so will ignore.
+                    return;
+                }
+                Bugsnag::notifyException($e);
+
+                return;
+            }
 
             if (isset($_prevRat->PreviousRatingInt)) {
                 $prevAtcRating = Qualification::parseVatsimATCQualification($_prevRat->PreviousRatingInt);

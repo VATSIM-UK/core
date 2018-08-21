@@ -5,12 +5,12 @@ namespace Tests\Unit;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\ServerGroup;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TeamSpeakTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected $channel;
     protected $channelGroups;
