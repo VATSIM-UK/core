@@ -18,20 +18,20 @@ class AccountAddedToWaitingList
 
     public $waitingList;
 
-    public $staffUser;
+    public $staffAccount;
 
     /**
      * Create a new event instance.
      *
      * @param Account $account
      * @param WaitingList $waitingList
-     * @param Account $staffUser
+     * @param Account $staffAccount
      */
-    public function __construct(Account $account, WaitingList $waitingList, Account $staffUser)
+    public function __construct(Account $account, WaitingList $waitingList, Account $staffAccount)
     {
         $this->account = $account;
         $this->waitingList = $waitingList;
-        $this->staffUser = $staffUser;
+        $this->staffAccount = $staffAccount;
     }
 
     /**
