@@ -4,6 +4,7 @@ namespace App\Models\Training;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Training\WaitingListAccount;
 
 class WaitingListStatus extends Model
 {
@@ -17,7 +18,8 @@ class WaitingListStatus extends Model
 
     public function waitingListAccount()
     {
-        return $this->hasMany(WaitingListAccount::class, 'status_id');
+        return $this->belongsToMany(WaitingListAccount::class, 'training_waiting_list_account_status',
+            'id', 'status_id')->using(WaitingListAccountStatus::class);
     }
 
     /**
