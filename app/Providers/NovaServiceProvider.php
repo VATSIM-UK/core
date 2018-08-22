@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Laravel\Nova\NovaApplicationServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class NovaServiceProvider extends NovaApplicationServiceProvider
+class NovaServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -14,7 +14,19 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+        if (!class_exists('\Laravel\Nova\Nova')) {
+            return;
+        }
+
+        $this->routes();
+
+        \Laravel\Nova\Nova::serving(function (\Laravel\Nova\Events\ServingNova $event) {
+            $this->authorization();
+
+            $this->resources();
+            \Laravel\Nova\Nova::cards($this->cards());
+            \Laravel\Nova\Nova::tools($this->tools());
+        });
     }
 
     /**
@@ -24,12 +36,33 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     protected function routes()
     {
-        if(class_exists('\Laravel\Nova\Nova')){
-            \Laravel\Nova\Nova::routes()
-                    ->withAuthenticationRoutes()
-                    ->withPasswordResetRoutes()
-                    ->register();
+        if (!class_exists('\Laravel\Nova\Nova')) {
+            return;
         }
+
+        \Laravel\Nova\Nova::routes()
+            ->withAuthenticationRoutes()
+            ->withPasswordResetRoutes()
+            ->register();
+    }
+
+    /**
+     * Configure the Nova authorization services.
+     *
+     * @return void
+     */
+    protected function authorization()
+    {
+        if (!class_exists('\Laravel\Nova\Nova')) {
+            return;
+        }
+
+        $this->gate();
+
+        \Laravel\Nova\Nova::auth(function ($request) {
+            return app()->environment('local') ||
+                Gate::check('viewNova', [$request->user()]);
+        });
     }
 
     /**
@@ -68,6 +101,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [];
+    }
+
+    /**
+     * Register the application's Nova resources.
+     *
+     * @return void
+     */
+    protected function resources()
+    {
+        \Laravel\Nova\Nova::resourcesIn(app_path('Nova'));
     }
 
     /**

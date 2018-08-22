@@ -15,5 +15,7 @@ _ide_helper.php
 .phpstorm.meta.php
 /build
 
+/_nova/*
 /nova/*
 !/nova/composer.json
+!/nova/src/NovaCoreServiceProvider.php
