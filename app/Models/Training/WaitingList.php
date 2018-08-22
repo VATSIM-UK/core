@@ -67,7 +67,8 @@ class WaitingList extends Model
      */
     public function removeFromWaitingList(Account $account)
     {
-        $position = $this->accounts()->where('account_id', $account->id)->first()->pivot->position;
+        $base = $this->accounts()->where('account_id', $account->id)->first()->pivot;
+        $position = $base->position;
 
         $this->accounts->transform(function ($item, $key) use ($position) {
             if ($item->pivot->position > $position) {
@@ -75,7 +76,8 @@ class WaitingList extends Model
             }
         });
 
-        $this->accounts()->detach($account);
+        // soft delete WaitingListUser and reset the position to -1
+        $base->update(['deleted_at' => now(), 'position' => -1]);
     }
 
     /**

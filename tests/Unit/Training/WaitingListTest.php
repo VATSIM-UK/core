@@ -69,8 +69,8 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->removeFromWaitingList($account);
 
-        $this->assertDatabaseMissing('training_waiting_list_account',
-            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
+        $this->assertDatabaseHas('training_waiting_list_account',
+            ['account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now(), 'position' => -1]);
     }
 
     /** @test * */

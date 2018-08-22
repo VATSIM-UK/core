@@ -11,7 +11,7 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position'];
+    public $fillable = ['position', 'deleted_at'];
 
     public function status()
     {
