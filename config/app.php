@@ -159,7 +159,7 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Maknz\Slack\SlackServiceProvider::class,
+//        Maknz\Slack\SlackServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 
@@ -170,6 +170,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
     ],
