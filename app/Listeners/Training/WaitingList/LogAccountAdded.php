@@ -3,8 +3,6 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
 class LogAccountAdded

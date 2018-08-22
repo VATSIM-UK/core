@@ -3,8 +3,6 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountRemovedFromWaitingList;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EndAssignedStatus
 {
