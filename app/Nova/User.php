@@ -8,6 +8,9 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\Password;
 
+/**
+ * @codeCoverageIgnore
+ */
 class User extends Resource
 {
     /**

@@ -5,6 +5,9 @@ namespace App\Nova;
 use Laravel\Nova\Resource as NovaResource;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class Resource extends NovaResource
 {
     /**
