@@ -10,9 +10,9 @@ use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Registration;
 use App\Models\TeamSpeak\ServerGroup;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Facades\Cache;
 use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use TeamSpeak3_Node_Client;
@@ -76,7 +76,7 @@ class TeamSpeak
         }
         // Add pwd
         $pwd = uniqid(mt_rand(), true);
-        $server->tempPasswordCreate($pwd, 60*60);
+        $server->tempPasswordCreate($pwd, 60 * 60);
         Cache::forever('TEAMSPEAK_TEMP_PWD', $pwd);
     }
 
