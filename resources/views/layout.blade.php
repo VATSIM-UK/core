@@ -110,7 +110,7 @@
                         </li>
                     </ul>
 
-                    @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc->isS1)
+                    @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc && Auth::user()->qualificationAtc->isS1)
                         <ul class="nav navbar-nav navcustom">
                             <li class="dropdown dropdown-large">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
