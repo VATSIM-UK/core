@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TeamSpeak;
 
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
+use Illuminate\Support\Facades\Cache;
 use Redirect;
 use Request;
 use Response;
@@ -35,7 +36,7 @@ class Registration extends \App\Http\Controllers\BaseController
         }
 
         $autoURL = 'ts3server://'.env('TS_HOST').'?nickname='.$this->account->name_first.'%20';
-        $autoURL .= $this->account->name_last.'&amp;token='.$confirmation->privilege_key;
+        $autoURL .= $this->account->name_last.'&amp;token='.$confirmation->privilege_key.'&amp;password='.Cache::get('TEAMSPEAK_TEMP_PWD');
 
         $this->pageTitle = 'New Registration';
         $view = $this->viewMake('teamspeak.new')
