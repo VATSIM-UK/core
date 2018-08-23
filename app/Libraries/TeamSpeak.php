@@ -69,7 +69,7 @@ class TeamSpeak
                 $server->tempPasswordDelete(Cache::get('TEAMSPEAK_TEMP_PWD'));
             } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
                 // Most likely a database zero result exception
-                if (strpos($e->getMessage(), 'database empty result') === false) {
+                if ($e->getCode() !== self::DATABASE_EMPTY_RESULT_SET) {
                     Bugsnag::notifyException($e);
                 }
             }
