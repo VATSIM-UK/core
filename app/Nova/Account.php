@@ -55,14 +55,14 @@ class Account extends Resource
                 ->creationRules('unique:users,email')
                 ->updateRules('unique:users,email,{{resourceId}}'),
 
-            Text::make('ATC Rating', function (){
+            Text::make('ATC Rating', function () {
                 return $this->qualificationAtc->code;
             })->exceptOnForms(),
 
             Text::make('State', function () {
                 $state = $this->states()->first();
 
-                return sprintf("%s (%s / %s)", ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
+                return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
             }),
 
             Password::make('Password')
