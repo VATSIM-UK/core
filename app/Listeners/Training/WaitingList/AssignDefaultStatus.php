@@ -3,7 +3,7 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use Illuminate\Support\Facades\Log;
+use App\Models\Training\WaitingListStatus;
 
 class AssignDefaultStatus
 {
@@ -20,12 +20,13 @@ class AssignDefaultStatus
     /**
      * Handle the event.
      *
-     * @param  AccountAddedToWaitingList  $event
+     * @param  AccountAddedToWaitingList $event
      * @return void
      */
     public function handle(AccountAddedToWaitingList $event)
     {
-        Log::channel('training')
-            ->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
+        // to cover old records e.g. if user was re-added to list, position will always be greater than zero.
+
+        $event->waitingList->accounts->where('id', $event->account->id)->where('pivot.position', '>', 0)->first()->pivot->addStatus(WaitingListStatus::find(WaitingListStatus::DEFAULT_STATUS));
     }
 }

@@ -35,7 +35,7 @@ class WaitingListManagementController extends AdmController
         return $this->viewMake('adm.training.manage')
             ->with('waitingList', $waitingList->with([
                 'accounts' => function ($query) {
-                    $query->orderBy('position');
+                    $query->orderBy('position')->where('core.training_waiting_list_account.deleted_at', null);
                 },
                 'accounts.qualifications',
             ])->first());

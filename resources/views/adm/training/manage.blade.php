@@ -43,6 +43,7 @@
                                     <th>Name</th>
                                     <th>ATC Rating</th>
                                     <th>Added On</th>
+                                    <th>Status</th>
                                     <td>Actions</td>
                                 </tr>
                             </thead>
@@ -54,6 +55,7 @@
                                             <td>{{ $account }}</td>
                                             <td>{{ $account->qualificationAtc }}</td>
                                             <td>{{ $account->pivot->created_at }}</td>
+                                            <td>{{ $account->pivot->status->where('end_at', '==', null)->first() }}</td>
                                             <td>
                                                 <div style="display: flex; justify-content: center">
                                                     @can('promoteAccount', $waitingList)
