@@ -104,7 +104,7 @@
                                 </tr>
                             </table>
 
-                            @forelse($application->referees()->withTrashed()->get() as $count=>$reference)
+                            @forelse($application->referees()->get() as $count=>$reference)
                                 <br/>
                                 <h4>
                                     Reference {{ $count+1 }} - {{ $reference->account->name }}
