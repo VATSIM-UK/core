@@ -45,16 +45,13 @@ class Account extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
-            Gravatar::make(),
-
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Email')
-                ->sortable()
+            ID::make('CID', 'id')->sortable(),
+
+            Text::make('Primary Email', 'email')
                 ->rules('required', 'email', 'max:255')
                 ->creationRules('unique:users,email')
                 ->updateRules('unique:users,email,{{resourceId}}'),
@@ -74,7 +71,10 @@ class Account extends Resource
      */
     public function cards(Request $request)
     {
-        return [];
+        return [
+            (new Metrics\TotalAccounts),
+            (new Metrics\TotalDivisionAccounts)
+        ];
     }
 
     /**
