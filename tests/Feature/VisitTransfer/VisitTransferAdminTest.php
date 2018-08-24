@@ -47,6 +47,7 @@ class VisitTransferAdminTest extends TestCase
         $this->actingAs($this->user, 'web')
             ->get(route('visiting.admin.application.view', $this->application->id))
             ->assertDontSee('Reference 1 - '.$this->ref1->account->real_name)
-            ->assertSee('Reference 1 - '.$this->ref2->account->real_name);
+            ->assertSee('Reference 1 - '.$this->ref2->account->real_name)
+            ->assertSee('Application has system deleted references in addition to the below:');
     }
 }
