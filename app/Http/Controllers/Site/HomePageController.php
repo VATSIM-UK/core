@@ -13,10 +13,11 @@ class HomePageController extends \App\Http\Controllers\BaseController
     private function nextEvent()
     {
         $html = file_get_contents('https://cts.vatsim.uk/extras/next_event.php');
+
         return $this->getHTMLByID('next', $html);
     }
 
-    function getHTMLByID($id, $html)
+    public function getHTMLByID($id, $html)
     {
         $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
@@ -25,6 +26,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
         if ($node) {
             return $dom->saveXML($node);
         }
+
         return false;
     }
 }
