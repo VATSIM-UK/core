@@ -9,9 +9,10 @@ use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Registration;
 use App\Models\TeamSpeak\ServerGroup;
-use Cache;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Facades\Cache;
 use TeamSpeak3;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 use TeamSpeak3_Node_Client;
@@ -53,6 +54,30 @@ class TeamSpeak
         );
 
         return TeamSpeak3::factory($connectionUrl);
+    }
+
+    /**
+     * Creates or Updates a temporary password for server connections
+     *
+     * @param \TeamSpeak3_Node_Server $server
+     */
+    public static function recycleTemporaryPassword(\TeamSpeak3_Node_Server $server)
+    {
+        // Reset PWD
+        if (Cache::has('TEAMSPEAK_TEMP_PWD')) {
+            try {
+                $server->tempPasswordDelete(Cache::get('TEAMSPEAK_TEMP_PWD'));
+            } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+                // Most likely a database zero result exception
+                if ($e->getCode() !== self::DATABASE_EMPTY_RESULT_SET) {
+                    Bugsnag::notifyException($e);
+                }
+            }
+        }
+        // Add pwd
+        $pwd = uniqid(mt_rand(), true);
+        $server->tempPasswordCreate($pwd, 60 * 60);
+        Cache::forever('TEAMSPEAK_TEMP_PWD', $pwd);
     }
 
     /**

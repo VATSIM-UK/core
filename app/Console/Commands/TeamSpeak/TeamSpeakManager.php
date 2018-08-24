@@ -32,6 +32,9 @@ class TeamSpeakManager extends TeamSpeakCommand
         try {
             $tscon = TeamSpeak::run('VATSIM UK Management Bot');
 
+            // Recycle Temporary Password
+            Teamspeak::recycleTemporaryPassword($tscon);
+
             // get all clients and initiate loop
             $clients = $tscon->clientList();
             foreach ($clients as $client) {
