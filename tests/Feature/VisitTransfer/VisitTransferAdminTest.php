@@ -7,6 +7,7 @@ use App\Models\Mship\Role;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
@@ -21,6 +22,7 @@ class VisitTransferAdminTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+		Mail::fake();
 
         $this->application = factory(Application::class)->create();
         $this->ref1 = factory(Reference::class)->create(['application_id' => $this->application->id]);
