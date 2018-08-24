@@ -28,9 +28,9 @@ class WaitingListStatusTest extends TestCase
     {
         $this->assertEquals(1, $this->waitingListStatus->default()->id);
     }
-    
+
     /** @test **/
-    public function itHasListenerToAssignDefaultStatus() 
+    public function itHasListenerToAssignDefaultStatus()
     {
         $account = factory(Account::class)->create();
         $waitingList = factory(WaitingList::class)->create();

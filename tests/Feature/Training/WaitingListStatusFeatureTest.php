@@ -3,8 +3,6 @@
 namespace Tests\Feature\Training;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WaitingListStatusFeatureTest extends TestCase
 {
@@ -25,6 +23,5 @@ class WaitingListStatusFeatureTest extends TestCase
     /** @test **/
     public function testAStatusIsAssignedByDefaultOnCreate()
     {
-
     }
 }
