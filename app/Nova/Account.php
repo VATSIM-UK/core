@@ -11,14 +11,14 @@ use Laravel\Nova\Fields\Text;
 /**
  * @codeCoverageIgnore
  */
-class User extends Resource
+class Account extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\\User';
+    public static $model = 'App\\Models\\Mship\\Account';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
