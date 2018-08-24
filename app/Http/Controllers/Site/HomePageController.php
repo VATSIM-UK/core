@@ -10,7 +10,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 {
     public function __invoke()
     {
-        return view('site.home')
+        return $this->viewMake('site.home')
             ->with('nextEvent', $this->nextEvent())
             ->with('stats', $this->stats());
     }
