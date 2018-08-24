@@ -33,7 +33,7 @@ class WaitingListAccountTest extends TestCase
         $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->staffAccount);
 
         $this->waitingList->accounts->first()->pivot->addStatus($status);
-
+w
         $this->assertDatabaseHas('training_waiting_list_account_status', [
             'status_id' => $status->id,
             'start_at' => now(),

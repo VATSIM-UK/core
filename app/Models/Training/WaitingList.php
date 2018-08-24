@@ -45,7 +45,7 @@ class WaitingList extends Model
     public function accounts()
     {
         return $this->belongsToMany(Account::class, 'training_waiting_list_account',
-            'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position'])->withTimestamps();
+            'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position', 'deleted_at'])->withTimestamps();
     }
 
     /**

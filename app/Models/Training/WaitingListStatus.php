@@ -15,6 +15,8 @@ class WaitingListStatus extends Model
         'default' => 'boolean',
     ];
 
+    const DEFAULT_STATUS = 1;
+
     public function waitingListAccount()
     {
         return $this->belongsToMany(WaitingListAccount::class, 'training_waiting_list_account_status',
@@ -30,5 +32,10 @@ class WaitingListStatus extends Model
     public function scopeDefault($query)
     {
         return $query->where('default', true)->first();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
