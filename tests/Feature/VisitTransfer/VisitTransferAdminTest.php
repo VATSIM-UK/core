@@ -6,14 +6,17 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
 {
     use RefreshDatabase;
 
-    var $application, $ref1, $ref2, $user;
+    public $application;
+    public $ref1;
+    public $ref2;
+    public $user;
 
     public function setUp()
     {
@@ -33,8 +36,8 @@ class VisitTransferAdminTest extends TestCase
     {
         $this->actingAs($this->user, 'web')
             ->get(route('visiting.admin.application.view', $this->application->id))
-            ->assertSee("Reference 1 - ".$this->ref1->account->real_name)
-            ->assertSee("Reference 2 - ".$this->ref2->account->real_name);
+            ->assertSee('Reference 1 - '.$this->ref1->account->real_name)
+            ->assertSee('Reference 2 - '.$this->ref2->account->real_name);
     }
 
     /** @test * */
@@ -43,7 +46,7 @@ class VisitTransferAdminTest extends TestCase
         $this->ref1->delete();
         $this->actingAs($this->user, 'web')
             ->get(route('visiting.admin.application.view', $this->application->id))
-            ->assertDontSee("Reference 1 - ".$this->ref1->account->real_name)
-            ->assertSee("Reference 1 - ".$this->ref2->account->real_name);
+            ->assertDontSee('Reference 1 - '.$this->ref1->account->real_name)
+            ->assertSee('Reference 1 - '.$this->ref2->account->real_name);
     }
 }
