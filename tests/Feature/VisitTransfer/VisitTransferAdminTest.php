@@ -22,7 +22,7 @@ class VisitTransferAdminTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-		Mail::fake();
+        Mail::fake();
 
         $this->application = factory(Application::class)->create();
         $this->ref1 = factory(Reference::class)->create(['application_id' => $this->application->id]);
