@@ -17,6 +17,7 @@ Route::group([
             Route::get('/progression-guide')->uses('ATCPagesController@viewProgressionGuide')->name('progression');
             Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
             Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
+            Route::get('/bookings')->uses('ATCPagesController@viewBookings')->name('bookings');
         });
 });
 
