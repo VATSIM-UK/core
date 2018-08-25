@@ -95,7 +95,7 @@ class Account extends Resource
     public function filters(Request $request)
     {
         return [
-            (new Filters\MembershipState)
+            (new Filters\MembershipState),
         ];
     }
 
