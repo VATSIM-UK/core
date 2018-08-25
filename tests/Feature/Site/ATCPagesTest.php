@@ -35,4 +35,10 @@ class ATCPagesTest extends TestCase
     {
         $this->get(route('site.atc.mentor'))->assertOk();
     }
+
+    /** @test */
+    public function itLoadsTheBookingsPage()
+    {
+        $this->get(route('site.atc.bookings'))->assertOk();
+    }
 }
