@@ -19,7 +19,6 @@ class SmartcarsWebInterfaceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
         $this->account = factory(Account::class)->create();
         $this->exercise = factory(Flight::class)->create();
         $this->pirep = factory(Pirep::class)->create();
@@ -33,10 +32,40 @@ class SmartcarsWebInterfaceTest extends TestCase
     }
 
     /** @test * */
-    public function itLoadsTheDashboard()
+    public function itLoadsTheDashboardAndExerciseButton()
     {
         $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
-                ->assertSuccessful();
+                ->assertSuccessful()
+                ->assertSeeText("View All Exercises")
+                ->assertDontSee("No Flight Training Exercises are available at the moment.");
+    }
+
+    /** @test * */
+    public function itDoesNotShowExercisesButtonWhenNoneEnabled()
+    {
+        $this->exercise->enabled = false;
+        $this->pirep->bid->flight->enabled = false;
+
+        $this->exercise->save();
+        $this->pirep->bid->flight->save();
+
+        $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
+            ->assertSee("No Flight Training Exercises are available at the moment.")
+            ->assertDontSeeText("View All Exercises");
+    }
+
+    /** @test * */
+    public function itRedirectsWhenNoExercisesAvailable()
+    {
+        $this->exercise->enabled = false;
+        $this->pirep->bid->flight->enabled = false;
+
+        $this->exercise->save();
+        $this->pirep->bid->flight->save();
+
+        $this->actingAs($this->account, 'web')->get(route('fte.exercises'))
+            ->assertRedirect(route('fte.dashboard'))
+            ->assertSessionHas('error', 'There are no exercises available at the moment.');
     }
 
     /** @test * */

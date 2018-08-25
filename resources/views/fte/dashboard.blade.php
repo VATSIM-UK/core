@@ -73,7 +73,11 @@
                 <div class="panel" id="allExercises">
                     <div class="panel-body">
                         <div class="text-center">
-                            <a href="{{ route('fte.exercises') }}" class="btn btn-primary">View All Exercises &gt;&gt;</a>
+                            @if(\App\Models\Smartcars\Flight::enabled()->count() > 0)
+                                <a href="{{ route('fte.exercises') }}" class="btn btn-primary">View All Exercises &gt;&gt;</a>
+                            @else
+                                <strong>No Flight Training Exercises are available at the moment.</strong>
+                            @endif
                         </div>
                     </div>
                 </div>

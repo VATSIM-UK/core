@@ -35,6 +35,10 @@ class SmartcarsController extends BaseController
         if (is_null($exercise)) {
             $exercises = Flight::enabled()->orderBy('created_at')->get();
 
+            if($exercises->count() == 0) {
+                return redirect()->route('fte.dashboard')->withError('There are no exercises available at the moment.');
+            }
+
             return $this->viewMake('fte.exercises')->with('exercises', $exercises);
         } else {
             $this->authorize('bid', $exercise);
