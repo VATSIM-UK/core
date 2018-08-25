@@ -3,9 +3,12 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
  * @codeCoverageIgnore
@@ -24,7 +27,10 @@ class Account extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public function title()
+    {
+        return sprintf('%s %s', $this->name_first, $this->name_last);
+    }
 
     /**
      * The columns that should be searched.
@@ -32,7 +38,7 @@ class Account extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'email',
+        'id', 'email',
     ];
 
     /**
@@ -45,7 +51,6 @@ class Account extends Resource
     {
         return [
             Text::make('Name')
-                ->sortable()
                 ->rules('required', 'max:255'),
 
             ID::make('CID', 'id')->sortable(),
@@ -59,17 +64,29 @@ class Account extends Resource
                 return $this->qualificationAtc->code;
             })->exceptOnForms(),
 
-            Text::make('State', function () {
+            Text::make('Membership State', function () {
                 $state = $this->states()->first();
 
                 return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
             }),
+
+            BelongsToMany::make('Roles'),
 
             Password::make('Password')
                 ->onlyOnForms()
                 ->creationRules('required', 'string', 'min:6')
                 ->updateRules('nullable', 'string', 'min:6'),
         ];
+    }
+
+    /**
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $request->fullUrlWithQuery(['accounts_order' => 'id', 'accounts_direction' => 'asc']);
     }
 
     /**
