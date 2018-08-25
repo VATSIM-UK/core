@@ -10,16 +10,6 @@ class AccountPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function create(Account $account)
     {
         return false;
@@ -37,7 +27,7 @@ class AccountPolicy extends BasePolicy
 
     public function delete(Account $account)
     {
-        // TODO: Implement delete() method.
+        return false;
     }
 
     public function restore(Account $account)
@@ -47,7 +37,7 @@ class AccountPolicy extends BasePolicy
 
     public function forceDelete(Account $account)
     {
-        // TODO: Implement forceDelete() method.
+        return false;
     }
 
     public function viewAny(Account $account)
