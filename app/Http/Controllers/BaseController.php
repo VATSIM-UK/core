@@ -123,11 +123,12 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Add a new element to the breadcrumb to be shown on this page.
      *
-     * @param      $name The text to display on the page.
-     * @param      $uri  The URI the text should link to.
-     * @param bool $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param string $name The text to display on the page.
+     * @param        $uri  The URI the text should link to.
+     * @param bool   $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param bool   $first Set to TRUE if the breadcrumb should be first.
      */
-    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false)
+    protected function addBreadcrumb(string $name, $uri = null, $linkToPrevious = false, $first = false)
     {
         if ($this->breadcrumb == null) {
             $this->breadcrumb = collect();
@@ -139,18 +140,18 @@ class BaseController extends \Illuminate\Routing\Controller
 
         $element = collect(['name' => $name, 'uri' => $uri]);
 
+        if ($first) {
+            $this->breadcrumb->prepend($element);
+
+            return;
+        }
+
         $this->breadcrumb->push($element);
     }
 
     protected function buildBreadcrumb($startName, $startUri)
     {
-        $this->addBreadcrumb($startName, $startUri);
-        $this->addControllerBreadcrumbs();
-    }
-
-    protected function addControllerBreadcrumbs()
-    {
-        $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
+        $this->addBreadcrumb($startName, $startUri, false, true);
     }
 
     protected function getControllerRequest()
