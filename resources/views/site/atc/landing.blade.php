@@ -6,7 +6,7 @@
 
         <div class="col-md-8 col-md-offset-2">
             <img class="img-responsive center-block"
-                 src="https://community.vatsim.uk/uploads/monthly_2018_05/5ae9cca48306c_ATCTraining.png.8237c66f7a49df8278a061e6335e88c3.png"/>
+                 src="/images/atctrainingheader.png"/>
         </div>
 
     </div>

@@ -305,7 +305,7 @@
 
                     <p>
                         <img class="img-responsive center-block"
-                             src="https://community.vatsim.uk/uploads/monthly_2017_12/5a25fce5e3b8d_NewProcessGatwick.png.181a21add215413603be268799888e37.png">
+                             src="/images/obstos1.png">
                     </p>
                 </div>
             </div>
