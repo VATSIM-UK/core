@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Mship\Feedback;
 
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
@@ -13,9 +14,15 @@ class FeedbackTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $account;
+    private $form;
+
     public function setUp()
     {
         parent::setUp();
+
+        $this->account = factory(Account::class)->create();
+        $this->form = Form::find(1);
     }
 
     /** @test * */
@@ -68,6 +75,34 @@ class FeedbackTest extends TestCase
         $this->assertEquals('myquestion', $newQuestion->slug);
         $this->assertEquals('This is a sample question.', $newQuestion->question);
         $this->assertDatabaseHas('mship_feedback_questions', $question);
+    }
+
+    /** @test * */
+    public function itRedirectsFromFeedbackFormSelectorAsGuest()
+    {
+        $this->get(route('mship.feedback.new'))
+            ->assertRedirect(route('login'));
+    }
+
+    /** @test * */
+    public function itLoadsTheFeedbackFormSelector()
+    {
+        $this->actingAs($this->account, 'web')->get(route('mship.feedback.new'))
+            ->assertSuccessful();
+    }
+
+    /** @test * */
+    public function itRedirectsFromFeedbackFormAsGuest()
+    {
+        $this->get(route('mship.feedback.new.form', $this->form->slug))
+            ->assertRedirect(route('login'));
+    }
+
+    /** @test * */
+    public function itLoadsTheFeedbackForm()
+    {
+        $this->actingAs($this->account, 'web')->get(route('mship.feedback.new.form', $this->form->slug))
+            ->assertSuccessful();
     }
 
 //    /** @test * */
