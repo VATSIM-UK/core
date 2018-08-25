@@ -37,7 +37,7 @@ class VisitTransferAdminTest extends TestCase
     public function itShowsBothReferences()
     {
         $this->actingAs($this->user, 'web')
-            ->get(route('visiting.admin.application.view', $this->application->id))
+            ->get(route('adm.visiting.application.view', $this->application->id))
             ->assertSee('Reference 1 - '.$this->ref1->account->real_name)
             ->assertSee('Reference 2 - '.$this->ref2->account->real_name);
     }
@@ -47,7 +47,7 @@ class VisitTransferAdminTest extends TestCase
     {
         $this->ref1->delete();
         $this->actingAs($this->user, 'web')
-            ->get(route('visiting.admin.application.view', $this->application->id))
+            ->get(route('adm.visiting.application.view', $this->application->id))
             ->assertDontSee('Reference 1 - '.$this->ref1->account->real_name)
             ->assertSee('Reference 1 - '.$this->ref2->account->real_name)
             ->assertSee('Application has system deleted references in addition to the below:');
