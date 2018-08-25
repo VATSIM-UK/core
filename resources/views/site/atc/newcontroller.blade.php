@@ -81,7 +81,7 @@
                     </ul>
 
                     <p>
-                        The session will be held on <a href="https://community.vatsim.uk/community/teamspeak" rel="">TeamSpeak</a>
+                        The session will be held on <a href="{{ route('teamspeak.new') }}" rel="">TeamSpeak</a>
                         and
                         will be an opportunity for you to meet us and for us to introduce the basics of VATSIM ATC and
                         of using the
@@ -91,7 +91,7 @@
                     <p>
                         You will need to have <a href="https://community.vatsim.uk/downloads/" rel="">EuroScope, with
                             the UK Controller
-                            Pack</a>, and <a href="https://community.vatsim.uk/community/teamspeak" rel="">TeamSpeak</a>
+                            Pack</a>, and <a href="{{ route('teamspeak.new') }}" rel="">TeamSpeak</a>
                         installed and
                         set up ready for the session. We recommend that you do this in good time in advance of the
                         session so there is
@@ -226,7 +226,7 @@
                         As a Student 1 (S1) you may control any DEL or GND positions in VATSIM UK, with the exception of
                         London Heathrow
                         (EGLL) and Military aerodromes which require separate <a
-                                href="https://community.vatsim.uk/atc/endorsements"
+                                href="{{ route('site.atc.endorsements') }}"
                                 rel="">endorsements</a> and can only be achieved with a
                         controller rating of Student 2 (S2) or higher.
                     </p>
@@ -357,10 +357,10 @@
                                                        rel="external nofollow">Euroscope</a>
                         </li>
                         <li>
-                            <a href="https://vatsim.uk/download/info/?downloadID=00299" rel="">UK Controller Pack</a>
+                            <a href="https://community.vatsim.uk/downloads/" rel="">UK Controller Pack</a>
                         </li>
                         <li>
-                            <a href="https://community.vatsim.uk/community/teamspeak" rel="">Teamspeak</a>&nbsp;Installed
+                            <a href="{{ route('teamspeak.new') }}" rel="">Teamspeak</a>&nbsp;Installed
                         </li>
                         <li>
                             Know your <a href="https://cert.vatsim.net/vatsimnet/statcheck.html"
