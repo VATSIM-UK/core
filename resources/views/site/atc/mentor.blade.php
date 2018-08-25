@@ -16,7 +16,7 @@
                     in the UK is completely voluntary and the division is grateful for any time that a member can spend
                     mentoring, no matter how small. Mentoring is, however, a privilege and not a right.
 
-                    <h3>Prerequisites For Mentoring</h3>
+                    <h2>Prerequisites For Mentoring</h2>
                     There are two prerequisites for ATC mentors in the UK:
 
                     <ol>
@@ -36,7 +36,7 @@
                     mentors with an S1 rating are those that have spent a considerable time controlling and are often
                     working towards their S2 rating.
 
-                    <h3>Mentor Training</h3>
+                    <h2>Mentor Training</h2>
                     Your first mentoring session(s) at a particular level will be conducted in collaboration with a
                     VATSIM UK Instructor. This is not a formal exam, it is simply a chance for an instructor to observe
                     the mentor conducting a session, in order to help the mentor develop effective and efficient
@@ -45,16 +45,16 @@
                     discretion of the ATC Training Department, to have a supervised session on their return, to ensure
                     that they are comfortable with any changes that have happened in the meantime.
 
-                    <h3>Mentoring Positions</h3>
+                    <h2>Mentoring Positions</h2>
                     At present, members may typically mentor in one of the primary Training Groups (TG1 and TG2) and
                     additionally one of the remaining Training Groups (TGLL, TGNC, TGE). This policy is currently under
                     review.
 
-                    <h3>Expectations</h3>
+                    <h2>Expectations</h2>
                     By becoming a mentor, you agree to the following terms, which are in place to ensure efficient
                     training and fair treatment to students.
 
-                    <h3>Preferential Mentoring</h3>
+                    <h2>Preferential Mentoring</h2>
                     There is to be no preferential mentoring in VATSIM UK. Mentoring sessions should be accepted in the
                     order in which they appear in the session requests list, for the position that you wish to mentor
                     on, during the time period that you can mentor. Preferential mentoring, or specifically skipping
@@ -62,7 +62,7 @@
                     impediment to you mentoring a particular student, you must raise this with Training Group staff
                     immediately.
 
-                    <h3>Mentoring Reports</h3>
+                    <h2>Mentoring Reports</h2>
                     All mentoring sessions in VATSIM UK are completed along with a session report in the Central
                     Training System. These reports, whilst they appear long, are not supposed to be exhaustive - you do
                     not have to fill in every single box if there is nothing to say. At an APP and CTR level, it is
@@ -85,17 +85,17 @@
                         <li> Test Standard - Has been demonstrated and requires no mentor input.</li>
                     </ul>
 
-                    <h3>Practical Considerations</h3>
+                    <h2>Practical Considerations</h2>
                     There are a few practical considerations with regards to mentoring.
 
-                    <h3>Callsigns</h3>
+                    <h2>Callsigns</h2>
                     Information regarding mentoring callsigns may be found in VATSIM UK's Division Policy, which is
                     available on the website downloads section.
 
-                    <h3>Advertising Sessions and Traffic Requests</h3>
+                    <h2>Advertising Sessions and Traffic Requests</h2>
                     Advertisements for mentoring sessions and specific requests may be made in this <a href="https://community.vatsim.uk/topic/22218-traffic-requests-here/">forum thread</a>.
 
-                    <h3>Use Of Sweatbox</h3>
+                    <h2>Use Of Sweatbox</h2>
                     VATSIM provides the Sweatbox server - a simulation environment that allows mentors to generate
                     specific traffic situations for a student. These may be geared towards practicing specific skills or
                     handling higher-than-average workload. It is important that Sweatbox is not over-used. We are very
@@ -104,7 +104,7 @@
                     in every way. Therefore, Sweatbox should be used sparingly, with the majority of sessions conducted
                     on the live network.
 
-                    <h3>Session Structure</h3>
+                    <h2>Session Structure</h2>
                     There is no clear answer regarding how to structure a session, it depends on many factors. However,
                     a popular method is to begin with a practical session on the network. Once this is complete, the
                     mentor may wish to ask some theory questions (ideally, relevant to what has happened in the session)
@@ -112,7 +112,7 @@
                     the session. In the event of a quiet session, it may be pertinent to do some of the theoretical
                     element during the gaps in traffic, to keep the student engaged.
 
-                    <h3>When To Interrupt</h3>
+                    <h2>When To Interrupt</h2>
                     An important consideration when mentoring is when to interupt the student mid-flow to correct them
                     or provide alternative advice - this can be detrimental as it can break the student's flow and have
                     a negative effect further down the line. Unless there is an imminent safety concern, it can be
@@ -124,7 +124,7 @@
                     good (where appropriate) to challenge a student when everything is actually ok, to ensure that they
                     are confident in what they are doing and can explain why everything is as it should be.
 
-                    <h3>Solo Validations</h3>
+                    <h2>Solo Validations</h2>
                     When a student is nearing an exam, they may be eligible for a solo validation on their exam
                     position, in order to practice without mentor supervision. The minimum requirement for being awarded
                     a solo validation is that the student must have achieved "Satisfactory" in all criteria on the
@@ -133,13 +133,13 @@
                     be one or two instances where the request for a solo validation is declined, which is entirely at
                     the discretion of the Training Group staff.
 
-                    <h3>Staff Drop Ins</h3>
+                    <h2>Staff Drop Ins</h2>
                     From time to time, an instructor may sit in on a mentoring session or review mentoring reports and
                     give feedback to the mentor. This is entirely normal and is part of the division monitoring
                     progression and standards of ATC training. It is appreciated if all mentors could accomodate this as
                     far as practical.
 
-                    <h3>Get Started</h3>
+                    <h2>Get Started</h2>
                     If you are interested in mentoring in VATSIM UK, please open a ticket in the <a href="https://helpdesk.vatsim.uk/">helpdesk</a>, stating which
                     Training Groups you would be interested in mentoring in.
                 </div>
