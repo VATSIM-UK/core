@@ -94,7 +94,9 @@ class Account extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            (new Filters\MembershipState)
+        ];
     }
 
     /**
@@ -105,9 +107,7 @@ class Account extends Resource
      */
     public function lenses(Request $request)
     {
-        return [
-            (new Lenses\DivisionMembers)
-        ];
+        return [];
     }
 
     /**
