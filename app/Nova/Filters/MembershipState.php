@@ -2,6 +2,7 @@
 
 namespace App\Nova\Filters;
 
+use App\Models\Mship\State;
 use Illuminate\Http\Request;
 use Laravel\Nova\Filters\Filter;
 
@@ -31,10 +32,10 @@ class MembershipState extends Filter
     public function options(Request $request)
     {
         return [
-            'Division' => 3,
-            'Visiting' => 2,
-            'Region' => 4,
-            'International' => 5,
+            'Division' => State::findByCode('DIVISION')->id,
+            'Visiting' => State::findByCode('VISITING')->id,
+            'Region' => State::findByCode('REGION')->id,
+            'International' => State::findByCode('INTERNATIONAL')->id,
         ];
     }
 }
