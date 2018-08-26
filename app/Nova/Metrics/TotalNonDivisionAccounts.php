@@ -19,7 +19,7 @@ class TotalNonDivisionAccounts extends Value
      */
     public function calculate(Request $request)
     {
-        $divisionState =  State::findByCode('DIVISION')
+        $divisionState =  State::findByCode('DIVISION');
 
         return $this->count($request, Account::whereHas('states', function ($query) use ($divisionState) {
             $query->where('state_id', '!=', $divisionState->id);
