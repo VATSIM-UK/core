@@ -2,14 +2,14 @@
 
 namespace App\Nova\Metrics;
 
-use App\Models\Mship\Account;
 use App\Models\Mship\State;
+use App\Models\Mship\Account;
 use Illuminate\Http\Request;
 use Laravel\Nova\Metrics\Value;
 
-class TotalDivisionAccounts extends Value
+class TotalNonDivisionAccounts extends Value
 {
-    public $name = "Total Division Members";
+    public $name = "Total Non-Division Members";
 
     /**
      * Calculate the value of the metric.
@@ -19,10 +19,10 @@ class TotalDivisionAccounts extends Value
      */
     public function calculate(Request $request)
     {
-        $baseState = State::findByCode('DIVISION');
+        $divisionState =  State::findByCode('DIVISION')
 
-        return $this->count($request, Account::whereHas('states', function ($query) use ($baseState) {
-            $query->where('state_id', $baseState->id);
+        return $this->count($request, Account::whereHas('states', function ($query) use ($divisionState) {
+            $query->where('state_id', '!=', $divisionState->id);
         }));
     }
 
@@ -50,7 +50,7 @@ class TotalDivisionAccounts extends Value
      */
     public function cacheFor()
     {
-        return now()->addMinutes(120);
+        // return now()->addMinutes(5);
     }
 
     /**
@@ -60,6 +60,6 @@ class TotalDivisionAccounts extends Value
      */
     public function uriKey()
     {
-        return 'total-division-accounts';
+        return 'total-non-division-accounts';
     }
 }

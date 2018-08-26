@@ -63,6 +63,10 @@ class Account extends Resource
                 return $this->qualificationAtc->code;
             })->exceptOnForms(),
 
+            Text::make('Pilot Rating(s)', function () {
+                return $this->qualifications_pilot_string;
+            }),
+
             Text::make('Membership State', function () {
                 $state = $this->states()->first();
 
@@ -99,6 +103,7 @@ class Account extends Resource
         return [
             (new Metrics\TotalAccounts),
             (new Metrics\TotalDivisionAccounts),
+            (new Metrics\TotalNonDivisionAccounts),
         ];
     }
 
