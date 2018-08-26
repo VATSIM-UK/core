@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\Community;
 use App\Models\Mship\Account;
+use App\Models\Mship\Role;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
 use App\Policies\MembershipPolicy;
 use App\Policies\Nova\AccountPolicy;
+use App\Policies\Nova\RolePolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\Smartcars\ExercisePolicy;
 use App\Policies\Smartcars\PirepPolicy;
@@ -32,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         VisitTransfer\Application::class => ApplicationPolicy::class,
         VisitTransfer\Reference::class => ReferencePolicy::class,
         Account::class => AccountPolicy::class,
+        Role::class => RolePolicy::class,
     ];
 
     /**
