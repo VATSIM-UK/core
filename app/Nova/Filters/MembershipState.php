@@ -31,11 +31,8 @@ class MembershipState extends Filter
      */
     public function options(Request $request)
     {
-        return [
-            'Division' => State::findByCode('DIVISION')->id,
-            'Visiting' => State::findByCode('VISITING')->id,
-            'Region' => State::findByCode('REGION')->id,
-            'International' => State::findByCode('INTERNATIONAL')->id,
-        ];
+        return State::all()->pluck('id', 'code')->mapWithKeys(function ($item, $key) {
+            return [title_case($key) => $item];
+        })->toArray();
     }
 }
