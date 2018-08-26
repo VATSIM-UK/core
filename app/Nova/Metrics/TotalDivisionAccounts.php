@@ -9,7 +9,7 @@ use Laravel\Nova\Metrics\Value;
 
 class TotalDivisionAccounts extends Value
 {
-    public $name = "Total Division Members";
+    public $name = 'Total Division Members';
 
     /**
      * Calculate the value of the metric.
