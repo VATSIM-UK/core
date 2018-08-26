@@ -8,7 +8,7 @@ use Laravel\Nova\Metrics\Value;
 
 class TotalAccounts extends Value
 {
-    public $name = "Total Members";
+    public $name = 'Total Members';
 
     /**
      * Calculate the value of the metric.
