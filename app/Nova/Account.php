@@ -3,10 +3,10 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Gravatar;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
  * @codeCoverageIgnore
@@ -25,7 +25,10 @@ class Account extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public function title()
+    {
+        return sprintf('%s %s', $this->name_first, $this->name_last);
+    }
 
     /**
      * The columns that should be searched.
@@ -33,7 +36,7 @@ class Account extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'email',
+        'id', 'email', 'name_first', 'name_last',
     ];
 
     /**
@@ -45,25 +48,41 @@ class Account extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
-            Gravatar::make(),
-
             Text::make('Name')
-                ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Email')
-                ->sortable()
-                ->rules('required', 'email', 'max:255')
-                ->creationRules('unique:users,email')
-                ->updateRules('unique:users,email,{{resourceId}}'),
+            ID::make('CID', 'id')->sortable(),
 
-            Password::make('Password')
-                ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:6')
-                ->updateRules('nullable', 'string', 'min:6'),
+            Text::make('Primary Email', 'email')
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
+
+            Text::make('ATC Rating', function () {
+                return $this->qualificationAtc->code;
+            })->exceptOnForms(),
+
+            Text::make('Pilot Rating(s)', function () {
+                return $this->qualifications_pilot_string;
+            })->exceptOnForms(),
+
+            Text::make('Membership State', function () {
+                $state = $this->states()->first();
+
+                return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
+            }),
+
+            BelongsToMany::make('Roles'),
         ];
+    }
+
+    /**
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $request->fullUrlWithQuery(['accounts_order' => 'id', 'accounts_direction' => 'asc']);
     }
 
     /**
@@ -74,7 +93,11 @@ class Account extends Resource
      */
     public function cards(Request $request)
     {
-        return [];
+        return [
+            (new Metrics\TotalAccounts),
+            (new Metrics\TotalDivisionAccounts),
+            (new Metrics\TotalNonDivisionAccounts),
+        ];
     }
 
     /**
@@ -85,7 +108,9 @@ class Account extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            (new Filters\MembershipState),
+        ];
     }
 
     /**
