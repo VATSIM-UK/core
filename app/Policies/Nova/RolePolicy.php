@@ -7,7 +7,6 @@ use App\Policies\BasePolicy;
 
 class RolePolicy extends BasePolicy
 {
-
     public function viewAny(Account $account)
     {
         // TODO: Implement viewAny() method.
