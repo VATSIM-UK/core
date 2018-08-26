@@ -45,7 +45,7 @@ class TotalAccounts extends Value
      */
     public function cacheFor()
     {
-        return now()->addMinutes(120);
+        return now()->addMinutes(1440);
     }
 
     /**
