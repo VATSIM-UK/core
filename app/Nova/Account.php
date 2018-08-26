@@ -55,9 +55,8 @@ class Account extends Resource
             ID::make('CID', 'id')->sortable(),
 
             Text::make('Primary Email', 'email')
-                ->rules('required', 'email', 'max:255')
-                ->creationRules('unique:users,email')
-                ->updateRules('unique:users,email,{{resourceId}}'),
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             Text::make('ATC Rating', function () {
                 return $this->qualificationAtc->code;
@@ -65,7 +64,7 @@ class Account extends Resource
 
             Text::make('Pilot Rating(s)', function () {
                 return $this->qualifications_pilot_string;
-            }),
+            })->exceptOnForms(),
 
             Text::make('Membership State', function () {
                 $state = $this->states()->first();
@@ -74,11 +73,6 @@ class Account extends Resource
             }),
 
             BelongsToMany::make('Roles'),
-
-            Password::make('Password')
-                ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:6')
-                ->updateRules('nullable', 'string', 'min:6'),
         ];
     }
 
