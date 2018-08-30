@@ -69,20 +69,6 @@ class SmartcarsWebInterfaceTest extends TestCase
     }
 
     /** @test * */
-    public function testItRedirectsFromMapAsGuest()
-    {
-        $this->get(route('fte.map'))
-                ->assertRedirect(route('login'));
-    }
-
-    /** @test * */
-    public function testItLoadsTheMap()
-    {
-        $this->actingAs($this->account, 'web')->get(route('fte.map'))
-                ->assertSuccessful();
-    }
-
-    /** @test * */
     public function testItRedirectsFromGuideAsGuest()
     {
         $this->get(route('fte.guide'))

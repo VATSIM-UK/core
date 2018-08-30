@@ -20,11 +20,6 @@ class SmartcarsController extends BaseController
             ->with('pireps', $pireps);
     }
 
-    public function getMap()
-    {
-        return $this->viewMake('fte.map');
-    }
-
     public function getGuide()
     {
         return $this->viewMake('fte.guide');

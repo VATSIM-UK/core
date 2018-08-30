@@ -135,7 +135,6 @@
                                         <li class="dropdown-header">Flight Training Exercises</li>
                                         <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
                                         <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
-                                        {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
                                         <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
                                         <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
                                     </ul>
