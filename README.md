@@ -1,8 +1,8 @@
 <p align="center">
   <a href="https://travis-ci.org/VATSIM-UK/core"><img src="https://travis-ci.org/VATSIM-UK/core.svg" alt="Build Status"></a>
   <a href="https://styleci.io/repos/75443611"><img src="https://styleci.io/repos/75443611/shield?style=flat" alt="Style Status"></a>
-  <a href="https://codeclimate.com/github/VATSIM-UK/core/maintainability"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/maintainability" alt="Maintainability"></a>
-  <a href="https://codeclimate.com/github/VATSIM-UK/core/test_coverage"><img src="https://api.codeclimate.com/v1/badges/17d97541d889dde173d8/test_coverage" alt="Test Coverage"></a>
+  <a href="https://codeclimate.com/github/VATSIM-UK/core/maintainability"><img src="https://api.codeclimate.com/v1/badges/6a47acbf3b7798883e7e/maintainability" /></a>
+  <a href="https://codeclimate.com/github/VATSIM-UK/core/test_coverage"><img src="https://api.codeclimate.com/v1/badges/6a47acbf3b7798883e7e/test_coverage" /></a>
 </p>
 
 # About
