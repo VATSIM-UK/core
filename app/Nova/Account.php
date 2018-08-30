@@ -2,11 +2,10 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
  * @codeCoverageIgnore
@@ -38,6 +37,11 @@ class Account extends Resource
     public static $search = [
         'id', 'email', 'name_first', 'name_last',
     ];
+
+    public static function authorizable()
+    {
+        return true;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -71,18 +75,10 @@ class Account extends Resource
                 return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
             }),
 
+            BelongsToMany::make('Qualifications'),
+
             BelongsToMany::make('Roles'),
         ];
-    }
-
-    /**
-     * @param NovaRequest $request
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        return $request->fullUrlWithQuery(['accounts_order' => 'id', 'accounts_direction' => 'asc']);
     }
 
     /**

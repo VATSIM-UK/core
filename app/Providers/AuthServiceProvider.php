@@ -7,8 +7,10 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
+use App\Nova\Qualification;
 use App\Policies\MembershipPolicy;
 use App\Policies\Nova\AccountPolicy;
+use App\Policies\Nova\QualificationPolicy;
 use App\Policies\Nova\RolePolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\Smartcars\ExercisePolicy;
@@ -35,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         VisitTransfer\Reference::class => ReferencePolicy::class,
         Account::class => AccountPolicy::class,
         Role::class => RolePolicy::class,
+        Qualification::class => QualificationPolicy::class,
     ];
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Policies\Nova;
 
 use App\Models\Mship\Account;
+use App\Nova\Qualification;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -10,14 +11,29 @@ class AccountPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
+    public function attachAnyQualification(Account $account, Qualification $qualification)
+    {
+        return false;
+    }
+
+    public function detachQualification(Account $account, Account $memberAccount, Qualification $qualification)
+    {
+        return false;
+    }
+
     public function create(Account $account)
+    {
+        return false;
+    }
+
+    public function edit(Account $account)
     {
         return false;
     }
 
     public function update(Account $account)
     {
-        // TODO: Implement update() method.
+        return false;
     }
 
     public function view(Account $account)
@@ -42,6 +58,6 @@ class AccountPolicy extends BasePolicy
 
     public function viewAny(Account $account)
     {
-        // TODO: Implement viewAny() method.
+        return true;
     }
 }
