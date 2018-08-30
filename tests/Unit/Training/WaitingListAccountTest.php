@@ -37,7 +37,7 @@ class WaitingListAccountTest extends TestCase
 
         $this->assertDatabaseHas('training_waiting_list_account_status', [
             'status_id' => $status->id,
-            'start_at' => now(),
+            'start_at' => now()->toDateTimeString(),
         ]);
     }
 
