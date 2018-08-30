@@ -21,11 +21,6 @@ class WaitingList extends Model
         return 'slug';
     }
 
-    public function accountsStatus()
-    {
-        return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
-    }
-
     /**
      * A Waiting List can be managed by many Staff Members (Accounts)
      *
