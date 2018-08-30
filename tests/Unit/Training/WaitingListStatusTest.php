@@ -3,7 +3,6 @@
 namespace Tests\Unit\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use App\Listeners\Training\WaitingList\AssignDefaultStatus;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListStatus;
@@ -28,9 +27,9 @@ class WaitingListStatusTest extends TestCase
     {
         $this->assertEquals(1, $this->waitingListStatus->default()->id);
     }
-    
+
     /** @test **/
-    public function itHasListenerToAssignDefaultStatus() 
+    public function itHasListenerToAssignDefaultStatus()
     {
         $account = factory(Account::class)->create();
         $waitingList = factory(WaitingList::class)->create();
