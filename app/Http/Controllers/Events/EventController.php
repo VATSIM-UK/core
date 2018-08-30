@@ -8,7 +8,6 @@ use App\Http\Controllers\BaseController;
 
 class EventController extends BaseController
 {
-
     public function create()
     {
         return view('events.create');
@@ -17,17 +16,22 @@ class EventController extends BaseController
     public function store(Request $request)
     {
         Events::create($request->all());
+
         return redirect()->route('events.calendar');
     }
 
-    public function showCalendar() {
+    public function showCalendar()
+    {
         $events = Events::all();
+
         return view('events.calendar', compact('events'));
     }
 
-    public function showRoster() {
+    public function showRoster()
+    {
         return view('events.roster');
     }
+
     /*public function addATCInterest() {
         return view('events.atc.interest');
     }*/
@@ -37,9 +41,8 @@ class EventController extends BaseController
         //Form Select Options => should be event names gathered from a db
         $currentEvents = [''];
 
-        return view('events.atc.interest',[ 'currentEvents' => $currentEvents]);
+        return view('events.atc.interest', ['currentEvents' => $currentEvents]);
     }
-
 
 //    /*/**
 //     * Display a listing of the resource.
