@@ -28,32 +28,21 @@ class WaitingListStatusTest extends TestCase
     {
         $this->assertEquals(1, $this->waitingListStatus->default()->id);
     }
-
+    
     /** @test **/
-    public function itHasListenerToAssignDefaultStatus()
+    public function itHasListenerToAssignDefaultStatus() 
     {
         $account = factory(Account::class)->create();
         $waitingList = factory(WaitingList::class)->create();
         $staffAccount = factory(Account::class)->create();
         $waitingList->addToWaitingList($account, $staffAccount);
 
-        $listener = \Mockery::spy(AssignDefaultStatus::class);
-
-        app()->instance(AssignDefaultStatus::class, $listener);
-
         event(new AccountAddedToWaitingList($account, $waitingList, $staffAccount));
 
-        $listener->shouldHaveReceived('handle')->with(\Mockery::on(function ($event) use ($account, $waitingList) {
-            return $event->account->id == $account->id;
-        }))->once();
-
-        // TODO: fix
-        $waitingListAccount = $waitingList->fresh()->accounts->where('id', $account->id)->first()->pivot->first()->status;
-
-        dd($waitingListAccount);
+        $waitingListAccount = $waitingList::find($waitingList->id)->accounts->where('id', $account->id)->first()->pivot->status;
 
         $this->assertDatabaseHas('training_waiting_list_account_status', [
-            'id' => $waitingListAccount->id, 'status_id' => 1,
+            'id' => $waitingListAccount->first()->id, 'status_id' => 1,
         ]);
     }
 }
