@@ -36,8 +36,8 @@ class SmartcarsWebInterfaceTest extends TestCase
     {
         $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
                 ->assertSuccessful()
-                ->assertSeeText("View All Exercises")
-                ->assertDontSee("No Flight Training Exercises are available at the moment.");
+                ->assertSeeText('View All Exercises')
+                ->assertDontSee('No Flight Training Exercises are available at the moment.');
     }
 
     /** @test * */
@@ -50,8 +50,8 @@ class SmartcarsWebInterfaceTest extends TestCase
         $this->pirep->bid->flight->save();
 
         $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
-            ->assertSee("No Flight Training Exercises are available at the moment.")
-            ->assertDontSeeText("View All Exercises");
+            ->assertSee('No Flight Training Exercises are available at the moment.')
+            ->assertDontSeeText('View All Exercises');
     }
 
     /** @test * */
