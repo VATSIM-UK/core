@@ -16,6 +16,9 @@ class WaitingList extends Model
 
     protected $dates = ['deleted_at'];
 
+    const ATC_DEPARTMENT = 1;
+    const PILOT_DEPARTMENT = 2;
+
     public function getRouteKeyName()
     {
         return 'slug';
@@ -169,6 +172,16 @@ class WaitingList extends Model
         return $query->whereHas('staff');
     }
 
+    public function isAtcList()
+    {
+        return $this->department == self::ATC_DEPARTMENT;
+    }
+
+    public function isPilotList()
+    {
+        return $this->department == self::PILOT_DEPARTMENT;
+    }
+    
     public function __toString()
     {
         return $this->name;

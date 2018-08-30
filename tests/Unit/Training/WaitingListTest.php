@@ -4,6 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
+use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,6 +43,24 @@ class WaitingListTest extends TestCase
     {
         $this->assertNotNull($this->waitingList->name);
         $this->assertNotNull($this->waitingList->slug);
+    }
+
+    /** @test **/
+    public function itDetectsIfAtcList()
+    {
+        $atcList = factory(WaitingList::class)->create(['department' => 1]);
+
+        $this->assertTrue($atcList->isAtcList());
+        $this->assertFalse($atcList->isPilotList());
+    }
+
+    /** @test **/
+    public function itDetectsIfPilotList()
+    {
+        $atcList = factory(WaitingList::class)->create(['department' => 2]);
+
+        $this->assertTrue($atcList->isPilotList());
+        $this->assertFalse($atcList->isAtcList());
     }
 
     /** @test * */
