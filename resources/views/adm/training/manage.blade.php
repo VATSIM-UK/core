@@ -44,6 +44,7 @@
                                     <th>ATC Rating</th>
                                     <th>Added On</th>
                                     <th>Status</th>
+                                    @if ($waitingList->isAtcList())<th>12 Hour Check</th> @endif
                                     <td>Actions</td>
                                 </tr>
                             </thead>
@@ -56,6 +57,9 @@
                                             <td>{{ $account->qualificationAtc }}</td>
                                             <td>{{ $account->pivot->created_at }}</td>
                                             <td>{{ $account->pivot->status->where('end_at', '==', null)->first() }}</td>
+                                            @if ($waitingList->isAtcList())
+                                                <td style="font-weight: 500; @if ($account->pivot->atcHourCheck()) background-color: green; @else background-color: indianred; @endif"> {{ $account->pivot->atcHourCheck() ? "Y": "N" }} </td>
+                                            @endif
                                             <td>
                                                 <div style="display: flex; justify-content: center">
                                                     @can('promoteAccount', $waitingList)
@@ -99,7 +103,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center">
+                                            <td colspan="8" class="text-center">
                                                 No accounts are assigned to this waiting list...
                                             </td>
                                         </tr>
