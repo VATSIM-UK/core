@@ -22,7 +22,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             $feedbackForms[$f->slug] = $f->name;
         }
 
-        return view('mship.feedback.form')
+        return $this->viewMake('mship.feedback.form')
             ->with('feedbackForms', $feedbackForms);
     }
 
@@ -70,7 +70,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug));
         }
 
-        return view('mship.feedback.form', ['form' => $form, 'questions' => $questions]);
+        return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
     }
 
     public function postFeedback(Form $form, Request $request)
