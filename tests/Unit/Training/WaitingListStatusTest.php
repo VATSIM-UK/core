@@ -41,7 +41,7 @@ class WaitingListStatusTest extends TestCase
         $waitingListAccount = $waitingList::find($waitingList->id)->accounts->where('id', $account->id)->first()->pivot->status;
 
         $this->assertDatabaseHas('training_waiting_list_account_status', [
-            'id' => $waitingListAccount->first()->id, 'status_id' => 1,
+            'waiting_list_account_id' => $waitingListAccount->first()->id, 'status_id' => 1,
         ]);
     }
 }
