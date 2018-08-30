@@ -13,7 +13,6 @@ class QualificationPolicy extends BasePolicy
 
     public function before(Account $account, $policy)
     {
-        return null;
     }
 
     public function attachAnyAccount(Account $account, Qualification $qualification)
@@ -58,6 +57,6 @@ class QualificationPolicy extends BasePolicy
 
     public function forceDelete(Account $account)
     {
-       return false;
+        return false;
     }
 }
