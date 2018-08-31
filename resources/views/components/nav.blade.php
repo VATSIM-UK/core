@@ -96,25 +96,28 @@
             </li>
         </ul>
 
-        @if(\App\Models\Smartcars\Flight::enabled()->count() > 0)
-            <ul class="nav navbar-nav navcustom">
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Flight Training Exercises</li>
-                                <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
-                                <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
-                                {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
-                                <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
-                                <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        @endif
+        <ul class="nav navbar-nav navcustom">
+            <li class="dropdown dropdown-large">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
+                <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                    <li class="col-sm-12">
+                        <ul>
+                            <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
+                            <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                            <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
+                            <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Flight Training Exercises</li>
+                            <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
+                            <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
+                            {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
+                            <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
+                            <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
 
         @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
             {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
