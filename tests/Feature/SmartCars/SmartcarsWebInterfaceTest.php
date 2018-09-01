@@ -36,22 +36,7 @@ class SmartcarsWebInterfaceTest extends TestCase
     {
         $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
                 ->assertSuccessful()
-                ->assertSeeText('View All Exercises')
-                ->assertDontSee('No Flight Training Exercises are available at the moment.');
-    }
-
-    /** @test * */
-    public function testItDoesNotShowExercisesButtonWhenNoneEnabled()
-    {
-        $this->exercise->enabled = false;
-        $this->pirep->bid->flight->enabled = false;
-
-        $this->exercise->save();
-        $this->pirep->bid->flight->save();
-
-        $this->actingAs($this->account, 'web')->get(route('fte.dashboard'))
-            ->assertSee('No Flight Training Exercises are available at the moment.')
-            ->assertDontSeeText('View All Exercises');
+                ->assertSeeText('View All Exercises');
     }
 
     /** @test * */
