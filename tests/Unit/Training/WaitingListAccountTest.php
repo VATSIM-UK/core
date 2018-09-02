@@ -3,6 +3,7 @@
 namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
+use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingListStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -36,7 +37,7 @@ class WaitingListAccountTest extends TestCase
 
         $this->assertDatabaseHas('training_waiting_list_account_status', [
             'status_id' => $status->id,
-            'start_at' => now(),
+            'start_at' => now()->toDateTimeString(),
         ]);
     }
 
@@ -65,5 +66,17 @@ class WaitingListAccountTest extends TestCase
             'start_at' => now(),
             'end_at' => null,
         ]);
+    }
+
+    /** @test **/
+    public function itChecksFor12HourRequirement()
+    {
+        $account = factory(Account::class)->create();
+
+        $data = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
+
+        $this->waitingList->addToWaitingList($account, $this->staffAccount);
+
+        $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
+use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,6 +45,24 @@ class WaitingListTest extends TestCase
         $this->assertNotNull($this->waitingList->slug);
     }
 
+    /** @test **/
+    public function itDetectsIfAtcList()
+    {
+        $atcList = factory(WaitingList::class)->create(['department' => 1]);
+
+        $this->assertTrue($atcList->isAtcList());
+        $this->assertFalse($atcList->isPilotList());
+    }
+
+    /** @test **/
+    public function itDetectsIfPilotList()
+    {
+        $atcList = factory(WaitingList::class)->create(['department' => 2]);
+
+        $this->assertTrue($atcList->isPilotList());
+        $this->assertFalse($atcList->isAtcList());
+    }
+
     /** @test * */
     public function itCanHaveStudents()
     {
@@ -69,8 +88,8 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->removeFromWaitingList($account);
 
-        $this->assertDatabaseMissing('training_waiting_list_account',
-            ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
+        $this->assertDatabaseHas('training_waiting_list_account',
+            ['account_id' => $account->id, 'list_id' => $this->waitingList->id, 'deleted_at' => now(), 'position' => -1]);
     }
 
     /** @test * */

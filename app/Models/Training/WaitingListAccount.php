@@ -2,6 +2,7 @@
 
 namespace App\Models\Training;
 
+use App\Models\NetworkData\Atc;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -11,7 +12,7 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position'];
+    public $fillable = ['position', 'deleted_at'];
 
     public function status()
     {
@@ -64,5 +65,20 @@ class WaitingListAccount extends Pivot
         $this->save();
 
         return $this->position;
+    }
+
+    public function atcHourCheck()
+    {
+        // for a user in a waiting list, they should have > 12 hours controlled within the UK.
+        $controllingSessions = Atc::whereAccountId($this->account_id)
+            ->whereBetween('disconnected_at', [\Carbon\Carbon::parse('3 months ago'), now()])->isUk();
+
+        $time = $controllingSessions->sum('minutes_online');
+
+        if ($time >= 720) {
+            return true;
+        }
+
+        return false;
     }
 }

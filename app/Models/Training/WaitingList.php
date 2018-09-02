@@ -16,14 +16,12 @@ class WaitingList extends Model
 
     protected $dates = ['deleted_at'];
 
+    const ATC_DEPARTMENT = 1;
+    const PILOT_DEPARTMENT = 2;
+
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public function accountsStatus()
-    {
-        return $this->hasManyThrough(WaitingListAccount::class, WaitingListAccountStatus::class, 'status_id');
     }
 
     /**
@@ -45,7 +43,7 @@ class WaitingList extends Model
     public function accounts()
     {
         return $this->belongsToMany(Account::class, 'training_waiting_list_account',
-            'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position'])->withTimestamps();
+            'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position', 'deleted_at'])->withTimestamps();
     }
 
     /**
@@ -67,7 +65,8 @@ class WaitingList extends Model
      */
     public function removeFromWaitingList(Account $account)
     {
-        $position = $this->accounts()->where('account_id', $account->id)->first()->pivot->position;
+        $base = $this->accounts()->where('account_id', $account->id)->first()->pivot;
+        $position = $base->position;
 
         $this->accounts->transform(function ($item, $key) use ($position) {
             if ($item->pivot->position > $position) {
@@ -75,7 +74,8 @@ class WaitingList extends Model
             }
         });
 
-        $this->accounts()->detach($account);
+        // soft delete WaitingListUser and reset the position to -1
+        $base->update(['deleted_at' => now(), 'position' => -1]);
     }
 
     /**
@@ -170,6 +170,16 @@ class WaitingList extends Model
     public function scopeStaff($query)
     {
         return $query->whereHas('staff');
+    }
+
+    public function isAtcList()
+    {
+        return $this->department == self::ATC_DEPARTMENT;
+    }
+
+    public function isPilotList()
+    {
+        return $this->department == self::PILOT_DEPARTMENT;
     }
 
     public function __toString()

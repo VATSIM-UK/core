@@ -23,4 +23,9 @@ class WaitingListAccountStatus extends Pivot
 
         $this->save();
     }
+
+    public function scopeActiveStatus($query)
+    {
+        return $query->whereNull('deleted_at')->first();
+    }
 }

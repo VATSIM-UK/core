@@ -17,3 +17,7 @@ $factory->define(App\Models\Training\WaitingListStatus::class, function (Faker $
         'retains_position' => true,
     ];
 });
+
+$factory->state(App\Models\Training\WaitingListStatus::class, 'default', [
+    'default' => true,
+]);
