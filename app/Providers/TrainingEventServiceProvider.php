@@ -13,7 +13,6 @@ class TrainingEventServiceProvider extends ServiceProvider
         ],
         \App\Events\Training\AccountRemovedFromWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountRemoved::class,
-            \App\Listeners\Training\WaitingList\EndAssignedStatus::class,
         ],
         \App\Events\Training\AccountPromotedInWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountPromoted::class,
