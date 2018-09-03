@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
  * @codeCoverageIgnore
@@ -41,6 +42,45 @@ class Account extends Resource
     public static function authorizable()
     {
         return true;
+    }
+
+    /**
+     * Global disable of account creation as data comes from core.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    /**
+     * Global way of disabling the ability to detach qualifications.
+     *
+     * @TEMPORARY
+     *
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @param string $relationship
+     * @return bool
+     */
+    public function authorizedToDetach(NovaRequest $request, $model, $relationship)
+    {
+        if ($model == "Qualification") {
+            return false;
+        }
+    }
+
+    /**
+     * Globally disable the ability to delete an account.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
     }
 
     /**
