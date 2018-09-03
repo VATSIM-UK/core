@@ -67,7 +67,7 @@ class Account extends Resource
      */
     public function authorizedToDetach(NovaRequest $request, $model, $relationship)
     {
-        if ($model == "Qualification") {
+        if ($model == 'Qualification') {
             return false;
         }
     }
