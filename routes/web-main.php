@@ -167,7 +167,6 @@ Route::group([
     'middleware' => ['auth_full_group'],
 ], function () {
     Route::get('dashboard', 'SmartcarsController@getDashboard')->name('dashboard');
-    Route::get('map', 'SmartcarsController@getMap')->name('map');
     Route::get('exercises/{exercise?}', 'SmartcarsController@getExercise')->name('exercises');
     Route::post('exercises/{exercise}/book', 'SmartcarsController@bookExercise')->name('exercise.book');
     Route::post('exercises/{exercise}/cancel', 'SmartcarsController@cancelExercise')->name('exercise.cancel');
