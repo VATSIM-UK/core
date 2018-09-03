@@ -63,6 +63,13 @@ class AddWaitingListTable extends Migration
             'default' => true,
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
+        ],
+        [
+            'name' => 'Deferred',
+            'retains_position' => true,
+            'default' => false,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
         ]);
     }
 
