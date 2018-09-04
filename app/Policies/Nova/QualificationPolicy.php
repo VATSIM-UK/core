@@ -3,7 +3,6 @@
 namespace App\Policies\Nova;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
