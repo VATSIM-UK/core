@@ -15,16 +15,6 @@ class QualificationPolicy extends BasePolicy
     {
     }
 
-    public function attachAnyAccount(Account $account, Qualification $qualification)
-    {
-        return false;
-    }
-
-    public function detachAccount()
-    {
-        return false;
-    }
-
     public function viewAny(Account $account)
     {
         // TODO: Implement viewAny() method.
@@ -37,7 +27,7 @@ class QualificationPolicy extends BasePolicy
 
     public function create(Account $account)
     {
-        return true;
+        return false;
     }
 
     public function update(Account $account)

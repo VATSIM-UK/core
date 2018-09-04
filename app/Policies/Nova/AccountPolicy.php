@@ -11,16 +11,6 @@ class AccountPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
-    public function attachAnyQualification(Account $account, Qualification $qualification)
-    {
-        return false;
-    }
-
-    public function detachQualification(Account $account, Account $memberAccount, Qualification $qualification)
-    {
-        return false;
-    }
-
     public function create(Account $account)
     {
         return false;

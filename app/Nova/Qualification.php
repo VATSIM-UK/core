@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Qualification extends Resource
 {
@@ -33,7 +34,34 @@ class Qualification extends Resource
         return true;
     }
 
+    /**
+     * Disable the Qualification from being searchable.
+     *
+     * @return bool
+     */
     public static function searchable()
+    {
+        return false;
+    }
+
+    /**
+     * Globally disable the ability to edit a Qualification.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function authorizeToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    /**
+     * Globally disable the ability to edit an attached Qualification.
+     *
+     * @param NovaRequest $request
+     * @return bool
+     */
+    public function authorizedToUpdateForSerialization(NovaRequest $request)
     {
         return false;
     }

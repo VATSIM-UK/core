@@ -31,6 +31,20 @@ class Account extends Resource
     }
 
     /**
+     * Custom array to define which models should not be attachable to an Account by default.
+     *
+     * @var array
+     */
+    public static $disallowAttach = ['Qualification'];
+
+    /**
+     * Custom array to define which models should not be attachable to an Account by default.
+     *
+     * @var array
+     */
+    public static $disallowDetach = ['Qualification'];
+
+    /**
      * The columns that should be searched.
      *
      * @var array
@@ -56,9 +70,23 @@ class Account extends Resource
     }
 
     /**
-     * Global way of disabling the ability to detach qualifications.
+     * Global method of disabling the ability to attach resources to Account.
      *
-     * @TEMPORARY
+     * @SEMI-TEMPORARY
+     *
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @return bool
+     */
+    public function authorizedToAttach(NovaRequest $request, $model)
+    {
+        return in_array($model, self::$disallowAttach);
+    }
+
+    /**
+     * Global method of disabling the ability to attach resources to Account.
+     *
+     * @SEMI-TEMPORARY
      *
      * @param NovaRequest $request
      * @param \Illuminate\Database\Eloquent\Model|string $model
@@ -67,9 +95,7 @@ class Account extends Resource
      */
     public function authorizedToDetach(NovaRequest $request, $model, $relationship)
     {
-        if ($model == 'Qualification') {
-            return false;
-        }
+        return in_array($model, self::$disallowDetach);
     }
 
     /**
