@@ -17,7 +17,7 @@ class QualificationPolicy extends BasePolicy
 
     public function viewAny(Account $account)
     {
-        // TODO: Implement viewAny() method.
+        return true;
     }
 
     public function view(Account $account)
