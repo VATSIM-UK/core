@@ -141,7 +141,7 @@ class Account extends Resource
                 return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
             }),
 
-            BelongsToMany::make('Qualifications'),
+            BelongsToMany::make('Qualifications')->onlyOnDetail(),
 
             BelongsToMany::make('Roles'),
         ];
