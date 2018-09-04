@@ -773,7 +773,7 @@ class Application extends Model
         $qualificationId = $this->account->qualification_atc->id;
         $timeOnline = $this->account->networkDataAtc()->forQualificationId($qualificationId)->offline()->sum('minutes_online');
 
-        return $timeOnline >= (50*60);
+        return $timeOnline >= (50 * 60);
     }
 
     /** Guards */
