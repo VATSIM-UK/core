@@ -207,6 +207,8 @@ class TeamSpeak
             $duration = 60 * 60 * 12; // 12 hours
             self::banClient($client, trans('teamspeak.ban.network.ban'), $duration);
         } elseif ($member->is_system_banned) {
+            self::kickClient($client, trans('teamspeak.ban.system.ban'));
+            sleep(2);
             $duration = $member->system_ban->period_left;
             self::banClient($client, trans('teamspeak.ban.system.ban'), $duration);
         } elseif ($member->is_inactive) {
