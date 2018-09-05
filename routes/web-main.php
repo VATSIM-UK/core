@@ -96,6 +96,16 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
     ])->where('default', '[default|true]');
 });
 
+// Events
+Route::group(['prefix' => 'events/', 'middleware' => ['auth_full_group']], function () {
+    Route::get('calendar', 'Events\EventController@showCalendar')->name('events.calendar');
+    Route::get('create', 'Events\EventController@create')->name('events.create');
+    Route::get('store', 'Events\EventController@store')->name('events.store');
+    Route::get('edit', 'Events\EventController@edit')->name('events.edit');
+    Route::get('roster', 'Events\EventController@showRoster')->name('events.roster');
+    Route::get('atc/interest', 'Events\EventController@addATCInterest')->name('events.atc.interest');
+});
+
 // Controllers
 Route::group(['prefix' => 'controllers/', 'middleware' => ['auth_full_group']], function () {
     Route::get('endorsements/gatwick', 'Atc\EndorsementController@getGatwickGroundIndex')->name('controllers.endorsements.gatwick_ground');
