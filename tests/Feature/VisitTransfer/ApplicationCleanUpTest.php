@@ -4,11 +4,9 @@ namespace Tests\Feature\VisitTransfer;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use App\Models\Mship\Role;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
-use App\Models\VisitTransfer\Reference;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -39,7 +37,7 @@ class ApplicationCleanUpTest extends TestCase
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
             'facility_id' => $facility->id,
-            'submitted_at' => now()
+            'submitted_at' => now(),
         ]);
 
         // Add 60 hours of ATC
@@ -50,7 +48,7 @@ class ApplicationCleanUpTest extends TestCase
             'qualification_id' => $qual->id,
             'connected_at' => $start,
             'disconnected_at' => $end,
-            'minutes_online' => $start->diffInMinutes($end)
+            'minutes_online' => $start->diffInMinutes($end),
         ]);
     }
 

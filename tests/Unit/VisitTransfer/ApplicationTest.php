@@ -78,7 +78,7 @@ class ApplicationTest extends TestCase
         $application = factory(Application::class, 'atc_transfer')->create([
             'account_id' => $account->id,
             'status' => Application::STATUS_SUBMITTED,
-            'should_perform_checks' => 1
+            'should_perform_checks' => 1,
         ]);
 
         // Add 49 hours of ATC
@@ -89,12 +89,12 @@ class ApplicationTest extends TestCase
             'qualification_id' => $qual->id,
             'connected_at' => $start,
             'disconnected_at' => $end,
-            'minutes_online' => $start->diffInMinutes($end)
+            'minutes_online' => $start->diffInMinutes($end),
         ]);
 
         $this->assertFalse($application->check50Hours());
 
-        // Add 1 hours of ATC
+        // Add 1 hour of ATC
         $end = new Carbon('20 hour ago');
         $atc->disconnected_at = $end;
         $atc->minutes_online = $start->diffInMinutes($end);
@@ -116,7 +116,7 @@ class ApplicationTest extends TestCase
         $application = factory(Application::class, 'atc_transfer')->create([
             'account_id' => $account->id,
             'status' => Application::STATUS_SUBMITTED,
-            'should_perform_checks' => 1
+            'should_perform_checks' => 1,
         ]);
 
         // Add 60 hours of ATC
@@ -127,7 +127,7 @@ class ApplicationTest extends TestCase
             'qualification_id' => Qualification::code('S1')->first()->id,
             'connected_at' => $start,
             'disconnected_at' => $end,
-            'minutes_online' => $start->diffInMinutes($end)
+            'minutes_online' => $start->diffInMinutes($end),
         ]);
 
         $this->assertFalse($application->check50Hours());
@@ -145,7 +145,7 @@ class ApplicationTest extends TestCase
             'account_id' => $account->id,
             'status' => Application::STATUS_SUBMITTED,
             'should_perform_checks' => 1,
-            'submitted_at' => now()
+            'submitted_at' => now(),
         ]);
 
         $this->assertFalse($application->fresh()->check90DayQualification());
