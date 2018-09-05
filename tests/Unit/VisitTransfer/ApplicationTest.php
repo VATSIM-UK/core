@@ -95,7 +95,7 @@ class ApplicationTest extends TestCase
         $this->assertFalse($application->check50Hours());
 
         // Add 1 hour of ATC
-        $end = new Carbon('20 hour ago');
+        $end = new Carbon('30 hour ago');
         $atc->disconnected_at = $end;
         $atc->minutes_online = $start->diffInMinutes($end);
         $atc->save();
