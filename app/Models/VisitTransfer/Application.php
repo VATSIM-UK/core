@@ -149,6 +149,10 @@ class Application extends Model
         'created_at',
         'updated_at',
     ];
+    protected $casts = [
+        'check_outcome_90_day' => 'boolean',
+        'check_outcome_50_hours' => 'boolean',
+    ];
 
     const TYPE_VISIT = 10;
     const TYPE_TRANSFER = 40;
@@ -703,7 +707,6 @@ class Application extends Model
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
         $columnName = 'check_outcome_'.$check;
-
         $this->{$columnName} = (int) $outcome;
         $this->save();
     }
