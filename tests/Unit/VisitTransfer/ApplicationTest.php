@@ -73,8 +73,7 @@ class ApplicationTest extends TestCase
 
         $account = factory(\App\Models\Mship\Account::class)->create();
         $qual = Qualification::code('S2')->first();
-        $account->addQualification($qual);
-        $account->save();
+        $account->addQualification($qual)->save();
 
         $application = factory(Application::class, 'atc_transfer')->create([
             'account_id' => $account->id,
@@ -85,7 +84,7 @@ class ApplicationTest extends TestCase
         // Add 49 hours of ATC
         $start = new Carbon('80 hours ago');
         $end = new Carbon('31 hours ago');
-        factory(Atc::class, 'offline')->create([
+        $atc = factory(Atc::class, 'offline')->create([
             'account_id' => $account->id,
             'qualification_id' => $qual->id,
             'connected_at' => $start,
@@ -96,15 +95,10 @@ class ApplicationTest extends TestCase
         $this->assertFalse($application->check50Hours());
 
         // Add 1 hours of ATC
-        $start = new Carbon('2 hours ago');
-        $end = new Carbon('1 hour ago');
-        factory(Atc::class, 'offline')->create([
-            'account_id' => $account->id,
-            'qualification_id' => $qual->id,
-            'connected_at' => $start,
-            'disconnected_at' => $end,
-            'minutes_online' => $start->diffInMinutes($end)
-        ]);
+        $end = new Carbon('20 hour ago');
+        $atc->disconnected_at = $end;
+        $atc->minutes_online = $start->diffInMinutes($end);
+        $atc->save();
 
         $this->assertTrue($application->check50Hours());
     }
