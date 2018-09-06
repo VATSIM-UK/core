@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaitingList extends Model
 {
-    use SoftDeletes, PivotEventTrait;
+    use SoftDeletes;
 
     public $table = 'training_waiting_list';
 
