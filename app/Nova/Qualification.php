@@ -67,6 +67,17 @@ class Qualification extends Resource
     }
 
     /**
+     * Globally disable the ability to detach on the pivot.
+     *
+     * @param NovaRequest $request
+     * @return bool
+     */
+    public function authorizedToDeleteForSerialization(NovaRequest $request)
+    {
+        return false;
+    }
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
