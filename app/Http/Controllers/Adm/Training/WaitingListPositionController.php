@@ -13,15 +13,6 @@ use Illuminate\Support\Facades\Redirect;
 
 class WaitingListPositionController extends AdmController
 {
-    protected $waitingList;
-
-    public function __construct(WaitingList $waitingList)
-    {
-        parent::__construct();
-
-        $this->waitingList = $waitingList;
-    }
-
     /**
      * Promote Account within WaitingList.
      *
