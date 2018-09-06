@@ -31,6 +31,20 @@ class Account extends Resource
     }
 
     /**
+     * Custom array to define which models should not be attachable to an Account by default.
+     *
+     * @var array
+     */
+    public static $disallowAttach = ['Qualification'];
+
+    /**
+     * Custom array to define which models should not be attachable to an Account by default.
+     *
+     * @var array
+     */
+    public static $disallowDetach = ['Qualification'];
+
+    /**
      * The columns that should be searched.
      *
      * @var array
@@ -38,6 +52,62 @@ class Account extends Resource
     public static $search = [
         'id', 'email', 'name_first', 'name_last',
     ];
+
+    public static function authorizable()
+    {
+        return true;
+    }
+
+    /**
+     * Global disable of account creation as data comes from core.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    /**
+     * Global method of disabling the ability to attach resources to Account.
+     *
+     * @SEMI-TEMPORARY
+     *
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @return bool
+     */
+    public function authorizedToAttach(NovaRequest $request, $model)
+    {
+        return in_array($model, self::$disallowAttach);
+    }
+
+    /**
+     * Global method of disabling the ability to attach resources to Account.
+     *
+     * @SEMI-TEMPORARY
+     *
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @param string $relationship
+     * @return bool
+     */
+    public function authorizedToDetach(NovaRequest $request, $model, $relationship)
+    {
+        return in_array($model, self::$disallowDetach);
+    }
+
+    /**
+     * Globally disable the ability to delete an account.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -71,18 +141,10 @@ class Account extends Resource
                 return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
             }),
 
+            BelongsToMany::make('Qualifications')->onlyOnDetail(),
+
             BelongsToMany::make('Roles'),
         ];
-    }
-
-    /**
-     * @param NovaRequest $request
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        return $request->fullUrlWithQuery(['accounts_order' => 'id', 'accounts_direction' => 'asc']);
     }
 
     /**

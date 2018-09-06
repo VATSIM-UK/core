@@ -3,7 +3,10 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Qualification extends Resource
 {
@@ -19,21 +22,49 @@ class Qualification extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'code';
 
     public static function availableForNavigation(Request $request)
     {
         return false;
     }
 
+    public static function authorizable()
+    {
+        return true;
+    }
+
     /**
-     * The columns that should be searched.
+     * Disable the Qualification from being searchable.
      *
-     * @var array
+     * @return bool
      */
-    public static $search = [
-        'id',
-    ];
+    public static function searchable()
+    {
+        return false;
+    }
+
+    /**
+     * Globally disable the ability to edit a Qualification.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function authorizeToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    /**
+     * Globally disable the ability to edit an attached Qualification.
+     *
+     * @param NovaRequest $request
+     * @return bool
+     */
+    public function authorizedToUpdateForSerialization(NovaRequest $request)
+    {
+        return false;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -44,7 +75,19 @@ class Qualification extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            Text::make('Type')->resolveUsing(function ($type) {
+                return strtoupper($type);
+            }),
+
+            Text::make('Name', 'code')->resolveUsing(function ($code) {
+                return title_case($code);
+            }),
+
+            BelongsToMany::make('Accounts', 'account')->fields(function () {
+                return [
+                    DateTime::make('Achieved At', 'created_at'),
+                ];
+            }),
         ];
     }
 
