@@ -136,7 +136,7 @@ class WaitingListTest extends TestCase
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
             'account_id' => $accounts[2]->id,
-            'position' => $accounts[2]->waitingList->first()->pivot->position,
+            'position' => $accounts[2]->waitingLists->first()->pivot->position,
         ]);
     }
 
@@ -170,9 +170,9 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->promote($accounts[1], 1);
 
-        $this->assertEquals(1, $accounts[1]->fresh()->waitingList->find($this->waitingList)->pivot->position);
-        $this->assertEquals(2, $accounts[0]->fresh()->waitingList->find($this->waitingList)->pivot->position);
-        $this->assertEquals(3, $accounts[2]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(1, $accounts[1]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
+        $this->assertEquals(2, $accounts[0]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
+        $this->assertEquals(3, $accounts[2]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
     }
 
     /** @test **/
@@ -184,10 +184,10 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->promote($accounts[9], 9);
 
-        $this->assertEquals(1, $accounts[9]->waitingList->first()->pivot->position);
-        $this->assertEquals(3, $accounts[1]->fresh()->waitingList->first()->pivot->position);
-        $this->assertEquals(2, $accounts[0]->fresh()->waitingList->first()->pivot->position);
-        $this->assertEquals(4, $accounts[2]->fresh()->waitingList->first()->pivot->position);
+        $this->assertEquals(1, $accounts[9]->waitingLists->first()->pivot->position);
+        $this->assertEquals(3, $accounts[1]->fresh()->waitingLists->first()->pivot->position);
+        $this->assertEquals(2, $accounts[0]->fresh()->waitingLists->first()->pivot->position);
+        $this->assertEquals(4, $accounts[2]->fresh()->waitingLists->first()->pivot->position);
     }
 
     /** @test */
@@ -199,8 +199,8 @@ class WaitingListTest extends TestCase
 
         $this->waitingList->demote($accounts[1], 1);
 
-        $this->assertEquals(3, $accounts[1]->fresh()->waitingList->find($this->waitingList)->pivot->position);
-        $this->assertEquals(1, $accounts[0]->fresh()->waitingList->find($this->waitingList)->pivot->position);
-        $this->assertEquals(2, $accounts[2]->fresh()->waitingList->find($this->waitingList)->pivot->position);
+        $this->assertEquals(3, $accounts[1]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
+        $this->assertEquals(1, $accounts[0]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
+        $this->assertEquals(2, $accounts[2]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
     }
 }
