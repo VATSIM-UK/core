@@ -2,10 +2,10 @@
 
 namespace App\Nova;
 
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -78,7 +78,6 @@ class State extends Resource
         return false;
     }
 
-
     /**
      * Get the fields displayed by the resource.
      *
@@ -104,7 +103,7 @@ class State extends Resource
 
                     DateTime::make('End', 'end_at'),
                 ];
-            })
+            }),
         ];
     }
 
