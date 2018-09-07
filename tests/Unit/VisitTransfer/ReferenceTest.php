@@ -7,11 +7,18 @@ use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ReferenceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+
+    public function setUp()
+    {
+        parent::setUp();
+        Mail::fake();
+    }
 
     /** @test */
     public function itCantSubmitItselfWhenNotRequested()
