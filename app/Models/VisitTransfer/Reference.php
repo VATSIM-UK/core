@@ -7,7 +7,7 @@ use App\Events\VisitTransfer\ReferenceCancelled;
 use App\Events\VisitTransfer\ReferenceDeleted;
 use App\Events\VisitTransfer\ReferenceRejected;
 use App\Events\VisitTransfer\ReferenceUnderReview;
-use App\Exceptions\VisitTransfer\Reference\ReferenceAlreadySubmittedException;
+use App\Exceptions\VisitTransfer\Reference\ReferenceNotRequestedException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
 use App\Models\Model;
 use App\Models\Mship\Account;
@@ -97,6 +97,7 @@ class Reference extends Model
     const STATUS_ACCEPTED = 90;
     const STATUS_REJECTED = 95;
     const STATUS_CANCELLED = 100;
+    const STATUS_DELETED = 101;
 
     public static $REFERENCE_IS_PENDING = [
         self::STATUS_DRAFT,
@@ -224,6 +225,8 @@ class Reference extends Model
                 return 'Accepted';
             case self::STATUS_REJECTED:
                 return 'Rejected';
+            case self::STATUS_DELETED:
+                return 'Deleted';
         }
     }
 
@@ -274,6 +277,15 @@ class Reference extends Model
         event(new ReferenceRejected($this));
     }
 
+    public function delete()
+    {
+        // Set status to deleted
+        $this->status = self::STATUS_DELETED;
+        $this->save();
+
+        return parent::delete();
+    }
+
     public function cancel()
     {
         if ($this->isStatusIn(self::$REFERENCE_IS_PENDING) === false) {
@@ -306,7 +318,7 @@ class Reference extends Model
     private function guardAgainstReSubmittingReference()
     {
         if (!$this->is_requested) {
-            throw new ReferenceAlreadySubmittedException($this);
+            throw new ReferenceNotRequestedException($this);
         }
     }
 
