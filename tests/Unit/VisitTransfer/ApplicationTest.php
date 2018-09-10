@@ -5,7 +5,6 @@ namespace Tests\Unit\VisitTransfer;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Tests\TestCase;
@@ -79,7 +78,7 @@ class ApplicationTest extends TestCase
             'type' => Application::TYPE_VISIT,
             'facility_id' => $facility->id,
             'training_team' => $facility->training_team,
-            'status' => Application::STATUS_UNDER_REVIEW
+            'status' => Application::STATUS_UNDER_REVIEW,
         ]);
 
         $application->accept();
@@ -88,14 +87,9 @@ class ApplicationTest extends TestCase
             $mail = $notification->toMail($facility);
             $view = View::make($mail->view, $mail->viewData)->render();
 
-            $this->assertContains("Dear ATC Training Team,", $view);
+            $this->assertContains('Dear ATC Training Team,', $view);
 
             return $notification->application->id == $application->id;
         });
-
-
-
-
-
     }
 }
