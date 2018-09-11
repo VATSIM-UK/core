@@ -93,6 +93,10 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
+    protected $subscribe = [
+        //
+    ];
+
     /**
      * Register any other events for your application.
      *

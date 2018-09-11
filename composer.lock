@@ -1167,6 +1167,55 @@
             "time": "2018-03-08T01:11:30+00:00"
         },
         {
+            "name": "fico7489/laravel-pivot",
+            "version": "2.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fico7489/laravel-pivot.git",
+                "reference": "6c374f0c9d62891aafa75b70ed663943f326299a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fico7489/laravel-pivot/zipball/6c374f0c9d62891aafa75b70ed663943f326299a",
+                "reference": "6c374f0c9d62891aafa75b70ed663943f326299a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.6.*"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fico7489\\Laravel\\Pivot\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Filip Horvat",
+                    "email": "filip.horvat@am2studio.hr",
+                    "homepage": "http://am2studio.hr",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
+            "homepage": "https://github.com/fico7489/laravel-pivot",
+            "keywords": [
+                "eloquent events",
+                "eloquent extra events",
+                "laravel BelongsToMany events",
+                "laravel pivot events",
+                "laravel sync events"
+            ],
+            "time": "2018-03-08T16:03:54+00:00"
+        },
+        {
             "name": "firebase/php-jwt",
             "version": "v5.0.0",
             "source": {
