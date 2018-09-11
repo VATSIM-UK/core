@@ -16,7 +16,7 @@ class AtcSessionModelTest extends TestCase
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionStarted::class);
 
         $qualification = Qualification::inRandomOrder()->first();
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->networkDataAtc()->save($atcSession);
@@ -32,7 +32,7 @@ class AtcSessionModelTest extends TestCase
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionEnded::class);
 
         $qualification = Qualification::inRandomOrder()->first();
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->networkDataAtc()->save($atcSession);
@@ -50,7 +50,7 @@ class AtcSessionModelTest extends TestCase
     public function itUpdatesMinutesOnlineWhenASessionIsMarkedAsDisconnected()
     {
         $qualification = Qualification::inRandomOrder()->first();
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->networkDataAtc()->save($atcSession);
@@ -70,7 +70,7 @@ class AtcSessionModelTest extends TestCase
         $this->expectsEvents(\App\Events\NetworkData\AtcSessionDeleted::class);
 
         $qualification = Qualification::inRandomOrder()->first();
-        $atcSession = factory(\App\Models\NetworkData\Atc::class, 'online')->make();
+        $atcSession = factory(\App\Models\NetworkData\Atc::class)->make();
         $atcSession->qualification_id = $qualification->id;
         $account = factory(\App\Models\Mship\Account::class)->create();
         $account->networkDataAtc()->save($atcSession);
