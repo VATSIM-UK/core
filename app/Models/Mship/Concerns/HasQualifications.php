@@ -51,7 +51,7 @@ trait HasQualifications
             event(new QualificationAdded($this, $qualification));
         }
 
-        return true;
+        return $this;
     }
 
     /**

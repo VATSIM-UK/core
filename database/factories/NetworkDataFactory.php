@@ -1,36 +1,34 @@
 <?php
 
-use Faker\Generator as Faker;
+    use Carbon\Carbon;
+    use Faker\Generator as Faker;
 
-$factory->define(\App\Models\NetworkData\Atc::class, function (Faker $faker) {
-    return [
-        'account_id' => function () {
-            return factory(\App\Models\Mship\Account::class)->create()->id;
-        },
-        'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']).'_'.$faker->randomElement(['N', 'S', 'F', '']).'_'.$faker->randomElement(['TWR', 'GND', 'DEL', 'APP']),
-        'frequency' => $faker->randomFloat(3, 118, 134),
-        'connected_at' => $faker->dateTime('6 hours ago'),
-        'facility_type' => $faker->numberBetween(1, 6),
-        'qualification_id' => function () {
-            return factory(\App\Models\Mship\Qualification::class)->create()->id;
-        },
-    ];
-});
+    $factory->define(\App\Models\NetworkData\Atc::class, function (Faker $faker) {
+        $facility = $faker->randomElement([[4, 'TWR'], [3, 'GND'], [2, 'DEL'], [5, 'APP']]);
 
-$factory->defineAs(\App\Models\NetworkData\Atc::class, 'online', function (Faker $faker) {
-    return [
-        'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']).'_'.$faker->randomElement(['N', 'S', 'F', '']).'_'.$faker->randomElement(['TWR', 'GND', 'DEL', 'APP']),
-        'frequency' => $faker->randomFloat(3, 118, 134),
-        'connected_at' => $faker->dateTime('6 hours ago'),
-        'facility_type' => $faker->numberBetween(1, 6),
-    ];
-});
+        return [
+            'account_id' => function () {
+                return factory(\App\Models\Mship\Account::class)->create()->id;
+            },
+            'callsign' => $faker->randomElement(['EGLL', 'EGKK', 'EGCC', 'EGBB']).'_'.$faker->randomElement(['N', 'S', 'F', '']).'_'.$facility[1],
+            'frequency' => $faker->randomFloat(3, 118, 134),
+            'connected_at' => $faker->dateTimeBetween('6 hours ago'),
+            'facility_type' => $facility[0],
+            'qualification_id' => function () {
+                return factory(\App\Models\Mship\Qualification::class)->create()->id;
+            },
+        ];
+    });
+    $factory->defineAs(\App\Models\NetworkData\Atc::class, 'offline', function (Faker $faker) {
+        $start = $faker->dateTimeBetween('6 hours ago');
+        $end = $faker->dateTimeBetween($start);
 
-$factory->defineAs(\App\Models\NetworkData\Atc::class, 'offline', function (Faker $faker) {
-    return array_merge(
-        factory(\App\Models\NetworkData\Atc::class, 'online')->raw(),
-        [
-            'disconnected_at' => $faker->dateTimeBetween('-6 hours'),
-        ]
-    );
-});
+        return array_merge(
+            factory(\App\Models\NetworkData\Atc::class)->raw(),
+            [
+                'connected_at' => $start,
+                'disconnected_at' => $faker->dateTimeBetween($start),
+                'minutes_online' => Carbon::instance($start)->diffInMinutes(Carbon::instance($end)),
+            ]
+        );
+    });

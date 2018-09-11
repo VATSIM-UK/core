@@ -23,6 +23,7 @@ use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
+use App\Models\NetworkData\Atc;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -147,6 +148,10 @@ class Application extends Model
         'submitted_at',
         'created_at',
         'updated_at',
+    ];
+    protected $casts = [
+        'check_outcome_90_day' => 'boolean',
+        'check_outcome_50_hours' => 'boolean',
     ];
 
     const TYPE_VISIT = 10;
@@ -702,7 +707,6 @@ class Application extends Model
         // $this->guardAgainstDuplicateCheckOutcomeSubmission($check);
 
         $columnName = 'check_outcome_'.$check;
-
         $this->{$columnName} = (int) $outcome;
         $this->save();
     }
@@ -769,7 +773,10 @@ class Application extends Model
 
     public function check50Hours()
     {
-        return false;
+        $qualificationId = $this->account->qualification_atc->id;
+        $timeOnline = $this->account->networkDataAtc()->forQualificationId($qualificationId)->offline()->sum('minutes_online');
+
+        return $timeOnline >= (50 * 60);
     }
 
     /** Guards */

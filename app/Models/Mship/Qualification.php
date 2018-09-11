@@ -40,6 +40,11 @@ class Qualification extends Model
     protected $hidden = ['id'];
     public $timestamps = false;
 
+    public function scopeCode($query, $code)
+    {
+        return $query->where('code', $code);
+    }
+
     public function scopeOfType($query, $type)
     {
         return $query->whereType($type);
