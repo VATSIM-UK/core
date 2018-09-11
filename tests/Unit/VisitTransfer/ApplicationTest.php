@@ -7,7 +7,6 @@ use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
 use Carbon\Carbon;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
