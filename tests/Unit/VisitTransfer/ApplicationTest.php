@@ -5,13 +5,13 @@ namespace Tests\Unit\VisitTransfer;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
-use Carbon\Carbon;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ApplicationTest extends TestCase
