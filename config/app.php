@@ -159,7 +159,6 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Maknz\Slack\SlackServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 
@@ -170,6 +169,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TrainingEventServiceProvider::class,
@@ -253,7 +253,6 @@ return [
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Slack' => Maknz\Slack\Facades\Slack::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
 
