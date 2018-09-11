@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Concerns;
 
 use App\Exceptions\Mship\InvalidStateException;
+use App\Models\Mship\AccountState;
 use App\Models\Mship\State;
 use Carbon\Carbon;
 
@@ -17,7 +18,8 @@ trait HasStates
     {
         return $this->belongsToMany(State::class, 'mship_account_state', 'account_id', 'state_id')
             ->withPivot(['region', 'division', 'start_at', 'end_at'])
-            ->wherePivot('end_at', null);
+            ->wherePivot('end_at', null)
+            ->using(AccountState::class);
     }
 
     /**
@@ -29,7 +31,8 @@ trait HasStates
     {
         return $this->belongsToMany(State::class, 'mship_account_state', 'account_id', 'state_id')
             ->withPivot(['region', 'division', 'start_at', 'end_at'])
-            ->orderBy('pivot_start_at', 'DESC');
+            ->orderBy('pivot_start_at', 'DESC')
+            ->using(AccountState::class);
     }
 
     /**

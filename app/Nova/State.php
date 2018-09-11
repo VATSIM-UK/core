@@ -5,24 +5,25 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Qualification extends Resource
+class State extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\\Models\\Mship\\Qualification';
+    public static $model = 'App\\Models\\Mship\\State';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'code';
+    public static $title = 'id';
 
     public static function availableForNavigation(Request $request)
     {
@@ -35,7 +36,7 @@ class Qualification extends Resource
     }
 
     /**
-     * Disable the Qualification from being searchable.
+     * Disable the State from being searchable.
      *
      * @return bool
      */
@@ -45,7 +46,7 @@ class Qualification extends Resource
     }
 
     /**
-     * Globally disable the ability to edit a Qualification.
+     * Globally disable the ability to edit a State.
      *
      * @param Request $request
      * @return bool
@@ -56,7 +57,7 @@ class Qualification extends Resource
     }
 
     /**
-     * Globally disable the ability to edit an attached Qualification.
+     * Globally disable the ability to edit an attached State.
      *
      * @param NovaRequest $request
      * @return bool
@@ -86,17 +87,21 @@ class Qualification extends Resource
     public function fields(Request $request)
     {
         return [
-            Text::make('Type')->resolveUsing(function ($type) {
-                return strtoupper($type);
-            }),
-
-            Text::make('Name', 'code')->resolveUsing(function ($code) {
-                return title_case($code);
-            }),
+            Text::make('State', 'name'),
 
             BelongsToMany::make('Accounts', 'account')->fields(function () {
                 return [
-                    DateTime::make('Achieved At', 'created_at'),
+                    Text::make('Region')->resolveUsing(function () {
+                        return $this->pivot->region;
+                    }),
+
+                    Text::make('Division')->resolveUsing(function () {
+                        return $this->pivot->division;
+                    }),
+
+                    DateTime::make('Start', 'start_at'),
+
+                    DateTime::make('End', 'end_at'),
                 ];
             }),
         ];
