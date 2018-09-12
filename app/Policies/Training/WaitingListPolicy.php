@@ -49,11 +49,9 @@ class WaitingListPolicy extends BasePolicy
         return $waitingList->staff->contains($account);
     }
 
-
     /**
      * Nova Specific Policies
      */
-
     public function viewAny(Account $account)
     {
         // TODO: Implement viewAny() method.
