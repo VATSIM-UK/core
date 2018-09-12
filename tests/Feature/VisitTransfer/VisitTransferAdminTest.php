@@ -5,6 +5,7 @@ namespace Tests\Feature\VisitTransfer;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -51,5 +52,36 @@ class VisitTransferAdminTest extends TestCase
             ->assertDontSee('Reference 1 - '.$this->ref1->account->real_name)
             ->assertSee('Reference 1 - '.$this->ref2->account->real_name)
             ->assertSee('Application has system deleted references in addition to the below:');
+    }
+
+    /** @test **/
+    public function testInfinitePlacesCanBeSelectedForAFacility()
+    {
+        $this->actingAs($this->user, 'web')
+            ->post(route('visiting.admin.facility.create.post'), $this->createTestPostData())
+            ->assertRedirect(route('visiting.admin.facility'))
+            ->assertSessionHas('success');
+    }
+
+    private function createTestPostData()
+    {
+        $basicData = factory(Facility::class)->make()->toArray();
+
+        $data = [
+            'can_visit' => true,
+            'can_transfer' => true,
+            'training_required' => true,
+            'training_team' => 'atc',
+            'training_spaces' => null,
+            'stage_statement_enabled' => false,
+            'stage_reference_enabled' => true,
+            'stage_reference_quantity' => 2,
+            'stage_checks' => true,
+            'auto_acceptance' => true,
+            'open' => false,
+            'public' => true,
+        ];
+
+        return array_merge($basicData, $data);
     }
 }
