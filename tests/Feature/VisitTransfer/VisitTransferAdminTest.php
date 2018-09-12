@@ -34,7 +34,7 @@ class VisitTransferAdminTest extends TestCase
     }
 
     /** @test * */
-    public function itShowsBothReferences()
+    public function testThatItShowsBothReferences()
     {
         $this->actingAs($this->user, 'web')
             ->get(route('visiting.admin.application.view', $this->application->id))
@@ -43,7 +43,7 @@ class VisitTransferAdminTest extends TestCase
     }
 
     /** @test * */
-    public function itDoesntShowDeletedReferences()
+    public function testThatItDoesntShowDeletedReferences()
     {
         $this->ref1->delete();
         $this->actingAs($this->user, 'web')
