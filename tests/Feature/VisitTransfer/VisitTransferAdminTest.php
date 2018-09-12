@@ -63,6 +63,26 @@ class VisitTransferAdminTest extends TestCase
             ->assertSessionHas('success');
     }
 
+    /** @test **/
+    public function testTrainingSpacesHasToBePresent()
+    {
+        $array = $this->createTestPostData();
+
+        array_pull($array, 'training_spaces');
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('visiting.admin.facility.create.post'), $array)
+            ->assertRedirect()->assertSessionHas('errors');
+    }
+
+    /** @test **/
+    public function testNumberOfPlacesCanBeSelectedForAFacility()
+    {
+        $this->actingAs($this->user, 'web')
+            ->post(route('visiting.admin.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))
+            ->assertRedirect(route('visiting.admin.facility'));
+    }
+
     private function createTestPostData()
     {
         $basicData = factory(Facility::class)->make()->toArray();
