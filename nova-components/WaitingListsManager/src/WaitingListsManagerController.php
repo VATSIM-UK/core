@@ -2,7 +2,7 @@
 
 namespace Vatsimuk\WaitingListsManager;
 
-use \App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList;
 use Illuminate\Routing\Controller;
 
 class WaitingListsManagerController extends Controller
