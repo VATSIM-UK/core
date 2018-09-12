@@ -18,10 +18,10 @@ class WaitingList extends Model
     const ATC_DEPARTMENT = 1;
     const PILOT_DEPARTMENT = 2;
 
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
+//    public function getRouteKeyName()
+//    {
+//        return 'slug';
+//    }
 
     /**
      * A Waiting List can be managed by many Staff Members (Accounts)

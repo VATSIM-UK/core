@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingList extends Resource
 {
@@ -51,6 +52,8 @@ class WaitingList extends Resource
                 1 => 'ATC Training',
                 2 => 'Pilot Training',
             ])->displayUsingLabels()->rules(['required'])->sortable(),
+
+            WaitingListsManager::make(),
         ];
     }
 
