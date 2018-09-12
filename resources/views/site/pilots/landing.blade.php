@@ -15,7 +15,7 @@
 
         <div class="col-md-8 col-md-offset-2 ">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; ATC Training
+                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Pilot Training
                 </div>
                 <div class="panel-body">
                     <p>Welcome to the VATSIM UK’s Pilot Training Department</p>
@@ -113,7 +113,7 @@
                 <div class="panel-body">
                     <ol>
                         <li text="">
-                            <a href="https://community.vatsim.uk/community/visit-transfer/" rel="">Apply to visit as a
+                            <a href="{{ route('visiting.landing') }}" rel="">Apply to visit as a
                                 Pilot</a>
                         </li>
                         <li text="">
