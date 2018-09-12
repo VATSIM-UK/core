@@ -1,5 +1,5 @@
 $font-family: Calibri, Tahoma, Geneva, sans-serif;
-
+$screen-sm: 802px;
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/theme";
 @import "node_modules/bootstrap-tour/build/css/bootstrap-tour.min";
@@ -23,15 +23,6 @@ body, html {
 
 .header_container {
   width: 100%;
-}
-
-.logo_container {
-  height: 70%;
-  float: left;
-  margin: 10px 15px 0 5.0%;
-  img {
-    height: 100%;
-  }
 }
 
 .dev_environment_notification {

@@ -4,7 +4,7 @@ namespace App\Exceptions\VisitTransfer\Reference;
 
 use App\Models\VisitTransfer\Reference;
 
-class ReferenceAlreadySubmittedException extends \Exception
+class ReferenceNotRequestedException extends \Exception
 {
     private $reference;
 
@@ -12,7 +12,7 @@ class ReferenceAlreadySubmittedException extends \Exception
     {
         $this->reference = $reference;
 
-        $this->message = 'You cannot re-submit a reference once it has already been submitted.';
+        $this->message = 'This reference is not requested. It may have already been submitted.';
     }
 
     public function __toString()

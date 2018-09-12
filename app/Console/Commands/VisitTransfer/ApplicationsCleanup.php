@@ -80,6 +80,7 @@ class ApplicationsCleanup extends Command
         foreach ($submittedApplications as $application) {
             if ($application->should_perform_checks) {
                 $application->setCheckOutcome('90_day', $application->check90DayQualification());
+                $application->setCheckOutcome('50_hours', $application->check50Hours());
 
                 $application->markAsUnderReview('Automated checks have completed.');
             } else {
