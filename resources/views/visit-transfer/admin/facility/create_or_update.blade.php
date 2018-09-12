@@ -70,7 +70,7 @@
                                                        title="Give this key to applicants so that they can apply to join this facility">{!!$facility->public_id!!}</i>
                                                 @endif
                                             </font>
-                                        </p>`
+                                        </p>
                                     </div>
                                 @endif
 
