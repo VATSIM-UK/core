@@ -38,7 +38,7 @@
 <div class="container-fluid">
     <div class="header_container">
         <div class="banner hidden-xs hidden-sm"></div>
-
+        
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
             <div class="breadcrumb_container">
                 <div class="breadcrumb_content_left">

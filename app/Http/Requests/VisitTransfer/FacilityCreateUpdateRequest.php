@@ -20,7 +20,7 @@ class FacilityCreateUpdateRequest extends FormRequest
             'can_transfer' => 'required|in:1,0',
             'training_required' => 'required|boolean',
             'training_team' => 'required|in:pilot,atc',
-            'training_spaces' => 'numeric|nullable|min:0',
+            'training_spaces' => 'present|nullable|min:0',
             'stage_statement_enabled' => 'required|boolean',
             'stage_reference_enabled' => 'required|boolean',
             'stage_reference_quantity' => 'required_if:stage_reference_enabled,1|integer',
