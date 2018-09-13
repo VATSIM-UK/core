@@ -34,21 +34,9 @@
     @yield('styles')
 </head>
 <body>
+@include('components.nav')
 <div class="container-fluid">
-
     <div class="header_container">
-
-        <div class="navbar-fixed-top">
-            @if (is_local_environment())
-                <div class="dev_environment_notification">
-                    You are in a <b>NON-PRODUCTION</b> environment
-                </div>
-            @endif
-
-            @include('components.nav')
-
-        </div>
-
         <div class="banner hidden-xs hidden-sm"></div>
 
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
