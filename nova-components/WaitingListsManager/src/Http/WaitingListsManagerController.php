@@ -16,6 +16,6 @@ class WaitingListsManagerController extends Controller
 
     public function index(WaitingList $waitingList)
     {
-        return $waitingList->accounts()->get();
+        return WaitingListUserResource::collection($waitingList->accounts()->get());
     }
 }
