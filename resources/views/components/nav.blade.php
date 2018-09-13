@@ -30,6 +30,24 @@
                                 <li>{!! link_to_route("mship.feedback.view", "View My Feedback") !!}</li>
                             </ul>
                         </li>
+                    </ul>
+                </li>
+                <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
+                                <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
+                                <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Network Statistics</li>
+                                <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
+                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
@@ -58,20 +76,28 @@
                         </ul>
                     </li>
                 @endif
+
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
+                                <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
+                                <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
+                                <li class="divider"></li>
                                 <li class="dropdown-header">Flight Training Exercises</li>
                                 <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
                                 <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
+                                {{--<li>{!! link_to_route('fte.map', 'Map') !!}</li>--}}
                                 <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
                                 <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
                             </ul>
                         </li>
                     </ul>
                 </li>
+                
             </ul>
             @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                 <ul class="nav navbar-nav navbar-right navcustom">
