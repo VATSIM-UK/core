@@ -236,3 +236,10 @@ body, html {
     }
   }
 }
+
+.profile-picture {
+  object-fit: cover;
+  border-radius: 50px;
+  height:50px;
+  width: 50px;
+}
