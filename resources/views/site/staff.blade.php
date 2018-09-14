@@ -29,17 +29,17 @@
 
                         <div class="col-md-6">
                             <h4 class="text-center">Division Director (VATUK1)</h4><br/>
-                            <img src="https://community.vatsim.uk/uploads/monthly_2018_05/S_member_91.png"
+                            <img src="{{ $ipboard->getMemberById(91)->photoUrl }}"
                                  width=50px
-                                 class="img-responsive center-block text-center" style="border-radius: 50%;"/>
+                                 class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Simon Irvine</p>
                         </div>
 
                         <div class="col-md-6">
                             <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br/>
-                            <img src="https://community.vatsim.uk/uploads/monthly_2018_05/N_member_3580.png"
+                            <img src="{{ $ipboard->getMemberById(3580)->photoUrl }}"
                                  width=50px
-                                 class="img-responsive center-block text-center" style="border-radius: 50%;"/>
+                                 class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Nathan Donnelly</p>
                         </div>
 
@@ -60,9 +60,9 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Community Director (VATUK3)</h4><br/>
-                                <img src="https://community.vatsim.uk/uploads/monthly_2018_07/B_member_2311.png"
+                                <img src="{{ $ipboard->getMemberById(2311)->photoUrl }}"
                                      width=50px
-                                     class="img-responsive center-block" style="border-radius: 50%;"/>
+                                     class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Barrie Joplin</p>
 
                                 <h4>Community Team</h4>
@@ -86,9 +86,9 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Marketing Director (VATUK4)</h4><br/>
-                                <img src="https://community.vatsim.uk/uploads/monthly_2017_09/IMG_2141.thumb.JPG.863a262871ef800b70fa72b928d1cdb7.JPG"
+                                <img src="{{ $ipboard->getMemberById(6037)->photoUrl }}"
                                      width=50px
-                                     class="img-responsive center-block" style="border-radius: 50%;"/>
+                                     class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Layth Al-Wakil</p>
 
                                 <h4>Marketing Team</h4>
@@ -117,9 +117,8 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Pilot Training Director (VATUK6)</h4><br/>
-                                <img src="https://community.vatsim.uk/uploads/monthly_2017_09/IMG_4219.thumb.JPG.15f16e652d458286df9f28c62c7d7fca.JPG"
-                                     width=50px
-                                     class="img-responsive center-block" style="border-radius: 50%;"/>
+                                <img src="{{ $ipboard->getMemberById(6286)->photoUrl }}"
+                                     class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Daniel Crookes</p>
 
                                 <h4>Pilot Training Team</h4>
@@ -156,8 +155,8 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Web Services Director (VATUK8)</h4><br/>
-                                <img src="https://community.vatsim.uk/uploads/profile/photo-5125.jpg" width=50px
-                                     class="img-responsive center-block" style="border-radius: 50%;"/>
+                                <img src="{{ $ipboard->getMemberById(5125)->photoUrl }}" width=50px
+                                     class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Calum Towers</p>
 
                                 <h4>Web Services Team</h4>
@@ -197,9 +196,9 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Operations Director (VATUK9)</h4><br/>
-                                <img src="https://community.vatsim.uk/uploads/monthly_2017_10/7559173.thumb.jpg.f6f3767c5348f3c029066282fb1b2019.jpg"
+                                <img src="{{ $ipboard->getMemberById(54)->photoUrl }}"
                                      width=50px
-                                     class="img-responsive center-block" style="border-radius: 50%;"/>
+                                     class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Chris Pawley</p>
 
                             </div>
@@ -216,9 +215,9 @@
                     </div>
                     <div class="panel-body">
                         <h4>ATC Training Director (VATUK5)</h4><br/>
-                        <img src="https://community.vatsim.uk/uploads/monthly_2017_03/dmgimg.thumb.jpg.4eb16b46f3334ce02b083cf3e6debd74.jpg"
+                        <img src="{{ $ipboard->getMemberById(4366)->photoUrl }}"
                              width=50px
-                             class="img-responsive center-block" style="border-radius: 50%;"/>
+                             class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Andy Ford</p>
 
                         <h4>ATC Training Team</h4>
