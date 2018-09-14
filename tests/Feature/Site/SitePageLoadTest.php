@@ -17,4 +17,10 @@ class SitePageLoadTest extends TestCase
     {
         $this->get(route('site.join'))->assertOk();
     }
+
+    /** @test * */
+    public function itLoadsTheStaffPage()
+    {
+        $this->get(route('site.staff'))->assertOk();
+    }
 }
