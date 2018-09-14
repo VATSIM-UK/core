@@ -37,4 +37,15 @@
 
     </div>
 
+    <div class="row">
+
+        <div class="col-md-8 col-md-offset-2">
+            <iframe width="100%" height="500px"
+                    src="https://www.youtube-nocookie.com/embed/6pI77r3oAxw?rel=0&amp;controls=0&amp;showinfo=0&amp;start=3"
+                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+        </div>
+
+    </div>
+
 @stop
