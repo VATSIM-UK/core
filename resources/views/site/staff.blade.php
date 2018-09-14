@@ -12,9 +12,6 @@
                             Staff Group comprised of the heads of each department. Department staff may be appointed
                             that
                             report to the relevant member of the DSG.</p>
-                        <p>Our current staff are listed below. In order to contact our staff, please use the links below
-                            to
-                            our ticketing system.</p>
                     </div>
                 </div>
             </div>
@@ -69,9 +66,9 @@
                                 <p class="text-center">Barrie Joplin</p>
 
                                 <h4>Community Team</h4>
-                                <table>
+                                <table class="table">
                                     <tr>
-                                        <td style="padding-right: 30px;">Community Manager</td>
+                                        <td>Community Manager</td>
                                         <td>Nick Marinov</td>
                                     </tr>
                                     <tr>
@@ -95,9 +92,9 @@
                                 <p class="text-center">Layth Al-Wakil</p>
 
                                 <h4>Marketing Team</h4>
-                                <table>
+                                <table class="table">
                                     <tr>
-                                        <td style="padding-right: 30px;">Social Media Manager</td>
+                                        <td>Social Media Manager</td>
                                         <td>Loui Ringer</td>
                                     </tr>
                                     <tr>
@@ -126,7 +123,7 @@
                                 <p class="text-center">Daniel Crookes</p>
 
                                 <h4>Pilot Training Team</h4>
-                                <table>
+                                <table class="table">
                                     <tr>
                                         <td>Administrative Manager</td>
                                         <td>Matthew Wilson</td>
@@ -144,7 +141,7 @@
                                         <td>Tom Knowles</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding-right: 30px;">Development Flight Instructor</td>
+                                        <td>Development Flight Instructor</td>
                                         <td>James Gibson</td>
                                     </tr>
                                 </table>
@@ -164,22 +161,26 @@
                                 <p class="text-center">Calum Towers</p>
 
                                 <h4>Web Services Team</h4>
-                                <table>
+                                <table class="table">
                                     <tr>
-                                        <td>Assistant</td>
+                                        <td>System Administrator</td>
+                                        <td>Nathan Davies</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Developer</td>
                                         <td>Alex Toff</td>
                                     </tr>
                                     <tr>
-                                        <td>Assistant</td>
+                                        <td>Developer</td>
                                         <td>Callum Axon</td>
                                     </tr>
                                     <tr>
-                                        <td>Assistant</td>
+                                        <td>Junior Developer</td>
                                         <td>Matt Collier</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding-right: 30px;">Assistant</td>
-                                        <td>Nathan Davies</td>
+                                        <td>Support</td>
+                                        <td>George Barlow</td>
                                     </tr>
                                 </table>
                             </div>
@@ -221,14 +222,26 @@
                         <p class="text-center">Andy Ford</p>
 
                         <h4>ATC Training Team</h4>
-                        <table>
+                        <table class="table">
                             <tr>
-                                <td style="padding-right: 30px;">Administrative Manager</td>
+                                <td>Administrative Manager</td>
                                 <td>Alex Beard</td>
                             </tr>
                             <tr>
-                                <td>Head Examiner</td>
+                                <td>Senior Division Instructor<br/>
+                                    TG Instructor (CTR)
+                                </td>
+                                <td>Phillip Speer</td>
+                            </tr>
+                            <tr>
+                                <td>Senior Division Instructor<br/>
+                                    Head Examiner
+                                </td>
                                 <td>George Wright</td>
+                            </tr>
+                            <tr>
+                                <td>Senior Division Instructor</td>
+                                <td>Chris Pawley</td>
                             </tr>
                             <tr>
                                 <td>Division Instructor</td>
@@ -239,142 +252,44 @@
                                 <td>Mike Pike</td>
                             </tr>
                             <tr>
-                                <td>Senior Division Instructor</td>
-                                <td>Chris Pawley</td>
+                                <td>TG Manager (TGNC)<br/>
+                                    TG Manager (Heathrow)
+                                </td>
+                                <td>Oliver Rhodes</td>
                             </tr>
                             <tr>
-                                <td>Senior Division Instructor</td>
-                                <td>George Wright</td>
+                                <td>TG Manager (TGNC)</td>
+                                <td>Josh Howker</td>
                             </tr>
                             <tr>
-                                <td>Senior Division Instructor</td>
-                                <td>Andy Ford</td>
+                                <td>TG Manager (TGNC)</td>
+                                <td>Tom Szczypinski</td>
                             </tr>
                             <tr>
-                                <td>Senior Division Instructor</td>
-                                <td>Phillip Speer</td>
+                                <td>TG Manager (TWR)</td>
+                                <td>Lee Roberts</td>
+                            </tr>
+                            <tr>
+                                <td>TG Manager (APP)</td>
+                                <td>Nick Marinov</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TG1)</td>
+                                <td>Jamie Paine</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TG1)</td>
+                                <td>Nathan Donnelly</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TG2)</td>
+                                <td>Jonas Hey</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (TG2)</td>
+                                <td>Luke Collister</td>
                             </tr>
                         </table>
-                        <br/>
-
-                        <table border="0" cellpadding="2">
-                            <tbody>
-                            <tr>
-                                <th align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px; width: 100px;">
-                                    &nbsp;
-                                </th>
-                                <th align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px; width: 120px;">
-                                    <strong>TG Managers</strong></th>
-                                <th align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px; width: 120px;">
-                                    <strong>TG Instructors (I1)</strong></th>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="1"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    New Controller
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    <p>
-                                        Oliver Rhodes</p>
-                                    <p>
-                                        Josh Howker</p>
-                                    <p>
-                                        Tom Szczypinski</p>
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    -
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="3"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    TG 1
-                                </td>
-                                <td align="left" style="padding: 4px;">
-                                    &nbsp;
-                                </td>
-                                <td align="left" style="padding: 4px;">
-                                    Matt Collier
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="4" style="padding: 4px;">
-                                    <p>
-                                        Lee Roberts</p>
-                                    <p>
-                                        Nick Marinov</p>
-                                </td>
-                                <td align="left" style="padding: 4px;">
-                                    Jamie Paine
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    Nathan Donnelly
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="3"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    TG 2
-                                </td>
-                                <td align="left" style="padding: 4px;">
-                                    Jonas Hey
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" style="padding: 4px;">
-                                    Luke Collister
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    &nbsp;
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    &nbsp;
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="1"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    Enroute
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    &nbsp;
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    <p>
-                                        Phillip Speer (I3)</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" rowspan="1"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    Heathrow
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    Oliver Rhodes
-                                </td>
-                                <td align="left"
-                                    style="border-width: 0px 0px 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 4px;">
-                                    James Yuen
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
                     </div>
                 </div>
             </div>
