@@ -15,6 +15,8 @@ class WaitingListStatusResource extends JsonResource
         return [
             'name' => $this->name,
             'retains_position' => (bool) $this->retains_position,
+            'start_at' => $this->pivot->start_at,
+            'end_at' => $this->pivot->end_at,
         ];
     }
 }

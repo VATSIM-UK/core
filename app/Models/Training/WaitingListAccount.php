@@ -14,6 +14,8 @@ class WaitingListAccount extends Pivot
 
     public $fillable = ['position', 'deleted_at'];
 
+    protected $appends = ['atcHourCheck'];
+
     public function status()
     {
         return $this->belongsToMany(WaitingListStatus::class,
@@ -80,5 +82,10 @@ class WaitingListAccount extends Pivot
         }
 
         return false;
+    }
+
+    public function getAtcHourCheckAttribute()
+    {
+        return $this->atcHourCheck();
     }
 }
