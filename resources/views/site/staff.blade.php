@@ -157,7 +157,7 @@
                                 <h4>Web Services Director (VATUK8)</h4><br/>
                                 <img src="{{ $ipboard->getMemberById(5125)->photoUrl }}" width=50px
                                      class="img-responsive center-block profile-picture"/>
-                                <p class="text-center">Calum Towers</p>
+                                <p class="text-center">Calum Tοwers</p>
 
                                 <h4>Web Services Team</h4>
                                 <table class="table">
