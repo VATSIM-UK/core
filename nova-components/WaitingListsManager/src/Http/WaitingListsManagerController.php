@@ -1,6 +1,6 @@
 <?php
 
-namespace Vatsimuk\WaitingListsManager;
+namespace Vatsimuk\WaitingListsManager\Http;
 
 use App\Models\Training\WaitingList;
 use Illuminate\Routing\Controller;
@@ -16,6 +16,6 @@ class WaitingListsManagerController extends Controller
 
     public function index(WaitingList $waitingList)
     {
-        return WaitingListUserResource::collection($waitingList->accounts()->get());
+        return WaitingListAccountResource::collection($waitingList->accounts()->orderBy('position')->get());
     }
 }

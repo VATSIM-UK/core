@@ -4,7 +4,7 @@ namespace Vatsimuk\WaitingListsManager\Http;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class WaitingListUserResource extends JsonResource
+class WaitingListAccountResource extends JsonResource
 {
     /**
      * @param \Illuminate\Http\Request $request
