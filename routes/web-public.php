@@ -20,6 +20,16 @@ Route::group([
             Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
             Route::get('/bookings')->uses('ATCPagesController@viewBookings')->name('bookings');
         });
+
+    Route::group([
+        'as' => 'pilots.',
+        'prefix' => 'pilots',
+    ], function () {
+        Route::get('/')->uses('PilotPagesController@viewLanding')->name('landing');
+        Route::get('/ratings')->uses('PilotPagesController@viewRatings')->name('ratings');
+        Route::get('/becoming-a-mentor')->uses('PilotPagesController@viewBecomingAMentor')->name('mentor');
+        Route::get('/oceanic')->uses('PilotPagesController@viewOceanic')->name('oceanic');
+    });
 });
 
 // Helpers

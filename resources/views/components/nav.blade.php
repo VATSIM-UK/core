@@ -76,11 +76,17 @@
                         </ul>
                     </li>
                 @endif
+
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
+                                <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
+                                <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
+                                <li class="divider"></li>
                                 <li class="dropdown-header">Flight Training Exercises</li>
                                 <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
                                 <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
@@ -90,6 +96,7 @@
                         </li>
                     </ul>
                 </li>
+
             </ul>
             @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                 <ul class="nav navbar-nav navbar-right navcustom">
