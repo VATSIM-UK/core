@@ -36,7 +36,7 @@ Route::group([
         'as' => 'operations.',
         'prefix' => 'operations',
     ], function () {
-       Route::get('/')->uses('OperationsPagesController@viewLanding')->name('landing');
+        Route::get('/')->uses('OperationsPagesController@viewLanding')->name('landing');
         Route::get('/sectors')->uses('OperationsPagesController@viewSectors')->name('sectors');
     });
 });
