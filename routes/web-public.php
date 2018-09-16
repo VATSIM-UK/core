@@ -39,6 +39,15 @@ Route::group([
         Route::get('/')->uses('OperationsPagesController@viewLanding')->name('landing');
         Route::get('/sectors')->uses('OperationsPagesController@viewSectors')->name('sectors');
     });
+
+    Route::group([
+        'as' => 'community.',
+        'prefix' => 'community',
+    ], function () {
+       Route::get('/vt-guide')->uses('CommunityPagesController@viewVtGuide')->name('vt-guide');
+       Route::get('/terms-and-conditions')->uses('CommunityPagesController@viewTerms')->name('terms');
+       Route::get('/teamspeak')->uses('CommunityPagesController@viewTeamspeak')->name('teamspeak');
+    });
 });
 
 // Helpers

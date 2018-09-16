@@ -62,12 +62,15 @@
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li class="dropdown-header">Membership</li>
-                                <li>{!! link_to_route("visiting.landing", "Visit/Transfer") !!}</li>
+                                <li class="dropdown-header">Visit / Transfer</li>
+                                <li>{!! link_to_route("site.community.vt-guide", "Guide") !!}</li>
+                                <li>{!! link_to_route("visiting.landing", "Dashboard") !!}</li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Third-Party Services</li>
-                                <li>{!! link_to_route("teamspeak.new", "TS Registration") !!}</li>
-                                <li>{!! link_to_route("slack.new", "Slack Registration") !!}</li>
+                                <li>{!! link_to_route("site.community.teamspeak", "TeamSpeak") !!}</li>
+                                <li>{!! link_to_route("slack.new", "Slack") !!}</li>
+                                <li class="divider"></li>
+                                <li>{!! link_to_route('site.community.terms', "Terms & Conditions") !!}</li>
                             </ul>
                         </li>
                     </ul>
