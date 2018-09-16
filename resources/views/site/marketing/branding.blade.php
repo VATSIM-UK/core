@@ -8,7 +8,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-globe"></i> &thinsp; Branding Guidelines
+                    <div class="panel-heading"><i class="glyphicon glyphicon-pencil"></i> &thinsp; Branding Guidelines
                     </div>
                     <div class="panel-body">
 
@@ -139,7 +139,7 @@
 
     <div class="col-md-3">
         <div class="panel panel-ukblue">
-            <div class="panel-heading"><i class="glyphicon glyphicon-time"></i> &thinsp; Branding Bank
+            <div class="panel-heading"><i class="glyphicon glyphicon-briefcase"></i> &thinsp; Branding Bank
             </div>
             <div class="panel-body">
 
