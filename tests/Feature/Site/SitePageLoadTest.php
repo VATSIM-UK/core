@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Site;
 
+use Alawrence\Ipboard\Ipboard;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Config;
 
 class SitePageLoadTest extends TestCase
 {
@@ -19,8 +21,12 @@ class SitePageLoadTest extends TestCase
     }
 
     /** @test * */
-    public function itLoadsTheStaffPage()
+    public function itLoadsTheStaffPageRegardlessOfIPBKey()
     {
+        Config::set([
+            'ipboard.api_key' => 'Invalid_API_Key',
+        ]);
+
         $this->get(route('site.staff'))->assertOk();
     }
 }
