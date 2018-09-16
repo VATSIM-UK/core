@@ -29,7 +29,7 @@
 
                         <div class="col-md-6">
                             <h4 class="text-center">Division Director (VATUK1)</h4><br/>
-                            <img src="{{ $ipboard->getMemberById(91)->photoUrl }}"
+                            <img src="{{ $teamPhotos[91] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Simon Irvine</p>
@@ -37,7 +37,7 @@
 
                         <div class="col-md-6">
                             <h4 class="text-center">Deputy Division Director (VATUK2)</h4><br/>
-                            <img src="{{ $ipboard->getMemberById(3580)->photoUrl }}"
+                            <img src="{{ $teamPhotos[3580] }}"
                                  width=50px
                                  class="img-responsive center-block profile-picture"/>
                             <p class="text-center">Nathan Donnelly</p>
@@ -60,7 +60,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Community Director (VATUK3)</h4><br/>
-                                <img src="{{ $ipboard->getMemberById(2311)->photoUrl }}"
+                                <img src="{{ $teamPhotos[2311] }}"
                                      width=50px
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Barrie Joplin</p>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Marketing Director (VATUK4)</h4><br/>
-                                <img src="{{ $ipboard->getMemberById(6037)->photoUrl }}"
+                                <img src="{{ $teamPhotos[6037] }}"
                                      width=50px
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Layth Al-Wakil</p>
@@ -117,7 +117,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Pilot Training Director (VATUK6)</h4><br/>
-                                <img src="{{ $ipboard->getMemberById(6286)->photoUrl }}"
+                                <img src="{{ $teamPhotos[6286] }}"
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Daniel Crookes</p>
 
@@ -155,7 +155,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Web Services Director (VATUK8)</h4><br/>
-                                <img src="{{ $ipboard->getMemberById(5125)->photoUrl }}" width=50px
+                                <img src="{{ $teamPhotos[5125] }}" width=50px
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Calum Tοwers</p>
 
@@ -196,7 +196,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Operations Director (VATUK9)</h4><br/>
-                                <img src="{{ $ipboard->getMemberById(54)->photoUrl }}"
+                                <img src="{{ $teamPhotos[54] }}"
                                      width=50px
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Chris Pawley</p>
@@ -215,7 +215,7 @@
                     </div>
                     <div class="panel-body">
                         <h4>ATC Training Director (VATUK5)</h4><br/>
-                        <img src="{{ $ipboard->getMemberById(4366)->photoUrl }}"
+                        <img src="{{ $teamPhotos[4366] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Andy Ford</p>
