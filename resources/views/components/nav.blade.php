@@ -1,4 +1,4 @@
-<nav class="navbar navbar-uk navbar-fixed-top">
+<nav id="nav" class="navbar navbar-uk navbar-fixed-top">
     @if (is_local_environment())
         <div class="dev_environment_notification">
             You are in a <b>NON-PRODUCTION</b> environment
@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        <div class="collapse navbar-collapse" id="nav" style="height:100%">
+        <div class="collapse navbar-collapse" style="height:100%">
             <ul class="nav navbar-nav navcustom" style="height:100%">
                 <li class="dropdown dropdown-large" style="height:100%">
                     {!! link_to_route("site.home", "Home") !!}
