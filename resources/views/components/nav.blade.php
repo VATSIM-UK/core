@@ -17,19 +17,18 @@
         </div>
 
         <div class="collapse navbar-collapse" id="nav" style="height:100%">
-            <ul class="nav navbar-nav navcustom"  style="height:100%">
-                <li class="dropdown dropdown-large"  style="height:100%">
+            <ul class="nav navbar-nav navcustom" style="height:100%">
+                <li class="dropdown dropdown-large" style="height:100%">
                     {!! link_to_route("dashboard", "Home") !!}
                 </li>
-                
-                
 
-        <ul class="nav navbar-nav navcustom">
-            <li class="dropdown dropdown-large">
-                {!! link_to_route("site.staff", "Staff") !!}
-            </li>
-        </ul>
-        
+
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                        {!! link_to_route("site.staff", "Staff") !!}
+                    </li>
+                </ul>
+
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
@@ -57,6 +56,7 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Community <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
@@ -72,19 +72,31 @@
                         </li>
                     </ul>
                 </li>
-                @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc && Auth::user()->qualificationAtc->isS1)
-                    <li class="dropdown dropdown-large">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+
+                <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
+                                <li>{!! link_to_route("site.atc.progression", "Progression Guide (S1-C3)") !!}</li>
+                                <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
+                                <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
+                                <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
+                            </ul>
+                        </li>
+                        @if(Auth::guard('vatsim-sso')->check() && !Auth::user()->qualificationAtc->isS1)
                             <li class="col-sm-12">
                                 <ul>
+                                    <li class="divider"></li>
                                     <li class="dropdown-header">Endorsements</li>
                                     <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
                                 </ul>
                             </li>
-                        </ul>
-                    </li>
-                @endif
+                        @endif
+                    </ul>
+                </li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
