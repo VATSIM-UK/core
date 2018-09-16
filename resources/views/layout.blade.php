@@ -37,7 +37,7 @@
 @include('components.nav')
 <div class="container-fluid">
     <div class="header_container">
-        <div class="banner hidden-xs hidden-sm"></div>
+        <div id="banner" class="banner hidden-xs hidden-sm"></div>
         
         <div class="breadcrumb_outer_container hidden-xs hidden-sm">
             <div class="breadcrumb_container">
