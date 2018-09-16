@@ -10,12 +10,13 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $waitingList;
     private $staffAccount;
