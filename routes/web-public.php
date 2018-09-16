@@ -48,6 +48,14 @@ Route::group([
         Route::get('/terms-and-conditions')->uses('CommunityPagesController@viewTerms')->name('terms');
         Route::get('/teamspeak')->uses('CommunityPagesController@viewTeamspeak')->name('teamspeak');
     });
+
+    Route::group([
+        'as' => 'marketing.',
+        'prefix' => 'marketing',
+    ], function () {
+        Route::get('/live-streaming')->uses('MarketingPagesController@viewLiveStreaming')->name('live-streaming');
+        Route::get('/branding')->uses('MarketingPagesController@viewBranding')->name('branding');
+    });
 });
 
 // Helpers
