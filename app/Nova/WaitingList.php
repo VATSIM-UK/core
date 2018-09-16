@@ -48,6 +48,9 @@ class WaitingList extends Resource
                 ->rules(['required'])
                 ->creationRules('unique:training_waiting_list,name'),
 
+            Text::make('Slug')
+                ->exceptOnForms(),
+
             Select::make('Department')->options([
                 1 => 'ATC Training',
                 2 => 'Pilot Training',

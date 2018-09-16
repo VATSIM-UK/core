@@ -5,7 +5,7 @@
                 There are no accounts assigned to this waiting list.
             </p>
 
-            <div class="overflow-hidden overflow-x-auto border-2 border-40" v-if="loaded && numberOfAccounts >= 1">
+            <div class="overflow-hidden overflow-x-auto -my-3 -mx-6" v-if="loaded && numberOfAccounts >= 1">
                 <table cellpadding="0" cellspacing="0" data-testid="resource-table" class="table w-full">
                     <thead>
                     <tr>
