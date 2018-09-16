@@ -226,6 +226,14 @@
                         </ul>
                     </li>
                 </ul>
+            @else
+                <ul class="nav navbar-nav navbar-right navcustom">
+                    <li class="dropdown dropdown-large">
+                        <a href="{{ route("login") }}" title="Login">
+                            Login &thinsp;<i class="glyphicon glyphicon-log-in"></i>
+                        </a>
+                    </li>
+                </ul>
             @endif
         </div>
     </div>
