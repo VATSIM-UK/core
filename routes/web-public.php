@@ -31,6 +31,14 @@ Route::group([
         Route::get('/becoming-a-mentor')->uses('PilotPagesController@viewBecomingAMentor')->name('mentor');
         Route::get('/oceanic')->uses('PilotPagesController@viewOceanic')->name('oceanic');
     });
+
+    Route::group([
+        'as' => 'operations.',
+        'prefix' => 'operations',
+    ], function () {
+       Route::get('/')->uses('OperationsPagesController@viewLanding')->name('landing');
+        Route::get('/sectors')->uses('OperationsPagesController@viewSectors')->name('sectors');
+    });
 });
 
 // Helpers

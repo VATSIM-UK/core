@@ -118,6 +118,19 @@
                     </ul>
                 </li>
 
+                <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Operations <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{!! link_to_route("site.operations.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.operations.sectors", "Area Sectors") !!}</li>
+                                <li>{!! link_to('https://community.vatsim.uk/forum/166-atc-procedure-changes/', "Procedure Changes") !!}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
             @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                 <ul class="nav navbar-nav navbar-right navcustom">
