@@ -11,7 +11,7 @@
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{ route("dashboard") }}">
+            <a class="navbar-brand" href="{{ route("site.home") }}">
                 {!! HTML::image("images/vatsim_uk_logo.png", "UK Logo") !!}
             </a>
         </div>
@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse" id="nav" style="height:100%">
             <ul class="nav navbar-nav navcustom" style="height:100%">
                 <li class="dropdown dropdown-large" style="height:100%">
-                    {!! link_to_route("dashboard", "Home") !!}
+                    {!! link_to_route("site.home", "Home") !!}
                 </li>
 
                 <ul class="nav navbar-nav navcustom">
