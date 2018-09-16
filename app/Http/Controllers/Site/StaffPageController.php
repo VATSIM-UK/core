@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Site;
 
 use Alawrence\Ipboard\Ipboard;
-use Illuminate\Support\Facades\Cache;
 
 class StaffPageController extends \App\Http\Controllers\BaseController
 {
@@ -11,7 +10,6 @@ class StaffPageController extends \App\Http\Controllers\BaseController
     {
         $this->setTitle('Staff');
         $this->addBreadcrumb('Staff', route('site.staff'));
-
 
         return $this->viewMake('site.staff')
             ->with('teamPhotos', $this->getStaffPhotos());
@@ -28,7 +26,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                 4366 => null,
                 5125 => null,
                 6037 => null,
-                6286 => null
+                6286 => null,
             ]
         );
 
