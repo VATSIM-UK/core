@@ -22,7 +22,6 @@
                     {!! link_to_route("dashboard", "Home") !!}
                 </li>
 
-
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                         {!! link_to_route("site.staff", "Staff") !!}
@@ -40,18 +39,60 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li>{{ HTML::link('https://vatsim.uk/', 'VATSIM UK Homepage', array("target"=>"_blank")) }}</li>
-                                <li>{{ HTML::link('https://cts.vatsim.uk/', 'Central Training System', array("target"=>"_blank")) }}</li>
-                                <li>{{ HTML::link('http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html', 'UK Charts', array("target"=>"_blank")) }}</li>
+                                <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
+                                <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
+                                <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
                                 <li class="divider"></li>
-                                <li class="dropdown-header">Network Statistics</li>
-                                <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
-                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
+                                <li class="dropdown-header">Flight Training Exercises</li>
+                                <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
+                                <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
+                                <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
+                                <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
+                                <li>{!! link_to_route("site.atc.progression", "Progression Guide (S1-C3)") !!}</li>
+                                <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
+                                <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
+                                <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
+                            </ul>
+                        </li>
+                        @if(Auth::guard('vatsim-sso')->check() && !Auth::user()->qualificationAtc->isS1)
+                            <li class="col-sm-12">
+                                <ul>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Endorsements</li>
+                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                                </ul>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+
+                <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Operations <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{!! link_to_route("site.operations.landing", "Welcome") !!}</li>
+                                <li>{!! link_to_route("site.operations.sectors", "Area Sectors") !!}</li>
+                                <li>{!! link_to('https://community.vatsim.uk/forum/166-atc-procedure-changes/', "Procedure Changes") !!}</li>
                             </ul>
                         </li>
                     </ul>
@@ -89,64 +130,40 @@
                 </li>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li>{!! link_to_route("site.atc.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.atc.newController", "New Controller (OBS)") !!}</li>
-                                <li>{!! link_to_route("site.atc.progression", "Progression Guide (S1-C3)") !!}</li>
-                                <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
-                                <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
-                                <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
+                                <li class="dropdown-header">Network Statistics</li>
+                                <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
+                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
                             </ul>
                         </li>
-                        @if(Auth::guard('vatsim-sso')->check() && !Auth::user()->qualificationAtc->isS1)
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
-                                </ul>
-                            </li>
-                        @endif
                     </ul>
                 </li>
+
+                <ul class="nav navbar-nav navcustom">
+                    <li class="dropdown dropdown-large">
+                    <li>{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
+                    </li>
+                </ul>
 
                 <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilots <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Services <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
-                                <li>{!! link_to_route("site.pilots.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.pilots.ratings", "Ratings (P1 - P5)") !!}</li>
-                                <li>{!! link_to_route("site.pilots.mentor", "Becoming a Mentor") !!}</li>
-                                <li>{!! link_to_route("site.pilots.oceanic", "Oceanic Procedures") !!}</li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Flight Training Exercises</li>
-                                <li>{!! link_to_route('fte.dashboard', 'Dashboard') !!}</li>
-                                <li>{!! link_to_route('fte.guide', 'Guide') !!}</li>
-                                <li>{!! link_to_route('fte.exercises', 'Exercises') !!}</li>
-                                <li>{!! link_to_route('fte.history', 'Flight History') !!}</li>
+                                <li>{{ HTML::link('https://cts.vatsim.uk/', 'CTS') }}</li>
+                                <li>{{ HTML::link('https://helpdesk.vatsim.uk/', 'Helpdesk') }}</li>
+                                <li>{{ HTML::link('https://community.vatsim.uk/', 'Forum') }}</li>
+                                <li>{{ HTML::link('https://events.vatsim.uk/', 'Events') }}</li>
+                                <li>{{ HTML::link('https://moodle.vatsim.uk/', 'Moodle') }}</li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Operations <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li>{!! link_to_route("site.operations.landing", "Welcome") !!}</li>
-                                <li>{!! link_to_route("site.operations.sectors", "Area Sectors") !!}</li>
-                                <li>{!! link_to('https://community.vatsim.uk/forum/166-atc-procedure-changes/', "Procedure Changes") !!}</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
             </ul>
+
             @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
                 <ul class="nav navbar-nav navbar-right navcustom">
                     <li class="dropdown dropdown-large navbar-notification hidden-xs">
