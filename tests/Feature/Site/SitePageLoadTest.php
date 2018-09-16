@@ -3,8 +3,8 @@
 namespace Tests\Feature\Site;
 
 use Alawrence\Ipboard\Ipboard;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Config;
+use Tests\TestCase;
 
 class SitePageLoadTest extends TestCase
 {
