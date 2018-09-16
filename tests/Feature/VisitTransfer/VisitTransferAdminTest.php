@@ -58,8 +58,8 @@ class VisitTransferAdminTest extends TestCase
     public function testInfinitePlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), $this->createTestPostData())
-            ->assertRedirect(route('visiting.admin.facility'))
+            ->post(route('adm.visiting.facility.create.post'), $this->createTestPostData())
+            ->assertRedirect(route('adm.visiting.facility'))
             ->assertSessionHas('success');
     }
 
@@ -71,7 +71,7 @@ class VisitTransferAdminTest extends TestCase
         array_pull($array, 'training_spaces');
 
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), $array)
+            ->post(route('adm.visiting.facility.create.post'), $array)
             ->assertRedirect()->assertSessionHas('errors');
     }
 
@@ -79,8 +79,8 @@ class VisitTransferAdminTest extends TestCase
     public function testNumberOfPlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))
-            ->assertRedirect(route('visiting.admin.facility'));
+            ->post(route('adm.visiting.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))
+            ->assertRedirect(route('adm.visiting.facility'));
     }
 
     private function createTestPostData()
