@@ -77,6 +77,18 @@
                 </li>
 
                 <li class="dropdown dropdown-large">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Marketing <b class="caret"></b></a>
+                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                        <li class="col-sm-12">
+                            <ul>
+                                <li>{!! link_to_route("site.marketing.live-streaming", "Live Streaming") !!}</li>
+                                <li>{!! link_to_route("site.marketing.branding", "Branding Guidelines") !!}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
