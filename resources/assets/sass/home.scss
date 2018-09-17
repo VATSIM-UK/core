@@ -101,7 +101,6 @@
     -webkit-text-decoration-skip: objects;
   }
   a:hover {
-    color: #0478ff;
     text-decoration: underline;
   }
   a:not([href]):not([tabindex]) {
@@ -889,7 +888,6 @@
     transition: .2s linear;
   }
   a:hover, a:focus {
-    color: #50a1ff;
     text-decoration: none;
     outline: none;
   }
@@ -961,8 +959,11 @@
     color: #757575;
     font-weight: 400;
   }
+  .nav-link:hover {
+    color: #ffffff;
+  }
   .nav-link.active {
-    color: #50a1ff;
+    color: #ffffff;
   }
   [data-overlay] {
     position: relative;
@@ -1171,7 +1172,7 @@
     .nav-item:hover > .nav-link,
     .nav-link.show,
     .nav-link:hover {
-      color: #555;
+      color: #50a1ff;
 
       .arrow {
         border-top-color: #555;
@@ -1259,6 +1260,12 @@
       padding-bottom: 0.75rem;
       font-size: 0.95rem;
       text-transform: none;
+    }
+    .nav-link.active {
+      color: #50a1ff;
+    }
+    .nav-link:hover {
+      color: #50a1ff;
     }
   }
 
