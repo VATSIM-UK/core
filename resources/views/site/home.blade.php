@@ -117,7 +117,7 @@
                     <h1>Welcome to VATSIM UK!</h1>
                     <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control for our pilots.</p>
                     <hr class="w-10 my-7">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="#">Join Us!</a>
+                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join Us!</a>
                 @endif
             </div>
 
@@ -198,7 +198,7 @@
                         </div>
 
                         <div class="col-6">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="#">Join</a>
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join</a>
                         </div>
                     </div>
                 </div>
