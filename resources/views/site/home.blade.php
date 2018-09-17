@@ -186,17 +186,21 @@
                     <a class="btn btn-xl btn-round btn-primary px-7" href="https://helpdesk.vatsim.uk">Helpdesk</a>
                 </div>
             @else
-                <div class="col-6">
+                <div class="col-12 col-sm-6">
                     <h3>Let's get to know eachother...</h3>
                     <small>Login or sign up today for free!</small>
                 </div>
 
-                <div class="col-3 py-4">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
-                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
+                        </div>
 
-                <div class="col-3 py-4">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="#">Join</a>
+                        <div class="col-6">
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="#">Join</a>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>
