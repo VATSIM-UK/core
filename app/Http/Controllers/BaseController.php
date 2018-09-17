@@ -84,7 +84,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $this->buildBreadcrumb('Home', '/');
 
         $view->with('_breadcrumb', $this->breadcrumb);
-        $view->with('_bannerUrl', $this->generateBannerUrl());
+        $view->with('_bannerUrl', self::generateBannerUrl());
 
         $view->with('_pageTitle', $this->getTitle());
         $view->with('_pageSubTitle', $this->getSubTitle());
@@ -119,7 +119,7 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Generate CORE banner from time of day
      */
-    private function generateBannerUrl()
+    public static function generateBannerUrl()
     {
         $key = 'CORE_BANNER_URL';
 
