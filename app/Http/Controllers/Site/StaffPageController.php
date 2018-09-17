@@ -33,7 +33,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
         try {
             $ipboard = new Ipboard();
 
-            return $teamPhotos->map(function($value, $key){
+            return $teamPhotos->map(function($value, $key) use($ipboard) {
                 return $ipboard->getMemberById($key)->photoUrl;
             });
         } catch (\Exception $e) {
