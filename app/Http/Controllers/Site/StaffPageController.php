@@ -33,9 +33,9 @@ class StaffPageController extends \App\Http\Controllers\BaseController
         try {
             $ipboard = new Ipboard();
 
-            foreach ($teamPhotos->keys()->toArray() as $staff) {
-                $teamPhotos->put($staff, $ipboard->getMemberById($staff)->photoUrl);
-            }
+            return $teamPhotos->each(function($value, $key){
+                return $ipboard->getMemberById($key)->photoUrl;
+            });
         } catch (\Exception $e) {
         }
 
