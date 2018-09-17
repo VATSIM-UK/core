@@ -165,9 +165,9 @@
                     @endif
                     <li class="dropdown dropdown-large">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="hidden-sm">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b
+                                <span class="hidden-md">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b
                                             class="caret"></b></span>
-                            <i class="fa fa-sliders visible-sm-inline-block"><b class="caret"></b></i>
+                            <i class="fa fa-sliders visible-md-inline-block"><b class="caret"></b></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-12">

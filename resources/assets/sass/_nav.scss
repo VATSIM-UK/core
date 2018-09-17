@@ -208,7 +208,6 @@ Nav Collapse Breakpoint
     overflow-y: scroll !important;
     overflow-x: hidden !important;
   }
-
   #nav {
     .navbar-header {
       float: none;
@@ -240,6 +239,16 @@ Nav Collapse Breakpoint
     .navbar-nav > li > a {
       padding-top: 10px;
       padding-bottom: 10px;
+    }
+    .navbar-nav .open .dropdown-menu {
+      position: static;
+      float: none;
+      width: auto;
+      margin-top: 0;
+      background-color: transparent;
+      border: 0;
+      -webkit-box-shadow: none;
+      box-shadow: none;
     }
     .collapse.in {
       display: block !important;
