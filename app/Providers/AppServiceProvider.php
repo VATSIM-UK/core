@@ -26,8 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerBugsnagCallback();
 
-        View::composer('layout*', function($view)
-        {
+        View::composer('layout*', function ($view) {
             $view->with('_bannerUrl', BaseController::generateBannerUrl());
         });
 
