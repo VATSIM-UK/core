@@ -129,20 +129,6 @@
                         </li>
                     </ul>
                 </li>
-
-                <li class="dropdown dropdown-large">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics <b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
-                        <li class="col-sm-12">
-                            <ul>
-                                <li class="dropdown-header">Network Statistics</li>
-                                <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
-                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
                 <ul class="nav navbar-nav navcustom">
                     <li class="dropdown dropdown-large">
                     <li>{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
@@ -154,6 +140,10 @@
                     <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
                         <li class="col-sm-12">
                             <ul>
+                                <li class="dropdown-header">Network Statistics</li>
+                                <li>{!! link_to_route("networkdata.dashboard", "My Statistics") !!}</li>
+                                <li>{!! link_to_route("networkdata.online", "Online Users") !!}</li>
+                                <li class="divider"></li>
                                 <li>{{ HTML::link('https://cts.vatsim.uk/', 'CTS') }}</li>
                                 <li>{{ HTML::link('https://helpdesk.vatsim.uk/', 'Helpdesk') }}</li>
                                 <li>{{ HTML::link('https://community.vatsim.uk/', 'Forum') }}</li>
@@ -192,6 +182,8 @@
                         <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-12">
                                 <ul>
+                                    <li>{!! link_to_route("dashboard", "Dashboard") !!}</li>
+                                    <li class="divider"></li>
                                     <li><a>ATC Rating: <b>
                                                 @if(Auth::user()->qualification_atc == "")
                                                     OBS
