@@ -18,13 +18,9 @@
 
         <div id="nav-inner" class="collapse navbar-collapse" style="height:100%">
             <ul class="nav navbar-nav navcustom" style="height:100%">
-                <li class="dropdown dropdown-large" style="height:100%">
-                    {!! link_to_route("site.home", "Home") !!}
-                </li>
+                <li class="nav-item">{!! link_to_route("site.home", "Home") !!}</li>
 
-                <li class="dropdown dropdown-large">
-                    {!! link_to_route("site.staff", "Staff") !!}
-                </li>
+                <li class="nav-item">{!! link_to_route("site.staff", "Staff") !!}</li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
