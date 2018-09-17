@@ -180,8 +180,7 @@
                             <i class="fa fa-sliders visible-sm-inline-block"><b class="caret"></b></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
-                            <li class="col-s
-                            m-12">
+                            <li class="col-sm-12">
                                 <ul>
                                     <li>{!! link_to_route("dashboard", "Dashboard") !!}</li>
                                     <li class="divider"></li>
