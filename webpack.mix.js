@@ -29,6 +29,8 @@ mix.js('resources/assets/js/app.js', 'public/js/app-all.js');
 
 // homepage
 mix.sass('resources/assets/sass/home.scss', 'public/css/home.css');
+mix.copy('resources/assets/js/home.js', 'public/js/home.js');
+
 
 // general
 mix.version();
