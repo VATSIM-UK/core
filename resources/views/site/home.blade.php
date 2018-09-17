@@ -114,7 +114,7 @@
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
                 @else
-                    <h1>Welcome; to VATSIM UK!</h1>
+                    <h1>Welcome to VATSIM UK!</h1>
                     <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control for our pilots.</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="#">Join Us!</a>
