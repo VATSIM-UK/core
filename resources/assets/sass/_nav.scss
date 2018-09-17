@@ -204,7 +204,7 @@ Nav Collapse Breakpoint
  */
 
 @media (max-width: $screen-md-min) {
-  #nav > ul{
+  #nav-inner {
     overflow-y: scroll !important;
     overflow-x: hidden !important;
   }
