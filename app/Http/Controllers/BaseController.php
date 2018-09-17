@@ -131,6 +131,9 @@ class BaseController extends \Illuminate\Routing\Controller
         $time = Carbon::now();
 
         switch ($time) {
+            case $time->hour < 7:
+                $time = 'night';
+                break;
             case $time->hour < 9:
                 $time = 'morning';
                 break;
