@@ -25,7 +25,7 @@
         <div class="navbar-left">
             <button class="navbar-toggler" type="button">&#9776;</button>
             <a class="navbar-brand" href="#">
-                <img class="logo-light" src="images/vatsim_uk_logo.png" alt="logo" width="150px">
+                <img class="logo-light mt-2" src="images/vatsim_uk_logo.png" alt="logo" width="150px">
             </a>
         </div>
 
