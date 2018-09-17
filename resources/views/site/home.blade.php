@@ -80,11 +80,10 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fa fa-twitter"></i></a>
                     </li>
-                    @if(Auth::guard('vatsim-sso')->check())
-
-                    <li class="nav-item">
-                        <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
-                    </li>
+                    @if(currentUserHasAuth())
+                        <li class="nav-item">
+                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
+                        </li>
                     @else
                         <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fa fa-sign-in"></i></a>
                     @endif
@@ -102,12 +101,12 @@
         <div class="row align-items-center h-100">
 
             <div class="col-md-8 mx-auto text-center py-8 flex-grow">
-                @if(Auth::guard('vatsim-sso')->check() && $_account->hasState('DIVISION'))
+                @if(currentUserHasAuth() && $_account->hasState('DIVISION'))
                     <h1>Welcome back, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of VATSIM UK?</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
-                @elseif(Auth::guard('vatsim-sso')->check())
+                @elseif(currentUserHasAuth())
                     <h1>Welcome to VATSIM UK, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0"> Have you considered visiting or transferring to the UK?</p>
                     <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn more!</a></p>
@@ -168,22 +167,25 @@
     <div class="container text-center">
 
         <div class="row">
-            @if(Auth::guard('vatsim-sso')->check())
-                <div class="col-6">
+            @if(currentUserHasAuth())
+                <div class="col-12 col-lg-4">
                     <h3>Welcome back, {{ $_account->name_first }}!</h3>
                     <small>How've you been?</small>
                 </div>
+                <div class="col-12 col-lg-8">
+                    <div class="row">
+                        <div class="col-12 col-md-4 mb-3">
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="https://community.vatsim.uk/downloads">Downloads</a>
+                        </div>
 
-                <div class="col-2 py-4 px-4">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="https://community.vatsim.uk/downloads">Downloads</a>
-                </div>
+                        <div class="col-12 col-md-4 mb-3">
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="https://moodle.vatsim.uk">Moodle</a>
+                        </div>
 
-                <div class="col-2 py-4 px-4">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="https://moodle.vatsim.uk">Moodle</a>
-                </div>
-
-                <div class="col-2 py-4">
-                    <a class="btn btn-xl btn-round btn-primary px-7" href="https://helpdesk.vatsim.uk">Helpdesk</a>
+                        <div class="col-12 col-md-4 mb-3">
+                            <a class="btn btn-xl btn-round btn-primary px-7" href="https://helpdesk.vatsim.uk">Helpdesk</a>
+                        </div>
+                    </div>
                 </div>
             @else
                 <div class="col-12 col-sm-6">
