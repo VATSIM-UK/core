@@ -123,7 +123,7 @@
                         </li>
                     </ul>
                 </li>
-                <li>{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
+                <li class="nav-item">{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Services <b class="caret"></b></a>
