@@ -30,20 +30,65 @@
         </div>
 
         <section class="navbar-mobile">
-            <nav class="nav nav-navbar ml-auto">
-                <a class="nav-link active" href="#">Welcome</a>
-                <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
-                <a class="nav-link" href="https://community.vatsim.uk/files/downloads/file/25-division-policy">Division Policy</a>
-                <a class="nav-link" href="https://cts.vatsim.uk">CTS</a>
-                <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
-                <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fa fa-facebook"></i></a>
-                <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fa fa-twitter"></i></a>
-                @if(Auth::guard('vatsim-sso')->check())
-                    <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fa fa-sign-in"></i></a>
-                @endif
-            </nav>
+            <ul class="nav nav-navbar ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Welcome</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href={{route("site.pilots.landing")}}>Training</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href={{route("site.airports")}}>Airfield Information</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Membership <span class="arrow"></span></a>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://cts.vatsim.uk">CTS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://helpdesk.vatsim.uk/">Helpdesk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://community.vatsim-uk.co.uk/downloads">Downloads</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route("site.community.vt-guide")}}">Visit or Transfer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://community.vatsim.uk/files/downloads/file/25-division-policy">Division Policy</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    @if(Auth::guard('vatsim-sso')->check())
+
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
+                    </li>
+                    @else
+                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fa fa-sign-in"></i></a>
+                    @endif
+            </ul>
         </section>
 
     </div>
