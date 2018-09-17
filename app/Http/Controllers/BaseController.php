@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Mship\Account;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Cache;
 use Session;
 use View;
 
@@ -121,36 +121,37 @@ class BaseController extends \Illuminate\Routing\Controller
      */
     private function generateBannerUrl()
     {
-        $key = "CORE_BANNER_URL";
+        $key = 'CORE_BANNER_URL';
 
-        if($url = Cache::get($key)){
+        if ($url = Cache::get($key)) {
             return $url;
         }
 
         // Work out time of day
         $time = Carbon::now();
 
-        switch($time){
+        switch ($time) {
             case $time->hour < 9:
-                $time = "morning";
+                $time = 'morning';
                 break;
             case $time->hour < 17:
-                $time = "day";
+                $time = 'day';
                 break;
             case $time->hour < 21:
-                $time = "evening";
+                $time = 'evening';
                 break;
             default:
-                $time = "night";
+                $time = 'night';
         }
 
         $dir = public_path('images/banner/'.$time);
         $images = array_diff(scandir($dir), ['.', '..']);
-        if(count($images) == 0){
+        if (count($images) == 0) {
             return asset('images/banner/fallback.jpg');
         }
         $url = asset("images/banner/$time/".$images[array_rand($images)]);
         Cache::put($key, $url, 60);
+
         return $url;
     }
 
