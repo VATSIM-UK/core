@@ -26,11 +26,15 @@ class AirportController extends BaseController
             });
         })->collapse();
 
-        $stand_status = null;
-        if (File::exists(resource_path().'/assets/data/stands/'.$airport->icao.'.csv')) {
-            $stand_status = (new StandStatus($airport->icao, resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
-        }
 
-        return $this->viewMake('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
+        return $this->viewMake('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $this->loadStandStatus($airport)]);
+    }
+
+    private function loadStandStatus($airport)
+    {
+        if (File::exists(resource_path().'/assets/data/stands/'.strtolower($airport->icao).'.csv')) {
+            return (new StandStatus($airport->icao, resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
+        }
+        return null;
     }
 }
