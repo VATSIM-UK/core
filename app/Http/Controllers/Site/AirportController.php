@@ -26,7 +26,6 @@ class AirportController extends BaseController
             });
         })->collapse();
 
-
         return $this->viewMake('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $this->loadStandStatus($airport)]);
     }
 
@@ -36,6 +35,5 @@ class AirportController extends BaseController
         if (File::exists($file_path)) {
             return (new StandStatus($airport->icao, $file_path, $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }
-        return null;
     }
 }
