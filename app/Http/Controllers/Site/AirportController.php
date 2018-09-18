@@ -35,5 +35,6 @@ class AirportController extends BaseController
         if (File::exists($file_path)) {
             return (new StandStatus($airport->icao, $file_path, $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }
+        return null;
     }
 }
