@@ -6,7 +6,7 @@
     @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav">
+            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav-inner">
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
@@ -16,17 +16,11 @@
             </a>
         </div>
 
-        <div class="collapse navbar-collapse" style="height:100%">
+        <div id="nav-inner" class="collapse navbar-collapse" style="height:100%">
             <ul class="nav navbar-nav navcustom" style="height:100%">
-                <li class="dropdown dropdown-large" style="height:100%">
-                    {!! link_to_route("site.home", "Home") !!}
-                </li>
+                <li class="nav-item">{!! link_to_route("site.home", "Home") !!}</li>
 
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                        {!! link_to_route("site.staff", "Staff") !!}
-                    </li>
-                </ul>
+                <li class="nav-item">{!! link_to_route("site.staff", "Staff") !!}</li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
@@ -129,11 +123,7 @@
                         </li>
                     </ul>
                 </li>
-                <ul class="nav navbar-nav navcustom">
-                    <li class="dropdown dropdown-large">
-                    <li>{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
-                    </li>
-                </ul>
+                <li class="nav-item">{{ HTML::link('http://community.vatsim-uk.co.uk/downloads', 'Downloads') }}</li>
 
                 <li class="dropdown dropdown-large">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Services <b class="caret"></b></a>
@@ -175,9 +165,9 @@
                     @endif
                     <li class="dropdown dropdown-large">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="hidden-sm">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b
+                                <span class="hidden-md">{{Auth::user()->name.' (' .Auth::user()->id.')'}} <b
                                             class="caret"></b></span>
-                            <i class="fa fa-sliders visible-sm-inline-block"><b class="caret"></b></i>
+                            <i class="fa fa-sliders visible-md-inline-block"><b class="caret"></b></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-logout dropdown-menu-large row mainmenu_dropdown">
                             <li class="col-sm-12">
