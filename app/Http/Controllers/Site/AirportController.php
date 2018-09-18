@@ -13,7 +13,7 @@ class AirportController extends BaseController
     {
         $airports = Airport::uk()->orderBy('name')->get()->split(2);
 
-        return view('site.airport.index')->with('airports', $airports);
+        return $this->viewMake('site.airport.index')->with('airports', $airports);
     }
 
     public function show(Airport $airport)
@@ -31,6 +31,6 @@ class AirportController extends BaseController
             $stand_status = (new StandStatus($airport->icao, resource_path().'/assets/data/stands/'.$airport->icao.'.csv', $airport->latitude, $airport->longitude, false, null))->setMaxAircraftAltitude($airport->elevation + 300)->parseData();
         }
 
-        return view('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
+        return $this->viewMake('site.airport.view')->with(['airport' => $airport, 'stations' => $stations, 'stands' => $stand_status]);
     }
 }

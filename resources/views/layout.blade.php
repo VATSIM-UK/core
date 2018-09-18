@@ -30,6 +30,13 @@
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Yellowtail">
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Josefin+Slab:600">
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/app-all.css') }}">
+    {{-- Dynamic Style --}}
+    <style type="text/css">
+        .banner{
+            background: url({{$_bannerUrl}}) no-repeat 50%;
+            background-size: cover;
+        }
+    </style>
 
     @yield('styles')
 </head>
