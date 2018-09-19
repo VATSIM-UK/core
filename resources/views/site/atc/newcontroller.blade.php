@@ -317,8 +317,7 @@
                     (OBS_PT1)
                 </div>
                 <div class="panel-body">
-                    <p>Announcements of upcoming group sessions are posted here: <a
-                                href="https://community.vatsim.uk/topic/34050-group-obs-session-dates/">https://community.vatsim.uk/topic/34050-group-obs-session-dates</a>.
+                    <p>Announcements of upcoming group sessions are posted here: <a class="wb-bw" href="https://community.vatsim.uk/topic/34050-group-obs-session-dates/">https://community.vatsim.uk/topic/34050-group-obs-session-dates</a>.
                     </p>
                 </div>
             </div>

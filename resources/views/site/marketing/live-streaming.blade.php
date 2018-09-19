@@ -2,8 +2,8 @@
 
 @section('content')
 
-    <div class="row-flex">
-        <div class="col-md-4 col-md-offset-2">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-2">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-record"></i> &thinsp; Live Streaming
                 </div>
@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-calendar"></i> &thinsp; Upcoming Live Streams
                 </div>
