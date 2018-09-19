@@ -93,7 +93,7 @@
                     Rating
                 </div>
                 <div class="panel-body">
-                    <p>The IFR Pilot (P4) course is the first fo 2 dedicated IFR pilot ratings. In this course you will
+                    <p>The IFR Pilot (P4) course is the first of 2 dedicated IFR pilot ratings. In this course you will
                         learn how to operate your selected aircraft under IFR rules, flying a SID, joining the airways,
                         following a STAR back down to earth and finally, fly a fully managed procedural ILS approach.
                         This
