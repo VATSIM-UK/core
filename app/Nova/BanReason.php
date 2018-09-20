@@ -31,6 +31,17 @@ class BanReason extends Resource
     public static $search = [];
 
     /**
+     * Removes BanReason from navigation bar.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
