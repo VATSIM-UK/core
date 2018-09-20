@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -127,6 +128,8 @@ class Account extends Resource
 
             BelongsToMany::make('States', 'statesHistory')->onlyOnDetail(),
 
+            HasMany::make('Bans', 'bans')->onlyOnDetail(),
+
             BelongsToMany::make('Roles'),
         ];
     }
@@ -178,6 +181,8 @@ class Account extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new Actions\Mship\BanAccount)
+        ];
     }
 }
