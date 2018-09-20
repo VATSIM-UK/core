@@ -31,11 +31,12 @@ class Ban extends Resource
         'id',
     ];
 
-    public static function availableForNavigation(Request $request)
-    {
-        return false;
-    }
-
+    /**
+     * Bans are processed using an action and thus the form for creating is not required.
+     *
+     * @param Request $request
+     * @return bool
+     */
     public static function authorizedToCreate(Request $request)
     {
         return false;
