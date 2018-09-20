@@ -2,49 +2,33 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Ban extends Resource
+class BanReason extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\\Models\\Mship\\Account\\Ban';
+    public static $model = 'App\\Models\\Mship\\Ban\\Reason';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
      *
      * @var array
      */
-    public static $search = [
-        'id',
-    ];
-
-    /**
-     * Bans are processed using an action and thus the form for creating is not required.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    public static function authorizedToCreate(Request $request)
-    {
-        return false;
-    }
+    public static $search = [];
 
     /**
      * Get the fields displayed by the resource.
@@ -55,17 +39,11 @@ class Ban extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make(),
+            ID::make()->sortable(),
 
-            DateTime::make('Banned At', 'created_at')->exceptOnForms(),
+            Text::make('Name'),
 
-            Text::make('Internal Note', 'reason_extra')->exceptOnForms()->hideFromIndex(),
-
-            BelongsTo::make('Ban Reason', 'reason', 'App\\Nova\\BanReason')->exceptOnForms()->hideFromIndex(),
-
-            BelongsTo::make('Banned By', 'banner', 'App\\Nova\\Account')->exceptOnForms(),
-
-            Boolean::make('Active')->exceptOnForms(),
+            Text::make('Reason Text', 'reason_text'),
         ];
     }
 
