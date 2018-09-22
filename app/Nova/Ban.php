@@ -117,7 +117,7 @@ class Ban extends Resource
     public function actions(Request $request)
     {
         return [
-            (new Actions\Mship\RepealBan)
+            (new Actions\Mship\RepealBan),
         ];
     }
 }
