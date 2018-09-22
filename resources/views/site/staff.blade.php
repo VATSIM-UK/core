@@ -86,20 +86,16 @@
                             </div>
                             <div class="panel-body">
                                 <h4>Marketing Director (VATUK4)</h4><br/>
-                                <img src="{{ $teamPhotos[6037] }}"
+                                <img src="{{ $teamPhotos[5161] }}"
                                      width=50px
                                      class="img-responsive center-block profile-picture"/>
-                                <p class="text-center">Layth Al-Wakil</p>
+                                <p class="text-center">Trevor Hannant</p>
 
                                 <h4>Marketing Team</h4>
                                 <table class="table">
                                     <tr>
                                         <td>Social Media Manager</td>
                                         <td>Loui Ringer</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Events Manager</td>
-                                        <td>Trevor Hannant</td>
                                     </tr>
                                 </table>
 
@@ -287,6 +283,10 @@
                             <tr>
                                 <td>TG Instructor (TG2)</td>
                                 <td>Luke Collister</td>
+                            </tr>
+                            <tr>
+                                <td>TG Instructor (Heathrow)</td>
+                                <td>James Yuen</td>
                             </tr>
                         </table>
                     </div>
