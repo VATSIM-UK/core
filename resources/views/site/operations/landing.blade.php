@@ -21,7 +21,7 @@
                     <p>
                         The operations department has responsibility for creating, updating and maintaining software,
                         documentation and other resources to support the division. Broadly, most resources which fall
-                        outside of either the ATC or pilot training systems is the responsibility of the Operations
+                        outside of either the ATC or pilot training systems are the responsibility of the Operations
                         Department.
                     </p>
 
