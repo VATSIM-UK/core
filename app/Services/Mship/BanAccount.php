@@ -46,8 +46,16 @@ class BanAccount implements BaseService
 
     public function getBanIdentifier()
     {
-        if (isset($this->ban)) {
-            return $this->ban->id;
-        }
+        return $this->banProcessed() ? $this->ban->id : null;
+    }
+
+    private function banProcessed()
+    {
+        return isset($this->ban);
+    }
+
+    public function getBanInstance()
+    {
+        return $this->banProcessed() ? $this->ban : null;
     }
 }
