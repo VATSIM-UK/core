@@ -181,3 +181,8 @@ function is_local_environment()
 {
     return env('APP_IS_LOCAL') == 'true';
 }
+
+function handleService(\App\Services\BaseService $service)
+{
+    return $service->handle();
+}
