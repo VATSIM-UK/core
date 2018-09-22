@@ -3,10 +3,10 @@
 namespace Tests\Unit\Mship;
 
 use App\Events\Mship\Bans\BanUpdated;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account;
+use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
