@@ -2916,16 +2916,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.0.3",
+            "version": "v4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d"
+                "reference": "fa6ee28600d21d49b2b4e1006b48426cec8e579c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd088dc940a418f09cda079a9b5c7c478890fb8d",
-                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/fa6ee28600d21d49b2b4e1006b48426cec8e579c",
+                "reference": "fa6ee28600d21d49b2b4e1006b48426cec8e579c",
                 "shasum": ""
             },
             "require": {
@@ -2963,7 +2963,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2018-07-15T17:25:16+00:00"
+            "time": "2018-09-18T07:03:24+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -3016,16 +3016,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.6.5",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "aaaf71f3f7713248703c23cfbd1189ce1215f57f"
+                "reference": "7b73005be3c224f12c47bd75a23ce24b762e47e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/aaaf71f3f7713248703c23cfbd1189ce1215f57f",
-                "reference": "aaaf71f3f7713248703c23cfbd1189ce1215f57f",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/7b73005be3c224f12c47bd75a23ce24b762e47e8",
+                "reference": "7b73005be3c224f12c47bd75a23ce24b762e47e8",
                 "shasum": ""
             },
             "require": {
@@ -3094,7 +3094,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2018-09-14T00:17:10+00:00"
+            "time": "2018-09-22T03:59:58+00:00"
         },
         {
             "name": "phpoffice/phpexcel",
@@ -3264,11 +3264,7 @@
                 "php": ">=5.2.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0.0",
-                "phpunit/phpunit": "^4.8.35 || ^5.4.3 || ^6.0 || ^7.0",
-                "react/socket": "^0.8.5",
-                "satooshi/php-coveralls": "^1.1 || ^2.0",
-                "symfony/yaml": "~2.1|~3.0|~4.0"
+                "phpunit/phpunit": "5.7.*"
             },
             "type": "library",
             "autoload": {
@@ -3298,7 +3294,7 @@
                 "teamspeak",
                 "ts3"
             ],
-            "time": "2018-05-07T18:25:32+00:00"
+            "time": "2017-12-06T16:53:01+00:00"
         },
         {
             "name": "psr/container",
