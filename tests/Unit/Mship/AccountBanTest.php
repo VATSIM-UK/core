@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Mship;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\Mship\BanCreated;
 use App\Events\Mship\Bans\BanUpdated;
-use Illuminate\Support\Facades\Event;
-use App\Services\Mship\BanAccount;
-use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account;
+use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Role;
+use App\Notifications\Mship\BanCreated;
+use App\Services\Mship\BanAccount;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AccountBanTest extends TestCase

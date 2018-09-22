@@ -3,7 +3,6 @@
 namespace App\Nova\Actions\Mship;
 
 use App\Models\Mship\Ban\Reason;
-use App\Notifications\Mship\BanCreated;
 use App\Nova\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;

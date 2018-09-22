@@ -2,11 +2,11 @@
 
 namespace App\Services\Mship;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use App\Notifications\Mship\BanCreated;
-use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Account;
+use App\Models\Mship\Ban\Reason;
+use App\Notifications\Mship\BanCreated;
 use App\Services\BaseService;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class BanAccount implements BaseService
 {
