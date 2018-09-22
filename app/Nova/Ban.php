@@ -45,6 +45,11 @@ class Ban extends Resource
         return false;
     }
 
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -56,6 +61,8 @@ class Ban extends Resource
         return [
             ID::make(),
 
+            BelongsTo::make('Account', 'account')->onlyOnIndex(),
+
             DateTime::make('Banned At', 'created_at')->exceptOnForms(),
 
             Text::make('Internal Note', 'reason_extra')->exceptOnForms()->hideFromIndex(),
@@ -64,7 +71,7 @@ class Ban extends Resource
 
             BelongsTo::make('Banned By', 'banner', 'App\\Nova\\Account')->exceptOnForms(),
 
-            Boolean::make('Active')->exceptOnForms(),
+            Boolean::make('Active', 'isActive')->exceptOnForms(),
         ];
     }
 
@@ -109,6 +116,8 @@ class Ban extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new Actions\Mship\RepealBan)
+        ];
     }
 }
