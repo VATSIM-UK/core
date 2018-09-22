@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Select;
@@ -35,14 +36,7 @@ class BanAccount extends Action
             return Action::danger('This Account is already banned');
         }
 
-        $ban = $account->addBan(
-            Reason::find($fields->ban_reason),
-            $fields->ban_reason_extra,
-            $fields->ban_internal_note,
-            auth()->id()
-        );
-
-        $account->notify(new BanCreated($ban));
+        $service = new \App\Services\Mship\BanAccount($account, Reason::find($fields->ban_reason), Auth::user(), $fields->toArray());
 
         return Action::message('You have successfully banned this member.');
     }
