@@ -8,6 +8,9 @@
     "APP_ENV": "development",
     "APP_DEBUG": "true",
     "APP_DEBUGBAR": "true",
+    "APP_KEY": {
+      "required": true
+    },
     "APP_IS_LOCAL": "true",
     "BUGSNAG_FILTERS": "password,authid,authpassword,apikey_pub,access_token,x-newrelic-id,cid",
     "BUGSNAG_BATCH_SENDING": "true",
