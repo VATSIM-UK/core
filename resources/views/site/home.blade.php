@@ -8,6 +8,22 @@
 
     <title>VATSIM United Kingdom Division</title>
 
+    <!--BugSnagScript-->
+    <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
+            data-apikey="b3be4a53f2e319e1fa77bb3c85a3449d"
+            data-releasestage="{{ env('APP_ENV') }}"></script>
+    <script type="text/javascript">
+        Bugsnag.notifyReleaseStages = ["staging", "production"];
+
+        @if(Auth::check())
+            Bugsnag.user = {
+            id: {{ Auth::user()->id }},
+            name: "{{ Auth::user()->name }}",
+            email: "{{ Auth::user()->email }}"
+        };
+        @endif
+    </script>
+
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
 
