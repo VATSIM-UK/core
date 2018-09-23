@@ -343,55 +343,55 @@ class CreateFeedbackTables extends Migration
                 'name' => 'adm/mship/feedback',
                 'display_name' => 'Admin / Membership / Feedback Access',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/list',
                 'display_name' => 'Admin / Membership / Feedback / List All',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/list/atc',
                 'display_name' => 'Admin / Membership / Feedback / List ATC',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/list/pilot',
                 'display_name' => 'Admin / Membership / Feedback / List Pilot',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/view/*',
                 'display_name' => 'Admin / Membership / Feedback / View',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/configure/*',
                 'display_name' => 'Admin / Membership / Feedback / Configure All Forms',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/view/*/action',
                 'display_name' => 'Admin / Membership / Feedback / Mark Actioned',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/view/*/unaction',
                 'display_name' => 'Admin / Membership / Feedback / Unmark Actioned',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'adm/mship/feedback/view/*/reporter',
                 'display_name' => 'Admin / Membership / Feedback / View Reporter',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }
