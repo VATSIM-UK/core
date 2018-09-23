@@ -65,16 +65,10 @@
     },
     {
       "url": "heroku/nodejs"
-    }
-  ],
-  "addons": [
-    {
-      "plan": "heroku-redis:hobby-dev",
-      "as": "REDIS"
     },
     {
-      "plan": "jawsdb-maria:kitefin",
-      "as": "DATABASE"
+      "url": "https://github.com/ryanbrainard/heroku-buildpack-nodejs.git"
     }
+  ]
   ]
 }
