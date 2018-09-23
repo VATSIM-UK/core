@@ -5,11 +5,11 @@ namespace App\Providers;
 use Bugsnag;
 use Config;
 use HTML;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use URL;
 use Validator;
 use View;
-use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
