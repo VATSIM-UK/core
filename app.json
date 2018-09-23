@@ -1,0 +1,80 @@
+{
+  "name": "VATSIM UK Core",
+  "description": "",
+  "scripts": {
+    "postdeploy": "php artisan postdeploy:heroku"
+  },
+  "env": {
+    "APP_DEBUG": "true",
+    "APP_ENV": "development",
+    "APP_KEY": {
+      "required": true
+    },
+    "APP_LOG": "errorlog",
+    "APP_LOG_LEVEL": "error",
+    "BROADCAST_DRIVER": "redis",
+    "CACHE_DRIVER": "redis",
+    "DB_CONNECTION": "mysql",
+    "FILESYSTEM_DRIVER": "local",
+    "MAIL_DRIVER": "smtp",
+    "MAIL_ENCRYPTION": "tls",
+    "MAIL_FROM_ADDRESS": "team@localhost.com",
+    "MAIL_FROM_NAME": "team@localhost.com",
+    "MAIL_HOST": {
+      "required": true
+    },
+    "MAIL_PASSWORD": {
+      "required": true
+    },
+    "MAIL_PORT": {
+      "required": true
+    },
+    "MAIL_USERNAME": {
+      "required": true
+    },
+    "NEXMO_KEY": {
+      "required": true
+    },
+    "NEXMO_SECRET": {
+      "required": true
+    },
+    "QUEUE_DRIVER": "sync",
+    "RESPONSE_CACHE_ENABLED": "true",
+    "RESPONSE_CACHE_DRIVER": "redis",
+    "SENDGRID_PASSWORD": {
+      "required": true
+    },
+    "SENDGRID_USERNAME": {
+      "required": true
+    },
+    "SESSION_DRIVER": "redis"
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "queue": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-redis:hobby-dev",
+      "as": "REDIS"
+    },
+    {
+      "plan": "jawsdb-maria:kitefin",
+      "as": "DATABASE"
+    }
+  ]
+}
