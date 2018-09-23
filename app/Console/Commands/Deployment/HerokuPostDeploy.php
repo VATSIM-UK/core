@@ -22,6 +22,8 @@ class HerokuPostDeploy extends Command
             return false;
         }
 
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+
         switch ($environment) {
             case 'production':
                 $this->call('migrate', ['--force' => true]);
@@ -33,6 +35,8 @@ class HerokuPostDeploy extends Command
                 $this->call('migrate:fresh');
                 break;
         }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 
     private function checkDatabaseConnection()
