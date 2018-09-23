@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use URL;
 use Validator;
 use View;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
