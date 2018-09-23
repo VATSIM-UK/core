@@ -33,6 +33,38 @@ class CreateFeedbackTables extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('mship_feedback_questions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('type_id');
+            $table->unsignedInteger('form_id');
+            $table->string('slug', 20);
+            $table->text('question');
+            $table->text('options')->nullable();
+            $table->boolean('required');
+            $table->unsignedInteger('sequence');
+            $table->boolean('permanent');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('mship_feedback_question_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->text('code');
+            $table->string('rules')->nullable();
+            $table->unsignedInteger('max_uses')->default(0);
+            $table->boolean('requires_value')->default(false);
+        });
+
+        Schema::create('mship_feedback_answers', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('feedback_id');
+            $table->unsignedInteger('question_id');
+            $table->text('response');
+        });
+
+        // Insert default data
+
         DB::table('mship_feedback_forms')->insert([
             [
                 'name' => 'ATC Feedback',
@@ -48,19 +80,43 @@ class CreateFeedbackTables extends Migration
             ],
         ]);
 
-        Schema::create('mship_feedback_questions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('type_id');
-            $table->unsignedInteger('form_id');
-            $table->string('slug', 20);
-            $table->text('question');
-            $table->text('options')->nullable();
-            $table->boolean('required');
-            $table->unsignedInteger('sequence');
-            $table->boolean('permanent');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        DB::table('mship_feedback_question_types')->insert([
+            [
+                'name' => 'userlookup',
+                'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
+                'rules' => 'integer|exists:mship_account,id',
+                'requires_value' => false,
+                'max_uses' => 1,
+            ],
+            [
+                'name' => 'text',
+                'code' => '<input class="form-control" name="%1$s" type="text" value="%2$s" id="%1$s">',
+                'rules' => null,
+                'requires_value' => false,
+                'max_uses' => 0,
+            ],
+            [
+                'name' => 'textarea',
+                'code' => '<textarea class="form-control" name="%1$s" cols="50" rows="10" id="%1$s">%2$s</textarea>',
+                'rules' => null,
+                'requires_value' => false,
+                'max_uses' => 0,
+            ],
+            [
+                'name' => 'radio',
+                'code' => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s" %5$s> %3$s',
+                'rules' => null,
+                'requires_value' => true,
+                'max_uses' => 0,
+            ],
+            [
+                'name' => 'datetime',
+                'code' => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">',
+                'rules' => 'date',
+                'requires_value' => false,
+                'max_uses' => 0,
+            ],
+        ]);
 
         DB::table('mship_feedback_questions')->insert([
             [
@@ -281,71 +337,62 @@ class CreateFeedbackTables extends Migration
             ],
         ]);
 
-        Schema::create('mship_feedback_question_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->text('code');
-            $table->string('rules')->nullable();
-            $table->unsignedInteger('max_uses')->default(0);
-            $table->boolean('requires_value')->default(false);
-        });
-
-        DB::table('mship_feedback_question_types')->insert([
-            [
-                'name' => 'userlookup',
-                'code' => '<input class="form-control" name="%1$s" type="text" id="%1$s" value="%2$s" placeholder="Enter the Users CID e.g 1234567">',
-                'rules' => 'integer|exists:mship_account,id',
-                'requires_value' => false,
-                'max_uses' => 1,
-            ],
-            [
-                'name' => 'text',
-                'code' => '<input class="form-control" name="%1$s" type="text" value="%2$s" id="%1$s">',
-                'rules' => null,
-                'requires_value' => false,
-                'max_uses' => 0,
-            ],
-            [
-                'name' => 'textarea',
-                'code' => '<textarea class="form-control" name="%1$s" cols="50" rows="10" id="%1$s">%2$s</textarea>',
-                'rules' => null,
-                'requires_value' => false,
-                'max_uses' => 0,
-            ],
-            [
-                'name' => 'radio',
-                'code' => '<input name="%1$s" type="radio" style="margin-left: 20px;" value="%4$s" id="%1$s" %5$s> %3$s',
-                'rules' => null,
-                'requires_value' => true,
-                'max_uses' => 0,
-            ],
-            [
-                'name' => 'datetime',
-                'code' => '<input class="form-control datetimepickercustom" name="%1$s" type="text" value="%2$s" id="%1$s">',
-                'rules' => 'date',
-                'requires_value' => false,
-                'max_uses' => 0,
-            ],
-        ]);
-
-        Schema::create('mship_feedback_answers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('feedback_id');
-            $table->unsignedInteger('question_id');
-            $table->text('response');
-        });
-
         // Insert new permissions
         DB::table('mship_permission')->insert([
-            ['name' => 'adm/mship/feedback', 'display_name' => 'Admin / Membership / Feedback Access', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/list', 'display_name' => 'Admin / Membership / Feedback / List All', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/list/atc', 'display_name' => 'Admin / Membership / Feedback / List ATC', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/list/pilot', 'display_name' => 'Admin / Membership / Feedback / List Pilot', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/view/*', 'display_name' => 'Admin / Membership / Feedback / View', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/configure/*', 'display_name' => 'Admin / Membership / Feedback / Configure All Forms', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/view/*/action', 'display_name' => 'Admin / Membership / Feedback / Mark Actioned', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/view/*/unaction', 'display_name' => 'Admin / Membership / Feedback / Unmark Actioned', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'adm/mship/feedback/view/*/reporter', 'display_name' => 'Admin / Membership / Feedback / View Reporter', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            [
+                'name' => 'adm/mship/feedback',
+                'display_name' => 'Admin / Membership / Feedback Access',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/list',
+                'display_name' => 'Admin / Membership / Feedback / List All',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/list/atc',
+                'display_name' => 'Admin / Membership / Feedback / List ATC',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/list/pilot',
+                'display_name' => 'Admin / Membership / Feedback / List Pilot',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/view/*',
+                'display_name' => 'Admin / Membership / Feedback / View',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/configure/*',
+                'display_name' => 'Admin / Membership / Feedback / Configure All Forms',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/view/*/action',
+                'display_name' => 'Admin / Membership / Feedback / Mark Actioned',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/view/*/unaction',
+                'display_name' => 'Admin / Membership / Feedback / Unmark Actioned',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'adm/mship/feedback/view/*/reporter',
+                'display_name' => 'Admin / Membership / Feedback / View Reporter',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 
