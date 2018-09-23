@@ -23,13 +23,13 @@ class HerokuPostDeploy extends Command
         }
 
         switch ($environment) {
-            case "production":
+            case 'production':
                 $this->call('migrate', ['--force' => true]);
                 break;
-            case "staging":
+            case 'staging':
                 $this->call('migrate');
                 break;
-            case "development":
+            case 'development':
                 $this->call('migrate:fresh');
                 break;
         }
@@ -39,6 +39,7 @@ class HerokuPostDeploy extends Command
     {
         try {
             DB::connection()->getDatabaseName();
+
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -51,6 +52,6 @@ class HerokuPostDeploy extends Command
             return false;
         }
 
-        $this->call("responsecache:clear");
+        $this->call('responsecache:clear');
     }
 }
