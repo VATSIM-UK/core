@@ -8,12 +8,6 @@
     "APP_ENV": "development",
     "APP_DEBUG": "true",
     "APP_DEBUGBAR": "true",
-    "APP_KEY": {
-      "required": true
-    },
-    "APP_URL": {
-      "required": true
-    },
     "APP_IS_LOCAL": "true",
     "BUGSNAG_FILTERS": "password,authid,authpassword,apikey_pub,access_token,x-newrelic-id,cid",
     "BUGSNAG_BATCH_SENDING": "true",
@@ -24,23 +18,10 @@
     "SESSION_DOMAIN": ".vukcore.test",
     "SESSION_LIFETIME": "10080",
     "SESSION_COOKIE": "vukcore.test.session",
-    "DB_MYSQL_HOST": {
-      "required": true
-    },
-    "DB_MYSQL_PORT": {
-      "required": true
-    },
-    "DB_MYSQL_USER": {
-      "required": true
-    },
-    "DB_MYSQL_PASS": {
-      "required": true
-    },
-    "DB_MYSQL_NAME": {
-      "required": true
-    },
     "MAIL_DRIVER": "log",
-    "SSO_BASE": "http://sso.hardern.net/server/",
+    "SSO_BASE": {
+      "required": true
+    },
     "SSO_CERT": {
       "required": true
     },
