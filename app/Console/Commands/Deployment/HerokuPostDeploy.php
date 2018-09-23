@@ -12,9 +12,7 @@ class HerokuPostDeploy extends Command
 
     public function handle()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         $this->runMigrationsFor(app()->environment());
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
         $this->clearResponseCache();
     }
 

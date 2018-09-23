@@ -13,6 +13,8 @@ class CreateForeignKeys extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         DB::statement('ALTER TABLE api_request MODIFY method VARCHAR(10)');
         Schema::table('api_request', function (Blueprint $table) {
             $table->unsignedInteger('api_account_id')->change();
