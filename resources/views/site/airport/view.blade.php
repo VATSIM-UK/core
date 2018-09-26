@@ -226,8 +226,11 @@
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-info"></i> Additional Information</div>
-                    <div class="panel-body">
-                        {!! $airport->other_information !!}
+                    <div class="text-summary panel-body">
+                        <p class="collapse" id="additionalInformationContainer">
+                            {!! $airport->other_information !!}
+                        </p>
+                        <a class="collapsed" data-toggle="collapse" href="#additionalInformationContainer" aria-expanded="false" aria-controls="additionalInformationContainer"></a>
                     </div>
                 </div>
             </div>
