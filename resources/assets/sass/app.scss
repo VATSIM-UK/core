@@ -67,6 +67,18 @@ body, html {
   }
 }
 
+.text-white {
+  color: white !important;
+}
+
+.vertical-center{
+  vertical-align: middle !important;
+}
+
+.table.table-borders >tbody > tr > td {
+  border: 1px solid grey;
+}
+
 .breadcrumb_outer_container {
   width: 100%;
   height: 35px;
@@ -128,6 +140,30 @@ body, html {
   opacity: 1;
 }
 
+.text-summary {
+  p.collapse:not(.in) {
+    height: 42px !important;
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  p.collapsing {
+    min-height: 42px !important;
+  }
+
+  a.collapsed:after {
+    content: '+ Read More';
+  }
+
+  a:not(.collapsed):after {
+    content: '- Read Less';
+  }
+}
+
+
 /* Bootstrap Overwrite */
 
 .label-xs {
@@ -150,7 +186,7 @@ body, html {
   border: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  > .panel-heading {
+  > .panel-heading, > .panel-heading-link > .panel-heading {
     background-color: #17375e;
     border-color: #17375E;
     color: white;
