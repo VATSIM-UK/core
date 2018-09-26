@@ -24,9 +24,12 @@
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; London Heathrow
-                </div>
-                <div class="panel-body">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-heathrow">
+                    <div class="panel-heading">
+                            <i class="glyphicon glyphicon-plane"></i> &thinsp; London Heathrow <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="endorsement-heathrow" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
                     London Heathrow (EGLL) is the only airfield in VATSIM UK that has been designated as a major
                     aerodrome under the regulations set out in VATSIM's Global Ratings Policy. Members rated S2 or
@@ -61,9 +64,12 @@
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; London Gatwick - GND (S1)
-                </div>
-                <div class="panel-body">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-gatwickgnd">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; London Gatwick - GND (S1)  <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="endorsement-gatwickgnd" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
                     After Heathrow, London Gatwick (EGKK) is by far the busiest airfield in VATSIM UK, boasting close to
                     50,000 movements every year. Controlling at London Gatwick is restricted by the ATC Training
@@ -90,9 +96,12 @@
 
         <div class="col-md-4">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; London Bandbox
-                </div>
-                <div class="panel-body">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-londonbbx">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; London Bandbox  <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="endorsement-londonbbx" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
                     London Bandbox (LON_CTR) is a designated special center under the terms of the <a
                             href="https://www.vatsim.net/grp/">VATSIM Global Ratings
@@ -136,9 +145,12 @@
 
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; Military
-                </div>
-                <div class="panel-body">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-mil">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; Military  <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="endorsement-mil" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
                     VATSIM UK offers controllers rated S2 or higher the opportunity to undertake a military endorsement,
                     through a number of self study courses. With this endorsement, controllers are permitted to open
@@ -188,9 +200,12 @@
 
         <div class="col-md-6">
             <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="glyphicon glyphicon-plane"></i> &thinsp; AFIS/AGCS (S1)
-                </div>
-                <div class="panel-body">
+                <a class="panel-heading-link" role="button" data-toggle="collapse" href="#endorsement-afis">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-plane"></i> &thinsp; AFIS/AGCS (S1) <i class="pull-right glyphicon glyphicon-menu-down"></i>
+                    </div>
+                </a>
+                <div id="endorsement-afis" class="panel-collapse collapse panel-body">
                     <h3>Background</h3>
                     VATSIM UK has a large number of pilots that enjoy a little jaunt across the country in a light
                     aircraft, enjoying the sights and freedoms of VFR. We also have a number of small aerodromes that
