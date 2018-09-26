@@ -71,6 +71,14 @@ body, html {
   color: white !important;
 }
 
+.vertical-center{
+  vertical-align: middle !important;
+}
+
+.table.table-borders >tbody > tr > td {
+  border: 1px solid grey;
+}
+
 .breadcrumb_outer_container {
   width: 100%;
   height: 35px;

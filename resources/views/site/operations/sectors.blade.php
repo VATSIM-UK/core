@@ -115,6 +115,42 @@
                         This table highlights the frequencies you may see on a typical night, without splitting from the
                         primary sectors.
                     </p>
+                    <p class="table-responsive">
+                    <table class="table table-borders">
+                        <tbody class="text-center">
+                        <tr>
+                            <td rowspan="4" class="vertical-center" style="color: #ffffff; background: #777777;">
+                                Bandbox<br>
+                                LON_CTR<br>
+                                123.900
+                            </td>
+                            <td rowspan="2" style="background: #6d4457; color: #ffffff;">
+                                South Central<br>
+                                LON_SC_CTR<br>
+                                132.600
+                            </td>
+                            <td style="background: #000080; color: #ffffff;">
+                                South LON_S_CTR (129.425)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background: #f09626; color: #000000;">
+                                Central LON_C_CTR (127.100)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #800000; color: #ffffff;">
+                                North LON_N_CTR (133.700)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #008000; color: #ffffff;">
+                                West LON_W_CTR (126.075)
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </p>
 
                     <p>
                         <strong>Sector Splits - London</strong>
@@ -123,6 +159,142 @@
                     <p>
                         For the cases where the 4 main sectors are split (common for events), additional frequencies
                         (plus the coverage order) is displayed below.
+                    </p>
+
+                    <p class="table-responsive">
+                    <table class="table table-borders">
+                        <tbody class="text-center">
+                        <tr>
+                            <td rowspan="4" class="vertical-center" style="background: #000080; color: #ffffff;">
+                                South<br>
+                                LON_S<br>
+                                (129.425)
+                            </td>
+                            <td rowspan="2" style="background: #000080; color: #ffffff;">
+                                Worthing<br>
+                                LON_S<br>
+                                (129.425)
+                            </td>
+                            <td colspan="2" style="background: #000080; color: #ffffff;">
+                                Worthing LON_S (129.425)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background: #5f5ff0; color: #ffffff;">
+                                TC South<br>
+                                LTC_S<br>
+                                (134.125)
+                            </td>
+                            <td style="background: #cbe5ff; color: #000000;">
+                                TC South West LTC_SW (133.175)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background: #5f5ff0; color: #ffffff;">
+                                Dover<br>
+                                LON_D<br>
+                                (134.900)
+                            </td>
+                            <td style="background: #cbe5ff; color: #000000;">
+                                TC South East LTC_SE (120.525)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #5f5ff0; color: #ffffff;">
+                                Dover LON_D (134.900)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border: 0;">
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="4" class="vertical-center" style="background: #f09626; color: #000000;">
+                                Central<br>
+                                LON_C<br>
+                                (127.100)
+                            </td>
+                            <td rowspan="2" style="background: #f09626; color: #000000;">
+                                Daventry<br>
+                                LON_C<br>
+                                (127.100)
+                            </td>
+                            <td colspan="2" style="background: #f09626; color: #000000;">
+                                Daventry LON_C (127.100)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background: #fab464; color: #000000;">
+                                TC North<br>
+                                LTC_N<br>
+                                (119.775)
+                            </td>
+                            <td style="background: #faf096; color: #000000;">
+                                TC North West LTC_NW (121.275)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background: #fab464; color: #000000;">
+                                Clacton<br>
+                                LON_E<br>
+                                (121.225)
+                            </td>
+                            <td style="background: #faf096; color: #000000;">
+                                TC North East LTC_NE (118.825)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #fab464; color: #000000;">
+                                Clacton LON_E (121.225)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border: 0;">
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3" class="vertical-center" style="background: #800000; color: #ffffff;">
+                                North<br>
+                                LON_N<br>
+                                (133.700)
+                            </td>
+                            <td colspan="3" style="background: #800000; color: #ffffff;">
+                                North LON_N (133.700)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background: #963232; color: #ffffff;">
+                                Manchester<br>
+                                MAN<br>
+                                (118.775)
+                            </td>
+                            <td colspan="2" style="background: #bf7f7f; color: #000000;">
+                                Manchester West MAN_W (128.050)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="background: #bf7f7f; color: #000000;">
+                                Manchester East MAN_E (133.800)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border: 0;">
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="vertical-center" style="min-height: 100px; background: #008000; color: #ffffff;">
+                                West<br>
+                                LON_W<br>
+                                (126.075)
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                        </tbody>
+                    </table>
                     </p>
 
                     <p>
