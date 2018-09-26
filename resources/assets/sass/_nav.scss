@@ -32,6 +32,14 @@
   min-height:55px;
 }
 
+
+#nav {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+}
+
 .dropdown-menu {
   left: inherit;
 }
