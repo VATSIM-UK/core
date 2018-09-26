@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-6">
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Staff
                     </div>
@@ -12,6 +12,16 @@
                             Staff Group comprised of the heads of each department. Department staff may be appointed
                             that
                             report to the relevant member of the DSG.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Contact Us
+                    </div>
+                    <div class="panel-body text-center">
+                        <p>Need to talk to a member of staff? All our staff members can be contacted through our <strong>helpdesk</strong></p>
+                        <a href="https://helpdesk.vatsim.uk" target="_blank" class="btn btn-info">Contact Staff / Department <i class="glyphicon glyphicon-chevron-right"></i></a>
                     </div>
                 </div>
             </div>
