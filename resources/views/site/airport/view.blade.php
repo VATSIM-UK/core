@@ -30,6 +30,10 @@
             @if($stands)
                 $('#stands').DataTable();
             @endif
+
+            if($('#additionalInformationContainer').height() < 42){
+                $('#additionalInfoController').hide();
+            }
         });
         $.get('{{ route('metar', $airport->icao) }}', function (data) {
             $('#metar').fadeOut(400, function () {
@@ -227,10 +231,10 @@
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-info"></i> Additional Information</div>
                     <div class="text-summary panel-body">
-                        <p class="collapse" id="additionalInformationContainer">
+                        <p class="summary-container collapse" id="additionalInformationContainer">
                             {!! $airport->other_information !!}
                         </p>
-                        <a class="collapsed" data-toggle="collapse" href="#additionalInformationContainer" aria-expanded="false" aria-controls="additionalInformationContainer"></a>
+                        <a id="additionalInfoController" class="summary-controller collapsed" data-toggle="collapse" href="#additionalInformationContainer" aria-expanded="false" aria-controls="additionalInformationContainer"></a>
                     </div>
                 </div>
             </div>

@@ -141,24 +141,24 @@ body, html {
 }
 
 .text-summary {
-  p.collapse:not(.in) {
-    height: 42px !important;
+  p.summary-container.collapse:not(.in) {
+    max-height: 42px !important;
+    min-height: 30px !important;
     overflow: hidden;
-
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
   }
 
-  p.collapsing {
+  p.summary-container.collapsing {
     min-height: 42px !important;
   }
 
-  a.collapsed:after {
+  a.summary-controller.collapsed:after {
     content: '+ Read More';
   }
 
-  a:not(.collapsed):after {
+  a.summary-controller:not(.collapsed):after {
     content: '- Read Less';
   }
 }
