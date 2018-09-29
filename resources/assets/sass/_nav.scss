@@ -32,14 +32,6 @@
   min-height:55px;
 }
 
-
-#nav {
-  .dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0;
-  }
-}
-
 .dropdown-menu {
   left: inherit;
 }
@@ -210,6 +202,15 @@
 /*
 Nav Collapse Breakpoint
  */
+
+@media (min-width: $screen-lg-min) {
+  #nav {
+    .dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0;
+    }
+  }
+}
 
 @media (max-width: $screen-md-min) {
   #nav-inner {
