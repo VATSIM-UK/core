@@ -3,10 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SupermanCommandTest extends TestCase
 {
@@ -20,9 +19,9 @@ class SupermanCommandTest extends TestCase
 
         $this->account = factory(Account::class)->create();
     }
-    
+
     /** @test **/
-    public function itAttachesRoleSuccessfully() 
+    public function itAttachesRoleSuccessfully()
     {
         Artisan::call('grant:superman', ['cid' => $this->account->id]);
 
