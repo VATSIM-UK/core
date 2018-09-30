@@ -135,7 +135,7 @@
                                     </tr>
                                     <tr>
                                         <td>Initial Flight Instructor</td>
-                                        <td>John Livesey</td>
+                                        <td><em>Vacant</em></td>
                                     </tr>
                                     <tr>
                                         <td>VFR Flight Instructor</td>
