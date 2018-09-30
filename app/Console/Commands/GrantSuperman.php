@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\Mship\InvalidCIDException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use Illuminate\Console\Command;
@@ -51,11 +50,13 @@ class GrantSuperman extends Command
             $account = Account::findOrFail($accountID);
         } catch (ModelNotFoundException $exception) {
             $this->error('The specific CID was not found.');
+
             return;
         }
 
         if ($account != null && $account->hasRole($supermanRole)) {
             $this->error('The specified account already has the "superman" role.');
+
             return;
         }
 
