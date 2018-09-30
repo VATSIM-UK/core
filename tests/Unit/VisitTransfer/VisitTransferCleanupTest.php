@@ -4,13 +4,13 @@ namespace Tests\Unit\VisitTransfer;
 
 use Artisan;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class VisitTransferCleanupTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public $newApplication;
     public $oldApplication;
