@@ -6,6 +6,7 @@ use App\Exceptions\Mship\InvalidCIDException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GrantSuperman extends Command
 {
@@ -47,13 +48,15 @@ class GrantSuperman extends Command
         $account = null;
 
         try {
-            $account = Account::findOrRetrieve($accountID);
-        } catch (InvalidCIDException $exception) {
+            $account = Account::findOrFail($accountID);
+        } catch (ModelNotFoundException $exception) {
             $this->error('The specific CID was not found.');
+            return;
         }
 
-        if ($account->hasRole($supermanRole)) {
+        if ($account != null && $account->hasRole($supermanRole)) {
             $this->error('The specified account already has the "superman" role.');
+            return;
         }
 
         $account->roles()->attach($supermanRole);
