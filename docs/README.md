@@ -41,4 +41,6 @@ To start work on an issue, post a comment on the issue requesting it be assigned
 
 # Version Notes
 
-There are no additional steps required to deploy this version of Core.
+* Add IPBOARD_API_URL env variable.
+* Add IPBOARD_API_KEY env variable.
+* Add IPBOARD_API_REFERENCE_NAME env variable.

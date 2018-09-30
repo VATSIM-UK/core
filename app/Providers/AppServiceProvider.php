@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\BaseController;
 use Bugsnag;
 use Config;
 use HTML;
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->registerBugsnagCallback();
+
+        View::composer('layout*', function ($view) {
+            $view->with('_bannerUrl', BaseController::generateBannerUrl());
+        });
 
         HTML::component('icon', 'components.html.icon', ['type', 'key']);
         HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);

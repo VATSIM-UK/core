@@ -7,7 +7,7 @@
  */
 
 return [
-    'api_url' => 'https://community.vatsim.uk/api/',
-    'api_key' => '6119994a92722cd19b6fc7e625902d9b',
-    'api_reference_name' => 'ANTHONY_TEST',
+    'api_url' => env('IPBOARD_API_URL'),
+    'api_key' => env('IPBOARD_API_KEY'),
+    'api_reference_name' => env('IPBOARD_API_REFERENCE_NAME'),
 ];
