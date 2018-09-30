@@ -48,7 +48,7 @@ body, html {
 .banner {
   width: 100%;
   height: 350px;
-  background: url('../../../public/images/banner/fallback.jpg') no-repeat 50%;
+  background: url('/../images/banner/fallback.jpg') no-repeat 50%;
   background-size: cover;
   transform-style: preserve-3d;
   transform: perspective(auto) translateZ(-30vw) scale(1.4);
