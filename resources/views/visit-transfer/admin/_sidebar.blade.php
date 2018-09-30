@@ -8,19 +8,19 @@
     <ul class="treeview-menu">
 
         <li {!! (\Request::is('adm/visit-transfer') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("visiting.admin.dashboard") }}">
+            <a href="{{ URL::route("adm.visiting.dashboard") }}">
                 <i class="ion ion-ios-gear-outline"></i> <span> Dashboard</span>
             </a>
         </li>
 
         <li {!! (\Request::is('adm/visit-transfer/facility') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("visiting.admin.facility") }}">
+            <a href="{{ URL::route("adm.visiting.facility") }}">
                 <i class="ion ion-ios-gear-outline"></i> <span> Facility Settings</span>
             </a>
         </li>
 
         <li {!! (\Request::is('adm/visit-transfer/hours') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("visiting.admin.hours.create") }}">
+            <a href="{{ URL::route("adm.visiting.hours.create") }}">
                 <i class="ion ion-ios-clock"></i> <span> Hours Monitoring</span>
             </a>
         </li>
@@ -36,7 +36,7 @@
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list") }}">
+                    <a href="{{ URL::route("adm.visiting.application.list") }}">
                         <i class="fa fa-bars"></i>
                         <span>All Applications</span>
 
@@ -47,7 +47,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/open') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}">
+                    <a href="{{ URL::route("adm.visiting.application.list", ["open"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Open Applications</span>
 
@@ -58,7 +58,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/review') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["review"]) }}">
+                    <a href="{{ URL::route("adm.visiting.application.list", ["review"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Review Applications</span>
 
@@ -69,7 +69,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/accepted') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["accepted"]) }}">
+                    <a href="{{ URL::route("adm.visiting.application.list", ["accepted"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Accepted Applications</span>
 
@@ -80,7 +80,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/application/lists/closed') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}">
+                    <a href="{{ URL::route("adm.visiting.application.list", ["closed"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Closed Applications</span>
 
@@ -103,7 +103,7 @@
             <ul class="treeview-menu">
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/all') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list") }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list") }}">
                         <i class="fa fa-bars"></i>
                         <span>All References</span>
 
@@ -114,7 +114,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/pending') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list", ["pending-submission"]) }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list", ["pending-submission"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Pending Submission</span>
 
@@ -125,7 +125,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/submitted') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list", ["submitted"]) }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list", ["submitted"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Submitted References</span>
 
@@ -136,7 +136,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list", ["under-review"]) }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list", ["under-review"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Under Review</span>
 
@@ -148,7 +148,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list", ["accepted"]) }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list", ["accepted"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Accepted</span>
 
@@ -160,7 +160,7 @@
                 </li>
 
                 <li {{ (\Request::is('adm/visit-transfer/reference/approval') ? ' class="active"' : '') }}>
-                    <a href="{{ URL::route("visiting.admin.reference.list", ["rejected"]) }}">
+                    <a href="{{ URL::route("adm.visiting.reference.list", ["rejected"]) }}">
                         <i class="fa fa-bars"></i>
                         <span>Rejected</span>
 

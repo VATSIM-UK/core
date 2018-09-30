@@ -8,7 +8,7 @@
     <ul class="treeview-menu">
 
         <li {!! (\Request::is('adm/network-data') ? 'class="active"' : '') !!}>
-            <a href="{{ URL::route("networkdata.admin.dashboard") }}">
+            <a href="{{ URL::route("adm.networkdata.dashboard") }}">
                 <i class="ion ion-ios-gear-outline"></i> <span> Dashboard</span>
             </a>
         </li>
