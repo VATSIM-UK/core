@@ -30,7 +30,6 @@ class BaseController extends \Illuminate\Routing\Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-
             if (currentUserHasAuth()) {
                 $this->account = Auth::user();
                 $this->account->load('roles', 'roles.permissions');
