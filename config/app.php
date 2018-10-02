@@ -159,6 +159,7 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Maknz\Slack\SlackServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 
@@ -245,12 +246,12 @@ return [
         'SlackUserAdmin' => Vluzrmos\SlackApi\Facades\SlackUserAdmin::class,
         'SlackRealTimeMessage' => Vluzrmos\SlackApi\Facades\SlackRealTimeMessage::class,
         'SlackTeam' => Vluzrmos\SlackApi\Facades\SlackTeam::class,
-
         'HTML' => Collective\Html\HtmlFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Slack' => Maknz\Slack\Facades\Slack::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
 
