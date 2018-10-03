@@ -27,7 +27,7 @@
                     <div class='form-group'>
                         <label class="control-label col-sm-5">Account</label>
                         <div class="col-sm-4">
-                            <p class="form-control-static">{{ Auth::guard('vatsim-sso')->user()->id }}</p>
+                            <p class="form-control-static">{{ Auth::guard('vatsim-sso')->user()->id }} || <a href='#' class="form-control-static" data-toggle="modal" data-target="#notYou">Not You?</a></p>
                         </div>
                     </div>
 
@@ -80,6 +80,26 @@
                         {{ csrf_field() }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-danger" id="confirm">Confirm</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="notYou" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Not You?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Not {{ Auth::guard('vatsim-sso')->user()->name }}? Please click below to logout.</p>
+                </div>
+                <div class="modal-footer">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('logout') }}">
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn btn-danger" id="confirm">Logout</button>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
