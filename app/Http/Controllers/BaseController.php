@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Mship\Account;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Cache;
 use Session;
 use View;
 
@@ -28,7 +30,7 @@ class BaseController extends \Illuminate\Routing\Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            if (Auth::check() || Auth::guard('vatsim-sso')->check()) {
+            if (Auth::check() || Auth::guard('web')->check()) {
                 $this->account = Auth::user();
                 $this->account->load('roles', 'roles.permissions');
             } else {
@@ -82,6 +84,7 @@ class BaseController extends \Illuminate\Routing\Controller
         $this->buildBreadcrumb('Home', '/');
 
         $view->with('_breadcrumb', $this->breadcrumb);
+        $view->with('_bannerUrl', self::generateBannerUrl());
 
         $view->with('_pageTitle', $this->getTitle());
         $view->with('_pageSubTitle', $this->getSubTitle());
@@ -113,6 +116,48 @@ class BaseController extends \Illuminate\Routing\Controller
         return $this->pageSubTitle;
     }
 
+    /**
+     * Generate CORE banner from time of day
+     */
+    public static function generateBannerUrl()
+    {
+        $key = 'CORE_BANNER_URL';
+
+        if ($url = Cache::get($key)) {
+            return $url;
+        }
+
+        // Work out time of day
+        $time = Carbon::now();
+
+        switch ($time) {
+            case $time->hour < 7:
+                $time = 'night';
+                break;
+            case $time->hour < 9:
+                $time = 'morning';
+                break;
+            case $time->hour < 17:
+                $time = 'day';
+                break;
+            case $time->hour < 21:
+                $time = 'evening';
+                break;
+            default:
+                $time = 'night';
+        }
+
+        $dir = public_path('images/banner/'.$time);
+        $images = array_diff(scandir($dir), ['.', '..']);
+        if (count($images) == 0) {
+            return asset('images/banner/fallback.jpg');
+        }
+        $url = asset("images/banner/$time/".$images[array_rand($images)]);
+        Cache::put($key, $url, 60);
+
+        return $url;
+    }
+
     protected function setupLayout()
     {
         if (!is_null($this->layout)) {
@@ -123,11 +168,12 @@ class BaseController extends \Illuminate\Routing\Controller
     /**
      * Add a new element to the breadcrumb to be shown on this page.
      *
-     * @param      $name The text to display on the page.
-     * @param      $uri  The URI the text should link to.
-     * @param bool $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param string $name The text to display on the page.
+     * @param        $uri  The URI the text should link to.
+     * @param bool   $linkToPrevious Set to TRUE if the breadcrumb is a parent of the previous one.
+     * @param bool   $first Set to TRUE if the breadcrumb should be first.
      */
-    protected function addBreadcrumb($name, $uri = null, $linkToPrevious = false)
+    protected function addBreadcrumb(string $name, $uri = null, $linkToPrevious = false, $first = false)
     {
         if ($this->breadcrumb == null) {
             $this->breadcrumb = collect();
@@ -139,18 +185,18 @@ class BaseController extends \Illuminate\Routing\Controller
 
         $element = collect(['name' => $name, 'uri' => $uri]);
 
+        if ($first) {
+            $this->breadcrumb->prepend($element);
+
+            return;
+        }
+
         $this->breadcrumb->push($element);
     }
 
     protected function buildBreadcrumb($startName, $startUri)
     {
-        $this->addBreadcrumb($startName, $startUri);
-        $this->addControllerBreadcrumbs();
-    }
-
-    protected function addControllerBreadcrumbs()
-    {
-        $this->addBreadcrumb(ucfirst($this->getControllerRequest()), $this->getControllerRequest(), true);
+        $this->addBreadcrumb($startName, $startUri, false, true);
     }
 
     protected function getControllerRequest()
