@@ -67,7 +67,7 @@
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
                             </ul>
                         </li>
-                        @if(Auth::guard('vatsim-sso')->check() && !Auth::user()->qualificationAtc->isS1)
+                        @if(currentUserHasAuth() && Auth::user()->qualificationAtc->isS1)
                             <li class="col-sm-12">
                                 <ul>
                                     <li class="divider"></li>
@@ -145,7 +145,7 @@
                 </li>
             </ul>
 
-            @if(Auth::guard('vatsim-sso')->check() || Auth::guard('web')->check())
+            @if(currentUserHasAuth())
                 <ul class="nav navbar-nav navbar-right navcustom">
                     <li class="dropdown dropdown-large navbar-notification hidden-xs">
                         <a href="{{ route("mship.notification.list") }}" title="Notifications">
