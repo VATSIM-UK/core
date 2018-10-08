@@ -30,7 +30,7 @@ class BaseController extends \Illuminate\Routing\Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            if (Auth::check() || Auth::guard('vatsim-sso')->check()) {
+            if (Auth::check() || Auth::guard('web')->check()) {
                 $this->account = Auth::user();
                 $this->account->load('roles', 'roles.permissions');
             } else {
