@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class SupermanCommandTest extends TestCase
