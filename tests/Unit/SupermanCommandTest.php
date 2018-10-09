@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -21,9 +22,33 @@ class SupermanCommandTest extends TestCase
     }
 
     /** @test **/
+    public function itReportsToConsoleWhenSuccessful()
+    {
+        $this->artisan('grant:superman', ['cid' => $this->account->id])
+            ->expectsOutput('Account added to the superman role!');
+    }
+
+    /** @test **/
+    public function itReportsToConsoleWhenRoleAlreadyFound()
+    {
+        $this->account->roles()->attach(Role::find(1));
+
+        $this->artisan('grant:superman', ['cid' => $this->account->id])
+            ->expectsOutput('The specified account already has the "superman" role.');
+    }
+
+    /** @test **/
+    public function itReportsToConsoleWhenTheCIDIsNotFound()
+    {
+        $this->artisan('grant:superman', ['cid' => 0000000])
+            ->expectsOutput('The specific CID was not found.');
+    }
+
+    /** @test **/
     public function itAttachesRoleSuccessfully()
     {
-        Artisan::call('grant:superman', ['cid' => $this->account->id]);
+        $this->artisan('grant:superman', ['cid' => $this->account->id])
+            ->expectsOutput('Account added to the superman role!');
 
         $this->assertDatabaseHas('mship_account_role', [
             'account_id' => $this->account->id,
