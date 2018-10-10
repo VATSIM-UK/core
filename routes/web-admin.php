@@ -10,7 +10,7 @@ Route::group([
 
     // Index
     Route::get('/', function () {
-        return redirect()->route('dashboard');
+        return redirect()->route('adm.dashboard');
     });
 
     // Main
