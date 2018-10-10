@@ -362,11 +362,6 @@
                             <button type="button" class="btn btn-xs btn-warning" data-toggle="modal" data-target="#primaryEmailChangeModal">
                                 Change
                             </button>
-                            {{--<a href="https://cert.vatsim.net/vatsimnet/newmail.php" class="btn btn-xs btn-warning tooltip_displays"--}}
-                               {{--target="_blank" data-toggle="tooltip" data-placement="top"--}}
-                               {{--title="Primary email changes may take up to 24 hours to become visible in Core.">--}}
-                                {{--Change--}}
-                            {{--</a>--}}
                         </div>
                     </div>
                     <!-- Top Row [END] -->
