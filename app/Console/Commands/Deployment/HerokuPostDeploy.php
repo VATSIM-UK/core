@@ -13,15 +13,10 @@ class HerokuPostDeploy extends Command
     public function handle()
     {
         $this->runMigrationsFor(app()->environment());
-        $this->clearResponseCache();
     }
 
     public function runMigrationsFor($environment)
     {
-        if (!$this->checkDatabaseConnection()) {
-            return false;
-        }
-
         switch ($environment) {
             case 'production':
                 $this->call('migrate', ['--force' => true]);
@@ -33,25 +28,5 @@ class HerokuPostDeploy extends Command
                 $this->call('migrate:fresh');
                 break;
         }
-    }
-
-    private function checkDatabaseConnection()
-    {
-        try {
-            DB::connection()->getDatabaseName();
-
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
-    }
-
-    public function clearResponseCache()
-    {
-        if (!class_exists("\Spatie\ResponseCache\ResponseCacheServiceProvider")) {
-            return false;
-        }
-
-        $this->call('responsecache:clear');
     }
 }
