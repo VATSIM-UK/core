@@ -3,7 +3,6 @@
 namespace App\Console\Deployment;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class HerokuPostDeploy extends Command
 {
