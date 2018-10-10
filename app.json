@@ -16,6 +16,9 @@
     "BUGSNAG_BATCH_SENDING": "true",
     "BUGSNAG_NOTIFY_RELEASE_STAGES": "production,staging",
     "CACHE_DRIVER": "file",
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
     "QUEUE_DRIVER": "database",
     "SESSION_DRIVER": "file",
     "SESSION_DOMAIN": ".vukcore.test",
