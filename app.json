@@ -19,11 +19,7 @@
     "HEROKU_APP_NAME": {
       "required": true
     },
-    "QUEUE_DRIVER": "database",
-    "SESSION_DRIVER": "file",
-    "SESSION_DOMAIN": ".vukcore.test",
-    "SESSION_LIFETIME": "10080",
-    "SESSION_COOKIE": "vukcore.test.session",
+    "QUEUE_DRIVER": "sync",
     "MAIL_DRIVER": "log",
     "SSO_BASE": {
       "required": true
