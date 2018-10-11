@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // third-party
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
-        \App\Console\Deployment\HerokuPostDeploy::class,
+        \App\Console\Commands\Deployment\HerokuPostDeploy::class,
     ];
 
     /**

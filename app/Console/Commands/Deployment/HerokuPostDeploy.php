@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Deployment;
+namespace App\Console\Commands\Deployment;
 
 use Illuminate\Console\Command;
 
