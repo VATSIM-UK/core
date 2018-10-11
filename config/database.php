@@ -1,5 +1,15 @@
 <?php
 
+$herokuDb = [];
+if (env('DATABASE_URL', null) !== null) {
+    $split = parse_url(getenv('DATABASE_URL'));
+    $herokuDb['host'] = $split['host'];
+    $herokuDb['name'] = substr($split['path'], 1);
+    $herokuDb['port'] = $split['port'];
+    $herokuDb['user'] = $split['user'];
+    $herokuDb['pass'] = $split['pass'];
+}
+
 return [
 
     /*
@@ -41,11 +51,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST'),
-            'port' => env('DB_MYSQL_PORT'),
-            'database' => env('DB_MYSQL_NAME'),
-            'username' => env('DB_MYSQL_USER'),
-            'password' => env('DB_MYSQL_PASS'),
+            'host' => env('DB_MYSQL_HOST', array_get($herokuDb, 'host')),
+            'port' => env('DB_MYSQL_PORT', array_get($herokuDb, 'port')),
+            'database' => env('DB_MYSQL_NAME', array_get($herokuDb, 'name')),
+            'username' => env('DB_MYSQL_USER', array_get($herokuDb, 'user')),
+            'password' => env('DB_MYSQL_PASS', array_get($herokuDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_MYSQL_CHARSET', 'utf8mb4'),
             'collation' => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),

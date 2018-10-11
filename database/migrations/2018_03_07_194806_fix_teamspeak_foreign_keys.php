@@ -13,6 +13,8 @@ class FixTeamspeakForeignKeys extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('teamspeak_channel_group_permission', function (Blueprint $table) {
             $table->dropForeign('teamspeak_channel_group_permission_channelgroup_id_foreign');
         });
