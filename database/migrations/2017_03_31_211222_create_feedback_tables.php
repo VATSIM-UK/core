@@ -14,6 +14,8 @@ class CreateFeedbackTables extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('mship_feedback', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('form_id');

@@ -1,0 +1,65 @@
+{
+  "name": "vatsimuk/core",
+  "description": "VATSIM UK Core Framework",
+  "scripts": {
+    "postdeploy": "php artisan postdeploy:heroku"
+  },
+  "env": {
+    "APP_ENV": "development",
+    "APP_DEBUG": "true",
+    "APP_DEBUGBAR": "true",
+    "APP_KEY": {
+      "required": true
+    },
+    "APP_IS_LOCAL": "true",
+    "BUGSNAG_FILTERS": "password,authid,authpassword,apikey_pub,access_token,x-newrelic-id,cid",
+    "BUGSNAG_BATCH_SENDING": "true",
+    "BUGSNAG_NOTIFY_RELEASE_STAGES": "production,staging",
+    "CACHE_DRIVER": "file",
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "QUEUE_DRIVER": "database",
+    "SESSION_DRIVER": "file",
+    "SESSION_DOMAIN": ".vukcore.test",
+    "SESSION_LIFETIME": "10080",
+    "SESSION_COOKIE": "vukcore.test.session",
+    "MAIL_DRIVER": "log",
+    "SSO_BASE": {
+      "required": true
+    },
+    "SSO_CERT": {
+      "required": true
+    },
+    "SSO_KEY": {
+      "required": true
+    },
+    "SSO_SECRET": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "queue": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "jawsdb-maria:kitefin",
+      "as": "DATABASE"
+    }
+  ]
+}
