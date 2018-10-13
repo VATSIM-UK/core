@@ -17,11 +17,11 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function nextEvent()
     {
-        try{
+        try {
             $html = file_get_contents('https://cts.vatsim.uk/extras/next_event.php');
 
             return $this->getHTMLByID('next', $html);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             Bugsnag::notifyException($e);
         }
 
