@@ -3,9 +3,8 @@
 namespace Tests\Feature\Mship;
 
 use App\Models\Mship\Account;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SlackFeatureTest extends TestCase
 {
