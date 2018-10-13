@@ -25,6 +25,8 @@ class HomePageController extends \App\Http\Controllers\BaseController
             Bugsnag::notifyException($e);
         }
 
+        return null;
+
     }
 
     public function getHTMLByID($id, $html)
