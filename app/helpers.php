@@ -202,13 +202,13 @@ function maskEmail($email)
 {
     $delimited = explode('@', $email);
 
-    if(strlen($delimited[0]) <= 2) {
-        $delimited[0] = str_repeat("*", strlen($delimited[0]));
+    if (strlen($delimited[0]) <= 2) {
+        $delimited[0] = str_repeat('*', strlen($delimited[0]));
 
         return "{$delimited[0]}@{$delimited[1]}";
     }
 
-    for($pos = 1; $pos < strlen($delimited[0]) - 1; $pos++) {
+    for ($pos = 1; $pos < strlen($delimited[0]) - 1; $pos++) {
         if ($pos % 3 == 0) {
             continue;
         }
