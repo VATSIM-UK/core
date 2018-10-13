@@ -67,7 +67,7 @@
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
                             </ul>
                         </li>
-                        @if(currentUserHasAuth() && Auth::user()->qualificationAtc->isS1)
+                        @if(currentUserHasAuth() && Auth::user()->qualificationAtc && Auth::user()->qualificationAtc->isS1)
                             <li class="col-sm-12">
                                 <ul>
                                     <li class="divider"></li>
