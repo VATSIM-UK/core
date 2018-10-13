@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Slack;
 
 use App\Models\Sys\Token;
 use DB;
-use Illuminate\Auth\Access\AuthorizationException;
 use Redirect;
 use Response;
 use SlackUserAdmin;
