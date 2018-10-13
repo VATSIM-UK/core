@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Permission;
 use App\Models\Mship\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +13,8 @@ class InactivityMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $user, $role;
+    private $user;
+    private $role;
 
     public function setUp()
     {
@@ -23,10 +23,10 @@ class InactivityMiddlewareTest extends TestCase
         $this->user = factory(Account::class)->create(['password' => 'password']);
         $this->role = factory(Role::class)->create();
         $this->user->roles()->attach($this->role);
-
     }
 
-    private function login(){
+    private function login()
+    {
         Auth::guard('web')->login($this->user);
         Auth::guard('vatsim-sso')->login($this->user);
     }
@@ -60,5 +60,4 @@ class InactivityMiddlewareTest extends TestCase
         $this->get(route('site.home'))->assertSuccessful();
         Carbon::setTestNow();
     }
-
 }
