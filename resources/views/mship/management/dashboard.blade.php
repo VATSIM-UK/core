@@ -1,6 +1,36 @@
 @extends('layout')
 
 @section('content')
+    <div class="modal fade" id="primaryEmailChangeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Change your primary VATSIM email address</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <p>
+                            <strong>All primary email changes are handled by central membership, and may take up-to 24 hours to be reflected on our systems.</strong>
+                        </p>
+                    </div>
+                    <div class="panel panel-ukblue border-black-thin">
+                        <div class="panel-heading">
+                            <i>https://cert.vatsim.net/vatsimnet/newmail.php</i>
+                        </div>
+                        <div class="panel-body">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="https://cert.vatsim.net/vatsimnet/newmail.php"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="">
@@ -329,11 +359,9 @@
                         </div>
                         <div class="col-xs-2">
                             <br>
-                            <a href="https://cert.vatsim.net/vatsimnet/newmail.php" class="btn btn-xs btn-warning tooltip_displays"
-                               target="_blank" data-toggle="tooltip" data-placement="top"
-                               title="Primary email changes may take up to 24 hours to become visible in Core.">
+                            <button type="button" class="btn btn-xs btn-warning" data-toggle="modal" data-target="#primaryEmailChangeModal">
                                 Change
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <!-- Top Row [END] -->
