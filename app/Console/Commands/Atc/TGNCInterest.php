@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands\Atc;
 
-use App\Notifications\Atc\TGNCInterest as InterestCheck;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Console\Command;
 use App\Models\Mship\Account;
+use App\Notifications\Atc\TGNCInterest as InterestCheck;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class TGNCInterest extends Command
 {

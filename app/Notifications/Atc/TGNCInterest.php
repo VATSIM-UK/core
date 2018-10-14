@@ -45,7 +45,7 @@ class TGNCInterest extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->from('atc-team@vatsim.uk', 'VATSIM UK - ATC Training')
                     ->subject($subject)
-                    ->view('emails.atc.tgnc_interest',  ['recipient' => $notifiable, 'subject' => $subject]);
+                    ->view('emails.atc.tgnc_interest', ['recipient' => $notifiable, 'subject' => $subject]);
     }
 
     /**

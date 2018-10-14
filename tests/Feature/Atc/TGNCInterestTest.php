@@ -4,9 +4,9 @@ namespace Tests\Feature\Atc;
 
 use App\Models\Mship\Account;
 use App\Notifications\Atc\TGNCInterest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TGNCInterestTest extends TestCase
 {
