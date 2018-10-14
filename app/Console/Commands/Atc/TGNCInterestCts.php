@@ -1,13 +1,18 @@
 <?php
 
 namespace App\Console\Commands\Atc;
+use Illuminate\Support\Facades\DB;
 
 class TGNCInterestCts
 {
     public static function getUsers()
     {
-        // Call to CTS will go here and return an array of CIDs.
+        $results = DB::connection('cts')->select("CALL TGNCInterest()");
 
-        return [];
+        $results = collect($results)->each(function ($item, $key) {
+            // flatten the collection
+        });
+
+        return $results;
     }
 }
