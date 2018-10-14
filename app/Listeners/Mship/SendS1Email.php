@@ -3,7 +3,7 @@
 namespace App\Listeners\Mship;
 
 use App\Events\Mship\Feedback\NewFeedbackEvent;
-use App\Events\Mship\QualificationAdded;
+use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Notifications\Mship\S1TrainingOpportunities;
 
 class SendS1Email
