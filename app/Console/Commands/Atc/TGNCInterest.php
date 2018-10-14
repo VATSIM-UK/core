@@ -52,7 +52,7 @@ class TGNCInterest extends Command
         });
 
         $this->info("{$users->count()} users matched.");
-        $this->info("Sending emails...");
+        $this->info('Sending emails...');
         Notification::send($users, new InterestCheck());
 
         $this->line("Completed. {$users->count()} user(s) were processed.");
