@@ -10,10 +10,6 @@ class TGNCInterestCts
     {
         $results = DB::connection('cts')->select('CALL TGNCInterest()');
 
-        $results = collect($results)->each(function ($item, $key) {
-            // flatten the collection
-        });
-
-        return $results;
+        return array_pluck($results, 'cid');
     }
 }
