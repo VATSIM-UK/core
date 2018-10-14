@@ -43,6 +43,7 @@ class TGNCInterest extends Command
         $this->info('Getting users from CTS...');
         $users = collect(TGNCInterestCts::getUsers());
 
+        $this->info("{$users->count()} users require a reminder.");
         $this->info('Checking users exist within Core...');
         $users = $users->map(function ($item) {
             return Account::findOrRetrieve($item);
@@ -50,7 +51,8 @@ class TGNCInterest extends Command
             return $value === null;
         });
 
-        $this->info("Sending {$users->count()} emails...");
+        $this->info("{$users->count()} users matched.");
+        $this->info("Sending emails...");
         Notification::send($users, new InterestCheck());
 
         $this->line("Completed. {$users->count()} user(s) were processed.");
