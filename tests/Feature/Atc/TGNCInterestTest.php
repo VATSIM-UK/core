@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Atc;
 
+use App\Console\Commands\Atc\TGNCInterestCts;
 use App\Models\Mship\Account;
 use App\Notifications\Atc\TGNCInterest;
-use App\Console\Commands\Atc\TGNCInterestCts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -42,12 +42,12 @@ class TGNCInterestTest extends TestCase
     {
         $this->assertDatabaseHas('notifications', [
             'type' => 'App\Notifications\Atc\TGNCInterest',
-            'notifiable_id' => $this->validUser->id
+            'notifiable_id' => $this->validUser->id,
         ]);
 
         $this->assertDatabaseMissing('notifications', [
             'type' => 'App\Notifications\Atc\TGNCInterest',
-            'notifiable_id' => $this->userNotInArray->id
+            'notifiable_id' => $this->userNotInArray->id,
         ]);
     }
 }
