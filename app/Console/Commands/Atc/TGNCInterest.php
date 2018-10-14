@@ -41,7 +41,7 @@ class TGNCInterest extends Command
     public function handle()
     {
         $this->info('Getting users from CTS...');
-        $users = collect(TGNCInterestCts::getUsers());
+        $users = collect(resolve(TGNCInterestCts::class)->getUsers());
 
         $this->info("{$users->count()} users require a reminder.");
         $this->info('Checking users exist within Core...');

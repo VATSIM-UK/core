@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class TGNCInterestCts
 {
-    public static function getUsers()
+    public function getUsers()
     {
         $results = DB::connection('cts')->select('CALL TGNCInterest()');
 

@@ -4,6 +4,7 @@ namespace Tests\Feature\Atc;
 
 use App\Models\Mship\Account;
 use App\Notifications\Atc\TGNCInterest;
+use App\Console\Commands\Atc\TGNCInterestCts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -12,38 +13,41 @@ class TGNCInterestTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $userOne;
-    private $userTwo;
+    private $validUser;
+    private $userNotInArray;
 
     public function __construct()
     {
         parent::setUp();
         parent::__construct();
+
+        Notification::fake();
+
+        $getUserMock = \Mockery::mock(TGNCInterestCts::class)->shouldReceive('getUsers')->once()->andReturn([1300001, 1300002]);
+        $this->app->instance(TGNCInterestCts::class, $getUserMock->getMock());
+
+        $this->validUser = factory(Account::class)->create(['id' => '1300001', 'email' => 'foo@bar.com']);
+        $this->userNotInArray = factory(Account::class)->create(['id' => '1300003']);
+
+        $this->artisan('tgnc:interest');
     }
 
     public function testItSendsANotificationToValidUsers()
     {
-        Notification::fake();
-
-        $validUser = factory(Account::class)->create(['id' => '1300001', 'email' => 'foo@bar.com']);
-        $userNotInArray = factory(Account::class)->create(['id' => '1300003']);
-
-        $this->artisan('tgnc:interest');
-
-        Notification::assertSentTo($validUser, TGNCInterest::class);
-        Notification::assertNotSentTo($userNotInArray, TGNCInterest::class);
+        Notification::assertSentTo($this->validUser, TGNCInterest::class);
+        Notification::assertNotSentTo($this->userNotInArray, TGNCInterest::class);
     }
-}
 
-/*
- * This function mocks a return that would usually be given
- * to us by CTS via a Stored Procedure.
- */
-
-class TGNCInterestCts
-{
-    public static function getUsers()
+    public function testItStoresARecordInTheDatabaseForValidUsers()
     {
-        return [1300001, 1300002];
+        $this->assertDatabaseHas('notifications', [
+            'type' => 'App\Notifications\Atc\TGNCInterest',
+            'notifiable_id' => $this->validUser->id
+        ]);
+
+        $this->assertDatabaseMissing('notifications', [
+            'type' => 'App\Notifications\Atc\TGNCInterest',
+            'notifiable_id' => $this->userNotInArray->id
+        ]);
     }
 }
