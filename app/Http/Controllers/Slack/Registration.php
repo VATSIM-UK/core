@@ -29,7 +29,6 @@ class Registration extends \App\Http\Controllers\BaseController
                 ->withError('Your account is listed as an International Member, whom are not permitted to register for slack. Please contact the Web Services Department if you believe this to be an error.');
         }
 
-
         if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             DB::beginTransaction();
             $_slackToken = Token::generate('slack_registration', false, $this->account);

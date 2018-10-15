@@ -34,7 +34,7 @@ class SlackFeatureTest extends TestCase
     public function testRedirectIfInternationalMember()
     {
         $account = factory(Account::class)->create();
-        $account->addState(State::find(5), "USA", "ZLA"); // TODO: Add International member state
+        $account->addState(State::find(5), 'USA', 'ZLA'); // TODO: Add International member state
 
         $this->actingAs($account)->get(route('slack.new'))->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('error',
