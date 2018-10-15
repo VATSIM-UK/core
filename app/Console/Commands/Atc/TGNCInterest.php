@@ -46,7 +46,7 @@ class TGNCInterest extends Command
         $this->info("{$users->count()} users require a reminder.");
         $this->info('Checking users exist within Core...');
         $users = $users->map(function ($item) {
-            return Account::findOrRetrieve($item);
+            return Account::find($item);
         })->reject(function ($value) {
             return $value === null;
         });
