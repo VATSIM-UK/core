@@ -44,20 +44,4 @@ class IssueMentoringSessionAwardsCommandTest extends TestCase
 
         Artisan::call('community:badges:mentoring28');
     }
-
-    /**
-     * Ref: https://github.com/laravel/framework/blob/5.6/tests/Session/SessionTableCommandTest.php
-     *
-     * @param       $command
-     * @param array $input
-     *
-     * @return
-     */
-    protected function runCommand($command, $input = [])
-    {
-        return $command->run(
-            new \Symfony\Component\Console\Input\ArrayInput($input),
-            new \Symfony\Component\Console\Output\NullOutput
-        );
-    }
 }
