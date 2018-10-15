@@ -54,6 +54,22 @@ return [
             'engine'      => null,
         ],
 
+        // ToDo: This might need splitting out to separate variables...
+        'cts'   => [
+            'driver'      => 'mysql',
+            'host'        => env('DB_MYSQL_HOST'),
+            'port'        => env('DB_MYSQL_PORT'),
+            'database'    => env('DB_MYSQL_CTS_NAME'),
+            'username'    => env('DB_MYSQL_USER'),
+            'password'    => env('DB_MYSQL_PASS'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset'     => env('DB_MYSQL_CHARSET', 'utf8mb4'),
+            'collation'   => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix'      => env('DB_MYSQL_PREFIX', ''),
+            'strict'      => true,
+            'engine'      => null,
+        ],
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', '127.0.0.1'),
