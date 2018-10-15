@@ -10,6 +10,26 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
     ];
 });
 
+
+$factory->defineAs(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
+    $id = rand(10000000, 99999999);
+    $qual = factory(\App\Models\Mship\Qualification::class)->create();
+    // Assoc qualification to account
+    \DB::table('mship_account_qualification')->insert([
+        'account_id' => $id,
+        'qualification_id' => $qual->id,
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+    ]);
+    return [
+        'id' => $id,
+        'name_first' => $faker->firstName,
+        'name_last' => $faker->lastName,
+        'email' => $faker->email,
+        'is_invisible' => 0,
+    ];
+});
+
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
         'code' => $faker->bothify('?##'),
