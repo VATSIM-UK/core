@@ -10,7 +10,6 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
     ];
 });
 
-
 $factory->defineAs(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
     $id = rand(10000000, 99999999);
     $qual = factory(\App\Models\Mship\Qualification::class)->create();
@@ -21,6 +20,7 @@ $factory->defineAs(App\Models\Mship\Account::class, 'withQualification', functio
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ]);
+
     return [
         'id' => $id,
         'name_first' => $faker->firstName,
