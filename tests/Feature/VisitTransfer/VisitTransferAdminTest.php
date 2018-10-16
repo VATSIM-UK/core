@@ -7,13 +7,13 @@ use App\Models\Mship\Role;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public $application;
     public $ref1;
