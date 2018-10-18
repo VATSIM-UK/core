@@ -17,8 +17,8 @@ class AccountAltered extends Event
         $this->account = $account;
 
         // Determine what was changed
-        foreach ($account->getDirty() as $property => $newValue){
-            \Log::info($property." was changed to ".$newValue);
+        foreach ($account->getDirty() as $property => $newValue) {
+            \Log::info($property.' was changed to '.$newValue);
         }
     }
 }

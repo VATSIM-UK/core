@@ -4,10 +4,10 @@ namespace App\Jobs\Mship;
 
 use App\Models\Mship\Account;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -31,16 +31,15 @@ class SyncToCTS implements ShouldQueue
 
         $cts_user = DB::table("{$cts_database}.members")->where('cid', $this->account->id)->first();
 
-        if(!$cts_user){
+        if (!$cts_user) {
             // No user exists. Abort.
             return;
         }
 
-
         // Find correct email to use
         $user_cts_email = $this->account->ssoEmails()->where('sso_account_id', $sso_account_id)->with('email')->first();
         $email = $this->account->email;
-        if($user_cts_email){
+        if ($user_cts_email) {
             $email = $user_cts_email->email->email;
         }
 
@@ -52,11 +51,10 @@ class SyncToCTS implements ShouldQueue
             'last_cert_check' => $this->account->cert_checked_at,
         ];
 
-
         DB::table("{$cts_database}.members")
                     ->where('cid', $this->account->id)
                     ->update($data);
 
-        Log::debug($this->account->real_name . " synced to CTS");
+        Log::debug($this->account->real_name.' synced to CTS');
     }
 }

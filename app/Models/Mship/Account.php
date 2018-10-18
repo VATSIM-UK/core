@@ -3,8 +3,6 @@
 namespace App\Models\Mship;
 
 use App\Events\Mship\AccountAltered;
-use App\Events\Mship\EmailChangedEvent;
-use App\Events\Mship\NameChangedEvent;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
@@ -212,9 +210,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     {
         parent::boot();
 
-        self::saving(function($user){
-
-            if(count(array_except($user->getDirty(), $user->untracked)) > 0){
+        self::saving(function ($user) {
+            if (count(array_except($user->getDirty(), $user->untracked)) > 0) {
                 event(new AccountAltered($user));
             }
         });

@@ -32,7 +32,6 @@ class EventServiceProvider extends ServiceProvider
             //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
-
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
         ],
