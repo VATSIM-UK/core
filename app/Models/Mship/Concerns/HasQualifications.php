@@ -2,7 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Events\Mship\QualificationAdded;
+use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
 use Exception;

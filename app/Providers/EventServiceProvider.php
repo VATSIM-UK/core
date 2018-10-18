@@ -15,22 +15,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \App\Events\Mship\AccountTouched::class => [
+        \App\Events\Mship\AccountAltered::class => [
             // Look to implement a sync to external services here
         ],
 
-        \App\Events\Mship\QualificationAdded::class => [
+        \App\Events\Mship\Qualifications\QualificationAdded::class => [
             \App\Listeners\Mship\SendS1Email::class,
-        ],
-
-        \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
-            //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
         ],
 
         \App\Events\Mship\Bans\BanUpdated::class => [
             \App\Listeners\Sync\Bans\SyncBanToTs::class,
             \App\Listeners\Sync\Bans\SyncBanToForum::class,
         ],
+
+        \App\Events\Mship\Feedback\NewFeedbackEvent::class => [
+            //\App\Listeners\Mship\Feedback\NotifyOfNewFeedback::class,
+        ],
+
 
         AtcSessionEnded::class => [
             //AtcSessionRecordedSuccessNotification::class, // temporarily disabled
@@ -94,12 +95,11 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any other events for your application.
+     * The subscriber classes to register.
      *
-     * @return void
+     * @var array
      */
-    public function boot()
-    {
-        parent::boot();
-    }
+    protected $subscribe = [
+        'App\Listeners\Mship\SyncSubscriber',
+    ];
 }
