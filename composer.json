@@ -40,6 +40,7 @@
         "maatwebsite/excel": "~2.1.0",
         "malahierba-lab/public-id": "dev-master",
         "planetteamspeak/ts3-php-framework": "1.1.28",
+        "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
         "skymeyer/vatsimphp": "1.0.*",
         "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
