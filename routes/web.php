@@ -11,7 +11,3 @@ Route::group(['domain' => config('app.url')], function () {
 Route::group(['domain' => config('app.url'), 'middleware' => ['admin']], function () {
     require base_path('routes/web-admin.php');
 });
-
-Route::group(['domain' => 'vats.im'], function () {
-    require base_path('routes/web-shorturl.php');
-});

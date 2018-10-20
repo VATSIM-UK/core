@@ -112,8 +112,10 @@ class Atc extends Model
     const TYPE_CTR = 6;
     const TYPE_FSS = 7;
 
-    public static function boot()
+    protected static function boot()
     {
+        parent::boot();
+
         self::created(function ($atcSession) {
             event(new AtcSessionStarted($atcSession));
         });

@@ -186,3 +186,14 @@ function currentUserHasAuth()
 {
     return Auth::guard('vatsim-sso')->check() && Auth::guard('web')->check();
 }
+
+function appUrl()
+{
+    $appUrl = env('APP_URL', 'http://localhost');
+
+    if (env('HEROKU_APP_NAME') != null) {
+        $appUrl = 'http://'.env('HEROKU_APP_NAME').'.herokuapp.com';
+    }
+
+    return $appUrl;
+}
