@@ -70,9 +70,9 @@ return [
             'collation' => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => env('DB_MYSQL_PREFIX', ''),
             'strict' => true,
-            'engine' => null
+            'engine' => null,
           ],
-      
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', '127.0.0.1'),
