@@ -6,7 +6,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         processIsolation="false"
+         processIsolation="true"
          stopOnFailure="false">
 <testsuites>
     <testsuite name="Feature">
@@ -31,6 +31,5 @@
     <env name="SLACK_BOT_TOKEN" value="testing"/>
     <env name="SLACK_TOKEN_REGISTER" value="testing"/>
     <env name="SLACK_ENDPOINT" value="testing"/>
-    <env name="DB_MYSQL_NAME" value="core_testing"/>
 </php>
 </phpunit>

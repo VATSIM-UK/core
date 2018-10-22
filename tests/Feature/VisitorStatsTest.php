@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Mship\State;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class VisitorStatsTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
 

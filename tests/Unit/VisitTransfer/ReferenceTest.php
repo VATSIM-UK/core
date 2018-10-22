@@ -5,14 +5,14 @@ namespace Tests\Unit\VisitTransfer;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotRequestedException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
 use App\Models\VisitTransfer\Reference;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ReferenceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use DatabaseTransactions, WithFaker;
 
     public function setUp()
     {
