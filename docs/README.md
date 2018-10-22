@@ -7,7 +7,7 @@
 [alpha_status]: https://vatsim-uk.deploybot.com/badge/77558059841720/140917.png
 
 <p align="center">
-    <a href="https://www.vatsim.uk"><img src="https://vatsim.uk/system/view/images/logo.png" width="250px" /></a>
+    <a href="https://www.vatsim.uk"><img src="https://www.vatsim.uk/images/branding/vatsimuk_blackblue.png" width="250px" /></a>
 </p>
 
 # About
