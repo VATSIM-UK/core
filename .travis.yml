@@ -24,6 +24,7 @@ install:
 - php artisan key:generate
 - php artisan migrate -vvv -n
 - php artisan migrate:refresh -vvv -n
+- npm rebuild node-sass
 - npm run prod
 
 before_script:
