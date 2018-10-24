@@ -11,7 +11,7 @@ class SlackTest extends TestCase
     public function testSlackApiGivesInvalidAuth()
     {
         $users = SlackUser::lists();
-        $this->assertEquals('not_authed', $users->error);
+        $this->assertEquals('invalid_auth', $users->error);
         $this->assertFalse($users->ok);
     }
 
