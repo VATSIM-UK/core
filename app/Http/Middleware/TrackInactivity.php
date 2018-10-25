@@ -35,7 +35,7 @@ class TrackInactivity
                 // forget their secondary authentication
                 Auth::logout();
 
-                return redirect()->guest('/login');
+                return $next($request);
             }
         }
 
