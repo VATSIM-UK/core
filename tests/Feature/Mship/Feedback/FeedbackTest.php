@@ -7,12 +7,12 @@ use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Feedback\Question;
 use App\Models\Mship\Feedback\Question\Type;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FeedbackTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
     private $form;

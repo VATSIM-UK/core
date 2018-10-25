@@ -16,6 +16,7 @@
     "BUGSNAG_BATCH_SENDING": "true",
     "BUGSNAG_NOTIFY_RELEASE_STAGES": "production,staging",
     "CACHE_DRIVER": "file",
+    "COOKIE_CONSENT_ENABLED": "true",
     "CTS_DATABASE": "vukcts",
     "HEROKU_APP_NAME": {
       "required": true

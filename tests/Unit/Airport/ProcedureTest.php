@@ -5,12 +5,12 @@ namespace Tests\Unit\Airport;
 use App\Models\Airport;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class ProcedureTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /** @test */
     public function itCanCreateANewProcedure()

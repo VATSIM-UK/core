@@ -7,12 +7,12 @@ use App\Models\Airport\Navaid;
 use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
 use App\Models\Station;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class AirportTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /** @test */
     public function itCanCreateANewAirport()

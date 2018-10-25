@@ -43,6 +43,7 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
         "skymeyer/vatsimphp": "1.0.*",
+        "spatie/laravel-cookie-consent": "^2.4",
         "vatsim/sso": "dev-develop#7579e9f492d84f04bfd30df41f0073b3d7a01527",
         "vatsim/xml": "dev-master",
         "vluzrmos/slack-api": "dev-master",
