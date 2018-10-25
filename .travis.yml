@@ -30,7 +30,7 @@ before_script:
 - php artisan serve -q &
 
 script:
-- vendor/bin/phpunit
+- vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
