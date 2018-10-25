@@ -19,14 +19,9 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if (!is_null($this->account->slack_id)) {
-            return Redirect::route('mship.manage.dashboard')
-                ->withError('You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
-        }
-
         if (!$this->account->can('register-slack')) {
             return Redirect::route('mship.manage.dashboard')
-                ->withError('Your account is listed as an International Member, whom are not permitted to register for slack. Please contact the Web Services Department if you believe this to be an error.');
+                ->withError('You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
         }
 
         if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
