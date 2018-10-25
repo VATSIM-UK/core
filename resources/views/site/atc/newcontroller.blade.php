@@ -305,7 +305,7 @@
 
                     <p>
                         <img class="img-responsive center-block"
-                             src="/images/obstos1.png">
+                             src="/images/obstos1cc.png">
                     </p>
                 </div>
             </div>
