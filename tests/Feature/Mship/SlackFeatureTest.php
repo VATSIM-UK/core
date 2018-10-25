@@ -3,9 +3,7 @@
 namespace Tests\Feature\Mship;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class SlackFeatureTest extends TestCase
