@@ -61,8 +61,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected function serviceAccessGates()
     {
-        Gate::define('register-slack', function (Account $account) {
-            return is_null($account->slack_id);
-        });
+        //
     }
 }
