@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Community;
-use App\Models\Mship\Account;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
 use App\Policies\MembershipPolicy;
@@ -61,8 +60,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected function serviceAccessGates()
     {
-        Gate::define('register-slack', function (Account $account) {
-            return is_null($account->slack_id);
-        });
+        //
     }
 }

@@ -19,7 +19,7 @@ class Registration extends \App\Http\Controllers\BaseController
      */
     public function getNew()
     {
-        if (!$this->account->can('register-slack')) {
+        if ($this->account->slack_id) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
         }
