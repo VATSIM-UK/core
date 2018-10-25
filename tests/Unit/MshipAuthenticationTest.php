@@ -3,13 +3,13 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class MshipAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /**
      * Instance used for the tests

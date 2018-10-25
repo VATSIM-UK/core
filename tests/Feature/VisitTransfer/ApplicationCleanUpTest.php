@@ -8,14 +8,14 @@ use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ApplicationCleanUpTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public $application;
     public $user;
