@@ -25,6 +25,6 @@ class SyncSubscriber
         $events->listen(
                 \App\Events\Mship\AccountAltered::class,
                 '\App\Listeners\Mship\SyncSubscriber@syncToAllServices'
-            );
+        );
     }
 }

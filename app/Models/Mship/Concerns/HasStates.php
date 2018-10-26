@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Models\Mship\State;
 use Carbon\Carbon;
@@ -62,6 +63,7 @@ trait HasStates
     {
         $state = determine_mship_state_from_vatsim($region, $division);
         $this->addState($state, $region, $division);
+        event(new AccountAltered($this));
     }
 
     /**
@@ -141,14 +143,16 @@ trait HasStates
         ]);
 
         $this->touch();
-
+        event(new AccountAltered($this));
         return $state;
     }
 
     public function removeState(State $state)
     {
-        return $this->states()->updateExistingPivot($state->id, [
+        $update = $this->states()->updateExistingPivot($state->id, [
             'end_at' => Carbon::now(),
         ]);
+        event(new AccountAltered($this));
+        return $update;
     }
 }

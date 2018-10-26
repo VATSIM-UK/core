@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Email as AccountEmail;
 use Carbon\Carbon;
@@ -65,8 +66,10 @@ trait HasEmails
         }
 
         $this->attributes['email'] = strtolower($primaryEmail);
+        $this->save();
 
-        return $this->save();
+        event(new AccountAltered($this));
+        return true;
     }
 
     /**
@@ -107,7 +110,10 @@ trait HasEmails
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
-            return $this->secondaryEmails()->save($newSecondaryEmail);
+            $this->secondaryEmails()->save($newSecondaryEmail);
+
+            event(new AccountAltered($this));
+            return $this;
         }
 
         return $this->secondaryEmails->filter(function ($e) use ($newEmail) {
