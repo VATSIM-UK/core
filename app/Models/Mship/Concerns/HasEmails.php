@@ -68,7 +68,7 @@ trait HasEmails
         $this->attributes['email'] = strtolower($primaryEmail);
         $this->save();
 
-        if($this->email != strtolower($primaryEmail)){
+        if ($this->email != strtolower($primaryEmail)) {
             event(new AccountAltered($this));
         }
 

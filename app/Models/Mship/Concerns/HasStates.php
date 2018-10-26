@@ -143,6 +143,7 @@ trait HasStates
 
         $this->touch();
         event(new AccountAltered($this));
+
         return $state;
     }
 
