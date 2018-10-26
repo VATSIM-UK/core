@@ -63,7 +63,6 @@ trait HasStates
     {
         $state = determine_mship_state_from_vatsim($region, $division);
         $this->addState($state, $region, $division);
-        event(new AccountAltered($this));
     }
 
     /**
@@ -144,7 +143,6 @@ trait HasStates
 
         $this->touch();
         event(new AccountAltered($this));
-
         return $state;
     }
 

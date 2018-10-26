@@ -197,7 +197,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
-    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
@@ -210,7 +210,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     {
         parent::boot();
 
-        self::saving(function ($user) {
+        self::saved(function ($user) {
             if (count(array_except($user->getDirty(), $user->untracked)) > 0) {
                 event(new AccountAltered($user));
             }
