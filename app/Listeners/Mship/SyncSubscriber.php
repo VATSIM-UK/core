@@ -9,10 +9,12 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
-        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
-        \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
-        \App\Jobs\Mship\SyncToForums::dispatch($event->account);
+        \Log::info($event->account->real_name." was synced");
+//        \Log::info(debug_backtrace());
+//        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
+//        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
+//        \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
+//        \App\Jobs\Mship\SyncToForums::dispatch($event->account);
     }
 
     /**
