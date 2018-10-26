@@ -69,6 +69,7 @@ trait HasEmails
         $this->save();
 
         event(new AccountAltered($this));
+
         return true;
     }
 
@@ -81,6 +82,7 @@ trait HasEmails
     public function getEmailForService($sso_account_id)
     {
         $email_for_service = $this->ssoEmails()->where('sso_account_id', $sso_account_id)->with('email')->first();
+
         return $email_for_service ? $email_for_service->email->email : $this->email;
     }
 
@@ -113,6 +115,7 @@ trait HasEmails
             $this->secondaryEmails()->save($newSecondaryEmail);
 
             event(new AccountAltered($this));
+
             return $this;
         }
 

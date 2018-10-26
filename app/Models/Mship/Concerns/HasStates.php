@@ -144,6 +144,7 @@ trait HasStates
 
         $this->touch();
         event(new AccountAltered($this));
+
         return $state;
     }
 
@@ -153,6 +154,7 @@ trait HasStates
             'end_at' => Carbon::now(),
         ]);
         event(new AccountAltered($this));
+
         return $update;
     }
 }
