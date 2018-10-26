@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddOwnFeedbackPermission extends Migration
@@ -17,7 +15,7 @@ class AddOwnFeedbackPermission extends Migration
             'name' => 'adm/mship/feedback/view/own/',
             'display_name' => 'Admin / Membership / Feedback Access / Own',
             'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now()
+            'updated_at' => \Carbon\Carbon::now(),
         ]);
     }
 

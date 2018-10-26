@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Mship\Feedback;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Permission;
 use App\Models\Mship\Role;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FeedbackAdmTest extends TestCase
@@ -21,7 +21,7 @@ class FeedbackAdmTest extends TestCase
     {
         parent::setUp();
 
-        /** @var Account account */
+        /* @var Account account */
         $this->account = factory(Account::class)->create();
 
         $this->form = Form::findOrFail(1);
@@ -39,26 +39,25 @@ class FeedbackAdmTest extends TestCase
 
         $feedback = factory(Feedback::class)->create([
             'account_id' => $this->account->id,
-            'form_id' => $this->form->id
+            'form_id' => $this->form->id,
         ]);
 
         $this->withoutMiddleware('auth_full_group')->actingAs($this->account->fresh(), 'web')->get(route('adm.mship.feedback.view', $feedback))
             ->assertRedirect(route('adm.mship.feedback.all'))->assertSessionHas('error',
                 'You cannot view your own feedback');
     }
-    
+
     /** @test **/
-    public function testSuperAdminCanStillSeeOwnFeedback() 
+    public function testSuperAdminCanStillSeeOwnFeedback()
     {
         $this->account->roles()->attach(Role::find(1));
 
         $feedback = factory(Feedback::class)->create([
             'account_id' => $this->account->id,
-            'form_id' => $this->form->id
+            'form_id' => $this->form->id,
         ]);
 
         $this->withoutMiddleware('auth_full_group')->actingAs($this->account->fresh(), 'web')->get(route('adm.mship.feedback.view', $feedback))
             ->assertSuccessful();
     }
-
 }
