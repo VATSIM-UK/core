@@ -7,7 +7,7 @@
     @if(isset($_pageTitle))
         <title>VATSIM UK | {{ $_pageTitle }}</title>
     @else
-        <title>VATSIM UK | United Kingdom Division of VATSIM.net</title>
+        <title>VATSIM United Kingdom | United Kingdom Division of VATSIM.net</title>
     @endif
 
     <!--BugSnagScript-->
