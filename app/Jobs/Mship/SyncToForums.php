@@ -93,7 +93,7 @@ class SyncToForums implements ShouldQueue
                 }
             }
         }
-        
+
         Log::info($this->account->real_name.' synced to Forums');
     }
 }
