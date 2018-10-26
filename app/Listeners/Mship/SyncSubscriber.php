@@ -9,7 +9,7 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        \Log::info($event->account->real_name." was synced");
+        \Log::info($event->account->real_name.' was synced');
 //        \Log::info(debug_backtrace());
 //        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
 //        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);

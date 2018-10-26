@@ -15,6 +15,5 @@ class AccountAltered extends Event
     public function __construct(AccountData $account)
     {
         $this->account = $account;
-
     }
 }
