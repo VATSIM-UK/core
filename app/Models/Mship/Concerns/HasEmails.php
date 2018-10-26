@@ -66,13 +66,13 @@ trait HasEmails
         }
 
         $this->attributes['email'] = strtolower($primaryEmail);
-        $this->save();
+        $save = $this->save();
 
         if ($this->email != strtolower($primaryEmail)) {
             event(new AccountAltered($this));
         }
 
-        return true;
+        return $save;
     }
 
     /**
@@ -114,11 +114,11 @@ trait HasEmails
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 
-            $this->secondaryEmails()->save($newSecondaryEmail);
+            $save = $this->secondaryEmails()->save($newSecondaryEmail);
 
             event(new AccountAltered($this));
 
-            return $this;
+            return $save;
         }
 
         return $this->secondaryEmails->filter(function ($e) use ($newEmail) {
