@@ -28,8 +28,8 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 |     Env    |              URL              |        Status        |
 |------------|-------------------------------|----------------------|
 | Production | https://www.vatsim.uk         | ![production_status] |
-| Beta       | https://beta.core.vatsim.uk   | ![beta_status]       |
-| Alpha      | https://alpha.core.vatsim.uk  | ![alpha_status]      |
+| Beta       | https://beta.vatsim.uk        | ![beta_status]       |
+| Alpha      | https://alpha.vatsim.uk       | ![alpha_status]      |
 
 # Issue Tracking
 
@@ -42,7 +42,3 @@ When submitting an issue, please:
 To start work on an issue, post a comment on the issue requesting it be assigned to you. Once it has been assigned, you are free to start work on it.
 
 # Version Notes
-
-* Add IPBOARD_API_URL env variable.
-* Add IPBOARD_API_KEY env variable.
-* Add IPBOARD_API_REFERENCE_NAME env variable.
