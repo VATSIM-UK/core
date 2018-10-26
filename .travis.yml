@@ -31,7 +31,7 @@ before_script:
 
 script:
 - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then vendor/bin/phpunit; fi
-- if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then phpdbg -dmemory_limit=1G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
