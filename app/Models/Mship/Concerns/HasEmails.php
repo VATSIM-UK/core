@@ -70,6 +70,18 @@ trait HasEmails
     }
 
     /**
+     * Retrieve an email address for a given SSO service
+     *
+     * @param $sso_account_id
+     * @return string
+     */
+    public function getEmailForService($sso_account_id)
+    {
+        $email_for_service = $this->ssoEmails()->where('sso_account_id', $sso_account_id)->with('email')->first();
+        return $email_for_service ? $email_for_service->email->email : $this->email;
+    }
+
+    /**
      * Laravel magic setter - calls the setEmail method and instantly saves.
      *
      * @param string $email

@@ -29,23 +29,16 @@ class SyncToCTS implements ShouldQueue
 
         // Check user exists in database
 
-        $cts_user = DB::table("{$cts_database}.members")->where('cid', $this->account->id)->first();
+        $cts_account = DB::table("{$cts_database}.members")->where('cid', $this->account->id)->first();
 
-        if (!$cts_user) {
+        if (!$cts_account) {
             // No user exists. Abort.
             return;
         }
 
-        // Find correct email to use
-        $user_cts_email = $this->account->ssoEmails()->where('sso_account_id', $sso_account_id)->with('email')->first();
-        $email = $this->account->email;
-        if ($user_cts_email) {
-            $email = $user_cts_email->email->email;
-        }
-
         $data = [
             'name' => $this->account->real_name,
-            'email' => $email,
+            'email' => $this->account->getEmailForService($sso_account_id),
             'rating' => ($this->account->network_banned || $this->account->inactive) ? 0 : $this->account->qualification_atc->vatsim,
             'prating' => $this->account->qualifications_pilot->sum('vatsim'),
             'last_cert_check' => $this->account->cert_checked_at,

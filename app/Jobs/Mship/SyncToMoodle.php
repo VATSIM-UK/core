@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SyncToMoodle implements ShouldQueue
 {
@@ -22,6 +23,8 @@ class SyncToMoodle implements ShouldQueue
 
     public function handle()
     {
-        \Log::info($this->account->real_name.' synced to Moodle');
+
+        $this->account->syncToMoodle();
+        Log::debug($this->account->real_name.' synced to Moodle');
     }
 }
