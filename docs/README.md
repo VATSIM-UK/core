@@ -40,5 +40,3 @@ When submitting an issue, please:
 * Provide as much information as possible, to ensure others are able to understand and act upon the information you provide.
 
 To start work on an issue, post a comment on the issue requesting it be assigned to you. Once it has been assigned, you are free to start work on it.
-
-# Version Notes
