@@ -1,7 +1,6 @@
 language: php
 
 php:
-- 7.1
 - 7.2
 
 addons:
@@ -24,7 +23,6 @@ install:
 - cp .env.example .env
 - php artisan key:generate
 - php artisan migrate -vvv -n
-- php artisan migrate:refresh -vvv -n
 - npm run prod
 
 before_script:
@@ -32,7 +30,7 @@ before_script:
 - php artisan serve -q &
 
 script:
-- vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+- vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
