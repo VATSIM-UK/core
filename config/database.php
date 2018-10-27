@@ -8,6 +8,15 @@ if (env('DATABASE_URL', null) !== null) {
     $herokuDb['port'] = $split['port'];
     $herokuDb['user'] = $split['user'];
     $herokuDb['pass'] = $split['pass'];
+
+$ctsDb = [];
+if (env('CORE_DATABASE_URL', null) !== null) {
+    $ctsDb = parse_url(getenv('CTS_DATABASE_URL'));
+    $ctsDb['host'] = $split['host'];
+    $ctsDb['name'] = substr($split['path'], 1);
+    $ctsDb['port'] = $split['port'];
+    $ctsDb['user'] = $split['user'];
+    $ctsDb['pass'] = $split['pass'];
 }
 
 return [
@@ -66,11 +75,11 @@ return [
 
         'cts' => [
             'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST'),
-            'port' => env('DB_MYSQL_PORT'),
-            'database' => env('CTS_DATABASE'),
-            'username' => env('DB_MYSQL_USER'),
-            'password' => env('DB_MYSQL_PASS'),
+            'host' => env('DB_MYSQL_HOST', array_get($ctsDb, 'host')),
+            'port' => env('DB_MYSQL_PORT', array_get($ctsDb, 'port')),
+            'database' => env('CTS_DATABASE', array_get($ctsDb, 'name')),
+            'username' => env('DB_MYSQL_USER', array_get($ctsDb, 'user')),
+            'password' => env('DB_MYSQL_PASS', array_get($ctsDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => env('DB_MYSQL_CHARSET', 'utf8mb4'),
             'collation'   => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
