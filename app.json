@@ -57,6 +57,10 @@
     {
       "plan": "jawsdb-maria:kitefin",
       "as": "DATABASE"
+    },
+    {
+      "plan": "jawsdb-maria:kitefin",
+      "as": "CTS_DATABASE"
     }
   ]
 }
