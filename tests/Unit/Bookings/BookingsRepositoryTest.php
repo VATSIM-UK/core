@@ -64,9 +64,11 @@ class BookingsRepositoryTest extends UnitTestCase
             'type' => 'ME',
         ], $bookings->get(1)->toArray());
     }
-
-    // Can hide user's name on exam bookings
-    public function test_it_hides_member_details_on_exam_booking()
+    
+    /*
+     * @group CTS Bookings
+     * @test
+     */    public function test_it_hides_member_details_on_exam_booking()
     {
         Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '11:00:00', 'to' => '12:00:00', 'position' => 'EGKK_APP', 'member_id' => '258635', 'type' => 'BK']);
         Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '12:00:00', 'to' => '13:00:00', 'position' => 'EGCC_APP', 'member_id' => '317737', 'type' => 'EX']);
