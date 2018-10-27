@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Cts;
 
-
 use App\Models\Cts\Booking;
 use Carbon\Carbon;
 
@@ -14,13 +13,13 @@ class BookingRepository
         $returnData = collect();
 
         $bookings->each(function ($booking) use ($returnData) {
-           $returnData->push(collect([
+            $returnData->push(collect([
                'date' => $booking->date,
                'from' => $booking->from,
                'to' => $booking->to,
                'position' => $booking->position,
                'member' => $this->formatMember($booking),
-               'type' => $booking->type
+               'type' => $booking->type,
            ]));
         });
 
@@ -32,7 +31,7 @@ class BookingRepository
         if ($booking->type == 'EX') {
             return [
                 'id' => '',
-                'name' => 'Hidden'
+                'name' => 'Hidden',
             ];
         }
 

@@ -4,9 +4,9 @@ namespace Tests\Unit\Bookings;
 
 use App\Models\Cts\Booking;
 use App\Models\Cts\Member;
+use App\Repositories\Cts\BookingRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
-use App\Repositories\Cts\BookingRepository;
 use Tests\UnitTestCase;
 
 class BookingsRepositoryTest extends UnitTestCase
@@ -50,7 +50,7 @@ class BookingsRepositoryTest extends UnitTestCase
                 'id' => 1258635,
                 'name' => 'Calum Towers',
             ],
-            'type' => 'BK'
+            'type' => 'BK',
         ], $bookings->get(0)->toArray());
         $this->assertEquals([
             'date' => $this->knownDate->toDateString(),
@@ -61,9 +61,8 @@ class BookingsRepositoryTest extends UnitTestCase
                 'id' => 1317737,
                 'name' => 'Daniel Crookes',
             ],
-            'type' => 'ME'
+            'type' => 'ME',
         ], $bookings->get(1)->toArray());
-
     }
 
     // Can hide user's name on exam bookings
@@ -79,13 +78,12 @@ class BookingsRepositoryTest extends UnitTestCase
 
         $this->assertEquals([
             'id' => 1258635,
-            'name' => 'Calum Towers'
+            'name' => 'Calum Towers',
         ], $bookings->get(0)['member']);
 
         $this->assertEquals([
             'id' => '',
-            'name' => 'Hidden'
+            'name' => 'Hidden',
         ], $bookings->get(1)['member']);
-
     }
 }

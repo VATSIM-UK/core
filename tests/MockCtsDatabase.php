@@ -4,8 +4,8 @@ namespace Tests;
 
 use Illuminate\Support\Facades\DB;
 
-class MockCtsDatabase {
-
+class MockCtsDatabase
+{
     public static function create()
     {
         DB::connection('cts')->statement("SET SESSION sql_mode='NO_ZERO_IN_DATE';");
@@ -81,11 +81,11 @@ class MockCtsDatabase {
     public static function destroy()
     {
         DB::connection('cts')->statement(
-            "DROP TABLE IF EXISTS `members`;"
+            'DROP TABLE IF EXISTS `members`;'
         );
 
         DB::connection('cts')->statement(
-            "DROP TABLE IF EXISTS `bookings`;"
+            'DROP TABLE IF EXISTS `bookings`;'
         );
     }
 }
