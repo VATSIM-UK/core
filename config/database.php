@@ -11,7 +11,7 @@ if (env('CORE_DATABASE_URL', null) !== null) {
 }
 
 $ctsDb = [];
-if (env('CORE_DATABASE_URL', null) !== null) {
+if (env('CTS_DATABASE_URL', null) !== null) {
     $ctsDb = parse_url(getenv('CTS_DATABASE_URL'));
     $ctsDb['host'] = $split['host'];
     $ctsDb['name'] = substr($split['path'], 1);
