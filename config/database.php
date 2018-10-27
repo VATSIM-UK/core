@@ -1,13 +1,14 @@
 <?php
 
-$herokuDb = [];
-if (env('DATABASE_URL', null) !== null) {
-    $split = parse_url(getenv('DATABASE_URL'));
-    $herokuDb['host'] = $split['host'];
-    $herokuDb['name'] = substr($split['path'], 1);
-    $herokuDb['port'] = $split['port'];
-    $herokuDb['user'] = $split['user'];
-    $herokuDb['pass'] = $split['pass'];
+$coreDb = [];
+if (env('CORE_DATABASE_URL', null) !== null) {
+    $split = parse_url(getenv('CORE_DATABASE_URL'));
+    $coreDb['host'] = $split['host'];
+    $coreDb['name'] = substr($split['path'], 1);
+    $coreDb['port'] = $split['port'];
+    $coreDb['user'] = $split['user'];
+    $coreDb['pass'] = $split['pass'];
+}
 
 $ctsDb = [];
 if (env('CORE_DATABASE_URL', null) !== null) {
@@ -60,11 +61,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST', array_get($herokuDb, 'host')),
-            'port' => env('DB_MYSQL_PORT', array_get($herokuDb, 'port')),
-            'database' => env('DB_MYSQL_NAME', array_get($herokuDb, 'name')),
-            'username' => env('DB_MYSQL_USER', array_get($herokuDb, 'user')),
-            'password' => env('DB_MYSQL_PASS', array_get($herokuDb, 'pass')),
+            'host' => env('DB_MYSQL_HOST', array_get($coreDb, 'host')),
+            'port' => env('DB_MYSQL_PORT', array_get($coreDb, 'port')),
+            'database' => env('DB_MYSQL_NAME', array_get($coreDb, 'name')),
+            'username' => env('DB_MYSQL_USER', array_get($coreDb, 'user')),
+            'password' => env('DB_MYSQL_PASS', array_get($coreDb, 'pass')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => env('DB_MYSQL_CHARSET', 'utf8mb4'),
             'collation'   => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
