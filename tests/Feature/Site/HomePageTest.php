@@ -3,12 +3,11 @@
 namespace Tests\Feature\Site;
 
 use App\Models\Cts\Booking;
-use Tests\TestCase;
 use Carbon\Carbon;
+use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
-
     /** @test * */
     public function itLoadsTheHomepage()
     {
@@ -49,6 +48,4 @@ class HomePageTest extends TestCase
             ->assertDontSee($pilot->position)
             ->assertDontSee($sweatbox->position);
     }
-
-
 }

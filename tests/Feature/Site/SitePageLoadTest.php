@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class SitePageLoadTest extends TestCase
 {
-
     /** @test * */
     public function itLoadsTheJoinUsPage()
     {
