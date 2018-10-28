@@ -16,4 +16,16 @@ class Booking extends Model
     {
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
+
+    public function scopeNetworkAtc($query)
+    {
+        return $query->where(function ($subQuery) {
+            return $subQuery->where('position', 'LIKE', '%_DEL')
+                ->orWhere('position', 'LIKE', "%_GND")
+                ->orWhere('position', 'LIKE', "%_TWR")
+                ->orWhere('position', 'LIKE', "%_APP")
+                ->orWhere('position', 'LIKE', "%_CTR")
+                ->orWhere('position', 'LIKE', "%_FSS");
+        });
+    }
 }

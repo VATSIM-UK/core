@@ -96,4 +96,19 @@ class BookingsRepositoryTest extends UnitTestCase
             'name' => 'Hidden',
         ], $bookings->get(1)['member']);
     }
+
+    /* @test */
+    public function test_it_can_return_a_list_of_todays_live_atc_bookings()
+    {
+        factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_APP']); // Live ATC booking today
+        factory(Booking::class)->create(['date' => $this->today, 'position' => 'EGKK_SBAT']); // Sweatbox ATC booking today
+        factory(Booking::class)->create(['date' => $this->today, 'position' => 'P1_VATSIM']); // Pilot booking today
+        factory(Booking::class)->create(['date' => $this->tomorrow, 'position' => 'EGKK_APP']); // ATC booking tomorrow
+        factory(Booking::class)->create(['date' => $this->tomorrow, 'position' => 'P1_VATSIM']); // Pilot booking tomorrw
+
+        $atcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
+
+        $this->assertInstanceOf(Collection::class, $atcBookings);
+        $this->assertCount(1, $atcBookings);
+    }
 }

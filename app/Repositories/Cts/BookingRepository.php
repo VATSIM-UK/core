@@ -26,6 +26,13 @@ class BookingRepository
         return $returnData;
     }
 
+    public function getTodaysLiveAtcBookings()
+    {
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())->networkAtc()->get();
+
+        return $bookings;
+    }
+
     private function formatMember(Booking $booking)
     {
         if ($booking->type == 'EX') {
