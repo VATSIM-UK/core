@@ -14,7 +14,7 @@ class BookingsRepositoryTest extends UnitTestCase
 {
     use DatabaseTransactions;
 
-    /* @var BookingsRespository */
+    /* @var BookingRepository */
     protected $subjectUnderTest;
 
     /* @var Carbon */
