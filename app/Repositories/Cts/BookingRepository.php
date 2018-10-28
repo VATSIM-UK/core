@@ -9,7 +9,7 @@ class BookingRepository
 {
     public function getTodaysBookings()
     {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())->get();
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())->with('member')->get();
         $returnData = collect();
 
         $bookings->each(function ($booking) use ($returnData) {
