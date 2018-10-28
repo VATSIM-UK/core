@@ -123,8 +123,8 @@
                                 <li class="list-group-item text-primary text-center"><h4>Today's Bookings</h4></li>
                                 @foreach ($bookings as $booking)
                                     <li class="list-group-item text-primary">
-                                        {{ $booking->position }} ({{$booking->from}}z - {{$booking->to}}z)<br />
-                                        {{ $booking->member->name }} ({{ $booking->member->id }})
+                                        {{ $booking['position'] }} ({{$booking['from']}}z - {{$booking['to']}}z)<br />
+                                        {{ $booking['member']['name'] }} ({{ $booking['member']['id'] }})
                                         <a href="#">
                                             <span style="float:right;">
                                                 <i class="fa fa-info-circle tooltip"></i>
