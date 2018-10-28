@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use Alawrence\Ipboard\Ipboard;
+use Illuminate\Support\Facades\Cache;
 
 class StaffPageController extends \App\Http\Controllers\BaseController
 {
@@ -34,7 +35,11 @@ class StaffPageController extends \App\Http\Controllers\BaseController
 
         return $teamPhotos->map(function ($value, $key) use ($ipboard) {
             try {
-                return $ipboard->getMemberById($key)->photoUrl;
+                if (!Cache::has($key)) {
+                    Cache::put($key, $ipboard->getMemberById($key)->photoUrl, now()->addHours(24)->diffInMinutes());
+                }
+
+                return Cache::get($key);
             } catch (\Exception $e) {
                 return;
             }
