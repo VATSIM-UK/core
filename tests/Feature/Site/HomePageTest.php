@@ -4,10 +4,13 @@ namespace Tests\Feature\Site;
 
 use App\Models\Cts\Booking;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test * */
     public function itLoadsTheHomepage()
     {
