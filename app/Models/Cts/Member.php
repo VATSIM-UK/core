@@ -10,4 +10,5 @@ class Member extends Model
     protected $guarded = [];
     public $timestamps = false;
     protected $attributes = ['old_rts_id' => 0];
+    public $incrementing = false;
 }

@@ -29,13 +29,19 @@ class BookingsRepositoryTest extends UnitTestCase
      */
     public function test_it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
-        Booking::create(['date' => '2010-01-01', 'from' => '11:00:00', 'to' => '12:00:00', 'position' => 'EGKK_APP', 'member_id' => '258635', 'type' => 'BK']);
-        Booking::create(['date' => '2010-01-01', 'from' => '12:00:00', 'to' => '13:00:00', 'position' => 'EGCC_APP', 'member_id' => '317737', 'type' => 'ME']);
-        Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '11:00:00', 'to' => '12:00:00', 'position' => 'EGKK_APP', 'member_id' => '258635', 'type' => 'BK']);
-        Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '12:00:00', 'to' => '13:00:00', 'position' => 'EGCC_APP', 'member_id' => '317737', 'type' => 'ME']);
+        factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
-        Member::create(['id' => '258635', 'cid' => '1258635', 'name' => 'Calum Towers', 'joined' => $this->knownDate->toDateString(), 'joined_div' => $this->knownDate->toDateString()]);
-        Member::create(['id' => '317737', 'cid' => '1317737', 'name' => 'Daniel Crookes', 'joined' => $this->knownDate->toDateString(), 'joined_div' => $this->knownDate->toDateString()]);
+        $bookingTodayOne = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'member_id' => factory(Member::class)->create()->id,
+            'type' => 'BK'
+        ]);
+
+        $bookingTodayTwo = factory(Booking::class)->create([
+            'date' => $this->knownDate->toDateString(),
+            'member_id' => factory(Member::class)->create()->id,
+            'type' => 'ME'
+        ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
@@ -43,25 +49,25 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->assertCount(2, $bookings);
         $this->assertEquals([
             'date' => $this->knownDate->toDateString(),
-            'from' => '11:00:00',
-            'to' => '12:00:00',
-            'position' => 'EGKK_APP',
+            'from' => $bookingTodayOne->from,
+            'to' => $bookingTodayOne->to,
+            'position' => $bookingTodayOne->position,
             'member' => [
-                'id' => 1258635,
-                'name' => 'Calum Towers',
+                'id' => $bookingTodayOne['member']['cid'],
+                'name' => $bookingTodayOne['member']['name'],
             ],
-            'type' => 'BK',
+            'type' => $bookingTodayOne->type,
         ], $bookings->get(0)->toArray());
         $this->assertEquals([
             'date' => $this->knownDate->toDateString(),
-            'from' => '12:00:00',
-            'to' => '13:00:00',
-            'position' => 'EGCC_APP',
+            'from' => $bookingTodayTwo->from,
+            'to' => $bookingTodayTwo->to,
+            'position' => $bookingTodayTwo->position,
             'member' => [
-                'id' => 1317737,
-                'name' => 'Daniel Crookes',
+                'id' => $bookingTodayTwo['member']['cid'],
+                'name' => $bookingTodayTwo['member']['name'],
             ],
-            'type' => 'ME',
+            'type' => $bookingTodayTwo->type,
         ], $bookings->get(1)->toArray());
     }
 
@@ -71,17 +77,14 @@ class BookingsRepositoryTest extends UnitTestCase
      */
     public function test_it_hides_member_details_on_exam_booking()
     {
-        Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '11:00:00', 'to' => '12:00:00', 'position' => 'EGKK_APP', 'member_id' => '258635', 'type' => 'BK']);
-        Booking::create(['date' => $this->knownDate->toDateString(), 'from' => '12:00:00', 'to' => '13:00:00', 'position' => 'EGCC_APP', 'member_id' => '317737', 'type' => 'EX']);
-
-        Member::create(['id' => '258635', 'cid' => '1258635', 'name' => 'Calum Towers', 'joined' => $this->knownDate->toDateString(), 'joined_div' => $this->knownDate->toDateString()]);
-        Member::create(['id' => '317737', 'cid' => '1317737', 'name' => 'Daniel Crookes', 'joined' => $this->knownDate->toDateString(), 'joined_div' => $this->knownDate->toDateString()]);
+        $normalBooking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'type' => 'BK']);
+        factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'type' => 'EX']);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
         $this->assertEquals([
-            'id' => 1258635,
-            'name' => 'Calum Towers',
+            'id' => $normalBooking->member->cid,
+            'name' => $normalBooking->member->name,
         ], $bookings->get(0)['member']);
 
         $this->assertEquals([
