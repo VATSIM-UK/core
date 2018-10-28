@@ -43,11 +43,11 @@ To start work on an issue, post a comment on the issue requesting it be assigned
 
 # Deploying Locally
 
-To deploy core locally, we have provided a pre-configured Vagrantfile based on the (laravel/homestead)[https://laravel.com/docs/homestead] Vagrant Box. We have then abstracted away a number of additional steps required into a series of scripts within this repository.
+To deploy core locally, we have provided a pre-configured Vagrantfile based on the [laravel/homestead](https://laravel.com/docs/homestead) Vagrant Box. We have then abstracted away a number of additional steps required into a series of scripts within this repository.
 
 ## Requirements
 
-You will need Vagrant installed. (More Information)[https://www.vagrantup.com/downloads.html]
+You will need Vagrant installed. [More Information](https://www.vagrantup.com/downloads.html)
 
 ## Steps
 _NOTE: These steps will only work on a Linux/Unix Machine_
