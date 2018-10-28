@@ -21,11 +21,11 @@ class Booking extends Model
     {
         return $query->where(function ($subQuery) {
             return $subQuery->where('position', 'LIKE', '%_DEL')
-                ->orWhere('position', 'LIKE', "%_GND")
-                ->orWhere('position', 'LIKE', "%_TWR")
-                ->orWhere('position', 'LIKE', "%_APP")
-                ->orWhere('position', 'LIKE', "%_CTR")
-                ->orWhere('position', 'LIKE', "%_FSS");
+                ->orWhere('position', 'LIKE', '%_GND')
+                ->orWhere('position', 'LIKE', '%_TWR')
+                ->orWhere('position', 'LIKE', '%_APP')
+                ->orWhere('position', 'LIKE', '%_CTR')
+                ->orWhere('position', 'LIKE', '%_FSS');
         });
     }
 }

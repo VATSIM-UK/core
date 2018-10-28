@@ -32,7 +32,6 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
     }
 
-
     /* @test */
     public function test_it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
@@ -41,13 +40,13 @@ class BookingsRepositoryTest extends UnitTestCase
         $bookingTodayOne = factory(Booking::class)->create([
             'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
-            'type' => 'BK'
+            'type' => 'BK',
         ]);
 
         $bookingTodayTwo = factory(Booking::class)->create([
             'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
-            'type' => 'ME'
+            'type' => 'ME',
         ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
