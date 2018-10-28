@@ -5,6 +5,7 @@ namespace Tests\Unit\Bookings;
 use App\Models\Cts\Booking;
 use App\Models\Cts\Member;
 use App\Repositories\Cts\BookingRepository;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 use Tests\UnitTestCase;
@@ -16,11 +17,19 @@ class BookingsRepositoryTest extends UnitTestCase
     /* @var BookingsRespository */
     protected $subjectUnderTest;
 
+    /* @var Carbon */
+    protected $today;
+
+    /* @var Carbon */
+    protected $tomorrow;
+
     protected function setUp()
     {
         parent::setUp();
 
         $this->subjectUnderTest = resolve(BookingRepository::class);
+        $this->today = $this->knownDate->toDateString();
+        $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
     }
 
 
@@ -30,13 +39,13 @@ class BookingsRepositoryTest extends UnitTestCase
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
         $bookingTodayOne = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'BK'
         ]);
 
         $bookingTodayTwo = factory(Booking::class)->create([
-            'date' => $this->knownDate->toDateString(),
+            'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'ME'
         ]);
@@ -46,7 +55,7 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(2, $bookings);
         $this->assertEquals([
-            'date' => $this->knownDate->toDateString(),
+            'date' => $this->today,
             'from' => $bookingTodayOne->from,
             'to' => $bookingTodayOne->to,
             'position' => $bookingTodayOne->position,
@@ -57,7 +66,7 @@ class BookingsRepositoryTest extends UnitTestCase
             'type' => $bookingTodayOne->type,
         ], $bookings->get(0)->toArray());
         $this->assertEquals([
-            'date' => $this->knownDate->toDateString(),
+            'date' => $this->today,
             'from' => $bookingTodayTwo->from,
             'to' => $bookingTodayTwo->to,
             'position' => $bookingTodayTwo->position,
@@ -72,8 +81,8 @@ class BookingsRepositoryTest extends UnitTestCase
     /* @test */
     public function test_it_hides_member_details_on_exam_booking()
     {
-        $normalBooking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'type' => 'BK']);
-        factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'type' => 'EX']);
+        $normalBooking = factory(Booking::class)->create(['date' => $this->today, 'type' => 'BK']);
+        factory(Booking::class)->create(['date' => $this->today, 'type' => 'EX']);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
