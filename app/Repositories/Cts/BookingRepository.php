@@ -4,31 +4,31 @@ namespace App\Repositories\Cts;
 
 use App\Models\Cts\Booking;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class BookingRepository
 {
     public function getTodaysBookings()
     {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())->with('member')->get();
-        $returnData = collect();
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+            ->with('member')
+            ->get();
 
-        $bookings->each(function ($booking) use ($returnData) {
-            $returnData->push(collect([
-               'date' => $booking->date,
-               'from' => Carbon::parse($booking->from)->format('H:i'),
-               'to' => Carbon::parse($booking->to)->format('H:i'),
-               'position' => $booking->position,
-               'member' => $this->formatMember($booking),
-               'type' => $booking->type,
-           ]));
-        });
-
-        return $returnData;
+        return $this->formatBookings($bookings);
     }
 
     public function getTodaysLiveAtcBookings()
     {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())->networkAtc()->with('member')->get();
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+            ->networkAtc()
+            ->with('member')
+            ->get();
+
+        return $this->formatBookings($bookings);
+    }
+
+    private function formatBookings(Collection $bookings)
+    {
         $returnData = collect();
 
         $bookings->each(function ($booking) use ($returnData) {
