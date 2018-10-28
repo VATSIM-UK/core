@@ -23,10 +23,8 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->subjectUnderTest = resolve(BookingRepository::class);
     }
 
-    /*
-     * @group CTS Bookings
-     * @test
-     */
+
+    /* @test */
     public function test_it_can_return_a_list_of_todays_bookings_with_owner_and_type()
     {
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
@@ -71,10 +69,7 @@ class BookingsRepositoryTest extends UnitTestCase
         ], $bookings->get(1)->toArray());
     }
 
-    /*
-     * @group CTS Bookings
-     * @test
-     */
+    /* @test */
     public function test_it_hides_member_details_on_exam_booking()
     {
         $normalBooking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'type' => 'BK']);
