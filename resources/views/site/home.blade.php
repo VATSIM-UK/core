@@ -113,6 +113,31 @@
 <!-- UK Header [START] -->
 <header class="header text-white h-fullscreen pb-5" data-jarallax-video="mp4:videos/ctp.mp4" data-overlay="5">
     <div class="overlay opacity-55" style="background-color: #17375E"></div>
+
+        <div class="overlay todaysBookings">
+            <div class="row h-100">
+                <div class="col-lg-4 col-lg-offset-9 flex-grow flex-center">
+                    <div class="col-lg-12">
+                        <div style="height:100%; width:100%;">
+                            <ul class="list-group">
+                                <li class="list-group-item text-primary text-center"><h4>Today's Bookings</h4></li>
+                                @foreach ($bookings as $booking)
+                                    <li class="list-group-item text-primary">
+                                        EGKK_APP (1800z - 1900z)
+                                        <a href="#">
+                                            <span style="float:right;">
+                                                <i class="fa fa-info-circle tooltip"></i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <div class="container">
         <div class="row align-items-center h-100">
 

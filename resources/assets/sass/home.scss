@@ -1,6 +1,12 @@
 @import "node_modules/font-awesome/scss/font-awesome";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600");
 
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/grid";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/list-group";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/badges";
+
 @media all {
   :root {
     --blue: #25ADE3;
@@ -219,7 +225,7 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin-right: -15px;
+    margin-right: 0px !important;
     margin-left: -15px;
   }
   .col-12 {
@@ -1547,5 +1553,20 @@
   }
   .text-white small {
     color: rgba(255, 255, 255, 0.8);
+  }
+
+  .todaysBookings h4 {
+    margin: 0;
+  }
+
+  @media(max-width: 1200px) {
+    .todaysBookings {
+      display: none;
+    }
+  }
+
+  .flex-center {
+    display:flex;
+    align-items:center;
   }
 }
