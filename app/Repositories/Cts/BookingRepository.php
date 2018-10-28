@@ -15,8 +15,8 @@ class BookingRepository
         $bookings->each(function ($booking) use ($returnData) {
             $returnData->push(collect([
                'date' => $booking->date,
-               'from' => $booking->from,
-               'to' => $booking->to,
+               'from' => Carbon::parse($booking->from)->format('H:i'),
+               'to' => Carbon::parse($booking->to)->format('H:i'),
                'position' => $booking->position,
                'member' => $this->formatMember($booking),
                'type' => $booking->type,
@@ -34,8 +34,8 @@ class BookingRepository
         $bookings->each(function ($booking) use ($returnData) {
             $returnData->push(collect([
                 'date' => $booking->date,
-                'from' => $booking->from,
-                'to' => $booking->to,
+                'from' => Carbon::parse($booking->from)->format('H:i'),
+                'to' => Carbon::parse($booking->to)->format('H:i'),
                 'position' => $booking->position,
                 'member' => $this->formatMember($booking),
                 'type' => $booking->type,

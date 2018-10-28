@@ -4,6 +4,7 @@ namespace Tests\Feature\Site;
 
 use App\Models\Cts\Booking;
 use Tests\TestCase;
+use Carbon\Carbon;
 
 class HomePageTest extends TestCase
 {
@@ -21,8 +22,8 @@ class HomePageTest extends TestCase
 
         $this->get(route('site.home'))
             ->assertSee($booking->position)
-            ->assertSee($booking->from)
-            ->assertSee($booking->to)
+            ->assertSee(Carbon::parse($booking->from)->format('H:i'))
+            ->assertSee(Carbon::parse($booking->to)->format('H:i'))
             ->assertSee($booking->member->name)
             ->assertSee($booking->member->cid);
     }

@@ -55,8 +55,8 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->assertCount(2, $bookings);
         $this->assertEquals([
             'date' => $this->today,
-            'from' => $bookingTodayOne->from,
-            'to' => $bookingTodayOne->to,
+            'from' => Carbon::parse($bookingTodayOne->from)->format('H:i'),
+            'to' => Carbon::parse($bookingTodayOne->to)->format('H:i'),
             'position' => $bookingTodayOne->position,
             'member' => [
                 'id' => $bookingTodayOne['member']['cid'],
@@ -66,8 +66,8 @@ class BookingsRepositoryTest extends UnitTestCase
         ], $bookings->get(0)->toArray());
         $this->assertEquals([
             'date' => $this->today,
-            'from' => $bookingTodayTwo->from,
-            'to' => $bookingTodayTwo->to,
+            'from' => Carbon::parse($bookingTodayTwo->from)->format('H:i'),
+            'to' => Carbon::parse($bookingTodayTwo->to)->format('H:i'),
             'position' => $bookingTodayTwo->position,
             'member' => [
                 'id' => $bookingTodayTwo['member']['cid'],
