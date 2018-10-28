@@ -123,7 +123,8 @@
                                 <li class="list-group-item text-primary text-center"><h4>Today's Bookings</h4></li>
                                 @foreach ($bookings as $booking)
                                     <li class="list-group-item text-primary">
-                                        EGKK_APP (1800z - 1900z)
+                                        {{ $booking->position }} ({{$booking->from}}z - {{$booking->to}}z)<br />
+                                        {{ $booking->member->name }} ({{ $booking->member->id }})
                                         <a href="#">
                                             <span style="float:right;">
                                                 <i class="fa fa-info-circle tooltip"></i>

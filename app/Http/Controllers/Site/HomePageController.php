@@ -14,7 +14,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.home')
             ->with('nextEvent', $this->nextEvent())
             ->with('stats', $this->stats())
-            ->with('bookings', $this->todaysBookings());
+            ->with('bookings', $this->todaysLiveAtcBookings());
     }
 
     private function nextEvent()
@@ -57,10 +57,10 @@ class HomePageController extends \App\Http\Controllers\BaseController
         return $divisionMembers;
     }
 
-    private function todaysBookings()
+    private function todaysLiveAtcBookings()
     {
         $bookings = new BookingRepository();
 
-        return $bookings->getTodaysBookings();
+        return $bookings->getTodaysLiveAtcBookings();
     }
 }
