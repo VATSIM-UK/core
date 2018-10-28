@@ -3,6 +3,7 @@
 namespace Tests\Feature\Site;
 
 use Alawrence\Ipboard\Ipboard;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
@@ -28,5 +29,15 @@ class SitePageLoadTest extends TestCase
         ]);
 
         $this->get(route('site.staff'))->assertOk();
+    }
+    
+    /** @test **/
+    public function testItRetrievesURLFromCache() 
+    {
+        Cache::put(54, 'test.url', 1440);
+
+        $this->get(route('site.staff'))->assertOk();
+
+        Cache::shouldReceive('get')->with(54)->andReturn('test.url');
     }
 }
