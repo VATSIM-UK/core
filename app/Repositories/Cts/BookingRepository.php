@@ -57,7 +57,7 @@ class BookingRepository
         if (!$booking->member) {
             return [
                 'id' => '',
-                'name' => 'Unknown'
+                'name' => 'Unknown',
             ];
         }
 
