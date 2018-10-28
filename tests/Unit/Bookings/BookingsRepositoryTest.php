@@ -110,4 +110,14 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->assertInstanceOf(Collection::class, $atcBookings);
         $this->assertCount(1, $atcBookings);
     }
+
+    /* @test */
+    public function test_it_can_return_a_booking_without_a_known_member()
+    {
+        factory(Booking::class)->create(['date' => $this->today, 'member_id' => 0, 'type' => 'BK']);
+
+        $this->subjectUnderTest->getTodaysLiveAtcBookings();
+
+        $this->expectNotToPerformAssertions();
+    }
 }

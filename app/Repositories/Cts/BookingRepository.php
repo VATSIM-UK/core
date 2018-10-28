@@ -54,6 +54,13 @@ class BookingRepository
             ];
         }
 
+        if (!$booking->member) {
+            return [
+                'id' => '',
+                'name' => 'Unknown'
+            ];
+        }
+
         return [
             'id' => $booking->member->cid,
             'name' => $booking->member->name,
