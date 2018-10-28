@@ -27,5 +27,27 @@ class HomePageTest extends TestCase
             ->assertSee($booking->member->cid);
     }
 
+    /** @test * */
+    public function itDoesntShowExamCandidatesOnTheHomepage()
+    {
+        $booking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_APP', 'type' => 'EX']);
+
+        $this->get(route('site.home'))
+            ->assertDontSee($booking->member->name)
+            ->assertDontSee($booking->member->cid)
+            ->assertSee('Hidden');
+    }
+
+    /** @test * */
+    public function itDoesntShowPilotOrSweatboxBookingsOnTheHomepage()
+    {
+        $pilot = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'P1_VATSIM', 'type' => 'BK']);
+        $sweatbox = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_SBAT', 'type' => 'BK']);
+
+        $this->get(route('site.home'))
+            ->assertDontSee($pilot->position)
+            ->assertDontSee($sweatbox->position);
+    }
+
 
 }
