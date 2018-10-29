@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Deployment;
 
 use Illuminate\Console\Command;
-use Tests\MockCtsDatabase;
 
 class HerokuPostDeploy extends Command
 {
@@ -13,7 +12,6 @@ class HerokuPostDeploy extends Command
     public function handle()
     {
         $this->runMigrationsFor(app()->environment());
-        MockCtsDatabase::create();
     }
 
     public function runMigrationsFor($environment)
@@ -27,6 +25,7 @@ class HerokuPostDeploy extends Command
                 break;
             case 'development':
                 $this->call('migrate:fresh');
+                \Tests\MockCtsDatabase::create();
                 break;
         }
     }
