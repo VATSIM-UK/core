@@ -38,12 +38,14 @@ class BookingsRepositoryTest extends UnitTestCase
         factory(Booking::class, 2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
 
         $bookingTodayOne = factory(Booking::class)->create([
+            'id' => '96155',
             'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'BK',
         ]);
 
         $bookingTodayTwo = factory(Booking::class)->create([
+            'id' => '96156',
             'date' => $this->today,
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'ME',
@@ -54,6 +56,7 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(2, $bookings);
         $this->assertEquals([
+            'id' => $bookingTodayOne->id,
             'date' => $this->today,
             'from' => Carbon::parse($bookingTodayOne->from)->format('H:i'),
             'to' => Carbon::parse($bookingTodayOne->to)->format('H:i'),
@@ -65,6 +68,7 @@ class BookingsRepositoryTest extends UnitTestCase
             'type' => $bookingTodayOne->type,
         ], $bookings->get(0)->toArray());
         $this->assertEquals([
+            'id' => $bookingTodayTwo->id,
             'date' => $this->today,
             'from' => Carbon::parse($bookingTodayTwo->from)->format('H:i'),
             'to' => Carbon::parse($bookingTodayTwo->to)->format('H:i'),
