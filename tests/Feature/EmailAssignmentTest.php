@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class EmailAssignmentTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
     private $accountOther;
@@ -113,8 +113,7 @@ class EmailAssignmentTest extends TestCase
         ];
 
         $this->actingAs($this->account->fresh())->get(route('mship.manage.email.delete.post', $account), $data)
-            ->assertViewIs('mship.management.email.delete')
-            ->assertViewHas(['email' => $account->email]);
+            ->assertSee($account->email);
     }
 
     /** @test * */
@@ -123,11 +122,8 @@ class EmailAssignmentTest extends TestCase
         $email = $this->account->fresh()->email;
 
         $this->actingAs($this->account)->get(route('mship.manage.email.assignments'))
-            ->assertViewIs('mship.management.email.assignments')
-            ->assertViewHas([
-                'userPrimaryEmail' => $email,
-                'userSecondaryVerified' => $this->account->verified_secondary_emails,
-            ]);
+            ->assertSee($email)
+            ->assertSee($this->account->verified_secondary_emails);
     }
 
     /** @test * */

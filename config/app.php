@@ -10,6 +10,7 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
+    |
     */
 
     'name' => 'VATSIM UK Core',
@@ -21,7 +22,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services your application utilizes. Set this in your ".env" file.
+    | services the application utilizes. Set this in your ".env" file.
     |
     */
 
@@ -52,7 +53,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://undefined'),
+    'url' => appUrl(),
 
     /*
     |--------------------------------------------------------------------------
@@ -159,7 +160,6 @@ return [
         Vatsim\Xml\XmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Maknz\Slack\SlackServiceProvider::class,
         Alawrence\Ipboard\ServiceProvider::class,
         Vluzrmos\SlackApi\SlackApiServiceProvider::class,
 

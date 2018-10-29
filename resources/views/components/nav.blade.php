@@ -67,15 +67,13 @@
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
                             </ul>
                         </li>
-                        @if(currentUserHasAuth() && Auth::user()->qualificationAtc->isS1)
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
-                                </ul>
-                            </li>
-                        @endif
+                        <li class="col-sm-12">
+                            <ul>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Endorsements</li>
+                                <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

@@ -138,7 +138,7 @@
                         </p>
 
                         <p>
-                            <a href="https://core.vatsim.uk/visit-transfer" rel="external nofollow">Apply to transfer as
+                            <a href="{{ route('visiting.landing') }}" rel="external nofollow">Apply to transfer as
                                 an S1/S2/S3/C1/C3 rated controller</a>
                         </p>
 
