@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Mship\State as State;
+use App\Repositories\Cts\BookingRepository;
 use Illuminate\Support\Facades\Cache as Cache;
 use Illuminate\Support\Facades\DB as DB;
 
@@ -12,7 +13,8 @@ class HomePageController extends \App\Http\Controllers\BaseController
     {
         return $this->viewMake('site.home')
             ->with('nextEvent', $this->nextEvent())
-            ->with('stats', $this->stats());
+            ->with('stats', $this->stats())
+            ->with('bookings', $this->todaysLiveAtcBookings());
     }
 
     private function nextEvent()
@@ -53,5 +55,12 @@ class HomePageController extends \App\Http\Controllers\BaseController
         });
 
         return $divisionMembers;
+    }
+
+    private function todaysLiveAtcBookings()
+    {
+        $bookings = new BookingRepository();
+
+        return $bookings->getTodaysLiveAtcBookings();
     }
 }

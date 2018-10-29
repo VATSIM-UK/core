@@ -2,7 +2,6 @@
   "name": "vatsimuk/core",
   "description": "VATSIM UK Core Framework",
   "scripts": {
-    "postdeploy": "php artisan postdeploy:heroku"
   },
   "env": {
     "APP_ENV": "development",
@@ -56,7 +55,11 @@
   "addons": [
     {
       "plan": "jawsdb-maria:kitefin",
-      "as": "DATABASE"
+      "as": "CORE_DATABASE"
+    },
+    {
+      "plan": "jawsdb-maria:kitefin",
+      "as": "CTS_DATABASE"
     }
   ]
 }
