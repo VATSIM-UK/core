@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace App\Models\Cts;
 
 use Illuminate\Support\Facades\DB;
 
