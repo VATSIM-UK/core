@@ -23,9 +23,67 @@
         };
         @endif
     </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script>
+        var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
+
+        function updateClock () {
+            var today = new Date();
+            var h = today.getUTCHours();
+            var m = today.getUTCMinutes();
+            var s = today.getSeconds();
+            if(h<12){
+                h = "0"+m
+            }
+            if(m<10){
+                m = "0"+m;
+            }
+            if(s<10){
+                s = "0"+s;
+            }
+
+            $("#clock").text(h+":"+m+":"+s+'Z');
+        }
+
+        function removeAnimations (element) {
+            $(element).css("-webkit-animation", "none");
+            $(element).css("-moz-animation", "none");
+            $(element).css("-ms-animation", "none");
+            $(element).css("animation", "none");
+        }
+
+        function toggleActive () {
+            if($(".sidebar").hasClass("active")){
+                $(".sidebar").removeClass("active");
+            } else {
+                $(".sidebar").addClass("active");
+                removeAnimations(".sidebar")
+            }
+        }
+
+        $(function () {
+            $("#bookingsbutton").click(() => {
+                toggleActive()
+            })
+
+            if (!touchsupport){ 
+                $(".popout-button").addClass("has-hover");
+            }
+
+            setInterval('updateClock()', 1000);
+        });
+
+        $(document).keyup(function(e) {
+            if (e.keyCode === 27 && $('.sidebar').hasClass("active")) $('.sidebar').removeClass("active");
+            if (e.keyCode === 37 && !$(".sidebar").hasClass("active")) toggleActive();
+            if (e.keyCode === 39 && $(".sidebar").hasClass("active")) toggleActive();
+            if (e.keyCode === 66) toggleActive();
+        });
+    </script>
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" href="images/favicon.png">
@@ -91,17 +149,17 @@
                         <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fa fa-facebook"></i></a>
+                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fab fa-facebook-f"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fa fa-twitter"></i></a>
+                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fab fa-twitter"></i></a>
                     </li>
                     @if(currentUserHasAuth())
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
+                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fas fa-user"></i></a>
                         </li>
                     @else
-                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fa fa-sign-in"></i></a>
+                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fas fa-sign-in-alt"></i></a>
                     @endif
             </ul>
         </section>
@@ -110,9 +168,73 @@
 </nav>
 <!-- UK TopNav [END] -->
 
+<!-- Sidebar Content [START] -->
+<div class="sidebar">
+    <div class="window">
+        <div class="content">
+            <div class="header">
+                <h2>Today's Bookings</h2>
+                <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
+            </div>
+            <div class="data">
+                <ul>
+                    @forelse ($bookings as $booking)
+                        <li class='booking'>
+                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
+                                <div class="icon">
+                                    @if($booking['type'] == 'EX')
+                                        <i class="fas fa-exclamation"></i>
+                                    @elseif($booking['type'] == 'ME')
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    @elseif($booking['type'] == 'BK')
+                                        <i class="fas fa-headset"></i>
+                                    @endif
+                                </div>
+                                <div>
+                                    <b>{{ $booking['position'] }}
+                                        @if($booking['type'] == 'EX')
+                                            (E)
+                                        @elseif($booking['type'] == 'ME')
+                                            (M)
+                                        @endif
+                                    </b><br />
+                                    {{ $booking['member']['name'] }}
+                                        @if($booking['member']['id'])
+                                            ({{ $booking['member']['id'] }})
+                                        @endif
+                                        <br />
+                                    {{$booking['from']}}z - {{$booking['to']}}z<br />
+                                </div>
+                            </a>    
+                        </li>
+                    @empty
+                        <li>There are no bookings today. <i class="far fa-tired"></i></li>
+                    @endforelse
+                </ul>
+                <div class="spacer"></div>
+            </div>
+            <div class="footer">
+                @if (count($bookings) > 10)
+                    <span><i>Keep Scrolling</i></span>
+                @else
+                    <span>&nbsp;</span>
+                @endif
+                <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
+            </div>
+        </div>
+    </div>
+    <div class="icons">
+        <div class="icon popout-button">
+            <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
+        </div>
+    </div>
+</div>
+<!-- Sidebar Content [END] -->
+
 <!-- UK Header [START] -->
 <header class="header text-white h-fullscreen pb-5" data-jarallax-video="mp4:videos/ctp.mp4" data-overlay="5">
     <div class="overlay opacity-55" style="background-color: #17375E"></div>
+
     <div class="container">
         <div class="row align-items-center h-100">
 
@@ -212,11 +334,11 @@
                 <div class="col-12 col-sm-6">
                     <div class="row">
                         <div class="col-6">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
+                            <a class="btn btn-l btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
                         </div>
 
                         <div class="col-6">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join</a>
+                            <a class="btn btn-l btn-round btn-primary px-7" href="{{ route('site.join') }}">Join</a>
                         </div>
                     </div>
                 </div>
@@ -249,7 +371,6 @@
     ga('send', 'pageview');
 
 </script>
-
 <script src="js/home.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>

@@ -11,7 +11,7 @@ before_install:
 - sudo apt-get install -y nasm
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
-- mysql -e 'create database IF NOT EXISTS rts;' -uroot
+- mysql -e 'create database IF NOT EXISTS cts;' -uroot
 - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 - nvm install node
 - npm -v
