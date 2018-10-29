@@ -23,8 +23,7 @@
         };
         @endif
     </script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script>
         var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
 
@@ -46,15 +45,19 @@
             $("#clock").text(h+":"+m+":"+s+'Z');
         }
 
+        function removeAnimations (element) {
+            $(element).css("-webkit-animation", "none");
+            $(element).css("-moz-animation", "none");
+            $(element).css("-ms-animation", "none");
+            $(element).css("animation", "none");
+        }
+
         function toggleActive () {
             if($(".sidebar").hasClass("active")){
                 $(".sidebar").removeClass("active");
             } else {
                 $(".sidebar").addClass("active");
-                $(".sidebar").css("-webkit-animation", "none");
-                $(".sidebar").css("-moz-animation", "none");
-                $(".sidebar").css("-ms-animation", "none");
-                $(".sidebar").css("animation", "none");
+                removeAnimations(".sidebar")
             }
         }
 
@@ -165,79 +168,74 @@
 </nav>
 <!-- UK TopNav [END] -->
 
-<!-- UK Header [START] -->
-<header class="header text-white h-fullscreen pb-5">
-    <div class="background-video">
-        <video autoplay loop muted preload>
-            <source src="videos/ctp.mp4" type="video/mp4">
-        </video>
-        <div class="video-overlay"></div>
-    </div>
-
-    <!-- Sidebar Content [START] -->
-    <div class="sidebar">
-        <div class="overlay-test">
-            <div class="window">
-                <div class="content">
-                    <div class="header">
-                        <h2>Today's Bookings</h2>
-                        <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
-                    </div>
-                    <div class="data">
-                        <ul>
-                            @forelse ($bookings as $booking)
-                                <li class='booking'>
-                                    <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
-                                        <div class="icon">
+<!-- Sidebar Content [START] -->
+<div class="sidebar">
+    <div class="overlay-test">
+        <div class="window">
+            <div class="content">
+                <div class="header">
+                    <h2>Today's Bookings</h2>
+                    <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
+                </div>
+                <div class="data">
+                    <ul>
+                        @forelse ($bookings as $booking)
+                            <li class='booking'>
+                                <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
+                                    <div class="icon">
+                                        @if($booking['type'] == 'EX')
+                                            <i class="fas fa-exclamation"></i>
+                                        @elseif($booking['type'] == 'ME')
+                                            <i class="fas fa-chalkboard-teacher"></i>
+                                        @elseif($booking['type'] == 'BK')
+                                            <i class="fas fa-headset"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <b>{{ $booking['position'] }}
                                             @if($booking['type'] == 'EX')
-                                                <i class="fas fa-exclamation"></i>
+                                                (E)
                                             @elseif($booking['type'] == 'ME')
-                                                <i class="fas fa-chalkboard-teacher"></i>
-                                            @elseif($booking['type'] == 'BK')
-                                                <i class="fas fa-headset"></i>
+                                                (M)
                                             @endif
-                                        </div>
-                                        <div>
-                                            <b>{{ $booking['position'] }}
-                                                @if($booking['type'] == 'EX')
-                                                    (E)
-                                                @elseif($booking['type'] == 'ME')
-                                                    (M)
-                                                @endif
-                                            </b><br />
-                                            {{ $booking['member']['name'] }}
-                                                @if($booking['member']['id'])
-                                                    ({{ $booking['member']['id'] }})
-                                                @endif
-                                                <br />
-                                            {{$booking['from']}}z - {{$booking['to']}}z<br />
-                                        </div>
-                                    </a>    
-                                </li>
-                            @empty
-                                <li>There are no bookings today. <i class="far fa-tired"></i></li>
-                            @endforelse
-                        </ul>
-                        <div class="spacer"></div>
-                    </div>
-                    <div class="footer">
-                        @if (count($bookings) > 10)
-                            <span><i>Keep Scrolling</i></span>
-                        @else
-                            <span>&nbsp;</span>
-                        @endif
-                        <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
-                    </div>
+                                        </b><br />
+                                        {{ $booking['member']['name'] }}
+                                            @if($booking['member']['id'])
+                                                ({{ $booking['member']['id'] }})
+                                            @endif
+                                            <br />
+                                        {{$booking['from']}}z - {{$booking['to']}}z<br />
+                                    </div>
+                                </a>    
+                            </li>
+                        @empty
+                            <li>There are no bookings today. <i class="far fa-tired"></i></li>
+                        @endforelse
+                    </ul>
+                    <div class="spacer"></div>
+                </div>
+                <div class="footer">
+                    @if (count($bookings) > 10)
+                        <span><i>Keep Scrolling</i></span>
+                    @else
+                        <span>&nbsp;</span>
+                    @endif
+                    <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
                 </div>
             </div>
         </div>
-        <div class="icons">
-            <div class="icon popout-button">
-                <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
-            </div>
+    </div>
+    <div class="icons">
+        <div class="icon popout-button">
+            <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
         </div>
     </div>
-    <!-- Sidebar Content [END] -->
+</div>
+<!-- Sidebar Content [END] -->
+
+<!-- UK Header [START] -->
+<header class="header text-white h-fullscreen pb-5" data-jarallax-video="mp4:videos/ctp.mp4" data-overlay="5">
+    <div class="overlay opacity-55" style="background-color: #17375E"></div>
 
     <div class="container">
         <div class="row align-items-center h-100">
@@ -375,6 +373,9 @@
     ga('send', 'pageview');
 
 </script>
+<script src="js/home.js"></script>
+<script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
+<script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 
 </body>
 </html>
