@@ -209,7 +209,7 @@
                                     </a>    
                                 </li>
                             @empty
-                                <li>There are no bookings today.<i class="far fa-tired"></i></li>
+                                <li>There are no bookings today. <i class="far fa-tired"></i></li>
                             @endforelse
                         </ul>
                     </div>
