@@ -66,7 +66,7 @@ class BookingsRepositoryTest extends UnitTestCase
                 'name' => $bookingTodayOne['member']['name'],
             ],
             'type' => $bookingTodayOne->type,
-        ], $bookings->get(0)->toArray());
+        ], $bookings->get(1)->toArray());
         $this->assertEquals([
             'id' => $bookingTodayTwo->id,
             'date' => $this->today,
@@ -78,7 +78,7 @@ class BookingsRepositoryTest extends UnitTestCase
                 'name' => $bookingTodayTwo['member']['name'],
             ],
             'type' => $bookingTodayTwo->type,
-        ], $bookings->get(1)->toArray());
+        ], $bookings->get(0)->toArray());
     }
 
     /* @test */
@@ -123,5 +123,21 @@ class BookingsRepositoryTest extends UnitTestCase
         $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
         $this->expectNotToPerformAssertions();
+    }
+
+    /* @test */
+    public function test_it_returns_bookings_in_start_time_order()
+    {
+        $afternoon = factory(Booking::class)->create(['date' => $this->today, 'from' => '16:00', 'to' => '17:00', 'type' => 'BK']);
+        $morning = factory(Booking::class)->create(['date' => $this->today, 'from' => '09:00', 'to' => '11:00', 'type' => 'BK']);
+        $night = factory(Booking::class)->create(['date' => $this->today, 'from' => '22:00', 'to' => '23:00', 'type' => 'BK']);
+
+        $todaysBookings = $this->subjectUnderTest->getTodaysBookings();
+        $todaysAtcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
+
+        $this->assertEquals($todaysBookings, $todaysAtcBookings);
+        $this->assertEquals($morning->id, $todaysBookings[0]['id']);
+        $this->assertEquals($afternoon->id, $todaysBookings[1]['id']);
+        $this->assertEquals($night->id, $todaysBookings[2]['id']);
     }
 }
