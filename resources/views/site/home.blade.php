@@ -26,6 +26,8 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
+        var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
+
         function updateClock () {
             var today = new Date();
             var h = today.getUTCHours();
@@ -60,6 +62,10 @@
             $("#bookingsbutton").click(() => {
                 toggleActive()
             })
+
+            if (!touchsupport){ 
+                $(".popout-button").addClass("has-hover");
+            }
 
             setInterval('updateClock()', 1000);
         });
@@ -200,7 +206,7 @@
                                                 @endif
                                             </b><br />
                                             {{ $booking['member']['name'] }}
-                                                @if($booking['member']['id'] !== '')
+                                                @if($booking['member']['id'])
                                                     ({{ $booking['member']['id'] }})
                                                 @endif
                                                 <br />
@@ -212,6 +218,7 @@
                                 <li>There are no bookings today. <i class="far fa-tired"></i></li>
                             @endforelse
                         </ul>
+                        <div class="spacer"></div>
                     </div>
                     <div class="footer">
                         @if (count($bookings) > 10)
@@ -225,7 +232,7 @@
             </div>
         </div>
         <div class="icons">
-            <div class="icon">
+            <div class="icon popout-button">
                 <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
             </div>
         </div>
