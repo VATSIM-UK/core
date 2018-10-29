@@ -33,6 +33,7 @@ class BookingRepository
 
         $bookings->each(function ($booking) use ($returnData) {
             $returnData->push(collect([
+                'id' => $booking->id,
                 'date' => $booking->date,
                 'from' => Carbon::parse($booking->from)->format('H:i'),
                 'to' => Carbon::parse($booking->to)->format('H:i'),
