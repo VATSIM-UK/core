@@ -11,7 +11,7 @@ before_install:
 - sudo apt-get install -y nasm
 - mysql -e 'create database IF NOT EXISTS core;' -uroot
 - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
-- mysql -e 'create database IF NOT EXISTS rts;' -uroot
+- mysql -e 'create database IF NOT EXISTS cts;' -uroot
 - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 - nvm install node
 - npm -v
@@ -30,10 +30,11 @@ before_script:
 - php artisan serve -q &
 
 script:
-- vendor/bin/phpunit --coverage-clover=coverage.xml
+- if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then vendor/bin/phpunit; fi
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then phpdbg -dmemory_limit=1G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
 
 after_failure:
 

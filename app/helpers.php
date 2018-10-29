@@ -184,7 +184,7 @@ function is_local_environment()
 
 function currentUserHasAuth()
 {
-    return Auth::guard('vatsim-sso')->check() && Auth::guard('web')->check();
+    return Auth::guard('web')->check();
 }
 
 function appUrl()
