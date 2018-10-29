@@ -1560,6 +1560,33 @@
     align-items:center;
   }
 
+  /*
+  Fix scrollbar issue on windows. Windows formats Scrollbars in a very ugly way.
+  This creates a custom scrollbar style
+  */
+  .data::-webkit-scrollbar {
+    width: 8px; /* 1px wider than Lion. */
+    /* This is more usable for users trying to click it. */
+    background-color: rgba(0,0,0,0);
+    -webkit-border-radius: 100px;
+  }
+  /* hover effect for both scrollbar area, and scrollbar 'thumb' */
+  .data::-webkit-scrollbar:hover {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+  .data::-webkit-scrollbar-thumb:vertical {
+    /* This is the EXACT color of Mac OS scrollbars.
+      Yes, I pulled out digital color meter */
+    background-color: rgba(255,255,255,0.2);
+    -webkit-border-radius: 100px;
+  }
+  .data::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(255,255,255,0.5); /* Some darker color when you click it */
+    -webkit-border-radius: 100px;
+  }
+
   .background-video {
     position: absolute;
     width: 100%;
@@ -1634,7 +1661,7 @@
           width: 100%;
           display: block;
           height: calc(100vh - 226px);
-          overflow: scroll;
+          overflow: auto;
 
           ul {
             margin: 0;
@@ -1646,17 +1673,18 @@
             display: block;
             transition-property: background-color;
             transition-duration: 0.3s;
-            transition-timing-function: ease-in-out;      
+            transition-timing-function: ease-in-out;
+            padding: 0 0 0 15px; 
 
             a:link, a:visited, a:hover {
               display: block;
-              padding: 10px 15px;
+              padding: 10px 15px 10px 0;
               width: 100%;
               height: 100%;
               color: white;
             }
 
-            &:hover{
+            &.booking:hover{
               background-color: rgba(255, 255, 255, 0.3)
             }
 

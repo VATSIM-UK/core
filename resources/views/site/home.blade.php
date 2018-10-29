@@ -179,8 +179,8 @@
                     </div>
                     <div class="data">
                         <ul>
-                            @foreach ($bookings as $booking)
-                                <li>
+                            @forelse ($bookings as $booking)
+                                <li class='booking'>
                                     <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
                                         <div class="icon">
                                             @if($booking['type'] == 'EX')
@@ -200,9 +200,7 @@
                                                 @endif
                                             </b><br />
                                             {{ $booking['member']['name'] }}
-                                                @if($booking['member']['name'] == 'Hidden')
-                                                    (<i>Exam</i>)
-                                                @else
+                                                @if($booking['member']['id'] !== '')
                                                     ({{ $booking['member']['id'] }})
                                                 @endif
                                                 <br />
@@ -210,11 +208,17 @@
                                         </div>
                                     </a>    
                                 </li>
-                            @endforeach
+                            @empty
+                                <li>There are no bookings today.<i class="far fa-tired"></i></li>
+                            @endforelse
                         </ul>
                     </div>
                     <div class="footer">
-                        <span><i>Keep Scrolling</i></span>
+                        @if (count($bookings) > 10)
+                            <span><i>Keep Scrolling</i></span>
+                        @else
+                            <span>&nbsp;</span>
+                        @endif
                         <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
                     </div>
                 </div>
