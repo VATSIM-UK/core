@@ -84,8 +84,8 @@ class BookingsRepositoryTest extends UnitTestCase
     /* @test */
     public function test_it_hides_member_details_on_exam_booking()
     {
-        $normalBooking = factory(Booking::class)->create(['date' => $this->today, 'type' => 'BK']);
-        factory(Booking::class)->create(['date' => $this->today, 'type' => 'EX']);
+        $normalBooking = factory(Booking::class)->create(['date' => $this->today, 'from' => '17:00', 'type' => 'BK']);
+        factory(Booking::class)->create(['date' => $this->today, 'from' => '18:00', 'type' => 'EX']);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
