@@ -1795,7 +1795,8 @@
     transition-property: left;
     transition-duration: 0.5s;
     transition-timing-function: ease-in-out;
-    z-index: 3000;
+    z-index: 2000;
+    color: white;
 
     &.active {
       left: 0;
@@ -1803,6 +1804,12 @@
       .icons.icon:hover{
         width: 60px !important;
       }
+    }
+  }
+
+  @media (max-width: 991px) {
+    .sidebar {
+      display: none;
     }
   }
 
