@@ -219,7 +219,7 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin-right: -15px;
+    margin-right: -15px !important;
     margin-left: -15px;
   }
   .col-12 {
@@ -1548,4 +1548,226 @@
   .text-white small {
     color: rgba(255, 255, 255, 0.8);
   }
+
+  .flex-center {
+    display:flex;
+    align-items:center;
+  }
+
+  /*
+  Fix scrollbar issue on windows. Windows formats Scrollbars in a very ugly way.
+  This creates a custom scrollbar style
+  */
+  .data::-webkit-scrollbar {
+    width: 8px; /* 1px wider than Lion. */
+    /* This is more usable for users trying to click it. */
+    background-color: rgba(0,0,0,0);
+    -webkit-border-radius: 100px;
+  }
+  /* hover effect for both scrollbar area, and scrollbar 'thumb' */
+  .data::-webkit-scrollbar:hover {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+  .data::-webkit-scrollbar-thumb:vertical {
+    /* This is the EXACT color of Mac OS scrollbars.2
+      Yes, I pulled out digital color meter */
+    background-color: rgba(255,255,255,0.2);
+    -webkit-border-radius: 100px;
+  }
+  .data::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(255,255,255,0.5); /* Some darker color when you click it */
+    -webkit-border-radius: 100px;
+  }
+
+  @keyframes example {
+    0%   {left: -285px;}
+    25%  {left: -265px;}
+    50%  {left: -285px;}
+    75%  {left: -265px;}
+    100%  {left: -285px;}
+  }
+
+  .sidebar {
+    width: 365px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: -285px; //Hide by default
+    z-index: 2000;
+    color: white;
+
+    animation-name: peek-left-in; //Bounce / Peek Effect
+    animation-duration: 2s;
+    animation-delay: 2s;
+
+    transition-property: left;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+
+    &.active {
+      left: 0;
+
+      .icons.icon:hover{
+        width: 60px !important;
+      }
+    }
+
+    .icons {
+      width: 80px;
+      height: 100%;
+      top: 25%;
+      position: relative;
+      float: left;
+  
+      .icon {
+        display: block;
+        width: 60px;
+        border-radius: 0 10px 10px 0;
+        background-color: rgba(43,43,43, 1);
+        transition-property: width;
+        transition-duration: 0.5s;
+        transition-timing-function: ease-in-out;
+        cursor: pointer;
+  
+        span {
+          display: block;
+          font-size: 2em;
+          width: 100%;
+          padding: 0 15px 0 0;
+          text-align: right;
+        }
+  
+        &.has-hover:hover {
+          width: 80px;
+        }
+      }
+    }
+
+    .window {
+      width: 285px;
+      height: 100%;
+      position: relative;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      float: left;
+      background-color: rgba(43,43,43, 1);
+
+      .content {
+
+        .header {
+          padding: 0 15px;
+          
+          h2 {
+            padding-top: 15px;
+            margin: 0;
+          }
+  
+          p {
+            font-size: 0.87em;
+          }
+        }
+  
+        .data {
+          width: 100%;
+          display: block;
+          height: calc(100vh - 226px);
+          overflow: auto;
+  
+          ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+
+            li {
+              display: block;
+              transition-property: background-color;
+              transition-duration: 0.3s;
+              transition-timing-function: ease-in-out;
+              padding: 0 0 0 15px; 
+    
+              a:link, a:visited, a:hover {
+                display: block;
+                padding: 10px 15px 10px 0;
+                width: 100%;
+                height: 100%;
+                color: white;
+              }
+    
+              &.booking:hover{
+                background-color: rgba(255, 255, 255, 0.3)
+              }
+    
+              div {
+                display: inline-block;
+                line-height: 150%;
+                font-size: 0.87em;
+              }
+              
+              .icon {
+                font-size: 0.87em;
+                vertical-align: top;
+                width: 30px;
+                text-align: center;
+                padding: 5px 0 0 0;
+              }
+            }
+    
+            li:nth-child(even) {
+              background-color: rgba(255, 255, 255, 0.1)
+            }
+    
+            li:nth-child(even):hover {
+              background-color: rgba(255, 255, 255, 0.3)
+            }
+
+          }
+  
+          .spacer {
+            height: 30px;
+          }
+        }
+  
+        .data:after {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          bottom: 100px;
+          content: "";
+          background: linear-gradient(to top,
+            rgba(43,43,43, 1) 0%, 
+            rgba(43,43,43, 0) 10%
+          );
+          pointer-events: none; /* so the text is still selectable */
+        }
+        
+        .footer {
+          a {
+            margin: 0 auto;
+          }
+  
+          span {
+            font-size: 0.8rem;
+            display: block;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            opacity: 0.5;
+          }
+  
+          min-height: 105px;
+          width: 100%;
+          text-align: center;
+        }
+      }
+  
+    }
+  }
+  
+  @media (max-width: 991px) {
+    .sidebar {
+      display: none;
+    }
+  }  
 }

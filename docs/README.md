@@ -2,11 +2,12 @@
 [master_style_ci_status]: https://github.styleci.io/repos/75443611/shield?branch=master
 [code_climate_maintainability]: https://api.codeclimate.com/v1/badges/6a47acbf3b7798883e7e/maintainability
 [master_codecov_status]: https://codecov.io/gh/VATSIM-UK/core/branch/master/graphs/badge.svg
-[staging_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
+[beta_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/135269.png
 [production_status]: https://vatsim-uk.deploybot.com/badge/88313865825892/93858.png
+[alpha_status]: https://vatsim-uk.deploybot.com/badge/77558059841720/140917.png
 
 <p align="center">
-    <a href="https://www.vatsim.uk"><img src="https://vatsim.uk/system/view/images/logo.png" width="250px" /></a>
+    <a href="https://www.vatsim.uk"><img src="https://www.vatsim.uk/images/branding/vatsimuk_blackblue.png" width="250px" /></a>
 </p>
 
 # About
@@ -26,8 +27,9 @@ Core is the flagship application of VATSIM UK. Originally designed to handle Sin
 
 |     Env    |              URL              |        Status        |
 |------------|-------------------------------|----------------------|
-| Production | https://core.vatsim.uk        | ![production_status] |
-| Staging    | https://beta.core.vatsim.uk   | ![staging_status]    |
+| Production | https://www.vatsim.uk         | ![production_status] |
+| Beta       | https://beta.vatsim.uk        | ![beta_status]       |
+| Alpha      | https://alpha.vatsim.uk       | ![alpha_status]      |
 
 # Issue Tracking
 
@@ -38,9 +40,3 @@ When submitting an issue, please:
 * Provide as much information as possible, to ensure others are able to understand and act upon the information you provide.
 
 To start work on an issue, post a comment on the issue requesting it be assigned to you. Once it has been assigned, you are free to start work on it.
-
-# Version Notes
-
-* Add IPBOARD_API_URL env variable.
-* Add IPBOARD_API_KEY env variable.
-* Add IPBOARD_API_REFERENCE_NAME env variable.
