@@ -40,6 +40,7 @@ class BookingsRepositoryTest extends UnitTestCase
         $bookingTodayOne = factory(Booking::class)->create([
             'id' => '96155',
             'date' => $this->today,
+            'from' => '17:00',
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'BK',
         ]);
@@ -47,6 +48,7 @@ class BookingsRepositoryTest extends UnitTestCase
         $bookingTodayTwo = factory(Booking::class)->create([
             'id' => '96156',
             'date' => $this->today,
+            'from' => '18:00',
             'member_id' => factory(Member::class)->create()->id,
             'type' => 'ME',
         ]);
@@ -66,7 +68,7 @@ class BookingsRepositoryTest extends UnitTestCase
                 'name' => $bookingTodayOne['member']['name'],
             ],
             'type' => $bookingTodayOne->type,
-        ], $bookings->get(1)->toArray());
+        ], $bookings->get(0)->toArray());
         $this->assertEquals([
             'id' => $bookingTodayTwo->id,
             'date' => $this->today,
@@ -78,7 +80,7 @@ class BookingsRepositoryTest extends UnitTestCase
                 'name' => $bookingTodayTwo['member']['name'],
             ],
             'type' => $bookingTodayTwo->type,
-        ], $bookings->get(0)->toArray());
+        ], $bookings->get(1)->toArray());
     }
 
     /* @test */
