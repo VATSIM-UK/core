@@ -23,5 +23,27 @@ abstract class TestCase extends BaseTestCase
 
         Carbon::setTestNow();
         $this->knownDate = Carbon::now();
+
+        $this->seedLegacyTables();
+    }
+
+    protected function seedLegacyTables()
+    {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
+            return;
+        }
+
+        $this->dropLegacyTables();
+
+        MockCtsDatabase::create();
+    }
+
+    protected function dropLegacyTables()
+    {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
+            return;
+        }
+
+        MockCtsDatabase::destroy();
     }
 }
