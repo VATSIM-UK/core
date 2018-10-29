@@ -170,58 +170,56 @@
 
 <!-- Sidebar Content [START] -->
 <div class="sidebar">
-    <div class="overlay-test">
-        <div class="window">
-            <div class="content">
-                <div class="header">
-                    <h2>Today's Bookings</h2>
-                    <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
-                </div>
-                <div class="data">
-                    <ul>
-                        @forelse ($bookings as $booking)
-                            <li class='booking'>
-                                <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
-                                    <div class="icon">
+    <div class="window">
+        <div class="content">
+            <div class="header">
+                <h2>Today's Bookings</h2>
+                <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
+            </div>
+            <div class="data">
+                <ul>
+                    @forelse ($bookings as $booking)
+                        <li class='booking'>
+                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
+                                <div class="icon">
+                                    @if($booking['type'] == 'EX')
+                                        <i class="fas fa-exclamation"></i>
+                                    @elseif($booking['type'] == 'ME')
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    @elseif($booking['type'] == 'BK')
+                                        <i class="fas fa-headset"></i>
+                                    @endif
+                                </div>
+                                <div>
+                                    <b>{{ $booking['position'] }}
                                         @if($booking['type'] == 'EX')
-                                            <i class="fas fa-exclamation"></i>
+                                            (E)
                                         @elseif($booking['type'] == 'ME')
-                                            <i class="fas fa-chalkboard-teacher"></i>
-                                        @elseif($booking['type'] == 'BK')
-                                            <i class="fas fa-headset"></i>
+                                            (M)
                                         @endif
-                                    </div>
-                                    <div>
-                                        <b>{{ $booking['position'] }}
-                                            @if($booking['type'] == 'EX')
-                                                (E)
-                                            @elseif($booking['type'] == 'ME')
-                                                (M)
-                                            @endif
-                                        </b><br />
-                                        {{ $booking['member']['name'] }}
-                                            @if($booking['member']['id'])
-                                                ({{ $booking['member']['id'] }})
-                                            @endif
-                                            <br />
-                                        {{$booking['from']}}z - {{$booking['to']}}z<br />
-                                    </div>
-                                </a>    
-                            </li>
-                        @empty
-                            <li>There are no bookings today. <i class="far fa-tired"></i></li>
-                        @endforelse
-                    </ul>
-                    <div class="spacer"></div>
-                </div>
-                <div class="footer">
-                    @if (count($bookings) > 10)
-                        <span><i>Keep Scrolling</i></span>
-                    @else
-                        <span>&nbsp;</span>
-                    @endif
-                    <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
-                </div>
+                                    </b><br />
+                                    {{ $booking['member']['name'] }}
+                                        @if($booking['member']['id'])
+                                            ({{ $booking['member']['id'] }})
+                                        @endif
+                                        <br />
+                                    {{$booking['from']}}z - {{$booking['to']}}z<br />
+                                </div>
+                            </a>    
+                        </li>
+                    @empty
+                        <li>There are no bookings today. <i class="far fa-tired"></i></li>
+                    @endforelse
+                </ul>
+                <div class="spacer"></div>
+            </div>
+            <div class="footer">
+                @if (count($bookings) > 10)
+                    <span><i>Keep Scrolling</i></span>
+                @else
+                    <span>&nbsp;</span>
+                @endif
+                <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
             </div>
         </div>
     </div>
@@ -336,11 +334,11 @@
                 <div class="col-12 col-sm-6">
                     <div class="row">
                         <div class="col-6">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
+                            <a class="btn btn-l btn-round btn-primary px-7" href="{{ route('login') }}">Login</a>
                         </div>
 
                         <div class="col-6">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join</a>
+                            <a class="btn btn-l btn-round btn-primary px-7" href="{{ route('site.join') }}">Join</a>
                         </div>
                     </div>
                 </div>
