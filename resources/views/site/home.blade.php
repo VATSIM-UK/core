@@ -23,9 +23,58 @@
         };
         @endif
     </script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        function updateClock () {
+            var today = new Date();
+            var h = today.getUTCHours();
+            var m = today.getUTCMinutes();
+            var s = today.getSeconds();
+            if(h<12){
+                h = "0"+m
+            }
+            if(m<10){
+                m = "0"+m;
+            }
+            if(s<10){
+                s = "0"+s;
+            }
+
+            $("#clock").text(h+":"+m+":"+s+'Z');
+        }
+
+        function toggleActive () {
+            if($(".sidebar").hasClass("active")){
+                $(".sidebar").removeClass("active");
+            } else {
+                $(".sidebar").addClass("active");
+                $(".sidebar").css("-webkit-animation", "none");
+                $(".sidebar").css("-moz-animation", "none");
+                $(".sidebar").css("-ms-animation", "none");
+                $(".sidebar").css("animation", "none");
+            }
+        }
+
+        $(function () {
+            $("#bookingsbutton").click(() => {
+                toggleActive()
+            })
+
+            setInterval('updateClock()', 1000);
+        });
+
+        $(document).keyup(function(e) {
+            if (e.keyCode === 27 && $('.sidebar').hasClass("active")) $('.sidebar').removeClass("active");
+            if (e.keyCode === 37 && !$(".sidebar").hasClass("active")) toggleActive();
+            if (e.keyCode === 39 && $(".sidebar").hasClass("active")) toggleActive();
+            if (e.keyCode === 66) toggleActive();
+        });
+    </script>
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" href="images/favicon.png">
@@ -91,17 +140,17 @@
                         <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fa fa-facebook"></i></a>
+                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fab fa-facebook-f"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fa fa-twitter"></i></a>
+                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fab fa-twitter"></i></a>
                     </li>
                     @if(currentUserHasAuth())
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fa fa-user"></i></a>
+                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fas fa-user"></i></a>
                         </li>
                     @else
-                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fa fa-sign-in"></i></a>
+                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fas fa-sign-in-alt"></i></a>
                     @endif
             </ul>
         </section>
@@ -111,33 +160,73 @@
 <!-- UK TopNav [END] -->
 
 <!-- UK Header [START] -->
-<header class="header text-white h-fullscreen pb-5" data-jarallax-video="mp4:videos/ctp.mp4" data-overlay="5">
-    <div class="overlay opacity-55" style="background-color: #17375E"></div>
+<header class="header text-white h-fullscreen pb-5">
+    <div class="background-video">
+        <video autoplay loop muted preload>
+            <source src="videos/ctp.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
 
-        <div class="overlay todaysBookings">
-            <div class="row h-100">
-                <div class="col-lg-4 col-lg-offset-9 flex-grow flex-center">
-                    <div class="col-lg-12">
-                        <div style="height:100%; width:100%;">
-                            <ul class="list-group">
-                                <li class="list-group-item text-primary text-center"><h4>Today's Bookings</h4></li>
-                                @foreach ($bookings as $booking)
-                                    <li class="list-group-item text-primary">
-                                        {{ $booking['position'] }} ({{$booking['from']}}z - {{$booking['to']}}z)<br />
-                                        {{ $booking['member']['name'] }} ({{ $booking['member']['id'] }})
-                                        <a href="#">
-                                            <span style="float:right;">
-                                                <i class="fa fa-info-circle tooltip"></i>
-                                            </span>
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
+    <!-- Sidebar Content [START] -->
+    <div class="sidebar">
+        <div class="overlay-test">
+            <div class="window">
+                <div class="content">
+                    <div class="header">
+                        <h2>Today's Bookings</h2>
+                        <p>All times are represented in Zulu. (Currently <b><span id="clock"></span></b> )</p>
+                    </div>
+                    <div class="data">
+                        <ul>
+                            @foreach ($bookings as $booking)
+                                <li>
+                                    <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
+                                        <div class="icon">
+                                            @if($booking['type'] == 'EX')
+                                                <i class="fas fa-exclamation"></i>
+                                            @elseif($booking['type'] == 'ME')
+                                                <i class="fas fa-chalkboard-teacher"></i>
+                                            @elseif($booking['type'] == 'BK')
+                                                <i class="fas fa-headset"></i>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <b>{{ $booking['position'] }}
+                                                @if($booking['type'] == 'EX')
+                                                    (E)
+                                                @elseif($booking['type'] == 'ME')
+                                                    (M)
+                                                @endif
+                                            </b><br />
+                                            {{ $booking['member']['name'] }}
+                                                @if($booking['member']['name'] == 'Hidden')
+                                                    (<i>Exam</i>)
+                                                @else
+                                                    ({{ $booking['member']['id'] }})
+                                                @endif
+                                                <br />
+                                            {{$booking['from']}}z - {{$booking['to']}}z<br />
+                                        </div>
+                                    </a>    
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="footer">
+                        <span><i>Keep Scrolling</i></span>
+                        <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="icons">
+            <div class="icon">
+                <span id="bookingsbutton"><i class="fas fa-headset"></i></span>
+            </div>
+        </div>
+    </div>
+    <!-- Sidebar Content [END] -->
 
     <div class="container">
         <div class="row align-items-center h-100">
@@ -275,10 +364,6 @@
     ga('send', 'pageview');
 
 </script>
-
-<script src="js/home.js"></script>
-<script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
-<script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 
 </body>
 </html>
