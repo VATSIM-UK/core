@@ -2,7 +2,6 @@
   "name": "vatsimuk/core",
   "description": "VATSIM UK Core Framework",
   "scripts": {
-    "postdeploy": "php artisan postdeploy:heroku"
   },
   "env": {
     "APP_ENV": "development",

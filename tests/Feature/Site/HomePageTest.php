@@ -21,8 +21,10 @@ class HomePageTest extends TestCase
     public function itShowsLiveAtcBookingsOnTheHomepage()
     {
         $booking = factory(Booking::class)->create(['date' => $this->knownDate->toDateString(), 'position' => 'EGKK_APP', 'type' => 'BK']);
+        $url = "https://cts.vatsim.uk/bookings/bookinfo.php?cb={$booking->id}";
 
         $this->get(route('site.home'))
+            ->assertSee($url)
             ->assertSee($booking->position)
             ->assertSee(Carbon::parse($booking->from)->format('H:i'))
             ->assertSee(Carbon::parse($booking->to)->format('H:i'))

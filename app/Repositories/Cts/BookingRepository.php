@@ -12,6 +12,7 @@ class BookingRepository
     {
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
             ->with('member')
+            ->orderBy('from')
             ->get();
 
         return $this->formatBookings($bookings);
@@ -22,6 +23,7 @@ class BookingRepository
         $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
             ->networkAtc()
             ->with('member')
+            ->orderBy('from')
             ->get();
 
         return $this->formatBookings($bookings);

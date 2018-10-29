@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Models\Cts\MockCtsDatabase;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
