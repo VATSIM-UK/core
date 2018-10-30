@@ -11,6 +11,7 @@ use Validator;
 
 class Endorsement extends AdmController
 {
+    //Comment
     public function getIndex(Request $request)
     {
         $validator = Validator::make($request->all(), [
