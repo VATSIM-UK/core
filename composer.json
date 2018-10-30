@@ -1,14 +1,7 @@
 {
-    "name": "vatsimuk/core",
-    "description": "VATSIM UK Core Framework",
-    "keywords": [
-        "vatsim",
-        "vatsimuk",
-        "vatsim-uk",
-        "vatsim uk",
-        "planes",
-        "aviation"
-    ],
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
     "repositories": [
