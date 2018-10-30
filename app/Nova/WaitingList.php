@@ -7,7 +7,6 @@ use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
 
 class WaitingList extends Resource
 {
