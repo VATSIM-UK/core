@@ -14,6 +14,7 @@ before_install:
 - mysql -e 'create database IF NOT EXISTS cts;' -uroot
 - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 - nvm install node
+- npx semantic-release
 - npm -v
 - npm install
 
@@ -41,6 +42,11 @@ after_failure:
 before_deploy:
 
 deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+  - nvm install lts/*
+  - npx travis-deploy-once "npx semantic-release"
 
 after_deploy:
 
