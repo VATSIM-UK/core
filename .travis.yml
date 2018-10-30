@@ -36,17 +36,13 @@ script:
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
+- npx travis-deploy-once "npx semantic-release"
 
 after_failure:
 
 before_deploy:
 
 deploy:
-  provider: script
-  skip_cleanup: true
-  script:
-  - nvm install lts/*
-  - npx travis-deploy-once "npx semantic-release"
 
 after_deploy:
 
