@@ -39,6 +39,6 @@
     "vue": "^2.5.7"
   },
   "release": {
-    "repositoryUrl": "https://github.com/CalumTowers/core"
+    "repositoryUrl": "https://github.com/VATSIM-UK/core"
   }
 }
