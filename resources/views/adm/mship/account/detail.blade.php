@@ -298,7 +298,7 @@
                                           <tbody>
                                               @foreach($vtapplications as $a)
                                               <tr>
-                                                <td>{!! link_to_route('visiting.admin.application.view', $a->public_id, [$a->id]) !!}</td>
+                                                <td>{!! link_to_route('adm.visiting.application.view', $a->public_id, [$a->id]) !!}</td>
                                                 <td>{{ $a->type_string }}</td>
                                                 <td>{{ $a->facility_name }}</td>
                                                 <td>

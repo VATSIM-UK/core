@@ -7,7 +7,7 @@ use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 class ApplicationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /** Unit Testing */
 

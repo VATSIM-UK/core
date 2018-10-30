@@ -263,31 +263,31 @@
                                             -
                                         </td>
                                         <td class="text-center">
-                                            {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
+                                            {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
                                             <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "training_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
-                                            {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
+                                            {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
                                             <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "statement_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
-                                            {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
+                                            {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
                                             <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "references_required") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
-                                            {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
+                                            {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
                                             <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "should_perform_checks") !!}
                                             {!! Form::close() !!}
                                         </td>
                                         <td class="text-center">
-                                            {!! Form::open(array("url" => URL::route("visiting.admin.application.setting.toggle.post", $application->id))) !!}
+                                            {!! Form::open(array("url" => URL::route("adm.visiting.application.setting.toggle.post", $application->id))) !!}
                                             <button type="submit" class="btn btn-warning btn-xs">Toggle</button>
                                             {!! Form::hidden("setting", "will_auto_accept") !!}
                                             {!! Form::close() !!}
@@ -351,7 +351,7 @@
                                                                 Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "90_day") }}
                                                                 {{ Form::close() }}
@@ -379,7 +379,7 @@
                                                                 Once you have manually verified that this member received their current qualification within 90 days prior to the submission date, you can mark it as 'NOT MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "90_day") }}
                                                                 {{ Form::close() }}
@@ -401,7 +401,7 @@
                                                                 Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "90_day") }}
                                                                 {{ Form::close() }}
@@ -429,7 +429,7 @@
                                                                 Once you have manually verified that this member received their current qualification in excess of 90 days prior to the submission date, you can mark it as 'MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "90_day") }}
                                                                 {{ Form::close() }}
@@ -467,7 +467,7 @@
                                                                 Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "50_hours") }}
                                                                 {{ Form::close() }}
@@ -494,7 +494,7 @@
                                                                 Once you have manually verified that this member has not ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'NOT MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.notmet.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.notmet.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-danger">MARK THIS CHECK AS 'NOT MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "50_hours") }}
                                                                 {{ Form::close() }}
@@ -516,7 +516,7 @@
                                                                 Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "50_hours") }}
                                                                 {{ Form::close() }}
@@ -545,7 +545,7 @@
                                                                 Once you have manually verified that this member has ratified their rating (50 hours at rating, on a relevant position in their home division), you can mark it as 'MET'.
                                                             </div>
                                                             <div class="modal-footer">
-                                                                {{ Form::open(array("url" => URL::route("visiting.admin.application.check.met.post", $application->id))) }}
+                                                                {{ Form::open(array("url" => URL::route("adm.visiting.application.check.met.post", $application->id))) }}
                                                                 <button type="submit" class="btn btn-success">MARK THIS CHECK AS 'MET' - THIS CANNOT BE UNDONE</button>
                                                                 {{ Form::hidden("check", "50_hours") }}
                                                                 {{ Form::close() }}
@@ -580,7 +580,7 @@
     @if($unacceptedReferences->count() == 0)
         <div class="modal fade" id="modalApplicationReject" tabindex="-1" role="dialog"
              aria-labelledby="Reject Application" aria-hidden="true">
-            {!! Form::open(array("url" => URL::route("visiting.admin.application.reject.post", $application->id))) !!}
+            {!! Form::open(array("url" => URL::route("adm.visiting.application.reject.post", $application->id))) !!}
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -634,7 +634,7 @@
 
         <div class="modal fade" id="modalApplicationAccept" tabindex="-1" role="dialog"
              aria-labelledby="Accept Application" aria-hidden="true">
-            {!! Form::open(array("url" => URL::route("visiting.admin.application.accept.post", $application->id))) !!}
+            {!! Form::open(array("url" => URL::route("adm.visiting.application.accept.post", $application->id))) !!}
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -693,7 +693,7 @@
 
         <div class="modal fade" id="modalApplicationComplete" tabindex="-1" role="dialog"
              aria-labelledby="Accept Application" aria-hidden="true">
-            {!! Form::open(array("url" => URL::route("visiting.admin.application.complete.post", $application->id))) !!}
+            {!! Form::open(array("url" => URL::route("adm.visiting.application.complete.post", $application->id))) !!}
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -735,7 +735,7 @@
     @foreach($application->referees as $reference)
         <div class="modal fade" id="modalReferenceReject{{ $reference->id }}" tabindex="-1" role="dialog"
              aria-labelledby="Reject Reference" aria-hidden="true">
-            {!! Form::open(array("url" => URL::route("visiting.admin.reference.reject.post", $reference->id))) !!}
+            {!! Form::open(array("url" => URL::route("adm.visiting.reference.reject.post", $reference->id))) !!}
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -786,7 +786,7 @@
 
         <div class="modal fade" id="modalReferenceAccept{{ $reference->id }}" tabindex="-1" role="dialog"
              aria-labelledby="Accept Reference" aria-hidden="true">
-            {!! Form::open(array("url" => URL::route("visiting.admin.reference.accept.post", $reference->id))) !!}
+            {!! Form::open(array("url" => URL::route("adm.visiting.reference.accept.post", $reference->id))) !!}
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

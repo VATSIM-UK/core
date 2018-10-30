@@ -1,230 +1,208 @@
 <?php
 
-// Admin panel
-Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_full_group']], function () {
+// Admin
+Route::group([
+    'prefix' => 'adm',
+    'namespace' => 'Adm',
+    'middleware' => 'auth_full_group',
+    'as' => 'adm.',
+], function () {
+
     // Index
     Route::get('/', function () {
         return redirect()->route('adm.dashboard');
     });
 
     // Main
-    Route::get('/dashboard', ['as' => 'adm.dashboard', 'uses' => 'Dashboard@getIndex']);
-    Route::any('/search/{q?}', ['as' => 'adm.search', 'uses' => 'Dashboard@anySearch']);
+    Route::get('/dashboard')->uses('Dashboard@getIndex')->name('dashboard');
+    Route::any('/search/{q?}')->uses('Dashboard@anySearch')->name('search');
 
     // System
-    Route::group(['prefix' => 'system', 'namespace' => 'Sys'], function () {
-        Route::get('/activity', ['as' => 'adm.sys.activity.list', 'uses' => 'Activity@getIndex']);
+    Route::group([
+        'as' => 'sys.',
+        'prefix' => 'system',
+        'namespace' => 'Sys',
+    ], function () {
+        Route::get('/activity')->uses('Activity@getIndex')->name('activity.list');
 
-        Route::get('/jobs/failed', ['as' => 'adm.sys.jobs.failed', 'uses' => 'Jobs@getFailed']);
-        Route::post('/jobs/failed/{id}/retry', ['as' => 'adm.sys.jobs.failed.retry', 'uses' => 'Jobs@postFailed']);
-        Route::delete('/jobs/failed/{id}/delete', ['as' => 'adm.sys.jobs.failed.delete', 'uses' => 'Jobs@deleteFailed']);
+        Route::get('/jobs/failed')->uses('Jobs@getFailed')->name('jobs.failed');
+        Route::post('/jobs/failed/{id}/retry')->uses('Jobs@postFailed')->name('jobs.failed.retry');
+        Route::delete('/jobs/failed/{id}/delete')->uses('Jobs@deleteFailed')->name('jobs.failed.delete');
+    });
+
+    // smartCARS
+    Route::group([
+        'prefix' => 'smartcars',
+        'namespace' => 'Smartcars\Resources',
+        'as' => 'smartcars.',
+    ], function () {
+        Route::resource('configure/aircraft', 'AircraftController')->except('show');
+        Route::resource('configure/airports', 'AirportController')->except('show');
+        Route::resource('configure/exercises', 'ExerciseController')->except('show');
+        Route::resource('exercises.resources', 'ExerciseResourceController')->except('show');
+        Route::resource('flights', 'FlightController')->only('index', 'edit', 'update');
+    });
+
+    // ATC
+    Route::group([
+        'prefix' => 'atc',
+        'namespace' => 'Atc',
+        'as' => 'atc.',
+    ], function () {
+        Route::get('endorsement')->uses('Endorsement@getIndex')->name('endorsement.index');
+    });
+
+    // Operations
+    Route::group([
+        'prefix' => 'ops',
+        'namespace' => 'Operations',
+        'as' => 'ops.',
+    ], function () {
+        Route::get('qstats')->uses('QuarterlyStats@get')->name('qstats.index');
+        Route::post('qstats')->uses('QuarterlyStats@generate')->name('qstats.generate');
+    });
+
+    // Network Data
+    Route::group([
+        'as' => 'networkdata.',
+        'namespace' => 'NetworkData',
+        'prefix' => 'network-data',
+        'middleware' => 'auth_full_group',
+    ], function () {
+        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
     });
 
     // Members
-    Route::group(['prefix' => 'mship', 'namespace' => 'Mship'], function () {
-        Route::get('/account/{mshipAccount}/{tab?}/{tabid?}', ['as' => 'adm.mship.account.details', 'uses' => 'Account@getDetail'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/roles/attach', ['as' => 'adm.mship.account.role.attach', 'uses' => 'Account@postRoleAttach'])->where(['mshipAccount' => '\d+']);
-        Route::get('/account/{mshipAccount}/roles/{mshipRole}/detach', ['as' => 'adm.mship.account.role.detach', 'uses' => 'Account@getRoleDetach'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/ban/add', ['as' => 'adm.mship.account.ban.add', 'uses' => 'Account@postBanAdd'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/note/create', ['as' => 'adm.mship.account.note.create', 'uses' => 'Account@postNoteCreate'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/note/filter', ['as' => 'adm.mship.account.note.filter', 'uses' => 'Account@postNoteFilter'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/security/enable', ['as' => 'adm.mship.account.security.enable', 'uses' => 'Account@postSecurityEnable'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/security/reset', ['as' => 'adm.mship.account.security.reset', 'uses' => 'Account@postSecurityReset'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/security/change', ['as' => 'adm.mship.account.security.change', 'uses' => 'Account@postSecurityChange'])->where(['mshipAccount' => '\d+']);
-        Route::post('/account/{mshipAccount}/impersonate', ['as' => 'adm.mship.account.impersonate', 'uses' => 'Account@postImpersonate'])->where(['mshipAccount' => '\d+']);
+    Route::group([
+        'prefix' => 'mship',
+        'as' => 'mship.',
+        'namespace' => 'Mship',
+    ], function () {
 
-        Route::get('/bans', ['as' => 'adm.mship.ban.index', 'uses' => 'Account@getBans']);
-
-        Route::get('/ban/{ban}/repeal', ['as' => 'adm.mship.ban.repeal', 'uses' => 'Account@getBanRepeal'])->where(['ban' => '\d+']);
-        Route::post('/ban/{ban}/repeal', ['as' => 'adm.mship.ban.repeal.post', 'uses' => 'Account@postBanRepeal'])->where(['ban' => '\d+']);
-
-        Route::get('/ban/{ban}/comment', ['as' => 'adm.mship.ban.comment', 'uses' => 'Account@getBanComment'])->where(['ban' => '\d+']);
-        Route::post('/ban/{ban}/comment', ['as' => 'adm.mship.ban.comment.post', 'uses' => 'Account@postBanComment'])->where(['ban' => '\d+']);
-
-        Route::get('/ban/{ban}/modify', ['as' => 'adm.mship.ban.modify', 'uses' => 'Account@getBanModify'])->where(['ban' => '\d+']);
-        Route::post('/ban/{ban}/modify', ['as' => 'adm.mship.ban.modify.post', 'uses' => 'Account@postBanModify'])->where(['ban' => '\d+']);
-
-        Route::get('/account/{scope?}', ['as' => 'adm.mship.account.index', 'uses' => 'Account@getIndex'])->where(['scope' => '\w+']);
-
-        Route::get('/role/create', ['as' => 'adm.mship.role.create', 'uses' => 'Role@getCreate']);
-        Route::post('/role/create', ['as' => 'adm.mship.role.create.post', 'uses' => 'Role@postCreate']);
-        Route::get('/role/{mshipRole}/update', ['as' => 'adm.mship.role.update', 'uses' => 'Role@getUpdate']);
-        Route::post('/role/{mshipRole}/update', ['as' => 'adm.mship.role.update.post', 'uses' => 'Role@postUpdate']);
-        Route::any('/role/{mshipRole}/delete', ['as' => 'adm.mship.role.delete', 'uses' => 'Role@anyDelete']);
-        Route::get('/role/', ['as' => 'adm.mship.role.index', 'uses' => 'Role@getIndex']);
-
-        Route::get('/permission/create', ['as' => 'adm.mship.permission.create', 'uses' => 'Permission@getCreate']);
-        Route::post('/permission/create', ['as' => 'adm.mship.permission.create.post', 'uses' => 'Permission@postCreate']);
-        Route::get('/permission/{mshipPermission}/update', ['as' => 'adm.mship.permission.update', 'uses' => 'Permission@getUpdate']);
-        Route::post('/permission/{mshipPermission}/update', ['as' => 'adm.mship.permission.update.post', 'uses' => 'Permission@postUpdate']);
-        Route::any('/permission/{mshipPermission}/delete', ['as' => 'adm.mship.permission.delete', 'uses' => 'Permission@anyDelete']);
-        Route::get('/permission/', ['as' => 'adm.mship.permission.index', 'uses' => 'Permission@getIndex']);
-
-        Route::group(['as' => 'adm.mship.note.'], function () {
-            Route::get('/note/type/create', ['as' => 'type.create', 'uses' => 'Note@getTypeCreate']);
-            Route::post('/note/type/create', ['as' => 'type.create.post', 'uses' => 'Note@postTypeCreate']);
-            Route::get('/note/type/{mshipNoteType}/update', ['as' => 'type.update', 'uses' => 'Note@getTypeUpdate']);
-            Route::post('/note/type/{mshipNoteType}/update', ['as' => 'type.update.post', 'uses' => 'Note@postTypeUpdate']);
-            Route::any('/note/type/{mshipNoteType}/delete', ['as' => 'type.delete', 'uses' => 'Note@anyTypeDelete']);
-            Route::get('/note/type/', ['as' => 'type.index', 'uses' => 'Note@getTypeIndex']);
+        // Account
+        Route::group([
+            'prefix' => 'account/',
+            'as' => 'account.',
+        ], function () {
+            Route::get('/account/{scope?}')->where(['scope' => '\w+'])->uses('Account@getIndex')->name('index');
+            Route::get('{mshipAccount}/{tab?}/{tabid?}')->where(['mshipAccount' => '\d+'])->uses('Account@getDetail')->name('details');
+            Route::post('{mshipAccount}/roles/attach')->where(['mshipAccount' => '\d+'])->uses('Account@postRoleAttach')->name('role.attach');
+            Route::get('{mshipAccount}/roles/{mshipRole}/detach')->where(['mshipAccount' => '\d+'])->uses('Account@getRoleDetach')->name('role.detach');
+            Route::post('{mshipAccount}/ban/add')->where(['mshipAccount' => '\d+'])->uses('Account@postBanAdd')->name('ban.add');
+            Route::post('{mshipAccount}/note/create')->where(['mshipAccount' => '\d+'])->uses('Account@postNoteCreate')->name('note.create');
+            Route::post('{mshipAccount}/note/filter')->where(['mshipAccount' => '\d+'])->uses('Account@postNoteFilter')->name('note.filter');
+            Route::post('{mshipAccount}/security/enable')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityEnable')->name('security.enable');
+            Route::post('{mshipAccount}/security/reset')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityReset')->name('security.reset');
+            Route::post('{mshipAccount}/security/change')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityChange')->name('security.change');
+            Route::post('{mshipAccount}/impersonate')->where(['mshipAccount' => '\d+'])->uses('Account@postImpersonate')->name('impersonate');
         });
 
-        Route::group(['prefix' => 'feedback', 'as' => 'adm.mship.feedback.'], function () {
-            Route::get('', ['as' => 'forms', 'uses' => 'Feedback@getListForms']);
-
-            Route::get('new', ['as' => 'new', 'uses' => 'Feedback@getNewForm']);
-            Route::post('new', ['as' => 'new.create', 'uses' => 'Feedback@postNewForm']);
-
-            Route::get('configure/{form}', ['as' => 'config', 'uses' => 'Feedback@getConfigure']);
-            Route::post('configure/{form}', ['as' => 'config.save', 'uses' => 'Feedback@postConfigure']);
-            Route::get('configure/{form}/toggle', ['as' => 'config.toggle', 'uses' => 'Feedback@getEnableDisableForm']);
-            Route::get('configure/{form}/visibility', ['as' => 'config.visibility', 'uses' => 'Feedback@getFormVisibility']);
-
-            Route::get('list', ['as' => 'all', 'uses' => 'Feedback@getAllFeedback']);
-            Route::get('list/{slug}', ['as' => 'form', 'uses' => 'Feedback@getFormFeedback']);
-            Route::get('list/{slug}/export', ['as' => 'form.export', 'uses' => 'Feedback@getFormFeedbackExport']);
-            Route::post('list/{slug}/export', ['as' => 'form.export.post', 'uses' => 'Feedback@postFormFeedbackExport']);
-            Route::get('view/{feedback}', ['as' => 'view', 'uses' => 'Feedback@getViewFeedback']);
-            Route::post('view/{feedback}/action', ['as' => 'action', 'uses' => 'Feedback@postActioned']);
-            Route::get('view/{feedback}/unaction', ['as' => 'unaction', 'uses' => 'Feedback@getUnActioned']);
-
-            Route::post('view/{feedback}/send', ['as' => 'send', 'uses' => 'Feedback\FeedbackSendController@store']);
+        // Bans
+        Route::group([
+            'prefix' => 'ban',
+            'as' => 'ban.',
+        ], function () {
+            Route::get('/')->uses('Account@getBans')->name('index');
+            Route::get('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account@getBanRepeal')->name('repeal');
+            Route::post('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account@postBanRepeal')->name('repeal.post');
+            Route::get('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account@getBanComment')->name('comment');
+            Route::post('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account@postBanComment')->name('comment.post');
+            Route::get('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account@getBanModify')->name('modify');
+            Route::post('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account@postBanModify')->name('modify.post');
         });
 
-        Route::get('staff', ['as' => 'adm.mship.staff.index', 'uses' => 'Staff@getIndex']);
+        // Roles
+        Route::group([
+            'prefix' => 'role',
+            'as' => 'role.',
+        ], function () {
+            Route::get('/')->uses('Role@getIndex')->name('index');
+            Route::get('/create')->uses('Role@getCreate')->name('create');
+            Route::post('/create')->uses('Role@postCreate')->name('create.post');
+            Route::get('/{mshipRole}/update')->uses('Role@getUpdate')->name('update');
+            Route::post('/{mshipRole}/update')->uses('Role@postUpdate')->name('update.post');
+            Route::any('/{mshipRole}/delete')->uses('Role@anyDelete')->name('delete');
+        });
+
+        // Permissions
+        Route::group([
+            'prefix' => 'permission',
+            'as' => 'permission.',
+        ], function () {
+            Route::get('/')->uses('Permission@getIndex')->name('index');
+            Route::get('/create')->uses('Permission@getCreate')->name('create');
+            Route::post('/create')->uses('Permission@postCreate')->name('create.post');
+            Route::get('/{mshipPermission}/update')->uses('Permission@getUpdate')->name('update');
+            Route::post('/{mshipPermission}/update')->uses('Permission@postUpdate')->name('update.post');
+            Route::any('/{mshipPermission}/delete')->uses('Permission@anyDelete')->name('delete');
+        });
+
+        // Notes
+        Route::group([
+            'prefix' => 'note/type',
+            'as' => 'note.type.',
+        ], function () {
+            Route::get('')->uses('Note@getTypeIndex')->name('index');
+            Route::get('/create')->uses('Note@getTypeCreate')->name('create');
+            Route::post('/create')->uses('Note@postTypeCreate')->name('create.post');
+            Route::get('/{mshipNoteType}/update')->uses('Note@getTypeUpdate')->name('update');
+            Route::post('/{mshipNoteType}/update')->uses('Note@postTypeUpdate')->name('update.post');
+            Route::any('/{mshipNoteType}/delete')->uses('Note@anyTypeDelete')->name('delete');
+        });
+
+        // Feedback
+        Route::group([
+            'prefix' => 'feedback',
+            'as' => 'feedback.',
+        ], function () {
+            Route::get('/')->uses('Feedback@getListForms')->name('forms');
+            Route::get('new')->uses('Feedback@getNewForm')->name('new');
+            Route::post('new')->uses('Feedback@postNewForm')->name('new.create');
+            Route::get('configure/{form}')->uses('Feedback@getConfigure')->name('config');
+            Route::post('configure/{form}')->uses('Feedback@postConfigure')->name('config.save');
+            Route::get('configure/{form}/toggle')->uses('Feedback@getEnableDisableForm')->name('config.toggle');
+            Route::get('configure/{form}/visibility')->uses('Feedback@getFormVisibility')->name('config.visibility');
+            Route::get('list')->uses('Feedback@getAllFeedback')->name('all');
+            Route::get('list/{slug}')->uses('Feedback@getFormFeedback')->name('form');
+            Route::get('list/{slug}/export')->uses('Feedback@getFormFeedbackExport')->name('form.export');
+            Route::post('list/{slug}/export')->uses('Feedback@postFormFeedbackExport')->name('form.export.post');
+            Route::get('view/{feedback}')->uses('Feedback@getViewFeedback')->name('view');
+            Route::post('view/{feedback}/action')->uses('Feedback@postActioned')->name('action');
+            Route::get('view/{feedback}/unaction')->uses('Feedback@getUnActioned')->name('unaction');
+            Route::post('view/{feedback}/send')->uses('Feedback\FeedbackSendController@store')->name('send');
+        });
+
+        // Other
+        Route::get('staff')->uses('Staff@getIndex')->name('staff.index');
     });
 
-    Route::get('atc/endorsement', ['as' => 'adm.atc.endorsement.index', 'uses' => 'Atc\Endorsement@getIndex']);
-
-    Route::get('ops/qstats', ['as' => 'adm.ops.qstats.index', 'uses' => 'Operations\QuarterlyStats@get']);
-    Route::post('ops/qstats', ['as' => 'adm.ops.qstats.generate', 'uses' => 'Operations\QuarterlyStats@generate']);
-
-    Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
-        Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');
-        Route::resource('configure/airports', 'Resources\AirportController')->except('show');
-        Route::resource('configure/exercises', 'Resources\ExerciseController')->except('show');
-        Route::resource('exercises.resources', 'Resources\ExerciseResourceController')->except('show');
-        Route::resource('flights', 'Resources\FlightController')->only('index', 'edit', 'update');
+    // Visiting/Transferring
+    Route::group([
+        'as' => 'visiting.',
+        'prefix' => 'visit-transfer',
+        'namespace' => 'VisitTransfer',
+    ], function () {
+        Route::get('/')->uses('Dashboard@getDashboard')->name('dashboard');
+        Route::get('/facility')->uses('Facility@getList')->name('facility');
+        Route::get('/facility/create')->uses('Facility@getCreate')->name('facility.create');
+        Route::post('/facility/create')->uses('Facility@postCreate')->name('facility.create.post');
+        Route::get('/facility/{facility}/update')->where('facility', "\d+")->uses('Facility@getUpdate')->name('facility.update');
+        Route::post('/facility/{facility}/update')->where('facility', "\d+")->uses('Facility@postUpdate')->name('facility.update.post');
+        Route::get('/reference/{reference}')->where('reference', "\d+")->uses('Reference@getView')->name('reference.view');
+        Route::post('/reference/{reference}/reject')->where('reference', "\d+")->uses('Reference@postReject')->name('reference.reject.post');
+        Route::post('/reference/{reference}/accept')->where('reference', "\d+")->uses('Reference@postAccept')->name('reference.accept.post');
+        Route::get('/reference/{scope?}')->where('scope', '[a-zA-Z-]+')->uses('Reference@getList')->name('reference.list');
+        Route::get('/application/{application}')->where('application', "\d+")->uses('Application@getView')->name('application.view');
+        Route::post('/application/{application}/check/met')->uses('Application@postCheckMet')->name('application.check.met.post');
+        Route::post('/application/{application}/check/not-met')->uses('Application@postCheckNotMet')->name('application.check.notmet.post');
+        Route::post('/application/{application}/setting/toggle')->uses('Application@postSettingToggle')->name('application.setting.toggle.post');
+        Route::post('/application/{application}/accept')->where('application', "\d+")->uses('Application@postAccept')->name('application.accept.post');
+        Route::post('/application/{application}/reject')->where('application', "\d+")->uses('Application@postReject')->name('application.reject.post');
+        Route::post('/application/{application}/complete')->where('application', "\d+")->uses('Application@postComplete')->name('application.complete.post');
+        Route::get('/application/{scope?}')->where('scope', "\w+")->uses('Application@getList')->name('application.list');
+        Route::get('/hours/')->uses('VisitorStatsController@create')->name('hours.create');
+        Route::get('/hours/search')->uses('VisitorStatsController@index')->name('hours.search');
     });
-});
-
-Route::group([
-    'as' => 'networkdata.admin.',
-    'namespace' => 'NetworkData',
-    'prefix' => 'adm/network-data',
-    'middleware' => ['auth_full_group'],
-], function () {
-    Route::get('/', [
-        'as' => 'dashboard',
-        'uses' => 'Dashboard@getDashboard',
-    ]);
-});
-
-Route::group([
-    'as' => 'visiting.admin.',
-    'prefix' => 'adm/visit-transfer',
-    'namespace' => 'VisitTransfer\Admin',
-    'middleware' => ['auth_full_group'],
-], function () {
-    Route::get('/', [
-        'as' => 'dashboard',
-        'uses' => 'Dashboard@getDashboard',
-    ]);
-
-    Route::get('/facility', [
-        'as' => 'facility',
-        'uses' => 'Facility@getList',
-    ]);
-
-    Route::get('/facility/create', [
-        'as' => 'facility.create',
-        'uses' => 'Facility@getCreate',
-    ]);
-
-    Route::post('/facility/create', [
-        'as' => 'facility.create.post',
-        'uses' => 'Facility@postCreate',
-    ]);
-
-    Route::get('/facility/{facility}/update', [
-        'as' => 'facility.update',
-        'uses' => 'Facility@getUpdate',
-    ])->where('facility', "\d+");
-
-    Route::post('/facility/{facility}/update', [
-        'as' => 'facility.update.post',
-        'uses' => 'Facility@postUpdate',
-    ])->where('facility', "\d+");
-
-    Route::get('/reference/{reference}', [
-        'as' => 'reference.view',
-        'uses' => 'Reference@getView',
-    ])->where('reference', "\d+");
-
-    Route::post('/reference/{reference}/reject', [
-        'as' => 'reference.reject.post',
-        'uses' => 'Reference@postReject',
-    ])->where('reference', "\d+");
-
-    Route::post('/reference/{reference}/accept', [
-        'as' => 'reference.accept.post',
-        'uses' => 'Reference@postAccept',
-    ])->where('reference', "\d+");
-
-    Route::get('/reference/{scope?}', [
-        'as' => 'reference.list',
-        'uses' => 'Reference@getList',
-    ])->where('scope', '[a-zA-Z-]+');
-
-    Route::get('/application/{application}', [
-        'as' => 'application.view',
-        'uses' => 'Application@getView',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/check/met', [
-        'as' => 'application.check.met.post',
-        'uses' => 'Application@postCheckMet',
-    ]);
-
-    Route::post('/application/{application}/check/not-met', [
-        'as' => 'application.check.notmet.post',
-        'uses' => 'Application@postCheckNotMet',
-    ]);
-
-    Route::post('/application/{application}/setting/toggle', [
-        'as' => 'application.setting.toggle.post',
-        'uses' => 'Application@postSettingToggle',
-    ]);
-
-    Route::post('/application/{application}/accept', [
-        'as' => 'application.accept.post',
-        'uses' => 'Application@postAccept',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/reject', [
-        'as' => 'application.reject.post',
-        'uses' => 'Application@postReject',
-    ])->where('application', "\d+");
-
-    Route::post('/application/{application}/complete', [
-        'as' => 'application.complete.post',
-        'uses' => 'Application@postComplete',
-    ])->where('application', "\d+");
-
-    Route::get('/application/{scope?}', [
-        'as' => 'application.list',
-        'uses' => 'Application@getList',
-    ])->where('scope', "\w+");
-
-    Route::get('/hours/', [
-        'as' => 'hours.create',
-        'uses' => 'VisitorStatsController@create',
-    ]);
-
-    Route::get('/hours/search', [
-        'as' => 'hours.search',
-        'uses' => 'VisitorStatsController@index',
-    ]);
 });
 
 Route::group([

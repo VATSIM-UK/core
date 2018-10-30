@@ -3,13 +3,13 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class MshipAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /**
      * Instance used for the tests
@@ -65,7 +65,7 @@ class MshipAuthenticationTest extends TestCase
     {
         // In this test, we assert that we're getting a redirect to the login page if no auth at all
         $expectedStatus = 302;
-        $expectedRedirectRegExp = '#\h*<title>Redirecting to '.route('default').'<\/title>\h*#';
+        $expectedRedirectRegExp = '#\h*<title>Redirecting to '.route('dashboard').'<\/title>\h*#';
         $expectedObjectType = 'Illuminate\Http\RedirectResponse';
 
         $result = $this->authenticationInstance->getLogin();

@@ -42,7 +42,7 @@ class LoginController extends BaseController
         if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
             return $this->attemptSecondaryAuth();
         } else {
-            return redirect()->route('default');
+            return redirect()->route('dashboard');
         }
     }
 
@@ -117,7 +117,7 @@ class LoginController extends BaseController
     public function loginSecondary(Request $request)
     {
         if (!Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('default')
+            return redirect()->route('dashboard')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
@@ -185,6 +185,6 @@ class LoginController extends BaseController
 
     public function vSsoValidationFailure($error)
     {
-        return redirect()->route('default')->withError('Could not authenticate: '.$error['message']);
+        return redirect()->route('dashboard')->withError('Could not authenticate: '.$error['message']);
     }
 }

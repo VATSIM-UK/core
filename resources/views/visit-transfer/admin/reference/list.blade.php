@@ -34,10 +34,10 @@
                         @forelse($references as $r)
                             <tr>
                                 {{--<td align="center">--}}
-                                    {{--{!! link_to_route('visiting.admin.reference.view', $r->id, [$r->id]) !!}--}}
+                                    {{--{!! link_to_route('adm.visiting.reference.view', $r->id, [$r->id]) !!}--}}
                                 {{--</td>--}}
                                 {{--<td align="center">--}}
-                                    {{--{!! link_to_route('visiting.admin.application.view', $r->application_id, [$r->application_id]) !!}--}}
+                                    {{--{!! link_to_route('adm.visiting.application.view', $r->application_id, [$r->application_id]) !!}--}}
                                 {{--</td>--}}
                                 <td align="center">
                                     @include("adm.partials._account_link", ["account" => $r->application->account])

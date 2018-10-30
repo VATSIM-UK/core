@@ -8,7 +8,7 @@
                 range in the UK, rather than in their home division.</p>
         </div>
     </div>
-    {!! Form::open(['route' => 'visiting.admin.hours.search', 'method' => 'get', 'autocomplete' => 'off']) !!}
+    {!! Form::open(['route' => 'adm.visiting.hours.search', 'method' => 'get', 'autocomplete' => 'off']) !!}
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">

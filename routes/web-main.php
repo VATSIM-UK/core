@@ -1,74 +1,115 @@
 <?php
 
-// Index
-Route::get('/', 'Mship\Management@getLanding')->name('default');
+// Dashboard
+Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('dashboard');
 
 // Authentication
-Route::get('login', 'Auth\LoginController@getLogin');
-Route::post('login', 'Auth\LoginController@loginMain')->name('login');
-Route::get('login-secondary', 'Auth\LoginController@showLoginForm')->name('auth-secondary')->middleware('auth:vatsim-sso');
-Route::post('login-secondary', 'Auth\LoginController@loginSecondary')->name('auth-secondary.post')->middleware('auth:vatsim-sso');
-Route::get('login-vatsim', 'Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('login')->uses('Auth\LoginController@getLogin');
+Route::post('login')->uses('Auth\LoginController@loginMain')->name('login');
+Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
+Route::post('login-secondary')->uses('Auth\LoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
+Route::get('login-vatsim')->uses('Auth\LoginController@vatsimSsoReturn')->name('auth-vatsim-sso');
+Route::post('logout')->uses('Auth\LoginController@logout')->name('logout');
 
-// Password Reset
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email')->middleware('auth:vatsim-sso');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset')->middleware('auth:vatsim-sso');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.request')->middleware('auth:vatsim-sso');
+// Password
+Route::group([
+    'as' => 'password.',
+    'prefix' => 'password',
+], function () {
 
-// Password Change
-Route::group(['middleware' => ['auth_full_group']], function () {
-    Route::get('password/create', 'Auth\ChangePasswordController@showCreateForm')->name('password.create');
-    Route::post('password/create', 'Auth\ChangePasswordController@create');
-    Route::get('password/change', 'Auth\ChangePasswordController@showChangeForm')->name('password.change');
-    Route::post('password/change', 'Auth\ChangePasswordController@change');
-    Route::get('password/delete', 'Auth\ChangePasswordController@showDeleteForm')->name('password.delete');
-    Route::post('password/delete', 'Auth\ChangePasswordController@delete');
+    // Reset
+    Route::group([
+        'middleware' => 'auth:vatsim-sso',
+    ], function () {
+        Route::post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('email');
+        Route::get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('reset');
+        Route::post('reset')->uses('Auth\ResetPasswordController@reset')->name('request');
+    });
+
+    // Change
+    Route::group([
+        'middleware' => 'auth_full_group',
+    ], function () {
+        Route::get('create')->uses('Auth\ChangePasswordController@showCreateForm')->name('create');
+        Route::post('create')->uses('Auth\ChangePasswordController@create');
+        Route::get('change')->uses('Auth\ChangePasswordController@showChangeForm')->name('change');
+        Route::post('change')->uses('Auth\ChangePasswordController@change');
+        Route::get('delete', 'Auth\ChangePasswordController@showDeleteForm')->name('delete');
+        Route::post('delete')->uses('Auth\ChangePasswordController@delete');
+    });
 });
 
 // Webhooks
-Route::group(['prefix' => 'webhook', 'namespace' => 'Webhook'], function () {
-    Route::get('dropbox', 'Dropbox@getDropbox')->name('webhook.dropbox');
-    Route::post('dropbox', 'Dropbox@postDropbox');
+Route::group([
+    'as' => 'webhook.',
+    'prefix' => 'webhook',
+    'namespace' => 'Webhook',
+], function () {
+    Route::get('dropbox')->uses('Dropbox@getDropbox')->name('dropbox');
+    Route::post('dropbox')->uses('Dropbox@postDropbox');
 
-    Route::any('slack', 'Slack@anyRouter')->name('webhook.slack');
+    Route::any('slack')->uses('Slack@anyRouter')->name('slack');
 
-    Route::post('mailgun', 'Mailgun@event')->middleware('auth.basic.once');
-    Route::post('sendgrid', 'SendGrid@events')->middleware('auth.basic.once');
+    Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');
+    Route::post('sendgrid')->uses('SendGrid@events')->middleware('auth.basic.once');
 });
 
 // Members
-Route::group(['prefix' => 'mship', 'namespace' => 'Mship', 'middleware' => 'auth_full_group'], function () {
-    Route::post('auth/invisibility', ['as' => 'mship.auth.invisibility', 'uses' => 'Management@postInvisibility']);
+Route::group([
+    'prefix' => 'mship',
+    'as' => 'mship.',
+    'namespace' => 'Mship',
+    'middleware' => 'auth_full_group',
+], function () {
 
-    Route::get('notification/list', ['as' => 'mship.notification.list', 'uses' => 'Notification@getList']);
-    Route::post('notification/acknowledge/{sysNotification}', ['as' => 'mship.notification.acknowledge', 'uses' => 'Notification@postAcknowledge']);
+    // Manage
+    Route::group([
+        'as' => 'manage.',
+        'prefix' => 'manage',
+    ], function () {
+        Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
+        Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
+        Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
+        Route::post('email/add')->uses('Management@postEmailAdd')->name('email.add.post');
+        Route::get('email/delete/{email}')->uses('Management@getEmailDelete')->name('email.delete');
+        Route::post('email/delete/{email}')->uses('Management@postEmailDelete')->name('email.delete.post');
+        Route::get('email/assignments')->uses('Management@getEmailAssignments')->name('email.assignments');
+        Route::post('email/assignments')->uses('Management@postEmailAssignments')->name('email.assignments.post');
+    });
 
-    Route::get('manage/dashboard', ['as' => 'mship.manage.dashboard', 'uses' => 'Management@getDashboard']);
-    Route::get('manage/email/verify/{code}', ['as' => 'mship.manage.email.verify', 'uses' => 'Management@getVerifyEmail']);
-    Route::get('manage/email/add', ['as' => 'mship.manage.email.add', 'uses' => 'Management@getEmailAdd']);
-    Route::post('manage/email/add', ['as' => 'mship.manage.email.add.post', 'uses' => 'Management@postEmailAdd']);
-    Route::get('manage/email/delete/{email}', ['as' => 'mship.manage.email.delete', 'uses' => 'Management@getEmailDelete']);
-    Route::post('manage/email/delete/{email}', ['as' => 'mship.manage.email.delete.post', 'uses' => 'Management@postEmailDelete']);
-    Route::get('manage/email/assignments', ['as' => 'mship.manage.email.assignments', 'uses' => 'Management@getEmailAssignments']);
-    Route::post('manage/email/assignments', ['as' => 'mship.manage.email.assignments.post', 'uses' => 'Management@postEmailAssignments']);
+    // Feedback
+    Route::group([
+        'as' => 'feedback.',
+        'prefix' => 'feedback',
+    ], function () {
+        Route::get('new')->uses('Feedback@getFeedbackFormSelect')->name('new');
+        Route::post('new')->uses('Feedback@postFeedbackFormSelect')->name('new.post');
+        Route::get('new/{form}')->uses('Feedback@getFeedback')->name('new.form');
+        Route::post('new/{form}')->uses('Feedback@postFeedback')->name('new.form.post');
+        Route::get('users/search/{name}')->uses('Feedback@getUserSearch')->name('usersearch');
+        Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
+    });
 
-    Route::get('feedback/new', ['as' => 'mship.feedback.new', 'uses' => 'Feedback@getFeedbackFormSelect']);
-    Route::post('feedback/new', ['as' => 'mship.feedback.new.post', 'uses' => 'Feedback@postFeedbackFormSelect']);
-    Route::get('feedback/new/{form}', ['as' => 'mship.feedback.new.form', 'uses' => 'Feedback@getFeedback']);
-    Route::post('feedback/new/{form}', ['as' => 'mship.feedback.new.form.post', 'uses' => 'Feedback@postFeedback']);
-    Route::get('feedback/users/search/{name}', ['as' => 'mship.feedback.usersearch', 'uses' => 'Feedback@getUserSearch']);
+    // Other
+    Route::group([
+    ], function () {
+        Route::post('auth/invisibility')->uses('Management@postInvisibility')->name('auth.invisibility');
 
-    Route::get('feedback/view', ['as' => 'mship.feedback.view', 'uses' => 'Feedback\ViewFeedbackController@show']);
+        Route::get('notification/list')->uses('Notification@getList')->name('notification.list');
+        Route::post('notification/acknowledge/{sysNotification}')->uses('Notification@postAcknowledge')->name('notification.acknowledge');
 
-    // Route::get('/email', ['as' => 'mship.email', 'uses' => 'Email@getEmail']);
-    // Route::post('/email', ['as' => 'mship.email.post', 'uses' => 'Email@postEmail']);
-    // Route::get('/email/recipient-search', ['as' => 'mship.email.recipient-search', 'uses' => 'Email@getRecipientSearch']);
+        // Route::get('/email')->uses('Email@getEmail')->name('mship.email');
+        // Route::post('/email')->uses('Email@postEmail')->name('mship.email.post');
+        // Route::get('/email/recipient-search')->uses('Email@getRecipientSearch')->name('mship.email.recipient-search');
+    });
 });
 
 // TeamSpeak
-
-Route::group(['prefix' => 'mship/manage/teamspeak', 'namespace' => 'TeamSpeak', 'middleware' => ['auth_full_group']], function () {
+Route::group([
+    'prefix' => 'mship/manage/teamspeak',
+    'namespace' => 'TeamSpeak',
+    'middleware' => 'auth_full_group',
+], function () {
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
@@ -84,31 +125,40 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
 });
 
 // Community
-Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'middleware' => 'auth_full_group'], function () {
-    Route::get('community/membership/deploy', [
-        'as' => 'deploy',
-        'uses' => 'Membership@getDeploy',
-    ]);
-
-    Route::post('community/membership/deploy/{default?}', [
-        'as' => 'deploy.post',
-        'uses' => 'Membership@postDeploy',
-    ])->where('default', '[default|true]');
+Route::group([
+    'as' => 'community.membership.',
+    'prefix' => 'community/membership',
+    'namespace' => 'Community',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
+    Route::post('deploy/{default?}')->uses('Membership@postDeploy')->name('deploy.post')
+        ->where('default', '[default|true]');
 });
 
 // Controllers
-Route::group(['prefix' => 'controllers/', 'middleware' => ['auth_full_group']], function () {
-    Route::get('endorsements/gatwick', 'Atc\EndorsementController@getGatwickGroundIndex')->name('controllers.endorsements.gatwick_ground');
+Route::group([
+    'as' => 'controllers.',
+    'prefix' => 'controllers/',
+    'namespace' => 'Atc',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
 });
 
 // Network data
-Route::group(['as' => 'networkdata.', 'namespace' => 'NetworkData', 'middleware' => 'auth_full_group'], function () {
-    Route::get('network-data', function () {
+Route::group([
+    'as' => 'networkdata.',
+    'prefix' => 'network-data',
+    'namespace' => 'NetworkData',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('/', function () {
         return redirect()->route('networkdata.online');
     })->name('landing');
 
-    Route::get('network-data/dashboard', 'MainController@getDashboard')->name('dashboard');
-    Route::get('network-data/online', ['as' => 'online', 'uses' => 'Online@getOnline']);
+    Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
+    Route::get('online')->uses('Online@getOnline')->name('online');
 });
 
 // Visit/Transfer
@@ -120,40 +170,52 @@ Route::group([
     'as' => 'visiting.',
     'prefix' => 'visit-transfer',
     'namespace' => 'VisitTransfer\Site',
-    'middleware' => ['auth_full_group'],
+    'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
 
-    Route::group(['as' => 'application.', 'prefix' => 'application'], function () {
+    // Application
+    Route::group([
+        'as' => 'application.',
+        'prefix' => 'application',
+    ], function () {
         Route::get('/', function () {
             return redirect()->route('visiting.landing');
         });
 
-        Route::get('start/{type}/{team}', 'Application@getStart')->where('type', "\d+")->name('start');
-        Route::post('start/{type}/{team}', 'Application@postStart')->where('type', "\d+")->name('start.post');
+        // Start
+        Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
+        Route::post('start/{type}/{team}')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
 
-        Route::group(['prefix' => '{applicationByPublicId}'], function () {
-            Route::get('/', 'Application@getView')->name('view');
-            Route::get('continue', 'Application@getContinue')->name('continue');
-            Route::get('facility', 'Application@getFacility')->name('facility');
-            Route::post('facility', 'Application@postFacility')->name('facility.post');
-            Route::post('facility/manual', 'Application@postManualFacility')->name('facility.manual.post');
-            Route::get('statement', 'Application@getStatement')->name('statement');
-            Route::post('statement', 'Application@postStatement')->name('statement.post');
-            Route::get('referees', 'Application@getReferees')->name('referees');
-            Route::post('referees', 'Application@postReferees')->name('referees.post');
-            Route::post('referees/{reference}/delete', 'Application@postRefereeDelete')->name('referees.delete.post');
-            Route::get('submit', 'Application@getSubmit')->name('submit');
-            Route::post('submit', 'Application@postSubmit')->name('submit.post');
-            Route::get('withdraw', 'Application@getWithdraw')->name('withdraw');
-            Route::post('withdraw', 'Application@postWithdraw')->name('withdraw.post');
+        // Continue
+        Route::group([
+            'prefix' => '{applicationByPublicId}',
+        ], function () {
+            Route::get('/')->uses('Application@getView')->name('view');
+            Route::get('continue')->uses('Application@getContinue')->name('continue');
+            Route::get('facility')->uses('Application@getFacility')->name('facility');
+            Route::post('facility')->uses('Application@postFacility')->name('facility.post');
+            Route::post('facility/manual')->uses('Application@postManualFacility')->name('facility.manual.post');
+            Route::get('statement')->uses('Application@getStatement')->name('statement');
+            Route::post('statement')->uses('Application@postStatement')->name('statement.post');
+            Route::get('referees')->uses('Application@getReferees')->name('referees');
+            Route::post('referees')->uses('Application@postReferees')->name('referees.post');
+            Route::post('referees/{reference}/delete')->uses('Application@postRefereeDelete')->name('referees.delete.post');
+            Route::get('submit')->uses('Application@getSubmit')->name('submit');
+            Route::post('submit')->uses('Application@postSubmit')->name('submit.post');
+            Route::get('withdraw')->uses('Application@getWithdraw')->name('withdraw');
+            Route::post('withdraw')->uses('Application@postWithdraw')->name('withdraw.post');
         });
     });
 
-    Route::group(['as' => 'reference.', 'prefix' => 'reference'], function () {
-        Route::get('complete/{token}', 'Reference@getComplete')->name('complete');
-        Route::post('complete/{token}', 'Reference@postComplete')->name('complete.post');
-        Route::post('complete/{token}/cancel', 'Reference@postCancel')->name('complete.cancel');
+    // References
+    Route::group([
+        'as' => 'reference.',
+        'prefix' => 'reference',
+    ], function () {
+        Route::get('complete/{token}')->uses('Reference@getComplete')->name('complete');
+        Route::post('complete/{token}')->uses('Reference@postComplete')->name('complete.post');
+        Route::post('complete/{token}/cancel')->uses('Reference@postCancel')->name('complete.cancel');
     });
 });
 
@@ -164,31 +226,13 @@ Route::group([
     'as' => 'fte.',
     'prefix' => 'fte',
     'namespace' => 'Smartcars',
-    'middleware' => ['auth_full_group'],
+    'middleware' => 'auth_full_group',
 ], function () {
-    Route::get('dashboard', 'SmartcarsController@getDashboard')->name('dashboard');
-    Route::get('exercises/{exercise?}', 'SmartcarsController@getExercise')->name('exercises');
-    Route::post('exercises/{exercise}/book', 'SmartcarsController@bookExercise')->name('exercise.book');
-    Route::post('exercises/{exercise}/cancel', 'SmartcarsController@cancelExercise')->name('exercise.cancel');
-    Route::get('history/{pirep?}', 'SmartcarsController@getHistory')->name('history');
-    Route::get('guide', 'SmartcarsController@getGuide')->name('guide');
+    Route::get('dashboard')->uses('SmartcarsController@getDashboard')->name('dashboard');
+    Route::get('map')->uses('SmartcarsController@getMap')->name('map');
+    Route::get('exercises/{exercise?}')->uses('SmartcarsController@getExercise')->name('exercises');
+    Route::post('exercises/{exercise}/book')->uses('SmartcarsController@bookExercise')->name('exercise.book');
+    Route::post('exercises/{exercise}/cancel')->uses('SmartcarsController@cancelExercise')->name('exercise.cancel');
+    Route::get('history/{pirep?}')->uses('SmartcarsController@getHistory')->name('history');
+    Route::get('guide')->uses('SmartcarsController@getGuide')->name('guide');
 });
-
-// Helpers
-
-Route::get('metar/{airportIcao}', function ($airportIcao) {
-    return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
-        $client = new GuzzleHttp\Client();
-
-        try {
-            $response = $client->get("http://metar.vatsim.net/metar.php?id=$airportIcao");
-
-            if ($response->getStatusCode() === 200) {
-                return (string) $response->getBody();
-            }
-        } catch (GuzzleHttp\Exception\TransferException $e) {
-        }
-
-        return 'METAR UNAVAILABLE';
-    });
-})->name('metar')->middleware(['auth']);

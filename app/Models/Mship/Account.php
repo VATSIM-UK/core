@@ -75,7 +75,7 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $has_unread_notifications
  * @property-read mixed $is_banned
  * @property mixed $is_inactive
- * @property-read mixed $is_network_banned
+ * @propernty-read mixed $is_network_banned
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
  * @property-read bool $mandatory_password

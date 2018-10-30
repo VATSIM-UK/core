@@ -12,7 +12,7 @@
                 <div class="box-body">
                     <div class="btn-toolbar">
                         <div class="btn-group pull-right">
-                            {!! link_to_route("visiting.admin.facility.create", "Create Facility", [], ["class" => "btn btn-success"]) !!}
+                            {!! link_to_route("adm.visiting.facility.create", "Create Facility", [], ["class" => "btn btn-success"]) !!}
                         </div>
                     </div>
                     <span class="clearfix">&nbsp;</span>
@@ -35,7 +35,7 @@
                         <tbody>
                         @foreach($facilities as $f)
                             <tr>
-                                <td align="center">{!! link_to_route('visiting.admin.facility.update', $f->id, [$f->id]) !!}</td>
+                                <td align="center">{!! link_to_route('adm.visiting.facility.update', $f->id, [$f->id]) !!}</td>
                                 <td>{{ $f->name }}</td>
                                 <td class="text-center">
                                     @if($f->can_visit && $f->can_transfer)

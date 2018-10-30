@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\BaseController;
 use Bugsnag;
 use Config;
 use HTML;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use URL;
 use Validator;
@@ -19,11 +21,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
 
         $this->registerBugsnagCallback();
+
+        View::composer('layout*', function ($view) {
+            $view->with('_bannerUrl', BaseController::generateBannerUrl());
+        });
 
         HTML::component('icon', 'components.html.icon', ['type', 'key']);
         HTML::component('img', 'components.html.img', ['key', 'ext' => 'png', 'width' => null, 'height' => null, 'alt' => null]);

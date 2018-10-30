@@ -7,13 +7,13 @@ use App\Models\Mship\Role;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public $application;
     public $ref1;
@@ -38,7 +38,7 @@ class VisitTransferAdminTest extends TestCase
     public function testThatItShowsBothReferences()
     {
         $this->actingAs($this->user, 'web')
-            ->get(route('visiting.admin.application.view', $this->application->id))
+            ->get(route('adm.visiting.application.view', $this->application->id))
             ->assertSee('Reference 1 - '.$this->ref1->account->real_name)
             ->assertSee('Reference 2 - '.$this->ref2->account->real_name);
     }
@@ -48,7 +48,7 @@ class VisitTransferAdminTest extends TestCase
     {
         $this->ref1->delete();
         $this->actingAs($this->user, 'web')
-            ->get(route('visiting.admin.application.view', $this->application->id))
+            ->get(route('adm.visiting.application.view', $this->application->id))
             ->assertDontSee('Reference 1 - '.$this->ref1->account->real_name)
             ->assertSee('Reference 1 - '.$this->ref2->account->real_name)
             ->assertSee('Application has system deleted references in addition to the below:');
@@ -58,8 +58,8 @@ class VisitTransferAdminTest extends TestCase
     public function testInfinitePlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), $this->createTestPostData())
-            ->assertRedirect(route('visiting.admin.facility'))
+            ->post(route('adm.visiting.facility.create.post'), $this->createTestPostData())
+            ->assertRedirect(route('adm.visiting.facility'))
             ->assertSessionHas('success');
     }
 
@@ -71,7 +71,7 @@ class VisitTransferAdminTest extends TestCase
         array_pull($array, 'training_spaces');
 
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), $array)
+            ->post(route('adm.visiting.facility.create.post'), $array)
             ->assertRedirect()->assertSessionHas('errors');
     }
 
@@ -79,8 +79,8 @@ class VisitTransferAdminTest extends TestCase
     public function testNumberOfPlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->user, 'web')
-            ->post(route('visiting.admin.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))
-            ->assertRedirect(route('visiting.admin.facility'));
+            ->post(route('adm.visiting.facility.create.post'), array_replace($this->createTestPostData(), ['training_spaces' => 0]))
+            ->assertRedirect(route('adm.visiting.facility'));
     }
 
     private function createTestPostData()

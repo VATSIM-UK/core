@@ -198,6 +198,7 @@ class ProcessNetworkData extends Command
                 $flight->current_longitude = !empty($pilotData['longitude']) ? $pilotData['longitude'] : null;
                 $flight->current_altitude = !empty($pilotData['altitude']) ? $pilotData['altitude'] : null;
                 $flight->current_groundspeed = !empty($pilotData['groundspeed']) ? $pilotData['groundspeed'] : null;
+                $flight->current_heading = !empty($pilotData['heading']) ? $pilotData['heading'] : null;
 
                 // check their new location
                 $isAtDepartureAirport = $flight->isAtAirport($departureAirport);
@@ -255,7 +256,7 @@ class ProcessNetworkData extends Command
     private function getAirport(string $ident)
     {
         return Cache::remember('airport_'.$ident, 720, function () use ($ident) {
-            return Airport::where('ident', $ident)->first();
+            return Airport::where('icao', $ident)->first();
         });
     }
 }
