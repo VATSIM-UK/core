@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
 
-    <title>VATSIM United Kingdom Division</title>
+    <title>VATSIM United Kingdom Division!</title>
 
     <!--BugSnagScript-->
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"
