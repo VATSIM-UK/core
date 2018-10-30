@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "87ddd5aa309b78332e80825db3d3aec1",
+    "content-hash": "82cce8c7bb275bcc16db140ef55b2656",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -246,6 +246,55 @@
                 }
             ],
             "time": "2016-06-13T19:28:20+00:00"
+        },
+        {
+            "name": "benjaminhirsch/nova-slug-field",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benjaminhirsch/nova-slug-field.git",
+                "reference": "592fe6940758334b911fc6bdc191026ab0d6a2ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/benjaminhirsch/nova-slug-field/zipball/592fe6940758334b911fc6bdc191026ab0d6a2ba",
+                "reference": "592fe6940758334b911fc6bdc191026ab0d6a2ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Benjaminhirsch\\NovaSlugField\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Benjaminhirsch\\NovaSlugField\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Hirsch",
+                    "email": "mail@benjaminhirsch.net",
+                    "homepage": "https://wwwbenjaminhirsch.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova field to generate a slugs.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "time": "2018-10-10T18:18:24+00:00"
         },
         {
             "name": "bonroyage/oauth",
