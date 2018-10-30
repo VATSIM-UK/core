@@ -1,4 +1,8 @@
 {
+  "name": "vatsimuk/core",
+  "description": "VATSIM UK Core Framework",
+  "license": "MIT",
+  "type": "project",
   "private": true,
   "engines": {
         "node": "8.2.0",
