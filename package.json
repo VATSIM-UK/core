@@ -37,8 +37,5 @@
     "lodash": "^4.17.10",
     "popper.js": "^1.12",
     "vue": "^2.5.7"
-  },
-  "release": {
-    "repositoryUrl": "https://github.com/VATSIM-UK/core"
   }
 }
