@@ -59,6 +59,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/VATSIM-UK/laravel-ipboard"
+        },
+        {
+          "type": "path",
+          "url": "./nova"
         }
     ],
     "require": {
@@ -74,6 +78,7 @@
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.0",
         "laravel/tinker": "~1.0",
+        "laravel/nova": "*",
         "laravelcollective/html": "^5.6",
         "league/csv": "^8.0",
         "maatwebsite/excel": "~2.1.0",
