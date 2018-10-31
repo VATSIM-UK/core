@@ -43,7 +43,6 @@ trait HasBans
 
         $ban->notes()->save($note);
         event(new BanUpdated($ban));
-        event(new AccountAltered($this));
 
         return $ban;
     }

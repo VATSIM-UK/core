@@ -2,6 +2,9 @@
 
 namespace App\Listeners\Mship;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
 class SyncSubscriber
 {
     /**
@@ -9,12 +12,19 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        \Log::info($event->account->real_name.' was synced');
-//        \Log::info(debug_backtrace());
-//        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
-//        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
-//        \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
-//        \App\Jobs\Mship\SyncToForums::dispatch($event->account);
+        $ran_recently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3/60);
+
+        if ($ran_recently){
+            // Prevent unnecessary executions
+            return;
+        }
+
+        \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
+        \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
+        \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
+        \App\Jobs\Mship\SyncToForums::dispatch($event->account);
+
+        Log::debug($event->account->real_name.' was queued to sync to external services');
     }
 
     /**

@@ -25,7 +25,12 @@ class SyncToCTS implements ShouldQueue
     public function handle()
     {
         $cts_database = config('services.cts.database');
-        $sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first()->id;
+        $sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first();
+        if (!$sso_account_id){
+            return;
+        }
+
+        $sso_account_id = $sso_account_id->id;
 
         // Check user exists in database
 
@@ -47,7 +52,5 @@ class SyncToCTS implements ShouldQueue
         DB::table("{$cts_database}.members")
                     ->where('cid', $this->account->id)
                     ->update($data);
-
-        Log::debug($this->account->real_name.' synced to CTS');
     }
 }

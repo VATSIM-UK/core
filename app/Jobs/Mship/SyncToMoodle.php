@@ -24,6 +24,5 @@ class SyncToMoodle implements ShouldQueue
     public function handle()
     {
         $this->account->syncToMoodle();
-        Log::debug($this->account->real_name.' synced to Moodle');
     }
 }

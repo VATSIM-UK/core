@@ -236,8 +236,7 @@ class Management extends \App\Http\Controllers\BaseController
         $token->consume();
 
         // Mark the email as verified!
-        $token->related->verified_at = \Carbon\Carbon::now();
-        $token->related->save();
+        $token->related->verify();
 
         // Consumed, let's send away!
         if ($this->account) {

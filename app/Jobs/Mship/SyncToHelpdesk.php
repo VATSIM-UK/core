@@ -24,6 +24,5 @@ class SyncToHelpdesk implements ShouldQueue
     public function handle()
     {
         $this->account->syncToHelpdesk();
-        Log::info($this->account->real_name.' synced to Helpdesk');
     }
 }
