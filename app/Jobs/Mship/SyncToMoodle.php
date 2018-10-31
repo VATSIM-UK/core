@@ -22,6 +22,6 @@ class SyncToMoodle implements ShouldQueue
 
     public function handle()
     {
-        $this->account->syncToMoodle();
+        $this->account->syncUserToMoodle();
     }
 }

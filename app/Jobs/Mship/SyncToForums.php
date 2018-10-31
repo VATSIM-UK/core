@@ -22,6 +22,9 @@ class SyncToForums implements ShouldQueue
 
     public function handle()
     {
+        if(!config('services.community.init_file')){
+            return;
+        }
         require_once config('services.community.init_file');
         require_once \IPS\ROOT_PATH.'/system/Member/Member.php';
         require_once \IPS\ROOT_PATH.'/system/Member/Club/Club.php';
