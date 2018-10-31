@@ -7,7 +7,7 @@
             'name' => $faker->words(3, true),
             'reason_text' => $faker->paragraph,
             'period_amount' => $faker->randomDigit,
-            'period_unit' => $faker->randomElement(['M','H','D']),
+            'period_unit' => $faker->randomElement(['M', 'H', 'D']),
             'created_at' => $faker->dateTime(),
             'updated_at' => $faker->dateTime(),
         ];

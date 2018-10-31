@@ -9,7 +9,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SyncToCTS implements ShouldQueue
 {
@@ -26,7 +25,7 @@ class SyncToCTS implements ShouldQueue
     {
         $cts_database = config('services.cts.database');
         $sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first();
-        if (!$sso_account_id){
+        if (!$sso_account_id) {
             return;
         }
 

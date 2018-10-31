@@ -81,7 +81,6 @@ class Email extends Model
         $ssoEmail->sso_account_id = $ssoAccount->getKey();
         $ssoEmail->save();
 
-
         event(new AccountAltered($this->account));
 
         return true;
@@ -102,8 +101,10 @@ class Email extends Model
         return isset($this->attributes['email']) ? $this->attributes['email'] : '';
     }
 
-    public function verify(){
+    public function verify()
+    {
         $this->verified_at = Carbon::now();
+
         return $this->save();
     }
 

@@ -31,7 +31,7 @@ class AccountSyncTest extends TestCase
     /** @test **/
     public function testItTriggersWhenEmailChanged()
     {
-        $this->account->email = "joe@example.org";
+        $this->account->email = 'joe@example.org';
 
         Event::assertDispatched(AccountAltered::class);
     }
@@ -61,7 +61,6 @@ class AccountSyncTest extends TestCase
         $this->account->last_login = Carbon::now();
         $this->account->updated_at = Carbon::now();
         $this->account->save();
-
 
         Event::assertDispatched(AccountAltered::class);
     }
