@@ -22,7 +22,7 @@ class SyncToForums implements ShouldQueue
 
     public function handle()
     {
-        if(!config('services.community.init_file')){
+        if (!config('services.community.init_file')) {
             return;
         }
         require_once config('services.community.init_file');

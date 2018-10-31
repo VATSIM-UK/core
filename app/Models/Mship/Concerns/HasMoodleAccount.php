@@ -13,10 +13,10 @@ trait HasMoodleAccount
 
     public function syncUserToMoodle()
     {
-        if(!config('services.moodle.database')){
+        if (!config('services.moodle.database')) {
             return false;
         }
-        $moodle_account = DB::table(config('services.moodle.database').".mdl_user")
+        $moodle_account = DB::table(config('services.moodle.database').'.mdl_user')
             ->where('idnumber', $this->id)
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
             ->first();
@@ -32,7 +32,7 @@ trait HasMoodleAccount
     {
         if (!isset(self::$sso_account_id)) {
             $moodle_sso_account = DB::table('oauth_clients')->where('name', 'Moodle')->first();
-            if(!$moodle_sso_account){
+            if (!$moodle_sso_account) {
                 return false;
             }
             self::$sso_account_id = $moodle_sso_account->id;
