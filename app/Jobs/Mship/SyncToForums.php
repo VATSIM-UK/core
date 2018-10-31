@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class SyncToForums implements ShouldQueue
 {
@@ -22,7 +23,8 @@ class SyncToForums implements ShouldQueue
 
     public function handle()
     {
-        if (!config('services.community.init_file')) {
+        $community_client = DB::table('oauth_clients')->where('name', 'Community')->first();
+        if (!config('services.community.init_file') || $community_client) {
             return;
         }
         require_once config('services.community.init_file');
@@ -46,7 +48,7 @@ class SyncToForums implements ShouldQueue
 
         // Set data
         $ips_account->name = $this->account->real_name;
-        $ips_account->email = $this->account->getEmailForService(DB::table('oauth_clients')->where('name', 'Community')->first()->id);
+        $ips_account->email = $this->account->getEmailForService($community_client->id);
         $ips_account->member_title = $this->account->primary_state->name;
         $ips_account->temp_ban = ($this->account->is_banned) ? -1 : 0;
         $ips_account->save();
