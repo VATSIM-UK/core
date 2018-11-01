@@ -4,6 +4,7 @@ namespace App\Nova\Actions\Mship;
 
 use App\Models\Mship\Ban\Reason;
 use App\Nova\Account;
+use App\Services\Mship\BanAccount as BanAccountService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -35,7 +36,7 @@ class BanAccount extends Action
             return Action::danger('This Account is already banned');
         }
 
-        $service = new \App\Services\Mship\BanAccount($account, Reason::find($fields->ban_reason), Auth::user(), $fields->toArray());
+        handleService(new BanAccountService($account, Reason::find($fields->ban_reason), Auth::user(), $fields->toArray()));
 
         return Action::message('You have successfully banned this member.');
     }
