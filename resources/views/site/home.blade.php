@@ -32,14 +32,14 @@
             var h = today.getUTCHours();
             var m = today.getUTCMinutes();
             var s = today.getSeconds();
-            if(h<12){
-                h = "0"+m
+            if(h < 10){
+                h = "0" + h
             }
-            if(m<10){
-                m = "0"+m;
+            if(m < 10){
+                m = "0" + m;
             }
-            if(s<10){
-                s = "0"+s;
+            if(s < 10){
+                s = "0" +s;
             }
 
             $("#clock").text(h+":"+m+":"+s+'Z');
