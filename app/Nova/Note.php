@@ -65,7 +65,7 @@ class Note extends Resource
 
             DateTime::make('Created At', 'created_at')->format('DD MMM YYYY, HH:MM::SS'),
 
-            Textarea::make('Content')->onlyOnForms(),
+            Textarea::make('Content'),
         ];
     }
 
