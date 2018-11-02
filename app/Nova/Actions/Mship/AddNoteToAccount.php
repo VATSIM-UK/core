@@ -5,14 +5,12 @@ namespace App\Nova\Actions\Mship;
 use App\Models\Mship\Note\Type;
 use App\Services\Mship\AddNote;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Actions\Action;
-use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Textarea;
 
@@ -20,8 +18,7 @@ class AddNoteToAccount extends Action
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-
-    public $name = "Add Note";
+    public $name = 'Add Note';
 
     /**
      * Perform the action on the given models.
