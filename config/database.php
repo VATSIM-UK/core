@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'core'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +53,13 @@ return [
 
     'connections' => [
 
-        'core' => [
+        'sqlite' => [
+            'driver'   => 'sqlite',
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix'   => '',
+        ],
+
+        'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_MYSQL_HOST', array_get($coreDb, 'host')),
             'port' => env('DB_MYSQL_PORT', array_get($coreDb, 'port')),
@@ -82,21 +88,6 @@ return [
             'strict'      => true,
             'engine'      => null,
         ],
-
-        'cts' => [
-            'driver' => 'mysql',
-            'host' => env('DB_MYSQL_HOST', array_get($herokuDb, 'host')),
-            'port' => env('DB_MYSQL_PORT', array_get($herokuDb, 'port')),
-            'database' => env('CTS_DATABASE'),
-            'username' => env('DB_MYSQL_USER', array_get($herokuDb, 'user')),
-            'password' => env('DB_MYSQL_PASS', array_get($herokuDb, 'pass')),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => env('DB_MYSQL_CHARSET', 'utf8mb4'),
-            'collation' => env('DB_MYSQL_COLLATION', 'utf8mb4_unicode_ci'),
-            'prefix' => env('DB_MYSQL_PREFIX', ''),
-            'strict' => true,
-            'engine' => null,
-          ],
 
         'pgsql' => [
             'driver'   => 'pgsql',
