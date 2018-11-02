@@ -4,7 +4,7 @@
 Route::group([
     'prefix' => 'adm',
     'namespace' => 'Adm',
-    'middleware' => 'auth_full_group',
+    'middleware' => ['auth_full_group', 'admin'],
     'as' => 'adm.',
 ], function () {
 
