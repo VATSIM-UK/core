@@ -6,6 +6,7 @@ comment: false
 coverage:
   status:
     project:
+      default: off
       events_jobs_queues:
         target: 100%
         flags: events_jobs_queues
