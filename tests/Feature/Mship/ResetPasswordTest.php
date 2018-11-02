@@ -20,7 +20,8 @@ class ResetPasswordTest extends TestCase
         $this->actingAs($user, 'vatsim-sso')
             ->get(route('auth-secondary'));
 
-        $this->post(route('password.email'))
+        $this->actingAs($user, 'vatsim-sso')
+            ->post(route('password.email'))
             ->assertRedirect(route('auth-secondary'))
             ->assertSessionHas('status');
     }
