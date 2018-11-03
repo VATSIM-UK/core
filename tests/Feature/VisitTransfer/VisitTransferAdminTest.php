@@ -3,7 +3,7 @@
 namespace Tests\Feature\VisitTransfer;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
@@ -31,7 +31,7 @@ class VisitTransferAdminTest extends TestCase
         $this->application = $this->application->fresh();
 
         $this->user = factory(Account::class)->create();
-        $this->user->roles()->attach(Role::find(1));
+        $this->user->assignRole(Role::findById(1));
     }
 
     /** @test * */

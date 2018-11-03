@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;

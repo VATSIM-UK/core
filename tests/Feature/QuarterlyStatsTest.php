@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -18,7 +18,7 @@ class QuarterlyStatsTest extends TestCase
         parent::setUp();
 
         $this->admin = factory(Account::class)->create();
-        $this->admin->roles()->attach(Role::find(1));
+        $this->admin->assignRole(Role::findById(1));
     }
 
     public function testItLoadsQStats()

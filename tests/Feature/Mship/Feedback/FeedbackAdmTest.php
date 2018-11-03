@@ -6,7 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Permission;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -50,7 +50,7 @@ class FeedbackAdmTest extends TestCase
     /** @test **/
     public function testSuperAdminCanStillSeeOwnFeedback()
     {
-        $this->account->roles()->attach(Role::find(1));
+        $this->account->assignRole(Role::findById(1));
 
         $feedback = factory(Feedback::class)->create([
             'account_id' => $this->account->id,

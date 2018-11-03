@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -30,7 +30,7 @@ class SupermanCommandTest extends TestCase
     /** @test **/
     public function itReportsToConsoleWhenRoleAlreadyFound()
     {
-        $this->account->roles()->attach(Role::find(1));
+        $this->account->assignRole(Role::findById(1));
 
         $this->artisan('grant:superman', ['cid' => $this->account->id])
             ->expectsOutput('The specified account already has the "superman" role.');

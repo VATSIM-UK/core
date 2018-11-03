@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Permission;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -25,7 +25,7 @@ class AdminMiddlewareTest extends TestCase
         $this->otherUser = factory(Account::class)->create();
 
         $this->superUser = factory(Account::class)->create();
-        $this->superUser->roles()->attach(Role::find(1));
+        $this->superUser->assignRole(Role::findById(1));
     }
 
     private function createRoleWithPermissionId(int $permission, $user)

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
+use Spatie\Permission\Models\Role;
 use App\Models\Mship\State;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -20,7 +20,7 @@ class VisitorStatsTest extends TestCase
 
         $this->account = factory(Account::class)->create();
 
-        $this->account->roles()->attach(Role::find(1));
+        $this->account->assignRole(Role::findById(1));
 
         $this->account->addState(State::findByCode('DIVISION'));
     }
