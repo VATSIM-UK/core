@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Models\Role;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
@@ -218,6 +219,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
+        // Add to default role
+        $defaultRole = Role::findById(1, 'vatsim-sso');
+        $model->assignRole($defaultRole);
+
         // Queue the slack email
         $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
