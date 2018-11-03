@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 
 /**
@@ -157,7 +158,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails;
+        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasRoles;
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -443,9 +444,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getSessionTimeoutAttribute()
     {
-        $timeout = $this->roles->filter(function ($role) {
-            return $role->hasSessionTimeout();
-        })->pluck('session_timeout')->min();
+        $timeout = $this->roles()
+                        ->orderBy('session_timeout', 'DESC')
+                        ->first()
+                        ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
     }
