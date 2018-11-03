@@ -13,7 +13,7 @@ use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Models\Mship\Role as RoleData;
+use Spatie\Permission\Models\Role as RoleData;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
