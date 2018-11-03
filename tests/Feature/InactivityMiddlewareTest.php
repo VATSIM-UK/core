@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class InactivityMiddlewareTest extends TestCase

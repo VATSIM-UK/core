@@ -4,9 +4,9 @@ namespace Tests\Unit;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use Spatie\Permission\Models\Role;
 use App\Notifications\Mship\EmailVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
