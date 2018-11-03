@@ -38,6 +38,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Gate::before(function ($user, $ability) {
+            if ($user->hasRole('privacc')) {
+                return true;
+            }
+        });
+
         Passport::routes(function ($router) {
             $router->forAuthorization();
             $router->forAccessTokens();
