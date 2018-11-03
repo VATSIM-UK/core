@@ -55,12 +55,12 @@
                             <td><span class="{{ $p->roles->isEmpty() ?: 'btn-link' }}" data-toggle="popover" data-trigger="hover" data-html="true" data-content="@foreach($p->roles as $role){{$role->name}}<br> @endforeach">{{ $p->roles->count() }}</span></td>
                             <td>{{ $p->updated_at->toDateTimeString() }}</td>
                             <td>
-                                @if($_account->hasPermissionTo("adm/mship/permission/*/update"))
+                                @can('use_permission', "adm/mship/permission/*/update"))
                                     {!! link_to_route("adm.mship.permission.update", "Edit", [$p->id], ["class" => "btn btn-xs btn-primary"]) !!}
-                                @endif
-                                @if($_account->hasPermissionTo("adm/mship/permission/*/delete"))
+                                @endcan
+                                @can('use_permission', "adm/mship/permission/*/delete"))
                                     {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.permission.delete", [$p->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
-                                @endif
+                                @endcan
                             </td>
                         </tr>
                         @endforeach

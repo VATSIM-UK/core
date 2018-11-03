@@ -1,4 +1,4 @@
-@if($_account->hasChildPermission("adm/system"))
+@can('use_permission', "adm/system")
     <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-gear-b"></i> <span>System</span>
@@ -23,4 +23,4 @@
             </li>
         </ul>
     </li>
-@endif
+@endcan

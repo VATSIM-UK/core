@@ -1,30 +1,30 @@
-@if($_account->hasChildPermission("adm/mship"))
+@can('use_permission', "adm/mship")
     <li class="treeview {{ ((\Request::is('adm/mship*') && !\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-person-stalker"></i> <span>Membership</span>
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            @if($_account->hasChildPermission("adm/mship/account"))
+            @can('use_permission', "adm/mship/account")
                 <li {!! (\Request::is('adm/mship/account*') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.mship.account.index") }}"><i
                                 class="fa fa-angle-double-right"></i> Accounts List</a>
                 </li>
-            @endif
-            @if($_account->hasChildPermission("adm/mship/account/*/bans"))
+            @endcan
+            @can('use_permission', "adm/mship/account/*/bans")
                 <li {!! (\Request::is('adm/mship/bans*') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.mship.ban.index") }}"><i
                                 class="fa fa-angle-double-right"></i> Bans List</a>
                 </li>
-            @endif
-            @if($_account->hasChildPermission("adm/mship/staff"))
+            @endcan
+            @can('use_permission', "adm/mship/staff")
                 <li {!! (\Request::is('adm/mship/staff*') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.mship.staff.index") }}"><i
                                 class="fa fa-angle-double-right"></i> Staff List / Layout</a>
                 </li>
-            @endif
+            @endcan
 
-            @if($_account->hasChildPermission("adm/mship/permission") || $_account->hasChildPermission("adm/mship/role"))
+            @can('use_permission', "adm/mship/role")
                 <li class="treeview {{ ((\Request::is('adm/mship/permission*') || \Request::is('adm/mship/role*')) ? 'active' : '') }}">
                     <a href="#">
                         <i class="ion ion-email"></i> <span>Roles &amp; Permissions</span>
@@ -41,9 +41,9 @@
                         </li>
                     </ul>
                 </li>
-            @endif
+            @endcan
 
-            @if($_account->hasChildPermission("adm/mship/note"))
+            @can('use_permission', "adm/mship/note")
                 <li class="treeview {{ (\Request::is('adm/mship/note*') ? 'active' : '') }}">
                     <a href="#">
                         <i class="ion ion-email"></i> <span>Note Config</span>
@@ -57,8 +57,8 @@
                         </li>
                     </ul>
                 </li>
-            @endif
+            @endcan
 
         </ul>
     </li>
-@endif
+@endcan

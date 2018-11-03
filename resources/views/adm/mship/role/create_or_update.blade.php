@@ -22,7 +22,7 @@
                         {!! Form::text("name", null, ["class" => "form-control"]) !!}
                     </div>
 
-                    @if($_account->hasPermissionTo("adm/mship/role/default"))
+                    @can('use_permission', "adm/mship/role/default"))
                         <div class="form-group">
                             {!! Form::label("default", "Default?") !!}
 
@@ -40,7 +40,7 @@
                                 </label>
                             </div>
                         </div>
-                    @endif
+                    @endcan
 
                     <div class="form-group">
                         <label for="mandatoryPassword" class="control-label">Mandatory Password</label>
@@ -68,7 +68,7 @@
                         <input type="number" class="form-control" id="sessionTimeout" name="session_timeout" value="{{ isset($role) ? $role->session_timeout : '' }}">
                     </div>
 
-                    @if($_account->hasPermissionTo("adm/mship/permission/attach"))
+                    @can('use_permission', "adm/mship/permission/attach"))
                         <div class="form-group">
                             {!! Form::label("permissions[]", "Permissions") !!}
                             <ul class="list-unstyled" style="column-count: 3;">
@@ -84,7 +84,7 @@
                                 @endforeach
                             </ul>
                         </div>
-                    @endif
+                    @endcan
 
                     <div class="btn-toolbar">
                         <div class="btn-group pull-right">

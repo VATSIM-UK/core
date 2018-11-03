@@ -32,7 +32,7 @@
                                 {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
                             </div>
                         @endif
-                        @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/reporter'))
+                        @if (\Auth::user()->hasPermissionTo('adm/mship/feedback/view/*/reporter'))
                             <div class="col-md-12">
                                 <b>Submitter:</b></br>
                                 <span id="hidden-submitter-preamble">
@@ -74,7 +74,7 @@
                             <b>Marked actioned by:</b></br>
                             {{ $feedback->actioner->real_name }}
                         </div>
-                        @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/unaction') && !$feedback->sent_at)
+                        @if (\Auth::user()->hasPermissionTo('adm/mship/feedback/view/*/unaction') && !$feedback->sent_at)
                             <div class="col-lg-4 col-md-6">
                                 <a href="{{route('adm.mship.feedback.unaction', [$feedback->id])}}">{{ Form::button('Unmark as Actioned', ['class' => 'btn btn-block btn-danger', 'style' => 'font-size: 9pt;']) }}</a>
                             </div>
@@ -84,7 +84,7 @@
                             {{ $feedback->actioned_comment }}
                         </div>
                     @else
-                        @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/action'))
+                        @if (\Auth::user()->hasPermissionTo('adm/mship/feedback/view/*/action'))
                             {{ Form::open(['route' => ['adm.mship.feedback.action', $feedback->id]]) }}
                             <div class="col-md-9">
                                 <p>
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    @if (\Auth::user()->hasChildPermission('adm/mship/feedback/view/*/send'))
+    @if (\Auth::user()->hasPermissionTo('adm/mship/feedback/view/*/send'))
 
         <div class="row">
             <div class="col-md-6 col-md-offset-3">

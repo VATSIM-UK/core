@@ -1,4 +1,4 @@
-@if($_account->hasPermissionTo("adm/atc"))
+@can('use_permission', "adm/atc")
     <li class="treeview {{ ((\Request::is('adm/atc*')) ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-radio-waves"></i> <span>ATC</span>
@@ -6,15 +6,15 @@
         </a>
         <ul class="treeview-menu">
 
-            @if($_account->hasPermissionTo("adm/atc/endorsement"))
+            @can('use_permission', "adm/atc/endorsement")
                 <li {!! (\Request::is('adm/atc/endorsement*') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.atc.endorsement.index") }}">
                         <i class="ion ion-document-text"></i>
                         <span>Endorsements</span>
                     </a>
                 </li>
-            @endif
+            @endcan
 
         </ul>
     </li>
-@endif
+@endcan
