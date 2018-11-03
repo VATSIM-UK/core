@@ -58,19 +58,15 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Fak
     ]);
 });
 
-$factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker) {
+$factory->define(\Spatie\Permission\Models\Role::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
-        'session_timeout' => $faker->numberBetween(100, 1000),
-        'password_mandatory' => false,
-        'password_lifetime' => 0,
     ];
 });
 
-$factory->define(App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
+$factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
-        'display_name' => $faker->sentence,
     ];
 });
 

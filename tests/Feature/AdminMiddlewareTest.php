@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Permission;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -25,20 +25,20 @@ class AdminMiddlewareTest extends TestCase
         $this->otherUser = factory(Account::class)->create();
 
         $this->superUser = factory(Account::class)->create();
-        $this->superUser->assignRole(Role::findById(1));
+        $this->superUser->assignRole(Role::findById(1, 'vatsim-sso'));
     }
 
-    private function createRoleWithPermissionId(int $permission, $user)
+    private function createRoleWithPermissionName(string $permission, Account $user)
     {
         $role = factory(Role::class)->create();
-        $role->permissions()->attach(Permission::find($permission));
-        $user->roles()->attach($role);
+        $role->givePermissionTo(Permission::findByName($permission, 'vatsim-sso'));
+        $user->assignRole($role);
     }
 
     /** @test * */
     public function testAUserWithPermissionCanAccessAnExplicitEndPoint()
     {
-        $this->createRoleWithPermissionId(2, $this->user); // GET adm/dashboard
+        $this->createRoleWithPermissionName('adm/dashboard', $this->user); // GET adm/dashboard
 
         $this->actingAs($this->user, 'web')->get(route('adm.dashboard'))->assertSuccessful();
         $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
