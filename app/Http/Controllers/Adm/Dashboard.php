@@ -18,7 +18,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
         parent::__construct();
 
         $this->middleware(function ($request, $next) {
-            if (!$this->account->hasPermission('adm/dashboard')) {
+            if (!$this->account->hasPermissionTo('adm/dashboard')) {
                 return redirect($this->redirectPath());
             }
 

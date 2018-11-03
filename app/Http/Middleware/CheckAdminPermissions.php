@@ -23,7 +23,7 @@ class CheckAdminPermissions
             return $next($request);
         }
 
-        if (!$request->user()->hasPermission($request->decodedPath())) {
+        if (!$request->user()->hasPermissionTo($request->decodedPath())) {
             abort(403);
         }
 

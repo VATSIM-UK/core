@@ -103,7 +103,7 @@ class Account extends AdmController
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && !$this->account->hasPermission('adm/mship/account/own')) {
+        if ($this->account->id == $account->id && !$this->account->hasPermissionTo('adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }
@@ -332,7 +332,7 @@ class Account extends AdmController
 
     public function getBans(\Illuminate\Http\Request $request)
     {
-        if (!$request->user()->hasPermission('adm/mship/account/*/bans')) {
+        if (!$request->user()->hasPermissionTo('adm/mship/account/*/bans')) {
             throw new AuthorizationException();
         }
 

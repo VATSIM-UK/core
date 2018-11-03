@@ -20,13 +20,13 @@
                             <th>Ends</th>
                             <th>Type</th>
                             <th>Status</th>
-                            @if($_account->hasPermission('adm/mship/account/*/note/create'))
+                            @if($_account->hasPermissionTo('adm/mship/account/*/note/create'))
                                 <th>Note</th>
                             @endif
-                            @if($_account->hasPermission('adm/mship/ban/*/modify'))
+                            @if($_account->hasPermissionTo('adm/mship/ban/*/modify'))
                                 <th>Modify</th>
                             @endif
-                            @if($_account->hasPermission('adm/mship/ban/*/repeal'))
+                            @if($_account->hasPermissionTo('adm/mship/ban/*/repeal'))
                                 <th>Repeal</th>
                             @endif
                         </tr>
@@ -69,7 +69,7 @@
                                         Unknown
                                     @endif
                                 </td>
-                                @if($_account->hasPermission('adm/mship/account/'.$b->account->id.'/note/create'))
+                                @if($_account->hasPermissionTo('adm/mship/account/'.$b->account->id.'/note/create'))
                                     <td>
                                         <div class="btn-group">
                                             @if(!$b->is_repealed)
@@ -80,7 +80,7 @@
                                         </div>
                                     </td>
                                 @endif
-                                @if($_account->hasPermission('adm/mship/ban/'.$b->id.'/modify'))
+                                @if($_account->hasPermissionTo('adm/mship/ban/'.$b->id.'/modify'))
                                     <td>
                                         <div class="btn-group">
                                             @if($b->is_active)
@@ -91,7 +91,7 @@
                                         </div>
                                     </td>
                                 @endif
-                                @if($_account->hasPermission('adm/mship/ban/'.$b->id.'/repeal'))
+                                @if($_account->hasPermissionTo('adm/mship/ban/'.$b->id.'/repeal'))
                                     <td>
                                         <div class="'btn-group">
                                             @if(!$b->is_repealed)

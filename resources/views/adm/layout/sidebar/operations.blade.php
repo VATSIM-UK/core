@@ -1,4 +1,4 @@
-@if($_account->hasPermission("adm/ops"))
+@if($_account->hasPermissionTo("adm/ops"))
     <li class="treeview {{ ((\Request::is('adm/ops*')) ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-gear-b"></i> <span>Operations</span>
@@ -6,7 +6,7 @@
         </a>
         <ul class="treeview-menu">
 
-            @if($_account->hasPermission("adm/ops/qstats"))
+            @if($_account->hasPermissionTo("adm/ops/qstats"))
                 <li {!! (\Request::is('adm/atc/qstats*') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.ops.qstats.index") }}">
                         <i class="ion ion-document-text"></i>

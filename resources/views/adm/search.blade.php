@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{!! link_to_route("adm.mship.account.details", $m->id, [$m->id]) !!}</td>
                                 <td>{{ $m->name }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
+                                <td>{{ $_account->hasPermissionTo("adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
                                 <td>{{ $m->qualification_pilot }}</td>
                                 <td>{{ $m->primary_state->name }}</td>
@@ -73,7 +73,7 @@
                             <tr>
                                 <td>{!! link_to_route('adm.mship.account.details', $e->id, [$e->id]) !!}</td>
                                 <td>{{ $e->account->name }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/email/view") ? $e->email : "[ No Permission ]" }}</td>
+                                <td>{{ $_account->hasPermissionTo("adm/mship/account/email/view") ? $e->email : "[ No Permission ]" }}</td>
                                 <td>{{ $e->created_at }}</td>
                                 <td>{{ $e->verified_at }}</td>
                                 <td>{{ $e->deleted_at ? $e->deleted_at : "Not Deleted" }}</td>

@@ -36,7 +36,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.permission.create')->withErrors($permission->errors());
         }
 
-        if (count(Input::get('roles')) > 0 && $this->account->hasPermission('adm/mship/permission/attach')) {
+        if (count(Input::get('roles')) > 0 && $this->account->hasPermissionTo('adm/mship/permission/attach')) {
             $permission->attachRoles(Input::get('roles'));
         }
 
@@ -71,7 +71,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.permission.update')->withErrors($permission->errors());
         }
 
-        if ($this->account->hasPermission('adm/mship/permission/attach')) {
+        if ($this->account->hasPermissionTo('adm/mship/permission/attach')) {
             // Detatch permissions!
             foreach ($permission->roles as $r) {
                 if (!in_array($r->id, Input::get('roles', []))) {

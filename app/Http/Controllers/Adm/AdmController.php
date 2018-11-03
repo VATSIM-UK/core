@@ -42,8 +42,8 @@ class AdmController extends \App\Http\Controllers\BaseController
             $forms = Form::orderBy('id', 'asc')->get(['id']);
 
             return $forms->transform(function ($form, $key) use ($_account) {
-                $hasWildcard = $_account->hasPermission('adm/mship/feedback/list/*') || $_account->hasPermission('adm/mship/feedback/configure/*');
-                $hasSpecific = $_account->hasPermission('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermission('adm/mship/feedback/configure/'.$form->slug);
+                $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
+                $hasSpecific = $_account->hasPermissionTo('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermissionTo('adm/mship/feedback/configure/'.$form->slug);
 
                 if ($hasWildcard || $hasSpecific) {
                     return $form->feedback()->unActioned()->count();

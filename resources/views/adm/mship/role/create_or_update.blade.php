@@ -22,7 +22,7 @@
                         {!! Form::text("name", null, ["class" => "form-control"]) !!}
                     </div>
 
-                    @if($_account->hasPermission("adm/mship/role/default"))
+                    @if($_account->hasPermissionTo("adm/mship/role/default"))
                         <div class="form-group">
                             {!! Form::label("default", "Default?") !!}
 
@@ -68,14 +68,14 @@
                         <input type="number" class="form-control" id="sessionTimeout" name="session_timeout" value="{{ isset($role) ? $role->session_timeout : '' }}">
                     </div>
 
-                    @if($_account->hasPermission("adm/mship/permission/attach"))
+                    @if($_account->hasPermissionTo("adm/mship/permission/attach"))
                         <div class="form-group">
                             {!! Form::label("permissions[]", "Permissions") !!}
                             <ul class="list-unstyled" style="column-count: 3;">
                                 @foreach($permissions as $p)
                                     <li style="display: table;">
                                         @if(isset($role))
-                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, ($role->hasPermission($p) OR Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
+                                            {!! Form::checkbox("permissions[".$p->id."]", $p->id, ($role->hasPermissionTo($p) OR Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @else
                                             {!! Form::checkbox("permissions[".$p->id."]", $p->id, (Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @endif

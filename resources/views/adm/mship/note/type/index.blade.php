@@ -59,10 +59,10 @@
                             <td>{!! ($t->is_available ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
                             <td>{!! ($t->is_system ? '<span class="label label-success">YES</span>' : '<span class="label label-danger">NO</span>') !!}</td>
                             <td>
-                                @if($_account->hasPermission("adm/mship/note/type/*/update"))
+                                @if($_account->hasPermissionTo("adm/mship/note/type/*/update"))
                                     {!! link_to_route("adm.mship.note.type.update", "Edit", [$t->id], ["class" => "btn btn-xs btn-primary"]) !!}
                                 @endif
-                                @if($_account->hasPermission("adm/mship/note/type/*/delete"))
+                                @if($_account->hasPermissionTo("adm/mship/note/type/*/delete"))
                                     {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.note.type.delete", [$t->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                 @endif
                             </td>

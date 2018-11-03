@@ -84,8 +84,8 @@ class MshipRoleTest extends TestCase
             'permission_id' => $permission->id,
         ]);
 
-        $this->assertTrue($role->fresh()->hasPermission($permission));
-        $this->assertTrue($role->fresh()->hasPermission($permission->name));
+        $this->assertTrue($role->fresh()->hasPermissionTo($permission));
+        $this->assertTrue($role->fresh()->hasPermissionTo($permission->name));
     }
 
     /** @test */
@@ -107,10 +107,10 @@ class MshipRoleTest extends TestCase
             'permission_id' => $permissionB->id,
         ]);
 
-        $this->assertTrue($role->fresh()->hasPermission($permissionA));
-        $this->assertTrue($role->fresh()->hasPermission($permissionA->name));
-        $this->assertFalse($role->fresh()->hasPermission($permissionB));
-        $this->assertFalse($role->fresh()->hasPermission($permissionB->name));
+        $this->assertTrue($role->fresh()->hasPermissionTo($permissionA));
+        $this->assertTrue($role->fresh()->hasPermissionTo($permissionA->name));
+        $this->assertFalse($role->fresh()->hasPermissionTo($permissionB));
+        $this->assertFalse($role->fresh()->hasPermissionTo($permissionB->name));
     }
 
     /** @test */
@@ -121,7 +121,7 @@ class MshipRoleTest extends TestCase
 
         $role->attachPermission($permission);
 
-        $this->assertTrue($role->fresh()->hasPermission('adm/visittransfer/dashboard'));
+        $this->assertTrue($role->fresh()->hasPermissionTo('adm/visittransfer/dashboard'));
     }
 
     /** @test */
@@ -134,8 +134,8 @@ class MshipRoleTest extends TestCase
 
         $role->attachPermission($permissionA);
 
-        $this->assertTrue($role->fresh()->hasPermission('adm/visittransfer/dashboard'));
-        $this->assertFalse($role->fresh()->hasPermission('adm/visittransfer/elsewhere'));
-        $this->assertFalse($role->fresh()->hasPermission('teamspeak/server-admin'));
+        $this->assertTrue($role->fresh()->hasPermissionTo('adm/visittransfer/dashboard'));
+        $this->assertFalse($role->fresh()->hasPermissionTo('adm/visittransfer/elsewhere'));
+        $this->assertFalse($role->fresh()->hasPermissionTo('teamspeak/server-admin'));
     }
 }

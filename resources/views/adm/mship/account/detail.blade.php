@@ -10,25 +10,25 @@
             <div class="box-body">
                 <ul class="nav nav-tabs" role="tablist">
                     <li {{ $selectedTab == "basic" ? "class='active'" : "" }}><a href="#basic" role="tab" data-toggle="tab">Basic Details</a></li>
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles"))
                         <li {!! $selectedTab == "roles" ? "class='active'" : "" !!}><a href="#role" role="tab" data-toggle="tab">Roles</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/feedback"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/feedback"))
                         <li {!! $selectedTab == "feedback" ? "class='active'" : "" !!}><a href="#feedback" role="tab" data-toggle="tab">Feedback</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/visit-transfer/application/*"))
+                    @if($_account->hasPermissionTo("adm/visit-transfer/application/*"))
                         <li {!! $selectedTab == "vtapps" ? "class='active'" : "" !!}><a href="#vtapps" role="tab" data-toggle="tab">V/T Applications</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/bans"))
                         <li {!! $selectedTab == "bans" ? "class='active'" : "" !!}><a href="#bans" role="tab" data-toggle="tab">Bans</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/notes"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/notes"))
                         <li {!! $selectedTab == "notes" ? "class='active'" : "" !!}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/flags"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/flags"))
                         <li {!! $selectedTab == "flags" ? "class='active'" : "" !!}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
                     @endif
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/datachanges"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/datachanges"))
                         <li {!! $selectedTab == "datachanges" ? "class='active'" : "" !!}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
                     @endif
                 </ul>
@@ -40,7 +40,7 @@
                         <div class="col-md-12">
                             <div class="btn-toolbar">
                                 <div class="btn-group pull-right">
-                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/impersonate"))
+                                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/impersonate"))
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
                                     @endif
                                 </div>
@@ -64,7 +64,7 @@
                                         <label for="name">Name:</label>
                                         {{ $account->name }}
                                     </div>
-                                    @if($_account->hasPermission("adm/mship/account/email/view"))
+                                    @if($_account->hasPermissionTo("adm/mship/account/email/view"))
                                         <div class="form-group">
                                             <label for="primary_email">Primary Email:</label>
                                             {{ $account->email }}
@@ -148,7 +148,7 @@
                         </div>
                     </div>
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/impersonate"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/impersonate"))
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
                             {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
@@ -184,7 +184,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles"))
                         <div class="tab-pane fade {{ $selectedTab == "roles" ? "in active" : "" }}" id="role">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -196,7 +196,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/attach"))
+                                                @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles/attach"))
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRoleAttach">Add / Attach</button>
                                                 @endif
                                             </div>
@@ -211,7 +211,7 @@
                                                     <th>Name</th>
                                                     <th># Permissions</th>
                                                     <th>Added</th>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/".$account->id."/detach"))
+                                                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles/".$account->id."/detach"))
                                                         <th>Delete</th>
                                                     @endif
                                                 </tr>
@@ -223,7 +223,7 @@
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/".$r->id."/detach"))
+                                                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles/".$r->id."/detach"))
                                                         <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endif
                                                 </tr>
@@ -235,7 +235,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/feedback"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/feedback"))
                         <div class="tab-pane fade {{ $selectedTab == "feedback" ? "in active" : "" }}" id="feedback">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -275,7 +275,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/visit-transfer/application/*"))
+                    @if($_account->hasPermissionTo("adm/visit-transfer/application/*"))
                         <div class="tab-pane fade {{ $selectedTab == "vtapps" ? "in active" : "" }}" id="vtapps">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -320,7 +320,7 @@
                     @endif
 
                     <!-- Modals -->
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/roles/attach"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/roles/attach"))
                         <div class="modal fade" id="modalRoleAttach" tabindex="-1" role="dialog" aria-labelledby="Role Attach" aria-hidden="true">
                             {!! Form::open(["url" => URL::route("adm.mship.account.role.attach", $account->id)]) !!}
                             <div class="modal-dialog">
@@ -355,7 +355,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/bans"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/bans"))
                         <div class="tab-pane fade {{ $selectedTab == "bans" ? "in active" : "" }}" id="bans">
                             <div class="col-md-12">
                                 <!-- general form elements -->
@@ -367,7 +367,7 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/ban/add") && !$account->is_banned)
+                                                @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/ban/add") && !$account->is_banned)
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBanAdd">Add Ban</button>
                                                 @endif
                                             </div>
@@ -375,7 +375,7 @@
 
                                         <div class="clearfix">&nbsp;</div>
 
-                                        @if($_account->hasPermission("adm/mship/account/".$account->id."/ban/view"))
+                                        @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/ban/view"))
                                             @foreach($account->bans as $ban)
                                                 @include("adm.mship.account._ban", ["ban" => $ban, "selectedTab" => $selectedTab, "selectedTabId" => $selectedTabId])
                                             @endforeach
@@ -428,7 +428,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/notes"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/notes"))
                         <div class="tab-pane fade {{ $selectedTab == "notes" ? "in active" : "" }}" id="notes">
                             <div class="col-md-12">
                                 <!-- general form elements -->
@@ -440,11 +440,11 @@
 
                                         <div class="btn-toolbar">
                                             <div class="btn-group pull-right">
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/note/filter"))
+                                                @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/note/filter"))
                                                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalNoteFilter">Change Filter</button>
                                                 @endif
 
-                                                @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create"))
+                                                @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/note/create"))
                                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalNoteCreate">Add Note</button>
                                                 @endif
                                             </div>
@@ -452,7 +452,7 @@
 
                                         <div class="clearfix">&nbsp;</div>
 
-                                        @if($_account->hasPermission("adm/mship/account/".$account->id."/note/view"))
+                                        @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/note/view"))
 
                                             @foreach($account->notes as $note)
                                                 @if((array_key_exists($note->id, Input::get("filter", [])) && count(Input::get("filter", [])) > 0) OR count(Input::get("filter", [])) < 1)
@@ -496,7 +496,7 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/note/create"))
                         <div class="modal fade" id="modalNoteCreate" tabindex="-1" role="dialog" aria-labelledby="Create Note" aria-hidden="true">
                             {!! Form::open(array("url" => URL::route("adm.mship.account.note.create", $account->id))) !!}
                             <div class="modal-dialog">
@@ -535,11 +535,11 @@
                         </div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/flags"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/flags"))
                         <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
                     @endif
 
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/datachanges"))
+                    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/datachanges"))
                         <div class="tab-pane fade {{ $selectedTab == "datachanges" ? "in active" : "" }}" id="datachanges">
                             <!-- general form elements -->
                             <div class="box box-primary">
@@ -560,8 +560,8 @@
                                             @foreach($account->dataChanges as $dc)
                                             <tr>
                                                 <td>{{ $dc->data_key }}</td>
-                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
-                                                <td>{{ $_account->hasPermission("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
+                                                <td>{{ $_account->hasPermissionTo("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
+                                                <td>{{ $_account->hasPermissionTo("adm/mship/account/".$account->id."/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
                                                 <td>{{ $dc->created_at }}</td>
                                             </tr>
                                             @endforeach
@@ -578,7 +578,7 @@
             </div>
         </div>
     </div>
-    @if($_account->hasPermission("adm/mship/account/".$account->id."/timeline"))
+    @if($_account->hasPermissionTo("adm/mship/account/".$account->id."/timeline"))
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">

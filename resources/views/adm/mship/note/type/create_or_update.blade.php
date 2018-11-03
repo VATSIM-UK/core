@@ -56,7 +56,7 @@
                         </div>
                     </div>
 
-                @if($_account->hasPermission("adm/mship/note/type/default"))
+                @if($_account->hasPermissionTo("adm/mship/note/type/default"))
                     <div class="form-group">
                         {!! Form::label("is_default", "Default?") !!}
 

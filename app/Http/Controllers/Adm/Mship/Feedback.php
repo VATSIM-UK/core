@@ -21,8 +21,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $forms = Form::orderBy('id', 'asc')->get();
         $_account = $this->account;
         $forms = $forms->filter(function ($form, $key) use ($_account) {
-            $hasWildcard = $_account->hasPermission('adm/mship/feedback/list/*') || $_account->hasPermission('adm/mship/feedback/configure/*');
-            $hasSpecific = $_account->hasPermission('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermission('adm/mship/feedback/configure/'.$form->slug);
+            $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
+            $hasSpecific = $_account->hasPermissionTo('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermissionTo('adm/mship/feedback/configure/'.$form->slug);
 
             return $hasWildcard || $hasSpecific;
         })->all();
@@ -241,7 +241,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedback($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
+        if (!$this->account->hasPermissionTo('adm/mship/feedback/list/*') && !$this->account->hasPermissionTo('adm/mship/feedback/list/'.$slug)) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -255,7 +255,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedbackExport($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
+        if (!$this->account->hasPermissionTo('adm/mship/feedback/list/*') && !$this->account->hasPermissionTo('adm/mship/feedback/list/'.$slug)) {
             abort(403, 'Unauthorized action.');
         }
         $form = Form::whereSlug($slug)->firstOrFail();
@@ -357,8 +357,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getViewFeedback(FeedbackModel $feedback)
     {
         $targeted = $feedback->form->targeted;
-        if ($this->account->hasPermission('adm/mship/feedback/list/*') || $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug)) {
-            if ($this->account->id == $feedback->account_id && !$this->account->hasPermission('adm/mship/feedback/view/own/')) {
+        if ($this->account->hasPermissionTo('adm/mship/feedback/list/*') || $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug)) {
+            if ($this->account->id == $feedback->account_id && !$this->account->hasPermissionTo('adm/mship/feedback/view/own/')) {
                 return Redirect::route('adm.mship.feedback.all')->withError('You cannot view your own feedback');
             }
 
@@ -373,7 +373,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
+        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {
             if ($condition) {
@@ -391,7 +391,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $conditions = [];
         $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
+        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {
             if ($condition) {

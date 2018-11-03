@@ -31,7 +31,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
     public function postCreate()
     {
         // Let's create!
-        if (!$this->account->hasPermission('adm/mship/role/default')) {
+        if (!$this->account->hasPermissionTo('adm/mship/role/default')) {
             $data = Input::except('default');
         } else {
             $data = Input::all();
@@ -41,7 +41,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.role.create')->withErrors($role->errors());
         }
 
-        if (count(Input::get('permissions')) > 0 && $this->account->hasPermission('adm/mship/permission/attach')) {
+        if (count(Input::get('permissions')) > 0 && $this->account->hasPermissionTo('adm/mship/permission/attach')) {
             $role->attachPermissions(Input::get('permissions'));
         }
 
@@ -71,7 +71,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         $role->load('permissions');
 
         // Let's create!
-        if (!$this->account->hasPermission('adm/mship/role/default')) {
+        if (!$this->account->hasPermissionTo('adm/mship/role/default')) {
             $data = Input::except('default');
         } else {
             $data = Input::all();
@@ -81,7 +81,7 @@ class Role extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.role.update')->withErrors($role->errors());
         }
 
-        if ($this->account->hasPermission('adm/mship/permission/attach')) {
+        if ($this->account->hasPermissionTo('adm/mship/permission/attach')) {
             // Detatch permissions!
             foreach ($role->permissions as $p) {
                 if (!in_array($p->id, Input::get('permissions', []))) {
