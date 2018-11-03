@@ -25,13 +25,13 @@ class AdminMiddlewareTest extends TestCase
         $this->otherUser = factory(Account::class)->create();
 
         $this->superUser = factory(Account::class)->create();
-        $this->superUser->assignRole(Role::findById(1, 'vatsim-sso'));
+        $this->superUser->assignRole(Role::findById(1));
     }
 
     private function createRoleWithPermissionName(string $permission, Account $user)
     {
         $role = factory(Role::class)->create();
-        $role->givePermissionTo(Permission::findByName($permission, 'vatsim-sso'));
+        $role->givePermissionTo(Permission::findByName($permission));
         $user->assignRole($role);
     }
 
