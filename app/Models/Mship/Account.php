@@ -170,6 +170,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     protected $table = 'mship_account';
+    protected $guard_name = ['web'];
     public $incrementing = false;
     protected $dates = [
         'last_login',
@@ -220,7 +221,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public static function eventCreated($model, $extra = null, $data = null)
     {
         // Add to default role
-        $defaultRole = Role::findById(1, 'vatsim-sso');
+        $defaultRole = Role::findById(1, 'web');
         $model->assignRole($defaultRole);
 
         // Queue the slack email

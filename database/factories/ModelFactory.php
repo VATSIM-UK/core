@@ -61,12 +61,14 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Fak
 $factory->define(\Spatie\Permission\Models\Role::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
+        'guard_name' => 'web',
     ];
 });
 
 $factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
+        'guard_name' => 'web',
     ];
 });
 
