@@ -114,7 +114,7 @@ trait HasPassword
                     ->get()
                     ->filter(function ($value) {
                         return $value->password_mandatory;
-                        })
+                    })
                     ->isEmpty();
     }
 
