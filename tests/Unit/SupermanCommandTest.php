@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class SupermanCommandTest extends TestCase

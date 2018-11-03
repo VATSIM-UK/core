@@ -6,8 +6,8 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
 use App\Models\Mship\Permission;
-use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class FeedbackAdmTest extends TestCase

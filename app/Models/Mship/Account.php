@@ -29,8 +29,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Models\Role;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 

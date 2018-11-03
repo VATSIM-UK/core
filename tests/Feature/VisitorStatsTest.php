@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use App\Models\Mship\State;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class VisitorStatsTest extends TestCase
