@@ -22,9 +22,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $_account = $this->account;
         $forms = $forms->filter(function ($form, $key) use ($_account) {
             $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
-            $hasSpecific = $_account->hasPermissionTo('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermissionTo('adm/mship/feedback/configure/'.$form->slug);
 
-            return $hasWildcard || $hasSpecific;
+            return $hasWildcard;
         })->all();
 
         return $this->viewMake('adm.mship.feedback.forms')
