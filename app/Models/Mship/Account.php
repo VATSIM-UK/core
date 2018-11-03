@@ -221,7 +221,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public static function eventCreated($model, $extra = null, $data = null)
     {
         // Add to default role
-        $defaultRole = Role::findById(1, 'web');
+        $defaultRole = Role::findByName('member', 'web');
         $model->assignRole($defaultRole);
 
         // Queue the slack email
