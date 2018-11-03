@@ -112,9 +112,9 @@ trait HasPassword
     {
         return $this->roles()
                     ->get()
-                    ->filter(function ($value) {
+                    ->reject(function ($value) {
                         return $value->password_mandatory;
-                        })
+                    })
                     ->isEmpty();
     }
 
