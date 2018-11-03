@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Spatie\Permission\Models\Permission;
 
 class CheckAdminPermissions
 {
@@ -23,7 +24,7 @@ class CheckAdminPermissions
             return $next($request);
         }
 
-        if (!$request->user()->hasPermissionTo($request->decodedPath())) {
+        if (!$request->user()->getAllPermissions()->contains(Permission::findByName($request->decodedPath()))) {
             abort(403);
         }
 
