@@ -43,9 +43,8 @@ class AdmController extends \App\Http\Controllers\BaseController
 
             return $forms->transform(function ($form, $key) use ($_account) {
                 $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
-                $hasSpecific = $_account->hasPermissionTo('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermissionTo('adm/mship/feedback/configure/'.$form->slug);
 
-                if ($hasWildcard || $hasSpecific) {
+                if ($hasWildcard) {
                     return $form->feedback()->unActioned()->count();
                 }
 

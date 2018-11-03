@@ -372,7 +372,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
         $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
+        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list') || $this->account->hasPermissionTo('adm/mship/feedback/list/*');
         $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {
@@ -390,7 +390,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getUnActioned(FeedbackModel $feedback)
     {
         $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
+        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list') || $this->account->hasPermissionTo('adm/mship/feedback/list/*');
         $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
 
         foreach ($conditions as $condition) {

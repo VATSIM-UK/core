@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Permission;
 
 class CheckAdminPermissions
@@ -24,8 +25,10 @@ class CheckAdminPermissions
             return $next($request);
         }
 
-        $globalPermission = $request->user()->getAllPermissions()->contains(Permission::findByName('*'));
-        $routePermission = $request->user()->getAllPermissions()->contains(Permission::findByName($request->decodedPath()));
+        $globalPermission = $request->user()->hasRole('privacc');
+
+        $routePermission = preg_replace('/[0-9]+/', '', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
+        $routePermission = str_replace('//', '/*/', $routePermission); // Replace any // left by the previous step with a wildcard
 
         if (!$globalPermission && !$routePermission) {
             abort(403);
