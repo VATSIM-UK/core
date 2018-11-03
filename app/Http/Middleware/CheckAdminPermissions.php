@@ -24,11 +24,10 @@ class CheckAdminPermissions
             return $next($request);
         }
 
-        if ($request->user()->getAllPermissions()->contains(Permission::findByName('*'))) {
-            return $next($request);
-        }
+        $globalPermission = $request->user()->getAllPermissions()->contains(Permission::findByName('*'));
+        $routePermission = $request->user()->getAllPermissions()->contains(Permission::findByName($request->decodedPath()));
 
-        if (!$request->user()->getAllPermissions()->contains(Permission::findByName($request->decodedPath()))) {
+        if (!$globalPermission && !$routePermission) {
             abort(403);
         }
 
