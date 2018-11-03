@@ -24,6 +24,10 @@ class CheckAdminPermissions
             return $next($request);
         }
 
+        if ($request->user()->getAllPermissions()->contains(Permission::findByName('*'))) {
+            return $next($request);
+        }
+
         if (!$request->user()->getAllPermissions()->contains(Permission::findByName($request->decodedPath()))) {
             abort(403);
         }
