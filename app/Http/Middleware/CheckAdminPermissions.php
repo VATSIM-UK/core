@@ -38,7 +38,7 @@ class CheckAdminPermissions
 
             array_pop($fullUri); // Remove last item (specific URL)
 
-            $newUri = implode('/', $fullUri) . '/*'; // Replace last item with /*
+            $newUri = implode('/', $fullUri).'/*'; // Replace last item with /*
 
             $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
 

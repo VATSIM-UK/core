@@ -60,6 +60,7 @@ class Form extends Model
     {
         return $query->where('public', true);
     }
+
     public function questions()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Question::class);
