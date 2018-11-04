@@ -47,25 +47,35 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAUserWithPermissionCanAccessAWildcardEndpoint()
     {
-        $this->createRoleWithPermissionName('adm/mship/account/*', $this->user);
+        $this->withoutExceptionHandling();
 
-        $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
+        $newUser = factory(Account::class)->create();
+
+        $role = factory(Role::class)->create();
+        $permission = factory(Permission::class)->create(['name' => 'adm/mship/account/*']);
+        $role->givePermissionTo($permission);
+
+        $newUser->assignRole($role->fresh());
+
+        $this->actingAs($newUser, 'web')->get(route('adm.mship.account.details',
             $this->user))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
+        $this->actingAs($newUser, 'web')->get(route('adm.mship.account.details',
             $this->user))->assertSuccessful();
     }
 
     /** @test * */
     public function testAUserWithAnExplicitPermissionCanAccessEndpoint()
     {
+        // TODO: Rework test as no longer supported.
+
         $permission = factory(Permission::class)->create(['name' => "adm/mship/account/{$this->otherUser->id}/"]);
         $role = factory(Role::class)->create();
         $role->givePermissionTo($permission);
         $this->user->assignRole($role->fresh());
 
-        $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
-            $this->otherUser))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
+        $this->actingAs($this->user->fresh(), 'web')->get(route('adm.mship.account.details',
+            $this->otherUser))->assertForbidden();
+        $this->actingAs($this->superUser->fresh(), 'web')->get(route('adm.mship.account.details',
             $this->otherUser))->assertSuccessful();
     }
 

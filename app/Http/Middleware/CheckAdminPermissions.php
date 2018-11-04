@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Spatie\Permission\Models\Permission;
 
 class CheckAdminPermissions
 {
@@ -25,12 +26,11 @@ class CheckAdminPermissions
 
         $globalPermission = $request->user()->hasRole('privacc');
 
-        $routePermission = preg_replace('/[0-9]+/', '', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
-        $routePermission = str_replace('//', '/*/', $routePermission); // Replace any // left by the previous step with a wildcard
+        $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
 
-        dd($request->user('web')->hasPermissionTo(rtrim($routePermission, '/')));
+        $hasRoutePermission = in_array($routePermission, auth()->user()->getAllPermissions()->pluck('name')->toArray());
 
-        if (!$globalPermission && !$request->user('web')->hasPermissionTo(rtrim($routePermission, '/'))) {
+        if (!$globalPermission && !$hasRoutePermission) {
             abort(403);
         }
 
