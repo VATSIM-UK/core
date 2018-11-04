@@ -17,7 +17,6 @@ class AddLegacyPermissions extends Migration
         ]);
 
         DB::table('mship_permission')->insert([
-            ['id' => '1',	'name' => '*',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '2',	'name' => 'adm/dashboard',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '3',	'name' => 'adm/search',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '4',	'name' => 'adm/mship',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
