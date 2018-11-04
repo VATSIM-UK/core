@@ -25,7 +25,7 @@ class AdminMiddlewareTest extends TestCase
         $this->otherUser = factory(Account::class)->create();
 
         $this->superUser = factory(Account::class)->create();
-        $this->superUser->assignRole(Role::findById(1));
+        $this->superUser->assignRole(Role::findByName('privacc'));
     }
 
     private function createRoleWithPermissionName(string $permission, Account &$user)
@@ -35,26 +35,19 @@ class AdminMiddlewareTest extends TestCase
         $user->assignRole($role->fresh());
     }
 
-    private function createRoleWithPermissionId(int $id, Account &$user)
-    {
-        $role = factory(Role::class)->create();
-        $role->syncPermissions(Permission::findById($id));
-        $user->assignRole($role);
-    }
-
     /** @test * */
     public function testAUserWithPermissionCanAccessAnExplicitEndPoint()
     {
-        $this->createRoleWithPermissionName('adm/dashboard', $this->user); // GET adm/dashboard
+        $this->createRoleWithPermissionName('adm/dashboard', $this->user);
 
         $this->actingAs($this->user->fresh(), 'web')->get(route('adm.dashboard'))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
+        $this->actingAs($this->superUser->fresh(), 'web')->get(route('adm.dashboard'))->assertSuccessful();
     }
 
     /** @test * */
     public function testAUserWithPermissionCanAccessAWildcardEndpoint()
     {
-        $this->createRoleWithPermissionId(6, $this->user); // GET adm/mship/account/*
+        $this->createRoleWithPermissionName('adm/mship/account/*', $this->user);
 
         $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
             $this->user))->assertSuccessful();
