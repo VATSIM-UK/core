@@ -21,7 +21,7 @@ class FeedbackSendTest extends TestCase
         parent::setUp();
 
         $this->admin = factory(Account::class)->create();
-        $this->admin->assignRole(Role::findById(1));
+        $this->admin->assignRole(Role::findByName('privacc'));
 
         $this->member = factory(Account::class)->create();
 

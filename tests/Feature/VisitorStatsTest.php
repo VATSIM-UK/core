@@ -20,7 +20,7 @@ class VisitorStatsTest extends TestCase
 
         $this->account = factory(Account::class)->create();
 
-        $this->account->assignRole(Role::findById(1));
+        $this->account->assignRole(Role::findByName('privacc'));
 
         $this->account->addState(State::findByCode('DIVISION'));
     }

@@ -3,7 +3,7 @@
 namespace App\Models\TeamSpeak;
 
 use App\Models\Model;
-use App\Models\Mship\Permission;
+use Spatie\Permission\Models\Permission;
 use App\Models\Mship\Qualification;
 
 /**

@@ -31,7 +31,7 @@ class VisitTransferAdminTest extends TestCase
         $this->application = $this->application->fresh();
 
         $this->user = factory(Account::class)->create();
-        $this->user->assignRole(Role::findById(1));
+        $this->user->assignRole(Role::findByName('privacc'));
     }
 
     /** @test * */
