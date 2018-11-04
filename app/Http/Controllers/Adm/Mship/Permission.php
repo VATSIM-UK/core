@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Spatie\Permission\Models\Permission as PermissionData;
-use Spatie\Permission\Models\Role as RoleData;
 use Input;
 use Redirect;
+use Spatie\Permission\Models\Permission as PermissionData;
+use Spatie\Permission\Models\Role as RoleData;
 
 class Permission extends \App\Http\Controllers\Adm\AdmController
 {
@@ -53,6 +53,7 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
 
         $roles = RoleData::orderBy('name', 'ASC')
             ->get();
+
         return $this->viewMake('adm.mship.permission.create_or_update')
             ->with('permission', $permission)
             ->with('roles', $roles);
