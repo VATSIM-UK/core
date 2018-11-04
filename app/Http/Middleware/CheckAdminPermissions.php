@@ -23,10 +23,7 @@ class CheckAdminPermissions
             return $next($request);
         }
 
-        $globalPermission = $request->user()->hasRole('privacc');
-
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
-
         $hasRoutePermission = $request->user()->can('use-permission', $routePermission); // Check for permission to use route
 
         if ($hasRoutePermission) {
