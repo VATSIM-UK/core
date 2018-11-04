@@ -26,19 +26,19 @@
         @if($ban->is_local)
             <div class="btn-toolbar">
                 <div class="btn-group pull-right">
-                    @can('use_permission', "adm/mship/ban/*/repeal") && !$ban->is_repealed)
+                    @can('use-permission', "adm/mship/ban/*/repeal") && !$ban->is_repealed)
                         {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->id], ["class" => "btn btn-danger"]) !!}
                     @endif
                 </div>
 
                 <div class="btn-group pull-right">
-                    @can('use_permission', "adm/mship/ban/*/modify") && $ban->is_active)
+                    @can('use-permission', "adm/mship/ban/*/modify") && $ban->is_active)
                         {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->id], ["class" => "btn btn-warning"]) !!}
                     @endif
                 </div>
 
                 <div class="btn-group pull-right">
-                    @can('use_permission', "adm/mship/account/*/note/create") && !$ban->is_repealed)
+                    @can('use-permission', "adm/mship/account/*/note/create") && !$ban->is_repealed)
                         {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->id], ["class" => "btn btn-info"]) !!}
                     @endif
                 </div>

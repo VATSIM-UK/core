@@ -56,7 +56,7 @@
                         </div>
                     </div>
 
-                @can('use_permission', "adm/mship/note/type/default"))
+                @can('use-permission', "adm/mship/note/type/default"))
                     <div class="form-group">
                         {!! Form::label("is_default", "Default?") !!}
 

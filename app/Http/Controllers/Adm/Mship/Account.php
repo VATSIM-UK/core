@@ -103,7 +103,7 @@ class Account extends AdmController
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && !$this->account->can('use-permissions', 'adm/mship/account/own')) {
+        if ($this->account->id == $account->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }

@@ -67,10 +67,10 @@
                                     </td>
                                     <td>{{ $r->updated_at->toDateTimeString() }}</td>
                                     <td>
-                                        @can('use_permission', "adm/mship/role/*/update"))
+                                        @can('use-permission', "adm/mship/role/*/update"))
                                             {!! link_to_route("adm.mship.role.update", "Edit", [$r->id], ["class" => "btn btn-xs btn-primary"]) !!}
                                         @endcan
-                                        @can('use_permission', "adm/mship/role/*/delete"))
+                                        @can('use-permission', "adm/mship/role/*/delete"))
                                             {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.role.delete", [$r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                         @endcan
                                     </td>

@@ -1,4 +1,4 @@
-@can('use_permission', "adm/mship/feedback")
+@can('use-permission', "adm/mship/feedback")
     <li class="treeview {{ ((\Request::is('adm/mship/feedback*')) ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-help"></i> <span>Member Feedback</span>
@@ -6,7 +6,7 @@
         </a>
         <ul class="treeview-menu">
 
-            @can('use_permission', "adm/mship/feedback/list/*")
+            @can('use-permission', "adm/mship/feedback/list/*")
                 <li {!! (\Request::is('adm/mship/feedback/list') ? ' class="active"' : '') !!}>
                     <a href="{{ URL::route("adm.mship.feedback.all") }}">
                         <i class="fa fa-bars"></i>
@@ -25,7 +25,7 @@
 
                     @foreach($_feedbackForms as $f)
 
-                        @can('use_permission', "adm/mship/feedback/list/*")
+                        @can('use-permission', "adm/mship/feedback/list/*")
                             <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
                                     <i class="fa fa-bars"></i>

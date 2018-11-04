@@ -20,13 +20,13 @@
                             <th>Ends</th>
                             <th>Type</th>
                             <th>Status</th>
-                            @can('use_permission', 'adm/mship/account/*/note/create'))
+                            @can('use-permission', 'adm/mship/account/*/note/create'))
                                 <th>Note</th>
                             @endif
-                            @can('use_permission', 'adm/mship/ban/*/modify'))
+                            @can('use-permission', 'adm/mship/ban/*/modify'))
                                 <th>Modify</th>
                             @endif
-                            @can('use_permission', 'adm/mship/ban/*/repeal'))
+                            @can('use-permission', 'adm/mship/ban/*/repeal'))
                                 <th>Repeal</th>
                             @endif
                         </tr>
@@ -69,7 +69,7 @@
                                         Unknown
                                     @endif
                                 </td>
-                                @can('use_permission', 'adm/mship/account/*/note/create'))
+                                @can('use-permission', 'adm/mship/account/*/note/create'))
                                     <td>
                                         <div class="btn-group">
                                             @if(!$b->is_repealed)
@@ -80,7 +80,7 @@
                                         </div>
                                     </td>
                                 @endif
-                                @can('use_permission', 'adm/mship/ban/*/modify'))
+                                @can('use-permission', 'adm/mship/ban/*/modify'))
                                     <td>
                                         <div class="btn-group">
                                             @if($b->is_active)
@@ -91,7 +91,7 @@
                                         </div>
                                     </td>
                                 @endif
-                                @can('use_permission', 'adm/mship/ban/*/repeal'))
+                                @can('use-permission', 'adm/mship/ban/*/repeal'))
                                     <td>
                                         <div class="'btn-group">
                                             @if(!$b->is_repealed)

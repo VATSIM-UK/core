@@ -356,8 +356,9 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getViewFeedback(FeedbackModel $feedback)
     {
         $targeted = $feedback->form->targeted;
-        if ($this->account->hasPermissionTo('adm/mship/feedback/list/*') || $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug)) {
-            if ($this->account->id == $feedback->account_id && !$this->account->hasPermissionTo('adm/mship/feedback/view/own/')) {
+
+        if ($this->account->can('use-permission','adm/mship/feedback/view/*')) {
+            if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
                 return Redirect::route('adm.mship.feedback.all')->withError('You cannot view your own feedback');
             }
 

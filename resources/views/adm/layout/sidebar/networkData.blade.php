@@ -1,3 +1,3 @@
-@can('use_permission', "adm/networkdata")
+@can('use-permission', "adm/networkdata")
     @include("network-data.admin._sidebar")
 @endcan

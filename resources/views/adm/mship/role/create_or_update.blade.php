@@ -22,7 +22,7 @@
                         {!! Form::text("name", null, ["class" => "form-control"]) !!}
                     </div>
 
-                    @can('use_permission', "adm/mship/role/default"))
+                    @can('use-permission', "adm/mship/role/default"))
                         <div class="form-group">
                             {!! Form::label("default", "Default?") !!}
 
@@ -68,7 +68,7 @@
                         <input type="number" class="form-control" id="sessionTimeout" name="session_timeout" value="{{ isset($role) ? $role->session_timeout : '' }}">
                     </div>
 
-                    @can('use_permission', "adm/mship/permission/attach"))
+                    @can('use-permission', "adm/mship/permission/attach"))
                         <div class="form-group">
                             {!! Form::label("permissions[]", "Permissions") !!}
                             <ul class="list-unstyled" style="column-count: 3;">

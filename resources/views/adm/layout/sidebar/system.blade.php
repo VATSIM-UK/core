@@ -1,4 +1,4 @@
-@can('use_permission', "adm/system")
+@can('use-permission', "adm/system")
     <li class="treeview {{ (\Request::is('adm/system*') ? 'active' : '') }}">
         <a href="#">
             <i class="ion ion-gear-b"></i> <span>System</span>
