@@ -79,7 +79,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         // custom
-        'admin' => Middleware\CheckAdminPermissions::class,
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
         'must.have.community.group' => Middleware\MustHaveCommunityGroup::class,
         'api.tracking' => \App\Http\Middleware\ApiTracking::class,
