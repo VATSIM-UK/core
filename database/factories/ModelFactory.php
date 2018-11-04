@@ -62,6 +62,7 @@ $factory->define(\Spatie\Permission\Models\Role::class, function (Faker\Generato
     return [
         'name' => $faker->word,
         'guard_name' => 'web',
+        'session_timeout' => 180,
     ];
 });
 

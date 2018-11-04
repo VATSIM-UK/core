@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Spatie\Permission\Models\Role;
 
 class GrantSuperman extends Command
 {
@@ -40,7 +40,7 @@ class GrantSuperman extends Command
      */
     public function handle()
     {
-        $supermanRole = Role::find(1);
+        $supermanRole = Role::findByName('privacc');
 
         $accountID = $this->argument('cid');
 
@@ -60,7 +60,7 @@ class GrantSuperman extends Command
             return;
         }
 
-        $account->roles()->attach($supermanRole);
+        $account->assignRole($supermanRole);
 
         $this->info('Account added to the superman role!');
     }

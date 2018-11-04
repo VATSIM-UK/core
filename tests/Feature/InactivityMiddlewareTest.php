@@ -20,9 +20,9 @@ class InactivityMiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = factory(Account::class, 'withQualification')->create(['password' => 'password']);
+        $this->user = factory(Account::class)->create(['password' => 'password']);
         $this->role = factory(Role::class)->create();
-        $this->user->roles()->attach($this->role);
+        $this->user->assignRole($this->role);
     }
 
     private function login()

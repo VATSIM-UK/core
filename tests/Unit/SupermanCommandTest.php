@@ -3,13 +3,13 @@
 namespace Tests\Unit;
 
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\BrowserKitTesting\DatabaseTransactions;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class SupermanCommandTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
 
@@ -30,7 +30,7 @@ class SupermanCommandTest extends TestCase
     /** @test **/
     public function itReportsToConsoleWhenRoleAlreadyFound()
     {
-        $this->account->assignRole(Role::findById(1));
+        $this->account->assignRole(Role::findByName('privacc'));
 
         $this->artisan('grant:superman', ['cid' => $this->account->id])
             ->expectsOutput('The specified account already has the "superman" role.');
@@ -50,8 +50,8 @@ class SupermanCommandTest extends TestCase
             ->expectsOutput('Account added to the superman role!');
 
         $this->assertDatabaseHas('mship_account_role', [
-            'account_id' => $this->account->id,
-            'role_id' => 1,
+            'model_id' => $this->account->id,
+            'role_id' => Role::findByName('privacc')->id,
         ]);
     }
 }

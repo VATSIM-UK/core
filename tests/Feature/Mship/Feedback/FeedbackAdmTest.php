@@ -5,9 +5,9 @@ namespace Tests\Feature\Mship\Feedback;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
-use App\Models\Mship\Permission;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class FeedbackAdmTest extends TestCase
@@ -32,17 +32,17 @@ class FeedbackAdmTest extends TestCase
     {
         $role = factory(Role::class)->create();
 
-        Permission::whereName('adm/mship/feedback/view/*')->first()->attachRole($role);
-        Permission::whereName('adm/mship/feedback/list/*')->first()->attachRole($role);
+        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/view/*'));
+        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/list/*'));
 
-        $this->account->roles()->attach($role);
+        $this->account->assignRole($role);
 
         $feedback = factory(Feedback::class)->create([
-            'account_id' => $this->account->id,
+            'account_id' => $this->account->fresh()->id,
             'form_id' => $this->form->id,
         ]);
 
-        $this->withoutMiddleware('auth_full_group')->actingAs($this->account->fresh(), 'web')->get(route('adm.mship.feedback.view', $feedback))
+        $this->actingAs($this->account->fresh())->get(route('adm.mship.feedback.view', $feedback))
             ->assertRedirect(route('adm.mship.feedback.all'))->assertSessionHas('error',
                 'You cannot view your own feedback');
     }
@@ -50,7 +50,7 @@ class FeedbackAdmTest extends TestCase
     /** @test **/
     public function testSuperAdminCanStillSeeOwnFeedback()
     {
-        $this->account->assignRole(Role::findById(1));
+        $this->account->assignRole(Role::findbyName('privacc'));
 
         $feedback = factory(Feedback::class)->create([
             'account_id' => $this->account->id,

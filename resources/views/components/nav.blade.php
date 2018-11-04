@@ -154,7 +154,7 @@
                             @endif
                         </a>
                     </li>
-                    @if(Auth::user()->hasPermissionTo('adm/dashboard') || Auth::user()->hasPermissionTo('*') )
+                    @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard">
                                 <i class="fa fa-dashboard"></i>
