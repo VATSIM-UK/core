@@ -31,11 +31,10 @@ class CheckAdminPermissions
         try {
             $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission);
         } catch (PermissionDoesNotExist $e) {
-
             $fullUri = explode('/', $routePermission);
             array_pop($fullUri);
 
-            $newUri = implode('/', $fullUri) . '/*';
+            $newUri = implode('/', $fullUri).'/*';
 
             $request->user('web')->hasPermissionTo($newUri);
         }

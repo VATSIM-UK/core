@@ -50,7 +50,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         if (Form::whereSlug($new_ident)->exists()) {
             return Redirect::back()
                 ->withInput($request->input())
-                ->withError('New form identifier \'' . $new_ident . '\' already exists');
+                ->withError('New form identifier \''.$new_ident.'\' already exists');
         }
 
         $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
@@ -161,7 +161,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $type = Type::where('name', $question['type'])->first();
         $new_question = new Question();
         $new_question->question = $question['name'];
-        $new_question->slug = $question['slug'] . $sequence;
+        $new_question->slug = $question['slug'].$sequence;
         $new_question->type_id = $type->id;
         $new_question->form_id = $form->id;
         if (isset($question['options']['values']) && $question['options']['values'] != '') {
@@ -272,7 +272,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $query = $query->orderBy('created_at', 'desc')->get();
 
-        \Excel::create($form->name . ' Export ' . Carbon::now()->format('d-m-Y Hi'), function ($excel) use ($form, $query, $request, $from_date, $to_date) {
+        \Excel::create($form->name.' Export '.Carbon::now()->format('d-m-Y Hi'), function ($excel) use ($form, $query, $request, $from_date, $to_date) {
             $excel->sheet('Sheet 1', function ($sheet) use ($form, $query, $request, $from_date, $to_date) {
                 $sheet->rows(
                     [
@@ -358,7 +358,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
         $feedback->markActioned(\Auth::user(), $request->input('comment'));
-        \Cache::forget($this->account->id . '.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
+        \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
 
         return Redirect::back()
             ->withSuccess('Feedback marked as actioned!');
