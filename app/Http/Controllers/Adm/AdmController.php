@@ -42,9 +42,9 @@ class AdmController extends \App\Http\Controllers\BaseController
             $forms = Form::orderBy('id', 'asc')->get(['id']);
 
             return $forms->transform(function ($form, $key) use ($_account) {
-                $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
+                $hasPermission = $_account->can('use-permission', 'adm/mship/feedback/list/*') || $_account->can('use-permission', 'adm/mship/feedback/configure/*');
 
-                if ($hasWildcard) {
+                if ($hasPermission) {
                     return $form->feedback()->unActioned()->count();
                 }
 

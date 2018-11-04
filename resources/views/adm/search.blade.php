@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{!! link_to_route("adm.mship.account.details", $m->id, [$m->id]) !!}</td>
                                 <td>{{ $m->name }}</td>
-                                <td>{{ $_account->hasPermissionTo("adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
+                                <td>{{ $_account->can('use-permission', "adm/mship/account/email/view") ? $m->email : "[ No Permission ]" }}</td>
                                 <td>{{ $m->qualification_atc }}</td>
                                 <td>{{ $m->qualification_pilot }}</td>
                                 <td>{{ $m->primary_state->name }}</td>

@@ -562,8 +562,8 @@
                                             @foreach($account->dataChanges as $dc)
                                             <tr>
                                                 <td>{{ $dc->data_key }}</td>
-                                                <td>{{ $_account->hasPermissionTo("adm/mship/account/*/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
-                                                <td>{{ $_account->hasPermissionTo("adm/mship/account/*/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
+                                                <td>{{ $_account->can('use-permission', "adm/mship/account/*/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
+                                                <td>{{ $_account->can('use-permission', "adm/mship/account/*/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
                                                 <td>{{ $dc->created_at }}</td>
                                             </tr>
                                             @endforeach
