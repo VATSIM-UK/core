@@ -180,4 +180,9 @@ class WaitingList extends Model
     {
         return $this->name;
     }
+
+    public function getRouteKeyName()
+    {
+        return $this->slug;
+    }
 }

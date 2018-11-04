@@ -29,7 +29,7 @@ class WaitingListTest extends TestCase
     /** @test * */
     public function itHasASlugRouteKey()
     {
-        $this->assertEquals('slug', $this->waitingList->getRouteKeyName());
+        $this->assertEquals($this->waitingList->slug, $this->waitingList->getRouteKeyName());
     }
 
     /** @test **/
