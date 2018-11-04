@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Spatie\Permission\Models\Permission;
 
 class CheckAdminPermissions
 {
