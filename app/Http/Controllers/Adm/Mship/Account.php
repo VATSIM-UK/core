@@ -329,7 +329,7 @@ class Account extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
-    public function getBans(\Illuminate\Http\Request $request)
+    public function getBans()
     {
         $bans = BanData::isLocal()
             ->orderByDesc('created_at')
