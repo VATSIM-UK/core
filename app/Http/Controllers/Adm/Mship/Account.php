@@ -19,7 +19,6 @@ use App\Notifications\Mship\BanRepealed;
 use App\Notifications\Mship\UserImpersonated;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Input;
