@@ -8,7 +8,7 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><i class="fa fa-inbox"></i> Forms</b></h3>
-                @if ($_account->hasPermissionTo("adm/mship/feedback/new"))
+                @if ($_account->can('use-permission', "adm/mship/feedback/new"))
                   <a href="{{ URL::route("adm.mship.feedback.new") }}" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Create form</a>
                 @endif
             </div>

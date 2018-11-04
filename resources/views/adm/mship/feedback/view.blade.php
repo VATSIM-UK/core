@@ -32,7 +32,7 @@
                                 {{ $feedback->account->real_name }} ({{ $feedback->account->id }})
                             </div>
                         @endif
-                        @if (\Auth::user()->hasPermissionTo('adm/mship/feedback/view/*/reporter'))
+                        @if (\Auth::user()->can('use-permission', 'adm/mship/feedback/view/*/reporter'))
                             <div class="col-md-12">
                                 <b>Submitter:</b></br>
                                 <span id="hidden-submitter-preamble">

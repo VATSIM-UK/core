@@ -21,7 +21,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $forms = Form::orderBy('id', 'asc')->get();
         $_account = $this->account;
         $forms = $forms->filter(function ($form, $key) use ($_account) {
-            $hasWildcard = $_account->hasPermissionTo('adm/mship/feedback/list/*') || $_account->hasPermissionTo('adm/mship/feedback/configure/*');
+            $hasWildcard = $_account->can('use-permission', 'adm/mship/feedback/list/*') || $_account->can('use-permission', 'adm/mship/feedback/configure/*');
 
             return $hasWildcard;
         })->all();
