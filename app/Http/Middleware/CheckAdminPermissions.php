@@ -27,7 +27,7 @@ class CheckAdminPermissions
 
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
 
-        $hasRoutePermission = in_array($routePermission, auth()->user()->getAllPermissions()->pluck('name')->toArray());
+        $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission);
 
         if (!$globalPermission && !$hasRoutePermission) {
             abort(403);
