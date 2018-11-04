@@ -35,9 +35,9 @@ class VisitorStatsTest extends TestCase
     /** @test * */
     public function testOnlyVisitingControllersAreSelected()
     {
-        $this->actingAs($this->account)->get(route('adm.visiting.hours.search'))
-            ->assertSee('accounts')
-            ->assertSee('startDate')
-            ->assertSee('endDate');
+        $this->withoutMiddleware('auth_full_group')
+            ->actingAs($this->account->fresh())
+            ->get(route('adm.visiting.hours.search'))
+            ->assertRedirect();
     }
 }

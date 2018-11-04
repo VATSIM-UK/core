@@ -49,7 +49,7 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itAllowsFeedbackToBeMarkedAsSent()
     {
-        $this->actingAs($this->admin)->post(route('adm.mship.feedback.send', $this->feedback->id))
+        $this->actingAs($this->admin->fresh())->post(route('adm.mship.feedback.send', $this->feedback->id))
             ->assertRedirect()
             ->assertSessionHasNoErrors()
             ->assertSessionHas('success');

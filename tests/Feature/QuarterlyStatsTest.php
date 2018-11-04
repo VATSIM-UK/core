@@ -23,7 +23,7 @@ class QuarterlyStatsTest extends TestCase
 
     public function testItLoadsQStats()
     {
-        $this->actingAs($this->admin, 'web')->get(route('adm.ops.qstats.index'))->assertSuccessful();
+        $this->actingAs($this->admin->fresh(), 'web')->get(route('adm.ops.qstats.index'))->assertSuccessful();
     }
 
     public function testItGeneratesQStats()
@@ -33,6 +33,6 @@ class QuarterlyStatsTest extends TestCase
             'year' => '2016',
         ];
 
-        $this->actingAs($this->admin, 'web')->post(route('adm.ops.qstats.generate', $stats))->assertSuccessful();
+        $this->actingAs($this->admin->fresh(), 'web')->post(route('adm.ops.qstats.generate', $stats))->assertSuccessful();
     }
 }
