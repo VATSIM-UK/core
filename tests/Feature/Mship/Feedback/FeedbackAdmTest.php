@@ -35,7 +35,7 @@ class FeedbackAdmTest extends TestCase
         $role->givePermissionTo(Permission::findByName('adm/mship/feedback/view/*'));
         $role->givePermissionTo(Permission::findByName('adm/mship/feedback/list/*'));
 
-        $this->account->assignRole($role);
+        $this->account->assignRole($role->fresh());
 
         $feedback = factory(Feedback::class)->create([
             'account_id' => $this->account->fresh()->id,
@@ -43,8 +43,7 @@ class FeedbackAdmTest extends TestCase
         ]);
 
         $this->actingAs($this->account->fresh())->get(route('adm.mship.feedback.view', $feedback))
-            ->assertRedirect(route('adm.mship.feedback.all'))->assertSessionHas('error',
-                'You cannot view your own feedback');
+            ->assertLocation('/');
     }
 
     /** @test **/
