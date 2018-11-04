@@ -3,8 +3,8 @@
 namespace App\Models\TeamSpeak;
 
 use App\Models\Model;
-use Spatie\Permission\Models\Permission;
 use App\Models\Mship\Qualification;
+use Spatie\Permission\Models\Permission;
 
 /**
  * App\Models\TeamSpeak\Group
