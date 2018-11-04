@@ -39,7 +39,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Gate::before(function ($user, $ability) {
+        Gate::before(function ($user) {
             if ($user->hasRole('privacc')) {
                 return true;
             }
