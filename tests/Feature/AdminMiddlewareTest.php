@@ -28,10 +28,17 @@ class AdminMiddlewareTest extends TestCase
         $this->superUser->assignRole(Role::findById(1));
     }
 
-    private function createRoleWithPermissionName(string $permission, Account $user)
+    private function createRoleWithPermissionName(string $permission, Account &$user)
     {
         $role = factory(Role::class)->create();
         $role->givePermissionTo(Permission::findByName($permission));
+        $user->assignRole($role->fresh());
+    }
+
+    private function createRoleWithPermissionId(int $id, Account &$user)
+    {
+        $role = factory(Role::class)->create();
+        $role->syncPermissions(Permission::findById($id));
         $user->assignRole($role);
     }
 
@@ -40,7 +47,7 @@ class AdminMiddlewareTest extends TestCase
     {
         $this->createRoleWithPermissionName('adm/dashboard', $this->user); // GET adm/dashboard
 
-        $this->actingAs($this->user, 'web')->get(route('adm.dashboard'))->assertSuccessful();
+        $this->actingAs($this->user->fresh(), 'web')->get(route('adm.dashboard'))->assertSuccessful();
         $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
     }
 
