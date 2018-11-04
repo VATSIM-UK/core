@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Role as RoleData;
+use Spatie\Permission\Models\Permission as PermissionData;
+use Spatie\Permission\Models\Role as RoleData;
 use Input;
 use Redirect;
 
@@ -30,22 +30,16 @@ class Role extends \App\Http\Controllers\Adm\AdmController
 
     public function postCreate()
     {
-        // Let's create!
-        if (!$this->account->hasPermissionTo('adm/mship/role/default')) {
-            $data = Input::except('default');
-        } else {
-            $data = Input::all();
-        }
+        $data = Input::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
+
         $role = new RoleData($data);
-        if (!$role->save()) {
-            return Redirect::route('adm.mship.role.create')->withErrors($role->errors());
+        $role->save();
+
+        if (!is_null(Input::get('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+            $role->syncPermissions(Input::get('permissions'));
         }
 
-        if (count(Input::get('permissions')) > 0 && $this->account->hasPermissionTo('adm/mship/permission/attach')) {
-            $role->attachPermissions(Input::get('permissions'));
-        }
-
-        return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been created - don't forget to set the permissions properly!");
+        return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been created - don't forget to attach it to some roles!");
     }
 
     public function getUpdate(RoleData $role)
@@ -68,29 +62,20 @@ class Role extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
 
-        $role->load('permissions');
 
-        // Let's create!
-        if (!$this->account->hasPermissionTo('adm/mship/role/default')) {
-            $data = Input::except('default');
-        } else {
-            $data = Input::all();
-        }
+        $data = Input::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
+
         $role = $role->fill($data);
-        if (!$role->save()) {
-            return Redirect::route('adm.mship.role.update')->withErrors($role->errors());
+        $role->save();
+
+        foreach ($role->permissions as $p) {
+            if (!in_array($p->id, Input::get('permissions', []))) {
+                $role->revokePermissionTo($p);
+            }
         }
 
-        if ($this->account->hasPermissionTo('adm/mship/permission/attach')) {
-            // Detatch permissions!
-            foreach ($role->permissions as $p) {
-                if (!in_array($p->id, Input::get('permissions', []))) {
-                    $role->detachPermission($p);
-                }
-            }
-
-            // Attach all permissions.
-            $role->attachPermissions(Input::get('permissions', []));
+        if (!is_null(Input::get('permissions')) && $this->account->can('use-permission', 'adm/mship/role/attach')) {
+            $role->syncPermissions(Input::get('permissions'));
         }
 
         return Redirect::route('adm.mship.role.index')->withSuccess("Role '".$role->name."' has been updated - don't forget to set the permissions properly!");

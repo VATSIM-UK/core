@@ -6,7 +6,7 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title ">
-                        Create New Member Role
+                        {{ (isset($permission) ? "Update" : "Create")." Role" }}
                     </h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -22,31 +22,16 @@
                         {!! Form::text("name", null, ["class" => "form-control"]) !!}
                     </div>
 
-                    @can('use-permission', "adm/mship/role/default"))
                         <div class="form-group">
-                            {!! Form::label("default", "Default?") !!}
-
-                            <div class="radio">
-                                <label>
-                                    {!! Form::radio("default", 1) !!}
-                                    YES - <span class="help-inline warning">Choosing this will disable the current default group.</span>
-                                </label>
-                            </div>
-
-                            <div class="radio">
-                                <label>
-                                    {!! Form::radio("default2", 0) !!}
-                                    NO
-                                </label>
-                            </div>
+                            {!! Form::label("guard_name", "Guard Name") !!}
+                            {!! Form::text("guard_name", null, ["class" => "form-control"]) !!}
                         </div>
-                    @endcan
 
                     <div class="form-group">
                         <label for="mandatoryPassword" class="control-label">Mandatory Password</label>
 
                         @php
-                            $mandatoryPassword = isset($role) && $role->hasMandatoryPassword();
+                            $mandatoryPassword = isset($role) && $role->password_mandatory;
                         @endphp
                         <div class="radio">
                             <label class="radio-inline">
@@ -68,7 +53,7 @@
                         <input type="number" class="form-control" id="sessionTimeout" name="session_timeout" value="{{ isset($role) ? $role->session_timeout : '' }}">
                     </div>
 
-                    @can('use-permission', "adm/mship/permission/attach"))
+                    @can('use-permission', "adm/mship/permission/attach")
                         <div class="form-group">
                             {!! Form::label("permissions[]", "Permissions") !!}
                             <ul class="list-unstyled" style="column-count: 3;">
@@ -79,7 +64,7 @@
                                         @else
                                             {!! Form::checkbox("permissions[".$p->id."]", $p->id, (Input::old("permissions.".$p->id) ? "checked='checked'" : "")) !!}
                                         @endif
-                                        {{ $p->display_name }}
+                                        {{ $p->name }}
                                     </li>
                                 @endforeach
                             </ul>

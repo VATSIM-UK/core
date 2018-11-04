@@ -39,9 +39,8 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Display Name</th>
+                            <th>Guard Name</th>
                             <th>Name</th>
-                            <th># Roles</th>
                             <th>Last Updated</th>
                             <th>Actions</th>
                         </tr>
@@ -50,15 +49,14 @@
                         @foreach($permissions as $p)
                         <tr>
                             <td>{!! link_to_route('adm.mship.permission.update', $p->id, [$p->id]) !!}</td>
-                            <td>{{ $p->display_name }}</td>
+                            <td>{{ $p->guard_name }}</td>
                             <td>{{ $p->name }}</td>
-                            <td><span class="{{ $p->roles->isEmpty() ?: 'btn-link' }}" data-toggle="popover" data-trigger="hover" data-html="true" data-content="@foreach($p->roles as $role){{$role->name}}<br> @endforeach">{{ $p->roles->count() }}</span></td>
                             <td>{{ $p->updated_at->toDateTimeString() }}</td>
                             <td>
-                                @can('use-permission', "adm/mship/permission/*/update"))
+                                @can('use-permission', "adm/mship/permission/*/update")
                                     {!! link_to_route("adm.mship.permission.update", "Edit", [$p->id], ["class" => "btn btn-xs btn-primary"]) !!}
                                 @endcan
-                                @can('use-permission', "adm/mship/permission/*/delete"))
+                                @can('use-permission', "adm/mship/permission/*/delete")
                                     {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.permission.delete", [$p->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                 @endcan
                             </td>

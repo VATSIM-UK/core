@@ -6,7 +6,7 @@
         <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title ">
-                    Create New Member Role
+                    {{ (isset($permission) ? "Update" : "Create")." Permission" }}
                 </h3>
             </div><!-- /.box-header -->
             <div class="box-body">
@@ -23,8 +23,8 @@
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label("display_name", "Display Name") !!}
-                    {!! Form::text("display_name", null, ["class" => "form-control"]) !!}
+                    {!! Form::label("guard_name", "Guard Name") !!}
+                    {!! Form::text("guard_name", null, ["class" => "form-control"]) !!}
                 </div>
 
                 <div class="form-group">
@@ -47,7 +47,7 @@
 
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">
-                        {!! Form::submit("Create Role", ["class" => "btn btn-primary"]) !!}
+                        {!! Form::submit((isset($permission) ? "Update" : "Create")." Permission", ["class" => "btn btn-primary"]) !!}
                     </div>
                 </div>
 

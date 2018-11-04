@@ -39,10 +39,8 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Mandatory Password</th>
-                                <th>Password Expiry</th>
-                                <th>Session Timeout</th>
-                                <th># Members</th>
-                                <th># Permissions</th>
+                                <th>Password Expiry (days)</th>
+                                <th>Session Timeout (mins)</th>
                                 <th>Last Updated</th>
                                 <th>Actions</th>
                             </tr>
@@ -59,18 +57,13 @@
                                     </td>
                                     <td>{{ $r->password_mandatory }}</td>
                                     <td>{{ $r->password_lifetime }}</td>
-                                    <td>{{ $r->session_timeout }}</td>
-                                    <td>{{ $r->accounts()->count() }}</td>
-                                    <td><span class="{{ $r->permissions->isEmpty() ?: 'btn-link' }}"
-                                              data-toggle="popover" data-trigger="hover" data-html="true"
-                                              data-content="@foreach($r->permissions as $permission){{$permission->name}}<br> @endforeach">{{ $r->permissions->count() }}</span>
-                                    </td>
+                                    <td>{{ $r->session_timeout ?? 'N/A' }}</td>
                                     <td>{{ $r->updated_at->toDateTimeString() }}</td>
                                     <td>
-                                        @can('use-permission', "adm/mship/role/*/update"))
+                                        @can('use-permission', "adm/mship/role/*/update")
                                             {!! link_to_route("adm.mship.role.update", "Edit", [$r->id], ["class" => "btn btn-xs btn-primary"]) !!}
                                         @endcan
-                                        @can('use-permission', "adm/mship/role/*/delete"))
+                                        @can('use-permission', "adm/mship/role/*/delete")
                                             {!! Form::button("Delete", ["data-href" => URL::route("adm.mship.role.delete", [$r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}
                                         @endcan
                                     </td>
