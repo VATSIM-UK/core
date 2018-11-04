@@ -50,7 +50,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         if (Form::whereSlug($new_ident)->exists()) {
             return Redirect::back()
                 ->withInput($request->input())
-                ->withError('New form identifier \''.$new_ident.'\' already exists');
+                ->withError('New form identifier \'' . $new_ident . '\' already exists');
         }
 
         $form = $this->makeNewForm($new_ident, $new_name, $new_contact, $targeted, $public);
@@ -161,7 +161,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $type = Type::where('name', $question['type'])->first();
         $new_question = new Question();
         $new_question->question = $question['name'];
-        $new_question->slug = $question['slug'].$sequence;
+        $new_question->slug = $question['slug'] . $sequence;
         $new_question->type_id = $type->id;
         $new_question->form_id = $form->id;
         if (isset($question['options']['values']) && $question['options']['values'] != '') {
@@ -228,10 +228,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getAllFeedback()
     {
-        if (!$this->account->hasPermissionTo('adm/mship/feedback/list/*')) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->paginate(15);
 
         return $this->viewMake('adm.mship.feedback.list')
@@ -240,10 +236,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedback($slug)
     {
-        if (!$this->account->hasPermissionTo('adm/mship/feedback/list/*') && !$this->account->hasPermissionTo('adm/mship/feedback/list/'.$slug)) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $form = Form::whereSlug($slug)->firstOrFail();
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->paginate(15);
 
@@ -254,9 +246,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedbackExport($slug)
     {
-        if (!$this->account->hasPermissionTo('adm/mship/feedback/list/*') && !$this->account->hasPermissionTo('adm/mship/feedback/list/'.$slug)) {
-            abort(403, 'Unauthorized action.');
-        }
         $form = Form::whereSlug($slug)->firstOrFail();
 
         return $this->viewMake('adm.mship.feedback.export')
@@ -283,7 +272,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $query = $query->orderBy('created_at', 'desc')->get();
 
-        \Excel::create($form->name.' Export '.Carbon::now()->format('d-m-Y Hi'), function ($excel) use ($form, $query, $request, $from_date, $to_date) {
+        \Excel::create($form->name . ' Export ' . Carbon::now()->format('d-m-Y Hi'), function ($excel) use ($form, $query, $request, $from_date, $to_date) {
             $excel->sheet('Sheet 1', function ($sheet) use ($form, $query, $request, $from_date, $to_date) {
                 $sheet->rows(
                     [
@@ -357,50 +346,29 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $targeted = $feedback->form->targeted;
 
-        if ($this->account->can('use-permission', 'adm/mship/feedback/view/*')) {
-            if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
-                return Redirect::route('adm.mship.feedback.all')->withError('You cannot view your own feedback');
-            }
-
-            return $this->viewMake('adm.mship.feedback.view')
-                ->with('feedback', $feedback)
-                ->with('targeted', $targeted);
+        if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
+            return Redirect::route('adm.mship.feedback.all')->withError('You cannot view your own feedback');
         }
-        abort(403, 'Unauthorized action.');
+
+        return $this->viewMake('adm.mship.feedback.view')
+            ->with('feedback', $feedback)
+            ->with('targeted', $targeted);
     }
 
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
-        $conditions = [];
-        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list') || $this->account->hasPermissionTo('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
+        $feedback->markActioned(\Auth::user(), $request->input('comment'));
+        \Cache::forget($this->account->id . '.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
 
-        foreach ($conditions as $condition) {
-            if ($condition) {
-                $feedback->markActioned(\Auth::user(), $request->input('comment'));
-                \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
-
-                return Redirect::back()
-                    ->withSuccess('Feedback marked as actioned!');
-            }
-        }
-        abort(403, 'Unauthorized action.');
+        return Redirect::back()
+            ->withSuccess('Feedback marked as actioned!');
     }
 
     public function getUnActioned(FeedbackModel $feedback)
     {
-        $conditions = [];
-        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list') || $this->account->hasPermissionTo('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermissionTo('adm/mship/feedback/list/'.$feedback->form->slug);
+        $feedback->markUnActioned();
 
-        foreach ($conditions as $condition) {
-            if ($condition) {
-                $feedback->markUnActioned();
-
-                return Redirect::back()
-                    ->withSuccess('Feedback unmarked as actioned!');
-            }
-        }
-        abort(403, 'Unauthorized action.');
+        return Redirect::back()
+            ->withSuccess('Feedback unmarked as actioned!');
     }
 }
