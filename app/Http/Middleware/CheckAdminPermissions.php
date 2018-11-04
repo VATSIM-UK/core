@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 class CheckAdminPermissions
 {
@@ -27,7 +28,17 @@ class CheckAdminPermissions
 
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
 
-        $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission);
+        try {
+            $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission);
+        } catch (PermissionDoesNotExist $e) {
+
+            $fullUri = explode('/', $routePermission);
+            array_pop($fullUri);
+
+            $newUri = implode('/', $fullUri) . '/*';
+
+            $request->user('web')->hasPermissionTo($newUri);
+        }
 
         if (!$globalPermission && !$hasRoutePermission) {
             abort(403);
