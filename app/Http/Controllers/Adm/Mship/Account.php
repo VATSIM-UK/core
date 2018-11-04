@@ -332,10 +332,6 @@ class Account extends AdmController
 
     public function getBans(\Illuminate\Http\Request $request)
     {
-        if (!$request->user()->hasPermissionTo('adm/mship/account/*/bans')) {
-            throw new AuthorizationException();
-        }
-
         $bans = BanData::isLocal()
             ->orderByDesc('created_at')
             ->paginate(15);
