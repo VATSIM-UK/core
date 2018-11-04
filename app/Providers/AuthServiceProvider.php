@@ -57,7 +57,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('use-permission', function ($user, $permission) {
             try {
-                return in_array($permission, auth()->user()->getAllPermissions()->pluck('name')->toArray());
+                return auth()->user()->hasPermissionTo($permission);
             } catch (PermissionDoesNotExist $e) {
                 return false;
             }
