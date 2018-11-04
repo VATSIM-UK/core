@@ -10,6 +10,13 @@ class AdminMiddlewareTest extends TestCase
 {
     use DatabaseTransactions;
 
+
+    /** @test * */
+    public function testAGuestCannotAccessAdmEndpoints()
+    {
+        $this->get(route('adm.mship.feedback.new'))->assertRedirect(route('login'));
+    }
+
     /** @test * */
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
