@@ -28,32 +28,25 @@ class CheckAdminPermissions
 
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
 
-        try {
-            $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission); // Check for permission to use route
-        } catch (PermissionDoesNotExist $e) {
+        $hasRoutePermission = $request->user()->can('use-permission', $routePermission); // Check for permission to use route
 
-            // Permission doesn't exist, lets look for a higher level.
-
-            $fullUri = explode('/', $routePermission); // Split to array
-
-            array_pop($fullUri); // Remove last item (specific URL)
-
-            $newUri = implode('/', $fullUri).'/*'; // Replace last item with /*
-
-            $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
-
-            try {
-                $request->user('web')->hasPermissionTo($newUri);
-            } catch (PermissionDoesNotExist $e) {
-                return redirect(route('adm.dashboard'))->withErrors([$e->getMessage() . ' Please contact Web Services.']);
-            }
+        if ($hasRoutePermission) {
+            return $next($request);
         }
 
-        if (!$globalPermission && !$hasRoutePermission) {
-            abort(403);
+        $fullUri = explode('/', $routePermission); // Split to array
+        array_pop($fullUri); // Remove last item (specific URL)
+        $newUri = implode('/', $fullUri) . '/*'; // Replace last item with /*
+        $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
+
+        $hasRoutePermission = $request->user()->can('use-permission', $newUri);
+
+        if ($hasRoutePermission) {
+            return $next($request);
         }
 
-        return $next($request);
+        abort(403);
+
     }
 
     /**
