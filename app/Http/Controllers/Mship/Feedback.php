@@ -19,7 +19,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->public()->getModels();
         $feedbackForms = [];
         foreach ($forms as $f) {
-            $feedbackForms[$f->id] = $f->name;
+            $feedbackForms[$f->slug] = $f->name;
         }
 
         return $this->viewMake('mship.feedback.form')
@@ -29,7 +29,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function postFeedbackFormSelect(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'feedback_type' => 'required|exists:mship_feedback_forms,id',
+            'feedback_type' => 'required|exists:mship_feedback_forms,slug',
         ]);
         if ($validator->fails()) {
             return Redirect::back()

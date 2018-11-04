@@ -25,7 +25,7 @@
 
                     @foreach($_feedbackForms as $f)
 
-                        @can('use-permission', "adm/mship/feedback/list/*")
+                        @can('use-permission', "adm/mship/feedback/list/".$f->slug)
                             <li {!! (\Request::is('adm/mship/feedback/list/'.$f->slug) ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::route("adm.mship.feedback.form", [$f->slug]) }}">
                                     <i class="fa fa-bars"></i>
