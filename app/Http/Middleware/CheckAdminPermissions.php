@@ -29,13 +29,18 @@ class CheckAdminPermissions
         $routePermission = preg_replace('/[0-9]+/', '*', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
 
         try {
-            $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission);
+            $hasRoutePermission = $request->user('web')->hasPermissionTo($routePermission); // Check for permission to use route
         } catch (PermissionDoesNotExist $e) {
 
-            $fullUri = explode('/', $routePermission);
-            array_pop($fullUri);
+            // Permission doesn't exist, lets look for a higher level.
 
-            $newUri = implode('/', $fullUri) . '/*';
+            $fullUri = explode('/', $routePermission); // Split to array
+
+            array_pop($fullUri); // Remove last item (specific URL)
+
+            $newUri = implode('/', $fullUri) . '/*'; // Replace last item with /*
+
+            $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
 
             $request->user('web')->hasPermissionTo($newUri);
         }
