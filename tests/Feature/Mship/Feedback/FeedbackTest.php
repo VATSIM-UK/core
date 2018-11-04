@@ -94,14 +94,14 @@ class FeedbackTest extends TestCase
     /** @test * */
     public function itRedirectsFromFeedbackFormAsGuest()
     {
-        $this->get(route('mship.feedback.new.form', $this->form->slug))
+        $this->get(route('mship.feedback.new.form', $this->form->id))
             ->assertRedirect(route('login'));
     }
 
     /** @test * */
     public function itLoadsTheFeedbackForm()
     {
-        $this->actingAs($this->account, 'web')->get(route('mship.feedback.new.form', $this->form->slug))
+        $this->actingAs($this->account, 'web')->get(route('mship.feedback.new.form', $this->form->id))
             ->assertSuccessful();
     }
 

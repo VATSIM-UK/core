@@ -124,7 +124,7 @@
             </p>
           {!! Form::close() !!}
         @else
-          {!! Form::open(["route" => ["mship.feedback.new.form.post", $form->slug]]) !!}
+          {!! Form::open(["route" => ["mship.feedback.new.form.post", $form]]) !!}
         <p>
         @if($form->targeted)
           Here you can submit anonymous feedback about a <b>UK</b> division member.
