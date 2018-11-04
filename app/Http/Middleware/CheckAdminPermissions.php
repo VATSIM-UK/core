@@ -28,6 +28,8 @@ class CheckAdminPermissions
         $routePermission = preg_replace('/[0-9]+/', '', $request->decodedPath()); // Remove anything that looks like a number (its likely its an ID)
         $routePermission = str_replace('//', '/*/', $routePermission); // Replace any // left by the previous step with a wildcard
 
+        dd($request->user('web')->hasPermissionTo(rtrim($routePermission, '/')));
+
         if (!$globalPermission && !$request->user('web')->hasPermissionTo(rtrim($routePermission, '/'))) {
             abort(403);
         }

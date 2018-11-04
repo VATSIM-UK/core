@@ -60,8 +60,8 @@ class AdminMiddlewareTest extends TestCase
     {
         $permission = factory(Permission::class)->create(['name' => "adm/mship/account/{$this->otherUser->id}/"]);
         $role = factory(Role::class)->create();
-        $role->permissions()->attach($permission->first());
-        $this->user->roles()->attach($role);
+        $role->givePermissionTo($permission);
+        $this->user->assignRole($role->fresh());
 
         $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
             $this->otherUser))->assertSuccessful();
