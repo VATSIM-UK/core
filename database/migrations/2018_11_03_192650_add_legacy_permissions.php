@@ -21,7 +21,6 @@ class AddLegacyPermissions extends Migration
             ['id' => '2',	'name' => 'adm/dashboard',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '3',	'name' => 'adm/search',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '4',	'name' => 'adm/mship',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
-            ['id' => '5',	'name' => 'adm/mship/account',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '6',	'name' => 'adm/mship/account/*',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '7',	'name' => 'adm/mship/account/list',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
             ['id' => '8',	'name' => 'adm/mship/account/datachanges',	'guard_name' => 'web',	'created_at' => '2015-02-27 22:23:51',	'updated_at' => '2015-02-27 22:23:51'],
