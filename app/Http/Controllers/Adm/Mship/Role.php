@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Spatie\Permission\Models\Permission as PermissionData;
-use Spatie\Permission\Models\Role as RoleData;
 use Input;
 use Redirect;
+use Spatie\Permission\Models\Permission as PermissionData;
+use Spatie\Permission\Models\Role as RoleData;
 
 class Role extends \App\Http\Controllers\Adm\AdmController
 {
@@ -61,7 +61,6 @@ class Role extends \App\Http\Controllers\Adm\AdmController
         if (!$role or !$role->exists) {
             return Redirect::route('adm.mship.role.index')->withError("Role doesn't exist!");
         }
-
 
         $data = Input::only('name', 'guard_name', 'password_mandatory', 'password_lifetime', 'session_timeout', 'default');
 
