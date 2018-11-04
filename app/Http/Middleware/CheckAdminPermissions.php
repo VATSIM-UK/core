@@ -42,7 +42,11 @@ class CheckAdminPermissions
 
             $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
 
-            $request->user('web')->hasPermissionTo($newUri);
+            try {
+                $request->user('web')->hasPermissionTo($newUri);
+            } catch (PermissionDoesNotExist $e) {
+                return redirect(route('adm.dashboard'))->withErrors([$e->getMessage() . ' Please contact Web Services.']);
+            }
         }
 
         if (!$globalPermission && !$hasRoutePermission) {
