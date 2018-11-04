@@ -10,7 +10,6 @@ class AdminMiddlewareTest extends TestCase
 {
     use DatabaseTransactions;
 
-
     /** @test * */
     public function testAGuestCannotAccessAdmEndpoints()
     {
