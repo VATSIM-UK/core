@@ -8,40 +8,29 @@
          convertWarningsToExceptions="true"
          processIsolation="true"
          stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
-        </testsuite>
+<testsuites>
+    <testsuite name="Feature">
+        <directory suffix="Test.php">./tests/Feature</directory>
+    </testsuite>
 
-        <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app/Console/</directory>
-            <directory suffix=".php">./app/Events/</directory>
-            <directory suffix=".php">./app/Exceptions/</directory>
-            <directory suffix=".php">./app/Http/</directory>
-            <directory suffix=".php">./app/Jobs/</directory>
-            <directory suffix=".php">./app/Libraries/</directory>
-            <directory suffix=".php">./app/Listeners/</directory>
-            <directory suffix=".php">./app/Models/</directory>
-            <directory suffix=".php">./app/Notifications/</directory>
-            <directory suffix=".php">./app/Policies/</directory>
-            <directory suffix=".php">./app/Providers/</directory>
-            <directory suffix=".php">./app/Scopes/</directory>
-            <directory suffix=".php">./app/Traits/</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="SLACK_SECRET" value="testing"/>
-        <env name="SLACK_BOT_TOKEN" value="testing"/>
-        <env name="SLACK_TOKEN_REGISTER" value="testing"/>
-        <env name="SLACK_ENDPOINT" value="testing"/>
-    </php>
+    <testsuite name="Unit">
+        <directory suffix="Test.php">./tests/Unit</directory>
+    </testsuite>
+</testsuites>
+<filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+        <directory suffix=".php">./app</directory>
+    </whitelist>
+</filter>
+<php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="MAIL_DRIVER" value="log"/>
+    <env name="SLACK_SECRET" value="testing"/>
+    <env name="SLACK_BOT_TOKEN" value="testing"/>
+    <env name="SLACK_TOKEN_REGISTER" value="testing"/>
+    <env name="SLACK_ENDPOINT" value="testing"/>
+</php>
 </phpunit>

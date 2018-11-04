@@ -121,8 +121,8 @@
 
                         <p>
                             Posting an event on our forum? <a
-                                    href="https://community.vatsim-uk.co.uk/topic/33366-posting-an-event-read-here/"
-                                    rel="external nofollow">https://community.vatsim-uk.co.uk/topic/33366-posting-an-event-read-here/</a>
+                                    href="https://community.vatsim.uk/topic/34833-looking-to-post-an-event-please-read-first/"
+                                    rel="external nofollow">https://community.vatsim.uk/topic/34833-looking-to-post-an-event-please-read-first/</a>
                         </p>
 
                         <ul>
