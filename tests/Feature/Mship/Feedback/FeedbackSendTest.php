@@ -20,9 +20,6 @@ class FeedbackSendTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = factory(Account::class)->create();
-        $this->admin->assignRole(Role::findByName('privacc'));
-
         $this->member = factory(Account::class)->create();
 
         $this->feedback = factory(Feedback::class)->create([
@@ -40,7 +37,7 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itAllowsViewingIfThereIsSentFeedback()
     {
-        $this->feedback->markSent($this->admin);
+        $this->feedback->markSent($this->privacc);
 
         $this->actingAs($this->member)->get(route('mship.feedback.view'))
             ->assertSuccessful();
@@ -49,7 +46,7 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itAllowsFeedbackToBeMarkedAsSent()
     {
-        $this->actingAs($this->admin->fresh())->post(route('adm.mship.feedback.send', $this->feedback->id))
+        $this->actingAs($this->privacc)->post(route('adm.mship.feedback.send', $this->feedback->id))
             ->assertRedirect()
             ->assertSessionHasNoErrors()
             ->assertSessionHas('success');
