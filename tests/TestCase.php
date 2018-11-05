@@ -5,9 +5,9 @@ namespace Tests;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Cts\MockCtsDatabase;
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {

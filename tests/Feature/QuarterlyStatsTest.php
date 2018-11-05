@@ -2,9 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class QuarterlyStatsTest extends TestCase
