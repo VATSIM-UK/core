@@ -39,12 +39,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Gate::before(function ($user) {
-            if ($user->hasRole('privacc')) {
-                return true;
-            }
-        });
-
         Passport::routes(function ($router) {
             $router->forAuthorization();
             $router->forAccessTokens();
@@ -56,6 +50,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('use-permission', function ($user, $permission) {
+            if ($user->hasRole('privacc')) {
+                return true;
+            }
+
             try {
                 return auth()->user()->hasPermissionTo($permission);
             } catch (PermissionDoesNotExist $e) {
