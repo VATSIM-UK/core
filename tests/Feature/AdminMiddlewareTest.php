@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -32,5 +34,28 @@ class AdminMiddlewareTest extends TestCase
         $this->actingAs($this->privacc)
                 ->get('adm/')
                 ->assertRedirect(route('adm.dashboard'));
+    }
+
+    public function testUsingEndpointPermissionsAllowsAccess()
+    {
+        $staff = factory(Account::class)->create();
+
+        $this->actingAs($staff)
+                ->get('adm/dashboard')
+                ->assertForbidden();
+
+        $role = factory(Role::class)->create();
+        $permission = Permission::findByName('adm/dashboard');
+        $role->givePermissionTo($permission);
+        $staff->assignRole($role);
+
+        $this->actingAs($staff->fresh())
+            ->get('adm/dashboard')
+            ->assertSuccessful()
+            ->assertSee('Administration Control Panel');
+
+        $this->actingAs($staff->fresh())
+            ->get('adm/')
+            ->assertForbidden();
     }
 }
