@@ -21,7 +21,7 @@ class InactivityMiddlewareTest extends TestCase
         parent::setUp();
 
         $this->user = factory(Account::class)->create(['password' => 'password']);
-        $this->role = factory(Role::class)->create();
+        $this->role = factory(Role::class)->create(['session_timeout' => 90]);
         $this->user->assignRole($this->role);
     }
 
