@@ -11,19 +11,11 @@ class QuarterlyStatsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $admin;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->admin = factory(Account::class)->create();
-        $this->admin->assignRole(Role::findByName('privacc'));
-    }
-
     public function testItLoadsQStats()
     {
-        $this->actingAs($this->admin->fresh(), 'web')->get(route('adm.ops.qstats.index'))->assertSuccessful();
+        $this->actingAs($this->privacc)
+                ->get(route('adm.ops.qstats.index'))
+                ->assertSuccessful();
     }
 
     public function testItGeneratesQStats()
@@ -33,6 +25,8 @@ class QuarterlyStatsTest extends TestCase
             'year' => '2016',
         ];
 
-        $this->actingAs($this->admin->fresh(), 'web')->post(route('adm.ops.qstats.generate', $stats))->assertSuccessful();
+        $this->actingAs($this->privacc)
+                ->post(route('adm.ops.qstats.generate', $stats))
+                ->assertSuccessful();
     }
 }
