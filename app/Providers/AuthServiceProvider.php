@@ -50,7 +50,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('use-permission', function ($user, $permission) {
-            if ($user->hasRole('privacc')) {
+            if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
                 return true;
             }
 
