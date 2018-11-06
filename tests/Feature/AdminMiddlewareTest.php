@@ -58,9 +58,9 @@ class AdminMiddlewareTest extends TestCase
             ->get('adm/')
             ->assertForbidden();
     }
-    
+
     /** @test **/
-    public function testPrivAccDoesntWorkInProduction() 
+    public function testPrivAccDoesntWorkInProduction()
     {
         config()->set('app.env', 'production');
 
