@@ -182,6 +182,7 @@ class AddLegacyPermissions extends Migration
             ['id' => '172',	'name' => 'adm/visit-transfer/application/open',	'guard_name' => 'web',	'created_at' => '2018-08-16 20:51:03',	'updated_at' => '2018-08-16 20:51:03'],
             ['id' => '173',	'name' => 'adm/mship/ban',	'guard_name' => 'web',	'created_at' => '2018-10-08 18:22:36',	'updated_at' => '2018-10-08 18:22:36'],
             ['id' => '174',	'name' => 'adm/mship/feedback/view/own/',	'guard_name' => 'web',	'created_at' => '2018-10-29 23:24:44',	'updated_at' => '2018-10-29 23:24:44'],
+            ['id' => '175',	'name' => 'teamspeak/idle/temporary',	'guard_name' => 'web',	'created_at' => '2018-10-29 23:24:44',	'updated_at' => '2018-10-29 23:24:44'],
         ]);
     }
 
