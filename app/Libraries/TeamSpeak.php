@@ -298,7 +298,7 @@ class TeamSpeak
         $memberQualifications = $member->active_qualifications;
         foreach ($serverGroups as $group) {
             $qualified = (!is_null($group->qualification) && $memberQualifications->contains('id', $group->qualification->id))
-                || (!is_null($group->permission) && $member->hasPermission($group->permission));
+                || (!is_null($group->permission) && $member->hasPermissionTo($group->permission));
             if (!in_array($group->dbid, $currentGroups) && $qualified) {
                 $client->addServerGroup($group->dbid);
             } elseif (!in_array($group->dbid, $currentGroups) && starts_with($group->name, 'P0') && $member->qualifications_pilot->isEmpty()) {
@@ -340,9 +340,9 @@ class TeamSpeak
                 }
             }
 
-            if ($member->hasPermission($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
+            if ($member->hasPermissionTo($permission->permission_id) && $permission->channelgroup_id != $currentGroup) {
                 $client->setChannelGroup($permission->channel_id, $permission->channelgroup_id);
-            } elseif (!$member->hasPermission($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
+            } elseif (!$member->hasPermissionTo($permission->permission_id) && $currentGroup != null && $currentGroup != $defaultGroup->dbid) {
                 $client->setChannelGroup($permission->channel_id, $defaultGroup->dbid);
             }
         }
@@ -359,9 +359,9 @@ class TeamSpeak
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
-        if ($member->hasPermission('teamspeak/idle/permanent')) {
+        if ($member->hasPermissionTo('teamspeak/idle/permanent')) {
             return;
-        } elseif ($member->hasPermission('teamspeak/idle/temporary')) {
+        } elseif ($member->hasPermissionTo('teamspeak/idle/temporary')) {
             $maxIdleTime = 120;
         } else {
             $maxIdleTime = 60;
