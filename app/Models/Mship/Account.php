@@ -220,6 +220,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
+        // Add to default role
+        $defaultRole = Role::where('default', 1)->limit(1)->get();
+        $model->assignRole($defaultRole);
+
         // Queue the slack email
         $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
     }
@@ -446,10 +450,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getSessionTimeoutAttribute()
     {
-        if ($this->roles->isEmpty()) {
-            $this->assignDefaultRole();
-        }
-
         $timeout = $this->roles()
                         ->orderBy('session_timeout', 'DESC')
                         ->first()
@@ -478,11 +478,5 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function __toString()
     {
         return $this->name;
-    }
-
-    protected function assignDefaultRole()
-    {
-        $defaultRole = Role::where('default', 1)->limit(1)->get();
-        $this->assignRole($defaultRole);
     }
 }
