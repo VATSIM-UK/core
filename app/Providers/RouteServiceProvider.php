@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Redirect;
 use Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -39,11 +41,11 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('ssoEmail', \App\Models\Sso\Email::class);
         Route::model('sysNotification', \App\Models\Sys\Notification::class);
 
-        Route::model('mshipRole', \App\Models\Mship\Role::class, function () {
+        Route::model('mshipRole', Role::class, function () {
             Redirect::route('adm.mship.role.index')->withError('Role doesn\'t exist.');
         });
 
-        Route::model('mshipPermission', \App\Models\Mship\Permission::class, function () {
+        Route::model('mshipPermission', Permission::class, function () {
             Redirect::route('adm.mship.permission.index')->withError('Permission doesn\'t exist.');
         });
 

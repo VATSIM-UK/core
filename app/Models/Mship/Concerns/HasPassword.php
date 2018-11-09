@@ -97,10 +97,10 @@ trait HasPassword
      */
     public function getPasswordLifetimeAttribute()
     {
-        return $this->roles->filter(function ($role) {
-            return $role->hasPasswordLifetime();
-        })->pluck('password_lifetime')
-            ->min();
+        return $this->roles()
+            ->orderBy('password_lifetime', 'DESC')
+            ->first()
+            ->password_lifetime;
     }
 
     /**
@@ -110,9 +110,12 @@ trait HasPassword
      */
     public function getMandatoryPasswordAttribute()
     {
-        return $this->roles->filter(function ($role) {
-            return $role->hasMandatoryPassword();
-        })->count() > 0;
+        return $this->roles()
+                    ->get()
+                    ->filter(function ($value) {
+                        return $value->password_mandatory;
+                    })
+                    ->isNotEmpty();
     }
 
     /**

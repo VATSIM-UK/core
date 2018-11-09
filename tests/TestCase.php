@@ -4,8 +4,10 @@ namespace Tests;
 
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Cts\MockCtsDatabase;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -13,6 +15,8 @@ abstract class TestCase extends BaseTestCase
 
     /* @var Carbon */
     protected $knownDate;
+
+    protected $privacc;
 
     protected function setUp()
     {
@@ -26,6 +30,17 @@ abstract class TestCase extends BaseTestCase
         $this->knownDate = Carbon::now();
 
         $this->seedLegacyTables();
+
+        app()['cache']->forget('spatie.permission.cache');
+        $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
+        $this->setUpPrivacc();
+    }
+
+    protected function setUpPrivacc()
+    {
+        $privaccHolder = factory(Account::class)->create();
+        $privaccHolder->assignRole(Role::findByName('privacc'));
+        $this->privacc = $privaccHolder->fresh();
     }
 
     protected function seedLegacyTables()

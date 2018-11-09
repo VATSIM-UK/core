@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class InactivityMiddlewareTest extends TestCase
@@ -20,9 +20,9 @@ class InactivityMiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = factory(Account::class, 'withQualification')->create(['password' => 'password']);
-        $this->role = factory(Role::class)->create();
-        $this->user->roles()->attach($this->role);
+        $this->user = factory(Account::class)->create(['password' => 'password']);
+        $this->role = factory(Role::class)->create(['session_timeout' => 90]);
+        $this->user->assignRole($this->role);
     }
 
     private function login()

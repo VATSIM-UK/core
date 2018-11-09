@@ -23,11 +23,7 @@
 
         @include('adm.layout.sidebar.smartCARS')
 
-        @include('adm.layout.sidebar.networkData')
-
         @include('adm.layout.sidebar.visitingTransferring')
-
-        @include('adm.layout.sidebar.system')
 
     </ul>
 
