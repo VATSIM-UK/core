@@ -210,7 +210,7 @@ class RemoveAllForeignKeys extends Migration
         Schema::table('smartcars_session', function (Blueprint $table) {
             $table->dropForeign(['account_id']);
         });
-        
+
         Schema::table('mship_role_permission', function (Blueprint $table) {
             $table->dropForeign('mship_role_permission_permission_id_foreign');
             $table->dropForeign('mship_role_permission_role_id_foreign');
