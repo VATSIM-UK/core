@@ -4,14 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Mship\Account;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class InactivityMiddlewareTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $user;
     private $role;
