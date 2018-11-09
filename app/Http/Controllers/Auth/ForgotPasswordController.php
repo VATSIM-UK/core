@@ -31,7 +31,7 @@ class ForgotPasswordController extends BaseController
         $response = $this->broker()->sendResetLink(['id' => Auth::guard('vatsim-sso')->user()->id]);
 
         return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($response)
+            ? $this->sendResetLinkResponse($request, $response)
             : $this->sendResetLinkFailedResponse($request, $response);
     }
 }
