@@ -12,6 +12,17 @@ class AdminMiddlewareTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected $privacc;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $privaccHolder = factory(Account::class)->create();
+        $privaccHolder->assignRole(Role::findByName('privacc'));
+        $this->privacc = $privaccHolder->fresh();
+    }
+
     /** @test * */
     public function testAGuestCannotAccessAdmEndpoints()
     {

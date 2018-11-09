@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Spatie\Permission\Models\Role;
 
 class FeedbackSendTest extends TestCase
 {
@@ -14,6 +15,7 @@ class FeedbackSendTest extends TestCase
     private $admin;
     private $member;
     private $feedback;
+    private $privacc;
 
     public function setUp()
     {
@@ -24,6 +26,10 @@ class FeedbackSendTest extends TestCase
         $this->feedback = factory(Feedback::class)->create([
             'account_id' => $this->member->id,
         ]);
+
+        $privaccHolder = factory(Account::class)->create();
+        $privaccHolder->assignRole(Role::findByName('privacc'));
+        $this->privacc = $privaccHolder->fresh();
     }
 
     /** @test * */

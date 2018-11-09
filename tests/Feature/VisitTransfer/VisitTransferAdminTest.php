@@ -8,6 +8,8 @@ use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
+use App\Models\Mship\Account;
+use Spatie\Permission\Models\Role;
 
 class VisitTransferAdminTest extends TestCase
 {
@@ -17,6 +19,7 @@ class VisitTransferAdminTest extends TestCase
     public $ref1;
     public $ref2;
     public $user;
+    public $privacc;
 
     public function setUp()
     {
@@ -27,6 +30,10 @@ class VisitTransferAdminTest extends TestCase
         $this->ref1 = factory(Reference::class)->create(['application_id' => $this->application->id]);
         $this->ref2 = factory(Reference::class)->create(['application_id' => $this->application->id]);
         $this->application = $this->application->fresh();
+
+        $privaccHolder = factory(Account::class)->create();
+        $privaccHolder->assignRole(Role::findByName('privacc'));
+        $this->privacc = $privaccHolder->fresh();
     }
 
     /** @test * */

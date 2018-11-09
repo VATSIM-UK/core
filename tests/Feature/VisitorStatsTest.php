@@ -4,10 +4,21 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Models\Mship\Account;
+use Spatie\Permission\Models\Role;
 
 class VisitorStatsTest extends TestCase
 {
     use DatabaseTransactions;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $privaccHolder = factory(Account::class)->create();
+        $privaccHolder->assignRole(Role::findByName('privacc'));
+        $this->privacc = $privaccHolder->fresh();
+    }
 
     /** @test * */
     public function testNoHoursArePulledOnGet()

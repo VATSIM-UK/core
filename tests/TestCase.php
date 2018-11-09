@@ -16,8 +16,6 @@ abstract class TestCase extends BaseTestCase
     /* @var Carbon */
     protected $knownDate;
 
-    protected $privacc;
-
     protected function setUp()
     {
         parent::setUp();
@@ -33,14 +31,6 @@ abstract class TestCase extends BaseTestCase
 
         app()['cache']->forget('spatie.permission.cache');
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
-        $this->setUpPrivacc();
-    }
-
-    protected function setUpPrivacc()
-    {
-        $privaccHolder = factory(Account::class)->create();
-        $privaccHolder->assignRole(Role::findByName('privacc'));
-        $this->privacc = $privaccHolder->fresh();
     }
 
     protected function seedLegacyTables()
