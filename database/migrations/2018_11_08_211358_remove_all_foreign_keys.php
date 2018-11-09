@@ -110,11 +110,6 @@ class RemoveAllForeignKeys extends Migration
             $table->dropForeign('networkdata_pilots_account_id_foreign');
         });
 
-        Schema::table('mship_permission_role', function (Blueprint $table) {
-            $table->dropForeign('mship_permission_role_permission_id_foreign');
-            $table->dropForeign('mship_permission_role_role_id_foreign');
-        });
-
         Schema::table('mship_oauth_emails', function (Blueprint $table) {
             $table->dropForeign('mship_oauth_emails_account_email_id_foreign');
             $table->dropForeign('mship_oauth_emails_sso_account_id_foreign');
@@ -145,11 +140,6 @@ class RemoveAllForeignKeys extends Migration
         Schema::table('mship_account_state', function (Blueprint $table) {
             $table->dropForeign('mship_account_state_account_id_foreign');
             $table->dropForeign('mship_account_state_state_id_foreign');
-        });
-
-        Schema::table('mship_account_role', function (Blueprint $table) {
-            $table->dropForeign('mship_account_role_account_id_foreign');
-            $table->dropForeign('mship_account_role_role_id_foreign');
         });
 
         Schema::table('mship_account_qualification', function (Blueprint $table) {
