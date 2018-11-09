@@ -12,7 +12,7 @@ class MshipTest extends TestCase
 
     public function testItLoadsSuccessfully()
     {
-        $response = $this->get('/');
+        $response = $this->get(route('site.home'));
         $response->assertSuccessful();
     }
 
