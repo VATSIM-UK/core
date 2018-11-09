@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\VisitTransfer;
 
+use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
-use App\Models\Mship\Account;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
 {

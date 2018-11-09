@@ -5,8 +5,8 @@ namespace Tests\Feature\Mship\Feedback;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class FeedbackSendTest extends TestCase
 {

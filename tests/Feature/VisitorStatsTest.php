@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 use App\Models\Mship\Account;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class VisitorStatsTest extends TestCase
 {

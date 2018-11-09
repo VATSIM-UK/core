@@ -4,7 +4,6 @@ namespace Tests\Feature\Mship;
 
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ResetPasswordTest extends TestCase
