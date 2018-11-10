@@ -2,6 +2,10 @@
 
 Route::get('user')->uses('Api\OAuthUserController@view');
 
+// METAR
+
+Route::get('metar/{airportIcao}')->uses('Api\MetarController@get')->name('metar');
+
 // NETWORK DATA
 
 Route::group([
