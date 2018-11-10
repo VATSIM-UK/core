@@ -131,6 +131,8 @@ class Account extends Resource
             HasMany::make('Bans', 'bans')->onlyOnDetail(),
 
             BelongsToMany::make('Roles'),
+
+            HasMany::make('Notes')->onlyOnDetail(),
         ];
     }
 
@@ -182,6 +184,7 @@ class Account extends Resource
     public function actions(Request $request)
     {
         return [
+            (new Actions\Mship\AddNoteToAccount),
             (new Actions\Mship\BanAccount),
         ];
     }
