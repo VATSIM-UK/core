@@ -73,9 +73,9 @@ class SyncToForums implements ShouldQueue
 
         // Proccess core group membership.
         foreach ($groups as $group) {
-            $ips_club_id = array_search($group->name, $clubMap);
-            if ($ips_club_id !== false) {
-                $club = \IPS\Member\Club::load($ips_club_id);
+            $ipsClubId = array_search($group->name, $clubMap);
+            if ($ipsClubId !== false) {
+                $club = \IPS\Member\Club::load($ipsClubId);
 
                 // Only add the user if not in already
                 if ($club->memberStatus($ipsAccount) === null) {
@@ -85,13 +85,13 @@ class SyncToForums implements ShouldQueue
         }
 
         // Proccess member's IPB-side Club membership.
-        foreach ($ipsAccount->clubs() as $ips_member_club) {
-            $name = $clubMap[$ips_member_club];
+        foreach ($ipsAccount->clubs() as $ipsMemberClub) {
+            $name = $clubMap[$ipsMemberClub];
 
             if ($groups->pluck('name')->search($name) === false) {
-                $ips_member_club = \IPS\Member\Club::load($ips_member_club);
-                if (!$ips_member_club->isLeader($ipsAccount) && !$ips_member_club->isModerator($ipsAccount)) {
-                    $ips_member_club->removeMember($ipsAccount);
+                $ipsMemberClub = \IPS\Member\Club::load($ipsMemberClub);
+                if (!$ipsMemberClub->isLeader($ipsAccount) && !$ipsMemberClub->isModerator($ipsAccount)) {
+                    $ipsMemberClub->removeMember($ipsAccount);
                 }
             }
         }
