@@ -20,11 +20,11 @@ trait HasHelpdeskAccount
     public function syncToHelpdesk($helpdeskAccount = null)
     {
         if (!isset(self::$sso_account_id)) {
-            $helpdesk_sso_account = DB::table('oauth_clients')->where('name', 'Helpdesk')->first();
-            if (!$helpdesk_sso_account) {
+            $helpdeskSsoAccount = DB::table('oauth_clients')->where('name', 'Helpdesk')->first();
+            if (!$helpdeskSsoAccount) {
                 return false;
             }
-            self::$sso_account_id = $helpdesk_sso_account->id;
+            self::$sso_account_id = $helpdeskSsoAccount->id;
         }
 
         if ($helpdeskAccount) {

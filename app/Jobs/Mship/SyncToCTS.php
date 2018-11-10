@@ -23,32 +23,32 @@ class SyncToCTS implements ShouldQueue
 
     public function handle()
     {
-        $cts_database = config('services.cts.database');
-        $sso_account_id = DB::table('oauth_clients')->where('name', 'CT System')->first();
-        if (!$sso_account_id) {
+        $ctsDatabse = config('services.cts.database');
+        $ssoAccountId = DB::table('oauth_clients')->where('name', 'CT System')->first();
+        if (!$ssoAccountId) {
             return;
         }
 
-        $sso_account_id = $sso_account_id->id;
+        $ssoAccountId = $ssoAccountId->id;
 
         // Check user exists in database
 
-        $cts_account = DB::table("{$cts_database}.members")->where('cid', $this->account->id)->first();
+        $ctsAccount = DB::table("{$ctsDatabse}.members")->where('cid', $this->account->id)->first();
 
-        if (!$cts_account) {
+        if (!$ctsAccount) {
             // No user exists. Abort.
             return;
         }
 
         $data = [
             'name' => $this->account->real_name,
-            'email' => $this->account->getEmailForService($sso_account_id),
+            'email' => $this->account->getEmailForService($ssoAccountId),
             'rating' => ($this->account->network_banned || $this->account->inactive) ? 0 : $this->account->qualification_atc->vatsim,
             'prating' => $this->account->qualifications_pilot->sum('vatsim'),
             'last_cert_check' => $this->account->cert_checked_at,
         ];
 
-        DB::table("{$cts_database}.members")
+        DB::table("{$ctsDatabse}.members")
                     ->where('cid', $this->account->id)
                     ->update($data);
     }

@@ -82,11 +82,11 @@ trait HasEmails
      * @param $sso_account_id
      * @return string
      */
-    public function getEmailForService($sso_account_id)
+    public function getEmailForService($ssoAccountId)
     {
-        $email_for_service = $this->ssoEmails()->where('sso_account_id', $sso_account_id)->with('email')->first();
+        $emailForService = $this->ssoEmails()->where('sso_account_id', $ssoAccountId)->with('email')->first();
 
-        return $email_for_service ? $email_for_service->email->email : $this->email;
+        return $emailForService ? $emailForService->email->email : $this->email;
     }
 
     /**
