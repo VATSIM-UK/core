@@ -22,13 +22,13 @@
                             <th>Status</th>
                             @can('use-permission', 'adm/mship/account/*/note/create')
                                 <th>Note</th>
-                            @endif
+                            @endcan
                             @can('use-permission', 'adm/mship/ban/*/modify')
                                 <th>Modify</th>
-                            @endif
+                            @endcan
                             @can('use-permission', 'adm/mship/ban/*/repeal')
                                 <th>Repeal</th>
-                            @endif
+                            @endcan
                         </tr>
                         </thead>
                         <tbody>
