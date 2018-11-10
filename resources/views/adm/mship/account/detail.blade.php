@@ -25,9 +25,6 @@
                     @can('use-permission', "adm/mship/account/*/notes")
                         <li {!! $selectedTab == "notes" ? "class='active'" : "" !!}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endcan
-                    @can('use-permission', "adm/mship/account/*/flags")
-                        <li {!! $selectedTab == "flags" ? "class='active'" : "" !!}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
-                    @endcan
                 </ul>
                 <br />
 
@@ -534,28 +531,11 @@
                         </div>
                     @endcan
 
-                    @can('use-permission', "adm/mship/account/*/flags")
-                        <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
-                    @endcan
-
                 </div>
                 <div class="clearfix"></div>
             </div>
         </div>
     </div>
-    @can('use-permission', "adm/mship/account/*/timeline")
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Recent Activities</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body table-responsive">
-                    {{--@include('adm.sys.activity.stream', ['activities' => $account->activity_recent])--}}
-                    [Not implemented]
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div>
-    @endcan
 </div>
 @stop
 
