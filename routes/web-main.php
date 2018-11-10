@@ -153,8 +153,17 @@ Route::group([
     'namespace' => 'NetworkData',
     'middleware' => 'auth_full_group',
 ], function () {
+    Route::get('/', function () {
+        return redirect()->route('networkdata.online');
+    })->name('landing');
+
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
     Route::get('online')->uses('Online@getOnline')->name('online');
+});
+
+// Visit/Transfer
+Route::get('visiting-transferring', function () {
+    return redirect()->route('visiting.landing');
 });
 
 Route::group([
@@ -170,6 +179,9 @@ Route::group([
         'as' => 'application.',
         'prefix' => 'application',
     ], function () {
+        Route::get('/', function () {
+            return redirect()->route('visiting.landing');
+        });
 
         // Start
         Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
