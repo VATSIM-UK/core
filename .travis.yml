@@ -24,6 +24,7 @@ jobs:
     - php artisan key:generate
     - php artisan migrate -vvv -n
     - yarn run prod
+    - php artisan route:cache
     before_script:
     - ./cc-test-reporter before-build
     - php artisan serve -q &
