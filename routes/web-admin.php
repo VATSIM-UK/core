@@ -8,11 +8,6 @@ Route::group([
     'as' => 'adm.',
 ], function () {
 
-    // Index
-    Route::get('/', function () {
-        return redirect()->route('adm.dashboard');
-    });
-
     // Main
     Route::get('/dashboard')->uses('Dashboard@getIndex')->name('dashboard');
     Route::any('/search/{q?}')->uses('Dashboard@anySearch')->name('search');
