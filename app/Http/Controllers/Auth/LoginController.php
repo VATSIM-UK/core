@@ -95,25 +95,16 @@ class LoginController extends BaseController
 
     protected function attemptSecondaryAuth()
     {
-        if (Session::has('url.intended')) {
-            $intended = Session::get('url.intended');
-            if (starts_with($intended, route('password.request'))) {
-                Session::remove('url.intended');
-
-                return redirect($intended);
-            }
-        }
-
+        $intended = Session::pull('url.intended', route('site.home'));
         $member = Auth::guard('vatsim-sso')->user();
+
         if ($member->hasPassword()) {
             return redirect()->route('auth-secondary');
-        } else {
-            Auth::login(Auth::guard('vatsim-sso')->user(), true);
-
-            $intended = Session::pull('url.intended', route('site.home'));
-
-            return redirect($intended);
         }
+
+        Auth::login(Auth::guard('vatsim-sso')->user(), true);
+
+        return redirect($intended);
     }
 
     public function loginSecondary(Request $request)
