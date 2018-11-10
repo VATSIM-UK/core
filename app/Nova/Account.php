@@ -129,10 +129,12 @@ class Account extends Resource
             BelongsToMany::make('States', 'statesHistory')->onlyOnDetail(),
 
             HasMany::make('Bans', 'bans')->onlyOnDetail(),
-
+          
             MorphToMany::make('Roles', 'roles', \Vyuldashev\NovaPermission\Role::class),
 
             MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class),
+
+            HasMany::make('Notes')->onlyOnDetail(),
         ];
     }
 
@@ -184,6 +186,7 @@ class Account extends Resource
     public function actions(Request $request)
     {
         return [
+            (new Actions\Mship\AddNoteToAccount),
             (new Actions\Mship\BanAccount),
         ];
     }
