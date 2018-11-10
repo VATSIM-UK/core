@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 
-class OAuthUserController {
-
+class OAuthUserController
+{
     public function view(Request $request)
     {
         $clientId = $request->user()->oAuthToken()->client->id;
