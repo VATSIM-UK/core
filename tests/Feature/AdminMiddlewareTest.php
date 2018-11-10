@@ -42,7 +42,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testPrivaccCanBypassGuard()
     {
-        $this->actingAs($this->privacc->fresh())
+        $this->actingAs($this->privacc)
                 ->get('adm/')
                 ->assertRedirect(route('adm.dashboard'));
     }
