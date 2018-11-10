@@ -24,7 +24,7 @@ class AdminMiddlewareTest extends TestCase
     {
         $user = factory(Account::class)->create();
 
-        $this->actingAs($user)->get('adm/')
+        $this->actingAs($user)->get('adm/dashboard')
                 ->assertForbidden();
     }
 
@@ -32,8 +32,8 @@ class AdminMiddlewareTest extends TestCase
     public function testPrivaccCanBypassGuard()
     {
         $this->actingAs($this->privacc)
-                ->get('adm/')
-                ->assertRedirect(route('adm.dashboard'));
+                ->get('adm/dashboard')
+                ->assertSuccessful();
     }
 
     public function testUsingEndpointPermissionsAllowsAccess()
@@ -55,7 +55,7 @@ class AdminMiddlewareTest extends TestCase
             ->assertSee('Administration Control Panel');
 
         $this->actingAs($staff->fresh())
-            ->get('adm/')
+            ->get('adm/mship/account/account')
             ->assertForbidden();
     }
 
@@ -65,7 +65,7 @@ class AdminMiddlewareTest extends TestCase
         config()->set('app.env', 'production');
 
         $this->actingAs($this->privacc)
-            ->get('adm/')
+            ->get('adm/dashboard')
             ->assertForbidden();
     }
 }
