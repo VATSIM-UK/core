@@ -42,9 +42,10 @@ class AdminMiddlewareTest extends TestCase
     /** @test */
     public function testPrivaccCanBypassGuard()
     {
-        $this->actingAs($this->privacc)
+        $this->actingAs($this->privacc->fresh())
                 ->get('adm/')
-                ->assertRedirect(route('adm.dashboard'));
+                ->assertSuccessful()
+                ->assertSee('Administration Control Panel');
     }
 
     public function testUsingEndpointPermissionsAllowsAccess()
