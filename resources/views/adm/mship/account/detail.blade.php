@@ -25,12 +25,6 @@
                     @can('use-permission', "adm/mship/account/*/notes")
                         <li {!! $selectedTab == "notes" ? "class='active'" : "" !!}><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
                     @endcan
-                    @can('use-permission', "adm/mship/account/*/flags")
-                        <li {!! $selectedTab == "flags" ? "class='active'" : "" !!}><a href="#flags" role="tab" data-toggle="tab">Review Flags</a></li>
-                    @endcan
-                    @can('use-permission', "adm/mship/account/*/datachanges")
-                        <li {!! $selectedTab == "datachanges" ? "class='active'" : "" !!}><a href="#datachanges" role="tab" data-toggle="tab">Data Changes</a></li>
-                    @endcan
                 </ul>
                 <br />
 
@@ -537,62 +531,11 @@
                         </div>
                     @endcan
 
-                    @can('use-permission', "adm/mship/account/*/flags")
-                        <div class="tab-pane fade {{ $selectedTab == "flags" ? "in active" : "" }}" id="flags">Review Flags</div>
-                    @endcan
-
-                    @can('use-permission', "adm/mship/account/*/datachanges")
-                        <div class="tab-pane fade {{ $selectedTab == "datachanges" ? "in active" : "" }}" id="datachanges">
-                            <!-- general form elements -->
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <h3 class="box-title">Data Changes</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <table class="table table-striped table-bordered table-condensed">
-                                        <thead>
-                                            <tr>
-                                                <th>Data Key</th>
-                                                <th>Old Value</th>
-                                                <th>New Value</th>
-                                                <th>Timestamp</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($account->dataChanges as $dc)
-                                            <tr>
-                                                <td>{{ $dc->data_key }}</td>
-                                                <td>{{ $_account->can('use-permission', "adm/mship/account/*/datachanges/view") ? $dc->data_old : "[No Permission]" }}</td>
-                                                <td>{{ $_account->can('use-permission', "adm/mship/account/*/datachanges/view") ? $dc->data_new : "[No Permission]" }}</td>
-                                                <td>{{ $dc->created_at }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div><!-- /.box-body -->
-                            </div><!-- /.box -->
-
-                        </div>
-                    @endcan
-
                 </div>
                 <div class="clearfix"></div>
             </div>
         </div>
     </div>
-    @can('use-permission', "adm/mship/account/*/timeline")
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Recent Activities</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body table-responsive">
-                    {{--@include('adm.sys.activity.stream', ['activities' => $account->activity_recent])--}}
-                    [Not implemented]
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div>
-    @endcan
 </div>
 @stop
 
