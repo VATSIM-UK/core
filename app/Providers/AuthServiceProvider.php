@@ -40,7 +40,6 @@ class AuthServiceProvider extends ServiceProvider
         VisitTransfer\Reference::class => ReferencePolicy::class,
         WaitingList::class => WaitingListPolicy::class,
         Account::class => AccountPolicy::class,
-        Role::class => RolePolicy::class,
         Qualification::class => QualificationPolicy::class,
     ];
 

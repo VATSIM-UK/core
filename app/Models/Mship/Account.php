@@ -163,7 +163,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, 
-        HasNotifications, HasEmails, HasRoles HasWaitingLists;
+        HasNotifications, HasEmails, HasRoles, HasWaitingLists;
   
     use HasApiTokens {
         clients as oAuthClients;

@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
 
 abstract class BasePolicy
 {
@@ -19,7 +19,7 @@ abstract class BasePolicy
      */
     public function before(Account $account, $policy)
     {
-        return $account->roles->contains(Role::find(1));
+        return $account->roles->contains(Role::findByName('privacc'));
     }
 
     abstract public function viewAny(Account $account);
