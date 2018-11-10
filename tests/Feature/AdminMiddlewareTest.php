@@ -26,7 +26,7 @@ class AdminMiddlewareTest extends TestCase
     /** @test * */
     public function testAGuestCannotAccessAdmEndpoints()
     {
-        $this->get(route('adm.dashboard'))
+        $this->get(route('adm.mship.feedback.new'))
                 ->assertRedirect(route('login'));
     }
 
@@ -35,18 +35,17 @@ class AdminMiddlewareTest extends TestCase
     {
         $user = factory(Account::class)->create();
 
-        $this->actingAs($user)
-                ->get(route('adm.dashboard'))
+        $this->actingAs($user)->get('adm/')
                 ->assertForbidden();
     }
 
     /** @test */
     public function testPrivaccCanBypassGuard()
     {
-        $this->actingAs($this->privacc)
-                ->get(route('adm.dashboard'))
-                ->assertSee('Administration Control Panel')
-                ->assertSuccessful();
+        $this->actingAs($this->privacc->fresh())
+                ->get('adm/')
+                ->assertSuccessful()
+                ->assertSee('Administration Control Panel');
     }
 
     public function testUsingEndpointPermissionsAllowsAccess()
@@ -54,7 +53,7 @@ class AdminMiddlewareTest extends TestCase
         $staff = factory(Account::class)->create();
 
         $this->actingAs($staff)
-                ->get(route('adm.dashboard'))
+                ->get('adm/dashboard')
                 ->assertForbidden();
 
         $role = factory(Role::class)->create();
@@ -63,11 +62,12 @@ class AdminMiddlewareTest extends TestCase
         $staff->assignRole($role);
 
         $this->actingAs($staff->fresh())
-            ->get(route('adm.dashboard'))
+            ->get('adm/dashboard')
+            ->assertSuccessful()
             ->assertSee('Administration Control Panel');
 
         $this->actingAs($staff->fresh())
-            ->get(route('adm.search'))
+            ->get('adm/')
             ->assertForbidden();
     }
 
@@ -77,7 +77,7 @@ class AdminMiddlewareTest extends TestCase
         config()->set('app.env', 'production');
 
         $this->actingAs($this->privacc)
-            ->get(route('adm.dashboard'))
+            ->get('adm/')
             ->assertForbidden();
     }
 }
