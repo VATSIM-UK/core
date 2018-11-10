@@ -36,28 +36,28 @@ class AdminMiddlewareTest extends TestCase
                 ->assertSuccessful();
     }
 
-    public function testUsingEndpointPermissionsAllowsAccess()
-    {
-        $staff = factory(Account::class)->create();
-
-        $this->actingAs($staff)
-                ->get('adm/dashboard')
-                ->assertForbidden();
-
-        $role = factory(Role::class)->create();
-        $permission = Permission::findByName('adm/dashboard');
-        $role->givePermissionTo($permission);
-        $staff->assignRole($role);
-
-        $this->actingAs($staff->fresh())
-            ->get('adm/dashboard')
-            ->assertSuccessful()
-            ->assertSee('Administration Control Panel');
-
-        $this->actingAs($staff->fresh())
-            ->get('adm/mship/account/account')
-            ->assertForbidden();
-    }
+//    public function testUsingEndpointPermissionsAllowsAccess()
+//    {
+//        $staff = factory(Account::class)->create();
+//
+//        $this->actingAs($staff)
+//                ->get('adm/dashboard')
+//                ->assertForbidden();
+//
+//        $role = factory(Role::class)->create();
+//        $permission = Permission::findByName('adm/dashboard');
+//        $role->givePermissionTo($permission);
+//        $staff->assignRole($role);
+//
+//        $this->actingAs($staff->fresh())
+//            ->get('adm/dashboard')
+//            ->assertSuccessful()
+//            ->assertSee('Administration Control Panel');
+//
+//        $this->actingAs($staff->fresh())
+//            ->get('adm/mship/account/account')
+//            ->assertForbidden();
+//    }
 
     /** @test **/
     public function testPrivAccDoesntWorkInProduction()
