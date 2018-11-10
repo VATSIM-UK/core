@@ -110,7 +110,7 @@ class LoginController extends BaseController
         } else {
             Auth::login(Auth::guard('vatsim-sso')->user(), true);
 
-            $intended = Session::get('url.intended') ?? route('site.home');
+            $intended = Session::pull('url.intended', route('site.home'));
 
             return redirect($intended);
         }
