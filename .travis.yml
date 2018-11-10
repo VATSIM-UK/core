@@ -15,14 +15,15 @@ jobs:
     - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
     - nvm install node
     - npm -v
-    - npm install
+    - yarn -v
+    - yarn install
     install:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate -vvv -n
-    - npm run prod
+    - yarn run prod
     - php artisan route:cache
     before_script:
     - ./cc-test-reporter before-build
