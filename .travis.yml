@@ -22,7 +22,6 @@ jobs:
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate -vvv -n
-    - php artisan route:cache
     - npm run prod
     before_script:
     - ./cc-test-reporter before-build
