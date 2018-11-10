@@ -48,14 +48,14 @@
                     {{ Form::close() }}<br><br>
                     <div class="btn-group">
                         <a class="btn{{ $form->enabled ? ' btn-danger' : ' btn-success' }}" style="color:white;"
-                           href="{{route("adm.mship.feedback.config.toggle", $form->slug)}}">{{ $form->enabled ? 'Disable' : 'Enable' }}
+                           href="{{route("adm.mship.feedback.config.toggle", $form)}}">{{ $form->enabled ? 'Disable' : 'Enable' }}
                             Form</a>
                         <a class="btn{{ $form->public ? ' btn-danger' : ' btn-success' }}" style="color:white;"
-                           href="{{route("adm.mship.feedback.config.visibility", $form->slug)}}">Make {{ $form->public ? 'Unlisted' : 'Listed' }}</a>
+                           href="{{route("adm.mship.feedback.config.visibility", $form)}}">Make {{ $form->public ? 'Unlisted' : 'Listed' }}</a>
                     </div>
                     <div style="word-break: break-word;">
                         Form Link:
-                        {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form->slug), $form->slug)}}
+                        {{link_to_route('mship.feedback.new.form', route('mship.feedback.new.form', $form), $form->slug)}}
                     </div>
                 </div>
             </div>

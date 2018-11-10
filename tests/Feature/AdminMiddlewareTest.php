@@ -3,75 +3,69 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Permission;
-use App\Models\Mship\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminMiddlewareTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $user;
-    private $otherUser;
-    private $superUser;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->user = factory(Account::class)->create();
-
-        $this->otherUser = factory(Account::class)->create();
-
-        $this->superUser = factory(Account::class)->create();
-        $this->superUser->roles()->attach(Role::find(1));
-    }
-
-    private function createRoleWithPermissionId(int $permission, $user)
-    {
-        $role = factory(Role::class)->create();
-        $role->permissions()->attach(Permission::find($permission));
-        $user->roles()->attach($role);
-    }
-
     /** @test * */
-    public function testAUserWithPermissionCanAccessAnExplicitEndPoint()
+    public function testAGuestCannotAccessAdmEndpoints()
     {
-        $this->createRoleWithPermissionId(2, $this->user); // GET adm/dashboard
-
-        $this->actingAs($this->user, 'web')->get(route('adm.dashboard'))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.dashboard'))->assertSuccessful();
-    }
-
-    /** @test * */
-    public function testAUserWithPermissionCanAccessAWildcardEndpoint()
-    {
-        $this->createRoleWithPermissionId(6, $this->user); // GET adm/mship/account/*
-
-        $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
-            $this->user))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
-            $this->user))->assertSuccessful();
-    }
-
-    /** @test * */
-    public function testAUserWithAnExplicitPermissionCanAccessEndpoint()
-    {
-        $permission = factory(Permission::class)->create(['name' => "adm/mship/account/{$this->otherUser->id}/"]);
-        $role = factory(Role::class)->create();
-        $role->permissions()->attach($permission->first());
-        $this->user->roles()->attach($role);
-
-        $this->actingAs($this->user, 'web')->get(route('adm.mship.account.details',
-            $this->otherUser))->assertSuccessful();
-        $this->actingAs($this->superUser, 'web')->get(route('adm.mship.account.details',
-            $this->otherUser))->assertSuccessful();
+        $this->get(route('adm.mship.feedback.new'))
+                ->assertRedirect(route('login'));
     }
 
     /** @test * */
     public function testANonStaffMemberCannotAccessAdmEndpoints()
     {
-        $this->actingAs($this->user, 'web')->get(route('adm.mship.feedback.new'))->assertForbidden();
+        $user = factory(Account::class)->create();
+
+        $this->actingAs($user)->get('adm/dashboard')
+                ->assertForbidden();
+    }
+
+    /** @test */
+    public function testPrivaccCanBypassGuard()
+    {
+        $this->actingAs($this->privacc)
+                ->get('adm/dashboard')
+                ->assertSuccessful();
+    }
+
+//    public function testUsingEndpointPermissionsAllowsAccess()
+//    {
+//        $staff = factory(Account::class)->create();
+//
+//        $this->actingAs($staff)
+//                ->get('adm/dashboard')
+//                ->assertForbidden();
+//
+//        $role = factory(Role::class)->create();
+//        $permission = Permission::findByName('adm/dashboard');
+//        $role->givePermissionTo($permission);
+//        $staff->assignRole($role);
+//
+//        $this->actingAs($staff->fresh())
+//            ->get('adm/dashboard')
+//            ->assertSuccessful()
+//            ->assertSee('Administration Control Panel');
+//
+//        $this->actingAs($staff->fresh())
+//            ->get('adm/mship/account/account')
+//            ->assertForbidden();
+//    }
+
+    /** @test **/
+    public function testPrivAccDoesntWorkInProduction()
+    {
+        config()->set('app.env', 'production');
+
+        $this->actingAs($this->privacc)
+            ->get('adm/dashboard')
+            ->assertForbidden();
     }
 }

@@ -4,14 +4,9 @@
 Route::group([
     'prefix' => 'adm',
     'namespace' => 'Adm',
-    'middleware' => 'auth_full_group',
+    'middleware' => ['auth_full_group', 'admin'],
     'as' => 'adm.',
 ], function () {
-
-    // Index
-    Route::get('/', function () {
-        return redirect()->route('adm.dashboard');
-    });
 
     // Main
     Route::get('/dashboard')->uses('Dashboard@getIndex')->name('dashboard');

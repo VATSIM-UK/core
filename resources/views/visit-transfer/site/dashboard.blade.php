@@ -76,7 +76,7 @@
                                     <button class="btn btn-success">START PILOT APPLICATION</button>
                                 </a>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
-                                <a href="{{ route('visiting.application.continue', [$currentVisitApplicatioon->public_id]) }}">
+                                <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
                                     <button class="btn btn-primary" href="">CONTINUE APPLICATION</button>
                                 </a>
                             @elseif($currentTransferApplication)
