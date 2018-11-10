@@ -3,7 +3,6 @@
 namespace App\Policies\Training;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -11,18 +10,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class WaitingListPolicy extends BasePolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Allow SuperAdmins all permissions.
-     *
-     * @param Account $account
-     * @param $policy
-     * @return mixed
-     */
-    public function before(Account $account, $policy)
-    {
-        return $account->roles->contains(Role::find(1));
-    }
 
     public function addAccount(Account $account, WaitingList $waitingList)
     {
