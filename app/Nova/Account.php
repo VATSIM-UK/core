@@ -129,7 +129,7 @@ class Account extends Resource
             BelongsToMany::make('States', 'statesHistory')->onlyOnDetail(),
 
             HasMany::make('Bans', 'bans')->onlyOnDetail(),
-          
+
             MorphToMany::make('Roles', 'roles', \Vyuldashev\NovaPermission\Role::class),
 
             MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class),
