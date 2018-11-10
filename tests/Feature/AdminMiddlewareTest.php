@@ -44,8 +44,7 @@ class AdminMiddlewareTest extends TestCase
     {
         $this->actingAs($this->privacc->fresh())
                 ->get('adm/')
-                ->assertSuccessful()
-                ->assertSee('Administration Control Panel');
+                ->assertRedirect(route('adm.dashboard'));
     }
 
     public function testUsingEndpointPermissionsAllowsAccess()
