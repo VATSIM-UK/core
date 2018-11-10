@@ -9,7 +9,7 @@ Route::group([
 ], function () {
 
     // Main
-    Route::get('/')->uses('Dashboard@getIndex');
+    // Route::get('/')->uses('Dashboard@getIndex');
     Route::get('/dashboard')->uses('Dashboard@getIndex')->name('dashboard');
     Route::any('/search/{q?}')->uses('Dashboard@anySearch')->name('search');
 
