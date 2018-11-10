@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 use Watson\Rememberable\Rememberable;
 
 /**
@@ -160,7 +162,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
         HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
-        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasWaitingLists;
+        HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, 
+        HasNotifications, HasEmails, HasRoles HasWaitingLists;
+  
     use HasApiTokens {
         clients as oAuthClients;
         tokens as oAuthTokens;
@@ -171,6 +175,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     protected $table = 'mship_account';
+    protected $guard_name = ['web'];
     public $incrementing = false;
     protected $dates = [
         'last_login',
@@ -220,12 +225,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public static function eventCreated($model, $extra = null, $data = null)
     {
-        // Add the user to the default role.
-        $defaultRole = RoleData::isDefault()->first();
-
-        if ($defaultRole) {
-            $model->roles()->attach($defaultRole);
-        }
+        // Add to default role
+        $defaultRole = Role::where('default', 1)->limit(1)->get();
+        $model->assignRole($defaultRole);
 
         // Queue the slack email
         $model->notify((new SlackInvitation())->delay(Carbon::now()->addDays(7)));
@@ -293,89 +295,14 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->hasMany(\App\Models\Sys\Activity::class, 'actor_id');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(\App\Models\Mship\Role::class, 'mship_account_role')
-            ->with('permissions')
-            ->withTimestamps();
-    }
-
     public function pireps()
     {
         return $this->hasManyThrough(\App\Models\Smartcars\Pirep::class, \App\Models\Smartcars\Bid::class, 'account_id', 'bid_id', 'id');
     }
 
-    /**
-     * Determine if the given role is attached to this account.
-     *
-     * @param Role $role The role to check.
-     *
-     * @return bool
-     */
-    public function hasRole(Role $role)
-    {
-        return $this->roles->contains($role->id);
-    }
-
-    /**
-     * Detach a role from this account.
-     *
-     * @param Role $role The role to remove from the account.
-     *
-     * @return bool
-     */
-    public function removeRole(Role $role)
-    {
-        if (!$this->hasRole($role)) {
-            return true;
-        }
-
-        return $this->roles()->detach($role->id);
-    }
-
     public function feedback()
     {
         return $this->hasMany(\App\Models\Mship\Feedback\Feedback::class);
-    }
-
-    public function hasPermission($permission)
-    {
-        if (is_numeric($permission)) {
-            $permission = PermissionData::find($permission);
-            $permission = $permission ? $permission->name : 'NOTHING';
-        } elseif (is_object($permission)) {
-            $permission = $permission->name;
-        } else {
-            $permission = preg_replace('/\d+/', '*', $permission);
-        }
-
-        // Let's check all roles for this permission!
-        foreach ($this->roles as $r) {
-            if ($r->hasPermission($permission)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function hasChildPermission($parent)
-    {
-        if (is_object($parent)) {
-            $parent = $parent->name;
-        } elseif (is_numeric($parent)) {
-            $parent = PermissionData::find($parent);
-            $parent = $parent ? $parent->name : 'NOTHING-AT-ALL';
-        } elseif (!is_numeric($parent)) {
-            $parent = preg_replace('/\d+/', '*', $parent);
-        }
-
-        // Let's check all roles for this permission!
-        $hasPermission = $this->roles->filter(function ($role) use ($parent) {
-            return $role->hasPermission($parent);
-        })->count() > 0;
-
-        return $hasPermission;
     }
 
     public function addNote($noteType, $noteContent, $writer = null, $attachment = null)
@@ -528,9 +455,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function getSessionTimeoutAttribute()
     {
-        $timeout = $this->roles->filter(function ($role) {
-            return $role->hasSessionTimeout();
-        })->pluck('session_timeout')->min();
+        $timeout = $this->roles()
+                        ->orderBy('session_timeout', 'DESC')
+                        ->first()
+                        ->session_timeout;
 
         return $timeout === null ? 0 : $timeout;
     }

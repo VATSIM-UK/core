@@ -47,13 +47,13 @@ class CreateEditNoteType extends Request
         $currentNoteType = $this->route('mshipNoteType');
 
         if ($currentNoteType != null && $currentNoteType->exists) {
-            if (Auth::user()->hasPermission('adm/mship/note/type/default')) {
+            if (Auth::user()->can('use-permission', 'adm/mship/note/type/default')) {
                 $data['is_default'] = array_get($data, 'is_default', $currentNoteType->is_default);
             } else {
                 $data['is_default'] = $currentNoteType->is_default;
             }
         } else {
-            if (Auth::user()->hasPermission('adm/mship/note/type/default')) {
+            if (Auth::user()->can('use-permission', 'adm/mship/note/type/default')) {
                 $data['is_default'] = array_get($data, 'is_default', false);
             } else {
                 $data['is_default'] = false;
