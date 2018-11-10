@@ -64,7 +64,6 @@ class AdminMiddlewareTest extends TestCase
 
         $this->actingAs($staff->fresh())
             ->get(route('adm.dashboard'))
-            ->assertSuccessful()
             ->assertSee('Administration Control Panel');
 
         $this->actingAs($staff->fresh())
