@@ -73,7 +73,7 @@ function checkStatus(xmlhttp) {
 }
 
 window.setInterval(function() {
-    requestData("{{ route('teamspeak.status', $registration->id) }}", checkStatus);
+    requestData("{{ route('teamspeak.status', $registration) }}", checkStatus);
 }, 5000);
 
 window.setTimeout(function() {
