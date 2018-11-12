@@ -52,7 +52,7 @@
                         <span>Open Applications</span>
 
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Application::statisticOpen() !!}</small>
+                            <small class="label pull-right bg-green">{!! \App\Models\VisitTransfer\Application::statisticOpenNotInProgress() !!}</small>
                         </span>
                     </a>
                 </li>

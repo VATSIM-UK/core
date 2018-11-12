@@ -189,9 +189,14 @@
         /** @test */
         public function itReportsStatisticsCorrectly()
         {
+            $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->search(function($status) {
+                return $status == Application::STATUS_IN_PROGRESS;
+            });
+            $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->except($openNotInProgressApplications);
+
             $applicationTypes = [
                 'statisticTotal' => collect(Application::$APPLICATION_IS_CONSIDERED_EDITABLE)->merge(Application::$APPLICATION_IS_CONSIDERED_OPEN)->merge(Application::$APPLICATION_IS_CONSIDERED_CLOSED)->merge(Application::$APPLICATION_REQUIRES_ACTION)->merge(Application::$APPLICATION_IS_CONSIDERED_WITHDRAWABLE)->unique()->all(),
-                'statisticOpen' => Application::$APPLICATION_IS_CONSIDERED_OPEN,
+                'statisticOpenNotInProgress' => $openNotInProgressApplications->all(),
                 'statisticUnderReview' => [Application::STATUS_UNDER_REVIEW],
                 'statisticAccepted' => [Application::STATUS_ACCEPTED],
                 'statisticClosed' => Application::$APPLICATION_IS_CONSIDERED_CLOSED,

@@ -789,10 +789,10 @@ class Application extends Model
         });
     }
 
-    public static function statisticOpen()
+    public static function statisticOpenNotInProgress()
     {
-        return Cache::remember('VT_APPLICATIONS_STATISTICS_OPEN', 1, function () {
-            return self::statusIn(self::$APPLICATION_IS_CONSIDERED_OPEN)->count();
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_OPEN_NOT_IN_PROGRESS', 1, function () {
+            return self::statusIn(self::$APPLICATION_IS_CONSIDERED_OPEN)->where('status', '!=', self::STATUS_IN_PROGRESS)->count();
         });
     }
 
