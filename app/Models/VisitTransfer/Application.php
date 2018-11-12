@@ -781,7 +781,6 @@ class Application extends Model
     }
 
     /** Statistics */
-
     public static function statisticTotal()
     {
         return Cache::remember('VT_APPLICATIONS_STATISTICS_TOTAL', 1, function () {

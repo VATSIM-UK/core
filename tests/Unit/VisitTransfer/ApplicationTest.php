@@ -1,8 +1,8 @@
 <?php
 
-    namespace Tests\Unit\VisitTransfer;
+namespace Tests\Unit\VisitTransfer;
 
-    use App\Models\Mship\Qualification;
+use App\Models\Mship\Qualification;
     use App\Models\NetworkData\Atc;
     use App\Models\VisitTransfer\Application;
     use App\Notifications\ApplicationAccepted;
@@ -208,7 +208,7 @@
             factory(Application::class, 20)->create([
                 'status' => function () use ($applicationTypes) {
                     return Base::randomElement(Base::randomElement($applicationTypes));
-                }
+                },
             ]);
 
             // Test
