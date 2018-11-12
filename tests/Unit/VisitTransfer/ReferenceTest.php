@@ -90,7 +90,7 @@ class ReferenceTest extends TestCase
         factory(Reference::class, 20)->create([
             'status' => function () use ($referenceTypes) {
                 return Base::randomElement(Base::randomElement($referenceTypes));
-            }
+            },
         ]);
 
         // Test

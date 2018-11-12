@@ -317,7 +317,6 @@ class Reference extends Model
     }
 
     /** Statistics */
-
     public static function statisticTotal()
     {
         return Cache::remember('VT_REFERENCES_STATISTICS_TOTAL', 1, function () {
@@ -361,7 +360,6 @@ class Reference extends Model
     }
 
     /** Guards */
-
     private function guardAgainstReSubmittingReference()
     {
         if (!$this->is_requested) {
