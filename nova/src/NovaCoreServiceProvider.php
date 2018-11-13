@@ -43,7 +43,7 @@ class NovaCoreServiceProvider extends ServiceProvider
         Route::middlewareGroup('nova', config('nova.middleware', []));
 
         $this->app->make(HttpKernel::class)
-                    ->pushMiddleware(ServeNova::class);
+            ->pushMiddleware(ServeNova::class);
     }
 
     /**

@@ -118,7 +118,6 @@ class Account extends AdmController
             'notes.type',
             'notes.writer',
             'notes.attachment',
-            'dataChanges',
             'roles',
             'roles.permissions',
             'qualifications',
