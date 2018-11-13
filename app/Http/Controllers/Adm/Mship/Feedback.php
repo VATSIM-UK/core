@@ -346,6 +346,8 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     {
         $targeted = $feedback->form->targeted;
 
+        $this->authorize('use-permission', "adm/mship/feedback/view/{$feedback->formSlug()}");
+
         if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
             return redirect()->back()->withErrors('You may not view your own feedback.');
         }
