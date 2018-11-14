@@ -18,6 +18,11 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
         parent::__construct();
     }
 
+    public function index()
+    {
+        return redirect(route('adm.dashboard'));
+    }
+
     public function getIndex()
     {
         $statistics = Cache::remember('statistics.mship', 60, function () {

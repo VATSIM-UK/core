@@ -100,7 +100,7 @@
                     specific traffic situations for a student. These may be geared towards practicing specific skills or
                     handling higher-than-average workload. It is important that Sweatbox is not over-used. We are very
                     fortunate in the UK to have a large number of movements into our airfields and we should therefore
-                    aim to utilise them. Morever, students also need to practice skills with pilots that aren't perfect
+                    aim to utilise them. Moreover, students also need to practice skills with pilots that aren't perfect
                     in every way. Therefore, Sweatbox should be used sparingly, with the majority of sessions conducted
                     on the live network.
 
