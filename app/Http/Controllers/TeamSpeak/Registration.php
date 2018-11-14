@@ -54,6 +54,8 @@ class Registration extends \App\Http\Controllers\BaseController
     // delete registration (if owned)
     public function getDelete($registration)
     {
+        $registration = RegistrationModel::find($registration);
+
         if ($this->account->id == $registration->account_id) {
             $registration->delete();
         }
@@ -64,6 +66,8 @@ class Registration extends \App\Http\Controllers\BaseController
     // get status of registration
     public function postStatus($registration)
     {
+        $registration = RegistrationModel::find($registration);
+
         if ($this->account->id == $registration->account_id) {
             return ($registration->dbid === null) ? Response::make('new') : Response::make('active');
         } else {

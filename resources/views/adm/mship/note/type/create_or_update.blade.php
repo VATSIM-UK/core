@@ -56,7 +56,7 @@
                         </div>
                     </div>
 
-                @if($_account->hasPermission("adm/mship/note/type/default"))
+                @can('use-permission', "adm/mship/note/type/default"))
                     <div class="form-group">
                         {!! Form::label("is_default", "Default?") !!}
 
@@ -74,7 +74,7 @@
                             </label>
                         </div>
                     </div>
-                @endif
+                @endcan
 
                 <div class="btn-toolbar">
                     <div class="btn-group pull-right">

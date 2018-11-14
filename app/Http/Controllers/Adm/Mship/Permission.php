@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use App\Models\Mship\Permission as PermissionData;
-use App\Models\Mship\Role as RoleData;
 use Input;
 use Redirect;
+use Spatie\Permission\Models\Permission as PermissionData;
+use Spatie\Permission\Models\Role as RoleData;
 
 class Permission extends \App\Http\Controllers\Adm\AdmController
 {
@@ -31,16 +31,16 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
     public function postCreate()
     {
         // Let's create!
-        $permission = new PermissionData(Input::all());
+        $permission = new PermissionData(Input::only('name', 'guard_name'));
         if (!$permission->save()) {
             return Redirect::route('adm.mship.permission.create')->withErrors($permission->errors());
         }
 
-        if (count(Input::get('roles')) > 0 && $this->account->hasPermission('adm/mship/permission/attach')) {
-            $permission->attachRoles(Input::get('roles'));
+        if (!is_null(Input::get('roles')) && $this->account->can('use-permission', 'adm/mship/permission/attach')) {
+            $permission->syncRoles(Input::get('roles'));
         }
 
-        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->display_name."' has been created - don't forget to attach it to some roles!");
+        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been created - don't forget to attach it to some roles!");
     }
 
     public function getUpdate(PermissionData $permission)
@@ -65,25 +65,19 @@ class Permission extends \App\Http\Controllers\Adm\AdmController
             return Redirect::route('adm.mship.permissions.index')->withError("Permission doesn't exist!");
         }
 
-        // Let's create!
-        $permission = $permission->fill(Input::all());
-        if (!$permission->save()) {
-            return Redirect::route('adm.mship.permission.update')->withErrors($permission->errors());
-        }
-
-        if ($this->account->hasPermission('adm/mship/permission/attach')) {
+        if ($this->account->can('use-permission', 'adm/mship/permission/attach')) {
             // Detatch permissions!
             foreach ($permission->roles as $r) {
                 if (!in_array($r->id, Input::get('roles', []))) {
-                    $permission->detachRole($r);
+                    $permission->removeRole($r);
                 }
             }
 
             // Attach all permissions.
-            $permission->attachRoles(Input::get('roles', []));
+            $permission->assignRole(Input::get('roles', []));
         }
 
-        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->display_name."' has been updated - don't forget to set the roles properly!");
+        return Redirect::route('adm.mship.permission.index')->withSuccess("Permission '".$permission->name."' has been updated - don't forget to set the roles properly!");
     }
 
     public function anyDelete(PermissionData $permission)

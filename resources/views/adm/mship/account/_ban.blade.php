@@ -26,21 +26,27 @@
         @if($ban->is_local)
             <div class="btn-toolbar">
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/ban/".$ban->id."/repeal") && !$ban->is_repealed)
-                        {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->id], ["class" => "btn btn-danger"]) !!}
-                    @endif
+                    @can('use-permission', "adm/mship/ban/*/repeal")
+                        @if(!$ban->is_repealed && $ban->is_active)
+                            {!! link_to_route("adm.mship.ban.repeal", "Repeal Ban", [$ban->id], ["class" => "btn btn-danger"]) !!}
+                        @endif
+                    @endcan
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/ban/".$ban->id."/modify") && $ban->is_active)
-                        {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->id], ["class" => "btn btn-warning"]) !!}
-                    @endif
+                    @can('use-permission', "adm/mship/ban/*/modify")
+                        @if(!$ban->is_active && $ban->is_active)
+                            {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->id], ["class" => "btn btn-warning"]) !!}
+                        @endif
+                    @endcan
                 </div>
 
                 <div class="btn-group pull-right">
-                    @if($_account->hasPermission("adm/mship/account/".$account->id."/note/create") && !$ban->is_repealed)
-                        {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->id], ["class" => "btn btn-info"]) !!}
-                    @endif
+                    @can('use-permission', "adm/mship/account/*/note/create")
+                        @if(!$ban->is_repealed)
+                            {!! link_to_route("adm.mship.ban.comment", "Attach Note", [$ban->id], ["class" => "btn btn-info"]) !!}
+                        @endif
+                    @endcan
                 </div>
             </div>
         @endif

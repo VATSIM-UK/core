@@ -14,6 +14,7 @@ use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -49,7 +50,15 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('use-permission', function ($user, $permission) {
-            return $user->hasPermission($permission);
+            if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
+                return true;
+            }
+
+            try {
+                return auth()->user()->hasPermissionTo($permission);
+            } catch (PermissionDoesNotExist $e) {
+                return false;
+            }
         });
 
         $this->serviceAccessGates();
