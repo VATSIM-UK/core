@@ -13,19 +13,18 @@ use App\Models\Mship\Account\Ban as BanData;
 use App\Models\Mship\Ban\Reason;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\Note\Type as NoteTypeData;
-use App\Models\Mship\Role as RoleData;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
 use App\Notifications\Mship\UserImpersonated;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Input;
 use Redirect;
 use Session;
+use Spatie\Permission\Models\Role as RoleData;
 use URL;
 
 class Account extends AdmController
@@ -103,7 +102,7 @@ class Account extends AdmController
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && !$this->account->hasPermission('adm/mship/account/own')) {
+        if ($this->account->id == $account->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }
@@ -119,7 +118,6 @@ class Account extends AdmController
             'notes.type',
             'notes.writer',
             'notes.attachment',
-            'dataChanges',
             'roles',
             'roles.permissions',
             'qualifications',
@@ -330,12 +328,8 @@ class Account extends AdmController
             ->withSuccess('You have successfully banned this member.');
     }
 
-    public function getBans(\Illuminate\Http\Request $request)
+    public function getBans()
     {
-        if (!$request->user()->hasPermission('adm/mship/account/*/bans')) {
-            throw new AuthorizationException();
-        }
-
         $bans = BanData::isLocal()
             ->orderByDesc('created_at')
             ->paginate(15);

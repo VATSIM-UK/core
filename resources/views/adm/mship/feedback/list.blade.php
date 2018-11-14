@@ -14,7 +14,7 @@
                     </div>
                     @if(isset($form))
                     <div style="display:inline-block">
-                        <a href="{{route('adm.mship.feedback.form.export', $form->slug)}}" class="btn btn-primary"> <i class="fa fa-share"></i> Export</a>
+                        <a href="{{route('adm.mship.feedback.form.export', $form)}}" class="btn btn-primary"> <i class="fa fa-share"></i> Export</a>
                     </div>
                     @endif
                 </div>

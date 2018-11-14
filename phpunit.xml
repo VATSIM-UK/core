@@ -6,7 +6,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         processIsolation="true"
+         processIsolation="false"
          stopOnFailure="false">
 <testsuites>
     <testsuite name="Feature">
@@ -27,6 +27,7 @@
     <env name="CACHE_DRIVER" value="array"/>
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="MAIL_DRIVER" value="log"/>
     <env name="SLACK_SECRET" value="testing"/>
     <env name="SLACK_BOT_TOKEN" value="testing"/>
     <env name="SLACK_TOKEN_REGISTER" value="testing"/>

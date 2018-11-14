@@ -89,7 +89,7 @@
                                 <td>{!! link_to_route('adm.visiting.application.view', $a->public_id, [$a->id]) !!}</td>
                                 <td>{!! link_to_route('adm.mship.account.details', $a->account_id, [$a->account_id]) !!}</td>
                                 <td>{{ $a->account->name  }}</td>
-                                <td>{{ $_account->hasPermission("adm/mship/account/email/view") ? $a->account->email : "[ No Permission ]" }}</td>
+                                <td>{{ $_account->can('use-permission', "adm/mship/account/email/view") ? $a->account->email : "[ No Permission ]" }}</td>
                                 <td>{{ $a->type_string }} - {{ $a->facility_name }}</td>
                                 <td class="text-center">
                                     {!! HTML::fuzzyDate($a->created_at) !!}
