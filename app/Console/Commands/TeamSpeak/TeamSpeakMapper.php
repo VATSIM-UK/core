@@ -4,12 +4,12 @@ namespace App\Console\Commands\TeamSpeak;
 
 use App\Console\Commands\Command;
 use App\Libraries\TeamSpeak;
-use App\Models\Mship\Permission;
 use App\Models\Mship\Qualification;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\Group;
 use DB;
+use Spatie\Permission\Models\Permission;
 use TeamSpeak3_Node_Server;
 
 class TeamSpeakMapper extends Command

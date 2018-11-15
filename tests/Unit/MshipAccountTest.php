@@ -4,9 +4,9 @@ namespace Tests\Unit;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
-use App\Models\Mship\Role;
 use App\Notifications\Mship\EmailVerification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -14,7 +14,7 @@ use Tests\TestCase;
  */
 class MshipAccountTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /** @var Account $account */
     private $account;
@@ -394,12 +394,12 @@ class MshipAccountTest extends TestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->account->fresh()->roles()->attach($role);
+        $this->account->fresh()->assignRole($role);
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
 
         $this->assertDatabaseHas('mship_account_role', [
-            'account_id' => $this->account->id,
+            'model_id' => $this->account->id,
             'role_id' => $role->id,
         ]);
     }
@@ -419,11 +419,11 @@ class MshipAccountTest extends TestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->account->fresh()->roles()->attach($role);
+        $this->account->fresh()->assignRole($role);
 
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
         $this->assertDatabaseHas('mship_account_role', [
-            'account_id' => $this->account->id,
+            'model_id' => $this->account->id,
             'role_id' => $role->id,
         ]);
 
@@ -431,7 +431,7 @@ class MshipAccountTest extends TestCase
 
         $this->assertFalse($this->account->fresh()->roles->contains($role->id));
         $this->assertDatabaseMissing('mship_account_role', [
-            'account_id' => $this->account->id,
+            'model_id' => $this->account->id,
             'role_id' => $role->id,
         ]);
     }
@@ -447,7 +447,7 @@ class MshipAccountTest extends TestCase
     {
         $role = factory(Role::class)->create(['password_mandatory' => true]);
 
-        $this->account->roles()->attach($role);
+        $this->account->assignRole($role);
 
         $this->account = $this->account->fresh();
 

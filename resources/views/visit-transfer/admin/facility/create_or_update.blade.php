@@ -11,9 +11,9 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     @if(isset($facility) && $facility->exists)
-                        {!! Form::model($facility, ['route' => ['visiting.admin.facility.update.post', $facility->id]]) !!}
+                        {!! Form::model($facility, ['route' => ['adm.visiting.facility.update.post', $facility->id]]) !!}
                     @else
-                        {!! Form::open(["route" => "visiting.admin.facility.create.post"]) !!}
+                        {!! Form::open(["route" => "adm.visiting.facility.create.post"]) !!}
                     @endif
 
                     <div class="row">
@@ -70,7 +70,7 @@
                                                        title="Give this key to applicants so that they can apply to join this facility">{!!$facility->public_id!!}</i>
                                                 @endif
                                             </font>
-                                        </p>`
+                                        </p>
                                     </div>
                                 @endif
 

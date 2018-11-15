@@ -5,12 +5,13 @@ namespace Tests\Unit;
 use App\Models\TeamSpeak\Channel;
 use App\Models\TeamSpeak\ChannelGroup;
 use App\Models\TeamSpeak\ServerGroup;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class TeamSpeakTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected $channel;
     protected $channelGroups;
@@ -82,7 +83,7 @@ class TeamSpeakTest extends TestCase
     public function testGroupPermission()
     {
         $group = $this->serverGroups->first();
-        $permission = factory(\App\Models\Mship\Permission::class)->create();
+        $permission = factory(Permission::class)->create();
         $group->permission()->associate($permission)->save();
         $group = $group->fresh(['permission']);
         $this->assertEquals($group->permission->id, $permission->id);

@@ -11,7 +11,7 @@ class ApplicationAccepted extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $application;
+    public $application;
 
     /**
      * Create a new notification instance.
@@ -49,7 +49,7 @@ class ApplicationAccepted extends Notification implements ShouldQueue
         return (new MailMessage)
             ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject($subject)
-            ->view('visit-transfer.emails.training.accepted_application', ['recipient' => $this->application->account, 'subject' => $subject, 'application' => $this->application]);
+            ->view('visit-transfer.emails.training.accepted_application', ['recipientName' => strtoupper($this->application->facility->training_team).' Training Team', 'subject' => $subject, 'application' => $this->application]);
     }
 
     /**

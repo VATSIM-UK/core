@@ -1,4 +1,5 @@
 $font-family: Calibri, Tahoma, Geneva, sans-serif;
+$screen-sm: 802px;
 
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/theme";
@@ -19,6 +20,10 @@ body, html {
 
 .container-fluid {
   padding: 0;
+}
+
+.wb-bw {
+  word-break: break-word;
 }
 
 .header_container {
@@ -43,12 +48,39 @@ body, html {
 .banner {
   width: 100%;
   height: 350px;
-  background: url('../../../public/images/banner_slide_generic_1.jpg') no-repeat 50%;
+  background: url('/../images/banner/fallback.jpg') no-repeat 50%;
   background-size: cover;
+  transform-style: preserve-3d;
+  transform: perspective(auto) translateZ(-30vw) scale(1.4);
+  perspective: 1000;
   img {
     margin-top: 90px;
     height: 260px;
   }
+}
+
+.fuzzy_date {
+  color: #337ab7;
+  text-decoration: none;
+  &:hover{
+    cursor:pointer;
+  }
+}
+
+.text-white {
+  color: white !important;
+}
+
+.vertical-center{
+  vertical-align: middle !important;
+}
+
+.table.table-borders >tbody > tr > td {
+  border: 1px solid grey;
+}
+
+.border-black-thin {
+  border: 2px solid black !important;
 }
 
 .breadcrumb_outer_container {
@@ -112,6 +144,30 @@ body, html {
   opacity: 1;
 }
 
+.text-summary {
+  p.summary-container.collapse:not(.in) {
+    max-height: 42px !important;
+    min-height: 30px !important;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  p.summary-container.collapsing {
+    min-height: 42px !important;
+  }
+
+  a.summary-controller.collapsed:after {
+    content: '+ Read More';
+  }
+
+  a.summary-controller:not(.collapsed):after {
+    content: '- Read Less';
+  }
+}
+
+
 /* Bootstrap Overwrite */
 
 .label-xs {
@@ -134,12 +190,30 @@ body, html {
   border: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  > .panel-heading {
+  > .panel-heading, > .panel-heading-link > .panel-heading {
     background-color: #17375e;
     border-color: #17375E;
     color: white;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
+    .panel-heading-lg {
+      color: white;
+      letter-spacing: 2px;
+      font-size: 2em;
+      padding: 10px;
+    }
+
+    .panel-heading-lg-secondary {
+      background-color: #00b0f0;
+      color: white;
+      font-size: 2em;
+      padding: 5px;
+    }
+
+    > .panel-title a {
+      color: white;
+    }
   }
   .panel-body .row-text-contain {
     word-break: break-word;
@@ -205,4 +279,11 @@ body, html {
       right: 15px;
     }
   }
+}
+
+.profile-picture {
+  object-fit: cover;
+  border-radius: 50px;
+  height:50px;
+  width: 50px;
 }

@@ -181,3 +181,44 @@ function is_local_environment()
 {
     return env('APP_IS_LOCAL') == 'true';
 }
+
+function currentUserHasAuth()
+{
+    return Auth::guard('web')->check();
+}
+
+function appUrl()
+{
+    $appUrl = env('APP_URL', 'http://localhost');
+
+    if (env('HEROKU_APP_NAME') != null) {
+        $appUrl = 'http://'.env('HEROKU_APP_NAME').'.herokuapp.com';
+    }
+
+    return $appUrl;
+}
+
+function maskEmail($email)
+{
+    $delimited = explode('@', $email);
+
+    if (strlen($delimited[0]) <= 2) {
+        $delimited[0] = str_repeat('*', strlen($delimited[0]));
+
+        return "{$delimited[0]}@{$delimited[1]}";
+    }
+
+    for ($pos = 1; $pos < strlen($delimited[0]) - 1; $pos++) {
+        if ($pos % 3 == 0) {
+            continue;
+        }
+        $delimited[0][$pos] = '*';
+    }
+
+    return "{$delimited[0]}@{$delimited[1]}";
+}
+
+function handleService(\App\Services\BaseService $service)
+{
+    return $service->handle();
+}

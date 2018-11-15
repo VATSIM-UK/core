@@ -4,13 +4,12 @@ namespace Tests\Feature\Mship\Feedback;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
-use App\Models\Mship\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FeedbackSendTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $admin;
     private $member;
@@ -19,9 +18,6 @@ class FeedbackSendTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->admin = factory(Account::class)->create();
-        $this->admin->roles()->attach(Role::find(1));
 
         $this->member = factory(Account::class)->create();
 
@@ -40,7 +36,7 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itAllowsViewingIfThereIsSentFeedback()
     {
-        $this->feedback->markSent($this->admin);
+        $this->feedback->markSent($this->privacc);
 
         $this->actingAs($this->member)->get(route('mship.feedback.view'))
             ->assertSuccessful();
@@ -49,7 +45,7 @@ class FeedbackSendTest extends TestCase
     /** @test * */
     public function itAllowsFeedbackToBeMarkedAsSent()
     {
-        $this->actingAs($this->admin)->post(route('adm.mship.feedback.send', $this->feedback->id))
+        $this->actingAs($this->privacc)->post(route('adm.mship.feedback.send', $this->feedback->id))
             ->assertRedirect()
             ->assertSessionHasNoErrors()
             ->assertSessionHas('success');

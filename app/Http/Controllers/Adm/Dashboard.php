@@ -16,14 +16,11 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
     public function __construct()
     {
         parent::__construct();
+    }
 
-        $this->middleware(function ($request, $next) {
-            if (!$this->account->hasPermission('adm/dashboard')) {
-                return redirect($this->redirectPath());
-            }
-
-            return $next($request);
-        });
+    public function index()
+    {
+        return redirect(route('adm.dashboard'));
     }
 
     public function getIndex()

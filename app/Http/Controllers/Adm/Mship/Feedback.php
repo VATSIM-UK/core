@@ -21,10 +21,9 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
         $forms = Form::orderBy('id', 'asc')->get();
         $_account = $this->account;
         $forms = $forms->filter(function ($form, $key) use ($_account) {
-            $hasWildcard = $_account->hasPermission('adm/mship/feedback/list/*') || $_account->hasPermission('adm/mship/feedback/configure/*');
-            $hasSpecific = $_account->hasPermission('adm/mship/feedback/list/'.$form->slug) || $_account->hasPermission('adm/mship/feedback/configure/'.$form->slug);
+            $hasWildcard = $_account->can('use-permission', 'adm/mship/feedback/list/*') || $_account->can('use-permission', 'adm/mship/feedback/configure/*');
 
-            return $hasWildcard || $hasSpecific;
+            return $hasWildcard;
         })->all();
 
         return $this->viewMake('adm.mship.feedback.forms')
@@ -229,10 +228,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getAllFeedback()
     {
-        if (!$this->account->hasChildPermission('adm/mship/feedback/list/*')) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->paginate(15);
 
         return $this->viewMake('adm.mship.feedback.list')
@@ -241,10 +236,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedback($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $form = Form::whereSlug($slug)->firstOrFail();
         $feedback = FeedbackModel::with('account')->orderBy('created_at', 'desc')->whereFormId($form->id)->paginate(15);
 
@@ -255,9 +246,6 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormFeedbackExport($slug)
     {
-        if (!$this->account->hasPermission('adm/mship/feedback/list/*') && !$this->account->hasPermission('adm/mship/feedback/list/'.$slug)) {
-            abort(403, 'Unauthorized action.');
-        }
         $form = Form::whereSlug($slug)->firstOrFail();
 
         return $this->viewMake('adm.mship.feedback.export')
@@ -357,46 +345,32 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
     public function getViewFeedback(FeedbackModel $feedback)
     {
         $targeted = $feedback->form->targeted;
-        if ($this->account->hasPermission('adm/mship/feedback/list/*') || $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug)) {
-            return $this->viewMake('adm.mship.feedback.view')
-                ->with('feedback', $feedback)
-                ->with('targeted', $targeted);
+
+        $this->authorize('use-permission', "adm/mship/feedback/view/{$feedback->formSlug()}");
+
+        if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
+            return redirect()->back()->withErrors('You may not view your own feedback.');
         }
-        abort(403, 'Unauthorized action.');
+
+        return $this->viewMake('adm.mship.feedback.view')
+            ->with('feedback', $feedback)
+            ->with('targeted', $targeted);
     }
 
     public function postActioned(FeedbackModel $feedback, Request $request)
     {
-        $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
+        $feedback->markActioned(\Auth::user(), $request->input('comment'));
+        \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
 
-        foreach ($conditions as $condition) {
-            if ($condition) {
-                $feedback->markActioned(\Auth::user(), $request->input('comment'));
-                \Cache::forget($this->account->id.'.adm.mship.feedback.unactioned-count'); // Forget cached unactioned count
-
-                return Redirect::back()
-                    ->withSuccess('Feedback marked as actioned!');
-            }
-        }
-        abort(403, 'Unauthorized action.');
+        return Redirect::back()
+            ->withSuccess('Feedback marked as actioned!');
     }
 
     public function getUnActioned(FeedbackModel $feedback)
     {
-        $conditions = [];
-        $conditions[] = $this->account->hasChildPermission('adm/mship/feedback/list') || $this->account->hasChildPermission('adm/mship/feedback/list/*');
-        $conditions[] = $this->account->hasPermission('adm/mship/feedback/list/'.$feedback->form->slug);
+        $feedback->markUnActioned();
 
-        foreach ($conditions as $condition) {
-            if ($condition) {
-                $feedback->markUnActioned();
-
-                return Redirect::back()
-                    ->withSuccess('Feedback unmarked as actioned!');
-            }
-        }
-        abort(403, 'Unauthorized action.');
+        return Redirect::back()
+            ->withSuccess('Feedback unmarked as actioned!');
     }
 }

@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Sys\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class MshipTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function testItLoadsSuccessfully()
     {
@@ -23,7 +23,7 @@ class MshipTest extends TestCase
 
         $this->actingAs($account);
 
-        $response = $this->get('/');
+        $response = $this->get(route('dashboard'));
         $response->assertRedirect(route('mship.manage.dashboard'));
     }
 

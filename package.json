@@ -1,32 +1,43 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && npm run dev",
-        "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && npm run prod"
-    },
-    "devDependencies": {
-        "admin-lte": "2.3.11",
-        "axios": "^0.16.2",
-        "bootstrap": "^3.3.7",
-        "bootstrap-sass": "^3.3.7",
-        "bootstrap-tour": "^0.11.0",
-        "cross-env": "^5.2.0",
-        "font-awesome": "^4.7.0",
-        "ionicons": "^3.0.0",
-        "jquery": "^3.3.1",
-        "jquery-datetimepicker": "^2.5.20",
-        "jvectormap": "^2.0.4",
-        "laravel-mix": "^1.7.2",
-        "less": "^2.7.3",
-        "less-loader": "^4.1.0",
-        "lodash": "^4.17.10",
-        "vue": "^2.5.16"
-    }
+  "name": "vatsimukcore",
+  "description": "VATSIM UK Core Framework",
+  "license": "MIT",
+  "type": "project",
+  "private": true,
+  "scripts": {
+    "dev": "yarn run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch-poll": "yarn run watch -- --watch-poll",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "yarn run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "heroku-postbuild": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && npm run prod",
+    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && npm run dev"
+  },
+  "dependencies": {
+    "admin-lte": "2.3.11",
+    "axios": "^0.18",
+    "bootstrap": "^3.3.7",
+    "bootstrap-sass": "^3.3.7",
+    "bootstrap-tour": "^0.11.0",
+    "cross-env": "^5.2.0",
+    "font-awesome": "^4.7.0",
+    "ionicons": "^3.0.0",
+    "jquery": "^3.3.1",
+    "jquery-datetimepicker": "^2.5.20",
+    "jvectormap": "^2.0.4",
+    "laravel-mix": "^2.0",
+    "less": "^2.7.3",
+    "less-loader": "^4.1.0",
+    "lodash": "^4.17.10",
+    "popper.js": "^1.12",
+    "vue": "^2.5.7"
+  },
+  "release": {
+    "repositoryUrl": "https://github.com/VATSIM-UK/core",
+    "branch": "master"
+  }
+
 }

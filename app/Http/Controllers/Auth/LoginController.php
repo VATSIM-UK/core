@@ -42,7 +42,7 @@ class LoginController extends BaseController
         if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
             return $this->attemptSecondaryAuth();
         } else {
-            return redirect()->route('default');
+            return redirect()->route('dashboard');
         }
     }
 
@@ -95,29 +95,23 @@ class LoginController extends BaseController
 
     protected function attemptSecondaryAuth()
     {
-        if (Session::has('url.intended')) {
-            $intended = Session::get('url.intended');
-            if (starts_with($intended, route('password.request'))) {
-                Session::remove('url.intended');
-
-                return redirect($intended);
-            }
-        }
-
         $member = Auth::guard('vatsim-sso')->user();
+
         if ($member->hasPassword()) {
             return redirect()->route('auth-secondary');
-        } else {
-            Auth::login(Auth::guard('vatsim-sso')->user(), true);
-
-            return redirect('/');
         }
+
+        $intended = Session::pull('url.intended', route('site.home'));
+
+        Auth::login(Auth::guard('vatsim-sso')->user(), true);
+
+        return redirect($intended);
     }
 
     public function loginSecondary(Request $request)
     {
         if (!Auth::guard('vatsim-sso')->check()) {
-            return redirect()->route('default')
+            return redirect()->route('dashboard')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }
 
@@ -185,6 +179,6 @@ class LoginController extends BaseController
 
     public function vSsoValidationFailure($error)
     {
-        return redirect()->route('default')->withError('Could not authenticate: '.$error['message']);
+        return redirect()->route('dashboard')->withError('Could not authenticate: '.$error['message']);
     }
 }

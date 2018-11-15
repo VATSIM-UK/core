@@ -10,6 +10,26 @@ $factory->define(App\Models\Mship\Account::class, function (Faker\Generator $fak
     ];
 });
 
+$factory->defineAs(App\Models\Mship\Account::class, 'withQualification', function (Faker\Generator $faker) {
+    $id = rand(10000000, 99999999);
+    $qual = factory(\App\Models\Mship\Qualification::class)->create();
+    // Assoc qualification to account
+    \DB::table('mship_account_qualification')->insert([
+        'account_id' => $id,
+        'qualification_id' => $qual->id,
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+    ]);
+
+    return [
+        'id' => $id,
+        'name_first' => $faker->firstName,
+        'name_last' => $faker->lastName,
+        'email' => $faker->email,
+        'is_invisible' => 0,
+    ];
+});
+
 $factory->define(App\Models\Mship\Qualification::class, function (Faker\Generator $faker) {
     return [
         'code' => $faker->bothify('?##'),
@@ -38,19 +58,18 @@ $factory->defineAs(App\Models\Mship\Qualification::class, 'pilot', function (Fak
     ]);
 });
 
-$factory->define(App\Models\Mship\Role::class, function (Faker\Generator $faker) {
+$factory->define(\Spatie\Permission\Models\Role::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
-        'session_timeout' => $faker->numberBetween(100, 1000),
-        'password_mandatory' => false,
-        'password_lifetime' => 0,
+        'guard_name' => 'web',
+        'session_timeout' => 180,
     ];
 });
 
-$factory->define(App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
+$factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
-        'display_name' => $faker->sentence,
+        'guard_name' => 'web',
     ];
 });
 

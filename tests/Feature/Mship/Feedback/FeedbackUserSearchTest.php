@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FeedbackUserSearchTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $member;
     private $otherMember;
@@ -28,7 +28,7 @@ class FeedbackUserSearchTest extends TestCase
             ->get(route('mship.feedback.usersearch', $this->otherMember->real_name))
             ->getContent();
 
-        $this->assertContains($this->otherMember->real_name, $searchQuery);
+        $this->assertContains(e($this->otherMember->real_name), $searchQuery);
         $this->assertContains((string) ($this->otherMember->id), $searchQuery);
         /* need to assert contains state */
     }
@@ -40,7 +40,7 @@ class FeedbackUserSearchTest extends TestCase
                             ->get(route('mship.feedback.usersearch', $this->member->real_name))
                             ->getContent();
 
-        $this->assertNotContains($this->member->real_name, $searchQuery);
+        $this->assertNotContains(e($this->member->real_name), $searchQuery);
         $this->assertNotContains((string) ($this->member->id), $searchQuery);
         /* need to assert does not contain state */
     }

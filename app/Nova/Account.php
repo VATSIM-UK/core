@@ -4,7 +4,9 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -38,7 +40,6 @@ class Account extends Resource
     public static $disallowAttach = [
         'App\Models\Mship\Qualification',
         'App\Models\MshipState',
-        'App\Models\Mship\Role',
     ];
 
     /**
@@ -127,7 +128,13 @@ class Account extends Resource
 
             BelongsToMany::make('States', 'statesHistory')->onlyOnDetail(),
 
-            BelongsToMany::make('Roles'),
+            HasMany::make('Bans', 'bans')->onlyOnDetail(),
+
+            MorphToMany::make('Roles', 'roles', \Vyuldashev\NovaPermission\Role::class),
+
+            MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class),
+
+            HasMany::make('Notes')->onlyOnDetail(),
         ];
     }
 
@@ -178,6 +185,9 @@ class Account extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new Actions\Mship\AddNoteToAccount),
+            (new Actions\Mship\BanAccount),
+        ];
     }
 }

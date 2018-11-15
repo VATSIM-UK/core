@@ -17,7 +17,7 @@
             <div class="icon">
                 <i class="ion ion-person-stalker"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.application.list") }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.application.list") }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -37,7 +37,7 @@
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.application.list", ["open"]) }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.application.list", ["open"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -56,7 +56,7 @@
             <div class="icon">
                 <i class="fa fa-times"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.application.list", ["closed"]) }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.application.list", ["closed"]) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -75,7 +75,7 @@
             <div class="icon">
                 <i class="fa fa-clock-o"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.reference.list") }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.reference.list") }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -93,7 +93,7 @@
             <div class="icon">
                 <i class="fa fa-search"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.reference.list", ['approval']) }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.reference.list", ['approval']) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -112,7 +112,7 @@
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="{{ URL::route("visiting.admin.reference.list", ['accepted']) }}" class="small-box-footer">
+            <a href="{{ URL::route("adm.visiting.reference.list", ['accepted']) }}" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>

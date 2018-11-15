@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use Benjaminhirsch\NovaSlugField\Slug;
+use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -44,9 +46,10 @@ class WaitingList extends Resource
         return [
             ID::make()->sortable(),
 
-            Text::make('Name')
+            TextWithSlug::make('Name')
                 ->rules(['required'])
-                ->creationRules('unique:training_waiting_list,name'),
+                ->creationRules('unique:training_waiting_list,name')
+                ->slug('Slug'),
 
             Text::make('Slug')
                 ->exceptOnForms(),
