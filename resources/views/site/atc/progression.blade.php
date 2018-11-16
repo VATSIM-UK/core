@@ -14,7 +14,7 @@
                         do at every
                         step in order to progress to the next level. If you have any specific questions about your ATC
                         training, your
-                        RTS training staff will be happy to help you.
+                        TG staff will be happy to help you.
                     </p>
 
                     <p>
@@ -64,7 +64,7 @@
 
                     <p>
                         Theory materials for ATC ratings above S1 can be found in the&nbsp;<a
-                                href="https://community.vatsim.uk/downloads/" rel="external nofollow">Resources</a>&nbsp;section
+                                href="https://community.vatsim.uk/downloads/" rel="external nofollow">Downloads</a>&nbsp;section
                         of the website.
                     </p>
 
@@ -120,7 +120,7 @@
                     </ul>
 
                     <p>
-                        When you feel you are ready to take your next theory test, log in to the RTS System and select
+                        When you feel you are ready to take your next theory test, log in to the CT System and select
                         &quot;Theory
                         Exams&quot; from your Student menu. Good luck!
                     </p>
@@ -132,22 +132,19 @@
                     <p>
                         Your training now moves onto Tower, and the skills required as a tower controller will be
                         steadily introduced to
-                        you. Your training then continues until you are marked &quot;Test Standard&quot; in all aspects
+                        you. Your training then continues until you are at the required standard in all aspects
                         of the aerodrome
-                        criteria, when you will be forwarded for a pre-exam. The pre-exam is designed to be a busy
-                        session for you to
-                        practice your skills ahead of your exam.
+                        criteria, when you will be forwarded for your Tower exam.
                     </p>
 
                     <p>
-                        Once your pre-exam is done and dusted, you will be forwarded for your Tower practical exam. This
-                        will be carried
+                        This will be carried
                         out by a VATSIM UK examiner, who will be assessing you on the following areas:
                     </p>
 
                     <ul>
                         <li>
-                            Ability to code METARs
+                            Ability to decode METARs
                         </li>
                         <li>
                             Understanding local operating procedures for the airfield in order to provide satisfactory
@@ -259,12 +256,9 @@
                     </p>
 
                     <p>
-                        As with your Tower training, once your mentor deems you &quot;Test Standard&quot;, you will be
-                        forwarded for
-                        your Approach pre-exam. After your pre-exam is out of the way, you will once again be forwarded
-                        to take your
-                        practical exam, which is carried out by a VATSIM UK examiner. The exam will cover the following
-                        topics:
+                        As with your Tower training, once your mentor deems you to be at the required standard,
+                        you will be forwarded to take your practical exam, which is carried out by a VATSIM UK examiner.
+                        The exam will cover the following topics:
                     </p>
 
                     <ul>
@@ -330,15 +324,11 @@
                         commitment in
                         order to learn all the materials and skills needed for the job. Area exams can be carried out on
                         any core London
-                        sector (North, South, Central or West) or Scottish Control (EGPX_CTR). S3s wishing to undertake
-                        area training
-                        should join first make a request to join an &#39;Area RTS&#39; within the RTS system, which can
-                        be submitted
-                        through the &#39;Transfer RTS&#39; page.
+                        sector (North, South, Central or West) or Scottish Control (SCO_CTR).
                     </p>
 
                     <p>
-                        Before you can take your area practical exam, you need to take your last (phew!) theory exam.
+                        Before you can take your area practical exam, you need to take your last theory exam.
                         This exam will
                         cover the following:
                     </p>
@@ -376,9 +366,8 @@
                     </p>
 
                     <p>
-                        Once you are test standard in every category, you will be forwarded for an informal pre-exam,
-                        and then your
-                        exam. The practical exam, carried out by a VATSIM UK examiner, covers the following topics:
+                        Once you are test standard in every category, you will be forwarded for your exam.
+                        The practical exam, which is carried out by a VATSIM UK examiner, covers the following topics:
                     </p>
 
                     <ul>
