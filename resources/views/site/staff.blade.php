@@ -240,10 +240,6 @@
                                     <td>Jonas Hey</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>Luke Collister</td>
-                                </tr>
-                                <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
                                 </tr>
@@ -253,6 +249,9 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
+                                <tr>
+                                    <td>General Manager</td>
+                                    <td></td>
                                 <tr>
                                     <td>Administrative Manager</td>
                                     <td>Matthew Wilson</td>
@@ -271,7 +270,7 @@
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>James Gibson</td>
+                                    <td></td>
                                 </tr>
                              </table>   
 
