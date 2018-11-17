@@ -13,7 +13,7 @@ class WaitingListsManager extends ResourceTool
      */
     public function name()
     {
-        return 'Waiting Lists Management';
+        return 'Waiting List Students';
     }
 
     /**

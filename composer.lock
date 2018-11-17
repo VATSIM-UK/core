@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7fc9b63cbea4b93cb1f105a5828336ef",
+    "content-hash": "06c1f3dd0dcf4a790342234b55d97111",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -2457,16 +2457,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "3.2.4",
+            "version": "3.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "c9704b751315d21735dc98d78d4f37bd73596da7"
+                "reference": "82be04b4753f8b7693b62852b7eab30f97524f9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/c9704b751315d21735dc98d78d4f37bd73596da7",
-                "reference": "c9704b751315d21735dc98d78d4f37bd73596da7",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/82be04b4753f8b7693b62852b7eab30f97524f9b",
+                "reference": "82be04b4753f8b7693b62852b7eab30f97524f9b",
                 "shasum": ""
             },
             "require": {
@@ -2511,7 +2511,7 @@
                 "JWS",
                 "jwt"
             ],
-            "time": "2018-08-03T11:23:50+00:00"
+            "time": "2018-11-11T12:22:26+00:00"
         },
         {
             "name": "league/csv",
@@ -2706,16 +2706,16 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "7.2.0",
+            "version": "7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "8184f771d43ea7305ddbb893d0daf6f0352ec5fd"
+                "reference": "a61c6a318acc155769ae9afc693fd18d91475587"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/8184f771d43ea7305ddbb893d0daf6f0352ec5fd",
-                "reference": "8184f771d43ea7305ddbb893d0daf6f0352ec5fd",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/a61c6a318acc155769ae9afc693fd18d91475587",
+                "reference": "a61c6a318acc155769ae9afc693fd18d91475587",
                 "shasum": ""
             },
             "require": {
@@ -2735,6 +2735,7 @@
                 "phpstan/phpstan-phpunit": "^0.9.4",
                 "phpstan/phpstan-strict-rules": "^0.9.0",
                 "phpunit/phpunit": "^6.3 || ^7.0",
+                "roave/security-advisories": "dev-master",
                 "zendframework/zend-diactoros": "^1.3.2"
             },
             "type": "library",
@@ -2752,6 +2753,12 @@
                     "name": "Alex Bilbie",
                     "email": "hello@alexbilbie.com",
                     "homepage": "http://www.alexbilbie.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andy Millington",
+                    "email": "andrew@noexceptions.io",
+                    "homepage": "https://www.noexceptions.io",
                     "role": "Developer"
                 }
             ],
@@ -2772,7 +2779,7 @@
                 "secure",
                 "server"
             ],
-            "time": "2018-06-23T16:57:59+00:00"
+            "time": "2018-11-13T20:17:20+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -3089,16 +3096,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.34.1",
+            "version": "1.35.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "19201b87f7dba2a7cbf1cccdf0e1da13c04ee9c9"
+                "reference": "5c05a2be472b22f63291d192410df9f0e0de3b19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/19201b87f7dba2a7cbf1cccdf0e1da13c04ee9c9",
-                "reference": "19201b87f7dba2a7cbf1cccdf0e1da13c04ee9c9",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/5c05a2be472b22f63291d192410df9f0e0de3b19",
+                "reference": "5c05a2be472b22f63291d192410df9f0e0de3b19",
                 "shasum": ""
             },
             "require": {
@@ -3106,8 +3113,11 @@
                 "symfony/translation": "~2.6 || ~3.0 || ~4.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2",
                 "phpunit/phpunit": "^4.8.35 || ^5.7"
+            },
+            "suggest": {
+                "friendsofphp/php-cs-fixer": "Needed for the `composer phpcs` command. Allow to automatically fix code style.",
+                "phpstan/phpstan": "Needed for the `composer phpstan` command. Allow to detect potential errors."
             },
             "type": "library",
             "extra": {
@@ -3140,7 +3150,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-11-08T13:33:47+00:00"
+            "time": "2018-11-14T21:55:58+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4183,16 +4193,16 @@
         },
         {
             "name": "spatie/laravel-cookie-consent",
-            "version": "2.4.1",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-cookie-consent.git",
-                "reference": "7075db91a0f3bf5a8b6f0fd6a050e6ecdd29cf7a"
+                "reference": "d729b6c48980ecd10e5039fd0c62066f391fbcbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/7075db91a0f3bf5a8b6f0fd6a050e6ecdd29cf7a",
-                "reference": "7075db91a0f3bf5a8b6f0fd6a050e6ecdd29cf7a",
+                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/d729b6c48980ecd10e5039fd0c62066f391fbcbe",
+                "reference": "d729b6c48980ecd10e5039fd0c62066f391fbcbe",
                 "shasum": ""
             },
             "require": {
@@ -4247,7 +4257,7 @@
                 "law",
                 "spatie"
             ],
-            "time": "2018-09-03T12:48:24+00:00"
+            "time": "2018-11-12T14:28:44+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -5666,11 +5676,11 @@
         },
         {
             "name": "vatsimuk/waiting-lists-manager",
-            "version": "dev-feature/CORE-192-waiting-list-create-nova",
+            "version": "dev-feature/CORE-189-waiting-list-view-resource-tool",
             "dist": {
                 "type": "path",
                 "url": "./nova-components/WaitingListsManager",
-                "reference": "4cd0fc484d2482e20f5f8bf940c37c8c7a950362",
+                "reference": "adeae093d6b4d73f1ac87ddac2e5672622b89189",
                 "shasum": null
             },
             "require": {
@@ -6215,16 +6225,16 @@
         },
         {
             "name": "laravel/homestead",
-            "version": "v7.19.0",
+            "version": "v7.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "eb7477dafc410aea4f15f8a68cb3340fdc9807d3"
+                "reference": "234a43bf963e659bbbcc872e153f07051c23702b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/eb7477dafc410aea4f15f8a68cb3340fdc9807d3",
-                "reference": "eb7477dafc410aea4f15f8a68cb3340fdc9807d3",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/234a43bf963e659bbbcc872e153f07051c23702b",
+                "reference": "234a43bf963e659bbbcc872e153f07051c23702b",
                 "shasum": ""
             },
             "require": {
@@ -6262,7 +6272,7 @@
                 }
             ],
             "description": "A virtual machine for web artisans.",
-            "time": "2018-11-06T01:28:15+00:00"
+            "time": "2018-11-11T20:06:55+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -6948,16 +6958,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.4.3",
+            "version": "7.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c151651fb6ed264038d486ea262e243af72e5e64"
+                "reference": "b1be2c8530c4c29c3519a052c9fb6cee55053bbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c151651fb6ed264038d486ea262e243af72e5e64",
-                "reference": "c151651fb6ed264038d486ea262e243af72e5e64",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b1be2c8530c4c29c3519a052c9fb6cee55053bbd",
+                "reference": "b1be2c8530c4c29c3519a052c9fb6cee55053bbd",
                 "shasum": ""
             },
             "require": {
@@ -7028,7 +7038,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-10-23T05:57:41+00:00"
+            "time": "2018-11-14T16:52:02+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
