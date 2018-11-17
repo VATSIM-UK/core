@@ -144,7 +144,7 @@
                                         <td>Support</td>
                                         <td>George Barlow</td>
                                     </tr>
-
+                                </table>
                             </div>
                         </div>
                     </div>
