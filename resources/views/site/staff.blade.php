@@ -253,12 +253,10 @@
                                     <td>General Manager</td>
                                     <td></td>
                                 <tr>
-                                    <td>Administrative Manager</td>
+                                    <td>Administrative Manager<br/>
+                                        Initial Flight Instructor
+                                    </td>
                                     <td>Matthew Wilson</td>
-                                </tr>
-                                <tr>
-                                    <td>Initial Flight Instructor</td>
-                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td>VFR Flight Instructor</td>
