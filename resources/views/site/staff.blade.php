@@ -145,6 +145,7 @@
                                         <td>George Barlow</td>
                                     </tr>
                                 </table>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -159,7 +160,6 @@
                                      width=50px
                                      class="img-responsive center-block profile-picture"/>
                                 <p class="text-center">Chris Pawley</p>
-
                             </div>
                         </div>
                     </div>
