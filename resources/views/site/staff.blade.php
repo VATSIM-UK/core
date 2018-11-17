@@ -108,7 +108,6 @@
                                         <td>Loui Ringer</td>
                                     </tr>
                                 </table>
-
                             </div>
                         </div>
                     </div>
@@ -119,51 +118,13 @@
                 <div class="row row-eq-height">
                     <div class="col-md-6">
                         <div class="panel panel-ukblue">
-                            <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Pilot Training
-                            </div>
-                            <div class="panel-body">
-                                <h4>Pilot Training Director (VATUK6)</h4><br/>
-                                <img src="{{ $teamPhotos[6286] }}"
-                                     class="img-responsive center-block profile-picture"/>
-                                <p class="text-center">Daniel Crookes</p>
-
-                                <h4>Pilot Training Team</h4>
-                                <table class="table">
-                                    <tr>
-                                        <td>Administrative Manager</td>
-                                        <td>Matthew Wilson</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Initial Flight Instructor</td>
-                                        <td><em>Vacant</em></td>
-                                    </tr>
-                                    <tr>
-                                        <td>VFR Flight Instructor</td>
-                                        <td>Lewis Hammett</td>
-                                    </tr>
-                                    <tr>
-                                        <td>IFR Flight Instructor</td>
-                                        <td>Tom Knowles</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Development Flight Instructor</td>
-                                        <td>James Gibson</td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="panel panel-ukblue">
                             <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Web Services
                             </div>
                             <div class="panel-body">
                                 <h4>Web Services Director (VATUK8)</h4><br/>
-                                <img src="{{ $teamPhotos[5125] }}" width=50px
+                                <img src="{{ $teamPhotos[6286] }}"
                                      class="img-responsive center-block profile-picture"/>
-                                <p class="text-center">Calum Tοwers</p>
+                                <p class="text-center">Calum Towers</p>
 
                                 <h4>Web Services Team</h4>
                                 <table class="table">
@@ -180,22 +141,14 @@
                                         <td>Callum Axon</td>
                                     </tr>
                                     <tr>
-                                        <td>Junior Developer</td>
-                                        <td>Matt Collier</td>
-                                    </tr>
-                                    <tr>
                                         <td>Support</td>
                                         <td>George Barlow</td>
                                     </tr>
-                                </table>
+
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- End Row Two -->
 
-                <!-- Row Three -->
-                <div class="row row-eq-height">
                     <div class="col-md-6">
                         <div class="panel panel-ukblue">
                             <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
@@ -211,26 +164,29 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Row Three -->
+                <!-- End Row Two -->
             </div>
 
 
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; ATC Training
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Training
                     </div>
                     <div class="panel-body">
-                        <h4>ATC Training Director (VATUK5)</h4><br/>
-                        <img src="{{ $teamPhotos[4366] }}"
+                        <h4>Training Director (VATUK5)</h4><br/>
+                        <img src="{{ $teamPhotos[6286] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Andy Ford</p>
+                        <p class="text-center">Daniel Crookes</p>
 
                         <h4>ATC Training Team</h4>
                         <table class="table">
                             <tr>
+                                <td>General Manager</td>
+                                <td></td>
+                            <tr>
                                 <td>Administrative Manager</td>
-                                <td>Alex Beard</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Senior Division Instructor<br/>
@@ -271,7 +227,9 @@
                                 <td>Tom Szczypinski</td>
                             </tr>
                             <tr>
-                                <td>TG Manager (TWR)</td>
+                                <td>TG Manager (TWR)<br/>
+                                    TG Instructor (TG2)
+                                </td>
                                 <td>Lee Roberts</td>
                             </tr>
                             <tr>
@@ -287,6 +245,10 @@
                                 <td>Nathan Donnelly</td>
                             </tr>
                             <tr>
+                                <td>TG Instructor (TG1)</td>
+                                <td>Fraser Cooper</td>
+                            </tr>
+                            <tr>
                                 <td>TG Instructor (TG2)</td>
                                 <td>Jonas Hey</td>
                             </tr>
@@ -299,6 +261,30 @@
                                 <td>James Yuen</td>
                             </tr>
                         </table>
+                        
+                        <h4>Pilot Training Team</h4>
+                        <table class="table">
+                            <tr>
+                                <td>Administrative Manager</td>
+                                <td>Matthew Wilson</td>
+                            </tr>
+                            <tr>
+                                <td>Initial Flight Instructor</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>VFR Flight Instructor</td>
+                                <td>Lewis Hammett</td>
+                            </tr>
+                            <tr>
+                                <td>IFR Flight Instructor</td>
+                                <td>Tom Knowles</td>
+                            </tr>
+                            <tr>
+                                <td>Development Flight Instructor</td>
+                                <td>James Gibson</td>
+                            </tr>
+                         </table>   
                     </div>
                 </div>
             </div>
