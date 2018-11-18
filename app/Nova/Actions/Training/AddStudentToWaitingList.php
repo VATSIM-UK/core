@@ -17,7 +17,6 @@ class AddStudentToWaitingList extends Action
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-
     public $name = 'Add Student';
 
     /**
