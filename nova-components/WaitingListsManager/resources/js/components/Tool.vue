@@ -15,6 +15,7 @@
                         <th class="text-left">Added On</th>
                         <th class="text-left">Current Status</th>
                         <th class="text-left">ATC Hour Check</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -25,6 +26,11 @@
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
                         <td v-bind:class="{ 'text-green': account.atcHourCheck }"><span>{{ getHourCheck(account.atcHourCheck) }}</span></td>
+                        <td>
+                            <button class="cursor-pointer text-70 hover:text-primary mr-3" @click="removeAccount(account.id)">
+                                <icon type="delete" />
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -66,6 +72,14 @@
 
             getHourCheck(check) {
                 return (check ? "Y" : "N")
+            },
+
+            removeAccount(account) {
+                axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/remove`, { account_id: account })
+                    .then(response => {
+                        this.loadAccounts();
+                    }
+                );
             }
         }
     }
