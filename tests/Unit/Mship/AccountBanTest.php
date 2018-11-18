@@ -5,7 +5,6 @@ namespace Tests\Unit\Mship;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Mship\Account;
 use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Role;
 use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanRepealed;
 use App\Services\Mship\BanAccount;

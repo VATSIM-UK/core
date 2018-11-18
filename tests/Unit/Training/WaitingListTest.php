@@ -3,7 +3,6 @@
 namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
