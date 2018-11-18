@@ -150,7 +150,7 @@ class WaitingList extends Model
      */
     private function nextPosition()
     {
-        $size = $this->accounts()->count();
+        $size = $this->accounts()->where('position', '>', 0)->count();
 
         return $size + 1;
     }

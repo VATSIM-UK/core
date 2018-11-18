@@ -39,7 +39,7 @@ class Account extends Resource
      */
     public static $disallowAttach = [
         'App\Models\Mship\Qualification',
-        'App\Models\MshipState',
+        'App\Models\Mship\State',
     ];
 
     /**

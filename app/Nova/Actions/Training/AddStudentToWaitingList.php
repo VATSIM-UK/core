@@ -39,6 +39,10 @@ class AddStudentToWaitingList extends Action
             return Action::danger('The specified CID was not found.');
         }
 
+        if ($waitingList->accounts->contains($account)) {
+            return Action::danger('The account already exists in the waiting lists');
+        }
+
         $waitingList->addToWaitingList($cid, auth()->user());
 
         event(new AccountAddedToWaitingList($account, $waitingList, auth()->user()));
