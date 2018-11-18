@@ -18,7 +18,7 @@ class WaitingListsManagerController extends Controller
 
     public function index(WaitingList $waitingList)
     {
-        return WaitingListAccountResource::collection($waitingList->accounts()->where('position',">", 0)->orderBy('position')->get());
+        return WaitingListAccountResource::collection($waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get());
     }
 
     public function destroy(WaitingList $waitingList, Request $request)
