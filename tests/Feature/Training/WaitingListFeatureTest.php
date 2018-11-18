@@ -18,7 +18,6 @@ class WaitingListFeatureTest extends TestCase
     use DatabaseTransactions;
 
     private $waitingList;
-    private $staffAccount;
 
     public function setUp()
     {
@@ -27,10 +26,6 @@ class WaitingListFeatureTest extends TestCase
         Event::fake();
 
         $this->waitingList = factory(WaitingList::class)->create();
-
-        $this->staffAccount = factory(Account::class)->create();
-
-        $this->staffAccount->roles()->attach(Role::find(1));
     }
 
     /** @test * */
@@ -38,7 +33,7 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Account Added to Waiting List');
@@ -51,12 +46,12 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testRedirectOnUnknownAccountId()
     {
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => 12345678,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('error', 'Account Not Found.');
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.remove', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
             'account_id' => 12345678,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('error', 'Account Not Found.');
@@ -67,12 +62,12 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Account Added to Waiting List');
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.store', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertSessionHasErrors('account_id', 'That account is already in this waiting list');
     }
@@ -82,7 +77,7 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.manage.promote', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.manage.promote', $this->waitingList), [
             'account_id' => $account->id,
             'position' => 1,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
@@ -98,7 +93,7 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.manage.demote', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.manage.demote', $this->waitingList), [
             'account_id' => $account->id,
             'position' => 1,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
@@ -114,9 +109,9 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $this->waitingList->addToWaitingList($account, $this->staffAccount);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->actingAs($this->staffAccount)->post(route('training.waitingList.remove', $this->waitingList), [
+        $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
             'account_id' => $account->id,
         ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
             ->assertSessionHas('success', 'Student removed from Waiting List');

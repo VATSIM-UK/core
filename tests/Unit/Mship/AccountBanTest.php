@@ -10,29 +10,23 @@ use App\Notifications\Mship\BanCreated;
 use App\Notifications\Mship\BanRepealed;
 use App\Services\Mship\BanAccount;
 use App\Services\Mship\RepealBan;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AccountBanTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /** @var Account */
     protected $account;
-
-    protected $staffAccount;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->account = factory(Account::class)->create();
-
-        $this->staffAccount = factory(Account::class)->create();
-
-        $this->staffAccount->roles()->attach(Role::find(1));
 
         Event::fake();
 
@@ -44,7 +38,7 @@ class AccountBanTest extends TestCase
     {
         $reason = factory(Reason::class)->create();
 
-        $ban = $this->account->addBan($reason, 'ExtraReason', 'NoteForBan', $this->staffAccount);
+        $ban = $this->account->addBan($reason, 'ExtraReason', 'NoteForBan', $this->privacc);
 
         Event::assertDispatched(BanUpdated::class, function ($event) use ($ban) {
             return $event->ban->id === $ban->id;
@@ -56,7 +50,7 @@ class AccountBanTest extends TestCase
     {
         $reason = factory(Reason::class)->create();
 
-        $service = new BanAccount($this->account, $reason, $this->staffAccount,
+        $service = new BanAccount($this->account, $reason, $this->privacc,
             ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);
 
         $service->handle();
@@ -75,7 +69,7 @@ class AccountBanTest extends TestCase
     {
         $reason = factory(Reason::class)->create();
 
-        $banService = new BanAccount($this->account, $reason, $this->staffAccount,
+        $banService = new BanAccount($this->account, $reason, $this->privacc,
             ['ban_internal_note' => 'Testing an internal note.', 'ban_reason_extra' => 'Testing the note to a user.']);
 
         $banService->handle();
