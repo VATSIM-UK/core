@@ -57,3 +57,6 @@ Route::group([
         Route::get('/branding')->uses('MarketingPagesController@viewBranding')->name('branding');
     });
 });
+
+// METAR
+Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('metar');
