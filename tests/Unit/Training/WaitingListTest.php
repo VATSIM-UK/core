@@ -3,7 +3,6 @@
 namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
-use App\Models\Mship\Role;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -20,16 +19,6 @@ class WaitingListTest extends TestCase
         parent::setUp();
 
         $this->waitingList = $this->createList();
-
-        $this->staffUser = factory(Account::class)->create();
-
-        $this->staffUser->roles()->attach(Role::find(1));
-    }
-
-    /** @test * */
-    public function itHasASlugRouteKey()
-    {
-        $this->assertEquals('slug', $this->waitingList->getRouteKeyName());
     }
 
     /** @test **/
@@ -68,7 +57,7 @@ class WaitingListTest extends TestCase
     {
         $account = factory(Account::class)->make();
 
-        $this->waitingList->addToWaitingList($account, $this->staffUser);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertCount(1, $this->waitingList->accounts);
 
@@ -81,7 +70,7 @@ class WaitingListTest extends TestCase
     {
         $account = factory(Account::class)->make();
 
-        $this->waitingList->addToWaitingList($account, $this->staffUser);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertDatabaseHas('training_waiting_list_account',
             ['account_id' => $account->id, 'list_id' => $this->waitingList->id]);
@@ -97,7 +86,7 @@ class WaitingListTest extends TestCase
     {
         $accounts = factory(Account::class, 3)->create();
 
-        $this->waitingList->addToWaitingList($accounts, $this->staffUser);
+        $this->waitingList->addToWaitingList($accounts, $this->privacc);
 
         $this->assertEquals(3, $this->waitingList->accounts->count());
     }
@@ -108,8 +97,8 @@ class WaitingListTest extends TestCase
         $account = factory(Account::class)->create();
         $accountSecond = factory(Account::class)->create();
 
-        $this->waitingList->addToWaitingList($account, $this->staffUser);
-        $this->waitingList->addToWaitingList($accountSecond, $this->staffUser);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $this->waitingList->addToWaitingList($accountSecond, $this->privacc);
 
         $this->assertDatabaseHas('training_waiting_list_account', [
             'list_id' => $this->waitingList->id,
@@ -128,7 +117,7 @@ class WaitingListTest extends TestCase
     public function itUpdatesPositionsOnWaitingListRemoval()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
-            $this->waitingList->addToWaitingList($account, $this->staffUser);
+            $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
         $this->waitingList->removeFromWaitingList($accounts[1]);
@@ -165,7 +154,7 @@ class WaitingListTest extends TestCase
     public function itCanPromoteStudentsWithinTheListByOne()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
-            $this->waitingList->addToWaitingList($account, $this->staffUser);
+            $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
         $this->waitingList->promote($accounts[1], 1);
@@ -179,7 +168,7 @@ class WaitingListTest extends TestCase
     public function itCanPromoteStudentsWithinTheListByMoreThanOne()
     {
         $accounts = factory(Account::class, 10)->create()->each(function ($account) {
-            $this->waitingList->addToWaitingList($account, $this->staffUser);
+            $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
         $this->waitingList->promote($accounts[9], 9);
@@ -194,7 +183,7 @@ class WaitingListTest extends TestCase
     public function itCanDemoteStudentsWithinTheListByOne()
     {
         $accounts = factory(Account::class, 3)->create()->each(function ($account) {
-            $this->waitingList->addToWaitingList($account, $this->staffUser);
+            $this->waitingList->addToWaitingList($account, $this->privacc);
         });
 
         $this->waitingList->demote($accounts[1], 1);

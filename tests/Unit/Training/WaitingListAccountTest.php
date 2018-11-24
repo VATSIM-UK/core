@@ -5,33 +5,30 @@ namespace Tests\Unit\Training;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingListStatus;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListAccountTest extends TestCase
 {
-    use RefreshDatabase, WaitingListTestHelper;
+    use DatabaseTransactions, WaitingListTestHelper;
 
     private $waitingList;
-    private $staffAccount;
 
     protected function setUp()
     {
         parent::setUp();
 
         $this->waitingList = $this->createList();
-
-        $this->staffAccount = $this->createAdminAccount();
     }
 
-    /** @test **/
+    /** @test * */
     public function itCanHaveAStatusAssociatedWithIt()
     {
         $status = factory(WaitingListStatus::class)->create();
 
         $account = factory(Account::class)->create();
 
-        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->staffAccount);
+        $waitingListAccount = $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->waitingList->accounts->first()->pivot->addStatus($status);
 
@@ -41,7 +38,7 @@ class WaitingListAccountTest extends TestCase
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function itRemovedOldStatusesOnAdd()
     {
         $status = factory(WaitingListStatus::class)->create();
@@ -50,7 +47,7 @@ class WaitingListAccountTest extends TestCase
 
         $account = factory(Account::class)->create();
 
-        $this->waitingList->addToWaitingList($account, $this->staffAccount);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->waitingList->accounts->first()->pivot->addStatus($status);
 
@@ -68,14 +65,14 @@ class WaitingListAccountTest extends TestCase
         ]);
     }
 
-    /** @test **/
+    /** @test * */
     public function itChecksFor12HourRequirement()
     {
         $account = factory(Account::class)->create();
 
         $data = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
 
-        $this->waitingList->addToWaitingList($account, $this->staffAccount);
+        $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
     }
