@@ -221,5 +221,13 @@ class ApplicationTest extends TestCase
         foreach ($applicationTypes as $function => $status) {
             $this->assertEquals(Application::statusIn($status)->count(), Application::$function());
         }
+
+        // Assert that the values were cached
+        Cache::shouldReceive('remember')
+            ->times(5);
+
+        foreach ($applicationTypes as $function => $status){
+            Application::$function();
+        }
     }
 }

@@ -70,6 +70,7 @@ class ReferenceTest extends TestCase
     /** @test */
     public function itReportsStatisticsCorrectly()
     {
+
         $referenceTypes = [
             'statisticTotal' => collect(Reference::$REFERENCE_IS_PENDING)->merge(Reference::$REFERENCE_IS_SUBMITTED)->unique()->all(),
             'statisticRequested' => [Reference::STATUS_REQUESTED],
@@ -95,8 +96,20 @@ class ReferenceTest extends TestCase
 
         // Test
         Cache::flush();
+
+
         foreach ($referenceTypes as $function => $status) {
             $this->assertEquals(Reference::statusIn($status)->count(), Reference::$function());
         }
+
+        // Assert that the values were cached
+        Cache::shouldReceive('remember')
+            ->times(6);
+
+        foreach ($referenceTypes as $function => $status){
+            Reference::$function();
+        }
+
+
     }
 }
