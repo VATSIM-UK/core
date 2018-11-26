@@ -226,7 +226,7 @@ class ApplicationTest extends TestCase
         Cache::shouldReceive('remember')
             ->times(5);
 
-        foreach ($applicationTypes as $function => $status){
+        foreach ($applicationTypes as $function => $status) {
             Application::$function();
         }
     }
