@@ -6,12 +6,12 @@ use App\Events\Training\AccountAddedToWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListStatus;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class WaitingListStatusTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $waitingListStatus;
 
@@ -28,15 +28,14 @@ class WaitingListStatusTest extends TestCase
         $this->assertEquals(1, $this->waitingListStatus->default()->id);
     }
 
-    /** @test **/
+    /** @test * */
     public function itHasListenerToAssignDefaultStatus()
     {
         $account = factory(Account::class)->create();
         $waitingList = factory(WaitingList::class)->create();
-        $staffAccount = factory(Account::class)->create();
-        $waitingList->addToWaitingList($account, $staffAccount);
+        $waitingList->addToWaitingList($account, $this->privacc);
 
-        event(new AccountAddedToWaitingList($account, $waitingList, $staffAccount));
+        event(new AccountAddedToWaitingList($account, $waitingList, $this->privacc));
 
         $waitingListAccount = $waitingList::find($waitingList->id)->accounts->where('id', $account->id)->first()->pivot->status;
 
