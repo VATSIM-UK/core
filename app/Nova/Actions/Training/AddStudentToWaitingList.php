@@ -2,7 +2,6 @@
 
 namespace App\Nova\Actions\Training;
 
-use App\Events\Training\AccountAddedToWaitingList;
 use App\Models\Mship\Account;
 use App\Services\Training\AddToWaitingList;
 use Illuminate\Bus\Queueable;
