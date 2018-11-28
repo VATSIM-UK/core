@@ -4,11 +4,13 @@ namespace App\Nova\Actions\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Models\Mship\Account;
+use App\Services\Training\AddToWaitingList;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Text;
@@ -43,9 +45,7 @@ class AddStudentToWaitingList extends Action
             return Action::danger('The account already exists in the waiting lists');
         }
 
-        $waitingList->addToWaitingList($cid, auth()->user());
-
-        event(new AccountAddedToWaitingList($account, $waitingList, auth()->user()));
+        handleService(new AddToWaitingList($waitingList, $account, Account::find(auth()->id())));
 
         return Action::message('Student added to Waiting List.');
     }

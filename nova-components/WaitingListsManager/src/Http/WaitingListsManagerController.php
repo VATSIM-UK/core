@@ -4,8 +4,8 @@ namespace Vatsimuk\WaitingListsManager\Http;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Request;
 
 class WaitingListsManagerController extends Controller
 {
@@ -25,7 +25,7 @@ class WaitingListsManagerController extends Controller
     {
         $account = Account::findOrFail($request->get('account_id'));
 
-        $waitingList->removeManager($account);
+        $waitingList->removeFromWaitingList($account);
 
         return [];
     }
