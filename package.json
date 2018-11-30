@@ -13,8 +13,8 @@
     "prod": "yarn run production",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "heroku-postbuild": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && npm run prod",
-    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && npm run dev"
+    "build-waiting-lists-manager-prod": "cd nova-components/WaitingListsManager && yarn run prod",
+    "build-waiting-lists-manager": "cd nova-components/WaitingListsManager && yarn run dev"
   },
   "dependencies": {
     "admin-lte": "2.3.11",
