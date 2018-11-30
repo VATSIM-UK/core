@@ -170,7 +170,7 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td></td>
+                                    <td>Oliver Rhodes</td>
                                 <tr>
                                     <td>Administrative Manager</td>
                                     <td></td>
