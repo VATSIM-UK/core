@@ -2,11 +2,13 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingList extends Resource
 {
@@ -49,12 +51,14 @@ class WaitingList extends Resource
                 ->creationRules('unique:training_waiting_list,name')
                 ->slug('Slug'),
 
-            Slug::make('Slug')->onlyOnForms(),
+            Slug::make('Slug'),
 
             Select::make('Department')->options([
                 1 => 'ATC Training',
                 2 => 'Pilot Training',
             ])->displayUsingLabels()->rules(['required'])->sortable(),
+
+            WaitingListsManager::make(),
         ];
     }
 
@@ -99,6 +103,8 @@ class WaitingList extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new AddStudentToWaitingList),
+        ];
     }
 }

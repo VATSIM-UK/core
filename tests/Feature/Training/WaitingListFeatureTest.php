@@ -8,13 +8,13 @@ use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class WaitingListFeatureTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $waitingList;
 

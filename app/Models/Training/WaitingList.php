@@ -25,8 +25,12 @@ class WaitingList extends Model
      */
     public function staff()
     {
-        return $this->belongsToMany(Account::class, 'training_waiting_list_staff', 'list_id',
-            'account_id')->withTimestamps();
+        return $this->belongsToMany(
+            Account::class,
+            'training_waiting_list_staff',
+            'list_id',
+            'account_id'
+        )->withTimestamps();
     }
 
     /**
@@ -36,8 +40,11 @@ class WaitingList extends Model
      */
     public function accounts()
     {
-        return $this->belongsToMany(Account::class, 'training_waiting_list_account',
-            'list_id')->using(WaitingListAccount::class)->withPivot(['id', 'position', 'deleted_at'])->withTimestamps();
+        return $this->belongsToMany(
+            Account::class,
+            'training_waiting_list_account',
+            'list_id'
+        )->using(WaitingListAccount::class)->withPivot(['id', 'position', 'deleted_at'])->withTimestamps()->wherePivot('deleted_at', null);
     }
 
     /**
@@ -150,7 +157,7 @@ class WaitingList extends Model
      */
     private function nextPosition()
     {
-        $size = $this->accounts()->count();
+        $size = $this->accounts()->where('position', '>', 0)->count();
 
         return $size + 1;
     }

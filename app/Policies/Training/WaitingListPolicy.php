@@ -13,22 +13,22 @@ class WaitingListPolicy extends BasePolicy
 
     public function addAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->basePermission($account, $waitingList);
+        return true;
     }
 
     public function removeAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->basePermission($account, $waitingList);
+        return true;
     }
 
     public function promoteAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->basePermission($account, $waitingList);
+        return true;
     }
 
     public function demoteAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->basePermission($account, $waitingList);
+        return true;
     }
 
     private function basePermission(Account $account, WaitingList $waitingList)

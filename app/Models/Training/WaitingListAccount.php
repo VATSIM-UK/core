@@ -12,7 +12,9 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position', 'deleted_at'];
+    public $fillable = ['position', 'added_by', 'deleted_at'];
+
+    protected $appends = ['atcHourCheck'];
 
     public function status()
     {
@@ -80,5 +82,10 @@ class WaitingListAccount extends Pivot
         }
 
         return false;
+    }
+
+    public function getAtcHourCheckAttribute()
+    {
+        return $this->atcHourCheck();
     }
 }
