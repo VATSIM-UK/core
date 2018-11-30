@@ -39,7 +39,7 @@ class VisitTransferAdminTest extends TestCase
 
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertSeeTextInOrder(['90 Day Check', 'Data unavailable', '50 Hour Check', 'Data unavailable']);;
+            ->assertSeeTextInOrder(['90 Day Check', 'Data unavailable', '50 Hour Check', 'Data unavailable']);
 
         $this->application->setCheckOutcome('90_day', true);
         $this->application->setCheckOutcome('50_hours', false);
@@ -47,14 +47,13 @@ class VisitTransferAdminTest extends TestCase
             ->get(route('adm.visiting.application.view', $this->application->id))
             ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90
                                             days', '50 Hour Check', 'does not have in excess of 50
-                                            hours']);;
+                                            hours']);
 
         $this->application->setCheckOutcome('90_day', false);
         $this->application->setCheckOutcome('50_hours', true);
         $this->actingAs($this->privacc, 'web')
             ->get(route('adm.visiting.application.view', $this->application->id))
-            ->assertSeeTextInOrder(['90 Day Check', 'within 90 days', '50 Hour Check', 'in excess of 50 hours']);;
-
+            ->assertSeeTextInOrder(['90 Day Check', 'within 90 days', '50 Hour Check', 'in excess of 50 hours']);
     }
 
     /** @test * */
