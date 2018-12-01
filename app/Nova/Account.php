@@ -22,6 +22,8 @@ class Account extends Resource
      */
     public static $model = 'App\\Models\\Mship\\Account';
 
+    public static $group = 'Membership';
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
