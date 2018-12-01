@@ -170,7 +170,7 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td></td>
+                                    <td>Oliver Rhodes</td>
                                 <tr>
                                     <td>Administrative Manager</td>
                                     <td></td>
@@ -198,12 +198,6 @@
                                 <tr>
                                     <td>Division Instructor</td>
                                     <td>Mike Pike</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (TGNC)<br/>
-                                        TG Manager (Heathrow)
-                                    </td>
-                                    <td>Oliver Rhodes</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (TGNC)</td>

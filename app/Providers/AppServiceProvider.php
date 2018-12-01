@@ -80,11 +80,6 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
             return \Auth::user()->verifyPassword($value);
         });
-
-        View::composer(
-            ['visit-transfer.admin._sidebar'],
-            \App\Http\ViewComposers\StatisticsComposer::class
-        );
     }
 
     /**

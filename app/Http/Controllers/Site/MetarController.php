@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Site;
+
+use Illuminate\Support\Facades\Cache;
 
 class MetarController
 {
     public function get($airportIcao)
     {
         return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
-            $client = new GuzzleHttp\Client();
+            $client = new \GuzzleHttp\Client();
 
             try {
                 $response = $client->get("http://metar.vatsim.net/metar.php?id=$airportIcao");
