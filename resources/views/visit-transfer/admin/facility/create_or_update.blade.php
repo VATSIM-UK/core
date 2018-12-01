@@ -83,7 +83,7 @@
 
                             <div class="form-group">
                                 {!! Form::label('training_spaces', 'How many training places are available?'),
-                                Form::select("training_spaces", array_merge([0,1,2,3,4,5,6,7,8,9,10], ["null" => "Infinite"]), Input::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
+                                Form::select("training_spaces", array_merge([0,1,2,3,4,5,6,7,8,9,10], [null => "Infinite"]), Input::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">
