@@ -24,7 +24,6 @@ class NoteType extends Resource
      */
     public static $title = 'name';
 
-
     public static $displayInNavigation = false;
 
     /**
