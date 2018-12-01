@@ -200,12 +200,6 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TGNC)<br/>
-                                        TG Manager (Heathrow)
-                                    </td>
-                                    <td>Oliver Rhodes</td>
-                                </tr>
-                                <tr>
                                     <td>TG Manager (TGNC)</td>
                                     <td>Josh Howker</td>
                                 </tr>
