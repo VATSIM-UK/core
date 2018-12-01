@@ -5,6 +5,7 @@ namespace Tests\Feature\VisitTransfer;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -27,6 +28,32 @@ class VisitTransferAdminTest extends TestCase
         $this->ref1 = factory(Reference::class)->create(['application_id' => $this->application->id]);
         $this->ref2 = factory(Reference::class)->create(['application_id' => $this->application->id]);
         $this->application = $this->application->fresh();
+    }
+
+    /** @test * */
+    public function testThatItDisplaysCheckOutcomes()
+    {
+        $this->application->status = Application::STATUS_SUBMITTED;
+        $this->application->submitted_at = Carbon::now();
+        $this->application->save();
+
+        $this->actingAs($this->privacc, 'web')
+            ->get(route('adm.visiting.application.view', $this->application->id))
+            ->assertSeeTextInOrder(['90 Day Check', 'Data unavailable', '50 Hour Check', 'Data unavailable']);
+
+        $this->application->setCheckOutcome('90_day', true);
+        $this->application->setCheckOutcome('50_hours', false);
+        $this->actingAs($this->privacc, 'web')
+            ->get(route('adm.visiting.application.view', $this->application->id))
+            ->assertSeeTextInOrder(['90 Day Check', 'in excess of 90
+                                            days', '50 Hour Check', 'does not have in excess of 50
+                                            hours']);
+
+        $this->application->setCheckOutcome('90_day', false);
+        $this->application->setCheckOutcome('50_hours', true);
+        $this->actingAs($this->privacc, 'web')
+            ->get(route('adm.visiting.application.view', $this->application->id))
+            ->assertSeeTextInOrder(['90 Day Check', 'within 90 days', '50 Hour Check', 'in excess of 50 hours']);
     }
 
     /** @test * */
