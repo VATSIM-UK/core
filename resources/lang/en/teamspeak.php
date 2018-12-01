@@ -2,18 +2,18 @@
 
 
 return [
-    'registration.notfound.poke' => 'No registration found. Visit https://core.vatsim.uk to register.',
+    'registration.notfound.poke' => 'No registration found. Visit https://www.vatsim.uk/dashboard to register.',
     'registration.notfound.kick' => 'No registration found.',
     'registration.notfound.exception' => 'No registration found for :dbid',
     'ban.network.ban' => 'You are currently serving a VATSIM.net ban.',
     'ban.system.ban' => 'You are currently serving a VATSIM UK ban.',
     'inactive' => 'Your VATSIM membership is inactive - visit https://cert.vatsim.net/vatsimnet/statcheck.html',
-    'notification.mandatory.notify' => 'You must accept the new notifications that are published at https://core.vatsim.uk',
-    'notification.mandatory.poke' => 'You cannot connect to TeamSpeak until you read the notifications at https://core.vatsim.uk',
+    'notification.mandatory.notify' => 'You must accept the new notifications that are published at https://www.vatsim.uk/dashboard',
+    'notification.mandatory.poke' => 'You cannot connect to TeamSpeak until you read the notifications at https://www.vatsim.uk/dashboard',
     'notification.mandatory.kick' => 'You must accept the latest important notifications.',
-    'notification.important.poke.1' => 'You have new important notifications to accept at https://core.vatsim.uk',
+    'notification.important.poke.1' => 'You have new important notifications to accept at https://www.vatsim.uk/dashboard',
     'notification.important.poke.2' => 'These notifications are highly relevent. Please read them.',
-    'nickname.invalid.poke1' => 'Please use your full VATSIM-registered name - you may check this at https://core.vatsim.uk/',
+    'nickname.invalid.poke1' => 'Please use your full VATSIM-registered name - you may check this at https://www.vatsim.uk/dashboard/',
     'nickname.invalid.poke2' => 'If you believe this is a mistake, please contact Web Services via https://helpdesk.vatsim.uk/',
     'nickname.invalid.kick' => 'Please use your full VATSIM-registered name.',
     'nickname.partiallyinvalid.poke1' => 'Your current nickname is not allowed. Ensure that your name is your VATSIM-registered one.',
