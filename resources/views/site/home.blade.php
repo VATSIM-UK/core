@@ -371,7 +371,8 @@
     ga('send', 'pageview');
 
 </script>
-<script src="js/home.js"></script>
+<script src="{{ mix('js/home.js') }}"></script>
+<script src="{{ mix('js/snow.js') }}"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 
