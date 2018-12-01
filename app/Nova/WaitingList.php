@@ -26,6 +26,8 @@ class WaitingList extends Resource
      */
     public static $title = 'name';
 
+    public static $group = 'Training';
+
     /**
      * The columns that should be searched.
      *

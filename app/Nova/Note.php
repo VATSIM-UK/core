@@ -24,6 +24,8 @@ class Note extends Resource
      */
     public static $title = 'id';
 
+    public static $displayInNavigation = false;
+
     /**
      * The columns that should be searched.
      *

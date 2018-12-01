@@ -25,6 +25,8 @@ class Ban extends Resource
      */
     public static $title = 'id';
 
+    public static $group = 'Membership';
+
     /**
      * The columns that should be searched.
      *
