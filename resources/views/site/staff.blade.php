@@ -135,6 +135,10 @@
                             </tr>
                             <tr>
                                 <td>Developer</td>
+                                <td>Andy Ford</td>
+                            </tr>
+                            <tr>
+                                <td>Developer</td>
                                 <td>Callum Axon</td>
                             </tr>
                             <tr>
@@ -219,19 +223,11 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
-                                    <td>Jamie Paine</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (TG1)</td>
                                     <td>Nathan Donnelly</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
                                     <td>Fraser Cooper</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (TG2)</td>
-                                    <td>Jonas Hey</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
@@ -245,7 +241,7 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td></td>
+                                    <td><em>Vacant</em></td>
                                 <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
@@ -259,10 +255,6 @@
                                 <tr>
                                     <td>IFR Flight Instructor</td>
                                     <td>Tom Knowles</td>
-                                </tr>
-                                <tr>
-                                    <td>Development Flight Instructor</td>
-                                    <td></td>
                                 </tr>
                              </table>   
 
