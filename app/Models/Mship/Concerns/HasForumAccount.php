@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models\Mship\Concerns;
+namespace App\Models\Mship\Concerns;
 
-    use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
     /**
      * Trait HasForumAccount
@@ -11,14 +11,13 @@
     {
         /**
          * Sync the current account to the Forum.
-         *
          */
         public function syncToForum()
         {
             // Check forum enabled
             $communityClient = DB::table('oauth_clients')->where('name', 'Community')->first();
 
-            if(!config('services.community.init_file') || !config('services.community.database') || !$communityClient){
+            if (!config('services.community.init_file') || !config('services.community.database') || !$communityClient) {
                 return;
             }
 

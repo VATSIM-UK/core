@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Models\Mship\Concerns;
+namespace App\Models\Mship\Concerns;
 
-    use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
     /**
      * Trait HasForumAccount
@@ -11,7 +11,6 @@
     {
         /**
          * Sync the current account to the Forum.
-         *
          */
         public function syncToCTS()
         {
