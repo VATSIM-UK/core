@@ -24,11 +24,11 @@ class SyncSubscriber
         \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
         \App\Jobs\Mship\SyncToForums::dispatch($event->account);
 
-        Log::debug($event->account->real_name.' was queued to sync to external services');
+        Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }
 
     /**
-     * Register the listeners for the subscriber.
+     * Register the listeners for the subscriber.a
      *
      * @param  \Illuminate\Events\Dispatcher $events
      */

@@ -9,7 +9,9 @@ use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasEmails;
+use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
@@ -159,7 +161,7 @@ use Watson\Rememberable\Rememberable;
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
+        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword, HasNotifications, HasEmails, HasRoles;
     use HasApiTokens {
         clients as oAuthClients;
