@@ -21,11 +21,12 @@ class AccountSyncTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+
+        $this->account = factory(Account::class)->create();
         $initialDispatcher = Event::getFacadeRoot();
         Event::fake();
         Model::setEventDispatcher($initialDispatcher);
 
-        $this->account = factory(Account::class)->create();
     }
 
     /** @test **/
@@ -62,6 +63,6 @@ class AccountSyncTest extends TestCase
         $this->account->updated_at = Carbon::now();
         $this->account->save();
 
-        Event::assertDispatched(AccountAltered::class);
+        Event::assertNotDispatched(AccountAltered::class);
     }
 }
