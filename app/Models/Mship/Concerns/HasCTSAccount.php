@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
     trait HasCTSAccount
     {
         /**
-         * Sync the current account to the Forum.
+         * Sync the current account to the CTS.
          */
         public function syncToCTS()
         {
