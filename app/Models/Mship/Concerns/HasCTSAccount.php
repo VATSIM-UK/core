@@ -4,7 +4,7 @@ namespace App\Models\Mship\Concerns;
 
 use Illuminate\Support\Facades\DB;
 
-    /**
+/**
      * Trait HasCTSAccount
      */
     trait HasCTSAccount
