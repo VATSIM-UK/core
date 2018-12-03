@@ -26,7 +26,6 @@ class AccountSyncTest extends TestCase
         $initialDispatcher = Event::getFacadeRoot();
         Event::fake();
         Model::setEventDispatcher($initialDispatcher);
-
     }
 
     /** @test **/
