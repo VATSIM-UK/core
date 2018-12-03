@@ -69,7 +69,6 @@ trait HasEmails
         $save = $this->save();
 
         if ($this->email != strtolower($primaryEmail)) {
-            \Log::info('here');
             event(new AccountAltered($this));
         }
 
