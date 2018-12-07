@@ -1,17 +1,16 @@
 <?php
 
-    namespace Tests\Feature\Community;
+namespace Tests\Feature\Community;
 
-    use App\Models\Community\Group;
+use App\Models\Community\Group;
     use Illuminate\Foundation\Testing\DatabaseTransactions;
-    use Illuminate\Support\Facades\Auth;
     use Tests\TestCase;
 
     class DeploymentTest extends TestCase
     {
         use DatabaseTransactions;
 
-        var $account;
+        public $account;
 
         public function setUp()
         {

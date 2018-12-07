@@ -2,9 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Community\Membership;
 use App\Models\Mship\Account;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MembershipPolicy
 {
