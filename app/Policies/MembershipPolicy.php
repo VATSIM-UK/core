@@ -8,9 +8,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MembershipPolicy
 {
-    use HandlesAuthorization;
-
-    public function deploy(Account $user, Membership $membership)
+    public function deploy(Account $user)
     {
         return $user->communityGroups()->notDefault()->count() == 0 && $user->hasState('DIVISION');
     }
