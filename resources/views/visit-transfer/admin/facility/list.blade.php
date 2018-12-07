@@ -51,7 +51,7 @@
                                 <td align="center">
                                     @if($f->training_required)
                                         <span class="label label-success">YES</span>
-                                        <span class="label label-info">{{ ( $f->training_spaces === null ? "&infin;" : $f->training_spaces) . " available" }}</span>
+                                        <span class="label label-info">{!! ( $f->training_spaces === null ? "&infin;" : $f->training_spaces) . " available"  !!}</span>
                                     @else
                                         <span class="label label-danger">NO</span>
                                     @endif
@@ -69,7 +69,7 @@
                                 <td align="center">
                                     @if($f->stage_reference_enabled)
                                         <span class="label label-success">YES</span>
-                                        <span class="label label-info">{{ $f->stage_reference_quantity . "required" }}</span>
+                                        <span class="label label-info">{{ $f->stage_reference_quantity . " required" }}</span>
                                     @else
                                         <span class="label label-danger">NO</span>
                                     @endif
