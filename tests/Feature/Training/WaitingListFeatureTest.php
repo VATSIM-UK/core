@@ -8,13 +8,16 @@ use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
+use Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController;
+use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingListFeatureTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $waitingList;
 
@@ -74,30 +77,40 @@ class WaitingListFeatureTest extends TestCase
     /** @test * */
     public function testAStudentCanBePromoted()
     {
-        $account = factory(Account::class)->create();
+        $this->markNovaTest();
 
-        $this->actingAs($this->privacc)->post(route('training.waitingList.manage.promote', $this->waitingList), [
-            'account_id' => $account->id,
-            'position' => 1,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('success', 'Waiting list positions changed.');
+        [$account, $account2, $account3] = factory(Account::class, 3)->create();
 
-        Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $this->waitingList->addToWaitingList($account2, $this->privacc);
+        $this->waitingList->addToWaitingList($account3, $this->privacc);
+
+        $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/promote", [
+            'account_id' => $account2->id,
+        ])->assertSuccessful();
+
+        Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account2) {
+            return $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
         });
     }
 
     /** @test * */
     public function testAStudentCanBeDemoted()
     {
-        $account = factory(Account::class)->create();
+        $this->markNovaTest();
 
-        $this->actingAs($this->privacc)->post(route('training.waitingList.manage.demote', $this->waitingList), [
+        [$account, $account2, $account3] = factory(Account::class, 3)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $this->waitingList->addToWaitingList($account2, $this->privacc);
+        $this->waitingList->addToWaitingList($account3, $this->privacc);
+
+
+
+        $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/demote", [
             'account_id' => $account->id,
-            'position' => 1,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('success', 'Waiting list positions changed.');
-
+        ])->assertSuccessful();
+        
         Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
             return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
         });
