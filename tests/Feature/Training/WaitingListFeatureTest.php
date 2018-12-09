@@ -12,8 +12,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
-use Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController;
-use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingListFeatureTest extends TestCase
 {
@@ -105,12 +103,10 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account2, $this->privacc);
         $this->waitingList->addToWaitingList($account3, $this->privacc);
 
-
-
         $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/demote", [
             'account_id' => $account->id,
         ])->assertSuccessful();
-        
+
         Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
             return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
         });
