@@ -30,6 +30,12 @@ class WaitingListEventSubscriber
             ->info("Account {$event->account} ({$event->account->id}) was removed from {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
     }
 
+    public function accountStatusChange($event)
+    {
+        return Log::channel('training')
+            ->info("Account {$event->account} ({$event->account->id}) has their status changed in {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
+    }
+
     public function subscribe($events)
     {
         $events->listen(
@@ -50,6 +56,11 @@ class WaitingListEventSubscriber
         $events->listen(
             'App\Events\Training\AccountRemovedFromWaitingList',
             'App\Listeners\Training\WaitingListEventSubscriber@accountRemoved'
+        );
+
+        $event->listen(
+            'App\Events\Training\AccountChangedStatusInWaitingList',
+            'App\Listeners\Training\WaitingListEventSubscriber@accountStatusChange'
         );
     }
 }

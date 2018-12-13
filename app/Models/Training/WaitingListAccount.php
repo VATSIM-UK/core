@@ -18,9 +18,14 @@ class WaitingListAccount extends Pivot
 
     public function status()
     {
-        return $this->belongsToMany(WaitingListStatus::class,
-            'training_waiting_list_account_status', 'waiting_list_account_id', 'status_id')
-            ->withPivot(['start_at', 'end_at'])->using(WaitingListAccountStatus::class);
+        return $this->belongsToMany(
+            WaitingListStatus::class,
+            'training_waiting_list_account_status',
+            'waiting_list_account_id',
+            'status_id'
+        )
+            ->withPivot(['start_at', 'end_at'])->using(WaitingListAccountStatus::class)
+            ->wherePivot('end_at', null);
     }
 
     /**

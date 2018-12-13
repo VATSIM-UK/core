@@ -3,6 +3,7 @@
 namespace Tests\Feature\Training;
 
 use App\Events\Training\AccountAddedToWaitingList;
+use App\Events\Training\AccountChangedStatusInWaitingList;
 use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
@@ -125,6 +126,40 @@ class WaitingListFeatureTest extends TestCase
             ->assertSessionHas('success', 'Student removed from Waiting List');
 
         Event::assertDispatched(AccountRemovedFromWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
+    }
+
+    /** @test **/
+    public function testAStudentCanHaveTheirStatusChangedToDeferred()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer", [
+            'account_id' => $account->id,
+        ])->assertSuccessful();
+
+        Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
+            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+        });
+    }
+
+    /** @test **/
+    public function testAStudentCanHaveTheirStatusChangedToActive()
+    {
+        $this->withoutExceptionHandling();
+
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active", [
+            'account_id' => $account->id,
+        ])->assertSuccessful();
+
+        Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
             return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
         });
     }

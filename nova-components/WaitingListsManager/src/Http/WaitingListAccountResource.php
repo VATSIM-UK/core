@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class WaitingListAccountResource extends JsonResource
 {
+    protected $position = 0;
     /**
      * @param \Illuminate\Http\Request $request
      * @return array
@@ -18,7 +19,7 @@ class WaitingListAccountResource extends JsonResource
             'position' => $this->pivot->position,
             'atcHourCheck' => $this->pivot->atcHourCheck,
             'created_at' => $this->pivot->created_at,
-            'status' => new WaitingListStatusResource($this->pivot->status->where('end_at', null)->first()),
+            'status' => new WaitingListStatusResource($this->pivot->status->first()),
         ];
     }
 }
