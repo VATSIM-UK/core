@@ -2,9 +2,6 @@
 
 namespace App\Listeners\Training\WaitingList;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-
 class LogAccountStatusChange
 {
     /**

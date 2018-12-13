@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class WaitingListAccountResource extends JsonResource
 {
     protected $position = 0;
+
     /**
      * @param \Illuminate\Http\Request $request
      * @return array
