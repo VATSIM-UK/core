@@ -55,12 +55,12 @@ abstract class TeamSpeakCommand extends Command
             self::$command->log('Invalid client ID.');
         } elseif ($e->getCode() === TeamSpeak::PERMISSIONS_CLIENT_INSUFFICIENT) {
             self::$command->log('Insufficient permissions to perform this action on this member.');
-        } elseif ($e->getMessage() == "duplicate entry") {
-            if ($account){
+        } elseif ($e->getMessage() == 'duplicate entry') {
+            if ($account) {
                 self::$command->log('Member already has server group. ['.$account->real_name.' '.$account->id.']');
             }
             self::$command->log('Member already has server group.');
-        }else {
+        } else {
             self::handleException($e);
         }
     }
