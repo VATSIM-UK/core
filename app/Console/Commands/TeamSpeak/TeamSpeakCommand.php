@@ -6,6 +6,7 @@ use App\Console\Commands\Command;
 use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
 use App\Libraries\TeamSpeak;
+use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
@@ -46,14 +47,19 @@ abstract class TeamSpeakCommand extends Command
      * Handling for a serverquery exception thrown by the TeamSpeak framework.
      *
      * @param TeamSpeak3_Adapter_ServerQuery_Exception $e
-     * @throws TeamSpeak3_Adapter_ServerQuery_Exception
+     * @param Account $account
      */
-    protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e)
+    protected static function handleServerQueryException(TeamSpeak3_Adapter_ServerQuery_Exception $e, Account $account = null)
     {
         if ($e->getCode() === TeamSpeak::CLIENT_INVALID_ID) {
             self::$command->log('Invalid client ID.');
         } elseif ($e->getCode() === TeamSpeak::PERMISSIONS_CLIENT_INSUFFICIENT) {
             self::$command->log('Insufficient permissions to perform this action on this member.');
+        } elseif ($e->getMessage() == 'duplicate entry') {
+            if ($account) {
+                self::$command->log('Member already has server group. ['.$account->real_name.' '.$account->id.']');
+            }
+            self::$command->log('Member already has server group.');
         } else {
             self::handleException($e);
         }
