@@ -61,8 +61,8 @@
             "url": "https://github.com/VATSIM-UK/laravel-ipboard"
         },
         {
-            "type": "path",
-            "url": "./nova"
+            "type": "composer",
+            "url": "https://nova.laravel.com"
         },
         {
             "type": "path",

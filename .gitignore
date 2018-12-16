@@ -15,6 +15,7 @@ yarn-error.log
 .env
 .env.testing
 .phpunit.result.cache
+auth.json
 
 _ide_helper.php
 .phpstorm.meta.php

@@ -12,6 +12,9 @@ jobs:
     - mysql -e 'create database IF NOT EXISTS core;' -uroot
     - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
     - mysql -e 'create database IF NOT EXISTS cts;' -uroot
+    - cp auth.json.example auth.json
+    - sed -i "s/your-username/${NOVA_USERNAME}/g" auth.json
+    - sed -i "s/your-password/${NOVA_PASSWORD}/g" auth.json
     - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
     - nvm install node
     - npm -v
