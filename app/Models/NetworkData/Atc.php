@@ -190,7 +190,10 @@ class Atc extends Model
                 ->orWhere('callsign', 'LIKE', 'MAN\_%')
                 ->orWhere('callsign', 'LIKE', 'EGGX%')
                 ->orWhere('callsign', 'LIKE', 'EGTT%')
-                ->orWhere('callsign', 'LIKE', 'EGPX%');
+                ->orWhere('callsign', 'LIKE', 'EGPX%')
+                ->orWhere('callsign', 'LIKE', 'LXGB_%')
+                ->orWhere('callsign', 'LIKE', 'LCRA_%')
+                ->orWhere('callsign', 'LIKE', 'FHAW_%');
         });
     }
 
