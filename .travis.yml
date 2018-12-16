@@ -26,6 +26,7 @@ jobs:
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate -vvv -n
+    - php artisan nova:install
     - yarn run prod
     - php artisan route:cache
     before_script:

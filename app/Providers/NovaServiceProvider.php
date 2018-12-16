@@ -60,7 +60,7 @@ class NovaServiceProvider extends ServiceProvider
         $this->gate();
 
         \Laravel\Nova\Nova::auth(function ($request) {
-            return app()->environment('local') ||
+            return !app()->environment('production') ||
                 Gate::check('viewNova', [$request->user()]);
         });
     }
