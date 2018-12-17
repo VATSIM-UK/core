@@ -299,7 +299,7 @@
                             EGGW - London Luton
                         </li>
                         <li>
-                            EGNT - Newcastle
+                            EGNX - East Midlands
                         </li>
                     </ul>
 
