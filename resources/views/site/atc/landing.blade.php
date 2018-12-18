@@ -48,7 +48,7 @@
                             TG1: Responsible for S2 and S3 training at EGKK, EGBB, EGNX, EGGD, EGPF and EGPH;
                         </li>
                         <li>
-                            TG2: Responsible for S2 and S3 training at EGCC, EGGP, EGGW and EGSS;
+                            TG2: Responsible for S2 and S3 training at EGCC, EGGP, EGGW, EGSS and EGNX;
                         </li>
                         <li>
                             TG Enroute: Responsible for C1 training on EGTT and EGPX enroute positions;
