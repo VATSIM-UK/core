@@ -256,6 +256,10 @@
                                     <td>IFR Flight Instructor</td>
                                     <td>Tom Knowles</td>
                                 </tr>
+                                <tr>
+                                    <td>Development Flight Instructor</td>
+                                    <td>James Gibson</td>
+                                </tr>
                              </table>   
 
                         </div>
