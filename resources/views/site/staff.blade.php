@@ -212,10 +212,8 @@
                                     <td>Tom Szczypinski</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TWR)<br/>
-                                        TG Instructor (TG2)
-                                    </td>
-                                    <td>Lee Roberts</td>
+                                    <td>TG Manager (TWR)</td>
+                                    <td>Adam Meade</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (APP)</td>
@@ -229,6 +227,10 @@
                                     <td>TG Instructor (TG1)</td>
                                     <td>Fraser Cooper</td>
                                 </tr>
+                                <tr>
+                                    <td>TG Instructor (TG2)</td>
+                                    <td>Lee Roberts</td>
+                                </tr>   
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
