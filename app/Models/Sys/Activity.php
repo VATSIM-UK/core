@@ -2,12 +2,12 @@
 
 namespace App\Models\Sys;
 
-use App\Models\Concerns\OverridesUpdatedAt;
-use App\Models\Model;
 use Request;
+use App\Models\Model;
+use App\Models\Concerns\OverridesUpdatedAt;
 
 /**
- * App\Models\Sys\Activity
+ * App\Models\Sys\Activity.
  *
  * @property int $id
  * @property int|null $actor_id

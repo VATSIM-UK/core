@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Airport;
 
-use App\Models\Airport;
-use App\Models\Airport\Navaid;
-use App\Models\Airport\Procedure;
-use App\Models\Airport\Runway;
-use App\Models\Station;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Models\Airport;
+use App\Models\Station;
+use App\Models\Airport\Navaid;
+use App\Models\Airport\Runway;
+use App\Models\Airport\Procedure;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AirportTest extends TestCase
 {

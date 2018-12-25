@@ -2,23 +2,23 @@
 
 namespace App\Models\VisitTransfer;
 
-use App\Events\VisitTransfer\ReferenceAccepted;
-use App\Events\VisitTransfer\ReferenceCancelled;
+use App\Models\Model;
+use App\Models\Sys\Token;
+use App\Models\Mship\Account;
+use App\Models\Mship\Note\Type;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\VisitTransfer\ReferenceDeleted;
+use App\Events\VisitTransfer\ReferenceAccepted;
 use App\Events\VisitTransfer\ReferenceRejected;
+use App\Events\VisitTransfer\ReferenceCancelled;
 use App\Events\VisitTransfer\ReferenceUnderReview;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotRequestedException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
-use App\Models\Model;
-use App\Models\Mship\Account;
-use App\Models\Mship\Note\Type;
-use App\Models\Sys\Token;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 
 /**
- * App\Models\VisitTransfer\Reference
+ * App\Models\VisitTransfer\Reference.
  *
  * @property int $id
  * @property int $application_id
@@ -362,7 +362,7 @@ class Reference extends Model
     /** Guards */
     private function guardAgainstReSubmittingReference()
     {
-        if (!$this->is_requested) {
+        if (! $this->is_requested) {
             throw new ReferenceNotRequestedException($this);
         }
     }

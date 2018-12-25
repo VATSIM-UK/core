@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Events\Mship\Feedback\NewFeedbackEvent;
-use App\Models\Mship\Account;
-use App\Models\Mship\Feedback\Answer;
-use App\Models\Mship\Feedback\Form;
-use Illuminate\Http\Request;
 use Redirect;
 use Validator;
+use Illuminate\Http\Request;
+use App\Models\Mship\Account;
+use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Answer;
+use App\Events\Mship\Feedback\NewFeedbackEvent;
 
 class Feedback extends \App\Http\Controllers\BaseController
 {
@@ -43,7 +43,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedback(Form $form)
     {
         $questions = $form->questions()->orderBy('sequence')->get();
-        if (!$questions || !$form->enabled) {
+        if (! $questions || ! $form->enabled) {
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard')
                 ->withError('There was an issue loading the requested form');
@@ -111,7 +111,7 @@ class Feedback extends \App\Http\Controllers\BaseController
             // Process errors
             foreach ($rules as $rule) {
                 $automaticRuleErrors = ['required', 'exists', 'integer'];
-                if (!array_search($rule, $automaticRuleErrors)) {
+                if (! array_search($rule, $automaticRuleErrors)) {
                     $errormessages[$question->slug.'.'.$rule] = "Looks like you answered '".$question->question."' incorrectly. Please try again.";
                 }
             }
@@ -133,7 +133,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         }
 
         $account = null;
-        if (!$cidfield && !$form->targeted) {
+        if (! $cidfield && ! $form->targeted) {
             // No specific target, feedback points at submitter
             $account = Account::find(\Auth::user()->id);
         } elseif ($cidfield != null) {

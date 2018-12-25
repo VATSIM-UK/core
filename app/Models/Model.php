@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\TracksChanges;
 use App\Models\Concerns\TracksEvents;
+use App\Models\Concerns\TracksChanges;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
- * App\Models\Model
+ * App\Models\Model.
  */
 abstract class Model extends Eloquent
 {

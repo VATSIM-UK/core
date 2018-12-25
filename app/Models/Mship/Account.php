@@ -2,40 +2,40 @@
 
 namespace App\Models\Mship;
 
-use App\Exceptions\Mship\InvalidCIDException;
-use App\Jobs\UpdateMember;
-use App\Models\Model;
-use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Concerns\HasBans;
-use App\Models\Mship\Concerns\HasCommunityGroups;
-use App\Models\Mship\Concerns\HasEmails;
-use App\Models\Mship\Concerns\HasHelpdeskAccount;
-use App\Models\Mship\Concerns\HasMoodleAccount;
-use App\Models\Mship\Concerns\HasNetworkData;
-use App\Models\Mship\Concerns\HasNotifications;
-use App\Models\Mship\Concerns\HasPassword;
-use App\Models\Mship\Concerns\HasQualifications;
-use App\Models\Mship\Concerns\HasStates;
-use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
-use App\Models\Mship\Concerns\HasVisitTransferApplications;
-use App\Models\Mship\Note\Type;
-use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Model;
+use App\Jobs\UpdateMember;
+use App\Models\Mship\Note\Type;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Auth\Authenticatable;
 use Watson\Rememberable\Rememberable;
+use App\Models\Mship\Concerns\HasBans;
+use Spatie\Permission\Traits\HasRoles;
+use App\Models\Mship\Concerns\HasEmails;
+use App\Models\Mship\Concerns\HasStates;
+use Illuminate\Notifications\Notifiable;
+use App\Models\Mship\Concerns\HasPassword;
+use App\Notifications\Mship\SlackInvitation;
+use App\Exceptions\Mship\InvalidCIDException;
+use App\Models\Mship\Concerns\HasNetworkData;
+use App\Models\Mship\Concerns\HasMoodleAccount;
+use App\Models\Mship\Concerns\HasNotifications;
+use App\Models\Mship\Concerns\HasQualifications;
+use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasHelpdeskAccount;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use App\Models\Mship\Account\Note as AccountNoteData;
+use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Mship\Concerns\HasVisitTransferApplications;
+use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 /**
- * App\Models\Mship\Account
+ * App\Models\Mship\Account.
  *
  * @property int $id
  * @property string|null $slack_id
@@ -237,7 +237,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public static function findOrRetrieve($accountId)
     {
-        if (!is_numeric($accountId)) {
+        if (! is_numeric($accountId)) {
             throw new InvalidCIDException();
         }
 
@@ -311,7 +311,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             $noteType = Type::isDefault()->first()->getKey();
         }
 
-        if (!is_null($writer) && is_object($writer)) {
+        if (! is_null($writer) && is_object($writer)) {
             $writer = $writer->getKey();
         }
 
@@ -322,7 +322,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $note->content = $noteContent;
         $note->save();
 
-        if (!is_null($attachment)) {
+        if (! is_null($attachment)) {
             $note->attachment()->save($attachment);
         }
 

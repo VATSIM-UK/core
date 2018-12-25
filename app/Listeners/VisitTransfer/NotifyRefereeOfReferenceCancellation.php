@@ -2,9 +2,9 @@
 
 namespace App\Listeners\VisitTransfer;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ReferenceCancelled;
 use App\Notifications\ApplicationReferenceNoLongerNeeded;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyRefereeOfReferenceCancellation implements ShouldQueue
 {

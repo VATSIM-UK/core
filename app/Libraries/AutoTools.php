@@ -2,8 +2,8 @@
 
 namespace App\Libraries;
 
-use Bugsnag;
 use Cache;
+use Bugsnag;
 use Exception;
 use League\Csv\Reader;
 

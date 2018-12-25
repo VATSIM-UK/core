@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Mship\Note\Type;
 
-use App\Http\Requests\Request;
 use Auth;
+use App\Http\Requests\Request;
 
 class CreateEditNoteType extends Request
 {

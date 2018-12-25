@@ -5,7 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Models\Model;
 
 /**
- * App\Models\TeamSpeak\Confirmation
+ * App\Models\TeamSpeak\Confirmation.
  *
  * @property int $registration_id
  * @property string $privilege_key

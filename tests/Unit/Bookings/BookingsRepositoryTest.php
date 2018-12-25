@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Bookings;
 
-use App\Models\Cts\Booking;
-use App\Models\Cts\Member;
-use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Collection;
 use Tests\UnitTestCase;
+use App\Models\Cts\Member;
+use App\Models\Cts\Booking;
+use Illuminate\Support\Collection;
+use App\Repositories\Cts\BookingRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class BookingsRepositoryTest extends UnitTestCase
 {

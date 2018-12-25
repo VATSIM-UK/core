@@ -5,7 +5,7 @@ namespace App\Models\Mship\Feedback;
 use App\Models\Model;
 
 /**
- * App\Models\Mship\Feedback\Answer
+ * App\Models\Mship\Feedback\Answer.
  *
  * @property int $id
  * @property int $feedback_id

@@ -5,7 +5,7 @@ namespace App\Models\Staff;
 use App\Models\Model;
 
 /**
- * App\Models\Staff\Position
+ * App\Models\Staff\Position.
  *
  * @property int $id
  * @property int|null $parent_id

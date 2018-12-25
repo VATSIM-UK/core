@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Exceptions\Community\AlreadyAGroupTierMemberException;
 use App\Models\Community\Group;
+use App\Exceptions\Community\AlreadyAGroupTierMemberException;
 
 trait HasCommunityGroups
 {
@@ -48,7 +48,7 @@ trait HasCommunityGroups
 
     private function guardAgainstNonDivisionJoiningACommunityGroup()
     {
-        if (!$this->hasState('DIVISION')) {
+        if (! $this->hasState('DIVISION')) {
             throw new \App\Exceptions\Community\MustBeADivisionMemberException($this);
         }
     }

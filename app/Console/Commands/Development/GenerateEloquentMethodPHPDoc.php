@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands\Development;
 
+use stdClass;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionException;
 use App\Console\Commands\Command;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-use stdClass;
+use Illuminate\Database\Eloquent\Builder;
 
 class GenerateEloquentMethodPHPDoc extends Command
 {
@@ -45,7 +45,7 @@ class GenerateEloquentMethodPHPDoc extends Command
 
         $scrapedInfo = new ReflectionClass($this->scraped_class);
         foreach ($scrapedInfo->getMethods() as $method) {
-            if (!$this->isMagicMethod($method) && !$this->isModelMethod($method)) {
+            if (! $this->isMagicMethod($method) && ! $this->isModelMethod($method)) {
                 $this->log('* @method static ', null, false);
                 $docBlockTags = (new DocBlock($method))->getTags();
 
