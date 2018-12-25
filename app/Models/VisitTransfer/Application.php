@@ -2,36 +2,36 @@
 
 namespace App\Models\VisitTransfer;
 
-use App\Events\VisitTransfer\ApplicationAccepted;
-use App\Events\VisitTransfer\ApplicationCompleted;
+use Carbon\Carbon;
+use App\Models\Model;
+use App\Models\Mship\State;
+use App\Models\Mship\Account;
+use App\Models\NetworkData\Atc;
+use Malahierba\PublicId\PublicId;
+use Illuminate\Support\Facades\Cache;
+use App\Notifications\Mship\SlackInvitation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\VisitTransfer\ApplicationExpired;
+use App\Events\VisitTransfer\ApplicationAccepted;
 use App\Events\VisitTransfer\ApplicationRejected;
+use App\Events\VisitTransfer\ApplicationCompleted;
 use App\Events\VisitTransfer\ApplicationSubmitted;
-use App\Events\VisitTransfer\ApplicationUnderReview;
 use App\Events\VisitTransfer\ApplicationWithdrawn;
-use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
-use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
-use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
-use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
+use App\Events\VisitTransfer\ApplicationUnderReview;
+use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
 use App\Exceptions\VisitTransfer\Application\DuplicateRefereeException;
 use App\Exceptions\VisitTransfer\Application\FacilityHasNoCapacityException;
-use App\Exceptions\VisitTransfer\Application\TooManyRefereesException;
-use App\Models\Model;
-use App\Models\Mship\Account;
-use App\Models\Mship\State;
-use App\Models\NetworkData\Atc;
-use App\Notifications\Mship\SlackInvitation;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
-use Malahierba\PublicId\PublicId;
+use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
+use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
+use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
+use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
+use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
+use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
 
 /**
- * App\Models\VisitTransfer\Application
+ * App\Models\VisitTransfer\Application.
  *
  * @property int $id
  * @property int $type
@@ -429,7 +429,7 @@ class Application extends Model
 
     public function getTrainingTeamAttribute()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return 'Unknown';
         }
 
@@ -492,7 +492,7 @@ class Application extends Model
 
     public function isStatusNotIn($stati)
     {
-        return !$this->isStatusIn($stati);
+        return ! $this->isStatusIn($stati);
     }
 
     public function setFacility(Facility $facility)
@@ -762,7 +762,7 @@ class Application extends Model
 
     public function check90DayQualification()
     {
-        if (!$this->submitted_at) {
+        if (! $this->submitted_at) {
             return false;
         }
 

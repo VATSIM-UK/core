@@ -2,8 +2,8 @@
 
 namespace App\Events\VisitTransfer;
 
-use App\Models\VisitTransfer\Application;
 use Illuminate\Queue\SerializesModels;
+use App\Models\VisitTransfer\Application;
 
 class ApplicationUnderReview extends ApplicationStatusChanged
 {

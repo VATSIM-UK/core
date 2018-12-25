@@ -5,7 +5,7 @@ namespace App\Models\Messages\Thread;
 use App\Models\Model;
 
 /**
- * App\Models\Messages\Thread\Participant
+ * App\Models\Messages\Thread\Participant.
  *
  * @property int $id
  * @property int $thread_id

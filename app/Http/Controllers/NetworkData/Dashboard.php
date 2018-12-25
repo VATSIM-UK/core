@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\NetworkData;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\NetworkData\Atc;
-use App\Models\Statistic;
 use Cache;
+use App\Models\Statistic;
+use App\Models\NetworkData\Atc;
+use App\Http\Controllers\Adm\AdmController;
 
 class Dashboard extends AdmController
 {

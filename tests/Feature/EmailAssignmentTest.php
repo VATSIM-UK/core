@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class EmailAssignmentTest extends TestCase
 {

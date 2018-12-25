@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\VisitTransfer;
 
-use App\Models\VisitTransfer\Application;
+use Carbon\Carbon;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Mail;
 use App\Models\VisitTransfer\Facility;
 use App\Models\VisitTransfer\Reference;
-use Carbon\Carbon;
+use App\Models\VisitTransfer\Application;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
 
 class VisitTransferAdminTest extends TestCase
 {

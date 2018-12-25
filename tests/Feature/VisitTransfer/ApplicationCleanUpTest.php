@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\VisitTransfer;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\Qualification;
-use App\Models\NetworkData\Atc;
-use App\Models\VisitTransfer\Application;
-use App\Models\VisitTransfer\Facility;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
+use App\Models\Mship\Account;
+use App\Models\NetworkData\Atc;
+use App\Models\Mship\Qualification;
+use Illuminate\Support\Facades\Mail;
+use App\Models\VisitTransfer\Facility;
+use Illuminate\Support\Facades\Artisan;
+use App\Models\VisitTransfer\Application;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ApplicationCleanUpTest extends TestCase
 {

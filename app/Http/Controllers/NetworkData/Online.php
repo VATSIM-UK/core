@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\NetworkData;
 
-use App\Http\Controllers\BaseController;
 use App\Models\NetworkData\Atc;
 use App\Models\NetworkData\Pilot;
+use App\Http\Controllers\BaseController;
 
 class Online extends BaseController
 {

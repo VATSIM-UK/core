@@ -2,30 +2,30 @@
 
 namespace App\Console\Commands\Development;
 
-use App\Console\Commands\Command;
+use App\Models\Sys\Token;
 use App\Models\Mship\Account;
+use App\Console\Commands\Command;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Feedback\Feedback;
-use App\Models\Sys\Token;
-use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Reference;
-use App\Notifications\ApplicationAccepted;
-use App\Notifications\ApplicationReferenceAccepted;
-use App\Notifications\ApplicationReferenceNoLongerNeeded;
-use App\Notifications\ApplicationReferenceRejected;
-use App\Notifications\ApplicationReferenceRequest;
-use App\Notifications\ApplicationReferenceSubmitted;
-use App\Notifications\ApplicationReview;
-use App\Notifications\ApplicationStatusChanged;
 use App\Notifications\Mship\BanCreated;
+use App\Notifications\ApplicationReview;
 use App\Notifications\Mship\BanModified;
 use App\Notifications\Mship\BanRepealed;
-use App\Notifications\Mship\EmailVerification;
-use App\Notifications\Mship\FeedbackReceived;
-use App\Notifications\Mship\ForgottenPasswordLink;
-use App\Notifications\Mship\S1TrainingOpportunities;
-use App\Notifications\Mship\SlackInvitation;
+use App\Models\VisitTransfer\Application;
+use App\Notifications\ApplicationAccepted;
 use App\Notifications\Mship\WelcomeMember;
+use App\Notifications\Mship\SlackInvitation;
+use App\Notifications\Mship\FeedbackReceived;
+use App\Notifications\Mship\EmailVerification;
+use App\Notifications\ApplicationStatusChanged;
+use App\Notifications\ApplicationReferenceRequest;
+use App\Notifications\Mship\ForgottenPasswordLink;
+use App\Notifications\ApplicationReferenceAccepted;
+use App\Notifications\ApplicationReferenceRejected;
+use App\Notifications\ApplicationReferenceSubmitted;
+use App\Notifications\Mship\S1TrainingOpportunities;
+use App\Notifications\ApplicationReferenceNoLongerNeeded;
 
 /**
  * Experimental class used for generating emails to mailtrap.io
@@ -72,7 +72,7 @@ class TestEmails extends Command
             $this->log('ERROR: you should be using mailtrap.io before running this command!', 'error');
 
             return;
-        } elseif (!$this->confirm(
+        } elseif (! $this->confirm(
             'This command will make changes to the database that must be manually reversed.'.PHP_EOL
             .' Do you wish to continue?'
         )) {
@@ -83,7 +83,7 @@ class TestEmails extends Command
         $id = 1;
         $ids = Account::orderBy('id')->pluck('id')->toArray();
         while (true) {
-            if (!in_array($id, $ids)) {
+            if (! in_array($id, $ids)) {
                 break;
             } else {
                 $id++;

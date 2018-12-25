@@ -2,8 +2,8 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use App\Events\VisitTransfer\ApplicationAccepted;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\VisitTransfer\ApplicationAccepted;
 
 class NotifyTrainingDepartmentOfAcceptedApplication implements ShouldQueue
 {

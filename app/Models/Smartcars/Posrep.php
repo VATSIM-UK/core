@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Posrep
+ * App\Models\Smartcars\Posrep.
  *
  * @property int $id
  * @property int $bid_id
@@ -80,7 +80,7 @@ class Posrep extends Model
     public function positionIsValid(FlightCriterion $criterion)
     {
         // location
-        if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
+        if (! $criterion->hasPoint($this->latitude, $this->longitude)) {
             return false;
         }
 

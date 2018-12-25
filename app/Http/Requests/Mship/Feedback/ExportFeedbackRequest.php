@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Mship\Feedback;
 
-use App\Models\Mship\Feedback\Form;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Request;
+use App\Models\Mship\Feedback\Form;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ExportFeedbackRequest extends FormRequest
 {
@@ -17,10 +17,10 @@ class ExportFeedbackRequest extends FormRequest
     public function authorize()
     {
         $form = Form::whereSlug(Request::route('slug'))->first();
-        if (!$form) {
+        if (! $form) {
             return false;
         }
-        if (!Auth::user()->can('use-permission', 'adm/mship/feedback/list/*') && !Auth::user()->can('use-permission', 'adm/mship/feedback/list/'.$form->slug)) {
+        if (! Auth::user()->can('use-permission', 'adm/mship/feedback/list/*') && ! Auth::user()->can('use-permission', 'adm/mship/feedback/list/'.$form->slug)) {
             return false;
         }
 

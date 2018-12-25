@@ -5,7 +5,7 @@ namespace App\Models\VisitTransfer\Facility;
 use App\Models\Model;
 
 /**
- * App\Models\VisitTransfer\Facility\Email
+ * App\Models\VisitTransfer\Facility\Email.
  *
  * @property int $id
  * @property int $facility_id

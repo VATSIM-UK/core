@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Mship;
 
 use Auth;
-use Illuminate\Support\Carbon;
-use Redirect;
 use Session;
+use Redirect;
+use Illuminate\Support\Carbon;
 
 class Notification extends \App\Http\Controllers\BaseController
 {
@@ -18,7 +18,7 @@ class Notification extends \App\Http\Controllers\BaseController
 
         // If this is an interrupt AND we're got no more important notifications, then let's go back!
         if (Session::has('force_notification_read_return_url')) {
-            if (!Auth::user()->has_unread_important_notifications and !Auth::user()->get_unread_must_read_notifications) {
+            if (! Auth::user()->has_unread_important_notifications and ! Auth::user()->get_unread_must_read_notifications) {
                 return Redirect::to(Session::pull('force_notification_read_return_url'));
             }
         }
@@ -35,6 +35,6 @@ class Notification extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.notification.list')
             ->with('unreadNotifications', $unreadNotifications)
             ->with('readNotifications', $readNotifications)
-            ->with('allowedToLeave', (!Session::has('force_notification_read_return_url') or (!Auth::user()->has_unread_important_notifications and !Auth::user()->get_unread_must_read_notifications)));
+            ->with('allowedToLeave', (! Session::has('force_notification_read_return_url') or (! Auth::user()->has_unread_important_notifications and ! Auth::user()->get_unread_must_read_notifications)));
     }
 }

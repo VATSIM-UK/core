@@ -2,11 +2,11 @@
 
 namespace App\Models\Mship\Concerns;
 
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
 
 /**
- * Trait HasHelpdeskAccount
+ * Trait HasHelpdeskAccount.
  */
 trait HasHelpdeskAccount
 {
@@ -19,7 +19,7 @@ trait HasHelpdeskAccount
      */
     public function syncToHelpdesk($helpdeskAccount = null)
     {
-        if (!isset(self::$sso_account_id)) {
+        if (! isset(self::$sso_account_id)) {
             self::$sso_account_id = DB::table('oauth_clients')->where('name', 'Helpdesk')->first()->id;
         }
 
@@ -40,7 +40,7 @@ trait HasHelpdeskAccount
             ->where('address', $this->getHelpdeskEmail())
             ->first();
 
-        if (!$emailInUse) {
+        if (! $emailInUse) {
             $now = Carbon::now();
             $userId = DB::table(config('services.helpdesk.database').'.ost_user')
                 ->insertGetId([
@@ -113,7 +113,7 @@ trait HasHelpdeskAccount
                 ->whereIn('user_id', DB::table(config('services.helpdesk.database').'.ost_user_account')->select('user_id'))
                 ->exists();
 
-            if (!$emailInUse) {
+            if (! $emailInUse) {
                 // delete old emails from the database
                 DB::table(config('services.helpdesk.database').'.ost_user_email')
                     ->where('user_id', $helpdeskAccount->id)->orWhere('address', $newEmail)

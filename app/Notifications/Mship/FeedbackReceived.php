@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Mship;
 
-use App\Models\Mship\Feedback\Feedback;
-use App\Notifications\Notification;
 use Illuminate\Bus\Queueable;
+use App\Notifications\Notification;
+use App\Models\Mship\Feedback\Feedback;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

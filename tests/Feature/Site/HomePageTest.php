@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Site;
 
-use App\Models\Cts\Booking;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Models\Cts\Booking;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class HomePageTest extends TestCase
 {
