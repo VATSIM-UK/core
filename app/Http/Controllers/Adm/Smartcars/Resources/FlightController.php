@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
-use Illuminate\Http\Request;
-use App\Models\Smartcars\Pirep;
 use App\Http\Controllers\Adm\AdmController as Controller;
+use App\Models\Smartcars\Pirep;
+use Illuminate\Http\Request;
 
 class FlightController extends Controller
 {

@@ -2,11 +2,11 @@
 
 namespace App\Models\TeamSpeak;
 
-use TeamSpeak3;
-use App\Models\Model;
 use App\Libraries\TeamSpeak;
+use App\Models\Model;
 use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
+use TeamSpeak3;
 
 /**
  * App\Models\TeamSpeak\Registration.

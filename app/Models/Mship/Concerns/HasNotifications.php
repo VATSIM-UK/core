@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use Carbon\Carbon;
 use App\Models\Sys\Notification as SysNotification;
+use Carbon\Carbon;
 
 trait HasNotifications
 {

@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands\NetworkData;
 
+use App\Console\Commands\Command;
+use App\Models\NetworkData\Atc;
+use App\Models\Statistic;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Cache;
 use Carbon\Carbon;
-use App\Models\Statistic;
-use App\Models\NetworkData\Atc;
-use App\Console\Commands\Command;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 
 class NetworkStatistics extends Command
 {

@@ -2,9 +2,9 @@
 
 namespace App\Models\Sys;
 
-use Request;
-use App\Models\Model;
 use App\Models\Concerns\OverridesUpdatedAt;
+use App\Models\Model;
+use Request;
 
 /**
  * App\Models\Sys\Activity.

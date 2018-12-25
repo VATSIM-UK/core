@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Mship;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Mship\Account;
 use App\Models\Sys\Notification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class NotificationTest extends TestCase
 {

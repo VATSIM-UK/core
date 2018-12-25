@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands\ExternalServices;
 
+use App\Console\Commands\Command;
+use App\Models\Mship\Account;
 use DB;
 use Exception;
-use App\Models\Mship\Account;
-use App\Console\Commands\Command;
 
 class SyncCommunity extends Command
 {
@@ -58,7 +58,7 @@ class SyncCommunity extends Command
 
             $member = $members->current();
 
-            if (empty($member['token_identifier']) || ! is_numeric($member['token_identifier'])) {
+            if (empty($member['token_identifier']) || !is_numeric($member['token_identifier'])) {
                 if ($verbose) {
                     $this->output->writeln('<error>FAILURE: '.$member['member_id'].' has no valid CID.</error>');
                 }
@@ -114,7 +114,7 @@ class SyncCommunity extends Command
             $changeBan = false;
             if ($pBanned && ($member['temp_ban'] != -1)) {
                 $changeBan = true;
-            } elseif (! $pBanned && ($member['temp_ban'] != 0)) {
+            } elseif (!$pBanned && ($member['temp_ban'] != 0)) {
                 $changeBan = true;
             }
 
@@ -140,7 +140,7 @@ class SyncCommunity extends Command
                     $ips_member->email = $email;
                     $ips_member->member_title = $state;
                     // Check/set bans
-                    if (! $member_core->is_banned && $ips_member->temp_ban == -1) {
+                    if (!$member_core->is_banned && $ips_member->temp_ban == -1) {
                         $ips_member->temp_ban = 0;
                     } elseif ($member_core->is_banned && $ips_member->temp_ban == 0) {
                         $ips_member->temp_ban = -1;
@@ -197,7 +197,7 @@ class SyncCommunity extends Command
 
                 if ($groups->pluck('name')->search($name) === false) {
                     $ips_member_club = \IPS\Member\Club::load($ips_member_club);
-                    if (! $ips_member_club->isLeader($ips_member) && ! $ips_member_club->isModerator($ips_member)) {
+                    if (!$ips_member_club->isLeader($ips_member) && !$ips_member_club->isModerator($ips_member)) {
                         $ips_member_club->removeMember($ips_member);
                     }
                 }

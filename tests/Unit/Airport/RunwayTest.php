@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Airport;
 
-use Tests\TestCase;
 use App\Models\Airport;
-use App\Models\Airport\Runway;
 use App\Models\Airport\Procedure;
+use App\Models\Airport\Runway;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class RunwayTest extends TestCase
 {

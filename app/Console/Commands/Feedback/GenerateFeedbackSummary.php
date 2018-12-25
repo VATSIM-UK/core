@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands\Feedback;
 
-use DateInterval;
-use Carbon\Carbon;
-use Illuminate\Console\Command;
 use App\Models\Mship\Feedback\Feedback;
 use App\Notifications\Mship\FeedbackSummary;
+use Carbon\Carbon;
+use DateInterval;
+use Illuminate\Console\Command;
 
 class GenerateFeedbackSummary extends Command
 {

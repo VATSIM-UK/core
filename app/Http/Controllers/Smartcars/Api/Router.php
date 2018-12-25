@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Smartcars\Api;
 
 use App;
-use Log;
-use Debugbar;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Adm\AdmController;
 use App\Models\Mship\Account;
 use App\Models\Smartcars\Session;
-use App\Http\Controllers\Adm\AdmController;
+use Debugbar;
+use Illuminate\Http\Request;
+use Log;
 
 class Router extends AdmController
 {
@@ -73,14 +73,14 @@ class Router extends AdmController
                 return App::call(Flight::class.'@getBids');
 
             case 'bidonflight':
-                if (! $this->verify()) {
+                if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
                 return App::call(Flight::class.'@getBid');
 
             case 'deletebidflight':
-                if (! $this->verify()) {
+                if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
@@ -131,14 +131,14 @@ class Router extends AdmController
                 return '';
 
             case 'positionreport':
-                if (! $this->verify()) {
+                if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 
                 return App::call(Flight::class.'@postPosition');
 
             case 'filepirep':
-                if (! $this->verify()) {
+                if (!$this->verify()) {
                     return 'AUTH_FAILED';
                 }
 

@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands\ExternalServices;
 
-use Cache;
-use Bugsnag;
-use Exception;
-use SlackUser;
-use App\Models\Mship\Account;
 use App\Console\Commands\Command;
+use App\Models\Mship\Account;
+use Bugsnag;
+use Cache;
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use SlackUser;
 
 class ManageSlack extends Command
 {
@@ -70,7 +70,7 @@ class ManageSlack extends Command
 
                 $localUser = Account::where('slack_id', $slackUser->id)->first();
 
-                if (! $localUser) {
+                if (!$localUser) {
                     if ($this->userIsActive($slackUser)) {
                         // Try to find matching account - 1st their primary email
                         $matchAccount = Account::where('email', $slackUser->profile->email)->orWhereHas('secondaryEmails', function ($query) use ($slackUser) {
@@ -92,7 +92,7 @@ class ManageSlack extends Command
                     $this->messageDsgAdvisingOfBannedUser($localUser, $slackUser);
                 }
 
-                if (! $localUser->isValidDisplayName($slackUser->profile->real_name) && $this->userIsActive($slackUser)) {
+                if (!$localUser->isValidDisplayName($slackUser->profile->real_name) && $this->userIsActive($slackUser)) {
                     $this->messageAskingForRealName($localUser, $slackUser);
                 }
             } catch (ClientException $e) {
@@ -114,7 +114,7 @@ class ManageSlack extends Command
         return Cache::remember("slack-user-{$slackUser->id}-presence", 5, function () use ($slackUser) {
             try {
                 $user = SlackUser::getPresence($slackUser->id);
-                if (! $user || ! $user->ok) {
+                if (!$user || !$user->ok) {
                     // Most likely a slack error.
                     return 'active';
                 }

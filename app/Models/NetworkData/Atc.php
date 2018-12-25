@@ -2,14 +2,14 @@
 
 namespace App\Models\NetworkData;
 
-use App\Models\Model;
-use Malahierba\PublicId\PublicId;
-use Watson\Rememberable\Rememberable;
-use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionDeleted;
+use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Malahierba\PublicId\PublicId;
+use Watson\Rememberable\Rememberable;
 
 /**
  * App\Models\NetworkData\Atc.
@@ -123,7 +123,7 @@ class Atc extends Model
         self::updated(function ($atcSession) {
             event(new AtcSessionUpdated($atcSession));
 
-            if (! $atcSession->disconnected_at) {
+            if (!$atcSession->disconnected_at) {
                 return;
             }
         });
@@ -271,7 +271,7 @@ class Atc extends Model
      */
     public function calculateTimeOnline()
     {
-        if (! $this->disconnected_at) {
+        if (!$this->disconnected_at) {
             return;
         }
 

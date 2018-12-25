@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
-use Illuminate\Http\Request;
-use App\Models\Smartcars\Flight;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Smartcars\FlightResource;
 use App\Http\Controllers\Adm\AdmController as Controller;
+use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\FlightResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ExerciseResourceController extends Controller
 {

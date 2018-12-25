@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Atc;
 
-use Redirect;
-use Carbon\Carbon;
 use App\Models\Atc\Endorsement;
+use Carbon\Carbon;
+use Redirect;
 
 class EndorsementController extends \App\Http\Controllers\BaseController
 {
@@ -26,7 +26,7 @@ class EndorsementController extends \App\Http\Controllers\BaseController
             return $data;
         });
 
-        if (! $this->account->qualificationAtc->isS1) {
+        if (!$this->account->qualificationAtc->isS1) {
             return Redirect::route('mship.manage.dashboard')
                 ->withError('Only S1 rated controllers are eligible for a Gatwick Ground endorsement.');
         }

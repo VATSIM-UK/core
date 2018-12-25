@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Models\Airport;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\BaseController;
+use App\Models\Airport;
 use CobaltGrid\VatsimStandStatus\StandStatus;
+use Illuminate\Support\Facades\File;
 
 class AirportController extends BaseController
 {

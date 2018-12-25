@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Feedback;
 
-use App\Models\Model;
 use App\Models\Contact;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**

@@ -3,8 +3,8 @@
 namespace App\Http\Requests\VisitTransfer;
 
 use Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ApplicationRefereeDeleteRequest extends FormRequest
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Auth;
 use App\Traits\Middleware\RedirectsOnFailure;
+use Auth;
 
 class MustHaveCommunityGroup
 {

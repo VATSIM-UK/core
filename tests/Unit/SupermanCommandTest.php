@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use Laravel\BrowserKitTesting\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class SupermanCommandTest extends TestCase
 {

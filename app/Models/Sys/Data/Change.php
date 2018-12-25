@@ -2,8 +2,8 @@
 
 namespace App\Models\Sys\Data;
 
-use App\Models\Model;
 use App\Models\Concerns\OverridesUpdatedAt;
+use App\Models\Model;
 
 /**
  * App\Models\Sys\Data\Change.

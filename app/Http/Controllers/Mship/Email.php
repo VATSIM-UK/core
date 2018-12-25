@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Mship;
 
-use DB;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
 use App\Models\Messages\Thread;
-use Illuminate\Http\JsonResponse;
-use App\Models\Messages\Thread\Post;
-use App\Notifications\Mship\MemberEmail;
 use App\Models\Messages\Thread\Participant;
+use App\Models\Messages\Thread\Post;
+use App\Models\Mship\Account;
+use App\Notifications\Mship\MemberEmail;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class Email extends \App\Http\Controllers\BaseController
 {
@@ -25,19 +25,19 @@ class Email extends \App\Http\Controllers\BaseController
         $hasDivision = $member->hasState('DIVISION')
             || $member->hasState('VISITING')
             || $member->hasState('TRANSFERRING');
-        $isActive = ! $member->is_inactive;
-        $emailKnown = ! empty($member->email);
+        $isActive = !$member->is_inactive;
+        $emailKnown = !empty($member->email);
 
         $errors = [];
-        if (! $hasDivision) {
+        if (!$hasDivision) {
             $errors[] = 'Recipient is not a member of or associated with the division.';
         }
 
-        if (! $isActive) {
+        if (!$isActive) {
             $errors[] = 'Recipient is not an active member.';
         }
 
-        if (! $emailKnown) {
+        if (!$emailKnown) {
             $errors[] = 'Recipient\'s email address is unknown.';
         }
 
@@ -53,12 +53,12 @@ class Email extends \App\Http\Controllers\BaseController
         ]);
 
         $recipient = Account::find($request->input('recipient'));
-        if (! $recipient) {
+        if (!$recipient) {
             return back()->withErrors('Unknown recipient.');
         }
 
         $recipientErrors = $this->recipientErrors($recipient);
-        if (! empty($recipientErrors)) {
+        if (!empty($recipientErrors)) {
             return back()->withErrors($recipientErrors);
         }
 

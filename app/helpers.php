@@ -113,7 +113,7 @@ function is_relative_date_string($suspectedRelativeDateString)
 
 function human_diff_string(\Carbon\Carbon $ts1, \Carbon\Carbon $ts2, $absolute = false)
 {
-    if (! $ts1 or ! $ts2) {
+    if (!$ts1 or !$ts2) {
         return 'unknown length';
     }
 

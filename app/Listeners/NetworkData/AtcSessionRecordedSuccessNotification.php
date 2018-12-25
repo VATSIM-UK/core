@@ -3,8 +3,8 @@
 namespace App\Listeners\NetworkData;
 
 use App\Events\NetworkData\AtcSessionEnded;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\AtcSessionRecordedConfirmation;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AtcSessionRecordedSuccessNotification implements ShouldQueue
 {
@@ -17,7 +17,7 @@ class AtcSessionRecordedSuccessNotification implements ShouldQueue
     {
         $user = $event->atcSession->account;
 
-        if (! empty($user->slack_id)) {
+        if (!empty($user->slack_id)) {
             $user->notify(new AtcSessionRecordedConfirmation($event->atcSession));
         }
     }

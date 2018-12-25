@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Mship\State as State;
-use Illuminate\Support\Facades\DB as DB;
 use App\Repositories\Cts\BookingRepository;
 use Illuminate\Support\Facades\Cache as Cache;
+use Illuminate\Support\Facades\DB as DB;
 
 class HomePageController extends \App\Http\Controllers\BaseController
 {

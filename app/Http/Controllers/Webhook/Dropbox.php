@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Webhook;
 
+use App\Libraries\Dropbox as DropboxLibrary;
+use App\Libraries\Slack as SlackLibrary;
 use Cache;
 use Illuminate\Http\Request;
-use App\Libraries\Slack as SlackLibrary;
-use App\Libraries\Dropbox as DropboxLibrary;
 
 class Dropbox extends WebhookController
 {

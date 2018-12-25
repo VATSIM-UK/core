@@ -3,8 +3,8 @@
 namespace App\Events\VisitTransfer;
 
 use App\Events\Event;
-use Illuminate\Queue\SerializesModels;
 use App\Models\VisitTransfer\Application;
+use Illuminate\Queue\SerializesModels;
 
 class ApplicationStatusChanged extends Event
 {

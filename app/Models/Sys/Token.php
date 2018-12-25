@@ -125,7 +125,7 @@ class Token extends Model
 
     public function consume()
     {
-        if (! $this || $this->is_used || $this->is_expired) {
+        if (!$this || $this->is_used || $this->is_expired) {
             return false;
         }
 

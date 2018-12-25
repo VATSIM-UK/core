@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm;
 
-use View;
-use Cache;
 use App\Models\Mship\Feedback\Form;
+use Cache;
+use View;
 
 class AdmController extends \App\Http\Controllers\BaseController
 {
@@ -15,7 +15,7 @@ class AdmController extends \App\Http\Controllers\BaseController
      */
     protected function setupLayout()
     {
-        if (! is_null($this->layout)) {
+        if (!is_null($this->layout)) {
             $this->layout = View::make($this->layout);
         }
     }

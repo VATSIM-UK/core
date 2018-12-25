@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\TracksEvents;
 use App\Models\Concerns\TracksChanges;
+use App\Models\Concerns\TracksEvents;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**

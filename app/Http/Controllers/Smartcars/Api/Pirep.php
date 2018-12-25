@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use Input;
-use App\Models\Smartcars\Airport;
 use App\Http\Controllers\Adm\AdmController;
+use App\Models\Smartcars\Airport;
 use App\Models\Smartcars\Pirep as PirepData;
+use Input;
 
 class Pirep extends AdmController
 {
@@ -19,7 +19,7 @@ class Pirep extends AdmController
 
         $departure = Airport::findByIcao(Input::get('departureicao'));
         if (Input::get('departureicao', null) != null) {
-            if (! $departure) {
+            if (!$departure) {
                 return 'NONE';
             }
 
@@ -30,7 +30,7 @@ class Pirep extends AdmController
 
         $arrival = Airport::findByIcao(Input::get('arrivalicao'));
         if (Input::get('arrivalicao', null) != null) {
-            if (! $arrival) {
+            if (!$arrival) {
                 return 'NONE';
             }
 

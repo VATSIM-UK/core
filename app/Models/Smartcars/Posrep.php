@@ -80,7 +80,7 @@ class Posrep extends Model
     public function positionIsValid(FlightCriterion $criterion)
     {
         // location
-        if (! $criterion->hasPoint($this->latitude, $this->longitude)) {
+        if (!$criterion->hasPoint($this->latitude, $this->longitude)) {
             return false;
         }
 

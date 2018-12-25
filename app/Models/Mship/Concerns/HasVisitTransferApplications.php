@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Models\VisitTransfer\Application;
 use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
+use App\Models\VisitTransfer\Application;
 
 trait HasVisitTransferApplications
 {

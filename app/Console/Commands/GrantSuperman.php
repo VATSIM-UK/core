@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\Mship\Account;
 use Illuminate\Console\Command;
-use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Spatie\Permission\Models\Role;
 
 class GrantSuperman extends Command
 {

@@ -2,11 +2,11 @@
 
 namespace App\Models\Mship\Concerns;
 
-use Exception;
-use VatsimXML;
-use App\Models\Mship\Qualification;
 use App\Events\Mship\QualificationAdded;
 use App\Models\Mship\AccountQualification;
+use App\Models\Mship\Qualification;
+use Exception;
+use VatsimXML;
 
 trait HasQualifications
 {
@@ -45,7 +45,7 @@ trait HasQualifications
      */
     public function addQualification(Qualification $qualification)
     {
-        if (! $this->hasQualification($qualification)) {
+        if (!$this->hasQualification($qualification)) {
             $this->qualifications()->attach($qualification);
             $this->touch();
             event(new QualificationAdded($this, $qualification));
@@ -92,7 +92,7 @@ trait HasQualifications
 
         $ids = collect($qualifications)->pluck('id');
 
-        if (! empty($ids)) {
+        if (!empty($ids)) {
             $this->qualifications()->syncWithoutDetaching($ids);
         }
     }

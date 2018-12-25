@@ -3,8 +3,8 @@
 namespace App\Models\Concerns;
 
 use App;
-use Auth;
 use App\Models\Sys\Activity;
+use Auth;
 
 trait TracksEvents
 {
@@ -38,7 +38,7 @@ trait TracksEvents
      */
     public function addActivity($event)
     {
-        if (! App::runningInConsole()) {
+        if (!App::runningInConsole()) {
             Activity::create([
                 'actor_id' => Auth::check() ? Auth::id() : null,
                 'subject_id' => $this->getKey(),

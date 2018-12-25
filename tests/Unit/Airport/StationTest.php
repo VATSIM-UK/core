@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Airport;
 
-use Tests\TestCase;
 use App\Models\Airport;
 use App\Models\Station;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class StationTest extends TestCase
 {

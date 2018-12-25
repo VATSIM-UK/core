@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Slack;
 
+use App\Models\Sys\Token;
 use DB;
 use Redirect;
 use Response;
 use SlackUserAdmin;
-use App\Models\Sys\Token;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -24,7 +24,7 @@ class Registration extends \App\Http\Controllers\BaseController
                 ->withError('You already have a Slack registration with this account. Please contact the Web Services Department if you believe this to be an error.');
         }
 
-        if (! ($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
+        if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             DB::beginTransaction();
             $_slackToken = Token::generate('slack_registration', false, $this->account);
 
@@ -56,7 +56,7 @@ class Registration extends \App\Http\Controllers\BaseController
 
     public function getConfirmed()
     {
-        if (! $this->account->slack_id) {
+        if (!$this->account->slack_id) {
             return Redirect::route('slack.new');
         }
 
