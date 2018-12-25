@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use App\Models\VisitTransfer\Facility;
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use App\Models\VisitTransfer\Facility;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationFacilitySelectedRequested extends FormRequest
 {
@@ -52,15 +52,15 @@ class ApplicationFacilitySelectedRequested extends FormRequest
 
         $facility = Facility::find(array_get($data, 'facility_id', null));
 
-        if (Auth::user()->visit_transfer_current->is_transfer && !$facility->training_required) {
+        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->training_required) {
             $data['permitted'] = false;
         }
 
-        if (Auth::user()->visit_transfer_current->is_transfer && !$facility->can_transfer) {
+        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->can_transfer) {
             $data['permitted'] = false;
         }
 
-        if (Auth::user()->visit_transfer_current->is_visit && !$facility->can_visit) {
+        if (Auth::user()->visit_transfer_current->is_visit && ! $facility->can_visit) {
             $data['permitted'] = false;
         }
 

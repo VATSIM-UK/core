@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands\TeamSpeak;
 
-use App\Console\Commands\Command;
-use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
-use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use Exception;
 use App\Libraries\TeamSpeak;
 use App\Models\Mship\Account;
+use App\Console\Commands\Command;
 use App\Models\TeamSpeak\Registration;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use Exception;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
+use App\Exceptions\TeamSpeak\RegistrationNotFoundException;
+use App\Exceptions\TeamSpeak\ClientKickedFromServerException;
 
 abstract class TeamSpeakCommand extends Command
 {
@@ -86,7 +86,7 @@ abstract class TeamSpeakCommand extends Command
         self::$command->log($e->getTraceAsString());
 
         $member = Registration::where('dbid', self::$command->currentMember)->first();
-        if (!is_null(self::$command->currentMember) && !is_null($member)) {
+        if (! is_null(self::$command->currentMember) && ! is_null($member)) {
             $member = $member->account;
         } else {
             return;

@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\FlightCriterion
+ * App\Models\Smartcars\FlightCriterion.
  *
  * @property int $id
  * @property int $flight_id
@@ -90,7 +90,7 @@ class FlightCriterion extends Model
 
             $intersect = (($yi > $y) != ($yj > $y)) && ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi);
             if ($intersect) {
-                $inside = !$inside;
+                $inside = ! $inside;
             }
         }
 

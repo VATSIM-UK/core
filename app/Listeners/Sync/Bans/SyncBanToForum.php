@@ -26,7 +26,7 @@ class SyncBanToForum
     {
         $IPSInitFile = '/var/www/community/init.php';
 
-        if (!file_exists($IPSInitFile)) {
+        if (! file_exists($IPSInitFile)) {
             return;
         }
 

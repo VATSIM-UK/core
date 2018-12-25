@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Models\VisitTransfer\Reference;
 use Illuminate\Bus\Queueable;
+use App\Models\VisitTransfer\Reference;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -35,7 +35,7 @@ class ApplicationReferenceRequest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (!$this->reference->is_requested) {
+        if (! $this->reference->is_requested) {
             return []; // Already been completed
         } else {
             return ['mail', 'database'];

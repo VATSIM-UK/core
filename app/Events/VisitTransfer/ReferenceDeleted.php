@@ -3,8 +3,8 @@
 namespace App\Events\VisitTransfer;
 
 use App\Events\Event;
-use App\Models\VisitTransfer\Reference;
 use Illuminate\Queue\SerializesModels;
+use App\Models\VisitTransfer\Reference;
 
 class ReferenceDeleted extends Event
 {

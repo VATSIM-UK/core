@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Cts\Member;
 use Carbon\Carbon;
+use App\Models\Cts\Member;
 use Faker\Generator as Faker;
 
 $factory->define(App\Models\Cts\Booking::class, function (Faker $faker) {

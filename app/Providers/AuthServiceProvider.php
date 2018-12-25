@@ -2,20 +2,20 @@
 
 namespace App\Providers;
 
+use Gate;
 use App\Models\Community;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
 use App\Policies\GroupPolicy;
-use App\Policies\MembershipPolicy;
-use App\Policies\PasswordPolicy;
-use App\Policies\Smartcars\ExercisePolicy;
-use App\Policies\Smartcars\PirepPolicy;
-use App\Policies\VisitTransfer\ApplicationPolicy;
-use App\Policies\VisitTransfer\ReferencePolicy;
-use Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use App\Policies\PasswordPolicy;
+use App\Policies\MembershipPolicy;
+use App\Policies\Smartcars\PirepPolicy;
+use App\Policies\Smartcars\ExercisePolicy;
+use App\Policies\VisitTransfer\ReferencePolicy;
+use App\Policies\VisitTransfer\ApplicationPolicy;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {

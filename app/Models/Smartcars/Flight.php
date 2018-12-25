@@ -5,7 +5,7 @@ namespace App\Models\Smartcars;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Smartcars\Flight
+ * App\Models\Smartcars\Flight.
  *
  * @property int $id
  * @property string $code

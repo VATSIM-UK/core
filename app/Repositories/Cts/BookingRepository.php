@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Cts;
 
-use App\Models\Cts\Booking;
 use Carbon\Carbon;
+use App\Models\Cts\Booking;
 use Illuminate\Support\Collection;
 
 class BookingRepository
@@ -57,7 +57,7 @@ class BookingRepository
             ];
         }
 
-        if (!$booking->member) {
+        if (! $booking->member) {
             return [
                 'id' => '',
                 'name' => 'Unknown',

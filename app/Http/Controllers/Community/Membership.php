@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Community;
 
+use App\Models\Community\Group;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Community\DeployToCommunityGroupRequest;
-use App\Models\Community\Group;
 
 class Membership extends BaseController
 {
@@ -29,7 +29,7 @@ class Membership extends BaseController
         $this->authorize('deploy', $chosenGroup);
         \Auth::user()->addCommunityGroup($chosenGroup);
 
-        if (!$chosenGroup->default) {
+        if (! $chosenGroup->default) {
             \Auth::user()->syncWithDefaultCommunityGroup();
         }
 
