@@ -2,12 +2,12 @@
 
 namespace App\Models\Mship\Feedback;
 
-use App\Models\Contact;
 use App\Models\Model;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Mship\Feedback\Form
+ * App\Models\Mship\Feedback\Form.
  *
  * @property int $id
  * @property string $name

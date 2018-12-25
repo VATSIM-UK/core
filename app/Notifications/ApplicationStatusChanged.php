@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Models\VisitTransfer\Application;
 use Illuminate\Bus\Queueable;
+use App\Models\VisitTransfer\Application;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

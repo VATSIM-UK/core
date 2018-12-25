@@ -5,7 +5,7 @@ namespace App\Models\Staff;
 use App\Models\Model;
 
 /**
- * App\Models\Staff\Attribute
+ * App\Models\Staff\Attribute.
  *
  * @property int $id
  * @property int $service_id

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Site;
 
+use Tests\TestCase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Tests\TestCase;
 
 class SitePageLoadTest extends TestCase
 {

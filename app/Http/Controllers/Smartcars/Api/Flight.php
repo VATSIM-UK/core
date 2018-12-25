@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Smartcars\Api;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Smartcars\Aircraft;
-use App\Models\Smartcars\Airport;
+use Input;
 use App\Models\Smartcars\Bid;
 use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Posrep;
-use Input;
+use App\Models\Smartcars\Airport;
+use App\Models\Smartcars\Aircraft;
+use App\Http\Controllers\Adm\AdmController;
 
 class Flight extends AdmController
 {
@@ -18,7 +18,7 @@ class Flight extends AdmController
 
         $departure = Airport::findByIcao(Input::get('departureicao'));
         if (Input::get('departureicao', null) != null) {
-            if (!$departure) {
+            if (! $departure) {
                 return 'NONE';
             }
 
@@ -27,7 +27,7 @@ class Flight extends AdmController
 
         $arrival = Airport::findByIcao(Input::get('arrivalicao'));
         if (Input::get('arrivalicao', null) != null) {
-            if (!$arrival) {
+            if (! $arrival) {
                 return 'NONE';
             }
 
@@ -154,7 +154,7 @@ class Flight extends AdmController
     {
         $flight = \App\Models\Smartcars\Flight::find(Input::get('routeid'));
 
-        if (!$flight) {
+        if (! $flight) {
             return 'INVALID_ROUTEID';
         }
 

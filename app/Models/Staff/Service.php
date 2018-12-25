@@ -5,7 +5,7 @@ namespace App\Models\Staff;
 use App\Models\Model;
 
 /**
- * App\Models\Staff\Service
+ * App\Models\Staff\Service.
  *
  * @property int $id
  * @property string $name

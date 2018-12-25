@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\TeamSpeak;
 
-use App\Libraries\TeamSpeak;
 use Exception;
+use App\Libraries\TeamSpeak;
 use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 class TeamSpeakManager extends TeamSpeakCommand
@@ -45,7 +45,7 @@ class TeamSpeakManager extends TeamSpeakCommand
                     TeamSpeak::checkMemberMandatoryNotifications($client, $member);
                     TeamSpeak::checkClientNickname($client, $member);
 
-                    if (!TeamSpeak::clientIsProtected($client)) {
+                    if (! TeamSpeak::clientIsProtected($client)) {
                         TeamSpeak::checkClientServerGroups($client, $member);
                         TeamSpeak::checkClientChannelGroups($client, $member);
                         TeamSpeak::checkClientIdleTime($client, $member);

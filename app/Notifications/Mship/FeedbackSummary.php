@@ -2,12 +2,12 @@
 
 namespace App\Notifications\Mship;
 
-use App\Notifications\Notification;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
+use App\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Collection;
 
 class FeedbackSummary extends Notification implements ShouldQueue
 {

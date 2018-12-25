@@ -3,12 +3,12 @@
 namespace App\Exceptions;
 
 use App;
+use Log;
 use Auth;
+use Slack;
+use Request;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
-use Request;
-use Slack;
 
 class Handler extends ExceptionHandler
 {
@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        if (!$this->shouldntReport($e)) {
+        if (! $this->shouldntReport($e)) {
             if (extension_loaded('newrelic')) {
                 try {
                     newrelic_notice_error(null, $e);
@@ -121,7 +121,7 @@ class Handler extends ExceptionHandler
             ],
         ];
 
-        if (!App::runningInConsole()) {
+        if (! App::runningInConsole()) {
             if (method_exists('Auth', 'check') && Auth::check()) {
                 $attachment['fields'][] = [
                     'title' => 'Member:',

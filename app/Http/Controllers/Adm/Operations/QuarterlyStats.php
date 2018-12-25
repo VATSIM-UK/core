@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Adm\Operations;
 
-use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Account;
 use Illuminate\Http\Request;
+use App\Models\Mship\Account;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Adm\AdmController;
 
 class QuarterlyStats extends AdmController
 {

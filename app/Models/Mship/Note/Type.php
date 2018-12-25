@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Mship\Note\Type
+ * App\Models\Mship\Note\Type.
  *
  * @property int $id
  * @property string $name

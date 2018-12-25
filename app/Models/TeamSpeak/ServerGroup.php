@@ -5,7 +5,7 @@ namespace App\Models\TeamSpeak;
 use App\Scopes\TeamSpeak\GroupScope;
 
 /**
- * App\Models\TeamSpeak\ServerGroup
+ * App\Models\TeamSpeak\ServerGroup.
  *
  * @property int $id
  * @property int $dbid

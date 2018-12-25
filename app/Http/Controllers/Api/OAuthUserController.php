@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 
 class OAuthUserController
 {

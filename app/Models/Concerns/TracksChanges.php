@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 /**
  * Tracks changes to the specified attributes.
- * Adapted from Illuminate\Database\Eloquent\Concerns\GuardsAttributes
+ * Adapted from Illuminate\Database\Eloquent\Concerns\GuardsAttributes.
  */
 trait TracksChanges
 {
@@ -178,7 +178,7 @@ trait TracksChanges
         }
 
         return empty($this->getTracked()) &&
-            !Str::startsWith($key, '_');
+            ! Str::startsWith($key, '_');
     }
 
     /**
@@ -210,7 +210,7 @@ trait TracksChanges
      */
     protected function trackableFromArray(array $attributes)
     {
-        if (count($this->getTracked()) > 0 && !static::$fullyTracked) {
+        if (count($this->getTracked()) > 0 && ! static::$fullyTracked) {
             return array_intersect_key($attributes, array_flip($this->getTracked()));
         }
 

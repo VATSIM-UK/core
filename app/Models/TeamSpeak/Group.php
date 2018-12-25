@@ -7,7 +7,7 @@ use App\Models\Mship\Qualification;
 use Spatie\Permission\Models\Permission;
 
 /**
- * App\Models\TeamSpeak\Group
+ * App\Models\TeamSpeak\Group.
  *
  * @property int $id
  * @property int $dbid

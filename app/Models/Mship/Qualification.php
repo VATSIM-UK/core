@@ -5,7 +5,7 @@ namespace App\Models\Mship;
 use App\Models\Model;
 
 /**
- * App\Models\Mship\Qualification
+ * App\Models\Mship\Qualification.
  *
  * @property int $id
  * @property string $code

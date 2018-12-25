@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\VisitTransfer\ReferenceSubmitRequest;
-use App\Models\Sys\Token;
-use App\Notifications\ApplicationReferenceCancelledByReferee;
-use Exception;
 use Input;
 use Redirect;
+use Exception;
+use App\Models\Sys\Token;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\VisitTransfer\ReferenceSubmitRequest;
+use App\Notifications\ApplicationReferenceCancelledByReferee;
 
 class Reference extends BaseController
 {
