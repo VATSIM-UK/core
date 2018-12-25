@@ -4,9 +4,9 @@ namespace Tests\Unit\VisitTransfer;
 
 use Artisan;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class VisitTransferCleanupTest extends TestCase
 {

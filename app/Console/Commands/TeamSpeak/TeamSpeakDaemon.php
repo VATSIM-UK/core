@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands\TeamSpeak;
 
-use App\Libraries\TeamSpeak;
 use Exception;
-use TeamSpeak3_Adapter_ServerQuery_Event;
-use TeamSpeak3_Adapter_ServerQuery_Exception;
-use TeamSpeak3_Helper_Signal;
 use TeamSpeak3_Node_Host;
 use TeamSpeak3_Node_Server;
+use App\Libraries\TeamSpeak;
+use TeamSpeak3_Helper_Signal;
 use TeamSpeak3_Transport_Exception;
+use TeamSpeak3_Adapter_ServerQuery_Event;
+use TeamSpeak3_Adapter_ServerQuery_Exception;
 
 class TeamSpeakDaemon extends TeamSpeakCommand
 {
@@ -79,7 +79,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             TeamSpeak::checkMemberMandatoryNotifications($client, $member);
             TeamSpeak::checkClientNickname($client, $member);
 
-            if (!TeamSpeak::clientIsProtected($client)) {
+            if (! TeamSpeak::clientIsProtected($client)) {
                 TeamSpeak::checkClientServerGroups($client, $member);
                 TeamSpeak::checkClientChannelGroups($client, $member);
             }

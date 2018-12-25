@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands\VisitTransfer;
 
-use App\Console\Commands\Command;
-use App\Models\Statistic;
-use App\Models\VisitTransfer\Application;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Cache;
 use Carbon\Carbon;
+use App\Models\Statistic;
+use App\Console\Commands\Command;
+use App\Models\VisitTransfer\Application;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 
 class VisitTransferStatistics extends Command
 {

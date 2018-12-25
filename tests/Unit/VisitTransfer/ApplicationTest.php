@@ -2,18 +2,18 @@
 
 namespace Tests\Unit\VisitTransfer;
 
-use App\Models\Mship\Qualification;
+use Carbon\Carbon;
+use Tests\TestCase;
+use Faker\Provider\Base;
 use App\Models\NetworkData\Atc;
+use App\Models\Mship\Qualification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
 use App\Models\VisitTransfer\Application;
 use App\Notifications\ApplicationAccepted;
-use Carbon\Carbon;
-use Faker\Provider\Base;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ApplicationTest extends TestCase
 {

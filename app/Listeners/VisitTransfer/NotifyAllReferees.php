@@ -2,12 +2,12 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use App\Events\VisitTransfer\ApplicationSubmitted;
-use App\Models\VisitTransfer\Reference;
-use App\Notifications\ApplicationReferenceRequest;
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\VisitTransfer\Reference;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\VisitTransfer\ApplicationSubmitted;
+use App\Notifications\ApplicationReferenceRequest;
 
 class NotifyAllReferees implements ShouldQueue
 {
@@ -22,10 +22,10 @@ class NotifyAllReferees implements ShouldQueue
     {
         $refereesToBeNotified = $event->application->referees->filter(function ($ref) {
             if ($ref->reminded_at == null) {
-                return !$ref->is_submitted;
+                return ! $ref->is_submitted;
             }
 
-            return $ref->reminded_at->isPast() && !$ref->is_submitted;
+            return $ref->reminded_at->isPast() && ! $ref->is_submitted;
         });
 
         $contactAt = Carbon::now();

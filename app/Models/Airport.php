@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Airport\Navaid;
-use App\Models\Airport\Procedure;
 use App\Models\Airport\Runway;
 use App\Models\NetworkData\Atc;
+use App\Models\Airport\Procedure;
 use App\Models\NetworkData\Pilot;
 
 /**

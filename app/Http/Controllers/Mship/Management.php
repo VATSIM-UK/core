@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Mship;
 
-use App\Models\Mship\Account\Email as AccountEmail;
-use App\Models\Sys\Token as SystemToken;
 use Auth;
 use Input;
-use Laravel\Passport\Client as OAuthClient;
 use Redirect;
 use Validator;
+use App\Models\Sys\Token as SystemToken;
+use Laravel\Passport\Client as OAuthClient;
+use App\Models\Mship\Account\Email as AccountEmail;
 
 class Management extends \App\Http\Controllers\BaseController
 {
@@ -75,7 +75,7 @@ class Management extends \App\Http\Controllers\BaseController
                 ->withError('Emails entered are different.  You need to enter the same email, twice.');
         }
 
-        if (!$this->account->hasEmail($email)) {
+        if (! $this->account->hasEmail($email)) {
             $this->account->addSecondaryEmail($email);
         } else {
             return Redirect::route('mship.manage.dashboard')
@@ -183,7 +183,7 @@ class Management extends \App\Http\Controllers\BaseController
 
             // Let's do the assignment
             // The model will take care of checking if it exists or not, itself!
-            if (!$userVerifiedEmails->contains($assignedEmailID)) {
+            if (! $userVerifiedEmails->contains($assignedEmailID)) {
                 continue; // This isn't a valid EMAIL ID for this user.
             }
 
@@ -201,7 +201,7 @@ class Management extends \App\Http\Controllers\BaseController
         $token = SystemToken::where('code', '=', $code)->valid()->first();
 
         // Is it valid? Has it expired? Etc?
-        if (!$token) {
+        if (! $token) {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR1)'
@@ -225,7 +225,7 @@ class Management extends \App\Http\Controllers\BaseController
         }
 
         // Is it valid and linked to something?!?!
-        if (!$token->related or $token->type != 'mship_account_email_verify') {
+        if (! $token->related or $token->type != 'mship_account_email_verify') {
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR4)'

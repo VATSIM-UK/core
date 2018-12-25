@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
 use Auth;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 /**
  * This controller is responsible for handling password reset requests

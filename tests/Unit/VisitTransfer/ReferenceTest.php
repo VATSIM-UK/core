@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\VisitTransfer;
 
+use Tests\TestCase;
+use Faker\Provider\Base;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use App\Models\VisitTransfer\Reference;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotRequestedException;
 use App\Exceptions\VisitTransfer\Reference\ReferenceNotUnderReviewException;
-use App\Models\VisitTransfer\Reference;
-use Faker\Provider\Base;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
 
 class ReferenceTest extends TestCase
 {

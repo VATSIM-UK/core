@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm\VisitTransfer;
 
-use App\Models\Mship\Account as Accounts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Mship\Account as Accounts;
 
 class VisitorStatsController extends \App\Http\Controllers\Adm\AdmController
 {

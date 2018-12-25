@@ -2,13 +2,13 @@
 
 namespace App\Notifications\Mship;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\Account\Email;
 use App\Models\Sys\Token;
-use App\Notifications\Notification;
+use App\Models\Mship\Account;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\Mship\Account\Email;
+use App\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EmailVerification extends Notification implements ShouldQueue
 {

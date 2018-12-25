@@ -3,8 +3,8 @@
 namespace App\Listeners\Smartcars;
 
 use App\Events\Smartcars\BidCompleted;
-use App\Models\NetworkData\Pilot as NetworkData;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\NetworkData\Pilot as NetworkData;
 
 class EvaluateFlightCriteria implements ShouldQueue
 {
@@ -41,21 +41,21 @@ class EvaluateFlightCriteria implements ShouldQueue
                 }
             }
 
-            if (!$positionValid) {
+            if (! $positionValid) {
                 $pirep->markFailed("Failed: You went off track at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$altitudeValid) {
+            if (! $altitudeValid) {
                 $pirep->markFailed("Failed: You went outside of the altitude restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 
                 return;
             }
 
-            if (!$speedValid) {
+            if (! $speedValid) {
                 $pirep->markFailed("Failed: You went outside of the speed restriction at posrep #{$posrep->id}.", $posrep->id);
                 $pirep->save();
 

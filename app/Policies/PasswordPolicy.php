@@ -29,7 +29,7 @@ class PasswordPolicy extends Policy
      */
     public function change(Account $user)
     {
-        if (!$user->hasPassword()) {
+        if (! $user->hasPassword()) {
             return $this->deny('You do not have a password set.');
         }
 
@@ -46,7 +46,7 @@ class PasswordPolicy extends Policy
     {
         if ($user->mandatory_password) {
             return $this->deny('You are not allowed to disable your secondary password.');
-        } elseif (!$user->hasPassword()) {
+        } elseif (! $user->hasPassword()) {
             return $this->deny('You do not have a password set.');
         }
 

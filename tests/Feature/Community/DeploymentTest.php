@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Community;
 
+use Tests\TestCase;
 use App\Models\Community\Group;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 
 class DeploymentTest extends TestCase
 {

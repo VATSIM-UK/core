@@ -2,11 +2,11 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Events\Mship\Bans\BanUpdated;
-use App\Models\Mship\Account\Ban;
-use App\Models\Mship\Ban\Reason;
-use App\Models\Mship\Note\Type;
 use Carbon\Carbon;
+use App\Models\Mship\Note\Type;
+use App\Models\Mship\Ban\Reason;
+use App\Models\Mship\Account\Ban;
+use App\Events\Mship\Bans\BanUpdated;
 
 trait HasBans
 {

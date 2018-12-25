@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Models\Mship\Account;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
+use App\Models\Mship\Account;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class MshipAuthenticationTest extends TestCase
 {

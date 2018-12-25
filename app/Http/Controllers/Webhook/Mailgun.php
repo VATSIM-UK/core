@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Models\Email\Event;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Response;
+use Carbon\Carbon;
+use App\Models\Email\Event;
+use Illuminate\Http\Request;
 
 class Mailgun extends WebhookController
 {
@@ -20,7 +20,7 @@ class Mailgun extends WebhookController
 
     public function event(Request $request)
     {
-        if (!$this->verifyMailgun($request)) {
+        if (! $this->verifyMailgun($request)) {
             return Response::make('Unauthorised.', 406);
         }
 

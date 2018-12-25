@@ -2,8 +2,8 @@
 
 namespace App\Models\Mship\Feedback;
 
-use App\Models\Model;
 use Carbon\Carbon;
+use App\Models\Model;
 use Illuminate\Notifications\Notifiable;
 
 /**

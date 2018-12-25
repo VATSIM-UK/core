@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use App\Models\Airport;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 
 class AirfieldInformationTest extends TestCase
 {

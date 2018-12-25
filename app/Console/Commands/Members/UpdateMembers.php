@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands\Members;
 
-use App\Console\Commands\Command;
+use Carbon\Carbon;
 use App\Jobs\UpdateMember;
 use App\Models\Mship\Account;
-use Carbon\Carbon;
+use App\Console\Commands\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class UpdateMembers extends Command

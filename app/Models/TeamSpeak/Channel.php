@@ -56,7 +56,7 @@ class Channel extends Model
      */
     public function getProtectedAttribute($value)
     {
-        if (is_null($value) && !is_null($this->parent)) {
+        if (is_null($value) && ! is_null($this->parent)) {
             return $this->parent->protected;
         } else {
             if (is_null($value) && is_null($this->parent)) {

@@ -18,7 +18,7 @@ trait HasMoodleAccount
      */
     public function syncToMoodle($moodleAccount)
     {
-        if (!isset(self::$sso_account_id)) {
+        if (! isset(self::$sso_account_id)) {
             self::$sso_account_id = DB::table('oauth_clients')->where('name', 'Moodle')->first()->id;
         }
 
@@ -83,7 +83,7 @@ trait HasMoodleAccount
         ];
 
         $dirty = array_keys(array_diff_assoc($old, $new));
-        if (!empty($dirty)) {
+        if (! empty($dirty)) {
             DB::table(config('services.moodle.database').'.mdl_user')->where('username', (string) $this->id)->update($new);
         } else {
             // do nothing - account is up to date

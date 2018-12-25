@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
 use Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 
 /**
  * This controller is responsible for handling password creation,
