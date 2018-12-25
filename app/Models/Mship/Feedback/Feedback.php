@@ -2,12 +2,12 @@
 
 namespace App\Models\Mship\Feedback;
 
-use Carbon\Carbon;
 use App\Models\Model;
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\Models\Mship\Feedback\Feedback.
+ * App\Models\Mship\Feedback\Feedback
  *
  * @property int $id
  * @property int $form_id

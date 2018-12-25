@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands\Members;
 
-use DB;
-use Carbon\Carbon;
-use App\Models\Statistic;
-use App\Models\Mship\State;
-use App\Models\Mship\Account;
 use App\Console\Commands\Command;
+use App\Models\Mship\Account;
+use App\Models\Mship\State;
+use App\Models\Statistic;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Carbon\Carbon;
+use DB;
 
 class MemberStatistics extends Command
 {

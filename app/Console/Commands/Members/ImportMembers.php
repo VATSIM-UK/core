@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands\Members;
 
-use DB;
-use Exception;
-use VatsimXML;
-use App\Models\Mship\State;
+use App\Console\Commands\Command;
 use App\Libraries\AutoTools;
 use App\Models\Mship\Account;
-use App\Console\Commands\Command;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use DB;
+use Exception;
 use Illuminate\Support\Facades\Validator;
+use VatsimXML;
 
 /**
  * Utilizes the CERT divdb file to import new users and update existing user emails.
@@ -48,7 +48,7 @@ class ImportMembers extends Command
 
         $this->log('Member list and email list obtained.');
 
-        $members = AutoTools::getDivisionData(! $this->option('full'));
+        $members = AutoTools::getDivisionData(!$this->option('full'));
 
         foreach ($members as $member) {
             $this->log("Processing {$member['cid']} {$member['name_first']} {$member['name_last']}: ", null, false);

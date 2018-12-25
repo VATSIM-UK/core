@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use Route;
-use Redirect;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Redirect;
+use Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RouteServiceProvider extends ServiceProvider
 {

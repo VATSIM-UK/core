@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Mship;
 
-use Illuminate\Bus\Queueable;
-use App\Notifications\Notification;
 use App\Models\Messages\Thread\Post;
+use App\Notifications\Notification;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 

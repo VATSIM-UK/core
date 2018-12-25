@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\Deployment;
 
-use Illuminate\Console\Command;
 use App\Models\Cts\MockCtsDatabase;
+use Illuminate\Console\Command;
 
 class HerokuPostDeploy extends Command
 {

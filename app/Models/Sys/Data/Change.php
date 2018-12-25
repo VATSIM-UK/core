@@ -2,11 +2,11 @@
 
 namespace App\Models\Sys\Data;
 
-use App\Models\Model;
 use App\Models\Concerns\OverridesUpdatedAt;
+use App\Models\Model;
 
 /**
- * App\Models\Sys\Data\Change.
+ * App\Models\Sys\Data\Change
  *
  * @property int $data_change_id
  * @property int $model_id

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\Artisan;
 use SlackUser;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Artisan;
 
 class SlackTest extends TestCase
 {

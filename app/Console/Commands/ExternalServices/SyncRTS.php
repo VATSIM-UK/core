@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands\ExternalServices;
 
-use DB;
-use App\Models\Mship\Account;
 use App\Console\Commands\Command;
+use App\Models\Mship\Account;
+use DB;
 
 class SyncRTS extends Command
 {

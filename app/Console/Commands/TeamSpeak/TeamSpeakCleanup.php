@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands\TeamSpeak;
 
-use Exception;
-use Carbon\Carbon;
-use App\Libraries\TeamSpeak;
 use App\Console\Commands\Command;
+use App\Libraries\TeamSpeak;
 use App\Models\TeamSpeak\Registration;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Carbon\Carbon;
+use Exception;
 
 class TeamSpeakCleanup extends Command
 {
@@ -80,7 +80,7 @@ class TeamSpeakCleanup extends Command
             ->where('dbid', $client['cldbid'])
             ->exists();
 
-        if (! $isRegistered) {
+        if (!$isRegistered) {
             try {
                 $this->tscon->clientDeleteDb($client['cldbid']);
                 $this->log("No registration found: {$client['cldbid']} {$client['client_nickname']} {$client['client_unique_identifier']}");

@@ -2,9 +2,9 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ReferenceAccepted;
 use App\Notifications\ApplicationReferenceAccepted;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyApplicantOfReferenceAcceptance implements ShouldQueue
 {

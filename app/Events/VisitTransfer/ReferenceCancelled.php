@@ -2,8 +2,8 @@
 
 namespace App\Events\VisitTransfer;
 
-use Illuminate\Queue\SerializesModels;
 use App\Models\VisitTransfer\Reference;
+use Illuminate\Queue\SerializesModels;
 
 class ReferenceCancelled
 {

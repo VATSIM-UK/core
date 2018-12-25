@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Adm;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {

@@ -2,12 +2,12 @@
 
 namespace Tests;
 
-use Carbon\Carbon;
-use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
-use App\Models\Cts\MockCtsDatabase;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Models\Cts\MockCtsDatabase;
+use App\Models\Mship\Account;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -45,7 +45,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function seedLegacyTables()
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
             return;
         }
 
@@ -56,7 +56,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function dropLegacyTables()
     {
-        if (! method_exists($this, 'beginDatabaseTransaction')) {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
             return;
         }
 

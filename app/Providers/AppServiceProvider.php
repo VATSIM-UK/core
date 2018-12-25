@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use URL;
-use HTML;
-use View;
-use Config;
+use App\Http\Controllers\BaseController;
 use Bugsnag;
-use Validator;
+use Config;
+use HTML;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use App\Http\Controllers\BaseController;
+use URL;
+use Validator;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {

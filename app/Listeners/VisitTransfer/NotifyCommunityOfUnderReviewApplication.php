@@ -2,10 +2,10 @@
 
 namespace App\Listeners\VisitTransfer;
 
+use App\Events\VisitTransfer\ApplicationUnderReview;
 use App\Models\Mship\Account;
 use App\Notifications\ApplicationReview;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Events\VisitTransfer\ApplicationUnderReview;
 
 class NotifyCommunityOfUnderReviewApplication implements ShouldQueue
 {

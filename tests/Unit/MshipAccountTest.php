@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
 use App\Models\Mship\Qualification;
 use App\Notifications\Mship\EmailVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 /**
- * Class MshipAccountTest.
+ * Class MshipAccountTest
  */
 class MshipAccountTest extends TestCase
 {

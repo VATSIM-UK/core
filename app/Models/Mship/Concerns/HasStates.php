@@ -2,9 +2,9 @@
 
 namespace App\Models\Mship\Concerns;
 
-use Carbon\Carbon;
-use App\Models\Mship\State;
 use App\Exceptions\Mship\InvalidStateException;
+use App\Models\Mship\State;
+use Carbon\Carbon;
 
 trait HasStates
 {

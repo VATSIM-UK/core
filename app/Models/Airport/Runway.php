@@ -6,7 +6,7 @@ use App\Models\Airport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Airport\Runway.
+ * App\Models\Airport\Runway
  *
  * @property int $id
  * @property int $airport_id

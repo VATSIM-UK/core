@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Adm\Atc;
 
-use Validator;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Atc\Endorsement as EndorsementModel;
+use App\Models\Mship\Account;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Validator;
 
 class Endorsement extends AdmController
 {
@@ -18,7 +18,7 @@ class Endorsement extends AdmController
           'cid' => 'required|integer',
       ]);
 
-        if (! $validator->fails()) {
+        if (!$validator->fails()) {
             return $this->getUserEndorsement($request);
         }
 
@@ -32,7 +32,7 @@ class Endorsement extends AdmController
     {
         $requirements = EndorsementModel::where('endorsement', $request->input('endorsement'))->get();
         $user = Account::find($request->input('cid'));
-        if (! $user) {
+        if (!$user) {
             return redirect()
                     ->back()
                     ->withErrors(['That CID does not exist!']);

@@ -2,9 +2,9 @@
 
 namespace App\Models\Mship\Concerns;
 
-use Carbon\Carbon;
 use App\Models\Mship\Account\Email;
 use App\Models\Mship\Account\Email as AccountEmail;
+use Carbon\Carbon;
 
 trait HasEmails
 {
@@ -91,7 +91,7 @@ trait HasEmails
      */
     public function addSecondaryEmail($newEmail, $verified = false)
     {
-        if (! $this->hasEmail($newEmail)) {
+        if (!$this->hasEmail($newEmail)) {
             $newSecondaryEmail = new AccountEmail(['email' => $newEmail]);
             $newSecondaryEmail->verified_at = ($verified ? Carbon::now() : null);
 

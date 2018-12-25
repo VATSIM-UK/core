@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Smartcars;
 
-use Illuminate\Http\Request;
-use App\Models\Smartcars\Bid;
-use App\Models\Smartcars\Pirep;
-use App\Models\Smartcars\Flight;
 use App\Http\Controllers\BaseController;
+use App\Models\Smartcars\Bid;
+use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\Pirep;
+use Illuminate\Http\Request;
 
 class SmartcarsController extends BaseController
 {

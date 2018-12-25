@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class InactivityMiddlewareTest extends TestCase
 {

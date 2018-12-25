@@ -2,9 +2,9 @@
 
 namespace App\Listeners\VisitTransfer;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\VisitTransfer\ReferenceUnderReview;
 use App\Notifications\ApplicationReferenceSubmitted;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifyRefereeOfReferenceCompletion implements ShouldQueue
 {

@@ -2,12 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\TeamSpeak\Channel;
-use App\Models\TeamSpeak\ServerGroup;
 use App\Models\TeamSpeak\ChannelGroup;
-use Spatie\Permission\Models\Permission;
+use App\Models\TeamSpeak\ServerGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Permission;
+use Tests\TestCase;
 
 class TeamSpeakTest extends TestCase
 {

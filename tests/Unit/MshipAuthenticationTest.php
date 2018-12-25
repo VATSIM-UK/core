@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Session;
+use Tests\TestCase;
 
 class MshipAuthenticationTest extends TestCase
 {
     use DatabaseTransactions;
 
     /**
-     * Instance used for the tests.
+     * Instance used for the tests
      *
      * @var \App\Http\Controllers\Auth\LoginController
      */

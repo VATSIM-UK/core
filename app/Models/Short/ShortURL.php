@@ -6,7 +6,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
 
 /**
- * App\Models\Short\ShortURL.
+ * App\Models\Short\ShortURL
  *
  * @property int $id
  * @property string $url

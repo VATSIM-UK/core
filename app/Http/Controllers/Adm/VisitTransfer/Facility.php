@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Adm\VisitTransfer;
 
-use Redirect;
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\FacilityCreateUpdateRequest;
+use Redirect;
 
 class Facility extends AdmController
 {

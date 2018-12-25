@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\BaseController;
+use App\Models\Mship\Account;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Session;
 use VatsimSSO;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\Mship\Account;
-use App\Http\Controllers\BaseController;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 /**
  * This controller handles authenticating users for the application and
@@ -39,7 +39,7 @@ class LoginController extends BaseController
 
     public function getLogin()
     {
-        if (Auth::guard('vatsim-sso')->check() && ! Auth::check()) {
+        if (Auth::guard('vatsim-sso')->check() && !Auth::check()) {
             return $this->attemptSecondaryAuth();
         } else {
             return redirect()->route('dashboard');
@@ -55,11 +55,11 @@ class LoginController extends BaseController
     public function loginMain(Request $request)
     {
         // user has not been authenticated with VATSIM SSO
-        if (! Auth::guard('vatsim-sso')->check()) {
+        if (!Auth::guard('vatsim-sso')->check()) {
             return $this->attemptVatsimAuth();
         }
 
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             $this->attemptSecondaryAuth();
         }
 
@@ -110,7 +110,7 @@ class LoginController extends BaseController
 
     public function loginSecondary(Request $request)
     {
-        if (! Auth::guard('vatsim-sso')->check()) {
+        if (!Auth::guard('vatsim-sso')->check()) {
             return redirect()->route('dashboard')
                 ->withError('Could not authenticate: VATSIM.net authentication is not present.');
         }

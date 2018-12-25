@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Carbon\Carbon;
-use App\Models\Contact;
-use Illuminate\Http\Request;
-use App\Models\Mship\Feedback\Form;
-use App\Models\Mship\Feedback\Question;
-use Illuminate\Support\Facades\Redirect;
-use App\Models\Mship\Feedback\Question\Type;
-use App\Models\Mship\Feedback\Feedback as FeedbackModel;
 use App\Http\Requests\Mship\Feedback\ExportFeedbackRequest;
 use App\Http\Requests\Mship\Feedback\NewFeedbackFormRequest;
 use App\Http\Requests\Mship\Feedback\UpdateFeedbackFormRequest;
+use App\Models\Contact;
+use App\Models\Mship\Feedback\Feedback as FeedbackModel;
+use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Question;
+use App\Models\Mship\Feedback\Question\Type;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class Feedback extends \App\Http\Controllers\Adm\AdmController
 {
@@ -140,7 +140,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getEnableDisableForm(Form $form)
     {
-        $form->enabled = ! $form->enabled;
+        $form->enabled = !$form->enabled;
         $form->save();
 
         return Redirect::back()
@@ -149,7 +149,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
     public function getFormVisibility(Form $form)
     {
-        $form->public = ! $form->public;
+        $form->public = !$form->public;
         $form->save();
 
         return Redirect::back()
@@ -261,7 +261,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $query = $form->feedback()->with(['answers', 'account'])->whereBetween('created_at', [$from_date, $to_date]);
 
-        if (! ($request->input('include_actioned') && $request->input('include_unactioned'))) {
+        if (!($request->input('include_actioned') && $request->input('include_unactioned'))) {
             if ($request->input('include_actioned')) {
                 $query = $query->actioned();
             }
@@ -348,7 +348,7 @@ class Feedback extends \App\Http\Controllers\Adm\AdmController
 
         $this->authorize('use-permission', "adm/mship/feedback/view/{$feedback->formSlug()}");
 
-        if ($this->account->id == $feedback->account_id && ! $this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
+        if ($this->account->id == $feedback->account_id && !$this->account->can('use-permission', 'adm/mship/feedback/view/own/')) {
             return redirect()->back()->withErrors('You may not view your own feedback.');
         }
 

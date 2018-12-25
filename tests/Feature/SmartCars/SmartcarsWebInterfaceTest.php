@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\SmartCars;
 
-use Tests\TestCase;
 use App\Models\Mship\Account;
-use App\Models\Smartcars\Pirep;
 use App\Models\Smartcars\Flight;
+use App\Models\Smartcars\Pirep;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class SmartcarsWebInterfaceTest extends TestCase
 {

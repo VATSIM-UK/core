@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
-use Redirect;
 use App\Http\Controllers\Adm\AdmController;
-use App\Models\Mship\Note\Type as NoteType;
 use App\Http\Requests\Mship\Note\Type\CreateEditNoteType;
+use App\Models\Mship\Note\Type as NoteType;
+use Redirect;
 
 class Note extends AdmController
 {
@@ -26,7 +26,7 @@ class Note extends AdmController
     public function postTypeCreate(CreateEditNoteType $request)
     {
         $noteType = new NoteType($request->only(['name', 'short_code', 'colour_code', 'is_available', 'is_default']));
-        if (! $noteType->save()) {
+        if (!$noteType->save()) {
             return Redirect::route('adm.mship.note.type.create')->withErrors($noteType->errors());
         }
 
@@ -35,7 +35,7 @@ class Note extends AdmController
 
     public function getTypeUpdate(NoteType $noteType)
     {
-        if (! $noteType or ! $noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist!");
         }
 
@@ -46,13 +46,13 @@ class Note extends AdmController
 
     public function postTypeUpdate(CreateEditNoteType $request, NoteType $noteType)
     {
-        if (! $noteType or ! $noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist!");
         }
 
         // Let's create!
         $noteType->fill($request->only(['name', 'short_code', 'colour_code', 'is_available', 'is_default']));
-        if (! $noteType->save()) {
+        if (!$noteType->save()) {
             return Redirect::route('adm.mship.note.type.update')->withErrors($noteType->errors());
         }
 
@@ -61,7 +61,7 @@ class Note extends AdmController
 
     public function anyTypeDelete(NoteType $noteType)
     {
-        if (! $noteType or ! $noteType->exists) {
+        if (!$noteType or !$noteType->exists) {
             return Redirect::route('adm.mship.note.type.index')->withError("Note type doesn't exist!");
         }
 
