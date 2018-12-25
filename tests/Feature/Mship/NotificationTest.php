@@ -2,7 +2,7 @@
 
     namespace Tests\Feature\Mship;
 
-    use App\Models\Mship\Account;
+use App\Models\Mship\Account;
     use App\Models\Sys\Notification;
     use Carbon\Carbon;
     use Illuminate\Foundation\Testing\DatabaseTransactions;
