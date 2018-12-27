@@ -17,7 +17,7 @@ trait HasMoodleAccount
             return false;
         }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
-            ->where('idnumber', $this->id)
+            ->where('username', $this->id)
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
             ->first();
         $this->syncToMoodle($moodleAccount);
@@ -38,9 +38,9 @@ trait HasMoodleAccount
             self::$sso_account_id = $moodleSsoAccount->id;
         }
 
-        if ($moodleAccount === false && $this->canLoginToMoodle()) {
+        if ($moodleAccount === null && $this->canLoginToMoodle()) {
             $this->createMoodleAccount($this->getMoodleEmail());
-        } elseif ($moodleAccount !== false) {
+        } elseif ($moodleAccount !== null) {
             $this->updateMoodleAccount($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
         } else {
             // do nothing - user is not eligible for a Moodle account, nor do they have one already
