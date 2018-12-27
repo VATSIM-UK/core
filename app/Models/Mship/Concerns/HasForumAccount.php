@@ -27,17 +27,15 @@ use Illuminate\Support\Facades\DB;
             require_once \IPS\ROOT_PATH.'/system/Db/Db.php';
 
             $ipsAccount = \IPS\Db::i()->select(
-                'm.member_id, m.temp_ban, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
-                ['core_members', 'm'], [ 'p.field_12=?', $this->id ])
-                ->join(['core_login_links', 'l'], 'm.member_id = l.token_member')
-                ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
+                'member_id, field_12',
+                'core_pfields_content', [ 'field_12=?', $this->id ]);
 
-            if ($ipsAccount->count() == 0) {
+            if (count($ipsAccount) == 0) {
                 // No user. Abort;
                 return;
             }
 
-            $ipsAccount = \IPS\Member::load($ipsAccount->member_id);
+            $ipsAccount = \IPS\Member::load($ipsAccount->first()->member_id);
 
             // Set data
             $ipsAccount->name = $this->real_name;
