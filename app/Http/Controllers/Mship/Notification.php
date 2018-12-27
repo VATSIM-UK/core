@@ -13,6 +13,9 @@ class Notification extends \App\Http\Controllers\BaseController
 
     public function postAcknowledge($notification)
     {
+        if ($this->account->hasReadNotification($notification)) {
+            return redirect()->route('mship.manage.dashboard');
+        }
         $this->account->readSystemNotifications()
             ->attach($notification->id, ['created_at' => Carbon::now()]);
 
