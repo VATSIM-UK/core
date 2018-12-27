@@ -31,7 +31,7 @@ trait HasHelpdeskAccount
             ->leftJoin(config('services.helpdesk.database').'.ost_user_account', 'ost_user.id', '=', 'ost_user_account.user_id')
             ->leftJoin(config('services.helpdesk.database').'.ost_user_email', 'ost_user.id', '=', 'ost_user_email.user_id')
             ->where('username', $this->id)
-            ->first(['ost_user.id', 'ost_user_account.id as account_id', 'username', 'ost_user.name', 'ost_user_email.id as email_id', 'address as email'])->keyBy('username');
+            ->first(['ost_user.id', 'ost_user_account.id as account_id', 'username', 'ost_user.name', 'ost_user_email.id as email_id', 'address as email']);
 
         if ($helpdeskAccount) {
             $this->updateHelpdeskAccount($helpdeskAccount);
