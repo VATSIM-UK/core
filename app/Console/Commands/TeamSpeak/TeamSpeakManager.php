@@ -35,11 +35,11 @@ class TeamSpeakManager extends TeamSpeakCommand
             // get all clients and initiate loop
             $clients = $tscon->clientList();
             foreach ($clients as $client) {
+                $member = TeamSpeak::checkClientRegistration($client);
                 try {
                     $this->currentMember = $client['client_database_id'];
 
                     // perform the necessary checks on the client
-                    $member = TeamSpeak::checkClientRegistration($client);
                     $client = TeamSpeak::checkClientDescription($client, $member);
                     TeamSpeak::checkMemberStanding($client, $member);
                     TeamSpeak::checkMemberMandatoryNotifications($client, $member);
@@ -51,7 +51,7 @@ class TeamSpeakManager extends TeamSpeakCommand
                         TeamSpeak::checkClientIdleTime($client, $member);
                     }
                 } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
-                    self::handleServerQueryException($e);
+                    self::handleServerQueryException($e, $member);
                 } catch (Exception $e) {
                     self::handleException($e);
                 }

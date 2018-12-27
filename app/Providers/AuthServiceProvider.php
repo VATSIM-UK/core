@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Community;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
+use App\Policies\GroupPolicy;
 use App\Policies\MembershipPolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\Smartcars\ExercisePolicy;
@@ -26,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'password' => PasswordPolicy::class,
         Community\Membership::class => MembershipPolicy::class,
+        Community\Group::class => GroupPolicy::class,
         Smartcars\Flight::class => ExercisePolicy::class,
         Smartcars\Pirep::class => PirepPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,
