@@ -2,7 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Events\Mship\AccountAltered;
+use App\Models\Mship\Account\Email;
+use App\Models\Sso\OAuth\Client;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -165,4 +170,37 @@ class EmailAssignmentTest extends TestCase
             ->assertViewIs('mship.management.email.verify')
             ->assertViewHas('success', 'Your new email address ('.$email->email.') has been verified!');
     }
+
+
+    /** @test **/
+    public function testItTriggersAnUpdateWhenAssigningSSOEmail()
+    {
+        $sso_client = factory(\Laravel\Passport\Client::class)->create();
+        $email = factory(Email::class)->create(['account_id' => $this->account->id]);
+
+        $initialDispatcher = Event::getFacadeRoot();
+        Event::fake();
+        Model::setEventDispatcher($initialDispatcher);
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_client->id => $email->id]));
+
+        Event::assertDispatched(AccountAltered::class);
+    }
+
+    /** @test **/
+    public function testItTriggersAnUpdateWhenUnAssigningSSOEmail()
+    {
+        $sso_email = factory(\App\Models\Sso\Email::class)->create();
+
+        $initialDispatcher = Event::getFacadeRoot();
+        Event::fake();
+        Model::setEventDispatcher($initialDispatcher);
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_email->ssoAccount->id => 'pri']));
+
+        Event::assertDispatched(AccountAltered::class);
+    }
+
+
+
 }
