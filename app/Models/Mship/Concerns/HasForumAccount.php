@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
 
             $ipsAccount = \IPS\Db::i()->select(
                 'm.member_id, m.temp_ban, l.token_identifier, m.name, m.email, m.member_title, p.field_12, p.field_13, p.field_14',
-                ['core_members', 'm'], [ 'm.member_id=?', $this->id ])
+                ['core_members', 'm'], [ 'p.field_12=?', $this->id ])
                 ->join(['core_login_links', 'l'], 'm.member_id = l.token_member')
                 ->join(['core_pfields_content', 'p'], 'm.member_id = p.member_id');
 
@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\DB;
                 return;
             }
 
-            $ipsAccount = \IPS\Member::load($this->id);
+            $ipsAccount = \IPS\Member::load($ipsAccount->member_id);
 
             // Set data
             $ipsAccount->name = $this->real_name;
@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\DB;
                 'field_13' => $this->qualification_atc->name_long, // Controller Rating
                 'field_14' => $this->qualifications_pilot_string, // Pilot Ratings
             ];
-            \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $this->id]);
+            \IPS\Db::i()->update('core_pfields_content', $update, ['member_id=?', $ipsAccount->member_id]);
 
             // Set clubs
             $groups = $this->communityGroups()->notDefault()->get(['name']);
