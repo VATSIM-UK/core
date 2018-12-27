@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\DB;
                 return;
             }
 
-            $ipsAccount = \IPS\Member::load($ipsAccount[0]->member_id);
+            $ipsAccount = \IPS\Member::load($ipsAccount->first()->member_id);
 
             // Set data
             $ipsAccount->name = $this->real_name;
