@@ -28,7 +28,7 @@ class SyncSubscriber
     }
 
     /**
-     * Register the listeners for the subscriber.a
+     * Register the listeners for the subscriber.
      *
      * @param  \Illuminate\Events\Dispatcher $events
      */
