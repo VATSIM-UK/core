@@ -16,11 +16,16 @@ class WaitingListStatus extends Model
     ];
 
     const DEFAULT_STATUS = 1;
+    const DEFERRED = 2;
 
     public function waitingListAccount()
     {
-        return $this->belongsToMany(WaitingListAccount::class, 'training_waiting_list_account_status',
-            'id', 'status_id')->using(WaitingListAccountStatus::class);
+        return $this->belongsToMany(
+            WaitingListAccount::class,
+            'training_waiting_list_account_status',
+            'id',
+            'status_id'
+        )->using(WaitingListAccountStatus::class);
     }
 
     /**
