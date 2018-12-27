@@ -34,7 +34,7 @@ class SyncHelpdesk extends Command
      */
     public function handle()
     {
-                Account::whereNotNull('last_login')->whereNotNull('email')
+        Account::whereNotNull('last_login')->whereNotNull('email')
             ->with('ssoEmails')
             ->chunk(500, function ($coreAccounts) {
                 /** @var Account $coreAccount */
