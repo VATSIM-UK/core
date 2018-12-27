@@ -6,7 +6,7 @@ use App\Events\Event;
 use App\Models\Mship\Account as AccountData;
 use Illuminate\Queue\SerializesModels;
 
-class AccountTouched extends Event
+class AccountAltered extends Event
 {
     use SerializesModels;
 
