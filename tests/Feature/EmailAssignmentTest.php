@@ -200,7 +200,4 @@ class EmailAssignmentTest extends TestCase
 
         Event::assertDispatched(AccountAltered::class);
     }
-
-
-
 }

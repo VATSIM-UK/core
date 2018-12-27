@@ -16,10 +16,10 @@ $factory->define(\Laravel\Passport\Client::class, function ($faker) {
 
 $factory->define(\App\Models\Sso\Email::class, function ($faker) {
     return [
-        'account_email_id' => function() {
+        'account_email_id' => function () {
             return factory(\App\Models\Mship\Account\Email::class)->create()->id;
         },
-        'sso_account_id' => function() {
+        'sso_account_id' => function () {
             return factory(\Laravel\Passport\Client::class)->create()->id;
         },
         'created_at' => \Carbon\Carbon::now(),
