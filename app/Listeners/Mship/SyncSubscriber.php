@@ -22,7 +22,7 @@ class SyncSubscriber
         \App\Jobs\Mship\SyncToCTS::dispatch($event->account);
         \App\Jobs\Mship\SyncToHelpdesk::dispatch($event->account);
         \App\Jobs\Mship\SyncToMoodle::dispatch($event->account);
-        // \App\Jobs\Mship\SyncToForums::dispatch($event->account);
+        // \App\Jobs\Mship\SyncToForums::dispatch($event->account); - Re-enable tests
 
         Log::debug($event->account->real_name.' ('.$event->account->id.') was queued to sync to external services');
     }

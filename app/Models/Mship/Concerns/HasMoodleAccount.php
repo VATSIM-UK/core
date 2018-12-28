@@ -38,9 +38,9 @@ trait HasMoodleAccount
             self::$sso_account_id = $moodleSsoAccount->id;
         }
 
-        if ($moodleAccount === null && $this->canLoginToMoodle()) {
+        if (!$moodleAccount && $this->canLoginToMoodle()) {
             $this->createMoodleAccount($this->getMoodleEmail());
-        } elseif ($moodleAccount !== null) {
+        } elseif ($moodleAccount) {
             $this->updateMoodleAccount($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
         } else {
             // do nothing - user is not eligible for a Moodle account, nor do they have one already
