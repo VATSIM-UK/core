@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Mship\Feedback;
+namespace Tests\Unit\Mship\Sync;
 
 use App\Events\Mship\AccountAltered;
 use App\Jobs\Mship\SyncToCTS;
@@ -39,7 +39,7 @@ class AccountAlteredTest extends TestCase
         Queue::assertPushed(SyncToCTS::class);
         Queue::assertPushed(SyncToMoodle::class);
         Queue::assertPushed(SyncToHelpdesk::class);
-        Queue::assertPushed(SyncToForums::class);
+        //Queue::assertPushed(SyncToForums::class);
     }
 
     /** @test * */
@@ -54,6 +54,6 @@ class AccountAlteredTest extends TestCase
         Queue::assertPushed(SyncToCTS::class, 1);
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
-        Queue::assertPushed(SyncToForums::class, 1);
+        //Queue::assertPushed(SyncToForums::class, 1);
     }
 }
