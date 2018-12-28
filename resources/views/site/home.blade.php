@@ -113,10 +113,11 @@
                             <a class="nav-link" href="#">About VATSIM UK</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Staff</a>
+                            <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Policies</a>
+                            <a class="nav-link"
+                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Policies</a>
                         </li>
                     </ul>
                 </li>
@@ -124,22 +125,24 @@
                     <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">ATC Bookings</a>
+                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Charts</a>
+                            <a class="nav-link"
+                               href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html"
+                               target="_blank">Charts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Airports</a>
+                            <a class="nav-link" href="{{ route('site.airports') }}">Airports</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Area Sectors</a>
+                            <a class="nav-link" href="{{ route('site.operations.sectors') }}">Area Sectors</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Pilot Training</a>
+                            <a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Feedback</a>
+                            <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                         </li>
                     </ul>
                 </li>
@@ -147,22 +150,22 @@
                     <a class="nav-link" href="#">Controllers <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Become a Controller</a>
+                            <a class="nav-link" href="{{ route('site.atc.newController') }}">Become a Controller</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Controller Roster</a>
+                            <a class="nav-link" href="https://cts.vatsim.uk/home/solo.php">Solo Endorsements</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Controller Statistics</a>
+                            <a class="nav-link" href="https://cts.vatsim.uk/home/validations.php">Special
+                                Endorsements</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Resources</a>
+                            <a class="nav-link"
+                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Regulations
+                                and Policies</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Regulations and Policies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Visit / Transfer</a>
+                            <a class="nav-link" href="{{ route('visiting.landing') }}">Visit / Transfer</a>
                         </li>
                     </ul>
                 </li>
@@ -170,16 +173,16 @@
                     <a class="nav-link" href="#">Community <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Forum</a>
+                            <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">TeamSpeak / Slack</a>
+                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak / Slack</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Facebook</a>
+                            <a class="nav-link" href="https://www.facebook.com/vatsimuk">Facebook</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Twitter</a>
+                            <a class="nav-link" href="https://www.twitter.com/vatsimuk">Twitter</a>
                         </li>
                     </ul>
                 </li>
@@ -187,21 +190,21 @@
                     <a class="nav-link" href="#">Events <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Calendar</a>
+                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Live Streams</a>
+                            <a class="nav-link" href="{{ route('site.marketing.live-streaming') }}">Live Streams</a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Feedback</a>
+                    <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact Us <span class="arrow"></span></a>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Helpdesk</a>
+                            <a class="nav-link" href="https://helpdesk.vatsim.uk">Helpdesk</a>
                         </li>
                     </ul>
                 </li>
