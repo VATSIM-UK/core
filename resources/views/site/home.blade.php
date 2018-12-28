@@ -120,6 +120,15 @@
                             <li class="nav-item">
                                 <a class="nav-link" href={{route("site.airports")}}>Airfield Information</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html">UK Charts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route("site.operations.sectors")}}">Area Sectors</a>
+                            </li>                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://www.vatsim.net/pilot-resource-centre">Pilot Resources</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
