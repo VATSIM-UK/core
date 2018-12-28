@@ -42,4 +42,22 @@ class UKCP
 
         return $result;
     }
+
+    /**
+     * @param string $tokenId
+     * @return bool
+     */
+    public function deleteToken(string $tokenId)
+    {
+        try {
+            $client = new Client;
+            $client->delete('https://ukcp.vatsim.uk/token/' . $tokenId, ['headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]]);
+        } catch (ClientException $e) {
+            return false;
+        }
+
+        return true;
+    }
 }
