@@ -203,7 +203,7 @@
       max-width: 720px;
     }
   }
-  @media (min-width: 992px) {
+  @media (min-width: 1200px) {
     .container {
       max-width: 960px;
     }
@@ -287,7 +287,7 @@
     }
   }
 
-  @media (min-width: 992px){
+  @media (min-width: 1200px) {
     .col-lg-4 {
       -webkit-box-flex: 0;
       flex: 0 0 33.33333%;
@@ -439,13 +439,13 @@
   .navbar-toggler:not(:disabled):not(.disabled) {
     cursor: pointer;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1200px) {
     .navbar-expand-lg > .container {
       padding-right: 0;
       padding-left: 0;
     }
   }
-  @media (min-width: 992px) {
+  @media (min-width: 1200px) {
     .navbar-expand-lg {
       -webkit-box-orient: horizontal;
       -webkit-box-direction: normal;
@@ -1217,7 +1217,7 @@
     align-items: center;
     width: 100%;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1200px) {
     .navbar-expand-lg .navbar-mobile {
       -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
@@ -1301,7 +1301,7 @@
   }
 
 
-  @media (max-width: 991.98px) {
+  @media (max-width: 1200px) {
     .navbar-expand-lg .navbar-mobile {
       -webkit-box-orient:vertical;
       -webkit-box-direction: normal;
@@ -1433,7 +1433,7 @@
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: 1200px) {
     .navbar-expand-lg .backdrop-navbar {
       display:none
     }
@@ -1504,7 +1504,7 @@
     position: relative;
     height: 100%;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1200px) {
     .section {
       padding-top: 5rem;
       padding-bottom: 5rem;

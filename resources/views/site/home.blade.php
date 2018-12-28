@@ -105,71 +105,106 @@
 
         <section class="navbar-mobile">
             <ul class="nav nav-navbar ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Welcome</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.pilots.landing")}}>Training</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.airports")}}>Airfield Information</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html">UK Charts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.operations.sectors")}}">Area Sectors</a>
-                            </li>                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://www.vatsim.net/pilot-resource-centre">Pilot Resources</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Membership <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://cts.vatsim.uk">CTS</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://helpdesk.vatsim.uk/">Helpdesk</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://community.vatsim-uk.co.uk/downloads">Downloads</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.community.vt-guide")}}">Visit or Transfer</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk/files/downloads/file/25-division-policy">Division Policy</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fab fa-twitter"></i></a>
-                    </li>
-                    @if(currentUserHasAuth())
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home <span class="arrow"></span></a>
+                    <ul class="nav">
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fas fa-user"></i></a>
+                            <a class="nav-link" href="#">About VATSIM UK</a>
                         </li>
-                    @else
-                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fas fa-sign-in-alt"></i></a>
-                    @endif
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Staff</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Policies</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">ATC Bookings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Charts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Airports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Area Sectors</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Pilot Training</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Feedback</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Controllers <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Become a Controller</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Controller Roster</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Controller Statistics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Resources</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Regulations and Policies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Visit / Transfer</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Community <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Forum</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">TeamSpeak / Slack</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Facebook</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Twitter</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Events <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Calendar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Live Streams</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact Us <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Helpdesk</a>
+                        </li>
+                    </ul>
+                </li>
+                <a href="{{ route('login') }}" class="nav-link text-white"><i class="fas fa-user"></i></a>
             </ul>
         </section>
 
