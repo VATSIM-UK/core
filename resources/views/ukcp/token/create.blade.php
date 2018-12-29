@@ -40,15 +40,25 @@
                 </div>
                 <div class="panel-body">
                     EuroScope allows you to load plugins from one simple file.<br/>
-                    <br/>
                     Click below to download the latest version of the UK Controller Plugin.<br/>
                     <br/>
-                    <br/>
-                    <br/>
-
                     <a href="https://community.vatsim.uk/files/downloads/file/213-uk-controller-plugin/"
                        target="_blank">
                         <button class="btn btn-primary center-block">Download UK Controller Plugin</button>
+                    </a>
+
+                    <br/>
+
+                    The plugin relies on <a
+                            href="https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads"
+                            target="_blank">a
+                        package from Microsoft</a>. You can download that below too.
+                    <br/>
+                    <a href="https://aka.ms/vs/15/release/VC_redist.x86.exe"
+                       target="_blank">
+                        <br/>
+                        <button class="btn btn-primary center-block">Download Visual C++ Redistributable Package
+                        </button>
                     </a>
                 </div>
             </div>
@@ -60,6 +70,7 @@
                 <div class="panel-body">
                     When loading the plugin into EuroScope for the first time, you will be asked to provide a key so
                     that the plugin knows who is connecting.<br/>
+                    <br/>
                     Please click the button below to download your key. <br/><br/><b>You should never share your key
                         with
                         anyone
