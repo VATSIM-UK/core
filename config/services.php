@@ -45,6 +45,11 @@ return [
         ],
     ],
 
+    'ukcp' => [
+        'url' => env('UKCP_URL'),
+        'key' => env('UKCP_KEY'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | VATSIM UK Hosted Services

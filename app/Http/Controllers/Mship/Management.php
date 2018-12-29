@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mship;
 
+use App\Libraries\UKCP;
 use App\Models\Mship\Account\Email as AccountEmail;
 use App\Models\Sys\Token as SystemToken;
 use Auth;
@@ -33,7 +34,9 @@ class Management extends \App\Http\Controllers\BaseController
             'teamspeakRegistrations'
         );
 
-        return $this->viewMake('mship.management.dashboard');
+        $pluginKeys = (new UKCP)->getValidTokens(auth()->user());
+
+        return $this->viewMake('mship.management.dashboard')->with('pluginKeys', $pluginKeys);
     }
 
     public function postInvisibility()
