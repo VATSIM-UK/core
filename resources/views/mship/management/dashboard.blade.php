@@ -461,10 +461,8 @@
                     <div class="panel-heading"><i class="fa fa-signal"></i>
                         UK Controller Plugin
                         <div class="pull-right">
-                            <a href="#">
-                                <a href="{{ route('ukcp.token.create') }}">
-                                    <i class="fa fa-plus-circle"></i>
-                                </a>
+                            <a href="{{ route('ukcp.token.create') }}">
+                                <i class="fa fa-plus-circle"></i>
                             </a>
                         </div>
                     </div>
