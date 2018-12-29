@@ -14,6 +14,8 @@ class UKCP extends BaseController
     public function __construct(UKCPLibrary $ukcp)
     {
         $this->ukcp = $ukcp;
+
+        parent::__construct();
     }
 
     public function deleteToken($tokenId)
