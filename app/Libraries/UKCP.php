@@ -57,7 +57,7 @@ class UKCP
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
-            return collect();
+            return null;
         }
 
         return json_decode($result->getBody()->getContents());
