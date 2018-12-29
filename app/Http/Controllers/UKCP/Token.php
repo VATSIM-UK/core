@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Mship;
+namespace App\Http\Controllers\UKCP;
 
 use App\Http\Controllers\BaseController;
 use App\Libraries\UKCP as UKCPLibrary;
 use Illuminate\Support\Facades\Redirect;
 
-class UKCP extends BaseController
+class Token extends BaseController
 {
-    /** @var UKCP */
+    /** @var Token */
     private $ukcp;
 
     public function __construct(UKCPLibrary $ukcp)
@@ -18,7 +18,7 @@ class UKCP extends BaseController
         parent::__construct();
     }
 
-    public function deleteToken($tokenId)
+    public function destroy($tokenId)
     {
         $delete = $this->ukcp->deleteToken($tokenId);
 

@@ -486,7 +486,7 @@
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
                                         <br/>
-                                        [ <a href="{{ route('ukcp.token.delete', $key->id) }}">Remove Key</a> ]
+                                        [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
                                     </div>
                                 @empty
                                     <p>No keys currently created.</p>

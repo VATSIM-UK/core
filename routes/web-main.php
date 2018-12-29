@@ -128,10 +128,10 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
 Route::group([
     'as'         => 'ukcp.',
     'prefix'     => 'ukcp',
-    'namespace'  => 'Mship',
+    'namespace'  => 'UKCP',
     'middleware' => 'auth_full_group',
 ], function () {
-    Route::get('token/{id}/delete')->uses('UKCP@deleteToken')->name('token.delete');
+    Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
 });
 
 // Community
