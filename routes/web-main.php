@@ -133,6 +133,7 @@ Route::group([
 ], function () {
     Route::get('token/create')->uses('Token@create')->name('token.create');
     Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
+    Route::get('token/{path}/download')->uses('Token@download')->name('token.download');
 });
 
 // Community

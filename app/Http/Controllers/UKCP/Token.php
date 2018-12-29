@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Libraries\UKCP as UKCPLibrary;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 class Token extends BaseController
 {
@@ -49,5 +50,19 @@ class Token extends BaseController
 
         return Redirect::route('mship.manage.dashboard')
             ->withSuccess('Key has been deleted.');
+    }
+
+    public function download($tokenId)
+    {
+        $tokenPath = storage_path('app/public/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
+        $headers = array(
+            'Content-Type: application/json',
+        );
+
+        try {
+            return response()->download($tokenPath, substr($tokenId, -8) . '.json', $headers);
+        } catch (FileNotFoundException $e) {
+            return redirect()->back()->with('error', 'There was an issue downloading your file. Please contact Web Services.');
+        }
     }
 }

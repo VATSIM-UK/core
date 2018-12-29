@@ -488,6 +488,8 @@
                                             <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
                                         </a>
                                         <br/>
+                                        [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
+                                        <br/>
                                         [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
                                     </div>
                                 @empty
