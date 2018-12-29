@@ -50,7 +50,7 @@ class UKCP
     public function deleteToken(string $tokenId)
     {
         try {
-            (new Client)->delete('https://ukcp.vatsim.uk/token/' . $tokenId, ['headers' => [
+            (new Client)->delete(config('services.ukcp.url') . $tokenId, ['headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
