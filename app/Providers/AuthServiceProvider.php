@@ -81,7 +81,8 @@ class AuthServiceProvider extends ServiceProvider
                 1138314,
                 1317737,
                 1258635,
-                1285647
+                1285647,
+                1203533
             ]);
 
             return $betaTesters->contains($user->id) || app()->isLocal();
