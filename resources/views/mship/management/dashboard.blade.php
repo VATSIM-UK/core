@@ -455,59 +455,62 @@
                     </div>
                 </div>
             @endif
-            <div class="panel panel-ukblue">
-                <div class="panel-heading"><i class="fa fa-signal"></i>
-                    UK Controller Plugin
-                    <div class="pull-right">
-                        <a href="#">
-                            <a href="{{ route('ukcp.token.create') }}">
-                                <i class="fa fa-plus-circle"></i>
+
+            @can('ukcp-beta')
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-signal"></i>
+                        UK Controller Plugin
+                        <div class="pull-right">
+                            <a href="#">
+                                <a href="{{ route('ukcp.token.create') }}">
+                                    <i class="fa fa-plus-circle"></i>
+                                </a>
                             </a>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
                         </div>
-                        <div class="col-xs-9">
-                            <div class="row">
-                                @forelse($pluginKeys as $key)
-                                    <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
-                                        [ <strong>Registration #{{ substr($key->id, -8) }}</strong> ]<br/>
-                                        <strong>CREATED</strong>:
-                                        <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $key->created_at }}">
-                                            <em>{{ \Carbon\Carbon::createFromTimeString($key->created_at)->diffForHumans() }}</em>
-                                        </a>
-                                        <br/>
-                                        <strong>EXPIRES</strong>:
-                                        <a class="tooltip_displays" href="#" data-toggle="tooltip"
-                                           title="{{ $key->expires_at }}">
-                                            <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
-                                        </a>
-                                        <br/>
-                                        [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
-                                        <br/>
-                                        [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
-                                    </div>
-                                @empty
-                                    <p>No keys found.</p>
-                                @endforelse
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <b>UK CONTROLLER<br/>PLUGIN KEYS</b>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="row">
+                                    @forelse($pluginKeys as $key)
+                                        <div class="col-xs-6 row-text-contain" style="padding-bottom: 20px;">
+                                            [ <strong>Registration #{{ substr($key->id, -8) }}</strong> ]<br/>
+                                            <strong>CREATED</strong>:
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip"
+                                               title="{{ $key->created_at }}">
+                                                <em>{{ \Carbon\Carbon::createFromTimeString($key->created_at)->diffForHumans() }}</em>
+                                            </a>
+                                            <br/>
+                                            <strong>EXPIRES</strong>:
+                                            <a class="tooltip_displays" href="#" data-toggle="tooltip"
+                                               title="{{ $key->expires_at }}">
+                                                <em>{{ \Carbon\Carbon::createFromTimeString($key->expires_at)->diffForHumans() }}</em>
+                                            </a>
+                                            <br/>
+                                            [ <a href="{{ route('ukcp.token.download', $key->id) }}">Download Key</a> ]
+                                            <br/>
+                                            [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
+                                        </div>
+                                    @empty
+                                        <p>No keys found.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
+                                    share
+                                    your keys</b> as actions taken with these keys are logged against your account.
                             </div>
                         </div>
                     </div>
-                    <br/>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
-                                share
-                                your keys</b> as actions taken with these keys are logged against your account.
-                        </div>
-                    </div>
                 </div>
-            </div>
+            @endcan
         </div>
     </div>
 @stop
