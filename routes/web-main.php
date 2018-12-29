@@ -131,6 +131,7 @@ Route::group([
     'namespace'  => 'UKCP',
     'middleware' => 'auth_full_group',
 ], function () {
+    Route::get('token/create')->uses('Token@create')->name('token.create');
     Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
 });
 

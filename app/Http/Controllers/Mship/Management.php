@@ -34,7 +34,7 @@ class Management extends \App\Http\Controllers\BaseController
             'teamspeakRegistrations'
         );
 
-        $pluginKeys = (new UKCP)->getValidTokens(auth()->user());
+        $pluginKeys = (new UKCP)->getValidTokensFor(auth()->user());
 
         return $this->viewMake('mship.management.dashboard')->with('pluginKeys', $pluginKeys);
     }

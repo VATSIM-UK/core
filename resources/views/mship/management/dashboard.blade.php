@@ -460,7 +460,9 @@
                     UK Controller Plugin
                     <div class="pull-right">
                         <a href="#">
-                            <i class="fa fa-plus-circle"></i>
+                            <a href="{{ route('ukcp.token.create') }}">
+                                <i class="fa fa-plus-circle"></i>
+                            </a>
                         </a>
                     </div>
                 </div>

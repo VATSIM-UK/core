@@ -20,16 +20,48 @@ class UKCP
         $this->apiKey = config('services.ukcp.key');
     }
 
+    public function createAccount(Account $account)
+    {
+        // To be implemented
+        return 'account creation here';
+    }
+
     /**
      * @param Account $account
      * @return array|\Illuminate\Support\Collection|mixed|\Psr\Http\Message\ResponseInterface
      */
-    public function getValidTokens(Account $account)
+    public function getValidTokensFor(Account $account)
     {
-        return collect($this->getAccountFor($account)->tokens)
+        $tokens = optional($this->getAccountFor($account))->tokens;
+
+        return collect($tokens)
             ->filter(function ($item) {
                 return $item->revoked === false;
-            })->all();
+            });
+    }
+
+    /**
+     * @param Account $account
+     * @return bool
+     */
+    public function createTokenFor(Account $account)
+    {
+        $pluginAccount = collect($this->getAccountFor($account));
+
+        if ($pluginAccount->isEmpty()) {
+            return $this->createAccountFor($account);
+        }
+
+        try {
+            $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]]);
+            $result = $response->getBody()->getContents();
+        } catch (ClientException $e) {
+            return null;
+        }
+
+        return $result;
     }
 
     /**
