@@ -17,7 +17,7 @@ class UKCP
      */
     public function __construct()
     {
-        $this->apiKey = env('UKCP_KEY');
+        $this->apiKey = config('services.ukcp.key');
     }
 
     /**
@@ -28,7 +28,7 @@ class UKCP
     {
         try {
             $client = new Client;
-            $result = $client->get(env('UKCP_BASE_URL') . '/user/' . $account->id, ['headers' => [
+            $result = $client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey
             ]]);
         } catch (ClientException $e) {
