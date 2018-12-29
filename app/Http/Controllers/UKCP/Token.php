@@ -33,7 +33,7 @@ class Token extends BaseController
 
         $latestId = $this->ukcp->getValidTokensFor(auth()->user())->first()->id;
         $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
-        Storage::disk('public')->put($tokenPath, $newToken);
+        Storage::disk('local')->put($tokenPath, $newToken);
 
         return Redirect::route('mship.manage.dashboard')
             ->withSuccess('Key has been successfully created.');
@@ -54,7 +54,7 @@ class Token extends BaseController
 
     public function download($tokenId)
     {
-        $tokenPath = storage_path('app/public/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
+        $tokenPath = storage_path('app/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
         $headers = array(
             'Content-Type: application/json',
         );
