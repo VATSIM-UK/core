@@ -13,7 +13,7 @@ Route::post('logout')->uses('Auth\LoginController@logout')->name('logout');
 
 // Password
 Route::group([
-    'as' => 'password.',
+    'as'     => 'password.',
     'prefix' => 'password',
 ], function () {
 
@@ -41,8 +41,8 @@ Route::group([
 
 // Webhooks
 Route::group([
-    'as' => 'webhook.',
-    'prefix' => 'webhook',
+    'as'        => 'webhook.',
+    'prefix'    => 'webhook',
     'namespace' => 'Webhook',
 ], function () {
     Route::get('dropbox')->uses('Dropbox@getDropbox')->name('dropbox');
@@ -56,15 +56,15 @@ Route::group([
 
 // Members
 Route::group([
-    'prefix' => 'mship',
-    'as' => 'mship.',
-    'namespace' => 'Mship',
+    'prefix'     => 'mship',
+    'as'         => 'mship.',
+    'namespace'  => 'Mship',
     'middleware' => 'auth_full_group',
 ], function () {
 
     // Manage
     Route::group([
-        'as' => 'manage.',
+        'as'     => 'manage.',
         'prefix' => 'manage',
     ], function () {
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
@@ -79,7 +79,7 @@ Route::group([
 
     // Feedback
     Route::group([
-        'as' => 'feedback.',
+        'as'     => 'feedback.',
         'prefix' => 'feedback',
     ], function () {
         Route::get('new')->uses('Feedback@getFeedbackFormSelect')->name('new');
@@ -106,8 +106,8 @@ Route::group([
 
 // TeamSpeak
 Route::group([
-    'prefix' => 'mship/manage/teamspeak',
-    'namespace' => 'TeamSpeak',
+    'prefix'     => 'mship/manage/teamspeak',
+    'namespace'  => 'TeamSpeak',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
@@ -131,14 +131,17 @@ Route::group([
     'namespace'  => 'UKCP',
     'middleware' => 'auth_full_group',
 ], function () {
+    Route::get('/')->uses('Token@show')->name('guide');
+    Route::get('/token')->uses('Token@create')->name('token.create');
     Route::get('token/{id}/destroy')->uses('Token@destroy')->name('token.destroy');
+    Route::get('token/{id}/download')->uses('Token@download')->name('token.download');
 });
 
 // Community
 Route::group([
-    'as' => 'community.membership.',
-    'prefix' => 'community/membership',
-    'namespace' => 'Community',
+    'as'         => 'community.membership.',
+    'prefix'     => 'community/membership',
+    'namespace'  => 'Community',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('deploy')->uses('Membership@getDeploy')->name('deploy');
@@ -148,9 +151,9 @@ Route::group([
 
 // Controllers
 Route::group([
-    'as' => 'controllers.',
-    'prefix' => 'controllers/',
-    'namespace' => 'Atc',
+    'as'         => 'controllers.',
+    'prefix'     => 'controllers/',
+    'namespace'  => 'Atc',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('endorsements/gatwick')->uses('EndorsementController@getGatwickGroundIndex')->name('endorsements.gatwick_ground');
@@ -158,9 +161,9 @@ Route::group([
 
 // Network data
 Route::group([
-    'as' => 'networkdata.',
-    'prefix' => 'network-data',
-    'namespace' => 'NetworkData',
+    'as'         => 'networkdata.',
+    'prefix'     => 'network-data',
+    'namespace'  => 'NetworkData',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('MainController@getDashboard')->name('dashboard');
@@ -168,16 +171,16 @@ Route::group([
 });
 
 Route::group([
-    'as' => 'visiting.',
-    'prefix' => 'visit-transfer',
-    'namespace' => 'VisitTransfer\Site',
+    'as'         => 'visiting.',
+    'prefix'     => 'visit-transfer',
+    'namespace'  => 'VisitTransfer\Site',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/', ['as' => 'landing', 'uses' => 'Dashboard@getDashboard']);
 
     // Application
     Route::group([
-        'as' => 'application.',
+        'as'     => 'application.',
         'prefix' => 'application',
     ], function () {
 
@@ -208,7 +211,7 @@ Route::group([
 
     // References
     Route::group([
-        'as' => 'reference.',
+        'as'     => 'reference.',
         'prefix' => 'reference',
     ], function () {
         Route::get('complete/{token}')->uses('Reference@getComplete')->name('complete');
@@ -221,9 +224,9 @@ Route::group([
 Route::any('frame.php', 'Smartcars\Api\Router@routeRequest');
 
 Route::group([
-    'as' => 'fte.',
-    'prefix' => 'fte',
-    'namespace' => 'Smartcars',
+    'as'         => 'fte.',
+    'prefix'     => 'fte',
+    'namespace'  => 'Smartcars',
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('dashboard')->uses('SmartcarsController@getDashboard')->name('dashboard');
