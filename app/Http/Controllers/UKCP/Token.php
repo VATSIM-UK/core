@@ -40,8 +40,18 @@ class Token extends BaseController
         $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
         Storage::disk('local')->put($tokenPath, $newToken);
 
-        return Redirect::route('mship.manage.dashboard')
-            ->withSuccess('Key has been successfully created.');
+        return $this->viewMake('ukcp.token.create')->with('newToken', $latestId);
+    }
+
+    public function show()
+    {
+        $latestId = $this->ukcp->getValidTokensFor(auth()->user());
+
+        if ($latestId->isEmpty()) {
+            return Redirect::route('ukcp.token.create');
+        }
+
+        return $this->viewMake('ukcp.token.create')->with('newToken', $latestId->first()->id);
     }
 
     public function destroy($tokenId)
