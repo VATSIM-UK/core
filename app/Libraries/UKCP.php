@@ -20,10 +20,18 @@ class UKCP
         $this->apiKey = config('services.ukcp.key');
     }
 
-    public function createAccount(Account $account)
+    public function createAccountFor(Account $account)
     {
-        // To be implemented
-        return 'account creation here';
+        try {
+            $client = new Client;
+            $result = $client->post(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]]);
+        } catch (ClientException $e) {
+            return null;
+        }
+
+        return json_decode($result->getBody()->getContents());
     }
 
     /**
