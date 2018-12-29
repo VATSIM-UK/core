@@ -9,7 +9,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="text-center">
-                        The UK Controller Plugin (UKCP) is a Euroscope 3.2 plugin that is designed to assist controllers
+                        The UK Controller Plugin (UKCP) is a EuroScope 3.2 plugin that is designed to assist controllers
                         in the UK.<br/>
                         A full feature list can be found by <a
                                 href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md"
@@ -91,9 +91,31 @@
                     Plugin
                 </div>
                 <div class="panel-body">
-                    <div class="text-center">
-                        Some text here.
-                    </div>
+                    <ol>
+                        <li>Move the UKControllerPlugin.dll file (downloaded in Step One) to /Data/Plugins within
+                            your UK Sector File folder.
+                        </li>
+                        <li>Open EuroScope.</li>
+                        <li>Click Other Set, then Plugins.</li>
+                        <li>Click "Load" on the dialog that opens.</li>
+                        <li>Select the UKControllerPlugin.dll file from the /Data/Plugins directory.</li>
+                        <li>A warning will appear, press OK.</li>
+                        <li>The plugin will then ask you to find the key file that you downloaded in Step Two. Find it
+                            and click Open.
+                        </li>
+                        <li>Select the UK Controller Plugin from the list of plugins and move "Standard ES Radar Screen"
+                            from forbidden to allowed in the section below.
+                        </li>
+                        <li>Click close - the UK Controller Plugin has now been installed!</li>
+                    </ol>
+
+                    <p>Feel free to check out the settings by clicking the toggle at the bottom right of your radar
+                        screen. You may also wish to browse the <a
+                                href="https://github.com/VATSIM-UK/uk-controller-plugin/blob/develop/docs/README.md">full
+                            feature list</a>.</p>
+
+                    <p>Having trouble or got questions? Ask <a href="{{ route('slack.new') }}">on Slack</a> or <a
+                                href="https://community.vatsim.uk">our Forum</a>!</p>
                 </div>
             </div>
         </div>
