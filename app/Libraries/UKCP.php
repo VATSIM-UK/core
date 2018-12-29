@@ -26,21 +26,10 @@ class UKCP
      */
     public function getValidTokens(Account $account)
     {
-        try {
-            $client = new Client;
-            $result = $client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
-            ]]);
-        } catch (ClientException $e) {
-            return collect();
-        }
-
-        $result = json_decode($result->getBody()->getContents());
-        $result = collect($result->tokens)->filter(function ($item) {
-            return $item->revoked === false;
-        })->all();
-
-        return $result;
+        return collect($this->getAccountFor($account)->tokens)
+            ->filter(function ($item) {
+                return $item->revoked === false;
+            })->all();
     }
 
     /**
@@ -58,5 +47,19 @@ class UKCP
         }
 
         return true;
+    }
+
+    protected function getAccountFor(Account $account)
+    {
+        try {
+            $client = new Client;
+            $result = $client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]]);
+        } catch (ClientException $e) {
+            return collect();
+        }
+
+        return json_decode($result->getBody()->getContents());
     }
 }
