@@ -42,4 +42,21 @@ class UKCP
 
         return $result;
     }
+
+    /**
+     * @param string $tokenId
+     * @return bool
+     */
+    public function deleteToken(string $tokenId)
+    {
+        try {
+            (new Client)->delete(config('services.ukcp.url') . $tokenId, ['headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]]);
+        } catch (ClientException $e) {
+            return false;
+        }
+
+        return true;
+    }
 }
