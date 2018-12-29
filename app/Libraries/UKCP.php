@@ -13,6 +13,6 @@ class UKCP
      */
     public function __construct()
     {
-        $this->apiKey = env('UKCP_KEY');
+        $this->apiKey = config('services.ukcp.key');
     }
 }
