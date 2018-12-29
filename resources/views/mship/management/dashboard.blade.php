@@ -498,6 +498,14 @@
                             </div>
                         </div>
                     </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            The UK Controller Plugin uses a key to identify who is using the plugin. <br/><b>Do not
+                                share
+                                your keys</b> as actions taken with these keys are logged against your account.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
