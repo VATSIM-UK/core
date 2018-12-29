@@ -124,6 +124,16 @@ Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middlew
     Route::post('/{slackToken}/status', ['as' => 'slack.status', 'uses' => 'Registration@postStatus']);
 });
 
+// UKCP
+Route::group([
+    'as'         => 'ukcp.',
+    'prefix'     => 'ukcp',
+    'namespace'  => 'Mship',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('token/{id}/delete')->uses('UKCP@deleteToken')->name('token.delete');
+});
+
 // Community
 Route::group([
     'as' => 'community.membership.',
