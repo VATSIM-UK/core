@@ -31,6 +31,11 @@ class Token extends BaseController
 
         $newToken = $this->ukcp->createTokenFor(auth()->user());
 
+        if (!$newToken) {
+            return Redirect::route('mship.manage.dashboard')
+                ->withError('An unknown error occured, please contact Web Services.');
+        }
+
         $latestId = $this->ukcp->getValidTokensFor(auth()->user())->first()->id;
         $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
         Storage::disk('local')->put($tokenPath, $newToken);
