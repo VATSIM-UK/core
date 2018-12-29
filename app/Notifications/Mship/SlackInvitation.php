@@ -3,7 +3,6 @@
 namespace App\Notifications\Mship;
 
 use App\Notifications\Notification;
-use Gate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -30,7 +29,7 @@ class SlackInvitation extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (Gate::forUser($notifiable)->allows('register-slack')) {
+        if (!$notifiable->slack_id) {
             return ['mail', 'database'];
         } else {
             return [];
