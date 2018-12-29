@@ -31,7 +31,7 @@ class UKCP
             return null;
         }
 
-        return json_decode($result->getBody()->getContents());
+        return $result->getBody()->getContents();
     }
 
     /**
