@@ -493,7 +493,7 @@
                                         [ <a href="{{ route('ukcp.token.destroy', $key->id) }}">Remove Key</a> ]
                                     </div>
                                 @empty
-                                    <p>No keys currently created.</p>
+                                    <p>No keys found.</p>
                                 @endforelse
                             </div>
                         </div>
