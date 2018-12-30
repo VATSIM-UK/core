@@ -9,13 +9,8 @@ use DB;
  */
 trait HasMoodleAccount
 {
-    protected static $sso_account_id;
-
     public function syncUserToMoodle()
     {
-        if (!config('services.moodle.database')) {
-            return false;
-        }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
             ->where('username', $this->id)
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
@@ -30,18 +25,14 @@ trait HasMoodleAccount
      */
     public function syncToMoodle($moodleAccount)
     {
-        if (!isset(self::$sso_account_id)) {
-            $moodleSsoAccount = DB::table('oauth_clients')->where('name', 'Moodle')->first();
-            if (!$moodleSsoAccount) {
-                return false;
-            }
-            self::$sso_account_id = $moodleSsoAccount->id;
+        if (!config('services.moodle.database') || !DB::table('oauth_clients')->where('name', 'Moodle')->first()) {
+            return false;
         }
 
         if (!$moodleAccount && $this->canLoginToMoodle()) {
-            $this->createMoodleAccount($this->getMoodleEmail());
+            $this->createMoodleAccount();
         } elseif ($moodleAccount) {
-            $this->updateMoodleAccount($this->getMoodleEmail(), $this->canLoginToMoodle(), $moodleAccount);
+            $this->updateMoodleAccount($this->canLoginToMoodle(), $moodleAccount);
         } else {
             // do nothing - user is not eligible for a Moodle account, nor do they have one already
         }
@@ -52,7 +43,7 @@ trait HasMoodleAccount
      *
      * @param string $email
      */
-    protected function createMoodleAccount($email)
+    protected function createMoodleAccount()
     {
         DB::table(config('services.moodle.database').'.mdl_user')->insert([
             'auth' => 'vatsim',
@@ -64,7 +55,7 @@ trait HasMoodleAccount
             'password' => md5(str_random(60)),
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
-            'email' => $email,
+            'email' => $this->getMoodleEmail(),
             'vatuk_cron' => 1,
         ]);
     }
@@ -76,7 +67,7 @@ trait HasMoodleAccount
      * @param bool $allowLogin
      * @param mixed $moodleAccount
      */
-    protected function updateMoodleAccount($email, $allowLogin, $moodleAccount)
+    protected function updateMoodleAccount($allowLogin, $moodleAccount)
     {
         $old = [
             'auth' => $moodleAccount->auth,
@@ -93,7 +84,7 @@ trait HasMoodleAccount
             'deleted' => $allowLogin ? 0 : 1,
             'firstname' => $this->name_first,
             'lastname' => $this->name_last,
-            'email' => $email,
+            'email' => $this->getMoodleEmail(),
             'idnumber' => (string) $this->id,
             'vatuk_cron' => 1,
         ];
@@ -113,11 +104,7 @@ trait HasMoodleAccount
      */
     protected function getMoodleEmail()
     {
-        $ssoEmail = $this->ssoEmails->filter(function ($ssoemail) {
-            return $ssoemail->sso_account_id === self::$sso_account_id;
-        })->first();
-
-        return is_null($ssoEmail) ? $this->email : $ssoEmail->email->email;
+        return $this->getEmailForService(DB::table('oauth_clients')->where('name', 'Moodle')->first()->id);
     }
 
     /**
