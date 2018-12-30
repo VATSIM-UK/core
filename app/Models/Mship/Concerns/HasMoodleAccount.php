@@ -11,6 +11,9 @@ trait HasMoodleAccount
 {
     public function syncUserToMoodle()
     {
+        if(!$this->moodleEnabled()){
+            return false;
+        }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
             ->where('username', $this->id)
             ->get(['username', 'auth', 'deleted', 'firstname', 'lastname', 'email', 'idnumber'])
@@ -25,7 +28,7 @@ trait HasMoodleAccount
      */
     public function syncToMoodle($moodleAccount)
     {
-        if (!config('services.moodle.database') || !DB::table('oauth_clients')->where('name', 'Moodle')->first()) {
+        if(!$this->moodleEnabled()){
             return false;
         }
 
@@ -117,5 +120,10 @@ trait HasMoodleAccount
         return $this->hasState('DIVISION')
             || $this->hasState('VISITING')
             || $this->hasState('TRANSFERRING');
+    }
+    
+    private function moodleEnabled()
+    {
+        return config('services.moodle.database') && DB::table('oauth_clients')->where('name', 'Moodle')->first();
     }
 }
