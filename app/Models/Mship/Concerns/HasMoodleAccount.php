@@ -11,7 +11,7 @@ trait HasMoodleAccount
 {
     public function syncUserToMoodle()
     {
-        if(!$this->moodleEnabled()){
+        if (!$this->moodleEnabled()) {
             return false;
         }
         $moodleAccount = DB::table(config('services.moodle.database').'.mdl_user')
@@ -28,7 +28,7 @@ trait HasMoodleAccount
      */
     public function syncToMoodle($moodleAccount)
     {
-        if(!$this->moodleEnabled()){
+        if (!$this->moodleEnabled()) {
             return false;
         }
 
