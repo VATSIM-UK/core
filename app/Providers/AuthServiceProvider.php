@@ -63,6 +63,31 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+        Gate::define('ukcp-beta', function ($user) {
+            $betaTesters = collect([
+                858680,
+                1169992,
+                1381570,
+                1237658,
+                1240481,
+                1339920,
+                1294298,
+                1335936,
+                1305268,
+                1330403,
+                1284743,
+                856109,
+                1002707,
+                1138314,
+                1317737,
+                1258635,
+                1285647,
+                1203533
+            ]);
+
+            return $betaTesters->contains($user->id) || app()->isLocal();
+        });
+
         $this->serviceAccessGates();
     }
 
