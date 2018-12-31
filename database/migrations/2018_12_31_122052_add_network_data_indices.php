@@ -32,7 +32,7 @@ class AddNetworkDataIndices extends Migration
     public function down()
     {
         Schema::table('networkdata_atc', function (Blueprint $table) {
-            $table->dropIndex('callsign_index');
+            $table->dropIndex('networkdata_atc_callsign_index');
         });
 
         Schema::table('networkdata_pilots', function (Blueprint $table) {
