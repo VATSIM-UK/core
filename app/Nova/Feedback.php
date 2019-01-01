@@ -4,9 +4,13 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Panel;
 
 class Feedback extends Resource
 {
@@ -61,7 +65,37 @@ class Feedback extends Resource
                 return $this->form->name;
             }),
 
-            HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse')->withMeta(['perPage' => 20])
+            new Panel('Actioned Information', [
+                Boolean::make('Actioned', function () {
+                    return $this->actioned_at != null;
+                }),
+                DateTime::make('Actioned At')->canSee(function () {
+                    return $this->actioned_at != null;
+                })->onlyOnDetail(),
+                BelongsTo::make('Actioned By', 'actioner', 'App\Nova\Account')->canSee(function () {
+                    return $this->actioned_at != null;
+                })->onlyOnDetail(),
+                Textarea::make('Comment', 'actioned_comment')->canSee(function () {
+                    return $this->actioned_at != null;
+                })->onlyOnDetail(),
+            ]),
+
+            new Panel('Sent Information', [
+                Boolean::make('Sent To User', function () {
+                    return $this->sent_at != null;
+                }),
+                DateTime::make('Sent At')->canSee(function () {
+                    return $this->sent_at != null;
+                })->onlyOnDetail(),
+                BelongsTo::make('Sent By', 'actioner', 'App\Nova\Account')->canSee(function () {
+                    return $this->sent_at != null;
+                })->onlyOnDetail(),
+                Textarea::make('Comment', 'sent_comment')->canSee(function () {
+                    return $this->sent_at != null;
+                })->onlyOnDetail(),
+            ]),
+
+            HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse'),
         ];
     }
 
@@ -108,6 +142,9 @@ class Feedback extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new Actions\ActionFeedback)->onlyOnDetail(),
+            (new Actions\SendFeedback)->onlyOnDetail(),
+        ];
     }
 }
