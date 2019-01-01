@@ -41,6 +41,11 @@ class FeedbackResponse extends Resource
         return $query->orderBy('id');
     }
 
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
