@@ -19,8 +19,11 @@ class ActionedUnactionedFeedback extends Partition
     public function calculate(Request $request)
     {
         return $this->result([
-            'Actioned' => Feedback::actioned(true)->count(),
-            'Un-Actioned' => Feedback::unActioned(false)->count(),
+            'Actioned' => Feedback::actioned()->count(),
+            'Un-Actioned' => Feedback::unActioned()->count(),
+        ])->colors([
+            'Actioned' => '#2ECC40',
+            'Un-Actioned' => '#FF4136'
         ]);
     }
 
