@@ -109,6 +109,8 @@ class Feedback extends Resource
     {
         return [
             (new Metrics\TotalFeedback),
+            (new Metrics\TotalFeedbackGraph),
+            (new Metrics\ActionedUnactionedFeedback),
         ];
     }
 
