@@ -418,6 +418,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->name;
     }
 
+    public function getFullyDefinedAttribute()
+    {
+        return $this->name_first && $this->name_last && $this->email;
+    }
+
     /**
      * Determine if the given name, matches either the user's nickname or real name.
      *
