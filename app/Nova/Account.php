@@ -137,6 +137,8 @@ class Account extends Resource
             MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class),
 
             HasMany::make('Notes')->onlyOnDetail(),
+
+            HasMany::make('Feedback', 'feedback', 'App\Nova\Feedback'),
         ];
     }
 
