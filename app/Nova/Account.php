@@ -53,6 +53,8 @@ class Account extends Resource
         'id', 'email', 'name_first', 'name_last',
     ];
 
+    public static $with = ['feedback'];
+
     public static function authorizable()
     {
         return true;
