@@ -34,6 +34,13 @@ class Feedback extends Resource
     ];
 
     /**
+     * The group assigned to this resource.
+     *
+     * @var string
+     */
+    public static $group = 'Feedback';
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
