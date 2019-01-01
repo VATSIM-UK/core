@@ -18,7 +18,11 @@ class FeedbackResponse extends Resource
      */
     public static $model = 'App\Models\Mship\Feedback\Answer';
 
-
+    /**
+     * Set how many related models (Questions) to display on detail.
+     *
+     * @var int
+     */
     public static $perPageViaRelationship = 10;
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -32,15 +36,26 @@ class FeedbackResponse extends Resource
      *
      * @var array
      */
-    public static $search = [
-        'id',
-    ];
+    public static $search = [];
 
+    /**
+     * Order responses as they appear on the form.
+     *
+     * @param $query
+     * @param array $orderings
+     * @return mixed
+     */
     protected static function applyOrderings($query, array $orderings)
     {
         return $query->orderBy('id');
     }
 
+    /**
+     * Globally disable ability to create your own responses on the admin side.
+     *
+     * @param Request $request
+     * @return bool
+     */
     public static function authorizedToCreate(Request $request)
     {
         return false;
