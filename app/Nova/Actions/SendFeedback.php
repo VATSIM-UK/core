@@ -26,13 +26,12 @@ class SendFeedback extends Action
     {
         /** @var \App\Models\Mship\Feedback\Feedback */
         $feedback = $models->first();
-        $actioner = auth()->user();
 
-        if ($feedback->sent_at != null) {
-            return Action::danger('This feedback is already sent to the user.');
+        if ($feedback->sent_at) {
+            return Action::danger('This feedback has already been sent to the member.');
         }
 
-        $feedback->markSent($actioner, $fields->comment);
+        $feedback->markSent(auth()->user(), $fields->comment);
 
         return Action::message('Feedback sent!');
     }
@@ -45,7 +44,7 @@ class SendFeedback extends Action
     public function fields()
     {
         return [
-            Textarea::make('Comment')->rules('required', 'min:3'),
+            Textarea::make('Comment')->rules('required', 'min:10'),
         ];
     }
 }

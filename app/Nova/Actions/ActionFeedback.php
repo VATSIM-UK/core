@@ -25,13 +25,12 @@ class ActionFeedback extends Action
     {
         /** @var \App\Models\Mship\Feedback\Feedback */
         $feedback = $models->first();
-        $actioner = auth()->user();
 
-        if ($feedback->actioned_at != null) {
-            return Action::danger('This feedback is already actioned!');
+        if ($feedback->actioned) {
+            return Action::danger('This feedback has already been actioned.');
         }
 
-        $feedback->markActioned($actioner, $fields->comment);
+        $feedback->markActioned(auth()->user(), $fields->comment);
 
         return Action::message('Feedback actioned!');
     }
@@ -44,7 +43,7 @@ class ActionFeedback extends Action
     public function fields()
     {
         return [
-            Textarea::make('Comment')->rules('required', 'min:3'),
+            Textarea::make('Comment')->rules('required', 'min:10'),
         ];
     }
 }
