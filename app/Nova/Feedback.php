@@ -107,7 +107,11 @@ class Feedback extends Resource
      */
     public function cards(Request $request)
     {
-        return [];
+        return [
+            (new Metrics\TotalFeedback),
+            (new Metrics\TotalFeedbackGraph),
+            (new Metrics\ActionedUnactionedFeedback),
+        ];
     }
 
     /**
