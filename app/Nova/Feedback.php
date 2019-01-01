@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 
 class Feedback extends Resource
 {
@@ -46,6 +47,10 @@ class Feedback extends Resource
             BelongsTo::make('Subject', 'account', 'App\Nova\Account'),
 
             BelongsTo::make('Submitted By', 'submitter', 'App\Nova\Account'),
+
+            Text::make('Feedback Form', function () {
+                return $this->form->name;
+            }),
 
             HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse')->withMeta(['perPage' => 20])
         ];
