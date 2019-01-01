@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Panel;
 
 class Feedback extends Resource
@@ -70,13 +71,13 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Actioned At')->canSee(function () {
                     return $this->actioned_at != null;
-                }),
+                })->onlyOnDetail(),
                 BelongsTo::make('Actioned By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->actioned_at != null;
-                }),
-                Text::make('Comment', 'actioned_comment')->canSee(function () {
+                })->onlyOnDetail(),
+                Textarea::make('Comment', 'actioned_comment')->canSee(function () {
                     return $this->actioned_at != null;
-                }),
+                })->onlyOnDetail(),
             ]),
 
             new Panel('Sent Information', [
@@ -85,16 +86,16 @@ class Feedback extends Resource
                 }),
                 DateTime::make('Sent At')->canSee(function () {
                     return $this->sent_at != null;
-                }),
+                })->onlyOnDetail(),
                 BelongsTo::make('Sent By', 'actioner', 'App\Nova\Account')->canSee(function () {
                     return $this->sent_at != null;
-                }),
-                Text::make('Comment', 'sent_comment')->canSee(function () {
+                })->onlyOnDetail(),
+                Textarea::make('Comment', 'sent_comment')->canSee(function () {
                     return $this->sent_at != null;
-                }),
+                })->onlyOnDetail(),
             ]),
 
-            HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse')->withMeta(['perPage' => 20])
+            HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse'),
         ];
     }
 

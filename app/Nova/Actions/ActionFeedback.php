@@ -3,13 +3,12 @@
 namespace App\Nova\Actions;
 
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Actions\Action;
-use Illuminate\Support\Collection;
-use Laravel\Nova\Fields\ActionFields;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Laravel\Nova\Fields\Text;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Textarea;
 
 class ActionFeedback extends Action
 {
@@ -45,7 +44,7 @@ class ActionFeedback extends Action
     public function fields()
     {
         return [
-            Text::make('Comment')->rules('required', 'min:3'),
+            Textarea::make('Comment')->rules('required', 'min:3'),
         ];
     }
 }

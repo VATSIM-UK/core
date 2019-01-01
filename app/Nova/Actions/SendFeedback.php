@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 
 class SendFeedback extends Action
 {
@@ -45,7 +45,7 @@ class SendFeedback extends Action
     public function fields()
     {
         return [
-            Text::make('Comment')->rules('required', 'min:3'),
+            Textarea::make('Comment')->rules('required', 'min:3'),
         ];
     }
 }
