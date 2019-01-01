@@ -28,7 +28,7 @@ class SendFeedback extends Action
         $feedback = $models->first();
         $actioner = auth()->user();
 
-        if ($feedback->actioned_at != null) {
+        if ($feedback->sent_at != null) {
             return Action::danger('This feedback is already sent to the user.');
         }
 
