@@ -43,7 +43,7 @@ class TotalFeedback extends Value
      */
     public function cacheFor()
     {
-        return 0;
+        return now()->addMinutes(15);
     }
 
     /**

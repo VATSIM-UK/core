@@ -8,6 +8,7 @@ use Laravel\Nova\Metrics\Trend;
 
 class TotalFeedbackGraph extends Trend
 {
+    public $name = "Total Feedback Trends";
     /**
      * Calculate the value of the metric.
      *
@@ -40,7 +41,7 @@ class TotalFeedbackGraph extends Trend
      */
     public function cacheFor()
     {
-        return now()->addMinutes(60);
+        return now()->addMinutes(15);
     }
 
     /**
