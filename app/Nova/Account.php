@@ -53,6 +53,8 @@ class Account extends Resource
         'id', 'email', 'name_first', 'name_last',
     ];
 
+    public static $with = ['feedback'];
+
     public static function authorizable()
     {
         return true;
@@ -137,6 +139,8 @@ class Account extends Resource
             MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class),
 
             HasMany::make('Notes')->onlyOnDetail(),
+
+            HasMany::make('Feedback', 'feedback', 'App\Nova\Feedback'),
         ];
     }
 
