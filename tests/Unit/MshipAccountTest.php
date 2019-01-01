@@ -483,6 +483,19 @@ class MshipAccountTest extends TestCase
         $this->assertEquals(10, $this->account->fresh()->session_timeout);
     }
 
+    /** @test * */
+    public function itCorrectlyReportsFullyDefined()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->assertTrue($account->fully_defined);
+
+        $account->email = null;
+        $account->save();
+
+        $this->assertFalse($account->fully_defined);
+    }
+
 //    /** @test * */
 //    public function itSetsAUsersActiveStatus()
 //    {

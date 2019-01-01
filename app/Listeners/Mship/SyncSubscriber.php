@@ -14,7 +14,7 @@ class SyncSubscriber
     {
         $ranRecently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3 / 60);
 
-        if ($ranRecently) {
+        if ($ranRecently || !$event->account->fully_defined) {
             // Prevent unnecessary executions
             return;
         }
