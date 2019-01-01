@@ -4,6 +4,8 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -139,6 +141,9 @@ class Feedback extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new Actions\ActionFeedback)->onlyOnDetail(),
+            (new Actions\SendFeedback)->onlyOnDetail(),
+        ];
     }
 }
