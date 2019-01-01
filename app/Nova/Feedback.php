@@ -33,6 +33,8 @@ class Feedback extends Resource
         'id',
     ];
 
+    public static $with =  ['answers', 'account', 'submitter'];
+
     /**
      * The group assigned to this resource.
      *
