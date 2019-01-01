@@ -3,6 +3,7 @@
 namespace Vatsimuk\WaitingListsManager;
 
 use App\Models\Training\WaitingList;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Events\ServingNova;
@@ -38,7 +39,7 @@ class ToolServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::middleware(['nova'])
+        Route::middleware(['nova', SubstituteBindings::class])
                 ->prefix('nova-vendor/waiting-lists-manager')
                 ->group(__DIR__.'/../routes/api.php');
 

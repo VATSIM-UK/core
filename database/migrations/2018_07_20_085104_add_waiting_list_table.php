@@ -63,8 +63,8 @@ class AddWaitingListTable extends Migration
             'default' => true,
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
-        ],
-        [
+        ]);
+        DB::table('training_waiting_list_status')->insert([
             'name' => 'Deferred',
             'retains_position' => true,
             'default' => false,

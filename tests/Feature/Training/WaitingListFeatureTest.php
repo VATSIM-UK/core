@@ -27,6 +27,8 @@ class WaitingListFeatureTest extends TestCase
         Event::fake();
 
         $this->waitingList = factory(WaitingList::class)->create();
+
+        Route::middlewareGroup('nova', []);
     }
 
     /** @test * */
