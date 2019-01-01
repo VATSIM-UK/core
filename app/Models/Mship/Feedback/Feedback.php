@@ -180,4 +180,9 @@ class Feedback extends Model
     {
         return json_decode($options);
     }
+
+    public function getActionedAttribute()
+    {
+        return !is_null($this->actioned_at);
+    }
 }
