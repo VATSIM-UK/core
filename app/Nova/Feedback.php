@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Panel;
 
 class Feedback extends Resource
 {
@@ -60,6 +61,36 @@ class Feedback extends Resource
             Text::make('Feedback Form', function () {
                 return $this->form->name;
             }),
+
+            new Panel('Actioned Information', [
+                Boolean::make('Actioned' , function() {
+                    return $this->actioned_at != null;
+                }),
+                DateTime::make('Actioned At')->canSee(function () {
+                    return $this->actioned_at != null;
+                }),
+                BelongsTo::make('Actioned By', 'actioner', 'App\Nova\Account')->canSee(function () {
+                    return $this->actioned_at != null;
+                }),
+                Text::make('Comment', 'actioned_comment')->canSee(function () {
+                    return $this->actioned_at != null;
+                }),
+            ]),
+
+            new Panel('Sent Information', [
+                Boolean::make('Sent To User', function () {
+                    return $this->sent_at != null;
+                }),
+                DateTime::make('Sent At')->canSee(function () {
+                    return $this->sent_at != null;
+                }),
+                BelongsTo::make('Sent By', 'actioner', 'App\Nova\Account')->canSee(function () {
+                    return $this->sent_at != null;
+                }),
+                Text::make('Comment', 'sent_comment')->canSee(function () {
+                    return $this->sent_at != null;
+                }),
+            ]),
 
             HasMany::make('Answers', 'answers', 'App\Nova\FeedbackResponse')->withMeta(['perPage' => 20])
         ];
