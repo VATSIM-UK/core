@@ -65,7 +65,7 @@ class Feedback extends Resource
             }),
 
             new Panel('Actioned Information', [
-                Boolean::make('Actioned' , function() {
+                Boolean::make('Actioned', function () {
                     return $this->actioned_at != null;
                 }),
                 DateTime::make('Actioned At')->canSee(function () {
