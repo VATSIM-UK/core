@@ -40,7 +40,7 @@ class TotalFeedbackGraph extends Trend
      */
     public function cacheFor()
     {
-         return now()->addMinutes(60);
+        return now()->addMinutes(60);
     }
 
     /**
