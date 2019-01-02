@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Nova;
+
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
+
+class Pirep extends Resource
+{
+    /**
+     * The model the resource corresponds to.
+     *
+     * @var string
+     */
+    public static $model = 'App\Models\Smartcars\Pirep';
+
+    /**
+     * The single value that should be used to represent the resource when being displayed.
+     *
+     * @var string
+     */
+    public static $title = 'id';
+
+    public static $group = "Smartcars";
+
+    public static $with = ['bid'];
+
+    /**
+     * The columns that should be searched.
+     *
+     * @var array
+     */
+    public static $search = [];
+
+    /**
+     * Get the fields displayed by the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function fields(Request $request)
+    {
+        return [
+            ID::make()->sortable(),
+
+            BelongsTo::make('Bid', 'bid', 'App\Nova\Bid'),
+
+            Text::make('Route', 'route'),
+
+            Number::make('Landing Rate'),
+
+            Number::make('Fuel Used'),
+            
+            new Panel('Log & Comments', [
+                Textarea::make('Comments'),
+                Textarea::make('Log'),
+            ]),
+
+            new Panel('Approval Information', [
+                Boolean::make('Passed'),
+                Text::make('Pass Reason')->onlyOnDetail()->canSee(function () {
+                    return $this->passed;
+                }),
+                DateTime::make('Failed At', function () {
+                    return !$this->passed;
+                })->onlyOnDetail()->canSee(function () {
+                    return !$this->passed;
+                })
+            ])
+        ];
+    }
+
+    /**
+     * Get the cards available for the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function cards(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the filters available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function filters(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the lenses available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function lenses(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function actions(Request $request)
+    {
+        return [];
+    }
+}
