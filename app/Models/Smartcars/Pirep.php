@@ -59,6 +59,12 @@ class Pirep extends Model
         return $this->belongsTo(\App\Models\Smartcars\Bid::class, 'bid_id', 'id');
     }
 
+    public function account()
+    {
+        return $this->hasManyThrough(\App\Models\Mship\Account::class, \App\Models\Smartcars\Bid::class,
+            'flight_id', 'id', 'id', 'account_id');
+    }
+
     public function scopeBelongsTo($query, $cid)
     {
         return $query->whereHas('bid', function ($query) use ($cid) {

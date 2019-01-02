@@ -5,6 +5,7 @@ namespace App\Nova;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Number;
@@ -53,12 +54,20 @@ class Pirep extends Resource
 
             BelongsTo::make('Bid', 'bid', 'App\Nova\Bid'),
 
-            Text::make('Route', 'route'),
+            Text::make('Pilot', function () {
+                return $this->account->first()->name;
+            })->onlyOnIndex(),
+
+            Textarea::make('Route', 'route')->alwaysShow(),
 
             Number::make('Landing Rate'),
 
             Number::make('Fuel Used'),
-            
+
+            HasMany::make('Pilot', 'account', 'App\Nova\Account')->onlyOnDetail(),
+
+            Text::make('Flight Time'),
+
             new Panel('Log & Comments', [
                 Textarea::make('Comments'),
                 Textarea::make('Log'),
