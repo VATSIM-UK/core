@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Notifications\Mship\EmailVerification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -238,7 +239,8 @@ class MshipAccountTest extends TestCase
     {
         $originalUpdatedAt = $this->account->updated_at;
 
-        sleep(1);
+        // Simulate an update one day later.
+        Carbon::setTestNow(Carbon::now()->addDay());
 
         $verified = true;
         $email = $this->account->addSecondaryEmail('i_four_sleep@gmail.com', $verified);
@@ -267,8 +269,9 @@ class MshipAccountTest extends TestCase
     public function itTouchesAccountUpdatedAtWhenAddingAQualification()
     {
         $originalUpdatedAt = $this->account->updated_at;
-
-        sleep(1);
+        
+        // Simulate an update one day later.
+        Carbon::setTestNow(Carbon::now()->addDay());
 
         $qualification = factory(Qualification::class)->create();
         $this->account->fresh()->addQualification($qualification);
