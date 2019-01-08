@@ -26,8 +26,8 @@ class MshipAccountTest extends TestCase
 
         $this->account = factory(Account::class)->create([
             'name_first' => 'John',
-            'name_last' => 'Doe',
-            'email' => 'i_sleep@gmail.com',
+            'name_last'  => 'Doe',
+            'email'      => 'i_sleep@gmail.com',
         ]);
     }
 
@@ -43,8 +43,8 @@ class MshipAccountTest extends TestCase
     {
         $this->assertDatabaseHas('mship_account', [
             'name_first' => 'John',
-            'name_last' => 'Doe',
-            'email' => 'i_sleep@gmail.com',
+            'name_last'  => 'Doe',
+            'email'      => 'i_sleep@gmail.com',
         ]);
 
         $this->assertTrue($this->account->exists);
@@ -55,16 +55,16 @@ class MshipAccountTest extends TestCase
     {
         $member = factory(Account::class)->create([
             'name_first' => 'mary',
-            'name_last' => 'JANE',
+            'name_last'  => 'JANE',
         ]);
 
         $this->assertEquals('Mary', $member->name_first);
         $this->assertEquals('Jane', $member->name_last);
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $member->id,
+            'id'         => $member->id,
             'name_first' => 'Mary',
-            'name_last' => 'Jane',
+            'name_last'  => 'Jane',
         ]);
     }
 
@@ -81,11 +81,11 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'       => $this->account->id,
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Delboy '.$this->account->name_last;
+        $fullNickname = 'Delboy ' . $this->account->name_last;
         $this->assertTrue($this->account->isValidDisplayName($fullNickname));
     }
 
@@ -96,7 +96,7 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'       => $this->account->id,
             'nickname' => 'Delboy',
         ]);
 
@@ -110,11 +110,11 @@ class MshipAccountTest extends TestCase
         $this->account->save();
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'       => $this->account->id,
             'nickname' => 'Delboy',
         ]);
 
-        $fullNickname = 'Rodney '.$this->account->name_last;
+        $fullNickname = 'Rodney ' . $this->account->name_last;
         $this->assertFalse($this->account->isValidDisplayName($fullNickname));
     }
 
@@ -124,7 +124,7 @@ class MshipAccountTest extends TestCase
         $this->assertEquals('i_sleep@gmail.com', $this->account->email);
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'    => $this->account->id,
             'email' => 'i_sleep@gmail.com',
         ]);
     }
@@ -163,7 +163,7 @@ class MshipAccountTest extends TestCase
         $this->assertCount(0, $this->account->fresh()->secondaryEmails);
         $this->assertDatabaseMissing('mship_account_email', [
             'account_id' => $this->account->id,
-            'email' => 'i_sleep@gmail.com',
+            'email'      => 'i_sleep@gmail.com',
         ]);
     }
 
@@ -180,7 +180,7 @@ class MshipAccountTest extends TestCase
 
         $this->assertDatabaseHas('mship_account_email', [
             'account_id' => $this->account->id,
-            'email' => 'i_also_sleep@hotmail.com',
+            'email'      => 'i_also_sleep@hotmail.com',
         ]);
     }
 
@@ -259,9 +259,9 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->fresh()->hasQualification($qualification));
 
         $this->assertDatabaseHas('mship_account_qualification', [
-            'account_id' => $this->account->id,
+            'account_id'       => $this->account->id,
             'qualification_id' => $qualification->id,
-            'deleted_at' => null,
+            'deleted_at'       => null,
         ]);
     }
 
@@ -298,9 +298,9 @@ class MshipAccountTest extends TestCase
         $this->assertFalse($this->account->hasPassword());
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
-            'password' => null,
-            'password_set_at' => null,
+            'id'                  => $this->account->id,
+            'password'            => null,
+            'password_set_at'     => null,
             'password_expires_at' => null,
         ]);
     }
@@ -316,13 +316,13 @@ class MshipAccountTest extends TestCase
         $this->assertTrue(\Hash::check('testing123', $this->account->password));
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'       => $this->account->id,
             'password' => $this->account->password,
         ]);
 
         $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->account->id,
-            'password_set_at' => null,
+            'id'                  => $this->account->id,
+            'password_set_at'     => null,
             'password_expires_at' => null,
         ]);
     }
@@ -338,13 +338,13 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->hasPassword());
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
+            'id'       => $this->account->id,
             'password' => $this->account->password,
         ]);
 
         $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->account->id,
-            'password_set_at' => null,
+            'id'                  => $this->account->id,
+            'password_set_at'     => null,
             'password_expires_at' => null,
         ]);
     }
@@ -355,8 +355,6 @@ class MshipAccountTest extends TestCase
         $temporary = true;
         $this->mockAuth();
         $this->account->setPassword('testing911', $temporary);
-
-        sleep(1); // Necessary to check the password has expired.
 
         $this->account = $this->account->fresh();
 
@@ -376,18 +374,18 @@ class MshipAccountTest extends TestCase
         $this->account = $this->account->fresh();
 
         $this->assertDatabaseHas('mship_account', [
-            'id' => $this->account->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
+            'id'                  => $this->account->id,
+            'password'            => $oldPassword,
+            'password_set_at'     => $oldPasswordSetAt,
             'password_expires_at' => $oldPasswordExpiresAt,
         ]);
 
         $this->account->setPassword('testing456');
 
         $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->account->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
+            'id'                  => $this->account->id,
+            'password'            => $oldPassword,
+            'password_set_at'     => $oldPasswordSetAt,
             'password_expires_at' => $oldPasswordExpiresAt,
         ]);
     }
@@ -403,7 +401,7 @@ class MshipAccountTest extends TestCase
 
         $this->assertDatabaseHas('mship_account_role', [
             'model_id' => $this->account->id,
-            'role_id' => $role->id,
+            'role_id'  => $role->id,
         ]);
     }
 
@@ -427,7 +425,7 @@ class MshipAccountTest extends TestCase
         $this->assertTrue($this->account->fresh()->roles->contains($role->id));
         $this->assertDatabaseHas('mship_account_role', [
             'model_id' => $this->account->id,
-            'role_id' => $role->id,
+            'role_id'  => $role->id,
         ]);
 
         $this->account->fresh()->removeRole($role);
@@ -435,7 +433,7 @@ class MshipAccountTest extends TestCase
         $this->assertFalse($this->account->fresh()->roles->contains($role->id));
         $this->assertDatabaseMissing('mship_account_role', [
             'model_id' => $this->account->id,
-            'role_id' => $role->id,
+            'role_id'  => $role->id,
         ]);
     }
 
