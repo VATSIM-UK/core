@@ -51,7 +51,8 @@ class TeamSpeakDaemon extends TeamSpeakCommand
                     self::$connection = $this->establishConnection();
                 } catch (TeamSpeak3_Transport_Exception $e) {
                     // Connection failed, let the loop restart and try again
-                    $this->log('TeamSpeak connection failed: '.$e->getMessage(). '. Trying again...');
+                    $this->log('TeamSpeak connection failed: '.$e->getMessage(). '. Trying again in 15 seconds...');
+                    sleep(15);
                 }
             }
         }
