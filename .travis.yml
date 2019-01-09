@@ -15,10 +15,14 @@ jobs:
     install:
     - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
     - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then chmod +x ./cc-test-reporter; fi
+    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        yarn run dev;
+      else
+        yarn run prod;
+      fi
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate -vvv -n
-    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then yarn run dev else yarn run prod fi
     - php artisan route:cache
     before_script:
     - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./cc-test-reporter before-build; fi
