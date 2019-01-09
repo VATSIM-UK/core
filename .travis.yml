@@ -19,7 +19,7 @@ jobs:
           chmod +x ./cc-test-reporter;
           fi
         # If this is not a PR and we are not running on master, run yarn as dev to improve performance
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" != "master" ]; then
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
           yarn run dev;
           else
           yarn run prod;
@@ -34,13 +34,13 @@ jobs:
           ./cc-test-reporter before-build;
           fi
         # If this is not a PR and we are not running on master, remove xdebug to improve performance
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" != "master" ]; then
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
           phpenv config-rm xdebug.ini;
           fi
         - php artisan serve -q &
       script:
         # If this is not a PR and we are not running on master, run PHPUnit without coverage, otherwise, with.
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" != "master" ]; then
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
           vendor/bin/phpunit;
           else
           phpdbg -dmemory_limit=2G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
