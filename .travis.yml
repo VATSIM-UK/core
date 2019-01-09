@@ -7,7 +7,6 @@ jobs:
     addons:
       mariadb: '10.2'
     before_install:
-    - sudo apt-get update
     - sudo apt-get install -y nasm
     - mysql -e 'create database IF NOT EXISTS core;' -uroot
     - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
