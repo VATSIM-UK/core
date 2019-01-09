@@ -3,7 +3,7 @@ jobs:
   - stage: "Test"
     language: php
     php:
-    - 7.2
+    - 7.1
     addons:
       mariadb: '10.2'
     before_install:
