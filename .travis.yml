@@ -11,8 +11,6 @@ jobs:
     - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
     - mysql -e 'create database IF NOT EXISTS cts;' -uroot
     - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-    - npm -v
-    - yarn -v
     - yarn install
     install:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
