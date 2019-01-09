@@ -18,8 +18,8 @@ jobs:
         - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
           chmod +x ./cc-test-reporter;
           fi
-        # If this is a PR, run yarn as prod, if it is a push, optimise for speed by running dev
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        # If this is not a PR and we are not running on master, run yarn as dev to improve performance
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" != "master" ]; then
           yarn run dev;
           else
           yarn run prod;
