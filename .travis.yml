@@ -18,7 +18,7 @@ jobs:
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate -vvv -n
-    - yarn run prod
+    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then yarn run dev else yarn run prod fi
     - php artisan route:cache
     before_script:
     - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./cc-test-reporter before-build; fi
