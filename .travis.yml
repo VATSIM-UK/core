@@ -62,8 +62,6 @@ jobs:
           - $HOME/.composer/cache/files
       notifications:
         email: false
-        slack:
-          secure: RFWNr/B7Hg4HauK7FhT0PoWUTCy1s+117d2xuc8n5c9F6XD3+g9TXtAJa8wsdZSGSY+B7BLOojUFEoCKPRwAcdJiZ5pItxa7++6LRqNu/ireF4ItJTD25bXWO28iNmo43/E3isbN9pYdJPPc9JIordk8nZHMPRg3lqygGTSaExAB8pZMTSIG7cH+YGuEXO09Q1TQiW781xkj/IcF8PDhcRFNp+lQNsEvJTjC42/qs+7/JIclfL+lFJFG8WANhcgHy1NsnEQ2C0i6ywecTmUclAxQvq2K5WhKgeCaOyKwgtt0r+9tJpSoPF4wf6GXC3JysrgSEUmV7SASQhvgKlrGukEQm+ys8xw3PVHCAy6WDNXbbf8HPzJ1NUbT3U4HqV+dTjCbpa/LS9Z2LQQTOcY9gbc+07kaU3wHaDD5pOlxLcC8Y0ISsN5/r4nec4xHVboskgcBTwiNGC42hfJsRR2HrnGvK9VjETIuzzmParOz4RXEyKFti0oPtgSWEJdd8ni/nEOFVPzozNdL3Qlgkc8dpln2nHV4U+8wTJtWdSfjfbr0KqaRnOhgG0v8S0vChl1xxx0eWw9uaNQRaOt6U7hO8WhdnCQBcZcVrDkEpZnwW/k/ZL/ZHuzndLZH/IWqFHx4MBNeaL9KPHVxNsaR7vjvbdX2+4TB6YCkqdQ9GmshpO4=
     - stage: "Version"
       if: branch = master AND type = push
       deploy:
