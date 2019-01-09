@@ -47,7 +47,11 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             try {
                 self::$connection->getAdapter()->wait();
             } catch (TeamSpeak3_Transport_Exception $e) {
-                self::$connection = $this->establishConnection();
+                try {
+                    self::$connection = $this->establishConnection();
+                } catch (TeamSpeak3_Transport_Exception $e) {
+                    // Failed Again, let the loop restart
+                }
             }
         }
     }
@@ -121,9 +125,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             // register for events
             $connection->notifyRegister('server');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
+                ->subscribe('notifyCliententerview', self::class . '::clientJoinedEvent');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
+                ->subscribe('notifyClientleftview', self::class . '::clientLeftEvent');
 
             return $connection;
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
