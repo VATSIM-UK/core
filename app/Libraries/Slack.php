@@ -29,23 +29,27 @@ class Slack
         return $attachment;
     }
 
-    public static function sendToWebServices($message, $attachment = null, $as = "VATSIM UK Slack Bot")
+    public static function sendToWebServices($message, $attachment = null, $username = null)
     {
-        return self::send("#web_alerts", $message, $attachment, $as);
+        return self::send("#web_alerts", $message, $attachment, $username);
     }
 
     /**
-     * @param mixed $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is is ("#web_alerts")
+     * @param mixed $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is in ("#web_alerts")
      * @param string $message  Message
      * @param null $attachment Formatted Attachment https://api.slack.com/docs/message-attachments#attachment_structure
      * @param string $as Displayed Bot Name
      * @return mixed
      */
-    public static function send($channel, $message, $attachment = null, $as = "VATSIM UK Slack Bot")
+    public static function send($channel, $message, $attachment = null, $username = null)
     {
         if (is_object($channel) && get_class($channel) == App\Models\Mship\Account::class && $channel->slack_id) {
             $channel = $channel->slack_id;
         }
-        return SlackChat::message($channel, $message, ['attachments' => [$attachment], 'username' => $as]);
+
+        return SlackChat::message($channel, $message, [
+            'attachments' => $attachment,
+            'username' => $username
+        ]);
     }
 }
