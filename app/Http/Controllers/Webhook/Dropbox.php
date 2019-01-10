@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Libraries\Dropbox as DropboxLibrary;
-use App\Libraries\Slack as SlackLibrary;
 use Cache;
 use Illuminate\Http\Request;
 
@@ -47,8 +46,6 @@ class Dropbox extends WebhookController
             'Tag:' => trim($tags, "\n"),
             'File name:' => trim($names, "\n"),
         ];
-
-        SlackLibrary::sendMessage(__FILE__, sprintf('%s Dropbox files have been changed', count($entries)), $fields);
 
         // return nothing
         return response('');
