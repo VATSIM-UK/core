@@ -152,7 +152,7 @@ class ManageSlack extends Command
         $messages = [
             '****************************************************',
             'Your VATSIM UK and Slack accounts are not currently linked.',
-            'To link your accounts, please visit https://core.vatsim.uk and click the registration link for Slack.',
+            'To link your accounts, please visit https://www.vatsim.uk/mship/manage/dashboard and click the registration link for Slack.',
             'If you have problems with this, please get in touch: https://helpdesk.vatsim.uk',
             '****************************************************',
         ];
