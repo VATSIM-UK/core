@@ -135,7 +135,6 @@ abstract class Command extends BaseCommand
         }
 
         try {
-            \Log::info("message sending");
             Slack::sendToWebServices($message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
