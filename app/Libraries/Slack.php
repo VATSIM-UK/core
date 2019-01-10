@@ -35,8 +35,8 @@ class Slack
     }
 
     /**
-     * @param $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is is ("#web_alerts")
-     * @param $message Message
+     * @param mixed $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is is ("#web_alerts")
+     * @param string $message  Message
      * @param null $attachment Formatted Attachment https://api.slack.com/docs/message-attachments#attachment_structure
      * @param string $as Displayed Bot Name
      * @return mixed

@@ -41,12 +41,6 @@ class Dropbox extends WebhookController
             $paths .= $entry->path_lower."\n";
         }
 
-        $fields = [
-            'Path:' => trim($paths, "\n"),
-            'Tag:' => trim($tags, "\n"),
-            'File name:' => trim($names, "\n"),
-        ];
-
         // return nothing
         return response('');
     }
