@@ -7,7 +7,6 @@ use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Slack
 {
-
     public static function generateAttachmentForMessage($message, $fields = [], $actions = [], $author = null, $color = '#428bca')
     {
         $attachment = [
@@ -44,7 +43,7 @@ class Slack
      */
     public static function send($channel, $message, $attachment = null, $as = "VATSIM UK Slack Bot")
     {
-        if(is_object($channel) && get_class($channel) == App\Models\Mship\Account::class && $channel->slack_id){
+        if (is_object($channel) && get_class($channel) == App\Models\Mship\Account::class && $channel->slack_id) {
             $channel = $channel->slack_id;
         }
         return SlackChat::message($channel, $message, ['attachments' => [$attachment], 'username' => $as]);
