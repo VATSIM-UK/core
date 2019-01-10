@@ -148,8 +148,6 @@ class ManageSlack extends Command
 
     private function messageUserAdvisingOfRegistration($slackUser)
     {
-        $this->sendMessagesToUser($messages, $slackUser);
-
         $message =
             "Your VATSIM UK and Slack accounts are not currently linked.\n" .
             "To link your accounts, please visit " . route("mship.manage.dashboard") . " and click the registration link for Slack.\n" .
@@ -160,7 +158,6 @@ class ManageSlack extends Command
             "url" => route("mship.manage.dashboard"),
             "style" => "primary"
         ]], null, 'danger');
-
         $this->sendMessageToUser($attachment, $slackUser);
     }
 
