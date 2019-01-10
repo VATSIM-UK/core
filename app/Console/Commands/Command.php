@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App;
-use Bugsnag;
+use App\Libraries\Slack;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Console\Command as BaseCommand;
-use Slack;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends BaseCommand
@@ -56,19 +56,13 @@ abstract class Command extends BaseCommand
      * @param Account|string $to Either the local Account or the SlackUserID to send a message to.
      * @param string $message The message to send to the user
      */
-    protected function sendSlackMessagePlain($to, $message, $from = null)
+    protected function sendSlackMessagePlain($to, $message)
     {
         if (is_object($to) && $to->exists) {
             $to = $to->slack_id;
         }
 
-        $slack = $this->slack($to);
-
-        if ($from != null) {
-            $slack = $slack->from($from);
-        }
-
-        $slack->send($message);
+        Slack::send($to, $message);
     }
 
     protected function sendSlackMessageFormatted($to, $pretext, $message, $colour = 'danger', $fields = [], $from = null)
@@ -90,14 +84,8 @@ abstract class Command extends BaseCommand
             ];
         }
 
-        $slack = $this->slack($to);
-
-        if ($from != null) {
-            $slack = $slack->from($from);
-        }
-
         try {
-            $this->slack()->attach($attachment)->send();
+            Slack::send($to, $message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
         }
@@ -147,7 +135,8 @@ abstract class Command extends BaseCommand
         }
 
         try {
-            $this->slack()->attach($attachment)->send();
+            \Log::info("message sending");
+            Slack::sendToWebServices($message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
         }
@@ -198,7 +187,7 @@ abstract class Command extends BaseCommand
         }
 
         try {
-            $this->slack()->attach($attachment)->send();
+            Slack::sendToWebServices($message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
         }
