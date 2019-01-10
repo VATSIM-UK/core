@@ -251,7 +251,6 @@ return [
         'VatsimSSO' => Vatsim\OAuth\Facades\SSO::class,
         'VatsimXML' => Vatsim\Xml\Facades\XML::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Slack' => Maknz\Slack\Facades\Slack::class,
         'IPBoard' => Alawrence\Ipboard\Facades\Ipboard::class,
     ],
 
