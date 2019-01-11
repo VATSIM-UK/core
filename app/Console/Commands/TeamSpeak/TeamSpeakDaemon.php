@@ -41,7 +41,7 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     public function handle()
     {
         self::$connection = $this->establishConnection();
-        $connection_failures = 0;
+        $connectionFailures = 0;
 
         // main loop
         while (true) {
