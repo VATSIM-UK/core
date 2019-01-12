@@ -8,6 +8,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Session;
 use VatsimSSO;
 
@@ -54,6 +55,7 @@ class LoginController extends BaseController
      */
     public function loginMain(Request $request)
     {
+
         // user has not been authenticated with VATSIM SSO
         if (!Auth::guard('vatsim-sso')->check()) {
             return $this->attemptVatsimAuth();
@@ -75,15 +77,18 @@ class LoginController extends BaseController
     {
         $allowSuspended = true;
         $allowInactive = true;
-
         $token = VatsimSSO::requestToken(route('auth-vatsim-sso'), $allowSuspended, $allowInactive);
         if ($token) {
             $key = $token->token->oauth_token;
             $secret = $token->token->oauth_token_secret;
             Session::put('credentials.vatsim-sso', compact('key', 'secret'));
-
             return redirect()->to(VatsimSSO::sendToVatsim());
         } else {
+            // Check if there was a CURL error code
+            if(VATSIMSSO::error()['code']){
+                Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
+                return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
+            }
             throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
         }
     }
