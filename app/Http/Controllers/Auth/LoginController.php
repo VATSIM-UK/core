@@ -85,7 +85,7 @@ class LoginController extends BaseController
             return redirect()->to(VatsimSSO::sendToVatsim());
         } else {
             // Check if there was a CURL error code
-            if(VATSIMSSO::error()['code']){
+            if (VATSIMSSO::error()['code']) {
                 Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
                 return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
             }
