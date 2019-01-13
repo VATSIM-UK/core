@@ -42,7 +42,7 @@
                     EuroScope allows you to load plugins from one simple file.<br/>
                     Click below to download the latest version of the UK Controller Plugin.<br/>
                     <br/>
-                    <a href="https://community.vatsim.uk/files/downloads/file/213-uk-controller-plugin/"
+                    <a href="https://community.vatsim.uk/files/downloads/file/215-uk-controller-plugin/"
                        target="_blank">
                         <button class="btn btn-primary center-block">Download UK Controller Plugin</button>
                     </a>
