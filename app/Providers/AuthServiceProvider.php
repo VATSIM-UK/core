@@ -63,10 +63,6 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-        Gate::define('ukcp-beta', function ($user) {
-            return true;
-        });
-
         $this->serviceAccessGates();
     }
 

@@ -456,7 +456,6 @@
                 </div>
             @endif
 
-            @can('ukcp-beta')
                 <div class="panel panel-ukblue">
                     <div class="panel-heading"><i class="fa fa-signal"></i>
                         UK Controller Plugin
@@ -508,7 +507,6 @@
                         </div>
                     </div>
                 </div>
-            @endcan
         </div>
     </div>
 @stop

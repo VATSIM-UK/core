@@ -22,8 +22,6 @@ class Token extends BaseController
 
     public function create()
     {
-        $this->authorize('ukcp-beta');
-
         $currentTokens = $this->ukcp->getValidTokensFor(auth()->user());
 
         if ($currentTokens->count() >= 4) {
@@ -47,8 +45,6 @@ class Token extends BaseController
 
     public function show()
     {
-        $this->authorize('ukcp-beta');
-
         $latestId = $this->ukcp->getValidTokensFor(auth()->user());
 
         if ($latestId->isEmpty()) {
@@ -60,8 +56,6 @@ class Token extends BaseController
 
     public function destroy($tokenId)
     {
-        $this->authorize('ukcp-beta');
-
         $delete = $this->ukcp->deleteToken($tokenId);
 
         if (!$delete) {
@@ -75,8 +69,6 @@ class Token extends BaseController
 
     public function download($tokenId)
     {
-        $this->authorize('ukcp-beta');
-
         $tokenPath = storage_path('app/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
         $headers = array(
             'Content-Type: application/json',
