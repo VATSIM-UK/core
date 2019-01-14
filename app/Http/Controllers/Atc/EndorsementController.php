@@ -21,6 +21,8 @@ class EndorsementController extends \App\Http\Controllers\BaseController
                     return [substr($item['callsign'], 0, 4) => ($item['minutes_online'] / 60)];
                 })->transform(function ($item) {
                     return $item->sum();
+                })->sortByDesc(function ($value, $key) {
+                    return $value;
                 });
 
             return $data;
