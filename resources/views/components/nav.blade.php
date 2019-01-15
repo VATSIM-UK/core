@@ -67,9 +67,7 @@
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
                                 @if(currentUserHasAuth())
-                                    @can('ukcp-beta')
                                         <li>{!! link_to_route("ukcp.guide", "UK Controller Plugin") !!}</li>
-                                    @endcan
                                 @endif
                             </ul>
                         </li>
