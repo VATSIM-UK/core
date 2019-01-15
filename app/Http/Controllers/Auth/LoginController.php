@@ -83,14 +83,13 @@ class LoginController extends BaseController
             $secret = $token->token->oauth_token_secret;
             Session::put('credentials.vatsim-sso', compact('key', 'secret'));
             return redirect()->to(VatsimSSO::sendToVatsim());
-        } else {
-            // Check if there was a CURL error code
-            if (VATSIMSSO::error()['code']) {
-                Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
-                return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
-            }
-            throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
         }
+        // Check if there was a CURL error code
+        if (VATSIMSSO::error()['code']) {
+            Log::error('VATSIMSSO was unable to reach CERT. Code:'.VATSIMSSO::error()['code'].' Message:'.VATSIMSSO::error()['message']);
+            return redirect()->back()->withErrors(['connection' => "We were unable to contact VATSIM's certification service. Please try again later. If this persists, please contact Web Services."]);
+        }
+        throw new \Exception('SSO failed: '.VatsimSSO::error()['message']);
     }
 
     protected function setVatsimAuth($userId)
