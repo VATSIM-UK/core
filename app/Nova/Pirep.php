@@ -69,13 +69,15 @@ class Pirep extends Resource
 
             new Panel('Approval Information', [
                 Boolean::make('Passed'),
-                Text::make('Pass Reason')->onlyOnDetail()->canSee(function () {
-                    return $this->passed;
-                }),
                 DateTime::make('Failed At', function () {
                     return !$this->passed;
                 })->onlyOnDetail()->canSee(function () {
                     return !$this->passed;
+                }),
+                Text::make('Fail Reason', function () {
+                    return $this->pass_reason;
+                })->onlyOnDetail()->canSee(function () {
+                    return !is_null($this->failed_at);
                 })
             ])
         ];
