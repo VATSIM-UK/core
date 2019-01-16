@@ -31,6 +31,11 @@ class Bid extends Resource
         'id',
     ];
 
+    public static function availableForNavigation(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

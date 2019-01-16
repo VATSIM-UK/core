@@ -8,37 +8,20 @@ use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Permission\Models\Role;
 
-class PirepPolicy
+class PirepPolicy extends BasePolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Grants all permissions to a "SUPERMAN" user.
-     *
-     * @param Account $account
-     * @param $policy
-     * @return bool
-     */
-    public function before(Account $account, $policy)
-    {
-        return $account->roles->contains(Role::findByName('privacc'));
-    }
 
     /**
      * Determine whether the user can view the pirep.
      *
      * @param  Account $account
      * @param  Pirep $pirep
-     * @return mixed
+     * @return bool
      */
-    public function view(Account $account, Pirep $pirep)
+    public function viewAccount(Account $account, Pirep $pirep)
     {
         return $pirep->bid->account->id == $account->id;
-    }
-
-    public function viewAny(Account $account)
-    {
-        // TODO: Implement viewAny() method.
     }
 
     public function create(Account $account)
@@ -64,5 +47,15 @@ class PirepPolicy
     public function forceDelete(Account $account)
     {
         // TODO: Implement forceDelete() method.
+    }
+
+    public function view(Account $account)
+    {
+        return null;
+    }
+
+    public function viewAny(Account $account)
+    {
+        return null;
     }
 }

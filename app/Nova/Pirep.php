@@ -52,19 +52,13 @@ class Pirep extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Bid', 'bid', 'App\Nova\Bid'),
-
-            Text::make('Pilot', function () {
-                return $this->account->first()->name;
-            })->onlyOnIndex(),
-
             Textarea::make('Route', 'route')->alwaysShow(),
 
             Number::make('Landing Rate'),
 
             Number::make('Fuel Used'),
 
-            HasMany::make('Pilot', 'account', 'App\Nova\Account')->onlyOnDetail(),
+            Text::make('Account'),
 
             Text::make('Flight Time'),
 
