@@ -2,6 +2,8 @@
 
 namespace App\Models\Smartcars;
 
+use App\Models\Mship\Account;
+use App\Models\Smartcars\Bid;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $failed_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Smartcars\Bid $bid
+ * @property-read Bid $bid
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep belongsTo($cid)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereAircraftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Pirep whereBidId($value)
@@ -57,6 +59,11 @@ class Pirep extends Model
     public function bid()
     {
         return $this->belongsTo(\App\Models\Smartcars\Bid::class, 'bid_id', 'id');
+    }
+
+    public function getAccountAttribute()
+    {
+        return $this->bid->account->name;
     }
 
     public function scopeBelongsTo($query, $cid)

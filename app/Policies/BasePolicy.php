@@ -19,7 +19,7 @@ abstract class BasePolicy
      */
     public function before(Account $account, $policy)
     {
-        return $account->roles->contains(Role::findByName('privacc'));
+        return $account->roles->contains(Role::findByName('privacc')) ? true : null;
     }
 
     abstract public function viewAny(Account $account);
