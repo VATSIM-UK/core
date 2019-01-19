@@ -38,6 +38,9 @@ jobs:
           phpenv config-rm xdebug.ini;
           fi
         - php artisan serve -q &
+        - sed -i 's%^SSO_CERT.*$%SSO_CERT=\"${SSO_CERT}\"%' .env
+        - sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
+        - sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
       script:
         # If this is not a PR and we are not running on master, run PHPUnit without coverage, otherwise, with.
         - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
