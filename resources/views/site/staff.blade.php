@@ -176,23 +176,13 @@
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
                                 <tr>
-                                    <td>Administrative Manager</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor<br/>
+                                    <td>Division Instructor<br/>
                                         TG Instructor (CTR)
                                     </td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
-                                    <td>Senior Division Instructor<br/>
-                                        Head Examiner
-                                    </td>
-                                    <td>George Wright</td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor</td>
+                                    <td>Division Instructor</td>
                                     <td>Chris Pawley</td>
                                 </tr>
                                 <tr>
