@@ -381,7 +381,9 @@
 
 </script>
 <script src="{{ mix('js/home.js') }}"></script>
-<script src="{{ mix('js/snow.js') }}"></script>
+@if(Carbon\Carbon::now()->month == 12 || Carbon\Carbon::now()->dayOfYear < 10)
+    <script src="{{ mix('js/snow.js') }}"></script>
+@endif
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 
