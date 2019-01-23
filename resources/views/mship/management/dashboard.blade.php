@@ -302,7 +302,7 @@
                 <div class="panel-heading"><i class="fa fa-slack"></i>
                     Slack Registration
                     <div class="pull-right">
-                        @if(Gate::allows('register-slack'))
+                        @if(!$_account->slack_id)
                             <a href="{{ route("slack.new") }}">
                                 <i class="fa fa-plus-circle"></i>
                             </a>
@@ -314,11 +314,9 @@
                         <div class="col-xs-12">
                             @if($_account->slack_id)
                                 Currently registered with Slack ID {{ $_account->slack_id }}.
-                            @elseif(Gate::allows('register-slack'))
+                            @else
                                 You are not yet
                                 registered.  {!! link_to_route("slack.new", "Click here to register.") !!}
-                            @else
-                                You are not eligible for Slack registration.
                             @endif
                         </div>
                     </div>
