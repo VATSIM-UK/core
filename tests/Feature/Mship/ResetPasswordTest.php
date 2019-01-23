@@ -48,7 +48,5 @@ class ResetPasswordTest extends TestCase
         $this->assertTrue(Hash::check('Testing234', $user->fresh()->password));
         $this->assertEquals(Carbon::now(), $user->fresh()->password_set_at);
         $this->assertEquals(Carbon::now()->addDays($role->password_lifetime), $user->fresh()->password_expires_at);
-
-
     }
 }
