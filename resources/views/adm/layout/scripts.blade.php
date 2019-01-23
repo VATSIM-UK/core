@@ -37,9 +37,6 @@
 <!-- AdminLTE App -->
 <script src='/AdminLTE/js/app.min.js'></script>
 
-<!-- Snow -->
-<script src="{{ mix('js/snow.js') }}"></script>
-
 <script language="javascript" type="text/javascript">
     $('.selectpicker').selectpicker();
     $('[data-toggle="confirmation"]').confirmation({
