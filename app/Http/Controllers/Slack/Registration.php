@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Slack;
 
 use App\Models\Sys\Token;
-use DB;
-use Redirect;
-use Response;
-use SlackUserAdmin;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Vluzrmos\SlackApi\Facades\SlackUserAdmin;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
