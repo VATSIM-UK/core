@@ -32,8 +32,6 @@ class ResetPasswordTest extends TestCase
     public function testPasswordResetUpdatesCorrectly()
     {
         $user = factory(Account::class)->create(['password' => 'Testing123']);
-        $role = Role::findByName('privacc');
-        $user->assignRole($role);
         $token = Password::broker()->createToken($user);
         $this->actingAs($user, 'vatsim-sso')
             ->get(route('password.reset', $token))
