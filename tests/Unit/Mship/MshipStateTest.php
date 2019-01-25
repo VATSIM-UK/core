@@ -86,7 +86,7 @@ class MshipStateTest extends TestCase
         // Setup
 
         $regionState = \App\Models\Mship\State::findByCode('REGION');
-        for ($i=0;$i<5;$i++){
+        for ($i=0;$i<5;$i++) {
             $this->account->states()->attach($regionState, [
                 'start_at' => Carbon::now(),
                 'region' => 'EUR',
