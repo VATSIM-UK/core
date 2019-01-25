@@ -118,12 +118,12 @@ trait HasStates
     public function addState(State $state, $region = null, $division = null)
     {
         // Cleanup Old States
-        $permanent_states = $this->states->sortByDesc('pivot.start_at')->filter(function ($state) {
+        $permanentStates = $this->states->sortByDesc('pivot.start_at')->filter(function ($state) {
             return $state->isPermanent;
         });
-        if ($permanent_states->count() > 1) {
+        if ($permanentStates->count() > 1) {
             // They have more than 1 permanent state? Let's set all but the latest to ended...
-            $this->states()->permanent()->wherePivot('id', '!=', $permanent_states->first()->pivot->id)->update(['end_at' => Carbon::now()]);
+            $this->states()->permanent()->wherePivot('id', '!=', $permanentStates->first()->pivot->id)->update(['end_at' => Carbon::now()]);
         }
 
         if ($this->hasState($state)) {
@@ -136,7 +136,6 @@ trait HasStates
         }
 
         // New state
-
         if ($this->primary_permanent_state && $state->is_permanent) {
             // New state is a permanent one, so lets remove the old permanent state
             $this->removeState($this->primary_permanent_state);
