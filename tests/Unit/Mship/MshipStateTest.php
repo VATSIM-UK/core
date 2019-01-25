@@ -85,17 +85,14 @@ class MshipStateTest extends TestCase
     {
         // Setup
         $regionState = \App\Models\Mship\State::findByCode('REGION');
+        $internationalState = \App\Models\Mship\State::findByCode('INTERNATIONAL');
         $visitingState = \App\Models\Mship\State::findByCode('VISITING');
         $this->account->states()->attach($visitingState, [
             'start_at' => Carbon::now(),
         ]);
-        for ($i=0;$i<5;$i++) {
-            $this->account->states()->attach($regionState, [
-                'start_at' => Carbon::now(),
-                'region' => 'EUR',
-                'division' => 'EUD',
-            ]);
-        }
+
+        $this->insertFiveDuplicatedStates($regionState, "EUD", "EUR");
+
         $this->assertEquals(6, $this->account->fresh()->states()->count());
 
         // Now add the same state again.
@@ -106,6 +103,24 @@ class MshipStateTest extends TestCase
             'state_id' => $regionState->id,
             'region' => 'EUR',
             'division' => 'EUD',
+        ]);
+
+
+        $this->insertFiveDuplicatedStates($regionState, "EUD", "EUR");
+        $this->account->states()->attach($internationalState, [
+            'region' => 'WA',
+            'division' => 'ASIA',
+            'start_at' => Carbon::now(),
+        ]);
+
+        // Now add new state.
+        $this->account->fresh()->addState($internationalState, 'USA', 'USA-N');
+        $this->assertEquals(1, $this->account->fresh()->states()->permanent()->count());
+        $this->assertDatabaseHas('mship_account_state', [
+            'account_id' => $this->account->id,
+            'state_id' => $internationalState->id,
+            'region' => 'USA',
+            'division' => 'USA-N',
         ]);
     }
 
@@ -216,5 +231,16 @@ class MshipStateTest extends TestCase
         $this->account->fresh()->removeState($regionState);
 
         $this->assertFalse($this->account->fresh()->states->contains($regionState));
+    }
+
+    private function insertFiveDuplicatedStates($state, $region, $division)
+    {
+        for ($i=0;$i<5;$i++) {
+            $this->account->states()->attach($state, [
+                'start_at' => Carbon::now(),
+                'region' => $region,
+                'division' => $division,
+            ]);
+        }
     }
 }

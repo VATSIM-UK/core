@@ -125,8 +125,7 @@ trait HasStates
             // They have more than 1 permanent state? Let's set all but the latest to ended...
             $this->states()->permanent()->wherePivot('id', '!=', $permanentStates->first()->pivot->id)->update(['end_at' => Carbon::now()]);
         }
-
-        if ($this->hasState($state)) {
+        if ($this->fresh()->hasState($state)) {
             // Already has same class of state (e.g Intl)
             // Verify the same region/division information, else we want to update the state
             $exisitingState = $this->fresh()->states->sortByDesc('pivot.start_at')->where('id', $state->id)->first();
