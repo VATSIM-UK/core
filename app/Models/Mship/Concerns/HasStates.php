@@ -121,16 +121,15 @@ trait HasStates
         $permanent_states = $this->states->sortByDesc('pivot.start_at')->filter(function ($state) {
             return $state->isPermanent;
         });
-
-        if ($permanent_states->count() > 0) {
+        if ($permanent_states->count() > 1) {
             // They have more than 1 permanent state? Let's set all but the latest to ended...
-            $this->states()->permanent()->where('start_at', '!=', $permanent_states->first()->pivot->start_at)->update(['end_at' => Carbon::now()]);
+            $this->states()->permanent()->wherePivot('id', '!=', $permanent_states->first()->pivot->id)->update(['end_at' => Carbon::now()]);
         }
 
         if ($this->hasState($state)) {
             // Already has same class of state (e.g Intl)
             // Verify the same region/division information, else we want to update the state
-            $exisitingState = $this->states->sortByDesc('pivot.start_at')->where('id', $state->id)->first();
+            $exisitingState = $this->fresh()->states->sortByDesc('pivot.start_at')->where('id', $state->id)->first();
             if ($exisitingState->pivot->region == $region && $exisitingState->pivot->division == $division) {
                 return;
             }

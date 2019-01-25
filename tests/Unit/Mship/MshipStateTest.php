@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Mship;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -59,7 +60,7 @@ class MshipStateTest extends TestCase
             'end_at' => null,
         ]);
 
-        $this->account->fresh()->fresh()->addState($divisionState, 'EUR', 'GBR');
+        $this->account->fresh()->addState($divisionState, 'EUR', 'GBR');
 
         $this->assertDatabaseHas('mship_account_state', [
             'account_id' => $this->account->id,
@@ -76,6 +77,32 @@ class MshipStateTest extends TestCase
         $this->assertDatabaseHas('mship_account_state', [
             'account_id' => $this->account->id,
             'state_id' => $regionState->id,
+        ]);
+    }
+
+    /** @test */
+    public function itDeletesOldPermanentStates()
+    {
+        // Setup
+
+        $regionState = \App\Models\Mship\State::findByCode('REGION');
+        for ($i=0;$i<5;$i++){
+            $this->account->states()->attach($regionState, [
+                'start_at' => Carbon::now(),
+                'region' => 'EUR',
+                'division' => 'EUD',
+            ]);
+        }
+        $this->assertEquals(5, $this->account->fresh()->states()->count());
+
+        // Now add the same state again.
+        $this->account->fresh()->addState($regionState, 'EUR', 'EUD');
+        $this->assertEquals(1, $this->account->fresh()->states()->count());
+        $this->assertDatabaseHas('mship_account_state', [
+            'account_id' => $this->account->id,
+            'state_id' => $regionState->id,
+            'region' => 'EUR',
+            'division' => 'EUD',
         ]);
     }
 
