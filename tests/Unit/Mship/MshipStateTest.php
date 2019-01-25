@@ -84,8 +84,11 @@ class MshipStateTest extends TestCase
     public function itDeletesOldPermanentStates()
     {
         // Setup
-
         $regionState = \App\Models\Mship\State::findByCode('REGION');
+        $visitingState = \App\Models\Mship\State::findByCode('VISITING');
+        $this->account->states()->attach($visitingState, [
+            'start_at' => Carbon::now(),
+        ]);
         for ($i=0;$i<5;$i++) {
             $this->account->states()->attach($regionState, [
                 'start_at' => Carbon::now(),
@@ -93,11 +96,11 @@ class MshipStateTest extends TestCase
                 'division' => 'EUD',
             ]);
         }
-        $this->assertEquals(5, $this->account->fresh()->states()->count());
+        $this->assertEquals(6, $this->account->fresh()->states()->count());
 
         // Now add the same state again.
         $this->account->fresh()->addState($regionState, 'EUR', 'EUD');
-        $this->assertEquals(1, $this->account->fresh()->states()->count());
+        $this->assertEquals(1, $this->account->fresh()->states()->permanent()->count());
         $this->assertDatabaseHas('mship_account_state', [
             'account_id' => $this->account->id,
             'state_id' => $regionState->id,
