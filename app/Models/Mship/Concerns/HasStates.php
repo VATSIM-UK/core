@@ -122,7 +122,7 @@ trait HasStates
             return $state->isPermanent;
         });
 
-        if($permanent_states->count() > 0){
+        if ($permanent_states->count() > 0) {
             // They have more than 1 permanent state? Let's set all but the latest to ended...
             $this->states()->permanent()->where('start_at', '!=', $permanent_states->first()->pivot->start_at)->update(['end_at' => Carbon::now()]);
         }
