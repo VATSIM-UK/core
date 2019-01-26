@@ -123,13 +123,6 @@
         email: "{{ Auth::user()->email }}"
     };
     @endif
-
-        Tawk_API.onLoad = function () {
-        Tawk_API.addEvent('visited-page', {
-            'FullURL': '{{ Request::fullUrl() }}',
-        }, function (error) {
-        });
-    };
 </script>
 @endif
 
