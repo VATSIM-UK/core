@@ -17,11 +17,21 @@ trait HasHelpdeskAccount
      *
      * @param mixed $helpdeskAccount
      */
-    public function syncToHelpdesk($helpdeskAccount = null)
+    public function syncToHelpdesk()
     {
         if (!isset(self::$sso_account_id)) {
-            self::$sso_account_id = DB::table('oauth_clients')->where('name', 'Helpdesk')->first()->id;
+            $helpdeskSsoAccount = DB::table('oauth_clients')->where('name', 'Helpdesk')->first();
+            if (!$helpdeskSsoAccount) {
+                return false;
+            }
+            self::$sso_account_id = $helpdeskSsoAccount->id;
         }
+
+        $helpdeskAccount = DB::table(config('services.helpdesk.database').'.ost_user')
+            ->leftJoin(config('services.helpdesk.database').'.ost_user_account', 'ost_user.id', '=', 'ost_user_account.user_id')
+            ->leftJoin(config('services.helpdesk.database').'.ost_user_email', 'ost_user.id', '=', 'ost_user_email.user_id')
+            ->where('username', $this->id)
+            ->first(['ost_user.id', 'ost_user_account.id as account_id', 'username', 'ost_user.name', 'ost_user_email.id as email_id', 'address as email']);
 
         if ($helpdeskAccount) {
             $this->updateHelpdeskAccount($helpdeskAccount);

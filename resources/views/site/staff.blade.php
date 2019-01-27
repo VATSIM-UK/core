@@ -135,6 +135,10 @@
                             </tr>
                             <tr>
                                 <td>Developer</td>
+                                <td>Andy Ford</td>
+                            </tr>
+                            <tr>
+                                <td>Developer</td>
                                 <td>Callum Axon</td>
                             </tr>
                             <tr>
@@ -172,23 +176,13 @@
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
                                 <tr>
-                                    <td>Administrative Manager</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor<br/>
+                                    <td>Division Instructor<br/>
                                         TG Instructor (CTR)
                                     </td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
-                                    <td>Senior Division Instructor<br/>
-                                        Head Examiner
-                                    </td>
-                                    <td>George Wright</td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor</td>
+                                    <td>Division Instructor</td>
                                     <td>Chris Pawley</td>
                                 </tr>
                                 <tr>
@@ -208,18 +202,12 @@
                                     <td>Tom Szczypinski</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TWR)<br/>
-                                        TG Instructor (TG2)
-                                    </td>
-                                    <td>Lee Roberts</td>
+                                    <td>TG Manager (TWR)</td>
+                                    <td>Adam Meade</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (APP)</td>
                                     <td>Nick Marinov</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
@@ -231,8 +219,8 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG2)</td>
-                                    <td>Jonas Hey</td>
-                                </tr>
+                                    <td>Lee Roberts</td>
+                                </tr>   
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
@@ -245,7 +233,7 @@
                             <table class="table">
                                 <tr>
                                     <td>General Manager</td>
-                                    <td></td>
+                                    <td><em>Vacant</em></td>
                                 <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
@@ -262,7 +250,7 @@
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td></td>
+                                    <td>James Gibson</td>
                                 </tr>
                              </table>   
 

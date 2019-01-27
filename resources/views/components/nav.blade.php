@@ -6,7 +6,8 @@
     @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav-inner">
+            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
+                    data-target="#nav-inner">
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
@@ -65,6 +66,9 @@
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
+                                @if(currentUserHasAuth())
+                                        <li>{!! link_to_route("ukcp.guide", "UK Controller Plugin") !!}</li>
+                                @endif
                             </ul>
                         </li>
                         <li class="col-sm-12">

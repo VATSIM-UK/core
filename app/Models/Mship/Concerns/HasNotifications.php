@@ -22,6 +22,15 @@ trait HasNotifications
             ->withPivot(['created_at']);
     }
 
+    /**
+     * @param Notification $notification
+     * @return bool
+     */
+    public function hasReadNotification(SysNotification $notification)
+    {
+        return $this->readSystemNotifications()->where('sys_notification_read.notification_id', $notification->id)->first(['sys_notification_read.id']) != null;
+    }
+
     public function getUnreadNotificationsAttribute()
     {
         // Get all read notifications

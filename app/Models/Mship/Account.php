@@ -2,13 +2,16 @@
 
 namespace App\Models\Mship;
 
+use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidCIDException;
 use App\Jobs\UpdateMember;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCommunityGroups;
+use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasEmails;
+use App\Models\Mship\Concerns\HasForumAccount;
 use App\Models\Mship\Concerns\HasHelpdeskAccount;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
@@ -199,7 +202,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'inactive' => false,
         'last_login_ip' => '0.0.0.0',
     ];
-    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password'];
+    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
     protected $casts = ['inactive' => 'boolean'];
 
@@ -211,6 +214,12 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     protected static function boot()
     {
         parent::boot();
+
+        self::saved(function ($user) {
+            if (count(array_except($user->getDirty(), $user->untracked)) > 0) {
+                event(new AccountAltered($user));
+            }
+        });
 
         self::created([get_called_class(), 'eventCreated']);
     }
@@ -409,6 +418,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function getFullNameAttribute()
     {
         return $this->name;
+    }
+
+    public function getFullyDefinedAttribute()
+    {
+        return $this->name_first && $this->name_last && $this->email;
     }
 
     /**

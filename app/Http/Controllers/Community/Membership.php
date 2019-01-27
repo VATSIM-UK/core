@@ -12,7 +12,7 @@ class Membership extends BaseController
 
     public function getDeploy()
     {
-        $this->authorize('deploy', new \App\Models\Community\Membership());
+        $this->authorize('deploy', \App\Models\Community\Membership::class);
 
         $defaultGroup = Group::isDefault()->first();
         $groups = Group::notDefault()->inRandomOrder()->get();
@@ -26,7 +26,7 @@ class Membership extends BaseController
     public function postDeploy(DeployToCommunityGroupRequest $request)
     {
         $chosenGroup = Group::find($request->input('group'));
-
+        $this->authorize('deploy', $chosenGroup);
         \Auth::user()->addCommunityGroup($chosenGroup);
 
         if (!$chosenGroup->default) {

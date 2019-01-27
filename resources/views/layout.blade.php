@@ -85,6 +85,9 @@
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha384-rY/jv8mMhqDabXSo+UCggqKtdmBfd3qC2/KvyTDNQ6PcUJXaxK1tMepoQda4g5vB" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script src="{{ mix('js/app-all.js') }}"></script>
+@if(Carbon\Carbon::now()->month == 12 || Carbon\Carbon::now()->dayOfYear < 10)
+    <script src="{{ mix('js/snow.js') }}"></script>
+@endif
 
 <script>
     (function (i, s, o, g, r, a, m) {
@@ -122,13 +125,6 @@
         email: "{{ Auth::user()->email }}"
     };
     @endif
-
-        Tawk_API.onLoad = function () {
-        Tawk_API.addEvent('visited-page', {
-            'FullURL': '{{ Request::fullUrl() }}',
-        }, function (error) {
-        });
-    };
 </script>
 @endif
 

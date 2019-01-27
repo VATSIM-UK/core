@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Mship;
+namespace App\Events\Mship\Qualifications;
 
 use App\Events\Event;
 use App\Models\Mship\Account;

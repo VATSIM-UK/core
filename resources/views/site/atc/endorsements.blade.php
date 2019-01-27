@@ -225,9 +225,13 @@
                     <h3>Approved Aerodromes</h3>
                     <ul>
                         <li>Andrewsfield (EGSL)</li>
+                        <li>Barra (EGPR)</li>
                         <li>Bedford (EGBF)</li>
+                        <li>Bembridge (EGHJ)</li>
                         <li>Blackbushe (EGLK)</li>
+                        <li>Bodmin (EGLA)</li>
                         <li>Chichester Goodwood (EGHR)</li>
+                        <li>Clacton (EGSQ)</li>
                         <li>Coventry (EGBE)</li>
                         <li>Cumbernauld (EGPG)</li>
                         <li>Dunkeswell (EGTU)</li>
@@ -238,11 +242,14 @@
                         <li>Haverfordwest (EGFE)</li>
                         <li>Kemble (EGBP)</li>
                         <li>Manchester Barton (EGCB)</li>
-                        <li>OId Sarum (EGLS)</li>
+                        <li>Newtownards (EGAD)</li>
+                        <li>Old Sarum (EGLS)</li>
                         <li>Rochester (EGTO)</li>
+                        <li>Sherburn-in-Elmet (EGCJ)</li>
                         <li>Stapleford (EGSG)</li>
                         <li>Swansea (EGFH)</li>
                         <li>Thruxton (EGHO)</li>
+                        <li>Wolverhampton / Halfpenny Green (EGBO)</li>
                     </ul>
 
                     <h3>Get Started</h3>

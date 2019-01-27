@@ -2,7 +2,8 @@
 
 namespace App\Models\Mship\Concerns;
 
-use App\Events\Mship\QualificationAdded;
+use App\Events\Mship\AccountAltered;
+use App\Events\Mship\Qualifications\QualificationAdded;
 use App\Models\Mship\AccountQualification;
 use App\Models\Mship\Qualification;
 use Exception;
@@ -49,6 +50,7 @@ trait HasQualifications
             $this->qualifications()->attach($qualification);
             $this->touch();
             event(new QualificationAdded($this, $qualification));
+            event(new AccountAltered($this));
         }
 
         return $this;
@@ -94,6 +96,7 @@ trait HasQualifications
 
         if (!empty($ids)) {
             $this->qualifications()->syncWithoutDetaching($ids);
+            event(new AccountAltered($this));
         }
     }
 

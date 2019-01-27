@@ -35,7 +35,7 @@
 
                 <div class="btn-group pull-right">
                     @can('use-permission', "adm/mship/ban/*/modify")
-                        @if(!$ban->is_active && $ban->is_active)
+                        @if($ban->is_active)
                             {!! link_to_route("adm.mship.ban.modify", "Modify Ban", [$ban->id], ["class" => "btn btn-warning"]) !!}
                         @endif
                     @endcan

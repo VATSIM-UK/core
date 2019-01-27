@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Events\Mship\Bans\BanUpdated;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Ban\Reason;
@@ -93,6 +94,7 @@ trait HasBans
             $ban->account()->associate($this);
 
             $ban->save();
+            event(new AccountAltered($this));
         }
     }
 
@@ -102,6 +104,7 @@ trait HasBans
             $ban = $this->network_ban;
             $ban->period_finish = Carbon::now();
             $ban->save();
+            event(new AccountAltered($this));
         }
     }
 
