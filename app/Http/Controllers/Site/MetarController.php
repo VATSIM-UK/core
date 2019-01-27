@@ -20,7 +20,7 @@ class MetarController
                     return (string) $response->getBody();
                 }
             } catch (\Exception $e) {
-                if(!$e instanceof TransferException || !$e instanceof ConnectException ){
+                if (!$e instanceof TransferException || !$e instanceof ConnectException) {
                     throw $e;
                 }
             }
