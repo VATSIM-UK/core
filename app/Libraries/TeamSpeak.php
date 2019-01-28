@@ -32,6 +32,11 @@ class TeamSpeak
     const CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE = 'teamspeak_nickname_partially_correct_grace_';
     const CACHE_PREFIX_IDLE_NOTIFY = 'teamspeak_notify_idle_';
 
+    public static function enabled()
+    {
+        return env('TS_HOST') && env('TS_USER')  && env('TS_PASS') && env('TS_PORT') && env('TS_QUERY_PORT');
+    }
+
     /**
      * Connect to the TeamSpeak server.
      *
