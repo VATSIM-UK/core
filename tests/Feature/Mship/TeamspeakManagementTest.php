@@ -1,7 +1,6 @@
 <?php
 namespace Tests\Feature\Mship;
 
-
 use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -53,5 +52,4 @@ class TeamspeakManagementTest extends TestCase
             ->post(route('teamspeak.status', $this->registration))
             ->assertNotFound();
     }
-
 }

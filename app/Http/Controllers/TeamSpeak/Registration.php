@@ -7,6 +7,7 @@ use App\Models\TeamSpeak\Registration as RegistrationModel;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
+
 class Registration extends \App\Http\Controllers\BaseController
 {
     // create new registration process

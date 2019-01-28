@@ -25,7 +25,7 @@ $factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function (Faker\Gene
 
 $factory->define(\App\Models\TeamSpeak\Registration::class, function (Faker\Generator $faker) {
     return [
-        'account_id' => function (){
+        'account_id' => function () {
             return factory(\App\Models\Mship\Account::class)->create();
         },
         'registration_ip' => $faker->ipv4,
@@ -36,4 +36,3 @@ $factory->define(\App\Models\TeamSpeak\Registration::class, function (Faker\Gene
         'updated_at' => \Carbon\Carbon::now(),
     ];
 });
-
