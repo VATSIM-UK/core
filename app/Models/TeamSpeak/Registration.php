@@ -55,7 +55,7 @@ class Registration extends Model
 
     public function delete($tscon = null)
     {
-        if(Teamspeak::enabled()) {
+        if (Teamspeak::enabled()) {
             if ($tscon == null) {
                 $tscon = TeamSpeak::run('VATSIM UK Registrations');
             }
