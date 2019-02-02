@@ -6,5 +6,5 @@ class FteStorageWrapper extends StorageWrapper
 {
     protected $basePath = "smartcars/exercises";
 
-    protected static $disk = 'public';
+    protected $disk = 'public';
 }

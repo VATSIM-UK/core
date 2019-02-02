@@ -2,9 +2,6 @@
 
 namespace App\Libraries\Storage;
 
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-
 abstract class StorageWrapper
 {
     protected $basePath = '/';
@@ -30,13 +27,7 @@ abstract class StorageWrapper
      */
     public function retrieve($fileName)
     {
-        try {
-            $file = Storage::disk($this->disk)->get($this->parseFileName($fileName));
-        } catch (FileNotFoundException $e) {
-            return false;
-        }
-
-        return $file;
+        return asset($this->parseFileName($fileName));
     }
 
     /**
@@ -47,6 +38,6 @@ abstract class StorageWrapper
      */
     protected function parseFileName($fileName)
     {
-        return $this->disk. $fileName;
+        return $this->basePath. "/" . $fileName;
     }
 }
