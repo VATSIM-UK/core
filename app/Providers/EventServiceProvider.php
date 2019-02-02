@@ -92,7 +92,7 @@ class EventServiceProvider extends ServiceProvider
             EvaluateFlightCriteria::class,
         ],
     ];
-    
+
     /**
      * The subscriber classes to register.
      *

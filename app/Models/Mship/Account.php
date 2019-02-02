@@ -162,7 +162,7 @@ use Watson\Rememberable\Rememberable;
 class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use SoftDeletingTrait, Rememberable, Notifiable, Authenticatable, Authorizable,
-        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount,
+        HasCommunityGroups, HasNetworkData, HasMoodleAccount, HasHelpdeskAccount, HasForumAccount, HasCTSAccount,
         HasVisitTransferApplications, HasQualifications, HasStates, HasBans, HasTeamSpeakRegistrations, HasPassword,
         HasNotifications, HasEmails, HasRoles, HasWaitingLists;
     use HasApiTokens {
