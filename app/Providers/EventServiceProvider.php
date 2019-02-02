@@ -92,11 +92,7 @@ class EventServiceProvider extends ServiceProvider
             EvaluateFlightCriteria::class,
         ],
     ];
-
-    protected $subscribe = [
-        //
-    ];
-
+    
     /**
      * The subscriber classes to register.
      *
