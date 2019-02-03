@@ -48,7 +48,7 @@
                             TG1: Responsible for S2 and S3 training at EGKK, EGBB, EGNX, EGGD, EGPF and EGPH;
                         </li>
                         <li>
-                            TG2: Responsible for S2 and S3 training at EGCC, EGGP, EGGW and EGSS;
+                            TG2: Responsible for S2 and S3 training at EGCC, EGGP, EGGW, EGSS and EGNX;
                         </li>
                         <li>
                             TG Enroute: Responsible for C1 training on EGTT and EGPX enroute positions;
@@ -60,10 +60,9 @@
                     </ul>
 
                     <p>
-                        There are also a number of Division Instructors and Senior Instructors (I1 and I3 rated). These
-                        experienced and long-standing members take a wider view of training, from the perspective of the
-                        entire division. They work on projects assigned to them by, and provide counsel to, the ATC
-                        Training Director.
+                        There are also a number of Division Instructors (I3 rated), who are experienced and long-standing 
+                        members take a wider view of training, from the perspective of the entire division.
+                        They work on projects assigned to them by, and provide counsel to, the Training Director.
                     </p>
 
                     <p>

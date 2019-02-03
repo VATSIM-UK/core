@@ -2,10 +2,12 @@
 
 namespace App\Models\Mship\Account;
 
+use App\Events\Mship\AccountAltered;
 use App\Models\Model;
 use App\Models\Sso\Email as SSOEmail;
 use App\Models\Sys\Token;
 use App\Notifications\Mship\EmailVerification;
+use Carbon\Carbon;
 
 /**
  * App\Models\Mship\Account\Email
@@ -79,6 +81,8 @@ class Email extends Model
         $ssoEmail->sso_account_id = $ssoAccount->getKey();
         $ssoEmail->save();
 
+        event(new AccountAltered($this->account));
+
         return true;
     }
 
@@ -95,6 +99,13 @@ class Email extends Model
     public function __toString()
     {
         return isset($this->attributes['email']) ? $this->attributes['email'] : '';
+    }
+
+    public function verify()
+    {
+        $this->verified_at = Carbon::now();
+
+        return $this->save();
     }
 
     /**

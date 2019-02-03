@@ -41,13 +41,26 @@ class TeamSpeakDaemon extends TeamSpeakCommand
     public function handle()
     {
         self::$connection = $this->establishConnection();
+        $connectionFailures = 0;
 
         // main loop
         while (true) {
             try {
                 self::$connection->getAdapter()->wait();
+                $connectionFailures = 0;
             } catch (TeamSpeak3_Transport_Exception $e) {
-                self::$connection = $this->establishConnection();
+                try {
+                    self::$connection = $this->establishConnection();
+                    $connectionFailures = 0;
+                } catch (TeamSpeak3_Transport_Exception $e) {
+                    // Connection failed, let the loop restart and try again
+                    $connectionFailures++;
+                    if ($connectionFailures == 3) {
+                        throw new TeamSpeak3_Transport_Exception("TeamSpeak Daemon failed to connect 3 times.");
+                    }
+                    $this->log('TeamSpeak connection failed: '.$e->getMessage(). '. Trying again in 15 seconds...');
+                    sleep(15);
+                }
             }
         }
     }
@@ -121,9 +134,9 @@ class TeamSpeakDaemon extends TeamSpeakCommand
             // register for events
             $connection->notifyRegister('server');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyCliententerview', self::class.'::clientJoinedEvent');
+                ->subscribe('notifyCliententerview', self::class . '::clientJoinedEvent');
             TeamSpeak3_Helper_Signal::getInstance()
-                ->subscribe('notifyClientleftview', self::class.'::clientLeftEvent');
+                ->subscribe('notifyClientleftview', self::class . '::clientLeftEvent');
 
             return $connection;
         } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {

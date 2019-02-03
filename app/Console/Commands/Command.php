@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App;
-use Bugsnag;
+use App\Libraries\Slack;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Console\Command as BaseCommand;
-use Slack;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends BaseCommand
@@ -26,7 +26,8 @@ abstract class Command extends BaseCommand
             $style = posix_isatty(STDOUT) ? $style : null;
         } else {
             if (App::environment('production')) {
-                $this->sendSlackError('posix_isatty is not available in production - install POSIX extension (php-common)');
+                $attachment = Slack::generateAttachmentForMessage('posix_isatty is not available in production - install POSIX extension (php-common)', [], [], null, 'danger');
+                Slack::sendToWebServices("", $attachment);
             }
         }
 
@@ -35,72 +36,6 @@ abstract class Command extends BaseCommand
 
         // write the output
         $this->output->write($styled, $newline, OutputInterface::VERBOSITY_VERBOSE);
-    }
-
-    /**
-     * Return a Slack configuration for message sending.
-     *
-     * Method must be called for each message sent, to avoid message stacking/overlap.
-     *
-     * @param string $to
-     * @return mixed
-     */
-    protected function slack($destinationChannel = 'web_alerts')
-    {
-        return Slack::setUsername('Cron Notifications')->to($destinationChannel);
-    }
-
-    /**
-     * Send a direct message to a Slack user.
-     *
-     * @param Account|string $to Either the local Account or the SlackUserID to send a message to.
-     * @param string $message The message to send to the user
-     */
-    protected function sendSlackMessagePlain($to, $message, $from = null)
-    {
-        if (is_object($to) && $to->exists) {
-            $to = $to->slack_id;
-        }
-
-        $slack = $this->slack($to);
-
-        if ($from != null) {
-            $slack = $slack->from($from);
-        }
-
-        $slack->send($message);
-    }
-
-    protected function sendSlackMessageFormatted($to, $pretext, $message, $colour = 'danger', $fields = [], $from = null)
-    {
-        $attachment = [
-            'pretext' => '@here: '.$pretext,
-            'fallback' => $message,
-            'author_name' => 'VATSIM UK Slack Bot',
-            'color' => $colour,
-        ];
-
-        $attachment['author_link'] = $this->getAuthorLink();
-
-        foreach ($fields as $index => $message) {
-            $attachment['fields'][] = [
-                'title' => $index,
-                'value' => $message,
-                'short' => true,
-            ];
-        }
-
-        $slack = $this->slack($to);
-
-        if ($from != null) {
-            $slack = $slack->from($from);
-        }
-
-        try {
-            $this->slack()->attach($attachment)->send();
-        } catch (\Exception $e) {
-            $this->handleSlackException($e);
-        }
     }
 
     /**
@@ -147,7 +82,7 @@ abstract class Command extends BaseCommand
         }
 
         try {
-            $this->slack()->attach($attachment)->send();
+            Slack::sendToWebServices($message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
         }
@@ -198,7 +133,7 @@ abstract class Command extends BaseCommand
         }
 
         try {
-            $this->slack()->attach($attachment)->send();
+            Slack::sendToWebServices($message, $attachment);
         } catch (\Exception $e) {
             $this->handleSlackException($e);
         }
