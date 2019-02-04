@@ -16,7 +16,7 @@ class FteCreationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-    }    
+    }
 
     /** @test */
     public function testExerciseCanBeCreated()
