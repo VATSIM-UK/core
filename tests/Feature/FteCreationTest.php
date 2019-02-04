@@ -2,19 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Libraries\Storage\CoreUploadedFile;
 use App\Models\Smartcars\Aircraft;
 use App\Models\Smartcars\Airport;
-use App\Models\Smartcars\Flight;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Laravel\BrowserKitTesting\DatabaseTransactions;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FteCreationTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp()
+    {
+        parent::setUp();
+    }    
 
     /** @test */
     public function testExerciseCanBeCreated()
