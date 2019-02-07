@@ -49,19 +49,21 @@ class Aircraft extends Resource
 
             Text::make('ICAO')->rules('required', 'string', 'max:4'),
 
-            Text::make('Name')->rules('required', 'string', 'max:12'),
+            Text::make('Manufacturer', 'name')->rules('required', 'string', 'max:12'),
 
             Text::make('Full Name', 'fullname')->rules('required', 'string', 'max:50'),
 
-            Text::make('Registration')->rules('required', 'string', 'max:5'),
+            Text::make('Registration')->rules('required', 'string', 'max:5')->help('Exclude hyphen from registration.'),
 
-            Number::make('Range', 'range_nm')->rules('nullable', 'numeric', 'max:100000'),
+            Number::make('Range', 'range_nm')->rules('nullable', 'numeric', 'max:100000')->help('Enter in nautical miles (nm)'),
 
-            Number::make('Weight', 'weight_kg')->rules('nullable', 'numeric', 'max:100000'),
+            Number::make('Service Ceiling', 'cruise_altitude')->help('Enter in feet (ft).'),
+
+            Number::make('Weight', 'weight_kg')->rules('nullable', 'numeric', 'max:100000')->help('Enter in kilograms (kg).'),
 
             Number::make('Max Passengers')->rules('nullable', 'numeric', 'max:100000'),
 
-            Number::make('Max Cargo (KG)', 'max_cargo_kg')->rules('nullable', 'numeric', 'max:100000'),
+            Number::make('Max Cargo', 'max_cargo_kg')->rules('nullable', 'numeric', 'max:100000')->help('Enter in kilograms (kg).'),
         ];
     }
 
