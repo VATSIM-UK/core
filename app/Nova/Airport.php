@@ -45,7 +45,10 @@ class Airport extends Resource
         return [
             ID::make()->sortable(),
 
-            Text::make('ICAO')->rules('required', 'string', 'max:4'),
+            Text::make('ICAO')->rules('required', 'string', 'max:4')
+                ->creationRules('unique:smartcars_airport,icao')
+                ->updateRules('unique:smartcars_airport,icao,{{resourceId}}')
+                ->sortable(),
 
             Text::make('Name')->rules('required', 'string', 'max:100'),
 
