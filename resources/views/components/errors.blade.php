@@ -28,7 +28,7 @@
         </div>
     @endif
 
-    @if(Auth::check() && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
+    @if(Auth::guard('web')->check() && !Request::is("mship/notification*") && Auth::user()->has_unread_notifications)
         <div class="alert alert-warning" role="alert">
             You currently have unread notifications. You can view them on the
             "{!! HTML::link(route("mship.notification.list"), "notifications page") !!}".
