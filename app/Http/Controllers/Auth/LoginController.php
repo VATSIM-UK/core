@@ -177,7 +177,7 @@ class LoginController extends BaseController
         $account->updateDivision($user->division->code, $user->region->code);
         $account->save();
 
-        if(!is_numeric($user->rating->id) || !is_numeric($user->pilot_rating->rating)){
+        if (!is_numeric($user->rating->id) || !is_numeric($user->pilot_rating->rating)) {
             $job = new UpdateMember($user);
             $this->dispatch($job);
         }
