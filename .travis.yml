@@ -1,59 +1,81 @@
 jobs:
   include:
-  - stage: "Test"
-    language: php
-    php:
-    - 7.2
-    addons:
-      mariadb: '10.2'
-    before_install:
-    - sudo apt-get update
-    - sudo apt-get install -y nasm
-    - mysql -e 'create database IF NOT EXISTS core;' -uroot
-    - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
-    - mysql -e 'create database IF NOT EXISTS cts;' -uroot
-    - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-    - nvm install node
-    - npm -v
-    - yarn -v
-    - yarn install
-    install:
-    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    - chmod +x ./cc-test-reporter
-    - cp .env.example .env
-    - php artisan key:generate
-    - php artisan migrate -vvv -n
-    - yarn run prod
-    - php artisan route:cache
-    before_script:
-    - ./cc-test-reporter before-build
-    - php artisan serve -q &
-    script:
-    - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then vendor/bin/phpunit; fi
-    - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then phpdbg -dmemory_limit=2G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
-    after_script:
-    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT; fi
-    cache:
-      directories:
-      - node_modules
-      - $HOME/.composer/cache/files
-    notifications:
-      email: false
-      slack:
-        secure: RFWNr/B7Hg4HauK7FhT0PoWUTCy1s+117d2xuc8n5c9F6XD3+g9TXtAJa8wsdZSGSY+B7BLOojUFEoCKPRwAcdJiZ5pItxa7++6LRqNu/ireF4ItJTD25bXWO28iNmo43/E3isbN9pYdJPPc9JIordk8nZHMPRg3lqygGTSaExAB8pZMTSIG7cH+YGuEXO09Q1TQiW781xkj/IcF8PDhcRFNp+lQNsEvJTjC42/qs+7/JIclfL+lFJFG8WANhcgHy1NsnEQ2C0i6ywecTmUclAxQvq2K5WhKgeCaOyKwgtt0r+9tJpSoPF4wf6GXC3JysrgSEUmV7SASQhvgKlrGukEQm+ys8xw3PVHCAy6WDNXbbf8HPzJ1NUbT3U4HqV+dTjCbpa/LS9Z2LQQTOcY9gbc+07kaU3wHaDD5pOlxLcC8Y0ISsN5/r4nec4xHVboskgcBTwiNGC42hfJsRR2HrnGvK9VjETIuzzmParOz4RXEyKFti0oPtgSWEJdd8ni/nEOFVPzozNdL3Qlgkc8dpln2nHV4U+8wTJtWdSfjfbr0KqaRnOhgG0v8S0vChl1xxx0eWw9uaNQRaOt6U7hO8WhdnCQBcZcVrDkEpZnwW/k/ZL/ZHuzndLZH/IWqFHx4MBNeaL9KPHVxNsaR7vjvbdX2+4TB6YCkqdQ9GmshpO4=
-  - stage: "Version"
-    if: branch = master AND type = push
-    deploy:
-    provider: script
-    skip_cleanup: true
-    script:
-    - nvm install lts/*
-    - npx semantic-release
-  - stage: "Deploy"
-    if: branch = master AND type = push
-    deploy:
-    script:
-    - curl "https://vatsim-uk.deploybot.com/webhook/${DEPLOYBOT_SECRET}"
-    - curl -XPOST "https://vatsim-uk.deploybot.com/webhook/deploy?env_id=${DEPLOYBOT_ENV}&secret=${DEPLOYBOT_SECRET}"
+    - stage: "Test"
+      language: php
+      php:
+        - 7.1
+      addons:
+        mariadb: '10.2'
+      before_install:
+        - mysql -e 'create database IF NOT EXISTS core;' -uroot
+        - mysql -e 'create database IF NOT EXISTS core_testing;' -uroot
+        - mysql -e 'create database IF NOT EXISTS cts;' -uroot
+        - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+        - yarn install
+      install:
+        # If this is a PR, prep CodeCov
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+          chmod +x ./cc-test-reporter;
+          fi
+        # If this is not a PR and we are not running on master, run yarn as dev to improve performance
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+          yarn run dev;
+          else
+          yarn run prod;
+          fi
+        - cp .env.example .env
+        - php artisan key:generate
+        - php artisan migrate -vvv -n
+        - php artisan route:cache
+      before_script:
+        # If this is a PR, prep CodeCov
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+          ./cc-test-reporter before-build;
+          fi
+        # If this is not a PR and we are not running on master, remove xdebug to improve performance
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+          phpenv config-rm xdebug.ini;
+          fi
+        - php artisan serve -q &
+        - sed -i 's%^SSO_CERT.*$%SSO_CERT=\"${SSO_CERT}\"%' .env
+        - sed -i "s%^SSO_KEY.*$%SSO_KEY=${SSO_KEY}%" .env
+        - sed -i "s%^SSO_SECRET.*$%SSO_SECRET=${SSO_SECRET}%" .env
+      script:
+        # If this is not a PR and we are not running on master, run PHPUnit without coverage, otherwise, with.
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+          vendor/bin/phpunit;
+          else
+          phpdbg -dmemory_limit=2G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
+          fi
+      after_success:
+        # If this is a PR, make a request to CodeCov
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+          bash <(curl -s https://codecov.io/bash);
+          fi
+      after_script:
+        # If this is a PR, send coverage report to CodeCov
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+          ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT;
+          fi
+      cache:
+        yarn: true
+        directories:
+          - node_modules
+          - $HOME/.composer/cache/files
+      notifications:
+        email: false
+    - stage: "Version"
+      if: branch = master AND type = push
+      deploy:
+      provider: script
+      skip_cleanup: true
+      script:
+        - nvm install lts/*
+        - npx semantic-release
+    - stage: "Deploy"
+      if: branch = master AND type = push
+      deploy:
+      script:
+        - curl "https://vatsim-uk.deploybot.com/webhook/${DEPLOYBOT_SECRET}"
+        - curl -XPOST "https://vatsim-uk.deploybot.com/webhook/deploy?env_id=${DEPLOYBOT_ENV}&secret=${DEPLOYBOT_SECRET}"

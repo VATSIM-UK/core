@@ -96,18 +96,10 @@
                     </div>
                     <div class="panel-body">
                         <h4>Marketing Director (VATUK4)</h4><br/>
-                        <img src="{{ $teamPhotos[5161] }}"
+                        <img src="{{ $teamPhotos[6738] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Trevor Hannant</p>
-
-                        <h4>Marketing Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Social Media Manager</td>
-                                <td>Loui Ringer</td>
-                            </tr>
-                        </table>
+                        <p class="text-center">Loui Ringer</p>
                     </div>
                 </div>
             </div>
@@ -176,23 +168,13 @@
                                     <td>General Manager</td>
                                     <td>Oliver Rhodes</td>
                                 <tr>
-                                    <td>Administrative Manager</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor<br/>
+                                    <td>Division Instructor<br/>
                                         TG Instructor (CTR)
                                     </td>
                                     <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
-                                    <td>Senior Division Instructor<br/>
-                                        Head Examiner
-                                    </td>
-                                    <td>George Wright</td>
-                                </tr>
-                                <tr>
-                                    <td>Senior Division Instructor</td>
+                                    <td>Division Instructor</td>
                                     <td>Chris Pawley</td>
                                 </tr>
                                 <tr>

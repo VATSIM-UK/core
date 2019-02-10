@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Mship;
 
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

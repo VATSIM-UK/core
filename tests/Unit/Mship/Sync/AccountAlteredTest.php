@@ -56,4 +56,18 @@ class AccountAlteredTest extends TestCase
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         //Queue::assertPushed(SyncToForums::class, 1);
     }
+
+    /** @test * */
+    public function itWontTriggerWithSemiDefinedAccounts()
+    {
+        Queue::fake();
+
+        $account = factory(Account::class)->create(['email' => null]);
+        event(new AccountAltered($account));
+
+        Queue::assertNotPushed(SyncToCTS::class);
+        Queue::assertNotPushed(SyncToMoodle::class);
+        Queue::assertNotPushed(SyncToHelpdesk::class);
+        //Queue::assertNotPushed(SyncToForums::class);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use Auth;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 
@@ -47,5 +48,21 @@ class ResetPasswordController extends BaseController
         return array_merge(['id' => Auth::guard('vatsim-sso')->user()->id], $request->only(
             'password', 'password_confirmation', 'token'
         ));
+    }
+
+    /**
+     * Override password reset logic. Reset the given user's password.
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  string  $password
+     * @return void
+     */
+    protected function resetPassword($user, $password)
+    {
+        $user->setPassword($password);
+
+        event(new PasswordReset($user));
+
+        $this->guard()->login($user);
     }
 }

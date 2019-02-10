@@ -3,42 +3,19 @@
 namespace App\Libraries;
 
 use App;
-use Slack as SlackInterface;
+use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Slack
 {
-    /**
-     * Return a Slack configuration for message sending.
-     *
-     * Method must be called for each message sent, to avoid message stacking/overlap.
-     *
-     * @return mixed
-     */
-    protected static function slack()
+    public static function generateAttachmentForMessage($message, $fields = [], $actions = [], $author = null, $color = '#428bca')
     {
-        if (App::environment('production')) {
-            $channel = 'wslogging';
-        } else {
-            $channel = 'wslogging_dev';
-        }
-
-        return SlackInterface::setUsername('Core Notifications')->to($channel);
-    }
-
-    protected static function send($author, $message = '', $fields = [], $color = 'good')
-    {
-        // define the message/attachment to send
         $attachment = [
             'fallback' => $message,
             'author_name' => $author,
             'color' => $color,
-            'fields' => [
-                [
-                    'title' => 'Message:',
-                    'value' => $message,
-                    'short' => true,
-                ],
-            ],
+            'text' => $message,
+            'actions' => $actions,
+            'fields' => [],
         ];
 
         foreach ($fields as $index => $message) {
@@ -49,42 +26,30 @@ class Slack
             ];
         }
 
-        self::slack()->attach($attachment)->send();
+        return $attachment;
+    }
+
+    public static function sendToWebServices($message, $attachment = null, $username = null)
+    {
+        return self::send("#web_alerts", $message, $attachment, $username);
     }
 
     /**
-     * Send an error message to Slack.
-     *
-     * @param        $author
-     * @param string $message The message to send to Slack.
-     * @param array $fields
+     * @param mixed $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is in ("#web_alerts")
+     * @param string $message  Message
+     * @param null $attachment Formatted Attachment https://api.slack.com/docs/message-attachments#attachment_structure
+     * @param string $as Displayed Bot Name
+     * @return mixed
      */
-    public static function sendError($author, $message = '', $fields = [])
+    public static function send($channel, $message, $attachment = null, $username = null)
     {
-        self::send($author, $message, $fields, 'danger');
-    }
+        if (is_object($channel) && get_class($channel) == App\Models\Mship\Account::class && $channel->slack_id) {
+            $channel = $channel->slack_id;
+        }
 
-    /**
-     * Send a success message to Slack.
-     *
-     * @param        $author
-     * @param string $message The message to send.
-     * @param array $fields
-     */
-    public static function sendSuccess($author, $message = '', $fields = [])
-    {
-        self::send($author, $message, $fields, 'good');
-    }
-
-    /**
-     * Send a neutral message to Slack.
-     *
-     * @param        $author
-     * @param string $message
-     * @param array $fields
-     */
-    public static function sendMessage($author, $message = '', $fields = [])
-    {
-        self::send($author, $message, $fields, '#428bca');
+        return SlackChat::message($channel, $message, [
+            'attachments' => $attachment,
+            'username' => $username
+        ]);
     }
 }
