@@ -96,17 +96,10 @@
                     </div>
                     <div class="panel-body">
                         <h4>Marketing Director (VATUK4)</h4><br/>
-                        <img src="{{ $teamPhotos[5161] }}"
+                        <img src="{{ $teamPhotos[6738] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Trevor Hannant</p>
-
-                        <h4>Marketing Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Social Media Manager</td>
-                                <td>Loui Ringer</td>
-                            </tr>
+                        <p class="text-center">Loui Ringer</p>
                         </table>
                     </div>
                 </div>
@@ -214,10 +207,6 @@
                                     <td>Nathan Donnelly</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Fraser Cooper</td>
-                                </tr>
-                                <tr>
                                     <td>TG Instructor (TG2)</td>
                                     <td>Lee Roberts</td>
                                 </tr>   
@@ -231,10 +220,6 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
-                                <tr>
-                                    <td>General Manager</td>
-                                    <td><em>Vacant</em></td>
-                                <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
@@ -243,10 +228,6 @@
                                 <tr>
                                     <td>VFR Flight Instructor</td>
                                     <td>Lewis Hammett</td>
-                                </tr>
-                                <tr>
-                                    <td>IFR Flight Instructor</td>
-                                    <td>Tom Knowles</td>
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
