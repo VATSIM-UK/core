@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\VisitTransfer;
 
+use App\Http\Middleware\MustHaveCommunityGroup;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class FacilityTest extends TestCase
 {
-    use DatabaseTransactions, WithoutMiddleware;
+    use DatabaseTransactions;
 
     private $intlAccount;
     private $divisionAccount;
@@ -73,6 +73,7 @@ class FacilityTest extends TestCase
 
     public function testNoOptionToApplyWhenDivisionMember()
     {
+        $this->withoutMiddleware(MustHaveCommunityGroup::class);
         $this->insertFacilities();
         $this->actingAs($this->divisionAccount)->get(route('visiting.landing'))
             ->assertSee(trans('application.dashboard.apply.atc.visit.unable'))
