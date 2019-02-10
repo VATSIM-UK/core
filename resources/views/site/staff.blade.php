@@ -100,7 +100,6 @@
                              width=50px
                              class="img-responsive center-block profile-picture"/>
                         <p class="text-center">Loui Ringer</p>
-                        </table>
                     </div>
                 </div>
             </div>
