@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'enabled' => env('APP_DEBUG', true),
+    'enabled' => (env('APP_DEBUG', true) && env('APP_ENV') != 'testing'),
 
     /*
     |--------------------------------------------------------------------------
