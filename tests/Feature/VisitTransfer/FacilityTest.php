@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\VisitTransfer;
 
-
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
@@ -14,7 +13,8 @@ class FacilityTest extends TestCase
 {
     use DatabaseTransactions, WithoutMiddleware;
 
-    private $intlAccount, $divisionAccount;
+    private $intlAccount;
+    private $divisionAccount;
 
     public function setUp()
     {
