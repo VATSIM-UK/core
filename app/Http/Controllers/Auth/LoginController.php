@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Jobs\UpdateMember;
 use App\Models\Mship\Account;
 use Auth;
 use Carbon\Carbon;
@@ -175,6 +176,11 @@ class LoginController extends BaseController
         $account->updateVatsimRatings($user->rating->id, $user->pilot_rating->rating);
         $account->updateDivision($user->division->code, $user->region->code);
         $account->save();
+
+        if(!is_numeric($user->rating->id) || !is_numeric($user->pilot_rating->rating)){
+            $job = new UpdateMember($user);
+            $this->dispatch($job);
+        }
 
         $this->setVatsimAuth($user->id);
 
