@@ -4,7 +4,7 @@ namespace App\Libraries\Storage;
 
 abstract class StorageWrapper
 {
-    protected $basePath = '/';
+    protected $basePath = '/storage/';
     protected $disk = 'public';
 
     /**
