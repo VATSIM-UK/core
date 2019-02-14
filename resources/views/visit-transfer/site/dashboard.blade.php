@@ -30,7 +30,7 @@
                                         <button class="btn btn-primary" href="">{{ "X".trans('application.continue') }}</button>
                                     </a>
                                 @elseif($currentTransferApplication)
-                                    <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.xfer_open') }}</button>
+                                    <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
                                 @else
                                     <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, "atc"]) }}">
                                         <button class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
@@ -69,20 +69,20 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         @if(!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
-                            <button class="btn btn-danger" disabled="disabled">THERE ARE NO VISITING PILOT PLACES</button>
+                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.no_places') }}</button>
                         @else
                             @can("create", new \App\Models\VisitTransfer\Application)
                                 <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
-                                    <button class="btn btn-success">START PILOT APPLICATION</button>
+                                    <button class="btn btn-success">{{ trans('application.dashboard.apply.pilot.visit.start') }}</button>
                                 </a>
                             @elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
                                 <a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
-                                    <button class="btn btn-primary" href="">CONTINUE APPLICATION</button>
+                                    <button class="btn btn-primary" href="">{{ trans('application.continue') }}</button>
                                 </a>
                             @elseif($currentTransferApplication)
-                                <button class="btn btn-danger" disabled="disabled">You currently have a transfer application open.</button>
+                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
                             @else
-                                <button class="btn btn-danger" disabled="disabled">You are not able to apply to visit at this time.</button>
+                                <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.unable') }}</button>
                             @endcan
                         @endif
                     </div>
@@ -115,20 +115,20 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     @if(!\App\Models\VisitTransfer\Facility::isPossibleToTransfer())
-                        <button class="btn btn-danger" disabled="disabled">THERE ARE NO TRANSFER PLACES</button>
+                        <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.no_places') }}</button>
                     @else
                         @can("create", new \App\Models\VisitTransfer\Application)
                             <a href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
-                                <button class="btn btn-success" href="">START ATC APPLICATION</button>
+                                <button class="btn btn-success" href="">{{ trans('application.dashboard.apply.atc.transfer.start') }}</button>
                             </a>
                         @elseif($currentTransferApplication)
                             <a href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">
-                                <button class="btn btn-primary">CONTINUE APPLICATION</button>
+                                <button class="btn btn-primary">{{ trans('application.continue') }}</button>
                             </a>
                         @elseif($currentVisitApplication)
-                            <button class="btn btn-danger" disabled="disabled">You currently have a visit application open.</button>
+                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.visit_open') }}</button>
                         @else
-                            <button class="btn btn-danger" disabled="disabled">You are not able to apply to transfer at this time.</button>
+                            <button class="btn btn-danger" disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.unable') }}</button>
                         @endcan
                     @endif
                 </div>
