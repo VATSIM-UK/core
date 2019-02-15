@@ -202,7 +202,6 @@ class Management extends \App\Http\Controllers\BaseController
     {
         // Search tokens for this code!
         $token = SystemToken::where('code', '=', $code)->valid()->first();
-
         // Is it valid? Has it expired? Etc?
         if (!$token) {
             return $this->viewMake('mship.management.email.verify')->with(

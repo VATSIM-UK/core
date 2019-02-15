@@ -73,29 +73,6 @@ $factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Ge
     ];
 });
 
-$factory->define(App\Models\TeamSpeak\Channel::class, function (Faker\Generator $faker) {
-    return [
-        'id' => $faker->numberBetween(1, 65535),
-        'name' => $faker->text($maxNbChars = 30),
-    ];
-});
-
-$factory->define(\App\Models\TeamSpeak\ServerGroup::class, function (Faker\Generator $faker) {
-    return [
-        'dbid' => $faker->numberBetween(1, 65535),
-        'name' => $faker->text($maxNbChars = 30),
-        'type' => 's',
-    ];
-});
-
-$factory->define(\App\Models\TeamSpeak\ChannelGroup::class, function (Faker\Generator $faker) {
-    return [
-        'dbid' => $faker->numberBetween(1, 65535),
-        'name' => $faker->text($maxNbChars = 30),
-        'type' => 'c',
-    ];
-});
-
 $factory->define(\App\Models\Mship\Permission::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->regexify('([A-Z0-9._ ]{1,10}\/){2}testpermission'),

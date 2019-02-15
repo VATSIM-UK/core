@@ -37,8 +37,8 @@
                                 <td>{{ $exercise->flightnum }}</td>
                                 <td>
                                     @if($exercise->image)
-                                        <a href="{{ $exercise->image->asset() }}">
-                                            <img src="{{ $exercise->image->asset() }}" style="max-width: 150px;">
+                                        <a href="{{ $exercise->image }}">
+                                            <img src="{{ $exercise->image }}" style="max-width: 150px;">
                                         </a>
                                     @endif
                                 </td>

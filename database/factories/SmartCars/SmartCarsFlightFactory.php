@@ -7,6 +7,7 @@ $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
         'code' => strtoupper($faker->randomLetter).$faker->numberBetween(0, 50),
         'name' => $faker->words(3, true),
         'description' => $faker->paragraph,
+        'image' => $faker->image(),
         'featured' => $faker->optional(0.1, 0)->passthrough(1),
         'flightnum' => 1,
         'departure_id' => function () {

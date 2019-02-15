@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Mship;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Permission;
