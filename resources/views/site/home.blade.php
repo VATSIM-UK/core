@@ -198,12 +198,7 @@
                     <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact Us <span class="arrow"></span></a>
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://helpdesk.vatsim.uk">Helpdesk</a>
-                        </li>
-                    </ul>
+                    <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
                 <a href="{{ route('login') }}" class="nav-link text-white"><i class="fas fa-user"></i></a>
             </ul>
