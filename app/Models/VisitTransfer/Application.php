@@ -306,14 +306,14 @@ class Application extends Model
         }
 
         if ($this->is_pilot) {
-            return Facility::pilot()->public()->get();
+            return Facility::pilot()->isOpen()->public()->get();
         }
 
         if ($this->is_visit) {
-            return Facility::atc()->public()->canVisit()->get();
+            return Facility::atc()->isOpen()->public()->canVisit()->get();
         }
 
-        return Facility::atc()->public()->canTransfer()->get();
+        return Facility::atc()->isOpen()->public()->canTransfer()->get();
     }
 
     public function getIsOpenAttribute()

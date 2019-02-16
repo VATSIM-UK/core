@@ -206,10 +206,6 @@
                                     <td>Nathan Donnelly</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Instructor (TG1)</td>
-                                    <td>Fraser Cooper</td>
-                                </tr>
-                                <tr>
                                     <td>TG Instructor (TG2)</td>
                                     <td>Lee Roberts</td>
                                 </tr>   
@@ -223,10 +219,6 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
-                                <tr>
-                                    <td>General Manager</td>
-                                    <td><em>Vacant</em></td>
-                                <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
@@ -235,10 +227,6 @@
                                 <tr>
                                     <td>VFR Flight Instructor</td>
                                     <td>Lewis Hammett</td>
-                                </tr>
-                                <tr>
-                                    <td>IFR Flight Instructor</td>
-                                    <td>Tom Knowles</td>
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
