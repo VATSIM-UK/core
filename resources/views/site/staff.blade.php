@@ -171,7 +171,7 @@
                                     <td>Division Instructor<br/>
                                         TG Instructor (CTR)
                                     </td>
-                                    <td rowspan=2>Phillip Speer</td>
+                                    <td>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
