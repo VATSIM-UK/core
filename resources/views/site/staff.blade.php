@@ -171,7 +171,7 @@
                                     <td>Division Instructor<br/>
                                         TG Instructor (CTR)
                                     </td>
-                                    <td>Phillip Speer</td>
+                                    <td rowspan=2>Phillip Speer</td>
                                 </tr>
                                 <tr>
                                     <td>Division Instructor</td>
@@ -186,12 +186,8 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Josh Howker</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Tom Szczypinski</td>
+                                    <td>TG Manager (New Controller)</td>
+                                    <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (TWR)</td>
@@ -202,8 +198,16 @@
                                     <td>Nick Marinov</td>
                                 </tr>
                                 <tr>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Josh Howker</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (TG1)</td>
                                     <td>Nathan Donnelly</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (TG1)</td>
+                                    <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG2)</td>
@@ -230,7 +234,7 @@
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>James Gibson</td>
+                                    <td>James Edwards</td>
                                 </tr>
                              </table>   
 
