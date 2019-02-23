@@ -11,7 +11,9 @@ class MshipEmailTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $email, $ssoService, $secondEmail;
+    private $email;
+    private $ssoService;
+    private $secondEmail;
 
     public function setUp()
     {
