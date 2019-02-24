@@ -4,9 +4,9 @@ namespace App\Http\Controllers\TeamSpeak;
 
 use App\Models\TeamSpeak\Confirmation as ConfirmationModel;
 use App\Models\TeamSpeak\Registration as RegistrationModel;
-use Redirect;
-use Request;
-use Response;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Response;
 
 class Registration extends \App\Http\Controllers\BaseController
 {
@@ -52,24 +52,20 @@ class Registration extends \App\Http\Controllers\BaseController
     }
 
     // delete registration (if owned)
-    public function getDelete($registration)
+    public function getDelete(RegistrationModel $mshipRegistration)
     {
-        $registration = RegistrationModel::find($registration);
-
-        if ($this->account->id == $registration->account_id) {
-            $registration->delete();
+        if ($this->account->id == $mshipRegistration->account_id) {
+            $mshipRegistration->delete();
         }
 
         return Redirect::back();
     }
 
     // get status of registration
-    public function postStatus($registration)
+    public function postStatus(RegistrationModel $mshipRegistration)
     {
-        $registration = RegistrationModel::find($registration);
-
-        if ($this->account->id == $registration->account_id) {
-            return ($registration->dbid === null) ? Response::make('new') : Response::make('active');
+        if ($this->account->id == $mshipRegistration->account_id) {
+            return ($mshipRegistration->dbid === null) ? Response::make('new') : Response::make('active');
         } else {
             return Response::make('Cannot retrieve registration status.');
         }

@@ -50,7 +50,7 @@ jobs:
         - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
           vendor/bin/phpunit;
           else
-          phpdbg -dmemory_limit=2G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
+          phpdbg -dmemory_limit=3G -qrr vendor/bin/phpunit --coverage-clover=coverage.xml;
           fi
       after_success:
         # If this is a PR, make a request to CodeCov

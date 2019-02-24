@@ -51,7 +51,7 @@ class Facility extends AdmController
     private function getFacilityInputData()
     {
         return \Input::only([
-            'name', 'description', 'can_visit', 'can_transfer', 'training_required', 'training_team', 'training_spaces', 'stage_statement_enabled',
+            'name', 'description', 'open', 'can_visit', 'can_transfer', 'training_required', 'training_team', 'training_spaces', 'stage_statement_enabled',
             'stage_reference_enabled', 'stage_reference_quantity', 'stage_checks', 'auto_acceptance', 'acceptance_emails', 'public',
         ]);
     }

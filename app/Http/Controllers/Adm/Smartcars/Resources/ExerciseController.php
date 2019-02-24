@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Adm\Smartcars\Resources;
 
 use App\Http\Controllers\Adm\AdmController as Controller;
+use App\Libraries\Storage\CoreUploadedFile;
+use App\Libraries\Storage\FteStorageWrapper;
 use App\Models\Smartcars\Flight;
 use Illuminate\Http\Request;
 
@@ -90,12 +92,15 @@ class ExerciseController extends Controller
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        $exercise->save();
+        
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->storeAs('smartcars/exercises', "{$exercise->id}.{$image->extension()}", ['disk' => 'public']);
+            $file = new CoreUploadedFile($request->file('image'));
+            (new FteStorageWrapper())->store($file);
+            $exercise->image = $file->getFullFileName();
         }
+
+        $exercise->save();
 
         return redirect($this->redirectPath())->with('success', 'Exercise created.');
     }

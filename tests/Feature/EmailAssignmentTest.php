@@ -160,18 +160,6 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
     }
 
-    /** @test * */
-    public function testExistingUnAuthenticatedUserCanVerifyEmailViaGet()
-    {
-        $email = factory(\App\Models\Mship\Account\Email::class)->states('unverified')->create();
-
-        // ensures request is not sent by an authenticated user.
-        $this->withoutMiddleware()->get(route('mship.manage.email.verify', $email->tokens->first()))
-            ->assertViewIs('mship.management.email.verify')
-            ->assertViewHas('success', 'Your new email address ('.$email->email.') has been verified!');
-    }
-
-
     /** @test **/
     public function testItTriggersAnUpdateWhenAssigningSSOEmail()
     {
