@@ -41,7 +41,7 @@ use Malahierba\PublicId\PublicId;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility onlyTransfer()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility onlyVisit()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility pilot()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility public()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility public ()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility trainingRequired()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereAutoAcceptance($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\VisitTransfer\Facility whereCanTransfer($value)
@@ -72,9 +72,21 @@ class Facility extends Model
     protected $table = 'vt_facility';
     protected $primaryKey = 'id';
     public $timestamps = false;
+    public $casts = [
+        'can_visit' => 'boolean',
+        'can_transfer' => 'boolean',
+        'training_required' => 'boolean',
+        'stage_statement_enabled' => 'boolean',
+        'stage_reference_enabled' => 'boolean',
+        'stage_checks' => 'boolean',
+        'auto_acceptance' => 'boolean',
+        'open' => 'boolean',
+        'public' => 'boolean',
+    ];
     public $fillable = [
         'name',
         'description',
+        'open',
         'can_visit',
         'can_transfer',
         'training_required',
@@ -172,12 +184,12 @@ class Facility extends Model
 
     public function scopeIsOpen($query)
     {
-        return $query;
+        return $query->where('open', true);
     }
 
     public function scopeIsClosed($query)
     {
-        return $query;
+        return $query->where('open', false);
     }
 
     public function scopePublic($query)

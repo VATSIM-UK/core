@@ -113,8 +113,8 @@ Route::group([
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
-    Route::get('{tsreg}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
-    Route::post('{tsreg}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
+    Route::get('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
+    Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
 Route::group(['prefix' => 'mship/manage/slack', 'namespace' => 'Slack', 'middleware' => ['auth_full_group']], function () {

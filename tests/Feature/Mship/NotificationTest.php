@@ -49,4 +49,14 @@ class NotificationTest extends TestCase
             ->attach($notification->id, ['created_at' => Carbon::now()]);
         $this->actingAs($this->account)->post(route('mship.notification.acknowledge', $notification))->assertRedirect(route('mship.manage.dashboard'));
     }
+
+    /** @test * */
+    public function testNotificationBannerDoesntShowOnSecondaryLogin()
+    {
+        factory(Notification::class)->create();
+        $this->account->password = "123";
+        $this->account->save();
+        $this->followingRedirects()->actingAs($this->account, 'vatsim-sso')->get(route('auth-secondary'))->assertDontSee("You currently have unread notifications");
+        $this->followingRedirects()->actingAs($this->account, 'web')->get(route('dashboard'))->assertSee("You currently have unread notifications");
+    }
 }

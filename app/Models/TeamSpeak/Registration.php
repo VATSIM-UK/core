@@ -55,25 +55,27 @@ class Registration extends Model
 
     public function delete($tscon = null)
     {
-        if ($tscon == null) {
-            $tscon = TeamSpeak::run('VATSIM UK Registrations');
-        }
-        if ($this->confirmation) {
-            $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
-            $this->confirmation->delete();
-        }
-
-        foreach ($tscon->clientList() as $client) {
-            if ($client['client_database_id'] == $this->dbid || $client['client_unique_identifier'] == $this->uid) {
-                $client->kick(TeamSpeak3::KICK_SERVER, 'Registration deleted.');
+        if (Teamspeak::enabled()) {
+            if ($tscon == null) {
+                $tscon = TeamSpeak::run('VATSIM UK Registrations');
             }
-        }
-
-        try {
-            if (is_numeric($this->dbid)) {
-                $tscon->clientDeleteDb($this->dbid);
+            if ($this->confirmation) {
+                $tscon->privilegeKeyDelete($this->confirmation->privilege_key);
+                $this->confirmation->delete();
             }
-        } catch (\Exception $e) {
+
+            foreach ($tscon->clientList() as $client) {
+                if ($client['client_database_id'] == $this->dbid || $client['client_unique_identifier'] == $this->uid) {
+                    $client->kick(TeamSpeak3::KICK_SERVER, 'Registration deleted.');
+                }
+            }
+
+            try {
+                if (is_numeric($this->dbid)) {
+                    $tscon->clientDeleteDb($this->dbid);
+                }
+            } catch (\Exception $e) {
+            }
         }
 
         parent::delete();

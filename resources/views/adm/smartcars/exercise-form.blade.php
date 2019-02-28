@@ -36,8 +36,8 @@
                         <div class="form-group">
                             <label>Current Image</label>
                             <p class="form-control-static">
-                                <a href="{{ $exercise->image->asset() }}">
-                                    <img src="{{ $exercise->image->asset() }}">
+                                <a href="{{ $exercise->image }}">
+                                    <img src="{{ $exercise->image }}">
                                 </a>
                             </p>
                         </div>

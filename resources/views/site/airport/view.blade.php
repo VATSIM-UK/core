@@ -22,10 +22,10 @@
     <script>
         $(document).ready(function () {
             @if (($controllers = $airport->controllers)->count() > 10)
-            $('#online-controllers').DataTable();
+                $('#online-controllers').DataTable();
             @endif
             @if (($pilots = $airport->pilots)->count() > 10)
-            $('#online-pilots').DataTable();
+                $('#online-pilots').DataTable();
             @endif
             @if($stands)
                 $('#stands').DataTable();
@@ -241,6 +241,20 @@
         @endif
     </div>
     <hr>
+    @if(config('services.chartfox.public_token'))
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="fa fa-map"></i> Charts</div>
+                    <div class="text-summary panel-body">
+                        <iframe class="w-100" style="min-height:80vh;width:100%" src="https://chartfox.org/api/interface/charts/{{ $airport->icao }}?token={{ config('services.chartfox.public_token') }}"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr>
+    @endif
     <div class="row">
         @if($airport->navaids->merge($airport->runways)->count() > 0)
             <div class="col-md-6">

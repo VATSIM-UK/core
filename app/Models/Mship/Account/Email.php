@@ -76,6 +76,9 @@ class Email extends Model
             return true;
         }
 
+        // Remove any previous assignments to this service
+        $this->account->ssoEmails()->where('sso_account_id', $ssoAccount->id)->delete();
+
         $ssoEmail = new SSOEmail;
         $ssoEmail->account_email_id = $this->getKey();
         $ssoEmail->sso_account_id = $ssoAccount->getKey();

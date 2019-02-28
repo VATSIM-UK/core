@@ -96,18 +96,10 @@
                     </div>
                     <div class="panel-body">
                         <h4>Marketing Director (VATUK4)</h4><br/>
-                        <img src="{{ $teamPhotos[5161] }}"
+                        <img src="{{ $teamPhotos[6738] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Trevor Hannant</p>
-
-                        <h4>Marketing Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Social Media Manager</td>
-                                <td>Loui Ringer</td>
-                            </tr>
-                        </table>
+                        <p class="text-center">Loui Ringer</p>
                     </div>
                 </div>
             </div>
@@ -194,12 +186,8 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Josh Howker</td>
-                                </tr>
-                                <tr>
-                                    <td>TG Manager (TGNC)</td>
-                                    <td>Tom Szczypinski</td>
+                                    <td>TG Manager (New Controller)</td>
+                                    <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
                                     <td>TG Manager (TWR)</td>
@@ -210,17 +198,25 @@
                                     <td>Nick Marinov</td>
                                 </tr>
                                 <tr>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Josh Howker</td>
+                                </tr>
+                                <tr>
                                     <td>TG Instructor (TG1)</td>
                                     <td>Nathan Donnelly</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
-                                    <td>Fraser Cooper</td>
+                                    <td>Oliver Gates</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG2)</td>
                                     <td>Lee Roberts</td>
                                 </tr>   
+                                <tr>
+                                    <td>TG Instructor (TG2)</td>
+                                    <td>George Peppard</td>
+                                </tr>  
                                 <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
@@ -231,10 +227,6 @@
                         <div class="col-md-6">
                             <h4>Pilot Training Team</h4>
                             <table class="table">
-                                <tr>
-                                    <td>General Manager</td>
-                                    <td><em>Vacant</em></td>
-                                <tr>
                                     <td>Administrative Manager<br/>
                                         Initial Flight Instructor
                                     </td>
@@ -245,12 +237,8 @@
                                     <td>Lewis Hammett</td>
                                 </tr>
                                 <tr>
-                                    <td>IFR Flight Instructor</td>
-                                    <td>Tom Knowles</td>
-                                </tr>
-                                <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>James Gibson</td>
+                                    <td>James Edwards</td>
                                 </tr>
                              </table>   
 

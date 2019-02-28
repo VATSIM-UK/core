@@ -203,14 +203,14 @@
       max-width: 720px;
     }
   }
-  @media (min-width: 992px) {
+  @media (min-width: 1125px) {
     .container {
       max-width: 960px;
     }
   }
-  @media (min-width: 1200px) {
+  @media (min-width: 1125px) {
     .container {
-      max-width: 1140px;
+      max-width: 1400px;
     }
   }
   .row {
@@ -251,7 +251,7 @@
     flex: 0 0 50%;
     max-width: 50%;
   }
-  @media (min-width: 576px){
+  @media (min-width: 576px) {
     .col-sm-3 {
       -webkit-box-flex: 0;
       flex: 0 0 25%;
@@ -287,7 +287,7 @@
     }
   }
 
-  @media (min-width: 992px){
+  @media (min-width: 1125px) {
     .col-lg-4 {
       -webkit-box-flex: 0;
       flex: 0 0 33.33333%;
@@ -439,13 +439,13 @@
   .navbar-toggler:not(:disabled):not(.disabled) {
     cursor: pointer;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1124.8px) {
     .navbar-expand-lg > .container {
       padding-right: 0;
       padding-left: 0;
     }
   }
-  @media (min-width: 992px) {
+  @media (min-width: 1125px) {
     .navbar-expand-lg {
       -webkit-box-orient: horizontal;
       -webkit-box-direction: normal;
@@ -1064,8 +1064,9 @@
       line-height: 56px;
       padding-top: 0;
       padding-bottom: 0;
+
       > .arrow {
-        border-top: 3px solid rgba(255,255,255,0.65);
+        border-top: 3px solid rgba(255, 255, 255, 0.65);
       }
     }
 
@@ -1162,8 +1163,8 @@
       opacity: 0.7;
       width: 5px;
       height: 5px;
-      border-top: 1px solid rgba(117,117,117,0.8);
-      border-right: 1px solid rgba(117,117,117,0.8);
+      border-top: 1px solid rgba(117, 117, 117, 0.8);
+      border-right: 1px solid rgba(117, 117, 117, 0.8);
       border-top-width: 1px !important;
       transform: rotate(45deg);
     }
@@ -1217,7 +1218,7 @@
     align-items: center;
     width: 100%;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1124.8px) {
     .navbar-expand-lg .navbar-mobile {
       -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
@@ -1276,7 +1277,7 @@
   }
 
   .backdrop-navbar {
-    background-color: rgba(255,255,255,0.95);
+    background-color: rgba(255, 255, 255, 0.95);
     z-index: 1000 + 1;
     opacity: 0.4;
   }
@@ -1289,21 +1290,20 @@
       //transform: translate(0, 0);
       box-shadow: none;
 
-      .nav-navbar>.nav-item>.nav-link>.arrow, .nav-navbar>.nav-link>.arrow {
-        border-top: 3px solid rgba(117,117,117,0.8);
+      .nav-navbar > .nav-item > .nav-link > .arrow, .nav-navbar > .nav-link > .arrow {
+        border-top: 3px solid rgba(117, 117, 117, 0.8);
       }
     }
 
     .navbar-mobile {
       left: 0 !important;
-      box-shadow: 2px 0 9px rgba(0,0,0,0.05);
+      box-shadow: 2px 0 9px rgba(0, 0, 0, 0.05);
     }
   }
 
-
-  @media (max-width: 991.98px) {
+  @media (max-width: 1124.8px) {
     .navbar-expand-lg .navbar-mobile {
-      -webkit-box-orient:vertical;
+      -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
       flex-direction: column;
       -webkit-box-align: start;
@@ -1323,7 +1323,7 @@
       z-index: 1002
     }
 
-    .navbar-expand-lg .navbar-mobile>* {
+    .navbar-expand-lg .navbar-mobile > * {
       padding-top: 10px;
       padding-bottom: 10px
     }
@@ -1344,7 +1344,7 @@
       width: 100%
     }
 
-    .navbar-expand-lg .nav-navbar:not(.nav-inline)>.nav-item>.nav-link,.navbar-expand-lg .nav-navbar:not(.nav-inline)>.nav-link {
+    .navbar-expand-lg .nav-navbar:not(.nav-inline) > .nav-item > .nav-link, .navbar-expand-lg .nav-navbar:not(.nav-inline) > .nav-link {
       min-height: inherit;
       line-height: inherit;
       padding-top: 0.75rem;
@@ -1364,19 +1364,19 @@
       display: none
     }
 
-    .navbar-expand-lg .nav-navbar:not(.nav-inline)>.nav-item>.nav {
+    .navbar-expand-lg .nav-navbar:not(.nav-inline) > .nav-item > .nav {
       display: none;
-      border-left: 1px dashed rgba(0,0,0,0.08)
+      border-left: 1px dashed rgba(0, 0, 0, 0.08)
     }
 
-    .navbar-expand-lg .nav-navbar:not(.nav-inline)>.nav-item>.nav::before {
+    .navbar-expand-lg .nav-navbar:not(.nav-inline) > .nav-item > .nav::before {
       content: '';
       display: inline-block;
       position: absolute;
       top: 9px;
       left: -4px;
       bottom: 15px;
-      border-left: 1px dashed rgba(0,0,0,0.08);
+      border-left: 1px dashed rgba(0, 0, 0, 0.08);
       display: none
     }
 
@@ -1393,14 +1393,14 @@
       transform: translate(0, 0)
     }
 
-    .navbar-expand-lg .nav-navbar .nav.columns-2,.navbar-expand-lg .nav-navbar .nav.columns-3 {
+    .navbar-expand-lg .nav-navbar .nav.columns-2, .navbar-expand-lg .nav-navbar .nav.columns-3 {
       -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
       flex-direction: column;
       min-width: 100%
     }
 
-    .navbar-expand-lg .nav-navbar .nav.columns-2>.nav-link,.navbar-expand-lg .nav-navbar .nav.columns-2>.nav-item,.navbar-expand-lg .nav-navbar .nav.columns-3>.nav-link,.navbar-expand-lg .nav-navbar .nav.columns-3>.nav-item {
+    .navbar-expand-lg .nav-navbar .nav.columns-2 > .nav-link, .navbar-expand-lg .nav-navbar .nav.columns-2 > .nav-item, .navbar-expand-lg .nav-navbar .nav.columns-3 > .nav-link, .navbar-expand-lg .nav-navbar .nav.columns-3 > .nav-item {
       flex-basis: 100%
     }
 
@@ -1433,9 +1433,9 @@
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: 1125px) {
     .navbar-expand-lg .backdrop-navbar {
-      display:none
+      display: none
     }
   }
 
@@ -1504,7 +1504,7 @@
     position: relative;
     height: 100%;
   }
-  @media (max-width: 991.98px) {
+  @media (max-width: 1124.8px) {
     .section {
       padding-top: 5rem;
       padding-bottom: 5rem;
@@ -1550,8 +1550,8 @@
   }
 
   .flex-center {
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
   }
 
   /*
@@ -1561,7 +1561,7 @@
   .data::-webkit-scrollbar {
     width: 8px; /* 1px wider than Lion. */
     /* This is more usable for users trying to click it. */
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
     -webkit-border-radius: 100px;
   }
   /* hover effect for both scrollbar area, and scrollbar 'thumb' */
@@ -1573,20 +1573,30 @@
   .data::-webkit-scrollbar-thumb:vertical {
     /* This is the EXACT color of Mac OS scrollbars.2
       Yes, I pulled out digital color meter */
-    background-color: rgba(255,255,255,0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     -webkit-border-radius: 100px;
   }
   .data::-webkit-scrollbar-thumb:vertical:active {
-    background: rgba(255,255,255,0.5); /* Some darker color when you click it */
+    background: rgba(255, 255, 255, 0.5); /* Some darker color when you click it */
     -webkit-border-radius: 100px;
   }
 
   @keyframes peek-left-in {
-    0%   {left: -285px;}
-    25%  {left: -265px;}
-    50%  {left: -285px;}
-    75%  {left: -265px;}
-    100%  {left: -285px;}
+    0% {
+      left: -285px;
+    }
+    25% {
+      left: -265px;
+    }
+    50% {
+      left: -285px;
+    }
+    75% {
+      left: -265px;
+    }
+    100% {
+      left: -285px;
+    }
   }
 
   .sidebar {
@@ -1609,7 +1619,7 @@
     &.active {
       left: 0;
 
-      .icons.icon:hover{
+      .icons.icon:hover {
         width: 60px !important;
       }
     }
@@ -1620,17 +1630,17 @@
       top: 25%;
       position: relative;
       float: left;
-  
+
       .icon {
         display: block;
         width: 60px;
         border-radius: 0 10px 10px 0;
-        background-color: rgba(43,43,43, 1);
+        background-color: rgba(43, 43, 43, 1);
         transition-property: width;
         transition-duration: 0.5s;
         transition-timing-function: ease-in-out;
         cursor: pointer;
-  
+
         span {
           display: block;
           font-size: 2em;
@@ -1638,7 +1648,7 @@
           padding: 0 15px 0 0;
           text-align: right;
         }
-  
+
         &.has-hover:hover {
           width: 80px;
         }
@@ -1653,29 +1663,29 @@
       left: 0;
       overflow: hidden;
       float: left;
-      background-color: rgba(43,43,43, 1);
+      background-color: rgba(43, 43, 43, 1);
 
       .content {
 
         .header {
           padding: 0 15px;
-          
+
           h2 {
             padding-top: 15px;
             margin: 0;
           }
-  
+
           p {
             font-size: 0.87em;
           }
         }
-  
+
         .data {
           width: 100%;
           display: block;
           height: calc(100vh - 226px);
           overflow: auto;
-  
+
           ul {
             margin: 0;
             padding: 0;
@@ -1686,8 +1696,8 @@
               transition-property: background-color;
               transition-duration: 0.3s;
               transition-timing-function: ease-in-out;
-              padding: 0 0 0 15px; 
-    
+              padding: 0 0 0 15px;
+
               a:link, a:visited, a:hover {
                 display: block;
                 padding: 10px 15px 10px 0;
@@ -1695,17 +1705,17 @@
                 height: 100%;
                 color: white;
               }
-    
-              &.booking:hover{
+
+              &.booking:hover {
                 background-color: rgba(255, 255, 255, 0.3)
               }
-    
+
               div {
                 display: inline-block;
                 line-height: 150%;
                 font-size: 0.87em;
               }
-              
+
               .icon {
                 font-size: 0.87em;
                 vertical-align: top;
@@ -1714,22 +1724,22 @@
                 padding: 5px 0 0 0;
               }
             }
-    
+
             li:nth-child(even) {
               background-color: rgba(255, 255, 255, 0.1)
             }
-    
+
             li:nth-child(even):hover {
               background-color: rgba(255, 255, 255, 0.3)
             }
 
           }
-  
+
           .spacer {
             height: 30px;
           }
         }
-  
+
         .data:after {
           position: absolute;
           height: 100%;
@@ -1737,17 +1747,17 @@
           bottom: 100px;
           content: "";
           background: linear-gradient(to top,
-            rgba(43,43,43, 1) 0%, 
-            rgba(43,43,43, 0) 10%
+                  rgba(43, 43, 43, 1) 0%,
+                  rgba(43, 43, 43, 0) 10%
           );
           pointer-events: none; /* so the text is still selectable */
         }
-        
+
         .footer {
           a {
             margin: 0 auto;
           }
-  
+
           span {
             font-size: 0.8rem;
             display: block;
@@ -1755,19 +1765,19 @@
             padding-top: 10px;
             opacity: 0.5;
           }
-  
+
           min-height: 105px;
           width: 100%;
           text-align: center;
         }
       }
-  
+
     }
   }
-  
-  @media (max-width: 991px) {
+
+  @media (max-width: 1125px) {
     .sidebar {
       display: none;
     }
-  }  
+  }
 }
