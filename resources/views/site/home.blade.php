@@ -27,33 +27,33 @@
     <script>
         var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
 
-        function updateClock () {
+        function updateClock() {
             var today = new Date();
             var h = today.getUTCHours();
             var m = today.getUTCMinutes();
             var s = today.getSeconds();
-            if(h < 10){
+            if (h < 10) {
                 h = "0" + h
             }
-            if(m < 10){
+            if (m < 10) {
                 m = "0" + m;
             }
-            if(s < 10){
-                s = "0" +s;
+            if (s < 10) {
+                s = "0" + s;
             }
 
-            $("#clock").text(h+":"+m+":"+s+'Z');
+            $("#clock").text(h + ":" + m + ":" + s + 'Z');
         }
 
-        function removeAnimations (element) {
+        function removeAnimations(element) {
             $(element).css("-webkit-animation", "none");
             $(element).css("-moz-animation", "none");
             $(element).css("-ms-animation", "none");
             $(element).css("animation", "none");
         }
 
-        function toggleActive () {
-            if($(".sidebar").hasClass("active")){
+        function toggleActive() {
+            if ($(".sidebar").hasClass("active")) {
                 $(".sidebar").removeClass("active");
             } else {
                 $(".sidebar").addClass("active");
@@ -66,14 +66,14 @@
                 toggleActive()
             })
 
-            if (!touchsupport){ 
+            if (!touchsupport) {
                 $(".popout-button").addClass("has-hover");
             }
 
             setInterval('updateClock()', 1000);
         });
 
-        $(document).keyup(function(e) {
+        $(document).keyup(function (e) {
             if (e.keyCode === 27 && $('.sidebar').hasClass("active")) $('.sidebar').removeClass("active");
             if (e.keyCode === 37 && !$(".sidebar").hasClass("active")) toggleActive();
             if (e.keyCode === 39 && $(".sidebar").hasClass("active")) toggleActive();
@@ -83,7 +83,8 @@
 
     <!-- Styles -->
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/home.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css"
+          integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" href="images/favicon.png">
@@ -105,71 +106,101 @@
 
         <section class="navbar-mobile">
             <ul class="nav nav-navbar ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Welcome</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.pilots.landing")}}>Training</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.airports")}}>Airfield Information</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html">UK Charts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.operations.sectors")}}">Area Sectors</a>
-                            </li>                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://www.vatsim.net/pilot-resource-centre">Pilot Resources</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Membership <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://cts.vatsim.uk">CTS</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://helpdesk.vatsim.uk/">Helpdesk</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://community.vatsim-uk.co.uk/downloads">Downloads</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.community.vt-guide")}}">Visit or Transfer</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk/files/downloads/file/25-division-policy">Division Policy</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fab fa-twitter"></i></a>
-                    </li>
-                    @if(currentUserHasAuth())
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home <span class="arrow"></span></a>
+                    <ul class="nav">
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link text-white">{{ $_account->full_name }} <i class="fas fa-user"></i></a>
+                            <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
-                    @else
-                        <a href="{{ route('login') }}" class="nav-link text-white">Login <i class="fas fa-sign-in-alt"></i></a>
-                    @endif
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Policies</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html"
+                               target="_blank">Charts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.airports') }}">Airports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.operations.sectors') }}">Area Sectors</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Controllers <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.atc.newController') }}">Become a Controller</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://cts.vatsim.uk/home/solo.php">Solo Endorsements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://cts.vatsim.uk/home/validations.php">Special
+                                Endorsements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="https://community.vatsim.uk/files/downloads/category/4-policy-documents/">Regulations
+                                and Policies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('visiting.landing') }}">Visit / Transfer</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Community <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.community.teamspeak') }}">TeamSpeak / Slack</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.facebook.com/vatsimuk">Facebook</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.twitter.com/vatsimuk">Twitter</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Events <span class="arrow"></span></a>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.marketing.live-streaming') }}">Live Streams</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
+                </li>
+                <a href="{{ route('login') }}" class="nav-link text-white"><i class="fas fa-user"></i></a>
             </ul>
         </section>
 
@@ -189,7 +220,8 @@
                 <ul>
                     @forelse ($bookings as $booking)
                         <li class='booking'>
-                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}" target="_blank">
+                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}"
+                               target="_blank">
                                 <div class="icon">
                                     @if($booking['type'] == 'EX')
                                         <i class="fas fa-exclamation"></i>
@@ -206,15 +238,15 @@
                                         @elseif($booking['type'] == 'ME')
                                             (M)
                                         @endif
-                                    </b><br />
+                                    </b><br/>
                                     {{ $booking['member']['name'] }}
-                                        @if($booking['member']['id'])
-                                            ({{ $booking['member']['id'] }})
-                                        @endif
-                                        <br />
-                                    {{$booking['from']}}z - {{$booking['to']}}z<br />
+                                    @if($booking['member']['id'])
+                                        ({{ $booking['member']['id'] }})
+                                    @endif
+                                    <br/>
+                                    {{$booking['from']}}z - {{$booking['to']}}z<br/>
                                 </div>
-                            </a>    
+                            </a>
                         </li>
                     @empty
                         <li>There are no bookings today. <i class="far fa-tired"></i></li>
@@ -228,7 +260,8 @@
                 @else
                     <span>&nbsp;</span>
                 @endif
-                <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View Full Calendar</a>
+                <a class="btn btn-l btn-round btn-primary px-7" href="https://cts.vatsim.uk/bookings/calendar.php">View
+                    Full Calendar</a>
             </div>
         </div>
     </div>
@@ -250,18 +283,21 @@
             <div class="col-md-8 mx-auto text-center py-8 flex-grow">
                 @if(currentUserHasAuth() && $_account->hasState('DIVISION'))
                     <h1>Welcome back, {{ $_account->name_first }}!</h1>
-                    <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of VATSIM UK?</p>
+                    <p class="lead mt-5 my-0">Did you know you're one of {{ $stats['members_division'] }} members of
+                        VATSIM UK?</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
                 @elseif(currentUserHasAuth())
                     <h1>Welcome to VATSIM UK, {{ $_account->name_first }}!</h1>
                     <p class="lead mt-5 my-0"> Have you considered visiting or transferring to the UK?</p>
-                    <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn more!</a></p>
+                    <p class="lead"><a href="{{ route('visiting.landing') }}" class="text-white">Click here to learn
+                            more!</a></p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('dashboard') }}">Enter</a>
                 @else
                     <h1>Welcome to VATSIM UK!</h1>
-                    <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control for our pilots.</p>
+                    <p class="lead mt-5"> We pride ourselves in providing regular and high quality air traffic control
+                        for our pilots.</p>
                     <hr class="w-10 my-7">
                     <a class="btn btn-xl btn-round btn-primary px-7" href="{{ route('site.join') }}">Join Us!</a>
                 @endif
@@ -279,11 +315,16 @@
         <h1 class="text-primary">Welcome!</h1><br>
 
         <p>
-            VATSIM UK provides air traffic control and a wealth of information for controlling and flying in the United Kingdom on VATSIM. We pride ourselves in providing regular and high quality air traffic control for our pilots. This, combined with our great community, is what makes VATSIM UK such a great place to be. Get involved!
+            VATSIM UK provides air traffic control and a wealth of information for controlling and flying in the United
+            Kingdom on VATSIM. We pride ourselves in providing regular and high quality air traffic control for our
+            pilots. This, combined with our great community, is what makes VATSIM UK such a great place to be. Get
+            involved!
         </p>
 
         <p>
-            To join our great community, simply follow the easy-to-follow steps over at our Join Us page. Whether as a pilot, controller or both, you will receive a warm welcome by our community and will have a great time, whilst making a lot of new friends along the way.
+            To join our great community, simply follow the easy-to-follow steps over at our Join Us page. Whether as a
+            pilot, controller or both, you will receive a warm welcome by our community and will have a great time,
+            whilst making a lot of new friends along the way.
         </p>
         <br>
 
@@ -310,7 +351,8 @@
 </section>
 
 <!-- UK User Welcome [START] -->
-<section class="section py-7 text-white bg-img-bottom" style="background-image: url(images/cockpit.jpg)" data-overlay="9">
+<section class="section py-7 text-white bg-img-bottom" style="background-image: url(images/cockpit.jpg)"
+         data-overlay="9">
     <div class="container text-center">
 
         <div class="row">
@@ -322,7 +364,8 @@
                 <div class="col-12 col-lg-8">
                     <div class="row">
                         <div class="col-12 col-md-4 mb-3">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="https://community.vatsim.uk/downloads">Downloads</a>
+                            <a class="btn btn-xl btn-round btn-primary px-7"
+                               href="https://community.vatsim.uk/downloads">Downloads</a>
                         </div>
 
                         <div class="col-12 col-md-4 mb-3">
@@ -330,7 +373,8 @@
                         </div>
 
                         <div class="col-12 col-md-4 mb-3">
-                            <a class="btn btn-xl btn-round btn-primary px-7" href="https://helpdesk.vatsim.uk">Helpdesk</a>
+                            <a class="btn btn-xl btn-round btn-primary px-7"
+                               href="https://helpdesk.vatsim.uk">Helpdesk</a>
                         </div>
                     </div>
                 </div>
@@ -401,9 +445,6 @@
 
 </script>
 <script src="{{ mix('js/home.js') }}"></script>
-@if(Carbon\Carbon::now()->month == 12 || Carbon\Carbon::now()->dayOfYear < 10)
-    <script src="{{ mix('js/snow.js') }}"></script>
-@endif
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax.min.js"></script>
 <script src="https://unpkg.com/jarallax@1.10/dist/jarallax-video.min.js"></script>
 
