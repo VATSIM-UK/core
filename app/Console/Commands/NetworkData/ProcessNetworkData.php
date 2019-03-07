@@ -183,10 +183,10 @@ class ProcessNetworkData extends Command
                 'remarks' => $pilotData['planned_remarks'],
             ]);
 
-            if($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90){
+            if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
                 $pilotData['latitude'] =  null;
             }
-            if($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180){
+            if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
                 $pilotData['longitude'] =  null;
             }
 
