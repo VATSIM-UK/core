@@ -164,6 +164,11 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            if(!$account){
+                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+                continue;
+            }
+
             $flight = Pilot::firstOrNew([
                 'account_id' => $account->id,
                 'callsign' => $pilotData['callsign'],
