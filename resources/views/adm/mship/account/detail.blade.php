@@ -144,7 +144,7 @@
 
                     @can('use-permission', "adm/mship/account/*/impersonate")
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
+                            {!! Form::open(["url" => route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
