@@ -98,7 +98,7 @@ class Flight extends AdmController
         $bid = Bid::find(Input::get('bidid'));
 
         // Check bid has flight
-        if(!$bid){
+        if (!$bid) {
             return 'ERROR';
         }
 
