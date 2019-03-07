@@ -106,7 +106,7 @@ class ProcessNetworkData extends Command
             }
 
             if(!$account){
-                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
                 continue;
             }
 
