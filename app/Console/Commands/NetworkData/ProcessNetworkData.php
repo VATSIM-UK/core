@@ -169,7 +169,7 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
-            if(!$account){
+            if (!$account) {
                 $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
                 continue;
             }
