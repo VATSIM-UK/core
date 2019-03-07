@@ -105,6 +105,11 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            if(!$account){
+                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
+                continue;
+            }
+
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $atc = Atc::updateOrCreate(
                 [
