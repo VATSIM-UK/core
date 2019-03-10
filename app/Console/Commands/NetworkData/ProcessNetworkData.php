@@ -105,6 +105,11 @@ class ProcessNetworkData extends Command
                 continue;
             }
 
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: '.$controllerData['cid'], 'vvv');
+                continue;
+            }
+
             $qualification = Qualification::parseVatsimATCQualification($controllerData['rating']);
             $atc = Atc::updateOrCreate(
                 [
@@ -161,6 +166,11 @@ class ProcessNetworkData extends Command
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$pilotData['cid'], 'vvv');
                 DB::commit();
+                continue;
+            }
+
+            if (!$account) {
+                $this->info('Unable to find or retrieve CID: '.$pilotData['cid'], 'vvv');
                 continue;
             }
 
