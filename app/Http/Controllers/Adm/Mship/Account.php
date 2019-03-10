@@ -94,21 +94,21 @@ class Account extends AdmController
             ->with('sortDirSwitch', ($sortDir == 'DESC' ? 'ASC' : 'DESC'));
     }
 
-    public function getDetail(AccountData $account, $tab = 'basic', $tabId = 0)
+    public function getDetail(AccountData $mshipAccount, $tab = 'basic', $tabId = 0)
     {
-        if (!$account or $account->is_system) {
+        if (!$mshipAccount or $mshipAccount->is_system) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Do they have permission to view their own profile?
         // This is to prevent people doing silly things....
-        if ($this->account->id == $account->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
+        if ($this->account->id == $mshipAccount->id && !$this->account->can('use-permission', 'adm/mship/account/own')) {
             return Redirect::route('adm.mship.account.index')
                 ->withError('You cannot view or manage your own profile.');
         }
 
         // Lazy eager loading
-        $account->load(
+        $mshipAccount->load(
             'bans',
             'bans.banner',
             'bans.reason',
@@ -128,7 +128,7 @@ class Account extends AdmController
 
         // Get all possible roles!
         $availableRoles = RoleData::all()
-            ->diff($account->roles);
+            ->diff($mshipAccount->roles);
 
         // Get all ban reasons.
         $banReasons = Reason::all();
@@ -141,16 +141,16 @@ class Account extends AdmController
             ->orderBy('name', 'ASC')
             ->get();
 
-        $feedbackTargeted = $account->feedback()->orderBy('created_at', 'desc')->get();
+        $feedbackTargeted = $mshipAccount->feedback()->orderBy('created_at', 'desc')->get();
 
-        $vtapplications = $account->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
+        $vtapplications = $mshipAccount->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
 
-        $this->setTitle('Account Details: '.$account->name);
+        $this->setTitle('Account Details: '.$mshipAccount->name);
 
         return $this->viewMake('adm.mship.account.detail')
             ->with('selectedTab', $tab)
             ->with('selectedTabId', $tabId)
-            ->with('account', $account)
+            ->with('account', $mshipAccount)
             ->with('availableRoles', $availableRoles)
             ->with('banReasons', $banReasons)
             ->with('noteTypes', $noteTypes)
@@ -159,9 +159,9 @@ class Account extends AdmController
             ->with('vtapplications', $vtapplications);
     }
 
-    public function postRoleAttach(AccountData $account)
+    public function postRoleAttach(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -169,56 +169,56 @@ class Account extends AdmController
         $role = RoleData::find(Input::get('role'));
 
         if (!$role) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
                 ->withError('The selected role does not exist.');
         }
 
         // Let's add!
-        if (!$account->roles->contains($role->id)) {
-            $account->roles()
+        if (!$mshipAccount->roles->contains($role->id)) {
+            $mshipAccount->roles()
                 ->attach($role);
         }
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
             ->withSuccess($role->name.' role attached successfully. This user inherited '.count($role->permissions).' permissions.');
     }
 
-    public function getRoleDetach(AccountData $account, RoleData $role)
+    public function getRoleDetach(AccountData $mshipAccount, RoleData $role)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
         if (!$role) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
                 ->withError('The selected role does not exist.');
         }
 
-        if (!$account->roles->contains($role->id)) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
+        if (!$mshipAccount->roles->contains($role->id)) {
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
                 ->withError('This role is not attached to this user.');
         }
 
         // Let's remove!
-        $account->roles()
+        $mshipAccount->roles()
             ->detach($role);
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'roles'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'roles'])
             ->withSuccess($role->name.' role detached successfully. This user lost '.count($role->permissions).' permissions.');
     }
 
-    public function postSecurityEnable(AccountData $account)
+    public function postSecurityEnable(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Let's check the user doesn't currently have security on their account.
         // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $account->current_security;
+        $currentSecurity = $mshipAccount->current_security;
 
         if ($currentSecurity && $currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
                 ->withError('You cannot enable security on this account.');
         }
 
@@ -226,44 +226,44 @@ class Account extends AdmController
         $security = SecurityData::find(Input::get('securityLevel', 0));
 
         if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
                 ->withError('Invalid security ID specified.');
         }
 
         // Create them a blank security entry!
         $newSecurity = new AccountSecurityData();
         $newSecurity->save();
-        $account->security()
+        $mshipAccount->security()
             ->save($newSecurity);
         $security->accountSecurity()
             ->save($newSecurity);
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
             ->withSuccess('Security enabled for this account.');
     }
 
-    public function postSecurityReset(AccountData $account)
+    public function postSecurityReset(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Let's check the user doesn't currently have security on their account.
         // We can't reset non-existant security!
-        $currentSecurity = $account->current_security;
+        $currentSecurity = $mshipAccount->current_security;
 
         if (!$currentSecurity or !$currentSecurity->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
                 ->withError('You cannot reset non-existant security.');
         }
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
             ->withSuccess('Security reset requested - user will receive an email.');
     }
 
-    public function postSecurityChange(AccountData $account)
+    public function postSecurityChange(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -271,17 +271,17 @@ class Account extends AdmController
         $security = SecurityData::find(Input::get('securityLevel', 0));
 
         if (!$security) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
                 ->withError('Invalid security ID specified.');
         }
 
         // Let's check the user doesn't currently have security on their account.
         // We don't want to just override it for no reason, as that's bad.
-        $currentSecurity = $account->current_security;
+        $currentSecurity = $mshipAccount->current_security;
 
         // It's also pointless changing to the same security ID.
         if (!$currentSecurity or !$currentSecurity->exists or $currentSecurity->security_id == $security->security_id) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
                 ->withError('You cannot change security on this account.');
         }
 
@@ -292,39 +292,39 @@ class Account extends AdmController
         // Now, let's make a new one!
         $newSecurity = new AccountSecurityData();
         $newSecurity->save();
-        $account->security()
+        $mshipAccount->security()
             ->save($newSecurity);
         $security->accountSecurity()
             ->save($newSecurity);
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'security'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'security'])
             ->withSuccess('Security has been upgraded on this account.');
     }
 
-    public function postBanAdd(CreateRequest $request, AccountData $account)
+    public function postBanAdd(CreateRequest $request, AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
-        if ($account->is_banned) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'bans'])
+        if ($mshipAccount->is_banned) {
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'bans'])
                 ->withError('You are not able to ban a member that is already banned.');
         }
 
         $banReason = Reason::find(Input::get('ban_reason_id'));
 
         // Create the user's ban
-        $ban = $account->addBan(
+        $ban = $mshipAccount->addBan(
             $banReason,
             Input::get('ban_reason_extra'),
             Input::get('ban_note_content'),
             $this->account->id
         );
 
-        $account->notify(new BanCreated($ban));
+        $mshipAccount->notify(new BanCreated($ban));
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'bans', $ban->id])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'bans', $ban->id])
             ->withSuccess('You have successfully banned this member.');
     }
 
@@ -454,35 +454,35 @@ class Account extends AdmController
             ->withSuccess('This ban has been modified.');
     }
 
-    public function postNoteCreate(AccountData $account)
+    public function postNoteCreate(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
         // Is there any content?
         if (strlen(Input::get('content')) < 10) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
                 ->withError('You cannot add such a short note!');
         }
 
         // Check this type exists!
         $noteType = NoteTypeData::find(Input::get('note_type_id'));
         if (!$noteType or !$noteType->exists) {
-            return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
+            return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
                 ->withError('You selected an invalid note type.');
         }
 
         // Let's make a note and attach it to the user!
-        $account->addNote($noteType, Input::get('content'), Auth::user());
+        $mshipAccount->addNote($noteType, Input::get('content'), Auth::user());
 
-        return Redirect::route('adm.mship.account.details', [$account->id, 'notes'])
+        return Redirect::route('adm.mship.account.details', [$mshipAccount->id, 'notes'])
             ->withSuccess('The note has been saved successfully!');
     }
 
-    public function postNoteFilter(AccountData $account)
+    public function postNoteFilter(AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -493,12 +493,12 @@ class Account extends AdmController
             $qs .= 'filter['.$f.']=1&';
         }
 
-        return Redirect::to(URL::route('adm.mship.account.details', [$account->id, 'notes']).'?'.$qs);
+        return Redirect::to(URL::route('adm.mship.account.details', [$mshipAccount->id, 'notes']).'?'.$qs);
     }
 
-    public function postImpersonate(Request $request, AccountData $account)
+    public function postImpersonate(Request $request, AccountData $mshipAccount)
     {
-        if (!$account) {
+        if (!$mshipAccount) {
             return Redirect::route('adm.mship.account.index');
         }
 
@@ -507,10 +507,10 @@ class Account extends AdmController
         ]);
 
         Contact::where('key', 'PRIVACC')->first()
-            ->notify(new UserImpersonated($account, $request->user(), $attributes['reason']));
+            ->notify(new UserImpersonated($mshipAccount, $request->user(), $attributes['reason']));
 
         // Let's do the login!
-        Auth::loginUsingId($account->id, false);
+        Auth::loginUsingId($mshipAccount->id, false);
         Session::put('auth_override', true);
 
         return Redirect::to(URL::route('mship.manage.dashboard'))
