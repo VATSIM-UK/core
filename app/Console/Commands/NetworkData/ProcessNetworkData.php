@@ -183,6 +183,13 @@ class ProcessNetworkData extends Command
                 'remarks' => $pilotData['planned_remarks'],
             ]);
 
+            if ($pilotData['latitude'] > 90 || $pilotData['latitude'] < -90) {
+                $pilotData['latitude'] =  null;
+            }
+            if ($pilotData['longitude'] > 180 || $pilotData['longitude'] < -180) {
+                $pilotData['longitude'] =  null;
+            }
+
             if ($flight->exists) {
                 $departureAirport = $this->getAirport($flight->departure_airport);
                 $arrivalAirport = $this->getAirport($flight->arrival_airport);
