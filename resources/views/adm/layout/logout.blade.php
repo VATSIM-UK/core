@@ -13,6 +13,9 @@
                     </p>
                 </li>
                 <li class="user-footer">
+                    <div class="pull-left">
+                        <a href="{{ route('dashboard') }}" class="btn btn-default btn-flat">DASHBOARD</a>
+                    </div>
                     <div class="pull-right">
                         {!! Form::open(['route' => 'logout', 'id' => 'logout-form']) !!}
                         <a href="{{ route('logout') }}" class="btn btn-default btn-flat" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">LOG OUT</a>
