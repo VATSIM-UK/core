@@ -103,8 +103,12 @@
                         <table class="table">
                             <tr>
                                 <td>Marketing Manager</td>
-                                <td>Vacant</td>
-                            </tr>       
+                                <td>Ben Wright</td>
+                            </tr>
+                            <tr>
+                                <td>Marketing Manager</td>
+                                <td>Harrison Grose</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
