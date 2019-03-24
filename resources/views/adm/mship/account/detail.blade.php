@@ -217,7 +217,7 @@
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @can('use-permission', "adm/mship/account/*/roles/".$r->id."/detach")
+                                                    @can('use-permission', "adm/mship/account/*/roles/*/detach")
                                                         <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endcan
                                                 </tr>
