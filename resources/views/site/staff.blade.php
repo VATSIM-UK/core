@@ -214,6 +214,10 @@
                                     <td>Lee Roberts</td>
                                 </tr>   
                                 <tr>
+                                    <td>TG Instructor (TG2)</td>
+                                    <td>George Peppard</td>
+                                </tr>  
+                                <tr>
                                     <td>TG Instructor (Heathrow)</td>
                                     <td>James Yuen</td>
                                 </tr>
