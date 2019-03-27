@@ -28,4 +28,30 @@ class Booking extends Model
                 ->orWhere('position', 'LIKE', '%_FSS');
         });
     }
+
+    public function scopeNotEvent($query)
+    {
+        return $query->where('type', '!=', 'EV');
+    }
+
+    public function isEvent()
+    {
+        return $this->type == "EV";
+    }
+
+    public function isExam()
+    {
+        return $this->type == "EX";
+    }
+
+    public function isMemberBooking()
+    {
+        return $this->type == "BK";
+    }
+
+    public function isMentoring()
+    {
+        return $this->type == "ME";
+    }
+
 }
