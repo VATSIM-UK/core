@@ -223,6 +223,8 @@
                             @if($event->thread)
                                 <a href="{{$event->thread}}"
                                    target="_blank">
+                            @else
+                                <span>
                             @endif
                                 <div class="icon">
                                     <i class="fas fa-calendar"></i>
@@ -234,10 +236,12 @@
                                 </div>
                             @if($event->thread)
                                 </a>
+                            @else
+                                </span>
                             @endif
                         </li>
                         @if($loop->last)
-                            <hr>
+                            <hr class="mt-4 mb-4">
                         @endif
                     @endforeach
                     @foreach ($bookings as $booking)
