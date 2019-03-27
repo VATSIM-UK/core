@@ -53,5 +53,4 @@ class Booking extends Model
     {
         return $this->type == "ME";
     }
-
 }
