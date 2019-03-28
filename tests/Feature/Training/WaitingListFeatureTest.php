@@ -169,6 +169,5 @@ class WaitingListFeatureTest extends TestCase
     /** @test */
     public function testAStudentCanHaveAFlagToggledAboutThem()
     {
-        
     }
 }
