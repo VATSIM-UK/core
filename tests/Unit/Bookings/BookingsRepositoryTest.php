@@ -8,9 +8,9 @@ use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
-use Tests\UnitTestCase;
+use Tests\TestCase;
 
-class BookingsRepositoryTest extends UnitTestCase
+class BookingsRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -57,7 +57,7 @@ class BookingsRepositoryTest extends UnitTestCase
 
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(2, $bookings);
-        $this->assertEquals([
+        $this->assertArraySubset([
             'id' => $bookingTodayOne->id,
             'date' => $this->today,
             'from' => Carbon::parse($bookingTodayOne->from)->format('H:i'),
@@ -69,7 +69,7 @@ class BookingsRepositoryTest extends UnitTestCase
             ],
             'type' => $bookingTodayOne->type,
         ], $bookings->get(0)->toArray());
-        $this->assertEquals([
+        $this->assertArraySubset([
             'id' => $bookingTodayTwo->id,
             'date' => $this->today,
             'from' => Carbon::parse($bookingTodayTwo->from)->format('H:i'),

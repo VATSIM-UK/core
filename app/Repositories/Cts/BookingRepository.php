@@ -46,10 +46,12 @@ class BookingRepository
         $bookings->transform(function ($booking) {
             $booking->from = Carbon::parse($booking->from)->format('H:i');
             $booking->to = Carbon::parse($booking->to)->format('H:i');
+
             $booking->member = $this->formatMember($booking);
+            $booking->unsetRelation('member');
+
             return $booking;
         });
-
         return $bookings;
     }
 
