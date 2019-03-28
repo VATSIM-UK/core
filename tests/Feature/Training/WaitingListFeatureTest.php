@@ -165,4 +165,10 @@ class WaitingListFeatureTest extends TestCase
             return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
         });
     }
+
+    /** @test */
+    public function testAStudentCanHaveAFlagToggledAboutThem()
+    {
+        
+    }
 }

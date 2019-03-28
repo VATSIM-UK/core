@@ -4,6 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\WaitingListFlag;
 use App\Models\Training\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -75,5 +76,14 @@ class WaitingListAccountTest extends TestCase
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+    
+    /** @test */
+    public function it_can_have_a_boolean_flag()
+    {
+        $flag = factory(WaitingListFlag::class)->create();
+        $this->waitingList->addFlag($flag);
+
+        $this->assertNotNull($this->waitingList->flags);
     }
 }

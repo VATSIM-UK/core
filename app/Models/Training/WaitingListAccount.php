@@ -28,6 +28,15 @@ class WaitingListAccount extends Pivot
             ->wherePivot('end_at', null);
     }
 
+    public function flags()
+    {
+        return $this->belongsToMany(
+            WaitingListFlag::class,
+            'training_waiting_list_account_flag',
+            'waiting_list_account_id'
+        )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
+    }
+
     /**
      * @param \App\Models\Training\WaitingListStatus $listStatus
      */
@@ -51,6 +60,12 @@ class WaitingListAccount extends Pivot
     public function removeStatus(WaitingListStatus $listStatus)
     {
         return $this->status()->detach($listStatus);
+    }
+
+    public function addFlag(WaitingListFlag $listFlag, $value)
+    {
+        $pivot = $this->flags()->attach($listFlag);
+        $pivot->marked_at = now();
     }
 
     public function setPositionAttribute($value)
