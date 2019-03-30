@@ -250,7 +250,7 @@
                                 </tr>
                                 <tr>
                                     <td>Development Flight Instructor</td>
-                                    <td>James Edwards</td>
+                                    <td>Tom Sirett</td>
                                 </tr>
                              </table>   
 
