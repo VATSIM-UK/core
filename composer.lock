@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5129648c5000bd50670d2a3ad6d70fa2",
+    "content-hash": "287f08cb10838d7855f60ac2b958c2f5",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -1359,25 +1359,30 @@
         },
         {
             "name": "dragonmantank/cron-expression",
-            "version": "v2.2.0",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dragonmantank/cron-expression.git",
-                "reference": "92a2c3768d50e21a1f26a53cb795ce72806266c5"
+                "reference": "72b6fbf76adb3cf5bc0db68559b33d41219aba27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/92a2c3768d50e21a1f26a53cb795ce72806266c5",
-                "reference": "92a2c3768d50e21a1f26a53cb795ce72806266c5",
+                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/72b6fbf76adb3cf5bc0db68559b33d41219aba27",
+                "reference": "72b6fbf76adb3cf5bc0db68559b33d41219aba27",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0.0"
+                "php": "^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~6.4"
+                "phpunit/phpunit": "^6.4|^7.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Cron\\": "src/Cron/"
@@ -1404,7 +1409,7 @@
                 "cron",
                 "schedule"
             ],
-            "time": "2018-06-06T03:12:17+00:00"
+            "time": "2019-03-31T00:38:28+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -2257,21 +2262,21 @@
         },
         {
             "name": "laravel/nova",
-            "version": "v2.0.1",
+            "version": "v1.3.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "fb641afddcd23265e1a31754cd16a6c942f0f7ba"
+                "reference": "a88243f3f9bcc02ae0e96ebdce512e467839db09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-fb641afddcd23265e1a31754cd16a6c942f0f7ba-zip-d7b781.zip",
-                "reference": "fb641afddcd23265e1a31754cd16a6c942f0f7ba",
-                "shasum": "dd55d0eb98257d47ba0a2456815737ab1b4cc020"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-a88243f3f9bcc02ae0e96ebdce512e467839db09-zip-93b4e7.zip",
+                "reference": "a88243f3f9bcc02ae0e96ebdce512e467839db09",
+                "shasum": "98626947825e137307cc7c9dc05a2455abe5ec21"
             },
             "require": {
                 "cakephp/chronos": "^1.0",
-                "illuminate/support": "^5.7.15 | 5.8.*",
+                "illuminate/support": "5.6.*|5.7.*",
                 "moontoast/math": "^1.1",
                 "php": ">=7.1.0",
                 "spatie/once": "^1.1",
@@ -2279,15 +2284,15 @@
             },
             "require-dev": {
                 "mockery/mockery": "^1.0",
-                "orchestra/database": "3.7.* | 3.8.*",
-                "orchestra/testbench": "3.7.* | 3.8.*",
-                "phpunit/phpunit": "^7.0 | ^8.0",
+                "orchestra/database": "3.7.*",
+                "orchestra/testbench": "3.7.*",
+                "phpunit/phpunit": "^7.0",
                 "predis/predis": "^1.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.0-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -2322,7 +2327,7 @@
                 "admin",
                 "laravel"
             ],
-            "time": "2019-03-27T16:38:51+00:00"
+            "time": "2019-02-11T20:04:29+00:00"
         },
         {
             "name": "laravel/passport",
@@ -2749,16 +2754,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.50",
+            "version": "1.0.51",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "dab4e7624efa543a943be978008f439c333f2249"
+                "reference": "755ba7bf3fb9031e6581d091db84d78275874396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dab4e7624efa543a943be978008f439c333f2249",
-                "reference": "dab4e7624efa543a943be978008f439c333f2249",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/755ba7bf3fb9031e6581d091db84d78275874396",
+                "reference": "755ba7bf3fb9031e6581d091db84d78275874396",
                 "shasum": ""
             },
             "require": {
@@ -2829,20 +2834,20 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2019-02-01T08:50:36+00:00"
+            "time": "2019-03-30T13:22:34+00:00"
         },
         {
             "name": "league/oauth2-server",
-            "version": "7.3.2",
+            "version": "7.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "b71f382cd76e3f6905dfc53ef8148b3eebe1fd41"
+                "reference": "c7f499849704ebe2c60b45b6d6bb231df5601d4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/b71f382cd76e3f6905dfc53ef8148b3eebe1fd41",
-                "reference": "b71f382cd76e3f6905dfc53ef8148b3eebe1fd41",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/c7f499849704ebe2c60b45b6d6bb231df5601d4a",
+                "reference": "c7f499849704ebe2c60b45b6d6bb231df5601d4a",
                 "shasum": ""
             },
             "require": {
@@ -2906,7 +2911,7 @@
                 "secure",
                 "server"
             ],
-            "time": "2018-11-21T21:42:43+00:00"
+            "time": "2019-03-29T18:19:35+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -4579,16 +4584,16 @@
         },
         {
             "name": "spatie/laravel-cookie-consent",
-            "version": "2.7.0",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-cookie-consent.git",
-                "reference": "99c96a4a5900d36a434711b44dfa74b0ba2b31db"
+                "reference": "d50a81aea91bb188651e1e81e77c73ba95d8370e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/99c96a4a5900d36a434711b44dfa74b0ba2b31db",
-                "reference": "99c96a4a5900d36a434711b44dfa74b0ba2b31db",
+                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/d50a81aea91bb188651e1e81e77c73ba95d8370e",
+                "reference": "d50a81aea91bb188651e1e81e77c73ba95d8370e",
                 "shasum": ""
             },
             "require": {
@@ -4643,7 +4648,7 @@
                 "law",
                 "spatie"
             ],
-            "time": "2019-02-27T08:12:11+00:00"
+            "time": "2019-03-28T23:13:20+00:00"
         },
         {
             "name": "spatie/laravel-permission",
