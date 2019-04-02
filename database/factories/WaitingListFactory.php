@@ -25,6 +25,7 @@ $factory->state(App\Models\Training\WaitingListStatus::class, 'default', [
 $factory->define(\App\Models\Training\WaitingListFlag::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
+        'list_id' => factory(App\Models\Training\WaitingList::class),
         'default_value' => true,
     ];
 });

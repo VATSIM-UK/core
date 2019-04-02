@@ -77,13 +77,4 @@ class WaitingListAccountTest extends TestCase
 
         $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
     }
-    
-    /** @test */
-    public function it_can_have_a_boolean_flag()
-    {
-        $flag = factory(WaitingListFlag::class)->create();
-        $this->waitingList->addFlag($flag);
-
-        $this->assertNotNull($this->waitingList->flags);
-    }
 }

@@ -8,6 +8,7 @@ class WaitingListAccountFlag extends Model
 {
     protected $guarded = [];
     protected $dates = ['marked_at'];
+    protected $table = ['training_waiting_list_account_flag'];
 
     public function getValueAttribute()
     {
