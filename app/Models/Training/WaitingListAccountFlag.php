@@ -2,9 +2,9 @@
 
 namespace App\Models\Training;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class WaitingListAccountFlag extends Model
+class WaitingListAccountFlag extends Pivot
 {
     protected $guarded = [];
     protected $dates = ['marked_at'];
