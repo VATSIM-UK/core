@@ -107,5 +107,9 @@ class MockCtsDatabase
         DB::connection('cts')->statement(
             'DROP TABLE IF EXISTS `bookings`;'
         );
+
+        DB::connection('cts')->statement(
+            'DROP TABLE IF EXISTS `events`;'
+        );
     }
 }
