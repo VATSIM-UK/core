@@ -33,7 +33,8 @@ class WaitingListAccount extends Pivot
         return $this->belongsToMany(
             WaitingListFlag::class,
             'training_waiting_list_account_flag',
-            'waiting_list_account_id'
+            'waiting_list_account_id',
+            'flag_id'
         )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
     }
 
@@ -62,10 +63,33 @@ class WaitingListAccount extends Pivot
         return $this->status()->detach($listStatus);
     }
 
-    public function addFlag(WaitingListFlag $listFlag, $value)
+    public function addFlag(WaitingListFlag $listFlag)
     {
-        $pivot = $this->flags()->attach($listFlag);
-        $pivot->marked_at = now();
+        return $this->flags()->attach($listFlag);
+    }
+
+    /**
+     * Mark a Flag as true.
+     *
+     * @param WaitingListFlag $listFlag
+     */
+    public function markFlag(WaitingListFlag $listFlag)
+    {
+        // retrieve the pivot model of WaitingListAccountFlag
+        $flag = $this->flags()->get()->find($listFlag)->pivot;
+
+        $flag->mark();
+    }
+
+    public function unMarkFlag(WaitingListFlag $listFlag)
+    {
+        $flag = $this->flags()->get()->find($listFlag)->pivot;
+
+        if(!$flag->value) {
+            return;
+        }
+
+        $flag->unMark();
     }
 
     public function setPositionAttribute($value)
