@@ -10,6 +10,7 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\AccountAddedToWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountAdded::class,
             \App\Listeners\Training\WaitingList\AssignDefaultStatus::class,
+            \App\Listeners\Training\WaitingList\AssignFlags::class,
         ],
         \App\Events\Training\AccountRemovedFromWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountRemoved::class,

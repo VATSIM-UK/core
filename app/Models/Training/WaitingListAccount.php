@@ -63,9 +63,9 @@ class WaitingListAccount extends Pivot
         return $this->status()->detach($listStatus);
     }
 
-    public function addFlag(WaitingListFlag $listFlag)
+    public function addFlag(WaitingListFlag $listFlag, $value = null)
     {
-        return $this->flags()->attach($listFlag);
+        return $this->flags()->attach($listFlag, ['marked_at' => $value]);
     }
 
     /**
