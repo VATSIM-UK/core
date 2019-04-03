@@ -85,7 +85,7 @@ class WaitingListAccount extends Pivot
     {
         $flag = $this->flags()->get()->find($listFlag)->pivot;
 
-        if(!$flag->value) {
+        if (!$flag->value) {
             return;
         }
 
