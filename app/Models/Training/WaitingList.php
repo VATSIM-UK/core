@@ -69,6 +69,17 @@ class WaitingList extends Model
     }
 
     /**
+     * Remove a flag from a waiting list.
+     *
+     * @param WaitingListFlag $flag
+     * @return mixed
+     */
+    public function removeFlag(WaitingListFlag $flag)
+    {
+        return $this->flags()->delete($flag);
+    }
+
+    /**
      * Add an Account to a waiting list.
      *
      * @param Account $account | Collection
