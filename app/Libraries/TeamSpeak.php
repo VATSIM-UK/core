@@ -59,10 +59,10 @@ class TeamSpeak
 
 
 
-        try{
+        try {
             $factory = TeamSpeak3::factory($connectionUrl);
-        }catch (TeamSpeak3_Adapter_ServerQuery_Exception $e){
-            if(stripos($e->getMessage(), 'nickname is already in use')){
+        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+            if (stripos($e->getMessage(), 'nickname is already in use')) {
                 // Try again in 3 seconds
                 sleep(3);
                 $factory = TeamSpeak3::factory($connectionUrl);
