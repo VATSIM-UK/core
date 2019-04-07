@@ -38,7 +38,7 @@ class Slack
      * @param mixed $channel Can be either a Slack ID ("UBE27JE8"), An Account or Channel that the Bot is in ("#web_alerts")
      * @param string $message  Message
      * @param null $attachment Formatted Attachment https://api.slack.com/docs/message-attachments#attachment_structure
-     * @param string $as Displayed Bot Name
+     * @param string $username Displayed Bot Name
      * @return mixed
      */
     public static function send($channel, $message, $attachment = null, $username = null)
