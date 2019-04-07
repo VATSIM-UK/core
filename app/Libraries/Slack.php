@@ -48,7 +48,7 @@ class Slack
         }
 
         return SlackChat::message($channel, $message, [
-            'attachments' => $attachment,
+            'attachments' => [$attachment],
             'username' => $username
         ]);
     }
