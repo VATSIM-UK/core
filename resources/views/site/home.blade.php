@@ -106,65 +106,9 @@
 
         <section class="navbar-mobile">
             <ul class="nav nav-navbar ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Welcome</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pilots <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.pilots.landing")}}>Training</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href={{route("site.airports")}}>Airfield Information</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html">UK Charts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.operations.sectors")}}">Area Sectors</a>
-                            </li>                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://www.vatsim.net/pilot-resource-centre">Pilot Resources</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Membership <span class="arrow"></span></a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://cts.vatsim.uk">CTS</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk">Forum</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://helpdesk.vatsim.uk/">Helpdesk</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="http://community.vatsim-uk.co.uk/downloads">Downloads</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route("site.community.vt-guide")}}">Visit or Transfer</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://community.vatsim.uk/files/downloads/file/25-division-policy">Division Policy</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('mship.feedback.new') }}">Feedback</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://www.facebook.com/vatsimuk" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="https://twitter.com/vatsimuk" target="_blank"><i class="fab fa-twitter"></i></a>
-                    </li>
-                    @if(currentUserHasAuth())
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home <span class="arrow"></span></a>
+                    <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
                         </li>
@@ -461,24 +405,24 @@
 </section>
 
 @if(App::environment('production'))
-<script type="text/javascript">
-    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-    (function () {
-        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-    })();
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/57bb3bfca767d83b45e79605/1aqq3gev7';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
 
-    @if(Auth::check())
-        Tawk_API.visitor = {
-        name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
-        email: "{{ Auth::user()->email }}"
-    };
-    @endif
-</script>
+        @if(Auth::check())
+            Tawk_API.visitor = {
+            name: "{{ Auth::user()->name }} ({{ Auth::user()->id }})",
+            email: "{{ Auth::user()->email }}"
+        };
+        @endif
+    </script>
 @endif
 
 <!-- Scripts -->

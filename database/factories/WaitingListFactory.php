@@ -21,3 +21,11 @@ $factory->define(App\Models\Training\WaitingListStatus::class, function (Faker $
 $factory->state(App\Models\Training\WaitingListStatus::class, 'default', [
     'default' => true,
 ]);
+
+$factory->define(\App\Models\Training\WaitingListFlag::class, function (Faker $faker) {
+    return [
+        'name' => $faker->name,
+        'list_id' => factory(App\Models\Training\WaitingList::class),
+        'default_value' => true,
+    ];
+});

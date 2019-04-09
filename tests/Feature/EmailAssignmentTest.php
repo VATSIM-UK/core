@@ -188,34 +188,4 @@ class EmailAssignmentTest extends TestCase
 
         Event::assertDispatched(AccountAltered::class);
     }
-
-
-    /** @test **/
-    public function testItTriggersAnUpdateWhenAssigningSSOEmail()
-    {
-        $sso_client = factory(\Laravel\Passport\Client::class)->create();
-        $email = factory(Email::class)->create(['account_id' => $this->account->id]);
-
-        $initialDispatcher = Event::getFacadeRoot();
-        Event::fake();
-        Model::setEventDispatcher($initialDispatcher);
-
-        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_client->id => $email->id]));
-
-        Event::assertDispatched(AccountAltered::class);
-    }
-
-    /** @test **/
-    public function testItTriggersAnUpdateWhenUnAssigningSSOEmail()
-    {
-        $sso_email = factory(\App\Models\Sso\Email::class)->create();
-
-        $initialDispatcher = Event::getFacadeRoot();
-        Event::fake();
-        Model::setEventDispatcher($initialDispatcher);
-
-        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_email->ssoAccount->id => 'pri']));
-
-        Event::assertDispatched(AccountAltered::class);
-    }
 }

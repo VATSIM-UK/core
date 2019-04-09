@@ -48,6 +48,38 @@ class WaitingList extends Model
     }
 
     /**
+     * One WaitingList can have many flags associated with it.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function flags()
+    {
+        return $this->hasMany(WaitingListFlag::class, 'list_id');
+    }
+
+    /**
+     * Associate a flag with a waiting list.
+     *
+     * @param WaitingListFlag $flag
+     * @return mixed
+     */
+    public function addFlag(WaitingListFlag $flag)
+    {
+        return $this->flags()->save($flag);
+    }
+
+    /**
+     * Remove a flag from a waiting list.
+     *
+     * @param WaitingListFlag $flag
+     * @return mixed
+     */
+    public function removeFlag(WaitingListFlag $flag)
+    {
+        return $this->flags()->delete($flag);
+    }
+
+    /**
      * Add an Account to a waiting list.
      *
      * @param Account $account | Collection

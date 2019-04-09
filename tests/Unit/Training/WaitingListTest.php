@@ -4,6 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingListFlag;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -191,5 +192,25 @@ class WaitingListTest extends TestCase
         $this->assertEquals(3, $accounts[1]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
         $this->assertEquals(1, $accounts[0]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
         $this->assertEquals(2, $accounts[2]->fresh()->waitingLists->find($this->waitingList)->pivot->position);
+    }
+
+    /** @test */
+    public function itCanHaveABooleanFlag()
+    {
+        $flag = factory(WaitingListFlag::class)->create();
+        $this->waitingList->addFlag($flag);
+
+        $this->assertTrue($this->waitingList->flags->contains($flag));
+    }
+
+    /** @test */
+    public function itCanHaveFlagsRemoved()
+    {
+        $flag = factory(WaitingListFlag::class)->create();
+        $this->waitingList->addFlag($flag);
+
+        $this->waitingList->removeFlag($flag);
+
+        $this->assertFalse($this->waitingList->flags->contains($flag));
     }
 }

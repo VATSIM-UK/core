@@ -57,6 +57,22 @@ class AddWaitingListTable extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('training_waiting_list_flags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('list_id');
+            $table->string('name');
+            $table->boolean('default_value');
+            $table->timestamps();
+        });
+
+        Schema::create('training_waiting_list_account_flag', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('waiting_list_account_id');
+            $table->unsignedInteger('flag_id');
+            $table->timestamp('marked_at')->nullable();
+            $table->softDeletes();
+        });
+
         DB::table('training_waiting_list_status')->insert([
             'name' => 'Active',
             'retains_position' => true,

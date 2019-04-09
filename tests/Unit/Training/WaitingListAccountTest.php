@@ -4,6 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\WaitingListFlag;
 use App\Models\Training\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -49,9 +50,10 @@ class WaitingListAccountTest extends TestCase
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->waitingList->accounts->first()->pivot->addStatus($status);
+        $this->waitingList->accounts->find($account->id)->pivot->addStatus($status);
 
-        $this->waitingList->accounts->first()->pivot->first()->addStatus($secondStatus);
+        // adding a new status should mean the first status is marked as ended.
+        $this->waitingList->fresh()->accounts->find($account->id)->pivot->addStatus($secondStatus);
 
         $this->assertDatabaseHas('training_waiting_list_account_status', [
             'status_id' => $status->id,
