@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Adm\Mship;
 
+use App\Events\Mship\AccountAltered;
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\Mship\Account\Ban\CommentRequest;
 use App\Http\Requests\Mship\Account\Ban\CreateRequest;
 use App\Http\Requests\Mship\Account\Ban\ModifyRequest;
 use App\Http\Requests\Mship\Account\Ban\RepealRequest;
+use App\Listeners\Mship\SyncSubscriber;
 use App\Models\Contact;
 use App\Models\Mship\Account as AccountData;
 use App\Models\Mship\Account\Ban as BanData;
@@ -515,5 +517,18 @@ class Account extends AdmController
 
         return Redirect::to(URL::route('mship.manage.dashboard'))
             ->withSuccess('You are now impersonating this user - your reason has been logged. Be good!');
+    }
+
+    public function sync(AccountData $mshipAccount)
+    {
+        if (!$mshipAccount) {
+            return Redirect::route('adm.mship.account.index');
+        }
+
+        $subscriber = new SyncSubscriber();
+
+        $subscriber->syncToAllServices(new AccountAltered($mshipAccount));
+        return Redirect::back()
+            ->withSuccess('User queued to sync to external services!');
     }
 }

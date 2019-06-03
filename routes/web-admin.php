@@ -81,6 +81,7 @@ Route::group([
             'as' => 'account.',
         ], function () {
             Route::get('/account/{scope?}')->where(['scope' => '\w+'])->uses('Account@getIndex')->name('index');
+            Route::get('{mshipAccount}/sync')->where(['mshipAccount' => '\d+'])->uses('Account@sync')->name('sync');
             Route::get('{mshipAccount}/{tab?}/{tabid?}')->where(['mshipAccount' => '\d+'])->uses('Account@getDetail')->name('details');
             Route::post('{mshipAccount}/roles/attach')->where(['mshipAccount' => '\d+'])->uses('Account@postRoleAttach')->name('role.attach');
             Route::get('{mshipAccount}/roles/{mshipRole}/detach')->where(['mshipAccount' => '\d+'])->uses('Account@getRoleDetach')->name('role.detach');
