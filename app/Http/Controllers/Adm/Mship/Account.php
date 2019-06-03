@@ -526,8 +526,8 @@ class Account extends AdmController
         }
 
         $subscriber = new SyncSubscriber();
-
         $subscriber->syncToAllServices(new AccountAltered($mshipAccount));
+        
         return Redirect::back()
             ->withSuccess('User queued to sync to external services!');
     }

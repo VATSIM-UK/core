@@ -49,7 +49,7 @@ class AccountAlteredTest extends TestCase
     public function itTriggersJobsOnlyOnce()
     {
         $account = factory(Account::class)->create();
-        
+
         Queue::fake();
 
         Cache::flush(); // Remove time lockout cache
