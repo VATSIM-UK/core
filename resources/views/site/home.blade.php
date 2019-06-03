@@ -241,7 +241,7 @@
                             @endif
                         </li>
                         @if($loop->last)
-                            <hr class="mt-4 mb-4">
+                            <hr class="mt-2 mb-2">
                         @endif
                     @endforeach
                     @foreach ($bookings as $booking)
