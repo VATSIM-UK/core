@@ -71,13 +71,7 @@ class EvaluateFlightCriteria implements ShouldQueue
             return;
         }
 
-        $pirepTime = $this->minutes($pirep->flight_time);
-
-        $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
-            ->where('connected_at', '<', $posreps->last()->created_at)
-            ->sum('minutes_online');
-
-        if ((($networkTime / $pirepTime) * 100) < 90) {
+        if (!$this->onNetwork($pirep, $posreps)) {
             $pirep->markFailed('Failed: You were not connected to the VATSIM network.', null);
             $pirep->save();
 
@@ -86,6 +80,21 @@ class EvaluateFlightCriteria implements ShouldQueue
 
         $pirep->markPassed('Success: Flight passed all required checks');
         $pirep->save();
+    }
+
+    protected function onNetwork($pirep, $posreps)
+    {
+        $pirepTime = $this->minutes($pirep->flight_time);
+
+        $networkTime = NetworkData::where('disconnected_at', '>', $posreps->first()->created_at)
+            ->where('connected_at', '<', $posreps->last()->created_at)
+            ->sum('minutes_online');
+
+        if ($pirepTime < 0) {
+            return false;
+        }
+
+        return (($networkTime / $pirepTime) * 100) < 90;
     }
 
     protected function minutes($time)
