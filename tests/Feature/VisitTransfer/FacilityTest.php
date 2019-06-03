@@ -16,7 +16,7 @@ class FacilityTest extends TestCase
     private $intlAccount;
     private $divisionAccount;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->intlAccount = factory(Account::class)->create();

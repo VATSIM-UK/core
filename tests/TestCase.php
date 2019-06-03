@@ -18,7 +18,7 @@ abstract class TestCase extends BaseTestCase
 
     protected $privacc;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

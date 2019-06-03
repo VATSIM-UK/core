@@ -20,7 +20,7 @@ class ApplicationCleanUpTest extends TestCase
     public $application;
     public $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Mail::fake();

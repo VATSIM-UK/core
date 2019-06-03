@@ -16,7 +16,7 @@ class ReferenceTest extends TestCase
 {
     use DatabaseTransactions, WithFaker;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Mail::fake();

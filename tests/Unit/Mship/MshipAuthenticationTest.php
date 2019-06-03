@@ -26,7 +26,7 @@ class MshipAuthenticationTest extends TestCase
      * the start of the test so we don't have to create a new one for every
      * single test.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->authenticationInstance = new \App\Http\Controllers\Auth\LoginController();
@@ -44,7 +44,7 @@ class MshipAuthenticationTest extends TestCase
      *
      * This also resets Session:: for us after each test.
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->authenticationInstance = null;

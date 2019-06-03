@@ -13,7 +13,7 @@ class FeedbackUserSearchTest extends TestCase
     private $member;
     private $otherMember;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
