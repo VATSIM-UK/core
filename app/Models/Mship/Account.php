@@ -257,7 +257,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             $account = self::find($accountId);
 
-            if(!$account){
+            if (!$account) {
                 // User doesn't exist at VATSIM.NET
                 return false;
             }

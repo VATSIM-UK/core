@@ -171,7 +171,7 @@ class Application extends BaseController
         // Check if the CID is in the home region
         $referee = Account::findOrRetrieve(Input::get('referee_cid'));
 
-        if(!$referee){
+        if (!$referee) {
             return Redirect::back()
                 ->withError("There doesn't seem to be a VATSIM user with that ID.")
                 ->withInput();
