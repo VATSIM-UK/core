@@ -171,6 +171,12 @@ class Application extends BaseController
         // Check if the CID is in the home region
         $referee = Account::findOrRetrieve(Input::get('referee_cid'));
 
+        if(!$referee){
+            return Redirect::back()
+                ->withError("There doesn't seem to be a VATSIM user with that ID.")
+                ->withInput();
+        }
+
         try {
             if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {
                 return Redirect::back()

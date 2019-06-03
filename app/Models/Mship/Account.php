@@ -238,10 +238,10 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     /**
-     * Find an account by its ID or retrieve it from Cert.
+     * Find an account by its ID or retrieve it from Cert. If false, user does not exist at VATSIM.NET
      *
      * @param $accountId
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|boolean|static[]
      * @throws InvalidCIDException
      */
     public static function findOrRetrieve($accountId)
@@ -256,6 +256,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             dispatch((new UpdateMember($accountId))->onConnection('sync'));
 
             $account = self::find($accountId);
+
+            if(!$account){
+                // User doesn't exist at VATSIM.NET
+                return false;
+            }
 
             return $account;
         }
