@@ -27,7 +27,7 @@ class SitePageLoadTest extends TestCase
     /** @test **/
     public function testItRetrievesURLFromCache()
     {
-        Cache::put(54, 'test.url', 1440);
+        Cache::put(54, 'test.url', 1440 * 60);
 
         $this->get(route('site.staff'))->assertOk();
 

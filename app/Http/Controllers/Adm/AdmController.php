@@ -38,7 +38,7 @@ class AdmController extends \App\Http\Controllers\BaseController
         $view->with('_breadcrumb', $this->breadcrumb);
 
         $_account = $this->account;
-        $forms_with_unactioned = Cache::remember($_account->id.'.adm.mship.feedback.unactioned-count', 2, function () use ($_account) {
+        $forms_with_unactioned = Cache::remember($_account->id.'.adm.mship.feedback.unactioned-count', 2 * 60, function () use ($_account) {
             $forms = Form::orderBy('id', 'asc')->get(['id']);
 
             return $forms->transform(function ($form, $key) use ($_account) {

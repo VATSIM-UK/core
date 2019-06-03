@@ -153,7 +153,7 @@ class BaseController extends \Illuminate\Routing\Controller
             return asset('images/banner/fallback.jpg');
         }
         $url = asset("images/banner/$time/".$images[array_rand($images)]);
-        Cache::put($key, $url, 60);
+        Cache::put($key, $url, 60 * 60);
 
         return $url;
     }

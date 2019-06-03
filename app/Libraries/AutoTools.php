@@ -28,7 +28,7 @@ class AutoTools
         );
 
         $cacheName = $withTimestamp ? 'autotools_divdbfullwpilot_timestamp' : 'autotools_dividbfullwpilot_full';
-        $cacheLength = $withTimestamp ? 118 : 60 * 12;
+        $cacheLength = $withTimestamp ? 118 * 60 : 60 * 12 * 60;
 
         return Cache::remember($cacheName, $cacheLength, function () use ($url) {
             try {
