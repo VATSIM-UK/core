@@ -195,5 +195,4 @@ class Bans extends AdmController
         return Redirect::route('adm.mship.account.details', [$ban->account_id, 'bans', $ban->id])
             ->withSuccess('Your comment for this ban has been noted.');
     }
-
 }
