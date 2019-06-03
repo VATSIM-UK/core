@@ -20,7 +20,7 @@ class MshipAccountTest extends TestCase
     /** @var Account $account */
     private $account;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -17,7 +17,7 @@ class TeamSpeakTest extends TestCase
     protected $channelGroups;
     protected $serverGroups;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

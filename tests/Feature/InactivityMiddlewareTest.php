@@ -16,7 +16,7 @@ class InactivityMiddlewareTest extends TestCase
     private $user;
     private $role;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

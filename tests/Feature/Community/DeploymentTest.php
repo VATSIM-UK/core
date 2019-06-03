@@ -12,7 +12,7 @@ class DeploymentTest extends TestCase
 
     public $account;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

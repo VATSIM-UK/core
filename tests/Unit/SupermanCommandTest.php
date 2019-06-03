@@ -13,7 +13,7 @@ class SupermanCommandTest extends TestCase
 
     private $account;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

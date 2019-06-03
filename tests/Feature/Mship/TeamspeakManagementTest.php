@@ -12,7 +12,7 @@ class TeamspeakManagementTest extends TestCase
 
     private $registration;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

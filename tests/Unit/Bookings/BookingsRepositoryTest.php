@@ -23,7 +23,7 @@ class BookingsRepositoryTest extends UnitTestCase
     /* @var Carbon */
     protected $tomorrow;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

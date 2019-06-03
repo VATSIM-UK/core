@@ -13,7 +13,7 @@ class AtcSessionTest extends TestCase
 
     private $atcSession;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

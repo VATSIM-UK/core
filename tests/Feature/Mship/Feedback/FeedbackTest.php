@@ -17,7 +17,7 @@ class FeedbackTest extends TestCase
     private $account;
     private $form;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -16,7 +16,7 @@ class VisitTransferCleanupTest extends TestCase
     public $oldApplication;
     public $facility;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

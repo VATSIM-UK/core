@@ -19,7 +19,7 @@ class VisitTransferAdminTest extends TestCase
     public $ref2;
     public $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Mail::fake();

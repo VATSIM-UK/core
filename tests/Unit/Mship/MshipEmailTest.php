@@ -15,7 +15,7 @@ class MshipEmailTest extends TestCase
     private $ssoService;
     private $secondEmail;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

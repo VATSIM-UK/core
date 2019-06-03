@@ -17,7 +17,7 @@ class FeedbackAdmTest extends TestCase
     private $account;
     private $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

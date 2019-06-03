@@ -12,7 +12,7 @@ class DashboardTest extends TestCase
 
     protected $admin;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

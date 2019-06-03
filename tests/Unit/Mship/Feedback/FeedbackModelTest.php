@@ -14,7 +14,7 @@ class FeedbackModelTest extends TestCase
     private $admin;
     private $feedback;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
