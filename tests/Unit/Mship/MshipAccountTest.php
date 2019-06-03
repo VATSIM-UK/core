@@ -176,7 +176,7 @@ class MshipAccountTest extends TestCase
         $email = $this->account->addSecondaryEmail('i_also_sleep@hotmail.com', $verified);
 
         $this->assertCount(1, $this->account->fresh()->secondaryEmails);
-        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
+        $this->assertStringContainsString($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
 
         $this->assertDatabaseHas('mship_account_email', [
             'account_id' => $this->account->id,
@@ -193,7 +193,7 @@ class MshipAccountTest extends TestCase
         $email = $this->account->addSecondaryEmail('i_too_sleep@hotmail.com', $verified);
 
         $this->assertCount(0, $this->account->verified_secondary_emails);
-        $this->assertNotContains($email->id, $this->account->verified_secondary_emails->pluck('id'));
+        $this->assertStringNotContainsString($email->id, $this->account->verified_secondary_emails->pluck('id'));
     }
 
     /** @test */
@@ -202,7 +202,7 @@ class MshipAccountTest extends TestCase
         $verified = true;
         $email = $this->account->addSecondaryEmail('i_three_sleep@hotmail.com', $verified);
 
-        $this->assertContains($email->id, $this->account->fresh()->verified_secondary_emails->pluck('id'));
+        $this->assertStringContainsString($email->id, $this->account->fresh()->verified_secondary_emails->pluck('id'));
     }
 
     /** @test */
@@ -211,12 +211,12 @@ class MshipAccountTest extends TestCase
         $verified = true;
         $email = $this->account->addSecondaryEmail('i_four_sleep@gmail.com', $verified);
 
-        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
+        $this->assertStringContainsString($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
 
         $email->delete();
 
         $this->assertEquals(false, $email->exists);
-        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
+        $this->assertStringNotContainsString($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
     }
 
     /** @test * */
@@ -225,12 +225,12 @@ class MshipAccountTest extends TestCase
         $verified = true;
         $email = $this->account->addSecondaryEmail('sauron@gmail.com', $verified);
 
-        $this->assertContains($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
+        $this->assertStringContainsString($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
         $this->assertNotEquals('sauron@gmail.com', $this->account->fresh()->email);
 
         $this->account->fresh()->setEmail('sauron@gmail.com');
 
-        $this->assertNotContains($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
+        $this->assertStringNotContainsString($email->id, $this->account->fresh()->secondaryEmails->pluck('id'));
         $this->assertEquals('sauron@gmail.com', $this->account->fresh()->email);
     }
 

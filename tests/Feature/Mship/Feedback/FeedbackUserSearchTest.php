@@ -28,8 +28,8 @@ class FeedbackUserSearchTest extends TestCase
             ->get(route('mship.feedback.usersearch', $this->otherMember->real_name))
             ->getContent();
 
-        $this->assertContains(e($this->otherMember->real_name), $searchQuery);
-        $this->assertContains((string) ($this->otherMember->id), $searchQuery);
+        $this->assertStringContainsString(e($this->otherMember->real_name), $searchQuery);
+        $this->assertStringContainsString((string) ($this->otherMember->id), $searchQuery);
         /* need to assert contains state */
     }
 
@@ -40,8 +40,8 @@ class FeedbackUserSearchTest extends TestCase
                             ->get(route('mship.feedback.usersearch', $this->member->real_name))
                             ->getContent();
 
-        $this->assertNotContains(e($this->member->real_name), $searchQuery);
-        $this->assertNotContains((string) ($this->member->id), $searchQuery);
+        $this->assertStringNotContainsString(e($this->member->real_name), $searchQuery);
+        $this->assertStringNotContainsString((string) ($this->member->id), $searchQuery);
         /* need to assert does not contain state */
     }
 }
