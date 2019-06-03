@@ -16,7 +16,8 @@ class AccountTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $admin, $user;
+    protected $admin;
+    protected $user;
 
     public function setUp()
     {
