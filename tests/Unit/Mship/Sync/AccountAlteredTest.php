@@ -9,6 +9,7 @@ use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -23,6 +24,7 @@ class AccountAlteredTest extends TestCase
         Event::fake();
 
         $account = factory(Account::class)->create();
+        Cache::flush(); // Remove time lockout cache
         event(new AccountAltered($account));
 
         Event::assertDispatched(AccountAltered::class);
@@ -34,6 +36,7 @@ class AccountAlteredTest extends TestCase
         Queue::fake();
 
         $account = factory(Account::class)->create();
+        Cache::flush(); // Remove time lockout cache
         event(new AccountAltered($account));
 
         Queue::assertPushed(SyncToCTS::class);
@@ -45,9 +48,11 @@ class AccountAlteredTest extends TestCase
     /** @test * */
     public function itTriggersJobsOnlyOnce()
     {
+        $account = factory(Account::class)->create();
+        
         Queue::fake();
 
-        $account = factory(Account::class)->create();
+        Cache::flush(); // Remove time lockout cache
         event(new AccountAltered($account));
         event(new AccountAltered($account));
 
@@ -63,6 +68,7 @@ class AccountAlteredTest extends TestCase
         Queue::fake();
 
         $account = factory(Account::class)->create(['email' => null]);
+        Cache::flush(); // Remove time lockout cache
         event(new AccountAltered($account));
 
         Queue::assertNotPushed(SyncToCTS::class);
