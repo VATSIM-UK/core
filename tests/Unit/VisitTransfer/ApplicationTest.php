@@ -180,7 +180,7 @@ class ApplicationTest extends TestCase
             $mail = $notification->toMail($facility);
             $view = View::make($mail->view, $mail->viewData)->render();
 
-            $this->assertContains('Dear ATC Training Team,', $view);
+            $this->assertStringContainsString('Dear ATC Training Team,', $view);
 
             return $notification->application->id == $application->id;
         });

@@ -23,7 +23,7 @@ class AtcSessionModelTest extends TestCase
 
         $this->assertInstanceOf(\App\Models\NetworkData\Atc::class, $atcSession,
             'NetworkData::AtcSession not created.');
-        $this->assertAttributeEquals(true, 'exists', $atcSession, "NetworkData::AtcSession doesn't exist.");
+        $this->assertEquals(true, $atcSession->exists, "NetworkData::AtcSession doesn't exist.");
     }
 
     /** @test */
