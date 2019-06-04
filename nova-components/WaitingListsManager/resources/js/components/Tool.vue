@@ -41,20 +41,19 @@
                             </div>
 
                         </td>
-                        <td v-for="flag in account.flags">
-                            <div>
+                        <td >
+                            <div v-for="flag in account.flags">
                                 <p class="flex items-center">
                                     <span class="mr-1">{{ flag.name }}</span>
                                     <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
-                                          :class="{ 'bg-success': flag.value, 'bg-danger': !flag.value }"
+                                          :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
                                           @click="openFlagChangeModal"></span>
                                 </p>
-
                                 <portal to="modals">
                                     <transition name="fade">
                                         <confirm-flag-change-modal
                                                 v-if="flagConfirmModalOpen"
-                                                @confirm="confirmFlagChange(flag.id)"
+                                                @confirm="confirmFlagChange(flag.pivot.id)"
                                                 @close="closeFlagChangeModal"
                                         />
                                     </transition>
@@ -89,9 +88,7 @@
 </template>
 
 <script>
-    import ConfirmFlagChangeModal from "./ConfirmFlagChangeModal";
     export default {
-        components: {ConfirmFlagChangeModal},
         props: ['resourceName', 'resourceId', 'field'],
 
         data() {
@@ -176,7 +173,15 @@
             },
 
             confirmFlagChange(id) {
-                console.log('test')
+                console.log(id)
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${id}/toggle`).then(() => {
+                    // close the modal dialog
+                    this.closeFlagChangeModal()
+                    // show a success message
+                    this.$toasted.show('Flag changed successfully!', { type: 'success'})
+                    // refresh the data
+                    this.loadAccounts()
+                })
             }
         }
     }

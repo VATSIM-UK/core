@@ -8,3 +8,5 @@ Route::post('/accounts/{waitingList}/promote', 'Vatsimuk\WaitingListsManager\Htt
 Route::post('/accounts/{waitingList}/demote', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@demote');
 Route::patch('/accounts/{waitingList}/defer', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@defer');
 Route::patch('/accounts/{waitingList}/active', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@active');
+
+Route::patch('/flag/{waitingListAccountFlag}/toggle', 'Vatsimuk\WaitingListsManager\Http\WaitingListFlagController@toggle');

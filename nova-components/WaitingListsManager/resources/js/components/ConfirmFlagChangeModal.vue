@@ -1,8 +1,10 @@
 <template>
     <modal
+        data-testid="confirm-action-modal"
         tabindex="-1"
         role="dialog"
         @modal-close="handleClose"
+        class-whitelist="btn-primary"
     >
         <form
                 autocomplete="off"
@@ -31,13 +33,11 @@
 
                     <button
                             ref="runButton"
-                            dusk="confirm-action-button"
-                            :disabled="working"
+                            dusk="flag-action-button"
                             type="submit"
                             class="btn btn-default btn-primary"
                     >
-                        <loader v-if="working" width="30"></loader>
-                        <span v-else>{{ __('Change Flag') }}</span>
+                        <span>{{ __('Change Flag') }}</span>
                     </button>
                 </div>
             </div>
@@ -48,6 +48,10 @@
 <script>
     export default {
         name: "ConfirmFlagChangeModal",
+
+        mounted () {
+            this.$refs.runButton.focus()
+        },
 
         methods: {
             /**
