@@ -47,17 +47,8 @@
                                     <span class="mr-1">{{ flag.name }}</span>
                                     <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
                                           :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
-                                          @click="openFlagChangeModal"></span>
+                                          @click="openFlagChangeModal(flag.pivot.id)"></span>
                                 </p>
-                                <portal to="modals">
-                                    <transition name="fade">
-                                        <confirm-flag-change-modal
-                                                v-if="flagConfirmModalOpen"
-                                                @confirm="confirmFlagChange(flag.pivot.id)"
-                                                @close="closeFlagChangeModal"
-                                        />
-                                    </transition>
-                                </portal>
                             </div>
                         </td>
                         <td>
@@ -82,6 +73,16 @@
                     </tr>
                     </tbody>
                 </table>
+
+                <portal to="modals">
+                    <transition name="fade">
+                        <confirm-flag-change-modal
+                                v-if="flagConfirmModalOpen"
+                                @confirm="confirmFlagChange"
+                                @close="closeFlagChangeModal"
+                        />
+                    </transition>
+                </portal>
             </div>
         </loading-view>
     </div>
@@ -96,7 +97,8 @@
                 loaded: false,
                 accounts: {},
                 position: 0,
-                flagConfirmModalOpen: false
+                flagConfirmModalOpen: false,
+                selectedFlag: null
             }
         },
 
@@ -164,7 +166,8 @@
                 );
             },
 
-            openFlagChangeModal() {
+            openFlagChangeModal(selected) {
+                this.selectedFlag = selected
                 this.flagConfirmModalOpen = true
             },
 
@@ -174,7 +177,7 @@
 
             confirmFlagChange(id) {
                 console.log(id)
-                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${id}/toggle`).then(() => {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
                     // close the modal dialog
                     this.closeFlagChangeModal()
                     // show a success message
