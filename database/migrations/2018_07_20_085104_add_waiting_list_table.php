@@ -59,7 +59,7 @@ class AddWaitingListTable extends Migration
 
         Schema::create('training_waiting_list_flags', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('list_id');
+            $table->unsignedInteger('list_id')->nullable();
             $table->string('name');
             $table->boolean('default_value');
             $table->timestamps();

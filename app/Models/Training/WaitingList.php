@@ -65,7 +65,13 @@ class WaitingList extends Model
      */
     public function addFlag(WaitingListFlag $flag)
     {
-        return $this->flags()->save($flag);
+        $savedFlag = $this->flags()->save($flag);
+
+        $this->accounts()->each(function ($account) use ($flag) {
+            $account->pivot->flags()->attach($flag);
+        });
+
+        return $savedFlag;
     }
 
     /**

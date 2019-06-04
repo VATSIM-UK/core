@@ -184,6 +184,7 @@ class WaitingListFeatureTest extends TestCase
         $flag = factory(WaitingListFlag::class)->create();
         $this->waitingList->addFlag($flag);
 
+        // required due to event firing propagating flags
         handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc));
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
