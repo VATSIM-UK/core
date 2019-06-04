@@ -16,6 +16,7 @@
                         <th class="text-left">Current Status</th>
                         <th class="text-left">ATC Hour Check</th>
                         <th>Status Change</th>
+                        <th>Flags</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -39,6 +40,26 @@
                                 </button>
                             </div>
 
+                        </td>
+                        <td v-for="flag in account.flags">
+                            <div>
+                                <p class="flex items-center">
+                                    <span class="mr-1">{{ flag.name }}</span>
+                                    <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
+                                          :class="{ 'bg-success': flag.value, 'bg-danger': !flag.value }"
+                                          @click="openFlagChangeModal"></span>
+                                </p>
+
+                                <portal to="modals">
+                                    <transition name="fade">
+                                        <confirm-flag-change-modal
+                                                v-if="flagConfirmModalOpen"
+                                                @confirm="confirmFlagChange(flag.id)"
+                                                @close="closeFlagChangeModal"
+                                        />
+                                    </transition>
+                                </portal>
+                            </div>
                         </td>
                         <td>
                             <div class="flex justify-around">
@@ -68,7 +89,9 @@
 </template>
 
 <script>
+    import ConfirmFlagChangeModal from "./ConfirmFlagChangeModal";
     export default {
+        components: {ConfirmFlagChangeModal},
         props: ['resourceName', 'resourceId', 'field'],
 
         data() {
@@ -76,6 +99,7 @@
                 loaded: false,
                 accounts: {},
                 position: 0,
+                flagConfirmModalOpen: false
             }
         },
 
@@ -141,6 +165,18 @@
                         this.loadAccounts()
                     }
                 );
+            },
+
+            openFlagChangeModal() {
+                this.flagConfirmModalOpen = true
+            },
+
+            closeFlagChangeModal() {
+                this.flagConfirmModalOpen = false
+            },
+
+            confirmFlagChange(id) {
+                console.log('test')
             }
         }
     }

@@ -9,6 +9,7 @@ class WaitingListAccountFlag extends Pivot
     protected $guarded = [];
     protected $dates = ['marked_at'];
     protected $table = ['training_waiting_list_account_flag'];
+    protected $appends = ['value'];
 
     public function mark()
     {
