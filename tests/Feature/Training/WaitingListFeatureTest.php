@@ -9,6 +9,7 @@ use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingListFlag;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -24,8 +25,6 @@ class WaitingListFeatureTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         $this->waitingList = factory(WaitingList::class)->create();
 
         Route::middlewareGroup('nova', []);
@@ -35,14 +34,16 @@ class WaitingListFeatureTest extends TestCase
     public function testStudentCanBeAddedToWaitingList()
     {
         $account = factory(Account::class)->create();
+        
+        Event::fakeFor(function () use ($account) {
+            $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
+                'account_id' => $account->id,
+            ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+                ->assertSessionHas('success', 'Account Added to Waiting List');
 
-        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
-            'account_id' => $account->id,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('success', 'Account Added to Waiting List');
-
-        Event::assertDispatched(AccountAddedToWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountAddedToWaitingList::class, function ($event) use ($account) {
+                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
     }
 
@@ -86,12 +87,14 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account2, $this->privacc);
         $this->waitingList->addToWaitingList($account3, $this->privacc);
 
-        $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/promote", [
-            'account_id' => $account2->id,
-        ])->assertSuccessful();
+        Event::fakeFor(function () use ($account, $account2, $account3) {
+            $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/promote", [
+                'account_id' => $account2->id,
+            ])->assertSuccessful();
 
-        Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account2) {
-            return $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountPromotedInWaitingList::class, function ($event) use ($account2) {
+                return $event->account->id === $account2->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
     }
 
@@ -106,13 +109,16 @@ class WaitingListFeatureTest extends TestCase
         $this->waitingList->addToWaitingList($account2, $this->privacc);
         $this->waitingList->addToWaitingList($account3, $this->privacc);
 
-        $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/demote", [
-            'account_id' => $account->id,
-        ])->assertSuccessful();
+        Event::fakeFor(function () use ($account) {
+            $this->actingAs($this->privacc)->post("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/demote", [
+                'account_id' => $account->id,
+            ])->assertSuccessful();
 
-        Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
+                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
+
     }
 
     /** @test **/
@@ -122,13 +128,15 @@ class WaitingListFeatureTest extends TestCase
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
-            'account_id' => $account->id,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('success', 'Student removed from Waiting List');
+        Event::fakeFor(function () use ($account) {
+            $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
+                'account_id' => $account->id,
+            ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
+                ->assertSessionHas('success', 'Student removed from Waiting List');
 
-        Event::assertDispatched(AccountRemovedFromWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountRemovedFromWaitingList::class, function ($event) use ($account) {
+                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
     }
 
@@ -139,35 +147,53 @@ class WaitingListFeatureTest extends TestCase
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer", [
-            'account_id' => $account->id,
-        ])->assertSuccessful();
+        Event::fakeFor(function () use ($account) {
+            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/defer", [
+                'account_id' => $account->id,
+            ])->assertSuccessful();
 
-        Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
+                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
     }
 
     /** @test **/
     public function testAStudentCanHaveTheirStatusChangedToActive()
     {
-        $this->withoutExceptionHandling();
-
         $account = factory(Account::class)->create();
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
-        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active", [
-            'account_id' => $account->id,
-        ])->assertSuccessful();
+        Event::fakeFor(function () use ($account) {
+            $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/accounts/{$this->waitingList->id}/active", [
+                'account_id' => $account->id,
+            ])->assertSuccessful();
 
-        Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
-            return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            Event::assertDispatched(AccountChangedStatusInWaitingList::class, function ($event) use ($account) {
+                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
+            });
         });
     }
 
     /** @test */
     public function testAStudentCanHaveAFlagToggledAboutThem()
     {
+        $account = factory(Account::class)->create();
+        $flag = factory(WaitingListFlag::class)->create();
+
+        $this->waitingList->addFlag($flag);
+        $this->waitingList->fresh()->addToWaitingList($account, $this->privacc);
+
+        dd($this->waitingList->flags);
+
+        $waitingListAccount = $this->waitingList->fresh()->accounts->find($account->id)->pivot;
+        dd($waitingListAccount);
+        $flag = $waitingListAccount->flags->first()->pivot->id;
+
+        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/flag/{$flag}")->assertSuccessful();
+
+        $this->assertTrue($waitingListAccount->flags->first()->pivot->value);
+
     }
 }
