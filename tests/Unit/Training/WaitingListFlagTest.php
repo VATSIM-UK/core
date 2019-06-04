@@ -104,6 +104,8 @@ class WaitingListFlagTest extends TestCase
     public function itIsPropagatedToExistingAccountsWhenAFlagIsAdded()
     {
         $account = factory(Account::class)->create();
+        // null list represents a flag which hasn't yet been assigned to list.
+        // Normal flow wouldn't have this, but needs to emulate the action
         $flag = factory(WaitingListFlag::class)->create(['list_id' => null]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
