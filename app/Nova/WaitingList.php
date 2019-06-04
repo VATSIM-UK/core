@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\Training\AddFlagToWaitingList;
 use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
@@ -107,6 +108,7 @@ class WaitingList extends Resource
     {
         return [
             (new AddStudentToWaitingList),
+            (new AddFlagToWaitingList)
         ];
     }
 }
