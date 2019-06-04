@@ -10,6 +10,7 @@ use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListFlag;
+use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,7 @@ class WaitingListFeatureTest extends TestCase
     public function testStudentCanBeAddedToWaitingList()
     {
         $account = factory(Account::class)->create();
-        
+
         Event::fakeFor(function () use ($account) {
             $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
                 'account_id' => $account->id,
@@ -181,19 +182,12 @@ class WaitingListFeatureTest extends TestCase
     {
         $account = factory(Account::class)->create();
         $flag = factory(WaitingListFlag::class)->create();
-
         $this->waitingList->addFlag($flag);
-        $this->waitingList->fresh()->addToWaitingList($account, $this->privacc);
 
-        dd($this->waitingList->flags);
+        handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc));
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        $waitingListAccount = $this->waitingList->fresh()->accounts->find($account->id)->pivot;
-        dd($waitingListAccount);
-        $flag = $waitingListAccount->flags->first()->pivot->id;
-
-        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/flag/{$flag}")->assertSuccessful();
-
+        $this->actingAs($this->privacc)->patch("nova-vendor/waiting-lists-manager/flag/{$waitingListAccount->flags->first()->pivot->id}/toggle")->assertSuccessful();
         $this->assertTrue($waitingListAccount->flags->first()->pivot->value);
-
     }
 }
