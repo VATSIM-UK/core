@@ -101,5 +101,7 @@ class AddWaitingListTable extends Migration
         Schema::dropIfExists('training_waiting_list_account_status');
         Schema::dropIfExists('training_waiting_list_staff');
         Schema::dropIfExists('training_waiting_list_status');
+        Schema::dropIfExists('training_waiting_list_flags');
+        Schema::dropIfExists('training_waiting_list_account_flag');
     }
 }
