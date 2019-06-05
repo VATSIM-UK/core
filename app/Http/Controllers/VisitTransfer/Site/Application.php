@@ -170,9 +170,9 @@ class Application extends BaseController
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         // Check if the CID is in the home region
-        try{
+        try {
             $referee = Account::findOrRetrieve(Input::get('referee_cid'));
-        } catch (InvalidCIDException $e){
+        } catch (InvalidCIDException $e) {
             return Redirect::back()
                 ->withError("There doesn't seem to be a VATSIM user with that ID.")
                 ->withInput();
