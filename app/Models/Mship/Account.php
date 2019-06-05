@@ -259,7 +259,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
             if (!$account) {
                 // User doesn't exist at VATSIM.NET
-                return false;
+                throw new InvalidCIDException();
             }
 
             return $account;
