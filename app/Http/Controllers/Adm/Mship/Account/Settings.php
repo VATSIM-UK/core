@@ -192,11 +192,11 @@ class Settings extends AdmController
     public function sync(AccountData $mshipAccount)
     {
         if (!$mshipAccount) {
-            return Redirect::route('adm.mship.account.index');
+            return Redirect::route('adm.mship.account.index')
+                ->withError('This user does not exist');
         }
 
-        $subscriber = new SyncSubscriber();
-        $subscriber->syncToAllServices(new AccountAltered($mshipAccount));
+        (new SyncSubscriber())->syncToAllServices(new AccountAltered($mshipAccount));
 
         return Redirect::back()
             ->withSuccess('User queued to sync to external services!');
