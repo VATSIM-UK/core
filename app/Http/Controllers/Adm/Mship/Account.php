@@ -132,7 +132,7 @@ class Account extends AdmController
 
         $vtapplications = $mshipAccount->visitTransferApplications()->orderBy('updated_at', 'desc')->get();
 
-        $this->setTitle('Account Details: ' . $mshipAccount->name);
+        $this->setTitle("Account Details:  {$mshipAccount->name}");
 
         return $this->viewMake('adm.mship.account.detail')
             ->with('selectedTab', $tab)
