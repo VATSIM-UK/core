@@ -35,7 +35,7 @@ class WaitingListAccount extends Pivot
             'training_waiting_list_account_flag',
             'waiting_list_account_id',
             'flag_id'
-        )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
+        )->withPivot(['marked_at', 'id'])->using(WaitingListAccountFlag::class);
     }
 
     /**

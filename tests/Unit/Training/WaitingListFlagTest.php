@@ -99,4 +99,21 @@ class WaitingListFlagTest extends TestCase
         // flag in test has a default value of true.
         $this->assertTrue($waitingListAccount->flags()->find($this->flag->id)->pivot->value);
     }
+
+    /** @test */
+    public function itIsPropagatedToExistingAccountsWhenAFlagIsAdded()
+    {
+        $account = factory(Account::class)->create();
+        // null list represents a flag which hasn't yet been assigned to list.
+        // Normal flow wouldn't have this, but needs to emulate the action
+        $flag = factory(WaitingListFlag::class)->create(['list_id' => null]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $this->waitingList->addFlag($flag);
+
+        // assert that the flag which has been added is related to all the accounts which exists in the waiting list.
+        $this->assertTrue($this->waitingList->accounts()->each(function ($account) use ($flag) {
+            $this->assertTrue($account->pivot->flags->contains($flag));
+        }));
+    }
 }

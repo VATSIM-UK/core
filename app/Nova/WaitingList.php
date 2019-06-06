@@ -2,12 +2,17 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\Training\AddFlagToWaitingList;
 use App\Nova\Actions\Training\AddStudentToWaitingList;
 use Benjaminhirsch\NovaSlugField\Slug;
 use Benjaminhirsch\NovaSlugField\TextWithSlug;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Panel;
 use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
 class WaitingList extends Resource
@@ -37,6 +42,8 @@ class WaitingList extends Resource
         'name',
     ];
 
+    public static $with = ['accounts', 'flags'];
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -59,6 +66,13 @@ class WaitingList extends Resource
                 1 => 'ATC Training',
                 2 => 'Pilot Training',
             ])->displayUsingLabels()->rules(['required'])->sortable(),
+
+            new Panel('Notes on Flags', [
+                Heading::make('When deleting a flag, the changes will be made to the data but to see them visually,
+                you need to fresh the page.'),
+            ]),
+
+            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please fresh the page.'),
 
             WaitingListsManager::make(),
         ];
@@ -107,6 +121,7 @@ class WaitingList extends Resource
     {
         return [
             (new AddStudentToWaitingList),
+            (new AddFlagToWaitingList)
         ];
     }
 }

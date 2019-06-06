@@ -59,7 +59,7 @@ class AddWaitingListTable extends Migration
 
         Schema::create('training_waiting_list_flags', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('list_id');
+            $table->unsignedInteger('list_id')->nullable();
             $table->string('name');
             $table->boolean('default_value');
             $table->timestamps();
@@ -101,5 +101,7 @@ class AddWaitingListTable extends Migration
         Schema::dropIfExists('training_waiting_list_account_status');
         Schema::dropIfExists('training_waiting_list_staff');
         Schema::dropIfExists('training_waiting_list_status');
+        Schema::dropIfExists('training_waiting_list_flags');
+        Schema::dropIfExists('training_waiting_list_account_flag');
     }
 }

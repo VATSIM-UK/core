@@ -16,6 +16,7 @@
                         <th class="text-left">Current Status</th>
                         <th class="text-left">ATC Hour Check</th>
                         <th>Status Change</th>
+                        <th>Flags</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -40,6 +41,16 @@
                             </div>
 
                         </td>
+                        <td >
+                            <div v-for="flag in account.flags">
+                                <p class="flex items-center">
+                                    <span class="mr-1">{{ flag.name }}</span>
+                                    <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
+                                          :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
+                                          @click="openFlagChangeModal(flag.pivot.id)"></span>
+                                </p>
+                            </div>
+                        </td>
                         <td>
                             <div class="flex justify-around">
                                 
@@ -62,6 +73,16 @@
                     </tr>
                     </tbody>
                 </table>
+
+                <portal to="modals">
+                    <transition name="fade">
+                        <confirm-flag-change-modal
+                                v-if="flagConfirmModalOpen"
+                                @confirm="confirmFlagChange"
+                                @close="closeFlagChangeModal"
+                        />
+                    </transition>
+                </portal>
             </div>
         </loading-view>
     </div>
@@ -76,6 +97,8 @@
                 loaded: false,
                 accounts: {},
                 position: 0,
+                flagConfirmModalOpen: false,
+                selectedFlag: null
             }
         },
 
@@ -141,6 +164,27 @@
                         this.loadAccounts()
                     }
                 );
+            },
+
+            openFlagChangeModal(selected) {
+                this.selectedFlag = selected
+                this.flagConfirmModalOpen = true
+            },
+
+            closeFlagChangeModal() {
+                this.flagConfirmModalOpen = false
+            },
+
+            confirmFlagChange(id) {
+                console.log(id)
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
+                    // close the modal dialog
+                    this.closeFlagChangeModal()
+                    // show a success message
+                    this.$toasted.show('Flag changed successfully!', { type: 'success'})
+                    // refresh the data
+                    this.loadAccounts()
+                })
             }
         }
     }
