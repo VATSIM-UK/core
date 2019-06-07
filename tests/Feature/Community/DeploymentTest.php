@@ -44,7 +44,7 @@ class DeploymentTest extends TestCase
         $this->followingRedirects()->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertSuccessful();
         $this->followingRedirects()->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
 
-        $this->assertCount(1, $account->fresh()->communityGroups()->count());
+        $this->assertEquals(1, $account->fresh()->communityGroups()->count());
     }
 
     /** @test * */
