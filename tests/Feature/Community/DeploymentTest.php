@@ -3,6 +3,7 @@
 namespace Tests\Feature\Community;
 
 use App\Models\Community\Group;
+use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -33,6 +34,17 @@ class DeploymentTest extends TestCase
     {
         $this->account->addCommunityGroup(Group::find(1));
         $this->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
+    }
+
+    /** @test * */
+    public function testDivisionUserCantDeployTwiceIntoUKCommunity()
+    {
+        $group = Group::find(1);
+        $account = factory(Account::class)->create();
+        $this->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertOk();
+        $this->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
+
+        $this->assertCount(1, $account->fresh()->communityGroups()->count());
     }
 
     /** @test * */
