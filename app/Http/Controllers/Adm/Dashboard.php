@@ -48,7 +48,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
             return $statistics;
         });
 
-        $membershipStats = Cache::remember('statistics.membership.graph', 60 * 24 * 60, function () {
+        $membershipStats = Cache::remember('statistics.membership.graph', (60 * 24) * 60, function () {
             $membershipStats = [];
             $membershipStatsKeys = ['members.division.current', 'members.division.new', 'members.new', 'members.current'];
             $date = \Carbon\Carbon::parse('45 days ago');

@@ -20,7 +20,7 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        $statisticsGraph = Cache::remember('networkdata::statistics.graph', 60 * 24 * 60, function () {
+        $statisticsGraph = Cache::remember('networkdata::statistics.graph', (60 * 24) * 60, function () {
             $statistics = [];
             $statisticKeys = ['applications.total', 'applications.open', 'applications.closed', 'applications.new'];
 
