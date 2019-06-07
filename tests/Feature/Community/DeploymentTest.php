@@ -41,6 +41,9 @@ class DeploymentTest extends TestCase
     {
         $group = Group::find(1);
         $account = factory(Account::class)->create();
+        $account->addState(\App\Models\Mship\State::findByCode('DIVISION'));
+        $account = $account->fresh();
+        
         $this->followingRedirects()->actingAs($account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertSuccessful();
         $this->followingRedirects()->actingAs($account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
 
