@@ -33,11 +33,12 @@
 
                         <div class="col-md-12">
                             <div class="btn-toolbar">
-                                <div class="btn-group pull-right">
+                                    <div class="btn-group pull-right" role="group">
                                     @can('use-permission', "adm/mship/account/*/impersonate")
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
                                     @endcan
-                                </div>
+                                        <a href="{{route('adm.mship.account.sync', $account->id)}}" class="btn btn-warning">Sync To Services</a>
+                                    </div>
                             </div>
                         </div>
                         <div class="clearfix">&nbsp;</div>
