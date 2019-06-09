@@ -462,6 +462,9 @@
     .navbar-expand-lg .navbar-toggler {
       display: none;
     }
+    .navbar-expand-lg .d-tablet-none {
+      display: none !important;
+    }
   }
   .navbar-light .navbar-brand {
     color: rgba(0, 0, 0, 0.9);
