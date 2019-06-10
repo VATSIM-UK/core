@@ -28,9 +28,11 @@ class FeedbackAdminTest extends TestCase
     {
         // Give user permission to see and view feedback
         $role = factory(Role::class)->create();
+        
+        
 
-        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/view/'.$this->form->slug));
-        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/list/'.$this->form->slug));
+        $role->givePermissionTo(Permission::create(['name' => 'adm/mship/feedback/view/'.$this->form->slug]));
+        $role->givePermissionTo(Permission::create(['name' => 'adm/mship/feedback/list/'.$this->form->slug]));
 
         $this->user->assignRole($role->fresh());
 
