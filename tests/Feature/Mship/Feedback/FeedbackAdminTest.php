@@ -29,10 +29,10 @@ class FeedbackAdminTest extends TestCase
         // Give user permission to see and view feedback
         $role = factory(Role::class)->create();
         
-        
-
         $role->givePermissionTo(Permission::create(['name' => 'adm/mship/feedback/view/'.$this->form->slug]));
         $role->givePermissionTo(Permission::findByName('adm/mship/feedback/list/'.$this->form->slug));
+        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/list/*'));
+        $role->givePermissionTo(Permission::findByName('adm/mship/feedback/view/*'));
 
         $this->user->assignRole($role->fresh());
 
@@ -45,7 +45,7 @@ class FeedbackAdminTest extends TestCase
         $this->actingAs($this->user->fresh())
             ->get(route('adm.mship.feedback.view', $feedback))
             ->assertRedirect()
-            ->assertSessionHas('error', 'You may not view your own feedback.');
+            ->assertSessionHasErrors();
     }
 
     /** @test */
