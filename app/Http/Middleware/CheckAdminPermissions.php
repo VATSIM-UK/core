@@ -40,7 +40,6 @@ class CheckAdminPermissions
             return $next($request);
         }
         
-        dd($newUri);
         abort(403);
     }
 
