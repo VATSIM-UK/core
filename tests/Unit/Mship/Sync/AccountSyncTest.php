@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Mship;
+namespace Tests\Unit\Mship\Sync;
 
 use App\Events\Mship\AccountAltered;
 use App\Models\Mship\Account;
@@ -16,37 +16,36 @@ class AccountSyncTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $account;
-
     protected function setUp()
     {
         parent::setUp();
 
-        $this->account = factory(Account::class)->create();
+        // Setup for event faking
         $initialDispatcher = Event::getFacadeRoot();
         Event::fake();
         Model::setEventDispatcher($initialDispatcher);
     }
 
-    /** @test **/
+    /** @test * */
     public function testItTriggersWhenEmailChanged()
     {
-        $this->account->email = 'joe@example.org';
+        $this->user->email = 'joe@example.org';
 
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test **/
+    /** @test * */
     public function testItTriggersWhenBanned()
     {
         $reason = factory(Reason::class)->create();
         $banner = factory(Account::class)->create();
-        $this->account->addBan($reason, Lorem::paragraph(), Lorem::paragraph(), $banner);
+
+        $this->user->addBan($reason, Lorem::paragraph(), Lorem::paragraph(), $banner);
 
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test **/
+    /** @test * */
     public function testItTriggersWhenUnBanned()
     {
         $ban = factory(Account\Ban::class)->create();
@@ -55,12 +54,12 @@ class AccountSyncTest extends TestCase
         Event::assertDispatched(AccountAltered::class);
     }
 
-    /** @test **/
+    /** @test * */
     public function testItDoesntTriggerWhenUntrackedValuesChanged()
     {
-        $this->account->last_login = Carbon::now();
-        $this->account->updated_at = Carbon::now();
-        $this->account->save();
+        $this->user->last_login = Carbon::now();
+        $this->user->updated_at = Carbon::now();
+        $this->user->save();
 
         Event::assertNotDispatched(AccountAltered::class);
     }

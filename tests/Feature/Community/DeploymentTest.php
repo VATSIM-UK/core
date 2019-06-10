@@ -10,43 +10,59 @@ class DeploymentTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public $account;
+    public $divisionUser;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->account = factory(\App\Models\Mship\Account::class)->create();
-        $this->account->addState(\App\Models\Mship\State::findByCode('DIVISION'));
-        $this->account = $this->account->fresh();
+        $this->divisionUser = factory(\App\Models\Mship\Account::class)->create();
+        $this->divisionUser->addState(\App\Models\Mship\State::findByCode('DIVISION'));
+        $this->divisionUser = $this->divisionUser->fresh();
     }
 
-    /** @test * */
+    /** @test */
     public function testDivisionUserCanDeploy()
     {
-        $this->actingAs($this->account)->get(route('community.membership.deploy'))->assertSuccessful();
-        $this->followingRedirects()->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertSuccessful();
+        $this->actingAs($this->divisionUser)
+            ->get(route('community.membership.deploy'))
+            ->assertSuccessful();
+
+        $this->followingRedirects()->actingAs($this->divisionUser)
+            ->post(route('community.membership.deploy.post'), ['group' => 1])
+            ->assertSuccessful();
     }
 
-    /** @test * */
+    /** @test */
     public function testDivisionUserCantDeployTwice()
     {
-        $this->account->addCommunityGroup(Group::find(1));
-        $this->actingAs($this->account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
+        // Add to the UK Community
+        $this->divisionUser->addCommunityGroup(Group::find(1));
+
+        $this->actingAs($this->divisionUser)
+            ->post(route('community.membership.deploy.post'), ['group' => 1])
+            ->assertForbidden();
     }
 
-    /** @test * */
+    /** @test */
     public function testDivisionUserCanDeployWhenOnlyInDefaultGroup()
     {
-        $this->account->addCommunityGroup(Group::find(1));
-        $this->actingAs($this->account)->get(route('community.membership.deploy'))->assertSuccessful();
+        // Add to the UK Community
+        $this->divisionUser->addCommunityGroup(Group::find(1));
+        $this->actingAs($this->divisionUser)
+            ->get(route('community.membership.deploy'))
+            ->assertSuccessful();
     }
 
-    /** @test * */
+    /** @test */
     public function testDivisionUserCantDeployWithMoreThanOneNonDefaultGroup()
     {
-        $this->account->addCommunityGroup(Group::find(1));
-        $this->account->addCommunityGroup(Group::find(2));
-        $this->actingAs($this->account)->get(route('community.membership.deploy'))->assertForbidden();
+        // Add to the UK Community & a group
+        $this->divisionUser->addCommunityGroup(Group::find(1));
+        $this->divisionUser->addCommunityGroup(Group::find(2));
+
+        $this->actingAs($this->divisionUser)
+            ->get(route('community.membership.deploy'))
+            ->assertForbidden();
     }
 }

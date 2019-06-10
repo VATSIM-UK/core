@@ -1,7 +1,7 @@
 <?php
+
 namespace Tests\Feature\Mship;
 
-use App\Models\Mship\Account;
 use App\Models\TeamSpeak\Registration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -12,14 +12,7 @@ class TeamspeakManagementTest extends TestCase
 
     private $registration;
 
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->registration = factory(Registration::class)->create();
-    }
-
-    /** @test **/
+    /** @test */
     public function testUserCanDeleteOwnRegistration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
@@ -27,16 +20,15 @@ class TeamspeakManagementTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test **/
+    /** @test */
     public function testUserCantDeleteOthersRegistration()
     {
-        $account = factory(Account::class)->create();
-        $this->followingRedirects()->actingAs($account)
+        $this->followingRedirects()->actingAs($this->user)
             ->get(route('teamspeak.delete', $this->registration))
             ->assertNotFound();
     }
 
-    /** @test **/
+    /** @test */
     public function testCanGetStatusOfOwnRegistration()
     {
         $this->followingRedirects()->actingAs($this->registration->account)
@@ -44,12 +36,18 @@ class TeamspeakManagementTest extends TestCase
             ->assertSuccessful();
     }
 
-    /** @test **/
+    /** @test */
     public function testCantGetStatusOfOthersRegistration()
     {
-        $account = factory(Account::class)->create();
-        $this->followingRedirects()->actingAs($account)
+        $this->followingRedirects()->actingAs($this->user)
             ->post(route('teamspeak.status', $this->registration))
             ->assertNotFound();
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->registration = factory(Registration::class)->create();
     }
 }

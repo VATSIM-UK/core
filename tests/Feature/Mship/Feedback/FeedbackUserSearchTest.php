@@ -10,38 +10,34 @@ class FeedbackUserSearchTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $member;
-    private $otherMember;
+    private $otherUser;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->member = factory(Account::class)->create();
-        $this->otherMember = factory(Account::class)->create();
+        $this->otherUser = factory(Account::class)->create();
     }
 
-    /** @test * */
+    /** @test */
     public function testItReturnsAnotherUser()
     {
-        $searchQuery = $this->actingAs($this->member)
-            ->get(route('mship.feedback.usersearch', $this->otherMember->real_name))
+        $searchQuery = $this->actingAs($this->user)
+            ->get(route('mship.feedback.usersearch', $this->otherUser->real_name))
             ->getContent();
 
-        $this->assertContains(e($this->otherMember->real_name), $searchQuery);
-        $this->assertContains((string) ($this->otherMember->id), $searchQuery);
-        /* need to assert contains state */
+        $this->assertContains(e($this->otherUser->real_name), $searchQuery);
+        $this->assertContains((string)($this->otherUser->id), $searchQuery);
     }
 
-    /** @test * */
+    /** @test */
     public function testItDoesNotReturnCurrentUser()
     {
-        $searchQuery = $this->actingAs($this->member)
-                            ->get(route('mship.feedback.usersearch', $this->member->real_name))
-                            ->getContent();
+        $searchQuery = $this->actingAs($this->user)
+            ->get(route('mship.feedback.usersearch', $this->user->real_name))
+            ->getContent();
 
-        $this->assertNotContains(e($this->member->real_name), $searchQuery);
-        $this->assertNotContains((string) ($this->member->id), $searchQuery);
-        /* need to assert does not contain state */
+        $this->assertNotContains(e($this->user->real_name), $searchQuery);
+        $this->assertNotContains((string)($this->user->id), $searchQuery);
     }
 }

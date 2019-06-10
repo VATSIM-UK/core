@@ -9,10 +9,11 @@ class CookieConsentTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test * */
-    public function testGuestDoesNotHaveCookieSet()
+    /** @test */
+    public function testUserPromtedToAcceptCookies()
     {
-        $this->get(route('site.home'))->assertCookieMissing('vuk_cookie_consent')
+        $this->get(route('site.home'))
+            ->assertCookieMissing('vuk_cookie_consent')
             ->assertSee('Your experience on this site will be improved by allowing cookies.');
     }
 }

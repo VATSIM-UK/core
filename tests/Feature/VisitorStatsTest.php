@@ -9,7 +9,7 @@ class VisitorStatsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test * */
+    /** @test */
     public function testNoHoursArePulledOnGet()
     {
         $this->actingAs($this->privacc)
@@ -17,7 +17,7 @@ class VisitorStatsTest extends TestCase
             ->assertDontSee('accounts');
     }
 
-    /** @test * */
+    /** @test */
     public function testOnlyVisitingControllersAreSelected()
     {
         $this->withoutMiddleware('auth_full_group')

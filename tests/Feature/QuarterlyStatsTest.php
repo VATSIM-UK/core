@@ -12,8 +12,8 @@ class QuarterlyStatsTest extends TestCase
     public function testItLoadsQStats()
     {
         $this->actingAs($this->privacc)
-                ->get(route('adm.ops.qstats.index'))
-                ->assertSuccessful();
+            ->get(route('adm.ops.qstats.index'))
+            ->assertSuccessful();
     }
 
     public function testItGeneratesQStats()
@@ -24,7 +24,7 @@ class QuarterlyStatsTest extends TestCase
         ];
 
         $this->actingAs($this->privacc)
-                ->post(route('adm.ops.qstats.generate', $stats))
-                ->assertSuccessful();
+            ->post(route('adm.ops.qstats.generate', $stats))
+            ->assertSuccessful();
     }
 }

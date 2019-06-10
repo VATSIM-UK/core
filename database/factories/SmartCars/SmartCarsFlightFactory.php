@@ -9,7 +9,7 @@ $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
         'description' => $faker->paragraph,
         'image' => $faker->image(),
         'featured' => $faker->optional(0.1, 0)->passthrough(1),
-        'flightnum' => 1,
+        'flightnum' => "1",
         'departure_id' => function () {
             return factory(\App\Models\Smartcars\Airport::class)->create()->id;
         },
@@ -23,7 +23,7 @@ $factory->define(\App\Models\Smartcars\Flight::class, function (Faker $faker) {
         },
         'cruise_altitude' => $faker->numberBetween(1000, 30000),
         'distance' => $faker->randomFloat(2, 10, 160),
-        'flight_time' => $faker->randomFloat(2, 0, 5),
+        'flight_time' => (string) $faker->randomFloat(2, 0, 5),
         'notes' => $faker->paragraph,
         'enabled' => 1,
         'created_at' => \Carbon\Carbon::now(),

@@ -8,9 +8,9 @@ use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
-use Tests\UnitTestCase;
+use Tests\TestCase;
 
-class BookingsRepositoryTest extends UnitTestCase
+class BookingsRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
 

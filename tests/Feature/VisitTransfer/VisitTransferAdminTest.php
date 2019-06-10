@@ -30,7 +30,7 @@ class VisitTransferAdminTest extends TestCase
         $this->application = $this->application->fresh();
     }
 
-    /** @test * */
+    /** @test */
     public function testThatItDisplaysCheckOutcomes()
     {
         $this->application->status = Application::STATUS_SUBMITTED;
@@ -56,7 +56,7 @@ class VisitTransferAdminTest extends TestCase
             ->assertSeeTextInOrder(['90 Day Check', 'within 90 days', '50 Hour Check', 'in excess of 50 hours']);
     }
 
-    /** @test * */
+    /** @test */
     public function testThatItShowsBothReferences()
     {
         $this->actingAs($this->privacc, 'web')
@@ -65,7 +65,7 @@ class VisitTransferAdminTest extends TestCase
             ->assertSee('Reference 2 - '.e($this->ref2->account->real_name));
     }
 
-    /** @test * */
+    /** @test */
     public function testThatItDoesntShowDeletedReferences()
     {
         $this->ref1->delete();
@@ -76,7 +76,7 @@ class VisitTransferAdminTest extends TestCase
             ->assertSee('Application has system deleted references in addition to the below:');
     }
 
-    /** @test **/
+    /** @test */
     public function testInfinitePlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->privacc, 'web')
@@ -85,7 +85,7 @@ class VisitTransferAdminTest extends TestCase
             ->assertSessionHas('success');
     }
 
-    /** @test **/
+    /** @test */
     public function testTrainingSpacesHasToBePresent()
     {
         $array = $this->createTestPostData();
@@ -97,7 +97,7 @@ class VisitTransferAdminTest extends TestCase
             ->assertRedirect()->assertSessionHas('errors');
     }
 
-    /** @test **/
+    /** @test */
     public function testNumberOfPlacesCanBeSelectedForAFacility()
     {
         $this->actingAs($this->privacc, 'web')
