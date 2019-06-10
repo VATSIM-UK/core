@@ -184,13 +184,14 @@ class EmailAssignmentTest extends TestCase
     /** @test */
     public function testItTriggersAnUpdateWhenUnAssigningSSOEmail()
     {
-        $sso_email = factory(Email::class)->create();
+        $sso_email = factory(\App\Models\Sso\Email::class)->create();
 
         $initialDispatcher = Event::getFacadeRoot();
         Event::fake();
         Model::setEventDispatcher($initialDispatcher);
 
-        $this->actingAs($this->user)->post(route('mship.manage.email.assignments.post', ['assign_' . $sso_email->ssoAccount->id => 'pri']));
+        $this->actingAs($this->user)
+            ->post(route('mship.manage.email.assignments.post', ['assign_' . $sso_email->ssoAccount->id => 'pri']));
 
         Event::assertDispatched(AccountAltered::class);
     }
