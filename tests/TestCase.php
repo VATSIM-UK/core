@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Sys\Notification;
 use Carbon\Carbon;
 use App\Models\Mship\Account;
 use Spatie\Permission\Models\Role;
@@ -41,6 +42,7 @@ abstract class TestCase extends BaseTestCase
         app()['cache']->forget('spatie.permission.cache');
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
 
+        \Illuminate\Support\Facades\Notification::fake();
         // Create global super admin for testing
         $this->createPrivaccUser();
 
