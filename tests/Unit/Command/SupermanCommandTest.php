@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Command;
 
 use Laravel\BrowserKitTesting\DatabaseTransactions;
 use Spatie\Permission\Models\Role;

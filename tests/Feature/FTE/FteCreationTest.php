@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\FTE;
 
 use App\Models\Smartcars\Flight;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
