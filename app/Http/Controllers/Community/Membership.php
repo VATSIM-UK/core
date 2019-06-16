@@ -30,7 +30,7 @@ class Membership extends BaseController
         \Auth::user()->addCommunityGroup($chosenGroup);
 
         if (!$chosenGroup->default) {
-            \Auth::user()->syncWithDefaultCommunityGroup();
+            \Auth::user()->fresh()->syncWithDefaultCommunityGroup();
         }
 
         return redirect($this->redirectPath())->withSuccess("You have successfully been deployed to the '".$chosenGroup->name."' Group!");
