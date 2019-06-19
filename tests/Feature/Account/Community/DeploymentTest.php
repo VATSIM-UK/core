@@ -45,6 +45,18 @@ class DeploymentTest extends TestCase
     }
 
     /** @test */
+    public function testDivisionUserCantDeployTwiceIntoUKCommunity()
+    {
+        $account = factory(Account::class)->create();
+        $account->addState(\App\Models\Mship\State::findByCode('DIVISION'));
+        $account = $account->fresh();
+
+        $this->followingRedirects()->actingAs($account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertSuccessful();
+        $this->followingRedirects()->actingAs($account)->post(route('community.membership.deploy.post'), ['group' => 1])->assertForbidden();
+        $this->assertEquals(1, $account->fresh()->communityGroups()->count());
+    }
+
+    /** @test */
     public function testDivisionUserCanDeployWhenOnlyInDefaultGroup()
     {
         // Add to the UK Community
