@@ -1,7 +1,7 @@
 <template>
     <div>
         <heading class="mb-6" v-if="activeBucket">Eligible Students</heading>
-        <heading class="mb-6 mt-6" v-else>Master List</heading>
+        <heading class="mb-6 mt-6" v-else>Ineligible Students</heading>
         <loading-view :loading="!loaded">
             <p class="flex flex-col justify-center text-center p-2" v-if="numberOfAccounts < 1">
                 There are no accounts assigned to this 'bucket'.
