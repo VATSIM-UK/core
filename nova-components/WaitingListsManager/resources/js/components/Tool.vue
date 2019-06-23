@@ -29,7 +29,11 @@
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
-                        <td v-bind:class="{ 'text-green': account.atcHourCheck }"><span>{{ getHourCheck(account.atcHourCheck) }}</span></td>
+                        <td>
+                            <span class="inline-block rounded-full w-2 h-2"
+                                  :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
+                                  @click="openFlagChangeModal(flag.pivot.id)"></span>
+                        </td>
                         <td>
                             <div class="flex justify-around">
                                 <button class="btn btn-sm btn-outline" v-if="account.status.name === 'Active'"

@@ -33,6 +33,11 @@ class WaitingList extends Resource
 
     public static $group = 'Training';
 
+    public static function label()
+    {
+        return 'Waiting Lists';
+    }
+
     /**
      * The columns that should be searched.
      *
