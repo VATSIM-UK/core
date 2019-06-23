@@ -72,10 +72,130 @@ class WaitingListAccountTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $data = factory(Atc::class)->create(['account_id' => $account->id, 'minutes_online' => 721, 'disconnected_at' => now()]);
+        factory(Atc::class)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 721,
+                'disconnected_at' => now()
+            ]);
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
 
         $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itDetectsWhen12HourRequirementHaveNotBeenMet()
+    {
+        $account = factory(Account::class)->create();
+
+        factory(Atc::class)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 20,
+                'disconnected_at' => now()
+            ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertFalse($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itChecksForMultipleSessionsIn12HourRequirement()
+    {
+        $account = factory(Account::class)->create();
+
+        factory(Atc::class, 12)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 60,
+                'disconnected_at' => now()
+            ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itDisregardsNonUKControllingSessionsForHourCheck()
+    {
+        $account = factory(Account::class)->create();
+
+        // 12 sessions of an hour each to satisfy the requirement, but with non-uk callsign
+        factory(Atc::class, 12)->create(
+            [
+                'account_id' => $account->id,
+                'minutes_online' => 60,
+                'disconnected_at' => now(), 'callsign' => 'LFPG_APP'
+            ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertFalse($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itDisregardsSessionsGreaterThan3MonthsAgo()
+    {
+        $account = factory(Account::class)->create();
+
+        // 12 sessions of an hour satisfy the hour requirement, but not the date range
+        // subtracting 3 months and a day satisfies a boundary condition
+        factory(Atc::class, 12)
+            ->create(
+                [
+                    'account_id' => $account->id, 'minutes_online' => 60,
+                    'disconnected_at' => now()->subMonth(3)->subDay(1)
+                ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertFalse($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itHandlesExactly3MonthsAgoForAtcHourCheckCorrectly()
+    {
+        $account = factory(Account::class)->create();
+
+        // 12 sessions of an hour which occurred within the 3 month range
+        factory(Atc::class, 12)
+            ->create(
+                [
+                    'account_id' => $account->id, 'minutes_online' => 60,
+                    'disconnected_at' => now()->subMonth(3)
+                ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertTrue($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
+    }
+
+    /** @test */
+    public function itHandlesJustShortOfThe12HourRequirement()
+    {
+        $account = factory(Account::class)->create();
+
+        // 11 sessions of an hour which occurred within the 3 month range
+        factory(Atc::class, 11)
+            ->create(
+                [
+                    'account_id' => $account->id, 'minutes_online' => 60,
+                    'disconnected_at' => now()
+                ]);
+
+        // last session brings the total to 11 hours 59 minutes of controlling time.
+        factory(Atc::class, 1)
+            ->create(
+                [
+                    'account_id' => $account->id, 'minutes_online' => 59,
+                    'disconnected_at' => now()
+                ]);
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        $this->assertFalse($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
     }
 }
