@@ -1,8 +1,10 @@
 <template>
     <div>
+        <heading class="mb-6" v-if="activeBucket">Eligible Students</heading>
+        <heading class="mb-6 mt-6" v-else>Master List</heading>
         <loading-view :loading="!loaded">
             <p class="flex flex-col justify-center text-center p-2" v-if="numberOfAccounts < 1">
-                There are no accounts assigned to this waiting list.
+                There are no accounts assigned to this 'bucket'.
             </p>
 
             <div class="overflow-hidden overflow-x-auto -my-3 -mx-6" v-if="loaded && numberOfAccounts >= 1">
@@ -98,7 +100,8 @@
                 accounts: {},
                 position: 0,
                 flagConfirmModalOpen: false,
-                selectedFlag: null
+                selectedFlag: null,
+                activeBucket: this.field.activeBucket
             }
         },
 
@@ -114,12 +117,23 @@
 
         methods: {
             loadAccounts() {
-                axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}`)
-                    .then(response => {
-                        this.accounts = response.data.data;
-                        this.loaded = true;
-                    }
-                );
+
+                if (!this.activeBucket) {
+                    axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}`)
+                        .then(response => {
+                                this.accounts = response.data.data;
+                                this.loaded = true;
+                            }
+                        );
+                } else {
+                    axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active/index`)
+                        .then(response => {
+                                this.accounts = response.data.data;
+                                this.loaded = true;
+                            }
+                        );
+                }
+
             },
 
             getHourCheck(check) {

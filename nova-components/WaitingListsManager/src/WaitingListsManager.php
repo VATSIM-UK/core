@@ -16,6 +16,11 @@ class WaitingListsManager extends ResourceTool
         return 'Waiting List Students';
     }
 
+    public function activeBucket()
+    {
+        return $this->withMeta(['activeBucket' => true]);
+    }
+
     /**
      * Get the component name for the resource tool.
      *
