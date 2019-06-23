@@ -72,7 +72,9 @@ class WaitingList extends Resource
                 you need to fresh the page.'),
             ]),
 
-            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please fresh the page.'),
+            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please refresh the page.'),
+
+            WaitingListsManager::make()->activeBucket(),
 
             WaitingListsManager::make(),
         ];

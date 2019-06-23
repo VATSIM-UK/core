@@ -132,4 +132,27 @@ class WaitingListAccount extends Pivot
     {
         return $this->atcHourCheck();
     }
+
+    public function allFlagsChecker()
+    {
+        $checked = true;
+
+        // iterate through each of the flags to see if they are true. If a false flag is detected, stop iterating.
+        $this->flags()->each(function ($model) use (&$checked) {
+            if (!$model->pivot->value) {
+                $checked = false;
+                return false;
+            }
+        });
+
+        return $checked;
+    }
+
+    public function getEligibilityAttribute()
+    {
+        // is the status of the account deferred
+        // are all the flags true
+        // and is the atc hour check true
+        return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
+    }
 }
