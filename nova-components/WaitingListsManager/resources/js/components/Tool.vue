@@ -91,6 +91,7 @@
 </template>
 
 <script>
+    import { EventBus } from '../eventBus'
     export default {
         props: ['resourceName', 'resourceId', 'field'],
 
@@ -107,6 +108,9 @@
 
         mounted() {
             this.loadAccounts()
+
+            // required to detect any changes in the other buckets which might be present on the page.
+            EventBus.$on('list-changed', this.loadAccounts)
         },
 
         computed: {
@@ -143,7 +147,7 @@
             removeAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/remove`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -151,7 +155,7 @@
             promoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/promote`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -159,7 +163,7 @@
             demoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/demote`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -167,7 +171,7 @@
             deferAccount(account) {
                 axios.patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/defer`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts()
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -175,7 +179,7 @@
             activeAccount(account) {
                 axios.patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts()
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -197,7 +201,7 @@
                     // show a success message
                     this.$toasted.show('Flag changed successfully!', { type: 'success'})
                     // refresh the data
-                    this.loadAccounts()
+                    EventBus.$emit('list-changed')
                 })
             }
         }
