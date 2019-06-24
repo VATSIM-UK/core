@@ -36,6 +36,9 @@ class ToolServiceProvider extends ServiceProvider
      */
     protected function routes()
     {
+        Route::model('waitingList', WaitingList::class);
+        Route::model('waitingListAccountFlag', WaitingListAccountFlag::class);
+
         if ($this->app->routesAreCached()) {
             return;
         }
@@ -43,9 +46,6 @@ class ToolServiceProvider extends ServiceProvider
         Route::middleware(['nova', SubstituteBindings::class])
                 ->prefix('nova-vendor/waiting-lists-manager')
                 ->group(__DIR__.'/../routes/api.php');
-
-        Route::model('waitingList', WaitingList::class);
-        Route::model('waitingListAccountFlag', WaitingListAccountFlag::class);
     }
 
     /**

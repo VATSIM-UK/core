@@ -22,7 +22,20 @@ class WaitingListsManagerController extends Controller
 
     public function index(WaitingList $waitingList)
     {
-        return WaitingListAccountResource::collection($waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get());
+        return WaitingListAccountResource::collection(
+            $waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get()
+                ->filter(function ($model, $key) {
+                    return $model->pivot->eligibility == false;
+                }));
+    }
+
+    public function activeIndex(WaitingList $waitingList)
+    {
+        return WaitingListAccountResource::collection(
+            $waitingList->accounts()->where('position', '>', 0)->orderBy('position')->get()
+                ->filter(function ($model, $key) {
+                    return $model->pivot->eligibility == true;
+                }));
     }
 
     public function destroy(WaitingList $waitingList, Request $request)
@@ -80,5 +93,10 @@ class WaitingListsManagerController extends Controller
         event(new AccountChangedStatusInWaitingList($account, $waitingList, $request->user()));
 
         return [];
+    }
+
+    private function findAccount($id)
+    {
+        return Account::findOrFail($id);
     }
 }

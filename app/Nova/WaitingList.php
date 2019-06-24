@@ -33,6 +33,11 @@ class WaitingList extends Resource
 
     public static $group = 'Training';
 
+    public static function label()
+    {
+        return 'Waiting Lists';
+    }
+
     /**
      * The columns that should be searched.
      *
@@ -72,7 +77,9 @@ class WaitingList extends Resource
                 you need to fresh the page.'),
             ]),
 
-            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please fresh the page.'),
+            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please refresh the page.'),
+
+            WaitingListsManager::make()->activeBucket(),
 
             WaitingListsManager::make(),
         ];

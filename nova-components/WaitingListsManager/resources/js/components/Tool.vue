@@ -1,8 +1,10 @@
 <template>
     <div>
+        <heading class="mb-6" v-if="activeBucket">Eligible Students</heading>
+        <heading class="mb-6 mt-6" v-else>Ineligible Students</heading>
         <loading-view :loading="!loaded">
             <p class="flex flex-col justify-center text-center p-2" v-if="numberOfAccounts < 1">
-                There are no accounts assigned to this waiting list.
+                There are no accounts assigned to this 'bucket'.
             </p>
 
             <div class="overflow-hidden overflow-x-auto -my-3 -mx-6" v-if="loaded && numberOfAccounts >= 1">
@@ -27,7 +29,11 @@
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
-                        <td v-bind:class="{ 'text-green': account.atcHourCheck }"><span>{{ getHourCheck(account.atcHourCheck) }}</span></td>
+                        <td>
+                            <span class="inline-block rounded-full w-2 h-2"
+                                  :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
+                                  @click="openFlagChangeModal(flag.pivot.id)"></span>
+                        </td>
                         <td>
                             <div class="flex justify-around">
                                 <button class="btn btn-sm btn-outline" v-if="account.status.name === 'Active'"
@@ -89,6 +95,7 @@
 </template>
 
 <script>
+    import { EventBus } from '../eventBus'
     export default {
         props: ['resourceName', 'resourceId', 'field'],
 
@@ -98,12 +105,16 @@
                 accounts: {},
                 position: 0,
                 flagConfirmModalOpen: false,
-                selectedFlag: null
+                selectedFlag: null,
+                activeBucket: this.field.activeBucket
             }
         },
 
         mounted() {
             this.loadAccounts()
+
+            // required to detect any changes in the other buckets which might be present on the page.
+            EventBus.$on('list-changed', this.loadAccounts)
         },
 
         computed: {
@@ -114,12 +125,23 @@
 
         methods: {
             loadAccounts() {
-                axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}`)
-                    .then(response => {
-                        this.accounts = response.data.data;
-                        this.loaded = true;
-                    }
-                );
+
+                if (!this.activeBucket) {
+                    axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}`)
+                        .then(response => {
+                                this.accounts = response.data.data;
+                                this.loaded = true;
+                            }
+                        );
+                } else {
+                    axios.get(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active/index`)
+                        .then(response => {
+                                this.accounts = response.data.data;
+                                this.loaded = true;
+                            }
+                        );
+                }
+
             },
 
             getHourCheck(check) {
@@ -129,7 +151,7 @@
             removeAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/remove`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -137,7 +159,7 @@
             promoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/promote`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -145,7 +167,7 @@
             demoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/demote`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts();
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -153,7 +175,7 @@
             deferAccount(account) {
                 axios.patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/defer`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts()
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -161,7 +183,7 @@
             activeAccount(account) {
                 axios.patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active`, { account_id: account })
                     .then(response => {
-                        this.loadAccounts()
+                        EventBus.$emit('list-changed')
                     }
                 );
             },
@@ -183,7 +205,7 @@
                     // show a success message
                     this.$toasted.show('Flag changed successfully!', { type: 'success'})
                     // refresh the data
-                    this.loadAccounts()
+                    EventBus.$emit('list-changed')
                 })
             }
         }
