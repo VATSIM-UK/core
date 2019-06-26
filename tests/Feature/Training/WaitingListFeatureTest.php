@@ -204,4 +204,18 @@ class WaitingListFeatureTest extends TestCase
             ->patch("nova-vendor/waiting-lists-manager/note/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
             ->assertSuccessful();
     }
+
+    /** @test */
+    public function testStudentsCanHaveExistingNotesChanged()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
+        $waitingListAccount->addNote('This is a note');
+
+        $this->actingAs($this->privacc)
+            ->patch("nova-vendor/waiting-lists-manager/note/{$waitingListAccount->id}/edit", ['notes' => 'This is a modified note'])
+            ->assertSuccessful();
+    }
 }
