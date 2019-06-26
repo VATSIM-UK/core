@@ -165,4 +165,13 @@ class WaitingListAccount extends Pivot
 
         return $this->notes;
     }
+
+    public function editNote($contents)
+    {
+        // Purpose in future involves logging changes in contents (might look similar to add method).
+        $this->notes = $contents;
+        $this->save();
+
+        return $this->notes;
+    }
 }
