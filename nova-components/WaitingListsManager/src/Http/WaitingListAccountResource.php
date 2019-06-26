@@ -19,7 +19,8 @@ class WaitingListAccountResource extends JsonResource
             'atcHourCheck' => $this->pivot->atcHourCheck,
             'created_at' => $this->pivot->created_at,
             'status' => new WaitingListStatusResource($this->pivot->status->first()),
-            'flags' => $this->pivot->flags
+            'flags' => $this->pivot->flags,
+            'notes' => $this->pivot->notes
         ];
     }
 }
