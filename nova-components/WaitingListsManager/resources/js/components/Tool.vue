@@ -25,7 +25,7 @@
                     <tbody>
                     <tr v-for="(account, index) in accounts" :class="{ 'opacity-50': !account.status.default }">
                         <td><span class="font-semibold">{{ account.position }}</span></td>
-                        <td>{{ account.name }}</td>
+                        <td><span @click="openNotesModal(account)" class="cursor-pointer">{{ account.name }}</span></td>
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
@@ -87,6 +87,19 @@
                                 @confirm="confirmFlagChange"
                                 @close="closeFlagChangeModal"
                         />
+
+                    </transition>
+
+                </portal>
+
+                <portal to="modals">
+                    <transition name="fade">
+                        <text-input-modal
+                            v-if="notesModalOpen"
+                            @confirm="createNote"
+                            @close="closeNotesModal"
+                            :account="selectedAccount"
+                        />
                     </transition>
                 </portal>
             </div>
@@ -105,7 +118,9 @@
                 accounts: {},
                 position: 0,
                 flagConfirmModalOpen: false,
+                notesModalOpen: false,
                 selectedFlag: null,
+                selectedAccount: null,
                 activeBucket: this.field.activeBucket
             }
         },
@@ -197,6 +212,15 @@
                 this.flagConfirmModalOpen = false
             },
 
+            openNotesModal(selected) {
+                this.selectedAccount = selected
+                this.notesModalOpen = true
+            },
+
+            closeNotesModal() {
+                this.notesModalOpen = false
+            },
+
             confirmFlagChange(id) {
                 console.log(id)
                 Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
@@ -205,6 +229,18 @@
                     // show a success message
                     this.$toasted.show('Flag changed successfully!', { type: 'success'})
                     // refresh the data
+                    EventBus.$emit('list-changed')
+                })
+            },
+
+            createNote (payload) {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/note/${this.selectedAccount.pivot_id}/create`, {
+                    notes: payload.value
+                }).then((response) => {
+                    this.closeNotesModal()
+
+                    this.$toasted.show(response.success)
+
                     EventBus.$emit('list-changed')
                 })
             }
