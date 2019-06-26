@@ -198,4 +198,19 @@ class WaitingListAccountTest extends TestCase
 
         $this->assertFalse($this->waitingList->accounts->find($account->id)->pivot->atcHourCheck());
     }
+
+    /** @test */
+    public function itCanHaveNotesAdded()
+    {
+        $account = factory(Account::class)->create();
+
+        $this->waitingList->addToWaitingList($account, $this->privacc);
+
+        // grab the pivot model
+        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
+
+        $waitingListAccount->addNote('This is a note');
+
+        $this->assertEquals('This is a note', $waitingListAccount->fresh()->notes);
+    }
 }

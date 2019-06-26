@@ -157,4 +157,12 @@ class WaitingListAccount extends Pivot
         // and is the atc hour check true
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
     }
+
+    public function addNote($contents)
+    {
+        $this->notes = $contents;
+        $this->save();
+
+        return $this->notes;
+    }
 }

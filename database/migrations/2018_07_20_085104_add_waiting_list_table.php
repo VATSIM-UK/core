@@ -28,6 +28,7 @@ class AddWaitingListTable extends Migration
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('added_by')->nullable();
             $table->integer('position')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
