@@ -14,6 +14,7 @@ class WaitingListAccountResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'pivot_id' => $this->pivot->id,
             'name' => $this->name,
             'position' => $this->pivot->position,
             'atcHourCheck' => $this->pivot->atcHourCheck,
