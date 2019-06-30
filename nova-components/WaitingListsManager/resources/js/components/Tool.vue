@@ -16,6 +16,7 @@
                         <th class="text-left">CID</th>
                         <th class="text-left">Added On</th>
                         <th class="text-left">Current Status</th>
+                        <th class="text-left">Notes</th>
                         <th class="text-left">Hour Check</th>
                         <th>Status Change</th>
                         <th>Flags</th>
@@ -28,16 +29,23 @@
                         <td>
                             <div class="flex items-center">
                                 <p>{{ account.name }}</p>
-                                <div @click="openNotesModal(account)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-60 hover:text-90">
-                                        <path class="heroicon-ui" d="M8 4c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h2zm0 2H6v14h12V6h-2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2zm2-2v2h4V4h-4z"/>
-                                    </svg>
-                                </div>
                             </div>
                         </td>
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
+                        <td>
+                            <span v-if="account.notes" @click="openNotesModal(account)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-70 hover:text-primary">
+                                    <path class="heroicon-ui" d="M6 2h9a1 1 0 0 1 .7.3l4 4a1 1 0 0 1 .3.7v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2zm9 2.41V7h2.59L15 4.41zM18 9h-3a2 2 0 0 1-2-2V4H6v16h12V9zm-2 7a1 1 0 0 1-1 1H9a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1zm0-4a1 1 0 0 1-1 1H9a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1zm-5-4a1 1 0 0 1-1 1H9a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
+                                </svg>
+                            </span>
+                            <span v-else @click="openNotesModal(account)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-70 hover:text-primary">
+                                    <path class="heroicon-ui" d="M6 2h9a1 1 0 0 1 .7.3l4 4a1 1 0 0 1 .3.7v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2zm9 2.41V7h2.59L15 4.41zM18 9h-3a2 2 0 0 1-2-2V4H6v16h12V9z"/>
+                                </svg>
+                            </span>
+                        </td>
                         <td>
                             <span class="inline-block rounded-full w-2 h-2"
                                   :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
