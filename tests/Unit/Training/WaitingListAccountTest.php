@@ -209,23 +209,8 @@ class WaitingListAccountTest extends TestCase
         // grab the pivot model
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        $waitingListAccount->addNote('This is a note');
+        $waitingListAccount->notes = 'This is a note';
 
-        $this->assertEquals('This is a note', $waitingListAccount->fresh()->notes);
-    }
-
-    /** @test */
-    public function itCanHaveNotesModified()
-    {
-        $account = factory(Account::class)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-
-        // grab the pivot model
-        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-        $waitingListAccount->addNote('This is a note.');
-        $waitingListAccount->editNote('This is a changed note.');
-
-        $this->assertEquals('This is a changed note.', $waitingListAccount->fresh()->notes);
+        $this->assertEquals('This is a note', $waitingListAccount->notes);
     }
 }

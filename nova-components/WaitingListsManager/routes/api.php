@@ -10,7 +10,6 @@ Route::patch('/accounts/{waitingList}/defer', 'Vatsimuk\WaitingListsManager\Http
 Route::get('/accounts/{waitingList}/active/index', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@activeIndex');
 Route::patch('/accounts/{waitingList}/active', 'Vatsimuk\WaitingListsManager\Http\WaitingListsManagerController@active');
 
-Route::patch('/note/{waitingListAccount}/create', 'Vatsimuk\WaitingListsManager\Http\WaitingListNoteController@create');
-Route::patch('/note/{waitingListAccount}/edit', 'Vatsimuk\WaitingListsManager\Http\WaitingListNoteController@edit');
+Route::patch('/notes/{waitingListAccount}/create', 'Vatsimuk\WaitingListsManager\Http\WaitingListNoteController@create');
 
 Route::patch('/flag/{waitingListAccountFlag}/toggle', 'Vatsimuk\WaitingListsManager\Http\WaitingListFlagController@toggle');

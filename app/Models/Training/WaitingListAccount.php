@@ -158,12 +158,9 @@ class WaitingListAccount extends Pivot
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
     }
 
-    public function addNote($contents)
+    public function setNotesAttribute($value)
     {
-        $this->notes = $contents;
-        $this->save();
-
-        return $this->notes;
+        $this->attributes['notes'] =  $value;
     }
 
     public function editNote($contents)
