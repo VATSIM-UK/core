@@ -10,13 +10,13 @@
                 autocomplete="off"
                 @keydown="handleKeydown"
                 @submit.prevent.stop="handleConfirm"
-                class="bg-white rounded-lg shadow-lg overflow-hidden w-action"
+                class="bg-white rounded-lg shadow-lg overflow-hidden w-action-fields"
         >
             <div>
                 <heading :level="2" class="border-b border-40 py-8 px-8">Editing Notes For {{ account.name }} ({{ account.id }})</heading>
 
                 <div class="px-6 py-8">
-                    <textarea rows="4" v-model="text" class="w-full form-control form-input form-input-bordered"></textarea>
+                    <textarea v-model="text" rows="10" class="w-full form-control form-input form-input-bordered h-full" autofocus></textarea>
                 </div>
             </div>
 
