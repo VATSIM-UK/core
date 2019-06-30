@@ -16,7 +16,7 @@
                         <th class="text-left">CID</th>
                         <th class="text-left">Added On</th>
                         <th class="text-left">Current Status</th>
-                        <th class="text-left">ATC Hour Check</th>
+                        <th class="text-left">Hour Check</th>
                         <th>Status Change</th>
                         <th>Flags</th>
                         <th></th>
@@ -25,7 +25,16 @@
                     <tbody>
                     <tr v-for="(account, index) in accounts" :class="{ 'opacity-50': !account.status.default }">
                         <td><span class="font-semibold">{{ account.position }}</span></td>
-                        <td><span @click="openNotesModal(account)" class="cursor-pointer">{{ account.name }}</span></td>
+                        <td>
+                            <div class="flex items-center">
+                                <p>{{ account.name }}</p>
+                                <div @click="openNotesModal(account)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-60 hover:text-90">
+                                        <path class="heroicon-ui" d="M8 4c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h2zm0 2H6v14h12V6h-2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2zm2-2v2h4V4h-4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </td>
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
                         <td>{{ account.status.name }}</td>
@@ -48,8 +57,8 @@
 
                         </td>
                         <td >
-                            <div v-for="flag in account.flags">
-                                <p class="flex items-center">
+                            <div v-for="flag in account.flags" class="flex-row">
+                                <p class="text-center">
                                     <span class="mr-1">{{ flag.name }}</span>
                                     <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
                                           :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
@@ -239,7 +248,7 @@
                 }).then((response) => {
                     this.closeNotesModal()
 
-                    this.$toasted.show(response.success)
+                    this.$toasted.show(response.data.success, { type: 'success' })
 
                     EventBus.$emit('list-changed')
                 })
