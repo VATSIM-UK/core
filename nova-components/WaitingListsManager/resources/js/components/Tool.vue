@@ -15,7 +15,6 @@
                         <th class="text-left">Name</th>
                         <th class="text-left">CID</th>
                         <th class="text-left">Added On</th>
-                        <th class="text-left">Current Status</th>
                         <th class="text-left">Notes</th>
                         <th class="text-left">Hour Check</th>
                         <th>Status Change</th>
@@ -33,7 +32,6 @@
                         </td>
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
-                        <td>{{ account.status.name }}</td>
                         <td>
                             <span v-if="account.notes" @click="openNotesModal(account)">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-70 hover:text-primary">
