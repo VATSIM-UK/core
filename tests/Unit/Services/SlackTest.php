@@ -8,14 +8,16 @@ use Tests\TestCase;
 
 class SlackTest extends TestCase
 {
-    public function testSlackApiGivesInvalidAuth()
+    /** @test */
+    public function itSlackApiGivesInvalidAuth()
     {
         $users = SlackUser::lists();
         $this->assertEquals('invalid_auth', $users->error);
         $this->assertFalse($users->ok);
     }
 
-    public function testItLogsWhenSlackCredentialsIncorrect()
+    /** @test */
+    public function itItLogsWhenSlackCredentialsIncorrect()
     {
         Artisan::call('slack:manager');
         $this->assertEquals("Slack credentials invalid!\n", Artisan::output());

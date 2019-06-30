@@ -18,14 +18,14 @@ class AuthenticationTest extends TestCase
      */
     protected $authenticationInstance;
 
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         $this->authenticationInstance = new \App\Http\Controllers\Auth\LoginController();
         Session::flush();
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         parent::tearDown();
         $this->authenticationInstance = null;

@@ -16,7 +16,7 @@ class AccountSyncTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected function setUp()
+    protected function setUp():void
     {
         parent::setUp();
 
@@ -27,7 +27,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function testItTriggersWhenEmailChanged()
+    public function itItTriggersWhenEmailChanged()
     {
         $this->user->email = 'joe@example.org';
 
@@ -35,7 +35,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function testItTriggersWhenBanned()
+    public function itItTriggersWhenBanned()
     {
         $reason = factory(Reason::class)->create();
         $banner = factory(Account::class)->create();
@@ -46,7 +46,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function testItTriggersWhenUnBanned()
+    public function itItTriggersWhenUnBanned()
     {
         $ban = factory(Account\Ban::class)->create();
         $ban->repeal();
@@ -55,7 +55,7 @@ class AccountSyncTest extends TestCase
     }
 
     /** @test */
-    public function testItDoesntTriggerWhenUntrackedValuesChanged()
+    public function itItDoesntTriggerWhenUntrackedValuesChanged()
     {
         $this->user->last_login = Carbon::now();
         $this->user->updated_at = Carbon::now();
