@@ -18,6 +18,8 @@ class WaitingListNoteController extends Controller
         ]);
 
         $waitingListAccount->notes = $request->get('notes');
+        // persist the changes
+        $waitingListAccount->save();
 
         return response()->json(['success' => 'Note added!']);
     }

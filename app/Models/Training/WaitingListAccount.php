@@ -13,7 +13,7 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position', 'added_by', 'deleted_at'];
+    public $fillable = ['position', 'added_by', 'deleted_at', 'notes'];
 
     protected $appends = ['atcHourCheck'];
 
@@ -160,15 +160,7 @@ class WaitingListAccount extends Pivot
 
     public function setNotesAttribute($value)
     {
-        $this->attributes['notes'] =  $value;
-    }
+        $this->attributes['notes'] = (string)$value;
 
-    public function editNote($contents)
-    {
-        // Purpose in future involves logging changes in contents (might look similar to add method).
-        $this->notes = $contents;
-        $this->save();
-
-        return $this->notes;
     }
 }
