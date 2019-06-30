@@ -17,7 +17,7 @@ class AddWaitingListTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug');
-            $table->unsignedInteger('department')->default(1);
+            $table->string('department');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +28,7 @@ class AddWaitingListTable extends Migration
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('added_by')->nullable();
             $table->integer('position')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

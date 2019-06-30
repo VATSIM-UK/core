@@ -3,6 +3,7 @@
 namespace Vatsimuk\WaitingListsManager;
 
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingListAccount;
 use App\Models\Training\WaitingListAccountFlag;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,7 @@ class ToolServiceProvider extends ServiceProvider
     protected function routes()
     {
         Route::model('waitingList', WaitingList::class);
+        Route::model('waitingListAccount', WaitingListAccount::class);
         Route::model('waitingListAccountFlag', WaitingListAccountFlag::class);
 
         if ($this->app->routesAreCached()) {

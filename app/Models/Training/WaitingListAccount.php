@@ -13,7 +13,7 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position', 'added_by', 'deleted_at'];
+    public $fillable = ['position', 'added_by', 'deleted_at', 'notes'];
 
     protected $appends = ['atcHourCheck'];
 
@@ -156,5 +156,10 @@ class WaitingListAccount extends Pivot
         // are all the flags true
         // and is the atc hour check true
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
+    }
+
+    public function setNotesAttribute($value)
+    {
+        $this->attributes['notes'] = (string)$value;
     }
 }
