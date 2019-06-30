@@ -13,7 +13,7 @@ class WaitingListsManager extends ResourceTool
      */
     public function name()
     {
-        return 'Waiting List Students';
+        return 'Waiting Lists';
     }
 
     public function activeBucket()
