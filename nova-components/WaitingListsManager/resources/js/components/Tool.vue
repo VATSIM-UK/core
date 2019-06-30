@@ -1,7 +1,7 @@
 <template>
     <div>
-        <heading class="mb-6" v-if="activeBucket">Eligible Students</heading>
-        <heading class="mb-6 mt-6" v-else>Ineligible Students</heading>
+        <heading class="mb-6" v-if="activeBucket">Eligible Waiting List (EWL)</heading>
+        <heading class="mb-6 mt-6" v-else>Master Waiting List (MWL)</heading>
         <loading-view :loading="!loaded">
             <p class="flex flex-col justify-center text-center p-2" v-if="numberOfAccounts < 1">
                 There are no accounts assigned to this 'bucket'.
@@ -15,8 +15,8 @@
                         <th class="text-left">Name</th>
                         <th class="text-left">CID</th>
                         <th class="text-left">Added On</th>
-                        <th class="text-left">Current Status</th>
-                        <th class="text-left">ATC Hour Check</th>
+                        <th class="text-left">Notes</th>
+                        <th class="text-left">Hour Check</th>
                         <th>Status Change</th>
                         <th>Flags</th>
                         <th></th>
@@ -24,11 +24,26 @@
                     </thead>
                     <tbody>
                     <tr v-for="(account, index) in accounts" :class="{ 'opacity-50': !account.status.default }">
-                        <td><span class="font-semibold">{{ account.position }}</span></td>
-                        <td>{{ account.name }}</td>
+                        <td><span class="font-semibold">{{ index + 1 }}</span></td>
+                        <td>
+                            <div class="flex items-center">
+                                <p>{{ account.name }}</p>
+                            </div>
+                        </td>
                         <td>{{ account.id }}</td>
                         <td>{{ this.moment(account.created_at.date).format("MMMM Do YYYY") }}</td>
-                        <td>{{ account.status.name }}</td>
+                        <td>
+                            <span v-if="account.notes" @click="openNotesModal(account)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-70 hover:text-primary">
+                                    <path class="heroicon-ui" d="M6 2h9a1 1 0 0 1 .7.3l4 4a1 1 0 0 1 .3.7v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2zm9 2.41V7h2.59L15 4.41zM18 9h-3a2 2 0 0 1-2-2V4H6v16h12V9zm-2 7a1 1 0 0 1-1 1H9a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1zm0-4a1 1 0 0 1-1 1H9a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1zm-5-4a1 1 0 0 1-1 1H9a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
+                                </svg>
+                            </span>
+                            <span v-else @click="openNotesModal(account)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="cursor-pointer fill-current text-70 hover:text-primary">
+                                    <path class="heroicon-ui" d="M6 2h9a1 1 0 0 1 .7.3l4 4a1 1 0 0 1 .3.7v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2zm9 2.41V7h2.59L15 4.41zM18 9h-3a2 2 0 0 1-2-2V4H6v16h12V9z"/>
+                                </svg>
+                            </span>
+                        </td>
                         <td>
                             <span class="inline-block rounded-full w-2 h-2"
                                   :class="{ 'bg-success': account.atcHourCheck, 'bg-danger': !account.atcHourCheck }"
@@ -48,8 +63,8 @@
 
                         </td>
                         <td >
-                            <div v-for="flag in account.flags">
-                                <p class="flex items-center">
+                            <div v-for="flag in account.flags" class="flex-row">
+                                <p class="text-center">
                                     <span class="mr-1">{{ flag.name }}</span>
                                     <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
                                           :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
@@ -59,17 +74,6 @@
                         </td>
                         <td>
                             <div class="flex justify-around">
-                                
-                                <button class="cursor-pointer text-70 hover:text-primary mr-3" 
-                                        @click="promoteAccount(account.id)" v-if="account.id !== accounts[0].id">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui fill-current" d="M13 5.41V21a1 1 0 0 1-2 0V5.41l-5.3 5.3a1 1 0 1 1-1.4-1.42l7-7a1 1 0 0 1 1.4 0l7 7a1 1 0 1 1-1.4 1.42L13 5.4z"/></svg>
-                                </button>
-
-                                <button class="cursor-pointer text-70 hover:text-primary mr-3" 
-                                        @click="demoteAccount(account.id)" v-if="account.id !== accounts[accounts.length -1].id">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui fill-current" d="M11 18.59V3a1 1 0 0 1 2 0v15.59l5.3-5.3a1 1 0 0 1 1.4 1.42l-7 7a1 1 0 0 1-1.4 0l-7-7a1 1 0 0 1 1.4-1.42l5.3 5.3z"/></svg>
-                                </button>
-
                                 <button class="cursor-pointer text-70 hover:text-primary mr-3" 
                                         @click="removeAccount(account.id)">
                                     <icon type="delete" />
@@ -86,6 +90,19 @@
                                 v-if="flagConfirmModalOpen"
                                 @confirm="confirmFlagChange"
                                 @close="closeFlagChangeModal"
+                        />
+
+                    </transition>
+
+                </portal>
+
+                <portal to="modals">
+                    <transition name="fade">
+                        <text-input-modal
+                            v-if="notesModalOpen"
+                            @confirm="createNote"
+                            @close="closeNotesModal"
+                            :account="selectedAccount"
                         />
                     </transition>
                 </portal>
@@ -105,7 +122,9 @@
                 accounts: {},
                 position: 0,
                 flagConfirmModalOpen: false,
+                notesModalOpen: false,
                 selectedFlag: null,
+                selectedAccount: null,
                 activeBucket: this.field.activeBucket
             }
         },
@@ -156,6 +175,7 @@
                 );
             },
 
+            // Inactive as not currently needed.
             promoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/promote`, { account_id: account })
                     .then(response => {
@@ -164,6 +184,7 @@
                 );
             },
 
+            // Inactive as not currently needed.
             demoteAccount(account) {
                 axios.post(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/demote`, { account_id: account })
                     .then(response => {
@@ -197,6 +218,15 @@
                 this.flagConfirmModalOpen = false
             },
 
+            openNotesModal(selected) {
+                this.selectedAccount = selected
+                this.notesModalOpen = true
+            },
+
+            closeNotesModal() {
+                this.notesModalOpen = false
+            },
+
             confirmFlagChange(id) {
                 console.log(id)
                 Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
@@ -205,6 +235,18 @@
                     // show a success message
                     this.$toasted.show('Flag changed successfully!', { type: 'success'})
                     // refresh the data
+                    EventBus.$emit('list-changed')
+                })
+            },
+
+            createNote (payload) {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/notes/${this.selectedAccount.pivot_id}/create`, {
+                    notes: payload.value
+                }).then((response) => {
+                    this.closeNotesModal()
+
+                    this.$toasted.show(response.data.success, { type: 'success' })
+
                     EventBus.$emit('list-changed')
                 })
             }
