@@ -45,9 +45,6 @@ Route::group([
     'prefix'    => 'webhook',
     'namespace' => 'Webhook',
 ], function () {
-    Route::get('dropbox')->uses('Dropbox@getDropbox')->name('dropbox');
-    Route::post('dropbox')->uses('Dropbox@postDropbox');
-
     Route::any('slack')->uses('Slack@anyRouter')->name('slack');
 
     Route::post('mailgun')->uses('Mailgun@event')->middleware('auth.basic.once');

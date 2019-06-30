@@ -20,7 +20,7 @@ class AtcSessionTest extends TestCase
         $this->atcSession = factory(Atc::class)->create();
     }
 
-    /** @test **/
+    /** @test */
     public function itReturnsAMessageForAFacility()
     {
         tap(factory(Atc::class)->make(['facility_type' => 1]), function ($model) {
@@ -56,7 +56,7 @@ class AtcSessionTest extends TestCase
         });
     }
 
-    /** @test **/
+    /** @test */
     public function itDetectsWhetherASessionIsWithinTheUK()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {
@@ -68,7 +68,7 @@ class AtcSessionTest extends TestCase
         });
     }
 
-    /** @test **/
+    /** @test */
     public function itOnlyReturnsUkSessionDataOnRelationship()
     {
         tap(factory(Atc::class)->create(['callsign' => 'EGGD_APP']), function ($model) {

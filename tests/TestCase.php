@@ -2,45 +2,59 @@
 
 namespace Tests;
 
-use App\Http\Middleware\VerifyCsrfToken;
-use App\Models\Cts\MockCtsDatabase;
-use App\Models\Mship\Account;
+use App\Models\Sys\Notification;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use App\Models\Mship\Account;
 use Spatie\Permission\Models\Role;
+use Tests\Database\MockCtsDatabase;
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    /* @var Carbon */
     protected $knownDate;
 
     protected $privacc;
+    protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        // Exclude Middleware Across All Tests
         $this->withoutMiddleware(VerifyCsrfToken::class);
 
-        config(['app.url' => 'http://'.config('app.url')]);
+        // Add HTTP protocol
+        $parsed = parse_url(config('app.url'));
+        if (empty($parsed['scheme'])) {
+            config(['app.url' => 'http://'.config('app.url')]);
+        }
 
         Carbon::setTestNow();
         $this->knownDate = Carbon::now();
 
+        // Create tables for other services
         $this->seedLegacyTables();
 
+        // Force regeneration of permissions cache
         app()['cache']->forget('spatie.permission.cache');
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->registerPermissions();
-        $this->setUpPrivacc();
+
+        \Illuminate\Support\Facades\Notification::fake();
+        // Create global super admin for testing
+        $this->createPrivaccUser();
+
+        // Create generic user
+        $this->user = factory(Account::class)->create();
     }
 
-    protected function setUpPrivacc()
+    protected function createPrivaccUser()
     {
-        $privaccHolder = factory(Account::class)->create();
-        $privaccHolder->assignRole(Role::findByName('privacc'));
-        $this->privacc = $privaccHolder->fresh();
+        $user = factory(Account::class)->create();
+        $user->assignRole(Role::findByName('privacc'));
+        $this->privacc = $user->fresh();
     }
 
     protected function seedLegacyTables()
