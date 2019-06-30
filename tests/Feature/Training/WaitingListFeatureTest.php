@@ -212,10 +212,10 @@ class WaitingListFeatureTest extends TestCase
 
         $this->waitingList->addToWaitingList($account, $this->privacc);
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-        $waitingListAccount->addNote('This is a note');
+        $waitingListAccount->notes = 'This is a note';
 
         $this->actingAs($this->privacc)
-            ->patch("nova-vendor/waiting-lists-manager/note/{$waitingListAccount->id}/edit", ['notes' => 'This is a modified note'])
+            ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a modified note'])
             ->assertSuccessful();
     }
 }

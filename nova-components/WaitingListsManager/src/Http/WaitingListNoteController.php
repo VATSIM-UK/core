@@ -17,19 +17,8 @@ class WaitingListNoteController extends Controller
             'notes' => 'required|string'
         ]);
 
-        $waitingListAccount->addNote($request->get('notes'));
+        $waitingListAccount->notes = $request->get('notes');
 
         return response()->json(['success' => 'Note added!']);
-    }
-
-    public function edit(WaitingListAccount $waitingListAccount, Request $request)
-    {
-        $this->validate($request, [
-            'notes' => 'required|string'
-        ]);
-
-        $waitingListAccount->editNote($request->get('notes'));
-
-        return response()->json(['success' => 'Note modified!']);
     }
 }
