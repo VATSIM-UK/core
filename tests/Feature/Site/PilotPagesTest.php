@@ -7,25 +7,25 @@ use Tests\TestCase;
 class PilotPagesTest extends TestCase
 {
     /** @test */
-    public function itLoadsTheLandingPage()
+    public function testItLoadsTheLandingPage()
     {
         $this->get(route('site.pilots.landing'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheRatingsPage()
+    public function testItLoadsTheRatingsPage()
     {
         $this->get(route('site.pilots.ratings'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheMentorPage()
+    public function testItLoadsTheMentorPage()
     {
         $this->get(route('site.pilots.mentor'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheOceanicPage()
+    public function testItLoadsTheOceanicPage()
     {
         $this->get(route('site.pilots.oceanic'))->assertOk();
     }
