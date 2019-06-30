@@ -17,7 +17,7 @@ class SlackTest extends TestCase
     }
 
     /** @test */
-    public function itItLogsWhenSlackCredentialsIncorrect()
+    public function itLogsWhenSlackCredentialsIncorrect()
     {
         Artisan::call('slack:manager');
         $this->assertEquals("Slack credentials invalid!\n", Artisan::output());
