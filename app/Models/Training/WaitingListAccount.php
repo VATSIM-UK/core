@@ -161,6 +161,5 @@ class WaitingListAccount extends Pivot
     public function setNotesAttribute($value)
     {
         $this->attributes['notes'] = (string)$value;
-
     }
 }
