@@ -240,7 +240,7 @@
             },
 
             createNote (payload) {
-                Nova.request().patch(`/nova-vendor/waiting-lists-manager/note/${this.selectedAccount.pivot_id}/create`, {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/notes/${this.selectedAccount.pivot_id}/create`, {
                     notes: payload.value
                 }).then((response) => {
                     this.closeNotesModal()
