@@ -33,7 +33,7 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group One Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>{{ $requirements[0]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[0]->hours_months }} months.</strong>
+                    Control a total of <strong>{{ $conditions[0]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[0]->within_months }} months.</strong>
                     <ul>
                         <li>Manchester (EGCC)</li>
                         <li>Edinburgh (EGPH)</li>
@@ -42,10 +42,10 @@
                     </ul>
                     @foreach($hours[0] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hour > $requirements[0]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[0]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($conditions[0]->isMetForUser($_account))
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $conditions[0]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[0]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $requirements[0]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$conditions[0]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $conditions[0]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -56,7 +56,7 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Two Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>{{ $requirements[1]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[1]->hours_months }} months.</strong>
+                    Control a total of <strong>{{ $conditions[1]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[1]->within_months }} months.</strong>
                     <ul>
                         <li>Glasgow (EGPF)</li>
                         <li>Birmingham (EGBB)</li>
@@ -65,10 +65,10 @@
                     </ul>
                     @foreach($hours[1] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hour > $requirements[1]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[1]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($conditions[1]->isMetForUser($_account))
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $conditions[1]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[1]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $requirements[1]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$conditions[1]->required_hours)*100 }}%" aria-valuemin="0" aria-valuemax="{{ $conditions[1]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -79,7 +79,7 @@
             <div class="panel panel-ukblue">
                 <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> &thinsp; Group Three Controlling</div>
                 <div class="panel-body">
-                    Control a total of <strong>{{ $requirements[2]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $requirements[2]->hours_months }} months.</strong>
+                    Control a total of <strong>{{ $conditions[2]->required_hours }} hours</strong> on one of the following positions within the last <strong>{{ $conditions[2]->within_months }} months.</strong>
                     <ul>
                         <li>Jersey (EGJJ)</li>
                         <li>Belfast Aldergrove (EGAA)</li>
@@ -88,10 +88,10 @@
                     </ul>
                     @foreach($hours[2] as $icao => $hour)
                         <div class="progress" data-toggle="tooltip" title="{{ $icao }}">
-                            @if($hour > $requirements[2]->required_hours)
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $requirements[2]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
+                            @if($conditions[2]->isMetForUser($_account))
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 100%" aria-valuemin="0" aria-valuemax="{{ $conditions[2]->required_hours }}">{{ round($hour,2) }} Hrs {{ '('. $icao .')' }}</div>
                             @else
-                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$requirements[2]->required_hours)*100 }}%"aria-valuemin="0" aria-valuemax="{{ $requirements[2]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
+                                <div class="progress-bar" role="progressbar" style="width: {{ ($hour/$conditions[2]->required_hours)*100 }}%"aria-valuemin="0" aria-valuemax="{{ $conditions[2]->required_hours }}">{{ ($hour > 0) ? (round($hour,2)).' Hrs ('. $icao .')' : '' }}</div>
                             @endif
                         </div>
                     @endforeach
@@ -119,7 +119,7 @@
                 <div class="panel-body">
                     Once you have completed the requirements above, you will be able to press the button below to request access to the Moodle course and progress to Step 2.
                     <br><br>
-                    @if($_account->primary_state->isDivision && $hours[0]->max() > $requirements[0]->required_hours && $hours[1]->max() > $requirements[1]->required_hours && $hours[2]->max() > $requirements[2]->required_hours)
+                    @if($endorsment->conditionsMetForUser($_account))
                         <a href="mailto:atc-training@vatsim-uk.co.uk?Subject=Gatwick%20Endorsement%20-%20Moodle%20Request&Body=Please%20grant%20me%20access%20to%20the%20Gatwick%20Endorsement%20exam%20on%20Moodle%20as%20I%20have%20now%20met%20the%20number%20of%20hours%20required%20across%20the%20three%20groups.%0A%0AGroup%201%3A%20{{ round($hours[0]->max(),1) }}%20hours%20on%20{{ $hours[0]->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%202%3A%20{{ round($hours[1]->max(),1) }}%20hours%20on%20{{ $hours[1]->keys()->first() }}%20within%20the%20last%20three%20months.%0AGroup%203%3A%20{{ round($hours[2]->max(),1) }}%20hours%20on%20{{ $hours[2]->keys()->first() }}%20within%20the%20last%20three%20months.%0A%0AFull%20Name%3A%20{{ $_account->name }}%0AVATSIM%20CID%3A%20{{ $_account->id }}" style="text-decoration: none;">
                             <button class="btn btn-success center-block">Request Moodle Course</button>
                         </a>
