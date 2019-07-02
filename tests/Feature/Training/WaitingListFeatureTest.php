@@ -5,6 +5,7 @@ namespace Tests\Feature\Training;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\AccountChangedStatusInWaitingList;
 use App\Events\Training\AccountDemotedInWaitingList;
+use App\Events\Training\AccountNoteChanged;
 use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
@@ -167,24 +168,18 @@ class WaitingListFeatureTest extends TestCase
 
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        $this->actingAs($this->privacc)
-            ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
-            ->assertSuccessful();
+        Event::fakeFor(function () use ($waitingListAccount, $account) {
+            $this->actingAs($this->privacc)
+                ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
+                ->assertSuccessful();
+
+            Event::assertDispatched(AccountNoteChanged::class, function ($event) use ($waitingListAccount) {
+                return $event->account->id == $waitingListAccount->account->id
+                    && $event->newNoteContent == 'This is a note'
+                    && $event->oldNoteContent == null;
+            });
+        });
 
         $this->assertEquals('This is a note', $waitingListAccount->fresh()->notes);
-    }
-
-    /** @test */
-    public function testStudentsCanHaveExistingNotesChanged()
-    {
-        $account = factory(Account::class)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-        $waitingListAccount->notes = 'This is a note';
-
-        $this->actingAs($this->privacc)
-            ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a modified note'])
-            ->assertSuccessful();
     }
 }
