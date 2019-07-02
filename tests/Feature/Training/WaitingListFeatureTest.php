@@ -5,6 +5,7 @@ namespace Tests\Feature\Training;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Events\Training\AccountChangedStatusInWaitingList;
 use App\Events\Training\AccountDemotedInWaitingList;
+use App\Events\Training\AccountNoteChanged;
 use App\Events\Training\AccountPromotedInWaitingList;
 use App\Events\Training\AccountRemovedFromWaitingList;
 use App\Models\Mship\Account;
@@ -46,20 +47,6 @@ class WaitingListFeatureTest extends TestCase
                 return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
-    }
-
-    /** @test * */
-    public function testRedirectOnUnknownAccountId()
-    {
-        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
-            'account_id' => 12345678,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('error', 'Account Not Found.');
-
-        $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
-            'account_id' => 12345678,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('error', 'Account Not Found.');
     }
 
     /** @test * */
@@ -116,25 +103,6 @@ class WaitingListFeatureTest extends TestCase
             ])->assertSuccessful();
 
             Event::assertDispatched(AccountDemotedInWaitingList::class, function ($event) use ($account) {
-                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
-            });
-        });
-    }
-
-    /** @test **/
-    public function testAStudentCanBeRemoved()
-    {
-        $account = factory(Account::class)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-
-        Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->post(route('training.waitingList.remove', $this->waitingList), [
-                'account_id' => $account->id,
-            ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-                ->assertSessionHas('success', 'Student removed from Waiting List');
-
-            Event::assertDispatched(AccountRemovedFromWaitingList::class, function ($event) use ($account) {
                 return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
             });
         });
@@ -200,24 +168,18 @@ class WaitingListFeatureTest extends TestCase
 
         $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
 
-        $this->actingAs($this->privacc)
-            ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
-            ->assertSuccessful();
+        Event::fakeFor(function () use ($waitingListAccount, $account) {
+            $this->actingAs($this->privacc)
+                ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a note'])
+                ->assertSuccessful();
+
+            Event::assertDispatched(AccountNoteChanged::class, function ($event) use ($waitingListAccount) {
+                return $event->account->id == $waitingListAccount->account->id
+                    && $event->newNoteContent == 'This is a note'
+                    && $event->oldNoteContent == null;
+            });
+        });
 
         $this->assertEquals('This is a note', $waitingListAccount->fresh()->notes);
-    }
-
-    /** @test */
-    public function testStudentsCanHaveExistingNotesChanged()
-    {
-        $account = factory(Account::class)->create();
-
-        $this->waitingList->addToWaitingList($account, $this->privacc);
-        $waitingListAccount = $this->waitingList->accounts->find($account->id)->pivot;
-        $waitingListAccount->notes = 'This is a note';
-
-        $this->actingAs($this->privacc)
-            ->patch("nova-vendor/waiting-lists-manager/notes/{$waitingListAccount->id}/create", ['notes' => 'This is a modified note'])
-            ->assertSuccessful();
     }
 }
