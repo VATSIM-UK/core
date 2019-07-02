@@ -5,6 +5,7 @@ namespace App\Listeners\Training\WaitingList;
 use App\Events\Training\AccountNoteChanged;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class LogNoteChanged
 {
@@ -26,6 +27,8 @@ class LogNoteChanged
      */
     public function handle(AccountNoteChanged $event)
     {
-        //
+        Log::channel('training')
+            ->info("A note about {$event->account->name} ({$event->account->id}) in waiting list {$event->waitingListAccount->waitingList->name} ({$event->waitingListAccount->waitingList->id}) was changed from 
+            {$event->oldNoteContent} to {$event->newNoteContent}");
     }
 }

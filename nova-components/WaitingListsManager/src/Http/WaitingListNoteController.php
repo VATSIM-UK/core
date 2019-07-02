@@ -21,7 +21,7 @@ class WaitingListNoteController extends Controller
         $currentNoteContent = $waitingListAccount->notes;
         $newNoteContent = $request->get('notes');
 
-        event(new AccountNoteChanged($waitingListAccount->account, $currentNoteContent, $newNoteContent));
+        event(new AccountNoteChanged($waitingListAccount, $currentNoteContent, $newNoteContent));
 
         $waitingListAccount->notes = $newNoteContent;
         // persist the changes

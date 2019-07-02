@@ -3,19 +3,19 @@
 namespace App\Events\Training;
 
 use App\Models\Mship\Account;
-use Illuminate\Broadcasting\Channel;
+use App\Models\Training\WaitingListAccount;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class AccountNoteChanged
+class AccountNoteChanged implements ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $account;
+    /** @var WaitingListAccount */
+    public $waitingListAccount;
     public $oldNoteContent = null;
     public $newNoteContent;
 
@@ -26,20 +26,11 @@ class AccountNoteChanged
      * @param $oldNoteContent
      * @param $newNoteContent
      */
-    public function __construct(Account $account, $oldNoteContent, $newNoteContent)
+    public function __construct(WaitingListAccount $account, $oldNoteContent, $newNoteContent)
     {
-        $this->account = $account;
+        $this->waitingListAccount = $account;
+        $this->account = $this->waitingListAccount->account;
         $this->oldNoteContent = $oldNoteContent;
         $this->newNoteContent = $newNoteContent;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 }
