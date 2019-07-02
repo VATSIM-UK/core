@@ -10,16 +10,6 @@ use Illuminate\Support\Facades\Log;
 class LogNoteChanged
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
      * @param  AccountNoteChanged  $event
