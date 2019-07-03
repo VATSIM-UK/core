@@ -37,7 +37,7 @@ class Condition extends Model
         return str_replace('%', 'XXX', $this->positions);
     }
 
-    public function getHumanDescriptionAttribute($boldify = false)
+    public function getHumanDescriptionAttribute()
     {
         $description = "<b>$this->required_hours hour" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
 
@@ -59,11 +59,7 @@ class Condition extends Model
 
     public function isMetForUser(Account $user)
     {
-        if ($this->progress) {
-            $airfieldGroups = $this->progress->shuffle();
-        } else {
-            $airfieldGroups = $this->progressForUser($user)->shuffle();
-        }
+        $airfieldGroups = $this->progress ? $this->progress->shuffle() : $this->progressForUser($user)->shuffle();
 
         // Calculate whether it is met based on the type of condition required
         switch ($this->type) {
@@ -96,11 +92,7 @@ class Condition extends Model
             // Attempt to find the base position (e.g ESSEX or EGKK)
             $split = explode('_', $session['callsign']);
 
-            if (count($split) == 1) {
-                $index = $session['callsign'];
-            } else {
-                $index = $split[0];
-            }
+            $index = count($split) == 1 ? $session['callsign'] : $split[0];
 
             return [$index => ($session['minutes_online'] / 60)];
         })->transform(function ($sessions) {

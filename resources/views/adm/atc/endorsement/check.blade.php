@@ -31,7 +31,7 @@
                             <tr>
                                 <td>{{implode(", ", $condition->human_positions)}}</td>
                                 <td>
-                                    {!! $condition->getHumanDescriptionAttribute(true) !!}
+                                    {!! $condition->human_description !!}
                                 </td>
                                 <td>
                                     @forelse ($condition->positionProgress($account) as $icao => $hours)
