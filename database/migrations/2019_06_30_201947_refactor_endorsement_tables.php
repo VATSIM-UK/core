@@ -45,7 +45,7 @@ class RefactorEndorsementTables extends Migration
         });
 
         Schema::table('endorsement_conditions', function (Blueprint $table) {
-            $table->string('description')->after('endorsement_id');
+            $table->string('description')->nullable()->after('endorsement_id');
             $table->integer('endorsement_id')->change();
             $table->integer('within_months')->nullable()->change();
         });
@@ -63,6 +63,16 @@ class RefactorEndorsementTables extends Migration
     public function down()
     {
         Schema::drop('endorsements');
+        Schema::table('endorsement_conditions', function (Blueprint $table) {
+            $table->renameColumn('endorsement_id', 'endorsement');
+            $table->renameColumn('positions', 'required_airfields');
+            $table->renameColumn('within_months', 'hours_months');
+            $table->dropColumn('type');
+            $table->dropColumn('description');
+        });
+        Schema::table('endorsement_conditions', function (Blueprint $table) {
+            $table->string('endorsement')->change();
+        });
         Schema::rename('endorsement_conditions', 'endorsements');
     }
 }
