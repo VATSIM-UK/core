@@ -19,15 +19,15 @@ class RefactorEndorsementTables extends Migration
         Schema::create('endorsements', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
 
         // Migrate existing endorsements
 
         $endorsements = DB::table('endorsement_conditions')->distinct('endorsement')->pluck('endorsement');
-        foreach ($endorsements as $endorsement) {
-            $id = DB::table('endorsements')->insert([
+        foreach ($endorsements as $endorsement){
+            $id = DB::table('endorsements')->insertGetId([
                 'name' => $endorsement,
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
