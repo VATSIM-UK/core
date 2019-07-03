@@ -78,5 +78,4 @@ class EndorsementModelTest extends TestCase
 
         $this->assertTrue($this->endorsement->fresh()->conditionsMetForUser($this->user));
     }
-
 }

@@ -41,11 +41,11 @@ class Condition extends Model
     {
         $description = "<b>$this->required_hours hour" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
 
-        if($this->within_months){
+        if ($this->within_months) {
             $description .= "within the last <b>$this->within_months month" . ($this->required_hours > 1 ? 's </b>' : ' </b>');
         }
 
-        switch ($this->type){
+        switch ($this->type) {
             case self::TYPE_ON_SINGLE_AIRFIELD:
                 $description .= "on <b>one of the qualifying positions</b>";
                 break;
@@ -59,17 +59,17 @@ class Condition extends Model
 
     public function isMetForUser(Account $user)
     {
-        if($this->progress){
+        if ($this->progress) {
             $airfieldGroups = $this->progress->shuffle();
-        }else{
+        } else {
             $airfieldGroups = $this->progressForUser($user)->shuffle();
         }
 
         // Calculate whether it is met based on the type of condition required
         switch ($this->type) {
             case self::TYPE_ON_SINGLE_AIRFIELD:
-                foreach ($airfieldGroups as $hours ){
-                    if($hours >= $this->required_hours){
+                foreach ($airfieldGroups as $hours) {
+                    if ($hours >= $this->required_hours) {
                         return true;
                     }
                 }
