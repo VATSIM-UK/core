@@ -26,7 +26,7 @@ class RefactorEndorsementTables extends Migration
         // Migrate existing endorsements
 
         $endorsements = DB::table('endorsement_conditions')->distinct('endorsement')->pluck('endorsement');
-        foreach ($endorsements as $endorsement){
+        foreach ($endorsements as $endorsement) {
             $id = DB::table('endorsements')->insertGetId([
                 'name' => $endorsement,
                 'created_at' => \Carbon\Carbon::now(),
