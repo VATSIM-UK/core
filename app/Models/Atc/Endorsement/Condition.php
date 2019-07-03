@@ -2,6 +2,7 @@
 
 namespace App\Models\Atc\Endorsement;
 
+use App\Models\Atc\Endorsement;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,11 @@ class Condition extends Model
 
     const TYPE_ON_SINGLE_AIRFIELD = 1; // To qualify, any of the member positions must have at least the given hours
     const TYPE_SUM_OF_AIRFIELDS = 2; // To qualify, the sum of hours across all qualifying positions must meet the given hours
+
+    public function endorsement()
+    {
+        return $this->belongsTo(Endorsement::class);
+    }
 
     public function getHumanPositionsAttribute()
     {
@@ -56,7 +62,7 @@ class Condition extends Model
         if($this->progress){
             $airfieldGroups = $this->progress->shuffle();
         }else{
-            $airfieldGroups = $this->positionProgress($user)->shuffle();
+            $airfieldGroups = $this->progressForUser($user)->shuffle();
         }
 
         // Calculate whether it is met based on the type of condition required
@@ -75,7 +81,7 @@ class Condition extends Model
         }
     }
 
-    public function positionProgress(Account $user)
+    public function progressForUser(Account $user)
     {
         // Find matching sessions
         $sessions = $user->networkDataAtc()
