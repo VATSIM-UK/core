@@ -2,6 +2,7 @@
 
 namespace App\Models\Training;
 
+use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -13,7 +14,7 @@ class WaitingListAccount extends Pivot
 
     public $table = 'training_waiting_list_account';
 
-    public $fillable = ['position', 'added_by', 'deleted_at'];
+    public $fillable = ['position', 'added_by', 'deleted_at', 'notes'];
 
     protected $appends = ['atcHourCheck'];
 
@@ -37,6 +38,16 @@ class WaitingListAccount extends Pivot
             'waiting_list_account_id',
             'flag_id'
         )->withPivot(['marked_at', 'id'])->using(WaitingListAccountFlag::class);
+    }
+
+    public function waitingList()
+    {
+        return $this->belongsTo(WaitingList::class, 'list_id');
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     /**
@@ -156,5 +167,10 @@ class WaitingListAccount extends Pivot
         // are all the flags true
         // and is the atc hour check true
         return $this->atcHourCheck() && $this->allFlagsChecker() && $this->status->first()->name == "Active";
+    }
+
+    public function setNotesAttribute($value)
+    {
+        $this->attributes['notes'] = (string)$value;
     }
 }

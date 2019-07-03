@@ -21,6 +21,9 @@ class TrainingEventServiceProvider extends ServiceProvider
         \App\Events\Training\AccountDemotedInWaitingList::class => [
             \App\Listeners\Training\WaitingList\LogAccountDemoted::class,
         ],
+        \App\Events\Training\AccountNoteChanged::class => [
+            \App\Listeners\Training\WaitingList\LogNoteChanged::class,
+        ]
     ];
 
     /**

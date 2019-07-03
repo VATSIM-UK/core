@@ -68,8 +68,8 @@ class WaitingList extends Resource
             Slug::make('Slug'),
 
             Select::make('Department')->options([
-                1 => 'ATC Training',
-                2 => 'Pilot Training',
+                'atc' => 'ATC Training',
+                'pilot' => 'Pilot Training',
             ])->displayUsingLabels()->rules(['required'])->sortable(),
 
             new Panel('Notes on Flags', [
