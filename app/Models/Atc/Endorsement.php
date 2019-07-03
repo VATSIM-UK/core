@@ -22,11 +22,11 @@ class Endorsement extends Model
 
     public function conditionsMetForUser(Account $user)
     {
-        if($this->allMet){
+        if ($this->allMet) {
             return $this->allMet;
         }
 
-        return $this->allMet = $this->conditions->filter(function ($condition) use ($user){
+        return $this->allMet = $this->conditions->filter(function ($condition) use ($user) {
             return !$condition->isMetForUser($user);
         })->count() == 0;
     }

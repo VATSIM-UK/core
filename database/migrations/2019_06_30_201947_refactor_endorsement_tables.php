@@ -16,7 +16,7 @@ class RefactorEndorsementTables extends Migration
     {
         Schema::rename('endorsements', 'endorsement_conditions');
 
-        Schema::create('endorsements', function (Blueprint $table){
+        Schema::create('endorsements', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('description');
@@ -26,7 +26,7 @@ class RefactorEndorsementTables extends Migration
         // Migrate existing endorsements
 
         $endorsements = DB::table('endorsement_conditions')->distinct('endorsement')->pluck('endorsement');
-        foreach ($endorsements as $endorsement){
+        foreach ($endorsements as $endorsement) {
             $id = DB::table('endorsements')->insert([
                 'name' => $endorsement,
                 'created_at' => \Carbon\Carbon::now(),
