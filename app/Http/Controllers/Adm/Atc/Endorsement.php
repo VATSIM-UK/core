@@ -32,7 +32,7 @@ class Endorsement extends AdmController
     {
         $endorsement = EndorsementModel::with('conditions')->find($request->input('id'))->first();
 
-        try{
+        try {
             $user = Account::findOrFail($request->input('cid'));
         } catch (ModelNotFoundException $exception) {
             return redirect()
