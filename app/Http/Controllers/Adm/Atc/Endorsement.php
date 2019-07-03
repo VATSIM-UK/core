@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Adm\Atc;
 use App\Http\Controllers\Adm\AdmController;
 use App\Models\Atc\Endorsement as EndorsementModel;
 use App\Models\Mship\Account;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,7 +14,7 @@ class Endorsement extends AdmController
     public function getIndex(Request $request)
     {
         $validator = Validator::make($request->all(), [
-          'id' => 'required',
+          'id' => 'required|integer|exists:endorsements',
           'cid' => 'required|integer',
       ]);
 
@@ -31,16 +31,15 @@ class Endorsement extends AdmController
     public function getUserEndorsement(Request $request)
     {
         $endorsement = EndorsementModel::with('conditions')->find($request->input('id'))->first();
-        $user = Account::find($request->input('cid'));
-        if (!$user) {
+
+        try{
+            $user = Account::findOrFail($request->input('cid'));
+        } catch (ModelNotFoundException $exception) {
             return redirect()
-                    ->back()
-                    ->withErrors(['That CID does not exist!']);
+                ->back()
+                ->withErrors(['That CID does not exist!']);
         }
 
-        if (!$endorsement) {
-            abort(404);
-        }
         return $this->viewMake('adm.atc.endorsement.check')
             ->with('account', $user)
             ->with('endorsement', $endorsement);

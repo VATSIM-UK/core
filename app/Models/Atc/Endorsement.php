@@ -28,6 +28,6 @@ class Endorsement extends Model
 
         return $this->allMet = $this->conditions->filter(function ($condition) use ($user) {
             return !$condition->isMetForUser($user);
-        })->count() == 0;
+        })->isEmpty();
     }
 }
