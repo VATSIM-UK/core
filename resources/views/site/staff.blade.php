@@ -198,6 +198,14 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Sebastian Rekdal</td>
+                                </tr>
+                                <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Jamie Paine</td>
+                                </tr>
+                                <tr>
                                     <td>TG Manager (New Controller)</td>
                                     <td>Fergus Walsh</td>
                                 </tr>
