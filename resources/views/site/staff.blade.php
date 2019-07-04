@@ -258,7 +258,7 @@
             <!-- Other Roles -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
                         <br/>
