@@ -265,7 +265,7 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td>DCRM</td>
+                                    <td>Division Conflict Resolution Manager</td>
                                     <td>Sean Readman</td>
                                 </tr>
                                 <tr>
