@@ -269,7 +269,7 @@
                                     <td>Sean Readman</td>
                                 </tr>
                                 <tr>
-                                    <td>DPO</td>
+                                    <td>Data Protection Officer</td>
                                     <td>Chris Pawley</td>
                                 </tr>
                             </tbody
