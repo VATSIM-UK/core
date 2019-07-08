@@ -62,29 +62,17 @@
     <div class="container">
         <!-- Row One -->
         <div class="row row-eq-height">
-            <!-- Community -->
+            <!-- Operations -->
             <div class="col-md-4">
-                <div class="panel panel-ukblue" style="height: 100%;">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Community
+                <div class="panel panel-ukblue">
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
                     </div>
                     <div class="panel-body">
-                        <h4>Community Director (VATUK3)</h4><br/>
-                        <img src="{{ $teamPhotos[2311] }}"
+                        <h4>Operations Director (VATUK9)</h4><br/>
+                        <img src="{{ $teamPhotos[54] }}"
                              width=50px
                              class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Barrie Joplin</p>
-
-                        <h4>Community Team</h4>
-                        <table class="table">
-                            <tr>
-                                <td>Community Manager</td>
-                                <td>Nick Marinov</td>
-                            </tr>
-                            <tr>
-                                <td>Community Manager</td>
-                                <td>Leon Grant</td>
-                            </tr>
-                        </table>
+                        <p class="text-center">Chris Pawley</p>
                     </div>
                 </div>
             </div>
@@ -198,6 +186,14 @@
                                     <td>Mike Pike</td>
                                 </tr>
                                 <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Sebastian Rekdal</td>
+                                </tr>
+                                <tr>
+                                    <td>Division Instructor</td>
+                                    <td>Jamie Paine</td>
+                                </tr>
+                                <tr>
                                     <td>TG Manager (New Controller)</td>
                                     <td>Fergus Walsh</td>
                                 </tr>
@@ -259,17 +255,25 @@
                 </div>
             </div>
 
-            <!-- Operations -->
+            <!-- Other Roles -->
             <div class="col-md-4">
                 <div class="panel panel-ukblue">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Operations
+                    <div class="panel-heading"><i class="glyphicon glyphicon-star"></i> &thinsp; Other Roles
                     </div>
                     <div class="panel-body">
-                        <h4>Operations Director (VATUK9)</h4><br/>
-                        <img src="{{ $teamPhotos[54] }}"
-                             width=50px
-                             class="img-responsive center-block profile-picture"/>
-                        <p class="text-center">Chris Pawley</p>
+                        <br/>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Division Conflict Resolution Manager</td>
+                                    <td>Sean Readman</td>
+                                </tr>
+                                <tr>
+                                    <td>Data Protection Officer</td>
+                                    <td>Chris Pawley</td>
+                                </tr>
+                            </tbody
+                        </table>
                     </div>
                 </div>
             </div>
