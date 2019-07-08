@@ -10,9 +10,9 @@ class EndorsementController extends BaseController
 {
     public function getGatwickGroundIndex()
     {
-        $endorsment = Endorsement::with('conditions')->where('name', 'EGKK_GND')->first();
+        $endorsement = Endorsement::with('conditions')->where('name', 'EGKK_GND')->first();
 
-        $hours = $endorsment->conditions->map(function ($condition) {
+        $hours = $endorsement->conditions->map(function ($condition) {
             return $condition->progressForUser($this->account);
         });
 
@@ -22,8 +22,8 @@ class EndorsementController extends BaseController
         }
 
         return $this->viewMake('controllers.endorsements.gatwick_ground')
-            ->with('endorsment', $endorsment)
-            ->with('conditions', $endorsment->conditions)
+            ->with('endorsment', $endorsement)
+            ->with('conditions', $endorsement->conditions)
             ->with('hours', $hours->all());
     }
 }
