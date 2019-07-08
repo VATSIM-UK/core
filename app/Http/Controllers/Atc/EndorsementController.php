@@ -13,7 +13,7 @@ class EndorsementController extends BaseController
         $endorsment = Endorsement::with('conditions')->where('name', 'EGKK_GND')->first();
 
         $hours = $endorsment->conditions->map(function ($condition) {
-            return $condition->positionProgress($this->account);
+            return $condition->progressForUser($this->account);
         });
 
         if (!$this->account->qualificationAtc->isS1) {
