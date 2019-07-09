@@ -30,7 +30,7 @@ class Endorsement extends AdmController
 
     public function getUserEndorsement(Request $request)
     {
-        $endorsement = EndorsementModel::with('conditions')->find($request->input('id'))->first();
+        $endorsement = EndorsementModel::with('conditions')->find($request->input('id'));
 
         try {
             $user = Account::findOrFail($request->input('cid'));
