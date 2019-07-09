@@ -34,7 +34,7 @@
                                     {!! $condition->human_description !!}
                                 </td>
                                 <td>
-                                    @forelse ($condition->positionProgress($account) as $icao => $hours)
+                                    @forelse ($condition->progressForUser($account) as $icao => $hours)
                                         {{$icao}} ({{ is_int($hours) ? '' : '~' }}{{round($hours,1)}} hours)</br>
                                     @empty
                                         None
