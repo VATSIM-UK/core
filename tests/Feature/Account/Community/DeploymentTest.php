@@ -13,7 +13,7 @@ class DeploymentTest extends TestCase
 
     public $divisionUser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

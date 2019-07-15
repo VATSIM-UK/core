@@ -12,7 +12,7 @@ class FeedbackModelTest extends TestCase
 
     private $feedback;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->feedback = factory(Feedback::class)->create();

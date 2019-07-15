@@ -12,7 +12,7 @@ class SendingFeedbackTest extends TestCase
 
     private $feedback;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

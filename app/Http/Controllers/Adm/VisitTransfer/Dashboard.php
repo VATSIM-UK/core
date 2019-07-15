@@ -12,7 +12,7 @@ class Dashboard extends AdmController
 {
     public function getDashboard()
     {
-        $statisticsRaw = Cache::remember('visittransfer::statistics', 60, function () {
+        $statisticsRaw = Cache::remember('visittransfer::statistics', 60 * 60, function () {
             $statistics = [];
 
             $statistics['applications_total'] = Application::all()->count();
@@ -35,7 +35,7 @@ class Dashboard extends AdmController
             return $statistics;
         });
 
-        $statisticsGraph = Cache::remember('visittransfer::statistics.graph', 60 * 24, function () {
+        $statisticsGraph = Cache::remember('visittransfer::statistics.graph', (60 * 24) * 60, function () {
             $statistics = [];
             $statisticKeys = ['applications.total', 'applications.open', 'applications.closed', 'applications.new'];
 

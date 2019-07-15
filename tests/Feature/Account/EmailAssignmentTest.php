@@ -18,7 +18,7 @@ class EmailAssignmentTest extends TestCase
     private $userOther;
     private $emailOther;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

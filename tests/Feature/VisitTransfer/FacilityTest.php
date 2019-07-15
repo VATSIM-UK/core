@@ -16,7 +16,7 @@ class FacilityTest extends TestCase
     private $internationalUser;
     private $divisionUser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

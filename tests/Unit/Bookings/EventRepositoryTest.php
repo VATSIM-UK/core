@@ -16,15 +16,15 @@ class EventRepositoryTest extends TestCase
 
     private $repository;
 
-    protected function setUp()
+    protected function setUp():void
     {
         parent::setUp();
 
         $this->repository = resolve(EventRepository::class);
     }
 
-    /* @test */
-    public function test_it_can_return_todays_events()
+    /** @test */
+    public function itCanReturnTodaysEvents()
     {
         factory(Event::class, 2)->create(['date' => Carbon::now()->addDays(5)->toDateString()]);
 

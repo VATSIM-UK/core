@@ -319,42 +319,42 @@ class Reference extends Model
     /** Statistics */
     public static function statisticTotal()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_TOTAL', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_TOTAL', 60, function () {
             return self::count();
         });
     }
 
     public static function statisticRequested()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_REQUESTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_REQUESTED', 60, function () {
             return self::requested()->count();
         });
     }
 
     public static function statisticSubmitted()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_SUBMITTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_SUBMITTED', 60, function () {
             return self::submitted()->count();
         });
     }
 
     public static function statisticUnderReview()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_UNDER_REVIEW', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_UNDER_REVIEW', 60, function () {
             return self::underReview()->count();
         });
     }
 
     public static function statisticAccepted()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_ACCEPTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_ACCEPTED', 60, function () {
             return self::accepted()->count();
         });
     }
 
     public static function statisticRejected()
     {
-        return Cache::remember('VT_REFERENCES_STATISTICS_REJECTED', 1, function () {
+        return Cache::remember('VT_REFERENCES_STATISTICS_REJECTED', 60, function () {
             return self::rejected()->count();
         });
     }

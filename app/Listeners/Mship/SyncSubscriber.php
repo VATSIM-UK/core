@@ -12,7 +12,8 @@ class SyncSubscriber
      */
     public function syncToAllServices($event)
     {
-        $ranRecently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3 / 60);
+        $ranRecently = !Cache::add('SYNCSUB_'.$event->account->id, '1', 3);
+
         if ($ranRecently || !$event->account->fully_defined) {
             // Prevent unnecessary executions
             return;

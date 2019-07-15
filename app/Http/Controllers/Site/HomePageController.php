@@ -46,7 +46,7 @@ class HomePageController extends \App\Http\Controllers\BaseController
 
     private function stats()
     {
-        $divisionMembers = Cache::remember('home.mship.stats', 1440, function () {
+        $divisionMembers = Cache::remember('home.mship.stats', 1440 * 60, function () {
             $stat['members_division'] = DB::table('mship_account_state')
                 ->leftJoin('mship_account', 'mship_account_state.account_id', '=', 'mship_account.id')
                 ->where('inactive', '=', 0)

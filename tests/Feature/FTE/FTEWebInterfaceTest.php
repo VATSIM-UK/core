@@ -14,7 +14,7 @@ class FTEWebInterfaceTest extends TestCase
     private $exercise;
     private $pirep;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->exercise = factory(Flight::class)->create();
