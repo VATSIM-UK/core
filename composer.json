@@ -81,7 +81,7 @@
       "guzzlehttp/guzzle": "~6.0",
       "laravel/browser-kit-testing": "^1.0",
       "laravel/framework": "5.8.*",
-      "laravel/nova": "^1.0",
+      "laravel/nova": "^2.0",
       "laravel/passport": "^7.0",
       "laravel/tinker": "~1.0",
       "laravelcollective/html": "^5.6",
@@ -161,5 +161,7 @@
     },
     "preferred-install": "dist",
     "sort-packages": true
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
