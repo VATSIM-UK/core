@@ -57,7 +57,19 @@ class TeamSpeak
             $nonBlocking ? '&blocking=0' : ''
         );
 
-        return TeamSpeak3::factory($connectionUrl);
+
+
+        try {
+            $factory = TeamSpeak3::factory($connectionUrl);
+        } catch (TeamSpeak3_Adapter_ServerQuery_Exception $e) {
+            if (stripos($e->getMessage(), 'nickname is already in use')) {
+                // Try again in 3 seconds
+                sleep(3);
+                $factory = TeamSpeak3::factory($connectionUrl);
+            }
+        }
+
+        return $factory;
     }
 
     /**
@@ -240,7 +252,7 @@ class TeamSpeak
                     Cache::put(
                         self::CACHE_NOTIFICATION_MANDATORY.$client['client_database_id'],
                         Carbon::now(),
-                        20
+                        20 * 60
                     );
                 }
             } else {
@@ -281,8 +293,8 @@ class TeamSpeak
                 self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
 
                 $now = Carbon::now();
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6);
-                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3);
+                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id'], $now, 6 * 60);
+                Cache::put(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id'], $now, 3 * 60);
             }
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
@@ -380,10 +392,10 @@ class TeamSpeak
             throw new ClientKickedFromServerException;
         } elseif ($idleTime >= $maxIdleTime - 5 && !$notified) {
             self::pokeClient($client, trans('teamspeak.idle.poke', ['idleTime' => $idleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 5 * 60);
         } elseif (($maxIdleTime - 15 > 0) && ($idleTime >= $maxIdleTime - 15 && !$notified)) {
             self::messageClient($client, trans('teamspeak.idle.message', ['idleTime' => $idleTime, 'maxIdleTime' => $maxIdleTime]));
-            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10);
+            Cache::put(self::CACHE_PREFIX_IDLE_NOTIFY.$client['client_database_id'], Carbon::now(), 10 * 60);
         }
     }
 

@@ -10,7 +10,7 @@ class MetarController
 {
     public function get($airportIcao)
     {
-        return Cache::remember("vatsim.metar.$airportIcao", 5, function () use ($airportIcao) {
+        return Cache::remember("vatsim.metar.$airportIcao", 5 * 60, function () use ($airportIcao) {
             $client = new \GuzzleHttp\Client();
 
             try {

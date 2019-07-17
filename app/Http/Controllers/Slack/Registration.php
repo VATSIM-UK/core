@@ -27,11 +27,12 @@ class Registration extends \App\Http\Controllers\BaseController
 
         if (!($_slackToken = $this->account->tokens()->notExpired()->ofType('slack_registration')->first())) {
             DB::beginTransaction();
-            $_slackToken = Token::generate('slack_registration', false, $this->account);
+            $_slackToken = Token::generate('slack_registration', false, $this->account, 60 * 24 * 7);
 
             $result = SlackUserAdmin::invite($this->account->email, [
                 'first_name' => $this->account->name_first,
                 'last_name' => $this->account->name_last,
+                'resend' => true
             ]);
 
             if ($result->ok !== true) {

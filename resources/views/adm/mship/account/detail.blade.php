@@ -33,11 +33,12 @@
 
                         <div class="col-md-12">
                             <div class="btn-toolbar">
-                                <div class="btn-group pull-right">
+                                    <div class="btn-group pull-right" role="group">
                                     @can('use-permission', "adm/mship/account/*/impersonate")
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalImpersonate">Impersonate</button>
                                     @endcan
-                                </div>
+                                        <a href="{{route('adm.mship.account.sync', $account->id)}}" class="btn btn-warning">Sync To Services</a>
+                                    </div>
                             </div>
                         </div>
                         <div class="clearfix">&nbsp;</div>
@@ -144,7 +145,7 @@
 
                     @can('use-permission', "adm/mship/account/*/impersonate")
                         <div class="modal fade" id="modalImpersonate" tabindex="-1" role="dialog" aria-labelledby="Impersonate" aria-hidden="true">
-                            {!! Form::open(["url" => URL::route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
+                            {!! Form::open(["url" => route("adm.mship.account.impersonate", $account->id), "target" => "_blank"]) !!}
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -217,7 +218,7 @@
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ count($r->permissions) }}</td>
                                                     <td>{{ $r->created_at->toDateTimeString() }}</td>
-                                                    @can('use-permission', "adm/mship/account/*/roles/".$r->id."/detach")
+                                                    @can('use-permission', "adm/mship/account/*/roles/*/detach")
                                                         <td>{!! Form::button("Delete", ["data-href" => URL::route("adm.mship.account.role.detach", [$account->id, $r->id]), "data-toggle" => "confirmation", "class" => "btn btn-xs btn-danger"]) !!}</td>
                                                     @endcan
                                                 </tr>

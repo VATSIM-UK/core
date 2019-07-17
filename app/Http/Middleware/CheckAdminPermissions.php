@@ -36,11 +36,10 @@ class CheckAdminPermissions
         $newUri = str_replace('/*/*', '/*', $newUri); // If the new url results in /*/*, we only want the highest level
 
         $hasRoutePermission = $request->user()->can('use-permission', $newUri);
-
         if ($hasRoutePermission) {
             return $next($request);
         }
-
+        
         abort(403);
     }
 
