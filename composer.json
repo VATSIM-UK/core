@@ -74,7 +74,7 @@
       "alawrence/laravel-ipboard": "dev-master",
       "barryvdh/laravel-debugbar": "~3.0",
       "barryvdh/laravel-ide-helper": "^2.6",
-      "benjaminhirsch/nova-slug-field": "^1.1",
+      "benjaminhirsch/nova-slug-field": "^1.2",
       "bugsnag/bugsnag-laravel": "^2.0",
       "cobaltgrid/vatsim-stand-status": "^1.0",
       "doctrine/dbal": "~2.5",

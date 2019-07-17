@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ed56786df547703c2a6dcec86f1cc33",
+    "content-hash": "f8317b54fde96e573b60826320a46377",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
