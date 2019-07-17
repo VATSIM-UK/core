@@ -12,7 +12,7 @@ class WaitingListStatusTest extends TestCase
 
     private $waitingListStatus;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

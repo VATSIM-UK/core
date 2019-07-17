@@ -21,7 +21,7 @@ class AccountBanTest extends TestCase
     /** @var Account */
     protected $account;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
