@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Training;
+namespace Tests\Unit\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;

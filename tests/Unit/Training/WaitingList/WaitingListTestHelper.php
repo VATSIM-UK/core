@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Training;
+namespace Tests\Unit\Training\WaitingList;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
