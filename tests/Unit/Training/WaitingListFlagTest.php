@@ -90,7 +90,7 @@ class WaitingListFlagTest extends TestCase
         $this->assertNull($this->flag->endorsement);
         $this->flag->update(['endorsement_id' => $this->endorsement->id]);
 
-        $this->assertNotNull($this->flag->endorsement);
+        $this->assertNotNull($this->flag->fresh()->endorsement);
     }
 
     /** @test */
