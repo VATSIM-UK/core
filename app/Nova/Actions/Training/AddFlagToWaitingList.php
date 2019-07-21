@@ -2,6 +2,7 @@
 
 namespace App\Nova\Actions\Training;
 
+use App\Models\Atc\Endorsement;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -10,6 +11,7 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 
 class AddFlagToWaitingList extends Action
@@ -30,7 +32,13 @@ class AddFlagToWaitingList extends Action
         /** @var \App\Models\Training\WaitingList */
         $waitingList = $models->first();
 
-        $flag = WaitingListFlag::create(['name' => $fields->name, 'default_value' => $fields->default_value]);
+        $flag = WaitingListFlag::create(
+            [
+                'name' => $fields->name,
+                'default_value' => $fields->default_value,
+                'endorsement_id' => $fields->endorsement_id
+            ]
+        );
 
         $waitingList->addFlag($flag);
     }
@@ -46,7 +54,13 @@ class AddFlagToWaitingList extends Action
             Text::make('Name')->rules('required', 'min:3', 'unique:training_waiting_list_flags,name'),
 
             Boolean::make('Default Value')->rules('required', 'boolean')
-                ->help('Ticking this field with mean that when the flag is assigned, it will default to true. The opposite is also true.')
+                ->help('Ticking this field with mean that when the flag is assigned, it will default to true. The opposite is also true.'),
+
+            Select::make('Endorsement', 'endorsement_id')->options(
+                Endorsement::all()->mapWithKeys(function ($item) {
+                    return [$item['id'] => $item['name']];
+                })
+            )->help('If an option is chosen here, this will be an automated flag. This cannot be reversed.')
         ];
     }
 }

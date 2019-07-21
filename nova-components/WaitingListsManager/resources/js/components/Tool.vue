@@ -119,7 +119,7 @@
             },
 
             openFlagChangeModal(selected) {
-                this.selectedFlag = selected.flag
+                this.selectedFlag = selected.pivot.id
                 this.flagConfirmModalOpen = true
             },
 
@@ -137,7 +137,7 @@
             },
 
             confirmFlagChange() {
-                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag.flag}/toggle`).then(() => {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
                     // close the modal dialog
                     this.closeFlagChangeModal()
                     // show a success message

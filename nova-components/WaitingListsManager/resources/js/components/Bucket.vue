@@ -60,15 +60,13 @@
                         </div>
 
                     </td>
-                    <td >
-                        <div v-for="flag in account.flags" class="flex-row">
-                            <p class="text-center">
-                                <span class="mr-1">{{ flag.name }}</span>
-                                <span class="inline-block rounded-full w-2 h-2 cursor-pointer"
-                                      :class="{ 'bg-success': flag.pivot.value, 'bg-danger': !flag.pivot.value }"
-                                      @click="changeFlag(flag.pivot.id)"></span>
-                            </p>
-                        </div>
+                    <td>
+                        <flag-indicator
+                            v-for="flag in account.flags"
+                            :key="flag.pivot.id"
+                            :flag="flag"
+                            @changeFlag="changeFlag"
+                        ></flag-indicator>
                     </td>
                     <td>
                         <div class="flex justify-around">
@@ -116,7 +114,10 @@
             },
 
             changeFlag(flag) {
-                this.$emit('changeFlag', { flag: flag })
+                // check to see if the flag is automated or not.
+                if (!flag.endorsement_id) {
+                    this.$emit('changeFlag', flag)
+                }
             }
         },
 
