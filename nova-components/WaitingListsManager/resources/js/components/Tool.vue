@@ -110,8 +110,8 @@
                 )
             },
 
-            activeAccount(account) {
-                Nova.request().patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active`, { account_id: account })
+            activeAccount(payload) {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/accounts/${this.resourceId}/active`, { account_id: payload.account })
                     .then(response => {
                         EventBus.$emit('list-changed')
                     }
@@ -136,8 +136,8 @@
                 this.notesModalOpen = false
             },
 
-            confirmFlagChange(id) {
-                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag}/toggle`).then(() => {
+            confirmFlagChange() {
+                Nova.request().patch(`/nova-vendor/waiting-lists-manager/flag/${this.selectedFlag.flag}/toggle`).then(() => {
                     // close the modal dialog
                     this.closeFlagChangeModal()
                     // show a success message
