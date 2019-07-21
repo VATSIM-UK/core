@@ -23,7 +23,7 @@ class WaitingListFeatureTest extends TestCase
 
     private $waitingList;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

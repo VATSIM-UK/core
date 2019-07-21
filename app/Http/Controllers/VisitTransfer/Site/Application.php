@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\VisitTransfer\Site;
 
+use App\Exceptions\Mship\InvalidCIDException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\VisitTransfer\ApplicationFacilitySelectedRequested;
 use App\Http\Requests\VisitTransfer\ApplicationRefereeAddRequest;
@@ -169,7 +170,13 @@ class Application extends BaseController
     public function postReferees(ApplicationRefereeAddRequest $request, \App\Models\VisitTransfer\Application $application)
     {
         // Check if the CID is in the home region
-        $referee = Account::findOrRetrieve(Input::get('referee_cid'));
+        try {
+            $referee = Account::findOrRetrieve(Input::get('referee_cid'));
+        } catch (InvalidCIDException $e) {
+            return Redirect::back()
+                ->withError("There doesn't seem to be a VATSIM user with that ID.")
+                ->withInput();
+        }
 
         try {
             if ($referee->primary_permanent_state->pivot->region != Auth::user()->primary_permanent_state->pivot->region) {

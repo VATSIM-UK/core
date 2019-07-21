@@ -25,7 +25,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
 
     public function getIndex()
     {
-        $statistics = Cache::remember('statistics.mship', 60, function () {
+        $statistics = Cache::remember('statistics.mship', 60 * 60, function () {
             // All Stats
             $statistics = [];
             $statistics['members_total'] = (\App\Models\Mship\Account::count());
@@ -48,7 +48,7 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
             return $statistics;
         });
 
-        $membershipStats = Cache::remember('statistics.membership.graph', 60 * 24, function () {
+        $membershipStats = Cache::remember('statistics.membership.graph', (60 * 24) * 60, function () {
             $membershipStats = [];
             $membershipStatsKeys = ['members.division.current', 'members.division.new', 'members.new', 'members.current'];
             $date = \Carbon\Carbon::parse('45 days ago');
@@ -85,14 +85,14 @@ class Dashboard extends \App\Http\Controllers\Adm\AdmController
         }
 
         // Global searches!
-        $members = Cache::remember("adm_dashboard_membersearch_{$searchQuery}", 60, function () use ($searchQuery) {
+        $members = Cache::remember("adm_dashboard_membersearch_{$searchQuery}", 60 * 60, function () use ($searchQuery) {
             return Account::where('id', 'LIKE', '%'.$searchQuery.'%')
                 ->orWhere(\DB::raw("CONCAT(`name_first`, ' ', `name_last`)"), 'LIKE', '%'.$searchQuery.'%')
                 ->limit(25)
                 ->get();
         });
 
-        $emails = Cache::remember("adm_dashboard_emailssearch_{$searchQuery}", 60, function () use ($searchQuery) {
+        $emails = Cache::remember("adm_dashboard_emailssearch_{$searchQuery}", 60 * 60, function () use ($searchQuery) {
             return AccountEmail::where('email', 'LIKE', '%'.$searchQuery.'%')
                 ->limit(25)
                 ->get();

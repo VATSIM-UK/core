@@ -1,8 +1,8 @@
 <?php
 
-use Laravel\Nova\Http\Middleware\Authenticate;
 use Laravel\Nova\Http\Middleware\Authorize;
 use Laravel\Nova\Http\Middleware\BootTools;
+use Laravel\Nova\Http\Middleware\Authenticate;
 use Laravel\Nova\Http\Middleware\DispatchServingNovaEvent;
 
 return [
@@ -56,6 +56,7 @@ return [
     | of the authentication guards defined in the "auth" config file.
     |
     */
+
     'guard' => env('NOVA_GUARD', null),
 
     /*
@@ -76,5 +77,18 @@ return [
         BootTools::class,
         Authorize::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nova Pagination Type
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the pagination visual style used by Resources. You
+    | may choose between two types: "simple" and "links". Feel free to set
+    | this option to the visual style you like for your application.
+    |
+    */
+
+    'pagination' => 'simple',
 
 ];

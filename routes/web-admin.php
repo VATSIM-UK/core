@@ -81,16 +81,17 @@ Route::group([
             'as' => 'account.',
         ], function () {
             Route::get('/account/{scope?}')->where(['scope' => '\w+'])->uses('Account@getIndex')->name('index');
+            Route::get('{mshipAccount}/sync')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@sync')->name('sync');
             Route::get('{mshipAccount}/{tab?}/{tabid?}')->where(['mshipAccount' => '\d+'])->uses('Account@getDetail')->name('details');
-            Route::post('{mshipAccount}/roles/attach')->where(['mshipAccount' => '\d+'])->uses('Account@postRoleAttach')->name('role.attach');
-            Route::get('{mshipAccount}/roles/{mshipRole}/detach')->where(['mshipAccount' => '\d+'])->uses('Account@getRoleDetach')->name('role.detach');
-            Route::post('{mshipAccount}/ban/add')->where(['mshipAccount' => '\d+'])->uses('Account@postBanAdd')->name('ban.add');
-            Route::post('{mshipAccount}/note/create')->where(['mshipAccount' => '\d+'])->uses('Account@postNoteCreate')->name('note.create');
-            Route::post('{mshipAccount}/note/filter')->where(['mshipAccount' => '\d+'])->uses('Account@postNoteFilter')->name('note.filter');
-            Route::post('{mshipAccount}/security/enable')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityEnable')->name('security.enable');
-            Route::post('{mshipAccount}/security/reset')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityReset')->name('security.reset');
-            Route::post('{mshipAccount}/security/change')->where(['mshipAccount' => '\d+'])->uses('Account@postSecurityChange')->name('security.change');
-            Route::post('{mshipAccount}/impersonate')->where(['mshipAccount' => '\d+'])->uses('Account@postImpersonate')->name('impersonate');
+            Route::post('{mshipAccount}/roles/attach')->where(['mshipAccount' => '\d+'])->uses('Account\Roles@postRoleAttach')->name('role.attach');
+            Route::get('{mshipAccount}/roles/{mshipRole}/detach')->where(['mshipAccount' => '\d+'])->uses('Account\Roles@getRoleDetach')->name('role.detach');
+            Route::post('{mshipAccount}/ban/add')->where(['mshipAccount' => '\d+'])->uses('Account\Bans@postBanAdd')->name('ban.add');
+            Route::post('{mshipAccount}/note/create')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postNoteCreate')->name('note.create');
+            Route::post('{mshipAccount}/note/filter')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postNoteFilter')->name('note.filter');
+            Route::post('{mshipAccount}/security/enable')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postSecurityEnable')->name('security.enable');
+            Route::post('{mshipAccount}/security/reset')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postSecurityReset')->name('security.reset');
+            Route::post('{mshipAccount}/security/change')->where(['mshipAccount' => '\d+'])->uses('Account/Settings@postSecurityChange')->name('security.change');
+            Route::post('{mshipAccount}/impersonate')->where(['mshipAccount' => '\d+'])->uses('Account/Settings@postImpersonate')->name('impersonate');
         });
 
         // Bans
@@ -99,12 +100,12 @@ Route::group([
             'as' => 'ban.',
         ], function () {
             Route::get('/')->uses('Account@getBans')->name('index');
-            Route::get('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account@getBanRepeal')->name('repeal');
-            Route::post('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account@postBanRepeal')->name('repeal.post');
-            Route::get('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account@getBanComment')->name('comment');
-            Route::post('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account@postBanComment')->name('comment.post');
-            Route::get('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account@getBanModify')->name('modify');
-            Route::post('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account@postBanModify')->name('modify.post');
+            Route::get('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account\Bans@getBanRepeal')->name('repeal');
+            Route::post('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account\Bans@postBanRepeal')->name('repeal.post');
+            Route::get('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account\Bans@getBanComment')->name('comment');
+            Route::post('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account\Bans@postBanComment')->name('comment.post');
+            Route::get('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account\Bans@getBanModify')->name('modify');
+            Route::post('/{ban}/modify')->where(['ban' => '\d+'])->uses('Account\Bans@postBanModify')->name('modify.post');
         });
 
         // Roles

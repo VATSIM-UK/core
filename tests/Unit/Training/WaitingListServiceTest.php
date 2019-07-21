@@ -15,7 +15,7 @@ class WaitingListServiceTest extends TestCase
     /** @var \App\Models\Training\WaitingList */
     private $waitingList;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

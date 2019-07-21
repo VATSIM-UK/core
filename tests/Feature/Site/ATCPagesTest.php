@@ -7,37 +7,37 @@ use Tests\TestCase;
 class ATCPagesTest extends TestCase
 {
     /** @test */
-    public function itLoadsTheLandingPage()
+    public function testItLoadsTheLandingPage()
     {
         $this->get(route('site.atc.landing'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheNewControllerPage()
+    public function testItLoadsTheNewControllerPage()
     {
         $this->get(route('site.atc.newController'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheProgressionGuidePage()
+    public function testItLoadsTheProgressionGuidePage()
     {
         $this->get(route('site.atc.progression'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheEndorsementsPage()
+    public function testItLoadsTheEndorsementsPage()
     {
         $this->get(route('site.atc.endorsements'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheBecomingAMentorPage()
+    public function testItLoadsTheBecomingAMentorPage()
     {
         $this->get(route('site.atc.mentor'))->assertOk();
     }
 
     /** @test */
-    public function itLoadsTheBookingsPage()
+    public function testItLoadsTheBookingsPage()
     {
         $this->get(route('site.atc.bookings'))->assertOk();
     }

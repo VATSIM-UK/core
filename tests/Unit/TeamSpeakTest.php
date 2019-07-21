@@ -17,7 +17,7 @@ class TeamSpeakTest extends TestCase
     protected $channelGroups;
     protected $serverGroups;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -29,8 +29,8 @@ class TeamSpeakTest extends TestCase
         $this->channel->save();
         $this->channel = $this->channel->fresh(['parent', 'children']);
 
-        $this->serverGroups = factory(\App\Models\TeamSpeak\ServerGroup::class, 5)->create();
-        $this->channelGroups = factory(\App\Models\TeamSpeak\ChannelGroup::class, 5)->create();
+        $this->serverGroups = factory(ServerGroup::class, 5)->create();
+        $this->channelGroups = factory(ChannelGroup::class, 5)->create();
 
         $this->account = factory(\App\Models\Mship\Account::class)->create([
             'name_first' => 'John',

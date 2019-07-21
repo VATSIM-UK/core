@@ -126,7 +126,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link"
-                               href="http://www.nats-uk.ead-it.com/public/index.php%3Foption=com_content&task=blogcategory&id=6&Itemid=13.html"
+                               href="{{ route('site.airports') }}"
                                target="_blank">Charts</a>
                         </li>
                         <li class="nav-item">
@@ -200,7 +200,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="https://helpdesk.vatsim.uk">Contact Us</a>
                 </li>
-                <a href="{{ route('login') }}" class="nav-link text-white"><i class="fas fa-user"></i></a>
+                <li class="nav-item">
+                    <a href="{{ route('login') }}" class="nav-link">
+                        <i class="fas fa-user text-white d-mobile-none"></i>
+                        <span class="d-tablet-none">Login</span>
+                    </a>
+                </li>
             </ul>
         </section>
 
@@ -218,24 +223,50 @@
             </div>
             <div class="data">
                 <ul>
-                    @forelse ($bookings as $booking)
+                    @foreach($events as $event)
+                        <li class='booking event-booking'>
+                            @if($event->thread)
+                                <a href="{{$event->thread}}"
+                                   target="_blank">
+                            @else
+                                <span>
+                            @endif
+                                <div class="icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div>
+                                    <b>{{$event->event}}</b>
+                                    <br/>
+                                    {{$event->from}}z - {{$event->to}}z<br/>
+                                </div>
+                            @if($event->thread)
+                                </a>
+                            @else
+                                </span>
+                            @endif
+                        </li>
+                        @if($loop->last)
+                            <hr class="mt-2 mb-2">
+                        @endif
+                    @endforeach
+                    @foreach ($bookings as $booking)
                         <li class='booking'>
-                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking['id'] }}"
+                            <a href="https://cts.vatsim.uk/bookings/bookinfo.php?cb={{ $booking->id }}"
                                target="_blank">
                                 <div class="icon">
-                                    @if($booking['type'] == 'EX')
+                                    @if($booking->isExam())
                                         <i class="fas fa-exclamation"></i>
-                                    @elseif($booking['type'] == 'ME')
+                                    @elseif($booking->isMentoring())
                                         <i class="fas fa-chalkboard-teacher"></i>
-                                    @elseif($booking['type'] == 'BK')
+                                    @elseif($booking->isMemberBooking())
                                         <i class="fas fa-headset"></i>
                                     @endif
                                 </div>
                                 <div>
                                     <b>{{ $booking['position'] }}
-                                        @if($booking['type'] == 'EX')
+                                        @if($booking->isExam())
                                             (E)
-                                        @elseif($booking['type'] == 'ME')
+                                        @elseif($booking->isMentoring())
                                             (M)
                                         @endif
                                     </b><br/>
@@ -248,9 +279,10 @@
                                 </div>
                             </a>
                         </li>
-                    @empty
+                    @endforeach
+                    @if($bookings->count() == 0 && $events->count() == 0)
                         <li>There are no bookings today. <i class="far fa-tired"></i></li>
-                    @endforelse
+                    @endif
                 </ul>
                 <div class="spacer"></div>
             </div>

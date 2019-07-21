@@ -2,16 +2,32 @@
 
 namespace App\Models\Atc;
 
+use App\Models\Atc\Endorsement\Condition;
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Model;
 
 class Endorsement extends Model
 {
     protected $table = 'endorsements';
     protected $fillable = [
-        'endorsement',
-        'required_airfields',
-        'required_hours',
-        'hours_months',
+        'name',
     ];
-    public $timestamps = true;
+
+    private $allMet;
+
+    public function conditions()
+    {
+        return $this->hasMany(Condition::class);
+    }
+
+    public function conditionsMetForUser(Account $user)
+    {
+        if ($this->allMet) {
+            return $this->allMet;
+        }
+
+        return $this->allMet = $this->conditions->filter(function ($condition) use ($user) {
+            return !$condition->isMetForUser($user);
+        })->isEmpty();
+    }
 }

@@ -63,7 +63,7 @@ class WaitingList extends Resource
             TextWithSlug::make('Name')
                 ->rules(['required'])
                 ->creationRules('unique:training_waiting_list,name')
-                ->slug('Slug'),
+                ->slug('slug'),
 
             Slug::make('Slug'),
 

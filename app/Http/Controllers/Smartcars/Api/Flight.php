@@ -96,6 +96,12 @@ class Flight extends AdmController
         $aircraft = Aircraft::findByRegistration(Input::get('aircraft'));
 
         $bid = Bid::find(Input::get('bidid'));
+
+        // Check bid has flight
+        if (!$bid) {
+            return 'ERROR';
+        }
+
         $flight = $bid->flight;
 
         if ($flight->id != Input::get('routeid')) {
@@ -128,6 +134,12 @@ class Flight extends AdmController
         $aircraft = Aircraft::find(Input::get('aircraft'));
 
         $bid = Bid::find(Input::get('bidid'));
+
+        // Check bid has flight
+        if (!$bid) {
+            return 'ERROR';
+        }
+
         $flight = $bid->flight;
 
         if ($flight->id != Input::get('routeid')) {

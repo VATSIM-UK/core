@@ -29,23 +29,30 @@ class BookingRepository
         return $this->formatBookings($bookings);
     }
 
+    public function getTodaysLiveAtcBookingsWithoutEvents()
+    {
+        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+            ->notEvent()
+            ->networkAtc()
+            ->with('member')
+            ->orderBy('from')
+            ->get();
+
+        return $this->formatBookings($bookings);
+    }
+
     private function formatBookings(Collection $bookings)
     {
-        $returnData = collect();
+        $bookings->transform(function ($booking) {
+            $booking->from = Carbon::parse($booking->from)->format('H:i');
+            $booking->to = Carbon::parse($booking->to)->format('H:i');
 
-        $bookings->each(function ($booking) use ($returnData) {
-            $returnData->push(collect([
-                'id' => $booking->id,
-                'date' => $booking->date,
-                'from' => Carbon::parse($booking->from)->format('H:i'),
-                'to' => Carbon::parse($booking->to)->format('H:i'),
-                'position' => $booking->position,
-                'member' => $this->formatMember($booking),
-                'type' => $booking->type,
-            ]));
+            $booking->member = $this->formatMember($booking);
+            $booking->unsetRelation('member');
+
+            return $booking;
         });
-
-        return $returnData;
+        return $bookings;
     }
 
     private function formatMember(Booking $booking)

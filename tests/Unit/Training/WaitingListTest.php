@@ -15,7 +15,7 @@ class WaitingListTest extends TestCase
     private $waitingList;
     private $staffUser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
