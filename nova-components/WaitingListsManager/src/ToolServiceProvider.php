@@ -3,8 +3,8 @@
 namespace Vatsimuk\WaitingListsManager;
 
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListAccount;
-use App\Models\Training\WaitingListAccountFlag;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListAccountFlag;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;

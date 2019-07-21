@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Models\Training\WaitingList;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
+use App\Models\Training\WaitingList;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,7 +52,7 @@ class WaitingListAccount extends Pivot
     }
 
     /**
-     * @param \App\Models\Training\WaitingListStatus $listStatus
+     * @param \App\Models\Training\WaitingList\WaitingListStatus $listStatus
      */
     public function addStatus(WaitingListStatus $listStatus)
     {
@@ -67,7 +68,7 @@ class WaitingListAccount extends Pivot
     }
 
     /**
-     * @param \App\Models\Training\WaitingListStatus $listStatus
+     * @param \App\Models\Training\WaitingList\WaitingListStatus $listStatus
      * @return int
      */
     public function removeStatus(WaitingListStatus $listStatus)

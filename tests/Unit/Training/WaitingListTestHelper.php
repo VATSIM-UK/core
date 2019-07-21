@@ -4,7 +4,7 @@ namespace Tests\Unit\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 
 trait WaitingListTestHelper
 {

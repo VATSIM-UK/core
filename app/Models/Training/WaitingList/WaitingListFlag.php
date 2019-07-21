@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Models\Training\WaitingList;
 
 use App\Models\Atc\Endorsement;
 use Illuminate\Database\Eloquent\Model;

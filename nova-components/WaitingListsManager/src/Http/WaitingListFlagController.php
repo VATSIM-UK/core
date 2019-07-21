@@ -2,7 +2,7 @@
 
 namespace Vatsimuk\WaitingListsManager\Http;
 
-use App\Models\Training\WaitingListAccountFlag;
+use App\Models\Training\WaitingList\WaitingListAccountFlag;
 use Illuminate\Routing\Controller;
 
 class WaitingListFlagController extends Controller

@@ -2,16 +2,14 @@
 
 namespace App\Nova\Actions\Training;
 
-use App\Models\Training\WaitingListFlag;
+use App\Models\Training\WaitingList\WaitingListFlag;
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Actions\Action;
-use Illuminate\Support\Collection;
-use Laravel\Nova\Fields\ActionFields;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 
 class AddFlagToWaitingList extends Action

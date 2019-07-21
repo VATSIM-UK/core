@@ -7,7 +7,7 @@ use App\Events\Training\AccountDemotedInWaitingList;
 use App\Events\Training\AccountPromotedInWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 

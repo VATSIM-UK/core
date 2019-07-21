@@ -5,7 +5,7 @@ namespace Tests\Unit\Training;
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
