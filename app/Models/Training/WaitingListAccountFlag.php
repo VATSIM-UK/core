@@ -27,7 +27,7 @@ class WaitingListAccountFlag extends Pivot
 
     public function getValueAttribute()
     {
-        if ($this->flag->endorsement_id != null) {
+        if ($this->flag->endorsement_id) {
             return $this->flag->endorsement->conditionsMetForUser($this->waitingListAccount->account);
         }
 

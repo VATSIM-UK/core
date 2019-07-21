@@ -36,8 +36,6 @@ class WaitingListFlagTest extends TestCase
         $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
         $this->endorsement = factory(Endorsement::class)->create();
-
-//        Event::fake();
     }
 
     /** @test */
@@ -89,6 +87,7 @@ class WaitingListFlagTest extends TestCase
     /** @test */
     public function itCanBeRelatedToAnEndorsement()
     {
+        $this->assertNull($this->flag->endorsement);
         $this->flag->update(['endorsement_id' => $this->endorsement->id]);
 
         $this->assertNotNull($this->flag->endorsement);
