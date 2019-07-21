@@ -90,8 +90,8 @@ Route::group([
             Route::post('{mshipAccount}/note/filter')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postNoteFilter')->name('note.filter');
             Route::post('{mshipAccount}/security/enable')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postSecurityEnable')->name('security.enable');
             Route::post('{mshipAccount}/security/reset')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postSecurityReset')->name('security.reset');
-            Route::post('{mshipAccount}/security/change')->where(['mshipAccount' => '\d+'])->uses('Account/Settings@postSecurityChange')->name('security.change');
-            Route::post('{mshipAccount}/impersonate')->where(['mshipAccount' => '\d+'])->uses('Account/Settings@postImpersonate')->name('impersonate');
+            Route::post('{mshipAccount}/security/change')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postSecurityChange')->name('security.change');
+            Route::post('{mshipAccount}/impersonate')->where(['mshipAccount' => '\d+'])->uses('Account\Settings@postImpersonate')->name('impersonate');
         });
 
         // Bans
