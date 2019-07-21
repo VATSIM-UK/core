@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\App\Models\Training\WaitingList::class, function (Faker $faker) {
+$factory->define(App\Models\Training\WaitingList::class, function (Faker $faker) {
     $name = $faker->name;
 
     return [
@@ -23,10 +23,10 @@ $factory->state(App\Models\Training\WaitingList\WaitingListStatus::class, 'defau
     'default' => true,
 ]);
 
-$factory->define(\App\Models\Training\WaitingList\WaitingListFlag::class, function (Faker $faker) {
+$factory->define(App\Models\Training\WaitingList\WaitingListFlag::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'list_id' => factory(\App\Models\Training\WaitingList::class),
+        'list_id' => factory(App\Models\Training\WaitingList::class),
         'default_value' => true,
     ];
 });
