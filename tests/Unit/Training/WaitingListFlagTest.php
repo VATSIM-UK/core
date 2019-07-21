@@ -2,20 +2,17 @@
 
 namespace Tests\Unit\Training;
 
-use App\Events\Training\AccountAddedToWaitingList;
-use App\Listeners\Training\WaitingList\AssignFlags;
+use App\Models\Mship\Account;
 use App\Models\Atc\Endorsement;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingListFlag;
-use App\Models\Mship\Account;
 use App\Models\Training\WaitingListStatus;
 use App\Services\Training\AddToWaitingList;
+use App\Events\Training\AccountAddedToWaitingList;
+use App\Listeners\Training\WaitingList\AssignFlags;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WaitingListFlagTest extends TestCase
 {
