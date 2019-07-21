@@ -4,7 +4,6 @@ namespace App\Events\Training;
 
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;

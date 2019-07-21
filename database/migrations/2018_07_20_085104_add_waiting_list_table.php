@@ -63,6 +63,7 @@ class AddWaitingListTable extends Migration
             $table->unsignedInteger('list_id')->nullable();
             $table->string('name');
             $table->boolean('default_value');
+            $table->unsignedInteger('endorsement_id')->nullable();
             $table->timestamps();
         });
 

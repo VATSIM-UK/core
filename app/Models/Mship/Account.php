@@ -22,7 +22,7 @@ use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Note\Type;
-use App\Models\Training\Concerns\HasWaitingLists;
+use App\Models\Training\WaitingList\Concerns\HasWaitingLists;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;

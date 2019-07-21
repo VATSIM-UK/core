@@ -3,11 +3,8 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListAccount;
-use App\Models\Training\WaitingListFlag;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListFlag;
 
 class AssignFlags
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Models\Training\WaitingList;
 
-use App\Models\Mship\Account;
+use App\Models\Atc\Endorsement;
 use Illuminate\Database\Eloquent\Model;
 
 class WaitingListFlag extends Model
@@ -27,5 +27,10 @@ class WaitingListFlag extends Model
             'flag_id',
             'waiting_list_account_id'
         )->withPivot(['marked_at'])->using(WaitingListAccountFlag::class);
+    }
+
+    public function endorsement()
+    {
+        return $this->belongsTo(Endorsement::class);
     }
 }

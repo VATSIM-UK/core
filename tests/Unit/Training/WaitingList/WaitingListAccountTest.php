@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Unit\Training;
+namespace Tests\Unit\Training\WaitingList;
 
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
-use App\Models\Training\WaitingListFlag;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 

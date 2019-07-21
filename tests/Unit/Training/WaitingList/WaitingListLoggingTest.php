@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Training;
+namespace Tests\Unit\Training\WaitingList;
 
 use App\Events\Training\AccountNoteChanged;
 use App\Listeners\Training\WaitingList\LogNoteChanged;

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Training\Concerns;
+namespace App\Models\Training\WaitingList\Concerns;
 
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListAccount;
 
 trait HasWaitingLists
 {

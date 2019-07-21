@@ -3,7 +3,7 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 
 class AssignDefaultStatus
 {

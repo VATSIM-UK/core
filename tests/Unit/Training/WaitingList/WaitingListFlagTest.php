@@ -1,19 +1,18 @@
 <?php
 
-namespace Tests\Unit\Training;
+namespace Tests\Unit\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\AssignFlags;
+use App\Models\Atc\Endorsement;
+use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingListFlag;
-use App\Models\Mship\Account;
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListFlag;
+use App\Models\Training\WaitingList\WaitingListStatus;
+use App\Services\Training\AddToWaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WaitingListFlagTest extends TestCase
 {
@@ -23,6 +22,8 @@ class WaitingListFlagTest extends TestCase
     private $flag;
     /** @var WaitingList */
     private $waitingList;
+    /** @var Endorsement */
+    private $endorsement;
 
     protected function setUp(): void
     {
@@ -34,7 +35,7 @@ class WaitingListFlagTest extends TestCase
         $this->waitingList->addFlag($this->flag);
         $this->waitingList->addToWaitingList($this->privacc, $this->privacc);
 
-        Event::fake();
+        $this->endorsement = factory(Endorsement::class)->create();
     }
 
     /** @test */
@@ -81,6 +82,34 @@ class WaitingListFlagTest extends TestCase
 
         // gets the pivot and finds the marked value
         $this->assertFalse($waitingListAccount->flags()->first()->pivot->value);
+    }
+
+    /** @test */
+    public function itCanBeRelatedToAnEndorsement()
+    {
+        $this->assertNull($this->flag->endorsement);
+        $this->flag->update(['endorsement_id' => $this->endorsement->id]);
+
+        $this->assertNotNull($this->flag->fresh()->endorsement);
+    }
+
+    /** @test */
+    public function itDetectsTrueValueForFlagWithEndorsement()
+    {
+        $account = factory(Account::class)->create();
+        // populate network data
+        factory(Atc::class)->create(['account_id' => $account->id, 'callsign' => 'EGGD_APP', 'minutes_online' => 61]);
+        $condition = factory(Endorsement\Condition::class)->create(['required_hours' => 1, 'positions' => ['EGGD_APP']]);
+
+        $flag = factory(WaitingListFlag::class)->create(['endorsement_id' => $condition->endorsement->id, 'list_id' => $this->waitingList->id]);
+
+        // add to the waiting list
+        handleService(new AddToWaitingList($this->waitingList, $account, $this->privacc));
+
+        // find the pivot
+        $waitingListAccount = $this->waitingList->accounts()->find($account->id)->pivot;
+
+        $this->assertTrue($waitingListAccount->flags()->find($flag->id)->pivot->value);
     }
     
     /** @test */
