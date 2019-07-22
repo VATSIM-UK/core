@@ -376,7 +376,7 @@ class TeamSpeak
     {
         $idleTime = floor($client['client_idle_time'] / 1000 / 60); // minutes
 
-        if ($member->hasPermissionTo('teamspeak/idle/permanent')) {
+        if ($member->hasPermissionTo('teamspeak/idle/permanent') || $member->is_on_network) {
             return;
         } elseif ($member->hasPermissionTo('teamspeak/idle/temporary')) {
             $maxIdleTime = 120;
