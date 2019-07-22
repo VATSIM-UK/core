@@ -25,22 +25,20 @@
         <portal to="modals">
             <transition name="fade">
                 <confirm-flag-change-modal
-                        v-if="flagConfirmModalOpen"
-                        @confirm="confirmFlagChange"
-                        @close="closeFlagChangeModal"
+                    v-if="flagConfirmModalOpen"
+                    @confirm="confirmFlagChange"
+                    @close="closeFlagChangeModal"
                 />
-
             </transition>
-
         </portal>
 
         <portal to="modals">
             <transition name="fade">
                 <text-input-modal
-                        v-if="notesModalOpen"
-                        @confirm="createNote"
-                        @close="closeNotesModal"
-                        :account="selectedAccount"
+                    v-if="notesModalOpen"
+                    @confirm="createNote"
+                    @close="closeNotesModal"
+                    :account="selectedAccount"
                 />
             </transition>
         </portal>
