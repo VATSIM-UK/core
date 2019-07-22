@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\Training\WaitingListStatus;
+use App\Models\Training\WaitingList\WaitingListStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 

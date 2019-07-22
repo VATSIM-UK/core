@@ -2,11 +2,11 @@
 
 namespace Vatsimuk\WaitingListsManager\Http;
 
+use App\Events\Training\AccountNoteChanged;
+use App\Models\Training\WaitingList\WaitingListAccount;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use App\Events\Training\AccountNoteChanged;
-use App\Models\Training\WaitingListAccount;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class WaitingListNoteController extends Controller
 {

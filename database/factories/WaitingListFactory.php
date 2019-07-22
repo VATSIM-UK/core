@@ -12,18 +12,18 @@ $factory->define(App\Models\Training\WaitingList::class, function (Faker $faker)
     ];
 });
 
-$factory->define(App\Models\Training\WaitingListStatus::class, function (Faker $faker) {
+$factory->define(App\Models\Training\WaitingList\WaitingListStatus::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'retains_position' => true,
     ];
 });
 
-$factory->state(App\Models\Training\WaitingListStatus::class, 'default', [
+$factory->state(App\Models\Training\WaitingList\WaitingListStatus::class, 'default', [
     'default' => true,
 ]);
 
-$factory->define(\App\Models\Training\WaitingListFlag::class, function (Faker $faker) {
+$factory->define(App\Models\Training\WaitingList\WaitingListFlag::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'list_id' => factory(App\Models\Training\WaitingList::class),

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Models\Training\WaitingList;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -27,6 +27,20 @@ class WaitingListAccountFlag extends Pivot
 
     public function getValueAttribute()
     {
+        if ($this->flag->endorsement_id) {
+            return $this->flag->endorsement->conditionsMetForUser($this->waitingListAccount->account);
+        }
+
         return !is_null($this->marked_at);
+    }
+
+    public function waitingListAccount()
+    {
+        return $this->belongsTo(WaitingListAccount::class);
+    }
+
+    public function flag()
+    {
+        return $this->belongsTo(WaitingListFlag::class);
     }
 }

@@ -15,7 +15,7 @@ class WaitingListFlag extends Resource
      *
      * @var string
      */
-    public static $model = 'App\Models\Training\WaitingListFlag';
+    public static $model = 'App\Models\Training\WaitingList\WaitingListFlag';
 
     /**
      * The single value that should be used to represent the resource when being displayed.

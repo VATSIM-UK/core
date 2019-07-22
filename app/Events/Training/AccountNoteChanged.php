@@ -3,11 +3,11 @@
 namespace App\Events\Training;
 
 use App\Models\Mship\Account;
-use App\Models\Training\WaitingListAccount;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class AccountNoteChanged implements ShouldQueue
 {
