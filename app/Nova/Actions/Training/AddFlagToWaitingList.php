@@ -54,7 +54,7 @@ class AddFlagToWaitingList extends Action
             Text::make('Name')->rules('required', 'min:3', 'unique:training_waiting_list_flags,name'),
 
             Boolean::make('Default Value')->rules('required', 'boolean')
-                ->help('Ticking this field with mean that when the flag is assigned, it will default to true. The opposite is also true.'),
+                ->help('Ticking this field will mean that when the flag is assigned, it will default to true. The opposite is also true.'),
 
             Select::make('Endorsement', 'endorsement_id')->options(
                 Endorsement::all()->mapWithKeys(function ($item) {
