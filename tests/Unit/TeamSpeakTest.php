@@ -100,30 +100,32 @@ class TeamSpeakTest extends TestCase
 
     public function testValidDisplayName()
     {
-        $account = $this->account;
         $validDisplayName = 'John Doe';
-        $this->assertEquals(true, $account->isValidDisplayName($validDisplayName));
+        $this->assertEquals(true, $this->account->isValidDisplayName($validDisplayName));
     }
 
     public function testInvalidDisplayName()
     {
-        $account = $this->account;
         $invalidDisplayName = 'John Do';
-        $this->assertEquals(false, $account->isValidDisplayName($invalidDisplayName));
+        $this->assertFalse($this->account->isValidDisplayName($invalidDisplayName));
     }
 
     public function testPartiallyValidDisplayName()
     {
-        $account = $this->account;
         $validDisplayName = 'John Doe - EGKK_TWR';
-        $this->assertEquals(true, $account->isPartiallyValidDisplayName($validDisplayName));
+        $this->assertTrue($this->account->isPartiallyValidDisplayName($validDisplayName));
     }
 
     public function testNotPartiallyValidDisplayName()
     {
-        $account = $this->account;
         $validDisplayName = 'John Do - EGKK_TWR';
-        $this->assertEquals(false, $account->isPartiallyValidDisplayName($validDisplayName));
+        $this->assertFalse($this->account->isPartiallyValidDisplayName($validDisplayName));
+    }
+
+    public function testAllowedDuplicates()
+    {
+        $this->assertFalse( $this->account->isDuplicateDisplayName('John Do1'));
+        $this->assertTrue( $this->account->isDuplicateDisplayName('John Doe1'));
     }
 
     // TODO: registration tests
