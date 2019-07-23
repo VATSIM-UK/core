@@ -280,10 +280,10 @@ class TeamSpeak
             $hasGracePeriod = Cache::has(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
 
             // Check to see if their name is at least partially right
-            if($member->isPartiallyValidDisplayName($client['client_nickname'])){
+            if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
 
                 // Check if they have been recently told but the grace has elapsed
-                if($recentlyTold && !$hasGracePeriod){
+                if ($recentlyTold && !$hasGracePeriod) {
                     self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
                     self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
                     self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
@@ -294,7 +294,7 @@ class TeamSpeak
                 }
 
                 // Give them a grace period
-                if(!$hasGracePeriod){
+                if (!$hasGracePeriod) {
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
                     self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));

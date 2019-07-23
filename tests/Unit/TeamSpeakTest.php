@@ -124,8 +124,8 @@ class TeamSpeakTest extends TestCase
 
     public function testAllowedDuplicates()
     {
-        $this->assertFalse( $this->account->isDuplicateDisplayName('John Do1'));
-        $this->assertTrue( $this->account->isDuplicateDisplayName('John Doe1'));
+        $this->assertFalse($this->account->isDuplicateDisplayName('John Do1'));
+        $this->assertTrue($this->account->isDuplicateDisplayName('John Doe1'));
     }
 
     // TODO: registration tests
