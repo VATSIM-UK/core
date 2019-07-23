@@ -286,7 +286,7 @@ class TeamSpeak
                 Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
                 Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
                 throw new ClientKickedFromServerException;
-            } elseif (!$hasGracePeriod) {
+            } elseif (!$hasGracePeriod && !$member->isDuplicateDisplayName($client['client_nickname'])) {
                 // set grace period to allow for possible mistakes
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                 self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
