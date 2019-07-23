@@ -432,7 +432,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     {
         $wildcard = "";
 
-        if ($withNumberWildcard){
+        if ($withNumberWildcard) {
             $wildcard = "\d";
         }
 
