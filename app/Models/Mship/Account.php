@@ -428,6 +428,26 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         return $this->name_first && $this->name_last && $this->email;
     }
 
+    private function allowedNames($includeATC = false, $withNumberWildcard = false)
+    {
+        $wildcard = "";
+
+        if ($withNumberWildcard){
+            $wildcard = "\d";
+        }
+
+        $allowedNames = collect();
+        $allowedNames->push($this->name.$wildcard);
+        $allowedNames->push($this->real_name.$wildcard);
+
+        if ($includeATC && $this->networkDataAtcCurrent) {
+            $allowedNames->push($this->name.$wildcard.' - '.$this->networkDataAtcCurrent->callsign);
+            $allowedNames->push($this->real_name.$wildcard.' - '.$this->networkDataAtcCurrent->callsign);
+        }
+
+        return $allowedNames;
+    }
+
     /**
      * Determine if the given name, matches either the user's nickname or real name.
      *
@@ -437,28 +457,22 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function isValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        if ($this->networkDataAtcCurrent) {
-            $allowedNames->push($this->name.' - '.$this->networkDataAtcCurrent->callsign);
-            $allowedNames->push($this->real_name.' - '.$this->networkDataAtcCurrent->callsign);
-        }
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+        return $this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
             return strcasecmp($item, $displayName) == 0;
         })->count() > 0;
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        $allowedNames = collect();
-        $allowedNames->push($this->name);
-        $allowedNames->push($this->real_name);
-
-        return $allowedNames->filter(function ($item, $key) use ($displayName) {
+        return $this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
+        })->count() > 0;
+    }
+
+    public function isDuplicateDisplayName($displayName)
+    {
+        return $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+            return preg_match("/^".$displayName."$/i") == 1;
         })->count() > 0;
     }
 
