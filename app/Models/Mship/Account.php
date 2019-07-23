@@ -472,7 +472,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function isDuplicateDisplayName($displayName)
     {
         return $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
-            return preg_match("/^".$displayName."$/i") == 1;
+            return preg_match("/^".$displayName."$/i", $item) == 1;
         })->count() > 0;
     }
 
