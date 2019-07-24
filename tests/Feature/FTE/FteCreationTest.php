@@ -27,6 +27,8 @@ class FteCreationTest extends TestCase
 
         $name = sha1("{$file->getClientOriginalName()}.{$file->getClientOriginalExtension()}");
 
-        Storage::disk('public')->assertExists('storage/smartcars/exercises/' . $name . '.png');
+        Storage::disk('public')->assertExists('smartcars/exercises/' . $name . '.png');
+
+        $this->assertEquals('/storage/smartcars/exercises/' . $name . '.png', Flight::first()->image);
     }
 }

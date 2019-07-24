@@ -2,6 +2,8 @@
 
 namespace App\Libraries\Storage;
 
+use Illuminate\Support\Facades\Storage;
+
 abstract class StorageWrapper
 {
     protected $basePath = '/storage/';
@@ -27,7 +29,7 @@ abstract class StorageWrapper
      */
     public function retrieve($fileName)
     {
-        return asset($this->parseFileName($fileName));
+        return Storage::url($this->parseFileName($fileName));
     }
 
     /**
