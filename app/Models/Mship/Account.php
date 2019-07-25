@@ -441,8 +441,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $allowedNames->push($this->real_name.$wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
-            $allowedNames->push('{$this->name.$wildcard} - {$this->networkDataAtcCurrent->callsign}');
-            $allowedNames->push('{$this->real_name.$wildcard} - {$this->networkDataAtcCurrent->callsign}');
+            $allowedNames->push($this->name.$wildcard." - {$this->networkDataAtcCurrent->callsign}");
+            $allowedNames->push($this->real_name.$wildcard." - {$this->networkDataAtcCurrent->callsign}");
         }
 
         return $allowedNames;
