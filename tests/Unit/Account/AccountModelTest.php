@@ -77,6 +77,14 @@ class AccountModelTest extends TestCase
     }
 
     /** @test */
+    public function itAllowsValidIncrementedNicknames()
+    {
+        $this->assertTrue($this->user->isDuplicateDisplayName("{$this->user->name_first} {$this->user->name_last}1"));
+        $this->assertTrue($this->user->isDuplicateDisplayName("{$this->user->name_first} {$this->user->name_last}5"));
+        $this->assertFalse($this->user->isDuplicateDisplayName("Joe {$this->user->name_last}5"));
+    }
+
+    /** @test */
     public function itDeterminesThatANameIsStillValidEvenWithANickanemSet()
     {
         $this->user->nickname = 'Delboy';
