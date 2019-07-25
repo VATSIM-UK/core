@@ -26,9 +26,8 @@ class FteCreationTest extends TestCase
             ->assertRedirect();
 
         $name = sha1("{$file->getClientOriginalName()}.{$file->getClientOriginalExtension()}");
-
         Storage::disk('public')->assertExists('smartcars/exercises/' . $name . '.png');
 
-        $this->assertEquals('/storage/smartcars/exercises/' . $name . '.png', Flight::first()->image);
+        $this->assertEquals(url('/') . '/storage/smartcars/exercises/' . $name . '.png', Flight::first()->image);
     }
 }
