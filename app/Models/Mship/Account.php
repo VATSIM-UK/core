@@ -441,8 +441,8 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         $allowedNames->push($this->real_name.$wildcard);
 
         if ($includeATC && $this->networkDataAtcCurrent) {
-            $allowedNames->push($this->name.$wildcard.' - '.$this->networkDataAtcCurrent->callsign);
-            $allowedNames->push($this->real_name.$wildcard.' - '.$this->networkDataAtcCurrent->callsign);
+            $allowedNames->push('{$this->name.$wildcard} - {$this->networkDataAtcCurrent->callsign}');
+            $allowedNames->push('{$this->real_name.$wildcard} - {$this->networkDataAtcCurrent->callsign}');
         }
 
         return $allowedNames;
@@ -457,23 +457,23 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
      */
     public function isValidDisplayName($displayName)
     {
-        return $this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
+        return !$this->allowedNames(true)->filter(function ($item, $key) use ($displayName) {
             return strcasecmp($item, $displayName) == 0;
-        })->count() > 0;
+        })->isEmpty();
     }
 
     public function isPartiallyValidDisplayName($displayName)
     {
-        return $this->allowedNames()->filter(function ($item, $key) use ($displayName) {
+        return !$this->allowedNames()->filter(function ($item, $key) use ($displayName) {
             return strstr(strtolower($displayName), strtolower($item)) != false;
-        })->count() > 0;
+        })->isEmpty();
     }
 
     public function isDuplicateDisplayName($displayName)
     {
-        return $this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
+        return !$this->allowedNames(true, true)->filter(function ($item, $key) use ($displayName) {
             return preg_match("/^".$item."$/i", $displayName) == 1;
-        })->count() > 0;
+        })->isEmpty();
     }
 
     /**

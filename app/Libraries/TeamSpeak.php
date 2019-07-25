@@ -290,7 +290,6 @@ class TeamSpeak
                     Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
                     Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
                     throw new ClientKickedFromServerException;
-                    return;
                 }
 
                 // Give them a grace period
