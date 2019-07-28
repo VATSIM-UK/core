@@ -283,9 +283,9 @@ class TeamSpeak
             if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
 
                 // If they have a grace period, allow it for now
-                if ($hasGracePeriod){
+                if ($hasGracePeriod) {
                     return;
-                } else if (!$recentlyTold) {
+                } elseif (!$recentlyTold) {
                     // Give them a grace period if they haven't recently had one
 
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
