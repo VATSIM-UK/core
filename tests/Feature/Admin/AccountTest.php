@@ -25,6 +25,14 @@ class AccountTest extends TestCase
     }
 
     /** @test */
+    public function testCanViewBansList()
+    {
+        $this->actingAs($this->privacc)
+            ->get(route('adm.mship.ban.index'))
+            ->assertSuccessful();
+    }
+
+    /** @test */
     public function testCanQueueUserToSync()
     {
         // Remove time lockout cache & fake queue
