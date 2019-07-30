@@ -126,8 +126,22 @@ class Flight extends Model
         return $query->where('featured', true);
     }
 
+    public function image()
+    {
+        return new FteStorageWrapper();
+    }
+
     public function getImageAttribute($value)
     {
-        return (new FteStorageWrapper())->retrieve($value);
+        return $value ? $this->image()->retrieve($value) : null;
+    }
+
+    public function setImageAttribute($newValue)
+    {
+        if(isset($this->attributes['image']) && $this->attributes['image'] != $newValue){
+            // Deletes the old image if the file has changed
+            $this->image()->delete($this->attributes['image']);
+        }
+        $this->attributes['image'] = $newValue;
     }
 }

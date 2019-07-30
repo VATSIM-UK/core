@@ -22,7 +22,7 @@ abstract class StorageWrapper
     }
 
     /**
-     * Retrieve an image from the disk.
+     * Generates a public url to the image.
      *
      * @param $fileName
      * @return bool|string
@@ -30,6 +30,17 @@ abstract class StorageWrapper
     public function retrieve($fileName)
     {
         return url('/') . Storage::url($this->parseFileName($fileName));
+    }
+
+    /**
+     * Deletes the image file.
+     *
+     * @param $fileName
+     * @return bool
+     */
+    public function delete($fileName)
+    {
+        return Storage::disk($this->disk)->delete($this->parseFileName($fileName));
     }
 
     /**

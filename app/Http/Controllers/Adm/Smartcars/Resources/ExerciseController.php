@@ -96,7 +96,7 @@ class ExerciseController extends Controller
 
         if ($request->hasFile('image')) {
             $file = new CoreUploadedFile($request->file('image'));
-            (new FteStorageWrapper())->store($file);
+            $exercise->image()->store($file);
             $exercise->image = $file->getPathFileName();
         }
         $exercise->save();
@@ -140,7 +140,7 @@ class ExerciseController extends Controller
 
         if ($request->hasFile('image')) {
             $file = new CoreUploadedFile($request->file('image'));
-            (new FteStorageWrapper())->store($file);
+            $exercise->image()->store($file);
             $exercise->image = $file->getPathFileName();
         }
         $exercise->save();
@@ -161,7 +161,7 @@ class ExerciseController extends Controller
         $this->authorize('use-permission', 'adm/smartcars/exercises/delete');
 
         if ($exercise->image) {
-            $exercise->image->delete();
+            $exercise->image = null;
         }
 
         $exercise->delete();
