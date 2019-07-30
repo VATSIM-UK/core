@@ -99,7 +99,7 @@ Route::group([
             'prefix' => 'ban',
             'as' => 'ban.',
         ], function () {
-            Route::get('/')->uses('Account@getBans')->name('index');
+            Route::get('/')->uses('Account\Bans@getBans')->name('index');
             Route::get('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account\Bans@getBanRepeal')->name('repeal');
             Route::post('/{ban}/repeal')->where(['ban' => '\d+'])->uses('Account\Bans@postBanRepeal')->name('repeal.post');
             Route::get('/{ban}/comment')->where(['ban' => '\d+'])->uses('Account\Bans@getBanComment')->name('comment');
