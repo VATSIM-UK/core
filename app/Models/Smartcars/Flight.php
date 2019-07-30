@@ -138,7 +138,7 @@ class Flight extends Model
 
     public function setImageAttribute($newValue)
     {
-        if(isset($this->attributes['image']) && $this->attributes['image'] != $newValue){
+        if (isset($this->attributes['image']) && $this->attributes['image'] != $newValue) {
             // Deletes the old image if the file has changed
             $this->image()->delete($this->attributes['image']);
         }

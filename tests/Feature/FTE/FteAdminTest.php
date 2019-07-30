@@ -36,7 +36,6 @@ class FteAdminTest extends TestCase
     /** @test */
     public function testExerciseCanBeDeleted()
     {
-
         $file = CoreUploadedFile::fake()->image('testing.png');
         $name = sha1("{$file->getClientOriginalName()}.{$file->getClientOriginalExtension()}");
 
