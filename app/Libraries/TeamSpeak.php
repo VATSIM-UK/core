@@ -282,18 +282,12 @@ class TeamSpeak
             // Check to see if their name is at least partially right
             if ($member->isPartiallyValidDisplayName($client['client_nickname'])) {
 
-                // Check if they have been recently told but the grace has elapsed
-                if ($recentlyTold && !$hasGracePeriod) {
-                    self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
-                    self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
-                    self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
-                    Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
-                    Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
-                    throw new ClientKickedFromServerException;
-                }
+                // If they have a grace period, allow it for now
+                if ($hasGracePeriod) {
+                    return;
+                } elseif (!$recentlyTold) {
+                    // Give them a grace period if they haven't recently had one
 
-                // Give them a grace period
-                if (!$hasGracePeriod) {
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke1'));
                     self::pokeClient($client, trans('teamspeak.nickname.partiallyinvalid.poke2'));
                     self::messageClient($client, trans('teamspeak.nickname.partiallyinvalid.note', ['example' => $member->real_name.' - EGLL_N_TWR']));
@@ -304,6 +298,14 @@ class TeamSpeak
                     return;
                 }
             }
+
+            // Either partially valid and grace period over, or doesn't even contain their name!
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke1'));
+            self::pokeClient($client, trans('teamspeak.nickname.invalid.poke2'));
+            self::kickClient($client, trans('teamspeak.nickname.invalid.kick'));
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
+            Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
+            throw new ClientKickedFromServerException;
         } else {
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT.$client['client_database_id']);
             Cache::forget(self::CACHE_NICKNAME_PARTIALLY_CORRECT_GRACE.$client['client_database_id']);
