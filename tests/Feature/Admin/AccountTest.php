@@ -5,7 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
-use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -22,6 +22,28 @@ class AccountTest extends TestCase
         $this->actingAs($this->privacc)
             ->get(route('adm.mship.account.details', '12345'))
             ->assertNotFound();
+    }
+
+    /** @test */
+    public function testCanViewBansList()
+    {
+        // Add a ban
+        $ban = factory(Ban::class)->create([
+            'account_id' => $this->user->id
+        ]);
+
+        $this->actingAs($this->privacc)
+            ->get(route('adm.mship.ban.index'))
+            ->assertSuccessful()
+            ->assertSeeTextInOrder([
+                $ban->account->real_name,
+                $ban->banner->real_name,
+                $ban->created_at->format('dS M Y'),
+                $ban->period_start->format('dS M Y'),
+                $ban->period_finish->format('dS M Y'),
+                'Local',
+                'Active'
+            ]);
     }
 
     /** @test */
