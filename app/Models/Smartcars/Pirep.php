@@ -78,7 +78,7 @@ class Pirep extends Model
         $this->mark(true, $reason, null);
     }
 
-    public function markFailed($reason, $failed_at)
+    public function markFailed($reason, $failed_at = null)
     {
         $this->mark(false, $reason, $failed_at);
     }
