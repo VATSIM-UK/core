@@ -74,5 +74,4 @@ class PirepModelTest extends TestCase
 
         $this->assertEquals($posrep->id, $this->pirep->fresh()->failedAt->id);
     }
-
 }
