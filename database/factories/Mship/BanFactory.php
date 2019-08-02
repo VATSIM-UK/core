@@ -27,7 +27,7 @@
             },
             'reason_extra' => $faker->paragraph,
             'period_start' => \Carbon\Carbon::now()->subDay(),
-            'period_finish' => \Carbon\Carbon::now()->addDays($faker->randomDigit),
+            'period_finish' => \Carbon\Carbon::now()->addDays($faker->randomDigitNotNull),
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ];
