@@ -75,7 +75,9 @@
                     @if($pirep->passed === false)
                     <div class="col-xs-12">
                         <b>Reason:</b>
-                        Unsure why? Check out the map to the right!
+                        {{ $pirep->pass_reason }}
+                        </br>
+                        <small>Still unsure why? Check out the map to the right!</small>
                     </div>
                     @endif
                     <div class="col-xs-12">
@@ -117,7 +119,7 @@
 
             @include('fte.map.plot-criteria')
 
-            @if($pirep->passed === false)
+            @if($pirep->passed === false && $pirep->failedAt()->exists())
             @include('fte.map.plot-failure')
             @endif
 

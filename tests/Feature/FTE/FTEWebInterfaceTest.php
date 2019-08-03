@@ -4,6 +4,7 @@ namespace Tests\Feature\FTE;
 
 use App\Models\Smartcars\Flight;
 use App\Models\Smartcars\Pirep;
+use App\Models\Smartcars\Posrep;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -125,6 +126,17 @@ class FTEWebInterfaceTest extends TestCase
         $this->actingAs($this->pirep->bid->account, 'web')
             ->get(route('fte.history', $this->pirep->id))
             ->assertSuccessful();
+    }
+
+    /** @test */
+    public function testItLoadsPirepThatFailed()
+    {
+        $this->pirep->markFailed('It went wrong', factory(Posrep::class)->create()->id);
+        $this->pirep->save();
+        $this->actingAs($this->pirep->bid->account, 'web')
+            ->get(route('fte.history', $this->pirep->id))
+            ->assertSuccessful()
+            ->assertSee($this->pirep->pass_reason);
     }
 
     /** @test */
