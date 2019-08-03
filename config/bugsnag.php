@@ -157,7 +157,7 @@ return [
     |
     */
 
-    'bindings' => env('BUGSNAG_QUERY_BINDINGS', false),
+    'bindings' => env('BUGSNAG_QUERY_BINDINGS', true),
 
     /*
     |--------------------------------------------------------------------------
