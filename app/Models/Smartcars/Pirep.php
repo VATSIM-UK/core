@@ -66,11 +66,11 @@ class Pirep extends Model
         });
     }
 
-    public function mark($passed, $reason, $failed_at)
+    public function mark($passed, $reason, $failedAt)
     {
         $this->passed = $passed;
         $this->pass_reason = $reason;
-        $this->failed_at = $failed_at;
+        $this->failed_at = $failedAt;
     }
 
     public function markPassed($reason = 'Flight passed all criteria.')
@@ -78,9 +78,9 @@ class Pirep extends Model
         $this->mark(true, $reason, null);
     }
 
-    public function markFailed($reason, $failed_at)
+    public function markFailed($reason, $failedAt = null)
     {
-        $this->mark(false, $reason, $failed_at);
+        $this->mark(false, $reason, $failedAt);
     }
 
     public function failedAt()
