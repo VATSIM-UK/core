@@ -180,7 +180,7 @@ class SyncCommunity extends Command
                 $club_map[$club['id']] = $club['name'];
             }
 
-            // Proccess core group membership.
+            // Process core group membership.
             foreach ($groups as $group) {
                 $ips_club_id = array_search($group->name, $club_map);
                 if ($ips_club_id !== false) {
@@ -193,8 +193,14 @@ class SyncCommunity extends Command
                 }
             }
 
-            // Proccess member's IPB-side Club membership.
+            // Process member's IPB-side Club membership.
             foreach ($ips_member->clubs() as $ips_member_club) {
+
+                if(!isset($club_map[$ips_member_club])){
+                    // This must not be a community group. Skip
+                    continue;
+                }
+
                 $name = $club_map[$ips_member_club];
 
                 if ($groups->pluck('name')->search($name) === false) {
