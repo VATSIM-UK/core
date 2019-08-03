@@ -195,8 +195,7 @@ class SyncCommunity extends Command
 
             // Process member's IPB-side Club membership.
             foreach ($ips_member->clubs() as $ips_member_club) {
-
-                if(!isset($club_map[$ips_member_club])){
+                if (!isset($club_map[$ips_member_club])) {
                     // This must not be a community group. Skip
                     continue;
                 }
