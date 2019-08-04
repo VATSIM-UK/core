@@ -24,13 +24,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $flight_time
  * @property string $notes
  * @property bool $enabled
+ * @property mixed $image
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Smartcars\Aircraft $aircraft
  * @property-read \App\Models\Smartcars\Airport $arrival
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightCriterion[] $criteria
  * @property-read \App\Models\Smartcars\Airport $departure
- * @property-read mixed $image
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Smartcars\FlightResource[] $resources
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight enabled()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Smartcars\Flight featured()
@@ -126,8 +126,22 @@ class Flight extends Model
         return $query->where('featured', true);
     }
 
+    public function image()
+    {
+        return new FteStorageWrapper();
+    }
+
     public function getImageAttribute($value)
     {
-        return (new FteStorageWrapper())->retrieve($value);
+        return $value ? $this->image()->retrieve($value) : null;
+    }
+
+    public function setImageAttribute($newValue)
+    {
+        if (isset($this->attributes['image']) && $this->attributes['image'] != $newValue) {
+            // Deletes the old image if the file has changed
+            $this->image()->delete($this->attributes['image']);
+        }
+        $this->attributes['image'] = $newValue;
     }
 }

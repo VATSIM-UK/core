@@ -92,15 +92,15 @@ class ExerciseController extends Controller
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        
+
 
         if ($request->hasFile('image')) {
             $file = new CoreUploadedFile($request->file('image'));
-            (new FteStorageWrapper())->store($file);
-            $exercise->image = $file->getFullFileName();
+            $exercise->image()->store($file);
+            $exercise->image = $file->getPathFileName();
         }
-
         $exercise->save();
+
 
         return redirect($this->redirectPath())->with('success', 'Exercise created.');
     }
@@ -133,15 +133,17 @@ class ExerciseController extends Controller
 
         $this->validate($request, $this->rules());
 
+
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        $exercise->save();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->storeAs('smartcars/exercises', "{$exercise->id}.{$image->extension()}", ['disk' => 'public']);
+            $file = new CoreUploadedFile($request->file('image'));
+            $exercise->image()->store($file);
+            $exercise->image = $file->getPathFileName();
         }
+        $exercise->save();
 
         return redirect($this->redirectPath())->with('success', 'Exercise updated.');
     }
@@ -159,7 +161,7 @@ class ExerciseController extends Controller
         $this->authorize('use-permission', 'adm/smartcars/exercises/delete');
 
         if ($exercise->image) {
-            $exercise->image->delete();
+            $exercise->image = null;
         }
 
         $exercise->delete();
