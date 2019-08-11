@@ -2,6 +2,7 @@
 
 namespace App\Models\Training;
 
+use App\Events\Training\WaitingListCreated;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -13,12 +14,21 @@ class WaitingList extends Model
 {
     use SoftDeletes;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::created(function($model) {
+            event(new WaitingListCreated($model));
+        });
+    }
+
     public $table = 'training_waiting_list';
 
     protected $dates = ['deleted_at'];
 
-    const ATC_DEPARTMENT = 1;
-    const PILOT_DEPARTMENT = 2;
+    const ATC_DEPARTMENT = 'atc';
+    const PILOT_DEPARTMENT = 'pilot';
 
     /**
      * A Waiting List can be managed by many Staff Members (Accounts)
@@ -211,6 +221,15 @@ class WaitingList extends Model
     public function scopeStaff($query)
     {
         return $query->whereHas('staff');
+    }
+
+    public function generateTemplatePermissions()
+    {
+        return collect([
+            "waitingLists/{$this->department}/{$this->slug}/view",
+            "waitingLists/{$this->department}/{$this->slug}/edit",
+            "waitingLists/{$this->department}/{$this->slug}/accounts/add",
+        ]);
     }
 
     public function isAtcList()

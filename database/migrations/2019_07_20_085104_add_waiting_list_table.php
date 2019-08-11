@@ -98,6 +98,8 @@ class AddWaitingListTable extends Migration
         $this->createPermission('waitingLists/pilot/*');
         $this->createPermission('waitingLists/elevatedInformation');
         $this->createPermission('waitingLists/create');
+        $this->createPermission('waitingLists/atc/flags/add');
+        $this->createPermission('waitingLists/pilot/flags/add');
     }
 
     /**
@@ -120,7 +122,7 @@ class AddWaitingListTable extends Migration
     {
         return \Spatie\Permission\Models\Permission::create([
             'name' => $name,
-            'guard' => $guard
+            'guard_name' => $guard
         ]);
     }
 }
