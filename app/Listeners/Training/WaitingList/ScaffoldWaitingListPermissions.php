@@ -10,16 +10,6 @@ use Spatie\Permission\Models\Permission;
 class ScaffoldWaitingListPermissions
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
      * @param  WaitingListCreated  $event
