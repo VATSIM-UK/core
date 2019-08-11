@@ -6,7 +6,6 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Spatie\Permission\Models\Role;
 
 class WaitingListPolicy extends BasePolicy
 {
@@ -33,7 +32,7 @@ class WaitingListPolicy extends BasePolicy
     public function elevatedInformation(Account $account, WaitingList $waitingList)
     {
         return $this->departmentWildcard($account, $waitingList)
-            || $account->hasPermissionTo('waitingLists/elevatedInformation');
+            || $account->checkPermissionTo('waitingLists/elevatedInformation');
     }
 
     public function addFlags(Account $account, WaitingList $waitingList)
