@@ -6,14 +6,23 @@ use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
 use App\Policies\BasePolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
 
 class WaitingListPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
-    public function addAccount(Account $account, WaitingList $waitingList)
+    public function before(Account $account, $policy)
     {
-        return true;
+        if (parent::before($account, $policy)) return true;
+        if ($account->checkPermissionTo('waitingLists/*')) return true;
+        return null;
+    }
+
+    public function addAccounts(Account $account, WaitingList $waitingList)
+    {
+        return $this->departmentWildcard($account, $waitingList)
+            || $account->hasPermissionTo("waitingLists/{$waitingList->department}/{$waitingList->slug}/accounts/add");
     }
 
     public function removeAccount(Account $account, WaitingList $waitingList)
@@ -21,56 +30,62 @@ class WaitingListPolicy extends BasePolicy
         return true;
     }
 
-    public function promoteAccount(Account $account, WaitingList $waitingList)
+    public function elevatedInformation(Account $account, WaitingList $waitingList)
     {
-        return true;
+        return $this->departmentWildcard($account, $waitingList)
+            || $account->hasPermissionTo('waitingLists/elevatedInformation');
     }
 
-    public function demoteAccount(Account $account, WaitingList $waitingList)
+    public function addFlags(Account $account, WaitingList $waitingList)
     {
-        return true;
+        return $this->departmentWildcard($account, $waitingList)
+            || $account->checkPermissionTo("waitingLists/{$waitingList->department}/flags/add");
     }
 
-    private function basePermission(Account $account, WaitingList $waitingList)
+    private function departmentWildcard(Account $account, string $department)
     {
-        return $waitingList->staff->contains($account);
+        return $account->checkPermissionTo("waitingLists/{$department}/*");
     }
 
     /**
-     * Nova Specific Policies
+     * Can view any waiting list resources.
+     * @param Account $account
+     * @return bool
      */
     public function viewAny(Account $account)
     {
-        // TODO: Implement viewAny() method.
+        return $account->checkPermissionTo("waitingLists/base", "web");
     }
 
-    public function view(Account $account)
+    public function view(Account $account, WaitingList $waitingList)
     {
-        // TODO: Implement view() method.
+        return $this->departmentWildcard($account, $waitingList->department)
+            || $account->checkPermissionTo("waitingLists/{$waitingList->department}/{$waitingList->slug}/view");
     }
 
     public function create(Account $account)
     {
-        // TODO: Implement create() method.
+        return $account->checkPermissionTo("waitingLists/create");
     }
 
-    public function update(Account $account)
+    public function update(Account $account, WaitingList $waitingList)
     {
-        // TODO: Implement update() method.
+        return $this->departmentWildcard($account, $waitingList->department)
+            || $account->getPermissionsViaRoles()->contains("waitingLists/{$waitingList->department}/{$waitingList->slug}/edit");
     }
 
-    public function delete(Account $account)
+    public function delete(Account $account, WaitingList  $waitingList)
     {
-        // TODO: Implement delete() method.
+        return $this->departmentWildcard($account, $waitingList->department);
     }
 
     public function restore(Account $account)
     {
-        // TODO: Implement restore() method.
+        return false;
     }
 
     public function forceDelete(Account $account)
     {
-        // TODO: Implement forceDelete() method.
+        return false;
     }
 }
