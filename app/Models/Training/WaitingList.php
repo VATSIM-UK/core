@@ -18,7 +18,7 @@ class WaitingList extends Model
     {
         parent::boot();
 
-        self::created(function($model) {
+        self::created(function ($model) {
             event(new WaitingListCreated($model));
         });
     }

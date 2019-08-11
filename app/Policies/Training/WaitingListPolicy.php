@@ -13,8 +13,12 @@ class WaitingListPolicy extends BasePolicy
 
     public function before(Account $account, $policy)
     {
-        if (parent::before($account, $policy)) return true;
-        if ($account->checkPermissionTo('waitingLists/*')) return true;
+        if (parent::before($account, $policy)) {
+            return true;
+        }
+        if ($account->checkPermissionTo('waitingLists/*')) {
+            return true;
+        }
         return null;
     }
 

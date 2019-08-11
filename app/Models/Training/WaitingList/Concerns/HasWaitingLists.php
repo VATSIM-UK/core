@@ -17,9 +17,15 @@ trait HasWaitingLists
     public function authorisedDepartments()
     {
         $departments = [];
-        if ($this->hasRole('privacc')) $departments = ['atc', 'pilot'];
-        if ($this->checkPermissionTo('waitingLists/atc/base')) Arr::add($departments, 0,'atc');
-        if ($this->checkPermissionTo('waitingLists/pilot/base')) Arr::add($departments, 1,'pilot');
+        if ($this->hasRole('privacc')) {
+            $departments = ['atc', 'pilot'];
+        }
+        if ($this->checkPermissionTo('waitingLists/atc/base')) {
+            Arr::add($departments, 0, 'atc');
+        }
+        if ($this->checkPermissionTo('waitingLists/pilot/base')) {
+            Arr::add($departments, 1, 'pilot');
+        }
 
         return $departments;
     }
