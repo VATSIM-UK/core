@@ -28,7 +28,7 @@ trait HasNotifications
      */
     public function hasReadNotification(SysNotification $notification)
     {
-        return $this->readSystemNotifications()->where('sys_notification_read.notification_id', $notification->id)->first(['sys_notification_read.id']) != null;
+        return $this->readSystemNotifications->contains($notification->id);
     }
 
     public function getUnreadNotificationsAttribute()
