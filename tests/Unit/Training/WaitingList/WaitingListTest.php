@@ -38,7 +38,7 @@ class WaitingListTest extends TestCase
     /** @test **/
     public function itDetectsIfAtcList()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 1]);
+        $atcList = factory(WaitingList::class)->create(['department' => 'atc']);
 
         $this->assertTrue($atcList->isAtcList());
         $this->assertFalse($atcList->isPilotList());
@@ -47,7 +47,7 @@ class WaitingListTest extends TestCase
     /** @test **/
     public function itDetectsIfPilotList()
     {
-        $atcList = factory(WaitingList::class)->create(['department' => 2]);
+        $atcList = factory(WaitingList::class)->create(['department' => 'pilot']);
 
         $this->assertTrue($atcList->isPilotList());
         $this->assertFalse($atcList->isAtcList());

@@ -21,18 +21,4 @@ abstract class BasePolicy
     {
         return $account->roles->contains(Role::findByName('privacc')) ? true : null;
     }
-
-    abstract public function viewAny(Account $account);
-
-    abstract public function view(Account $account);
-
-    abstract public function create(Account $account);
-
-    abstract public function update(Account $account);
-
-    abstract public function delete(Account $account);
-
-    abstract public function restore(Account $account);
-
-    abstract public function forceDelete(Account $account);
 }

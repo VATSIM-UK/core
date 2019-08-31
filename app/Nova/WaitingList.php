@@ -12,6 +12,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Vatsimuk\WaitingListsManager\WaitingListsManager;
 
@@ -58,14 +59,14 @@ class WaitingList extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()->sortable()->canSeeWhen('elevatedInformation', $this),
 
             TextWithSlug::make('Name')
                 ->rules(['required'])
                 ->creationRules('unique:training_waiting_list,name')
                 ->slug('slug'),
 
-            Slug::make('Slug'),
+            Slug::make('Slug')->onlyOnForms()->canSeeWhen('elevatedInformation', $this),
 
             Select::make('Department')->options([
                 'atc' => 'ATC Training',
@@ -74,13 +75,20 @@ class WaitingList extends Resource
 
             new Panel('Notes on Flags', [
                 Heading::make('When deleting a flag, the changes will be made to the data but to see them visually,
-                you need to fresh the page.'),
+                you need to fresh the page.')->canSeeWhen('addFlags', $this)
             ]),
 
-            HasMany::make('Flags', 'flags', WaitingListFlag::class)->help('When removing a flag, please refresh the page.'),
+            HasMany::make('Flags', 'flags', WaitingListFlag::class)
+                ->help('When removing a flag, please refresh the page.')
+                ->canSeeWhen('addFlags', $this),
 
             WaitingListsManager::make(),
         ];
+    }
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $query->whereIn('department', $request->user()->authorisedDepartments());
     }
 
     /**
@@ -125,8 +133,17 @@ class WaitingList extends Resource
     public function actions(Request $request)
     {
         return [
-            (new AddStudentToWaitingList),
-            (new AddFlagToWaitingList)
+            (new AddStudentToWaitingList)->canSee(function (Request $request) {
+                return $request->user()->can('addAccounts', $this);
+            })->canRun(function (Request $request) {
+                return $request->user()->can('addAccounts', $this);
+            }),
+
+            (new AddFlagToWaitingList)->canSee(function (Request $request) {
+                return $request->user()->can('addFlags', $this);
+            })->canRun(function (Request $request) {
+                return $request->user()->can('addFlags', $this);
+            })
         ];
     }
 }

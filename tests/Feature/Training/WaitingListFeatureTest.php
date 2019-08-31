@@ -32,38 +32,6 @@ class WaitingListFeatureTest extends TestCase
     }
 
     /** @test * */
-    public function testStudentCanBeAddedToWaitingList()
-    {
-        $account = factory(Account::class)->create();
-
-        Event::fakeFor(function () use ($account) {
-            $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
-                'account_id' => $account->id,
-            ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-                ->assertSessionHas('success', 'Account Added to Waiting List');
-
-            Event::assertDispatched(AccountAddedToWaitingList::class, function ($event) use ($account) {
-                return $event->account->id === $account->id && $event->waitingList->id === $this->waitingList->id;
-            });
-        });
-    }
-
-    /** @test * */
-    public function testAStudentCanOnlyBeInAListOnce()
-    {
-        $account = factory(Account::class)->create();
-
-        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
-            'account_id' => $account->id,
-        ])->assertRedirect(route('training.waitingList.show', $this->waitingList))
-            ->assertSessionHas('success', 'Account Added to Waiting List');
-
-        $this->actingAs($this->privacc)->post(route('training.waitingList.store', $this->waitingList), [
-            'account_id' => $account->id,
-        ])->assertSessionHasErrors('account_id', 'That account is already in this waiting list');
-    }
-
-    /** @test * */
     public function testAStudentCanBePromoted()
     {
         $this->markNovaTest();

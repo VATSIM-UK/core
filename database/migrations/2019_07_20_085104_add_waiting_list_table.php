@@ -89,6 +89,16 @@ class AddWaitingListTable extends Migration
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ]);
+
+        $this->createPermission('waitingLists/*');
+        $this->createPermission('waitingLists/atc/base');
+        $this->createPermission('waitingLists/pilot/base');
+        $this->createPermission('waitingLists/atc/*');
+        $this->createPermission('waitingLists/pilot/*');
+        $this->createPermission('waitingLists/elevatedInformation');
+        $this->createPermission('waitingLists/create');
+        $this->createPermission('waitingLists/atc/flags/add');
+        $this->createPermission('waitingLists/pilot/flags/add');
     }
 
     /**
@@ -105,5 +115,13 @@ class AddWaitingListTable extends Migration
         Schema::dropIfExists('training_waiting_list_status');
         Schema::dropIfExists('training_waiting_list_flags');
         Schema::dropIfExists('training_waiting_list_account_flag');
+    }
+
+    private function createPermission(string $name, $guard = 'web')
+    {
+        return \Spatie\Permission\Models\Permission::create([
+            'name' => $name,
+            'guard_name' => $guard
+        ]);
     }
 }
