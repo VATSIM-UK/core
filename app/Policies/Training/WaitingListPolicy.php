@@ -38,7 +38,7 @@ class WaitingListPolicy extends BasePolicy
     public function elevatedInformation(Account $account, WaitingList $waitingList)
     {
         return $this->departmentWildcard($account, $waitingList)
-            || $account->checkPermissionTo('waitingLists/elevatedInformation',self::GUARD);
+            || $account->checkPermissionTo('waitingLists/elevatedInformation', self::GUARD);
     }
 
     public function addFlags(Account $account, WaitingList $waitingList)
