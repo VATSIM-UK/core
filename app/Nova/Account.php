@@ -53,7 +53,7 @@ class Account extends Resource
         'id', 'email', 'name_first', 'name_last',
     ];
 
-    public static $with = ['feedback'];
+    public static $with = ['feedback', 'qualifications', 'states'];
 
     public static function authorizable()
     {
@@ -115,18 +115,12 @@ class Account extends Resource
                 ->hideWhenUpdating(),
 
             Text::make('ATC Rating', function () {
-                return $this->qualificationAtc->code;
+                return $this->qualification_atc->code;
             })->exceptOnForms(),
 
             Text::make('Pilot Rating(s)', function () {
                 return $this->qualifications_pilot_string;
             })->exceptOnForms(),
-
-            Text::make('Membership State', function () {
-                $state = $this->states()->first();
-
-                return sprintf('%s (%s / %s)', ucwords(strtolower($state->code)), $state->pivot->region, $state->pivot->division);
-            }),
 
             BelongsToMany::make('Qualifications')->onlyOnDetail(),
 

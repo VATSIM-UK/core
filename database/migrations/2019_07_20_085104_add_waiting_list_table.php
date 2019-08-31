@@ -91,7 +91,6 @@ class AddWaitingListTable extends Migration
         ]);
 
         $this->createPermission('waitingLists/*');
-        $this->createPermission('waitingLists/base');
         $this->createPermission('waitingLists/atc/base');
         $this->createPermission('waitingLists/pilot/base');
         $this->createPermission('waitingLists/atc/*');
