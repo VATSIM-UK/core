@@ -194,10 +194,6 @@
                                     <td>Jamie Paine</td>
                                 </tr>
                                 <tr>
-                                    <td>TG Manager (New Controller)</td>
-                                    <td>Fergus Walsh</td>
-                                </tr>
-                                <tr>
                                     <td>TG Manager (TWR)</td>
                                     <td>Adam Meade</td>
                                 </tr>
@@ -207,7 +203,11 @@
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (New Controller)</td>
-                                    <td>Josh Howker</td>
+                                    <td>Ben Cook</td>
+                                </tr>
+                                <tr>
+                                    <td>TG Instructor (New Controller)</td>
+                                    <td>Fergus Walsh</td>
                                 </tr>
                                 <tr>
                                     <td>TG Instructor (TG1)</td>
