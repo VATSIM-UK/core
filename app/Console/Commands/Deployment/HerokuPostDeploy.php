@@ -29,5 +29,8 @@ class HerokuPostDeploy extends Command
                 \Tests\Database\MockCtsDatabase::create();
                 break;
         }
+        $this->info('=====================');
+        $this->info('Success!');
+        $this->info('=====================');
     }
 }
