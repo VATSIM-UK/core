@@ -25,8 +25,7 @@ class HerokuPostDeploy extends Command
                 break;
             case 'development':
                 $this->call('migrate:fresh');
-                \Tests\Database\MockCtsDatabase::destroy();
-                \Tests\Database\MockCtsDatabase::create();
+                $this->call('cts:migrate:fresh');
                 break;
         }
         $this->info('=====================');
