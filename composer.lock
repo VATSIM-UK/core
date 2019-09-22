@@ -1793,7 +1793,7 @@
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
-            "name": "jeremeamia/SuperClosure",
+            "name": "jeremeamia/superclosure",
             "version": "2.4.0",
             "source": {
                 "type": "git",
@@ -4190,27 +4190,27 @@
         },
         {
             "name": "spatie/laravel-cookie-consent",
-            "version": "2.8.0",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-cookie-consent.git",
-                "reference": "d50a81aea91bb188651e1e81e77c73ba95d8370e"
+                "reference": "1ed1ec190c309bb4978db91b9597c692dab3308e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/d50a81aea91bb188651e1e81e77c73ba95d8370e",
-                "reference": "d50a81aea91bb188651e1e81e77c73ba95d8370e",
+                "url": "https://api.github.com/repos/spatie/laravel-cookie-consent/zipball/1ed1ec190c309bb4978db91b9597c692dab3308e",
+                "reference": "1ed1ec190c309bb4978db91b9597c692dab3308e",
                 "shasum": ""
             },
             "require": {
-                "illuminate/cookie": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
-                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
-                "illuminate/view": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
+                "illuminate/cookie": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0",
+                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0",
+                "illuminate/view": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0",
                 "php": "^7.2"
             },
             "require-dev": {
                 "fzaninotto/faker": "~1.4",
-                "orchestra/testbench": "~3.5.0|~3.6.0|~3.7.0|~3.8.0",
+                "orchestra/testbench": "~3.5.0|~3.6.0|~3.7.0|~3.8.0|^4.0",
                 "phpunit/phpunit": "^8.0"
             },
             "type": "library",
@@ -4254,7 +4254,7 @@
                 "law",
                 "spatie"
             ],
-            "time": "2019-03-28T23:13:20+00:00"
+            "time": "2019-09-04T06:48:11+00:00"
         },
         {
             "name": "spatie/laravel-permission",
