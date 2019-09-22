@@ -19,7 +19,7 @@
     "axios": "^0.18",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
-    "bootstrap-tour": "^0.11.0",
+    "bootstrap-tour": "^0.12.0",
     "cross-env": "^5.2.0",
     "font-awesome": "^4.7.0",
     "ionicons": "^3.0.0",
