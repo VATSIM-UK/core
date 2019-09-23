@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38ec6894453428d00d48f84e80785249",
+    "content-hash": "2c2a1b256f72426d7d9d9c29875e03df",
     "packages": [
         {
             "name": "alawrence/laravel-ipboard",
@@ -6368,16 +6368,16 @@
         },
         {
             "name": "codedungeon/phpunit-result-printer",
-            "version": "0.23.4",
+            "version": "0.26.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikeerickson/phpunit-pretty-result-printer.git",
-                "reference": "83d77172a342c1df6ecbfeada7c7919aa5943fbb"
+                "reference": "70efe139f174954392582103355a1b4a3d9022e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikeerickson/phpunit-pretty-result-printer/zipball/83d77172a342c1df6ecbfeada7c7919aa5943fbb",
-                "reference": "83d77172a342c1df6ecbfeada7c7919aa5943fbb",
+                "url": "https://api.github.com/repos/mikeerickson/phpunit-pretty-result-printer/zipball/70efe139f174954392582103355a1b4a3d9022e5",
+                "reference": "70efe139f174954392582103355a1b4a3d9022e5",
                 "shasum": ""
             },
             "require": {
@@ -6388,7 +6388,7 @@
                 "symfony/yaml": "^2.7|^3.0|^4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.4.*",
+                "phpunit/phpunit": "8.0.*",
                 "spatie/phpunit-watcher": "^1.6"
             },
             "type": "library",
@@ -6417,7 +6417,7 @@
                 "result-printer",
                 "testing"
             ],
-            "time": "2018-11-08T04:12:52+00:00"
+            "time": "2019-02-28T18:52:43+00:00"
         },
         {
             "name": "doctrine/instantiator",
