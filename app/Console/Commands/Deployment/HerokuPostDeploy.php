@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Deployment;
 
 use Illuminate\Console\Command;
-use Tests\Database\MockCtsDatabase;
 
 class HerokuPostDeploy extends Command
 {
@@ -26,9 +25,11 @@ class HerokuPostDeploy extends Command
                 break;
             case 'development':
                 $this->call('migrate:fresh');
-                MockCtsDatabase::destroy();
-                MockCtsDatabase::create();
+                $this->call('cts:migrate:fresh');
                 break;
         }
+        $this->info('=====================');
+        $this->info('Success!');
+        $this->info('=====================');
     }
 }
